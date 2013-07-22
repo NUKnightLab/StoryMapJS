@@ -26,7 +26,7 @@
         // copy files to build directory
         // input: list of objects, where
         //      @src: source directory
-        //      @regex: regular expression to match files
+        //      @regex: regular expression to match files in @src
         "copy": [
             {
                 "src": "site",
@@ -79,13 +79,11 @@
     },
     //
     // stage
-    // 
-    // input: regular expression to match files
+    // input: regular expression to match files in the build directory
     //  
-    "stage": "(css/.*|img/.*|js/.*)$",
+    "stage": "(css/storymap\\.css|img/.*|js/storymap\\.js)$",
     //
     // deploy
-    //
     // input: name of the S3 bucket that will host the website 
     //
     "deploy": "storymapjs.knightlab.com"

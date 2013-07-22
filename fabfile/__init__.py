@@ -15,11 +15,9 @@ DEBUG = False
 #
 # Set paths
 #
-
 env.project_path = dirname(dirname(abspath(__file__)))
 env.sites_path = dirname(env.project_path)
 env.build_path = join(env.project_path, 'build')
-env.deploy_path =  join(env.project_path, 'build')
 
 #
 # Read config.json and update vars
@@ -41,7 +39,7 @@ env.cdn_path = abspath(join(
 # Path to s3cmd.cnf in secrets repository
 env.s3cmd_cfg = join(env.sites_path, 'secrets', 's3cmd.cfg')
 
-# Banner for the top of CSS and JS files (see CONFIG above)
+# Banner for the top of CSS and JS files
 BANNER = """
 /* %(name)s - v%(version)s - %(date)s
  * Copyright (c) %(year)s %(author)s 
@@ -50,15 +48,10 @@ BANNER = """
 
 if DEBUG:
     warn('DEBUGGING IS ON:')
-    CONFIG['deploy_bucket_name'] = 'test.knilab.com'
-    env.build_path = join(env.project_path, 'build_test') 
-    env.deploy_path =  join(env.project_path, 'build_test')
-    
-    print 'deploy_bucket_name:', CONFIG['deploy_bucket_name']
-    print 'build_path:', env.build_path
-    print 'deploy_path:', env.deploy_path
+    CONFIG['deploy'] = 'test.knilab.com'
+     
+    print 'deploy:', CONFIG['deploy']
     print 'tagging is OFF'
-    print 'uncommitted changes check is OFF'
     print ''
     
     doit = prompt("Continue? (y/n): ").strip()
@@ -297,15 +290,13 @@ def serve(port='8000'):
         local('livereload -b -p %s' % port)
  
 @task
-def build(version='TEST'):
+def build():
     """Build version"""   
     # get build config
     if not 'build' in CONFIG:
         abort('Could not find "build" in config file')
       
     # determine version
-    if version:
-        CONFIG['version'] = version
     if not 'version' in CONFIG:
         CONFIG['version'] = _last_version_tag()
     if not CONFIG['version']:
@@ -360,8 +351,11 @@ def stage():
     """
     Build, then copy as version to local cdn repository and tag last commit
     """    
+    if not 'stage' in CONFIG:
+        abort('Could not find "stage" in config file')
+
     # Make sure cdn exists
-    _check_path(env.cdn_path)
+    _check_path(join(env.sites_path, 'cdn.knightlab.com', 'app', 'libs'))
     
     # Ask user for a new version
     CONFIG['version'] = _get_version_tag()     
@@ -371,8 +365,9 @@ def stage():
     cdn_path = join(env.cdn_path, CONFIG['version'])
 
     _clean(cdn_path)
+    
     _copy(env.build_path, cdn_path, 
-        re.compile(r'(css/.*|font/.*|js/.*|preheader\.html|ZeroClipboard\.swf)$'))
+        re.compile(CONFIG['stage']))
 
     if not DEBUG:
         with lcd(env.project_path):
@@ -385,9 +380,9 @@ def stage_latest():
     """
     Copy version to latest within local cdn repository
     """
-    version = CONFIG['version']
-    
-    if not version:   
+    if 'version' in CONFIG:
+        version = CONFIG['version']
+    else:
         tags = _get_tags()
         puts('This project has the following tags:')
         puts(tags)
@@ -415,6 +410,9 @@ def stage_latest():
 @task
 def deploy():
     """Deploy to S3 bucket"""
+    if not 'deploy' in CONFIG:
+        abort('Could not find "deploy" in config file')
+
     # Make sure s3cmd.cnf exists
     _check_path(env.s3cmd_cfg)   
     
@@ -422,13 +420,13 @@ def deploy():
     build()
        
     # Sync build to S3   
-    puts('Deploying %(version)s to %(deploy_bucket_name)s...' % CONFIG)
+    puts('Deploying %(version)s to %(deploy)s...' % CONFIG)
     with lcd(env.project_path):
         local('fabfile/s3cmd --config=%s sync' \
                 ' --rexclude ".*/\.[^/]*$"' \
                 ' --delete-removed --acl-public' \
                 ' %s/ s3://%s/' \
-                % (env.s3cmd_cfg, env.deploy_path, CONFIG['deploy_bucket_name'])
+                % (env.s3cmd_cfg, env.build_path, CONFIG['deploy'])
             )
 
 
