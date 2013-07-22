@@ -1,0 +1,7 @@
+*.pyc
+
+# Ignore the build directory
+/build
+
+# Other
+.DS_Store
