@@ -2,6 +2,8 @@ Fabric==1.6.1
 docopt==0.6.1
 livereload==1.0.0
 paramiko==1.10.1
+ply==3.4
 pycrypto==2.6
+slimit==0.8.1
 tornado==3.1
 wsgiref==0.1.2

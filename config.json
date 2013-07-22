@@ -1,0 +1,92 @@
+//
+// storymapjs configuration 
+// 
+// All file/directory paths are relative to the project directory.
+//
+// Regular expressions are in python regular expression format, but backslashes
+// must be escaped for JSON.  When used to match files, matching will take
+// place against the the file/directory path realtive to the project directory.
+//
+{
+    //
+    // name of the project as it will appear in the cdn and css/js banners
+    //
+    "name": "storymapjs",
+    //
+    // author string to appear in css/js banners
+    //
+    "author": "Northwestern University Knight Lab",
+    //
+    // build
+    // 
+    // These commands will be run the exact order in which they appear.
+    // This order is determined in code by fabfile/__init__.py.
+    //
+    "build": {
+        // copy files to build directory
+        // input: list of objects, where
+        //      @src: source directory
+        //      @regex: regular expression to match files
+        "copy": [
+            {
+                "src": "site",
+                "regex": "(css/.*|img/.*|js/.*|.*\\.(ico|html))$"
+            },
+            {
+                "src": "source",
+                "regex": "(css/.*|img/.*|js/.*|.*\\.(ico|html))$"
+            }
+        ],
+        // compile less files
+        // input: list of objects, where
+        //      @src: source file
+        //      @dst: destination file
+        "lessc": [
+            {
+                "src": "source/less/storymap.less",
+                "dst": "build/css/storymap.css"
+            },
+            {
+                "src": "site/less/site.less",
+                "dst": "build/css/site.css"
+            }
+        ],
+        // concatenate files
+        // input: list of objects, where
+        //      @src: list of source files
+        //      @dst: destination file
+        "concat": [
+            {
+                "src": [
+                    "source/js/storymap_a.js",
+                    "source/js/storymap_b.js"
+                ],
+                "dst": "build/js/storymap.js"
+            }
+        ],
+        // minify files
+        // input: list of file paths
+        "minify": [
+            "build/js/storymap.js"
+        ],
+        // banner
+        // input: list of file paths
+        "banner": [
+            "build/js/storymap.js",
+            "build/js/storymap.min.js",
+            "build/css/storymap.css"        
+        ]
+    },
+    //
+    // stage
+    // 
+    // input: regular expression to match files
+    //  
+    "stage": "(css/.*|img/.*|js/.*)$",
+    //
+    // deploy
+    //
+    // input: name of the S3 bucket that will host the website 
+    //
+    "deploy": "storymapjs.knightlab.com"
+}
