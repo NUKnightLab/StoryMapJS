@@ -34,7 +34,7 @@
             },
             {
                 "src": "source",
-                "regex": "(css/.*|img/.*|js/.*|.*\\.(ico|html))$"
+                "regex": "(css/.*|img/.*|.*\\.(ico|html))$"
             }
         ],
         // compile less files
