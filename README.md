@@ -1,4 +1,3 @@
-
 ## Setting up a development environment
 
 Install [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/)
@@ -29,8 +28,11 @@ Install [Node.js](http://nodejs.org)
     # Run the development server
     fab serve
 
-Files located in the `source` directory are assets for storymapjs itself. 
+Files located in the `source` directory are assets for storymapjs itself.
+
 Files located in the `site` directory are for the storymapjs website.
+
+Edit config.json as needed to modify the staging and delployment process.
           
           
 ## Deploying updates the the CDN
