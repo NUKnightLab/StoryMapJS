@@ -4,7 +4,7 @@ Install [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/)
 
 Install [Node.js](http://nodejs.org)
 
-    # Install LESS globally
+    # Install LESS globally (you may need to use 'sudo npm' instead)
     npm install -g less
     
     # Change into the parent directory containing your repositories
