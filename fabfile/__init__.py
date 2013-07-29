@@ -300,7 +300,7 @@ def build():
     if not 'version' in CONFIG:
         CONFIG['version'] = _last_version_tag()
     if not CONFIG['version']:
-        abort('No available version tag')      
+        CONFIG['version'] = '0.0.0' #abort('No available version tag')      
         
     print 'Building version %(version)s...' % CONFIG
             
