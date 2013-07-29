@@ -32,7 +32,7 @@ Files located in the `source` directory are assets for storymapjs itself.
 
 Files located in the `site` directory are for the storymapjs website.
 
-Edit config.json as needed to modify the staging and delployment process.
+Edit config.json as needed to modify the staging and deployment process.
           
           
 ## Deploying updates the the CDN
