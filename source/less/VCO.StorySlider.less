@@ -1,0 +1,159 @@
+/*!
+	StorySlider
+	
+	Designed and built by Zach Wise at VeriteCo
+	
+	This Source Code Form is subject to the terms of the Mozilla Public
+	License, v. 2.0. If a copy of the MPL was not distributed with this
+	file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+*/
+
+/* SLIDER CONTAINERS 
+================================================== */
+.vco-storyslider {
+	width:100%;
+	height:100%;
+	overflow:hidden;
+	
+	img, embed, object, video, iframe {
+		max-width: 100%;
+	}
+	
+	.vco-slider-container-mask {
+		text-align: center;
+		width: 100%;
+		height: 100%;
+		overflow: hidden;
+		.vco-slider-container {
+			position: relative;
+			top: 0px;
+			left: 0px;
+			width: 100%;
+			height: 100%;
+			text-align: center;
+			.vco-slider-item-container {
+				width: 100%;
+				height: 100%;
+				.vco-slide {
+					position:absolute;
+					width:100%;
+					height:100%;
+					padding:0px;
+					margin:0px;
+					display:table;
+					overflow-y:auto;
+					.vco-content-container {
+						display:table-cell;
+						vertical-align:middle;
+						width:100%;
+						height:100%;
+						.vco-content {
+							width:100%;
+							display:table;
+							vertical-align:middle;
+							.vco-media {
+								//display:table-cell;
+								//vertical-align:middle;
+								width:100%;
+								min-width:50%;
+								//height:100%;
+								float: left;
+								margin-top:auto;
+								margin-bottom:auto;
+								//margin-right:auto;
+							}
+							.vco-text {
+								width:50%;
+								max-width:50%;
+								min-width:120px;
+								padding: 0 20px 0 20px;
+								display:table-cell;
+								vertical-align:middle;
+								text-align: left;
+								//float:left;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
+}
+
+// Mobile, iPhone and skinny
+@media only screen and (max-width: 500px), only screen and (max-device-width: 500px) {
+	.vco-storyslider {
+		.vco-slider-container-mask {
+			.vco-slider-container {
+				.vco-slider-item-container {
+					.vco-slider-item {
+						display:block;
+						.vco-content-container {
+							display:block;
+							.vco-content {
+								display:block;
+								.vco-media {
+									width:100%;
+									height:auto;
+									float: none;
+									display:block;
+								}
+								.vco-text {
+									width:100%;
+									max-width:100%;
+									min-width:auto;
+									float:none;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+/* NAVIGATION
+================================================== */
+.vco-storyslider {
+	.vco-nav-previous, .vco-nav-next {
+		position:absolute;
+		top: 45%;
+		//width: @feature-nav-width; 
+		color: #DBDBDB;
+		//font-size:@base-font-small;
+		.vco-nav-container {
+			height:100px;
+			width:200px;
+			position:absolute;
+		}
+		.vco-icon {
+			
+		}
+		.vco-date, .vco-title {
+			a {
+				
+			}
+			small {
+				
+			}
+		}
+		.vco-date {
+			
+		}
+		.vco-title {
+			
+		}
+	}
+	.vco-nav-next {
+		//float: right;
+		text-align: right;
+		right:200px;
+	}
+	.vco-nav-previous {
+		//float: left;
+		text-align: left;
+	}
+}
