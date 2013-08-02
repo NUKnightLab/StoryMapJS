@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>StorySlider Embed</title>
+    <meta charset="utf-8">
+    <meta name="description" content="TimelineJS Embed">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-touch-fullscreen" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <!-- CSS-->
+    <link rel="stylesheet" href="css/storyslider.css?v1">
+    <!-- Style-->
+    <style>
+      html, body {
+      height:100%;
+      padding: 0px;
+      margin: 0px;
+      }
+      
+    </style>
+    <!-- HTML5 shim, for IE6-8 support of HTML elements--><!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  </head>
+  <body>
+    <div id="storyslider"></div>
+    <div id="storyslider-another"></div>
+    <div class="vco-storyslider">
+      <div class="vco-slider-container-mask">
+        <div class="vco-slider-container">
+          <div class="vco-slider-item-container">
+            <div class="vco-slide">
+              <div class="vco-content-container">
+                <div class="vco-content">
+                  <div class="vco-media"><img src="http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg"></div>
+                  <div class="vco-text">
+                    <h2>The Kitchen Sink, Évier de la Cuisine</h2>
+                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Morbi commodo, ipsum sed pharetra gravida, orci magna rhoncus neque, id pulvinar odio lorem non turpis. </p>
+                    <p>Nullam sit amet enim. Suspendisse id velit vitae ligula volutpat condimentum. Aliquam erat volutpat. Sed quis velit. Nulla facilisi. Nulla libero. </p>
+                    <p>Vivamus pharetra posuere sapien. Nam consectetuer. Sed aliquam, nunc eget euismod ullamcorper, lectus nunc ullamcorper orci, fermentum bibendum enim nibh eget ipsum. </p>
+                    <p>Donec porttitor ligula eu dolor. Maecenas vitae nulla consequat libero cursus venenatis.</p>
+                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Morbi commodo, ipsum sed pharetra gravida, orci magna rhoncus neque, id pulvinar odio lorem non turpis. </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="vco-nav-next">
+        <div class="vco-nav-container">
+          <div class="vco-icon">&nbsp;</div>
+          <div class="vco-date">
+             
+            1899
+          </div>
+          <div class="vco-title">
+             
+            Next Le portrait mystérieux
+          </div>
+        </div>
+      </div>
+      <div class="vco-nav-previous">
+        <div class="vco-nav-container">
+          <div class="vco-icon">&nbsp;</div>
+          <div class="vco-date">
+             
+            1899
+          </div>
+          <div class="vco-title">
+             
+            Previous Le portrait mystérieux
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- JavaScript-->
+    <script src="js/storyslider.js"></script>
+    <script>
+      var story = new VCO.StorySlider('storyslider');
+      var story_another = new VCO.StorySlider('storyslider-another');
+    </script>
+  </body>
+</html>
