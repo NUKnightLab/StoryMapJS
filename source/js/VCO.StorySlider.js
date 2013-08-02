@@ -25,23 +25,23 @@
 ================================================== */
 VCO.StorySlider = VCO.Class.extend({
 	
-	_container: {},
-	_slider_container_mask: {},
-	_slider_container: {},
-	_slider_item_container: {},
+	// DOM ELEMENTS
+	_el: {
+		container: {},
+		slider_container_mask: {},
+		slider_container: {},
+		slider_item_container: {},
+	},
+	
+	// Slides Array
+	_slides: [],
 	
 	includes: VCO.Events,
 	
 	options: {
-		// projection
-		scale: function (zoom) {
-			return 256 * Math.pow(2, zoom);
-		},
-
+		
 		// state
-		center: null,
-		zoom: null,
-		layers: [],
+		full_image_background: null,
 
 		// interaction
 		dragging: true
@@ -52,7 +52,8 @@ VCO.StorySlider = VCO.Class.extend({
 		trace("StorySlider Initialized");
 		
 		VCO.Util.setOptions(this, options);
-		this._container = VCO.Dom.get(id);
+		
+		this._el.container = VCO.Dom.get(id);
 		this._initLayout();
 
 
@@ -64,18 +65,36 @@ VCO.StorySlider = VCO.Class.extend({
 			zoom = this.options.zoom;
 	},
 	
+	// Add a slide or slides to the slider
+	addSlides: function(slides) { // array of objects
+		
+		for (var i = 0; i < this._slides; i++) {
+			var slide = new VCO.Slide();
+			this._slides.push(slide);
+		}
+		
+	},
+	
+	// Add a slide or slides to the slider
+	removeSlides: function(slides) { // array of objects
+
+		for (var i = 0; i < this._slides; i++) {
+			var slide = new VCO.Slide();
+			this._slides.push(slide);
+		}
+	},
+	
 	// Private Methods
 	
 	_initLayout: function () {
 		trace(" _initLayout");
 		
-		var container = this._container;
-		container.className += ' vco-storyslider';
+		this._el.container.className += ' vco-storyslider';
 		
 		// Create Layout
-		this._slider_container_mask		= VCO.Dom.create('div', 'vco-slider-container-mask', this._container);
-		this._slider_container			= VCO.Dom.create('div', 'vco-slider-container', this._slider_container_mask);
-		this._slider_item_container		= VCO.Dom.create('div', 'vco-slider-item-container', this._slider_container);
+		this._el.slider_container_mask		= VCO.Dom.create('div', 'vco-slider-container-mask', this._el.container);
+		this._el.slider_container			= VCO.Dom.create('div', 'vco-slider-container', this._el.slider_container_mask);
+		this._el.slider_item_container		= VCO.Dom.create('div', 'vco-slider-item-container', this._el.slider_container);
 		
 		/*
 		div.vco-storyslider
@@ -85,7 +104,10 @@ VCO.StorySlider = VCO.Class.extend({
 		*/
 		
 		
-	}
+	},
+	
+	
+	
 	
 });
 

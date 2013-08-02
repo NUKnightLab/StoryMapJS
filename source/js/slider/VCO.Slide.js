@@ -35,8 +35,7 @@ VCO.Slide = VCO.Class.extend({
 		
 		var container = this._container;
 		container.className += ' vco-slide';
-		div.vco-content-container
-			div.vco-content
+		
 		// Create Layout
 		this._content_container		= VCO.Dom.create('div', 'vco-content-container', this._container);
 		this._content		= VCO.Dom.create('div', 'vco-content', this._content_container);

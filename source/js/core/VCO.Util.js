@@ -28,6 +28,28 @@ VCO.Util = {
 		};
 	}()),
 	
+	unique_ID: function(size) {
+		
+		var getRandomNumber = function(range) {
+			return Math.floor(Math.random() * range);
+		};
+
+		var getRandomChar = function() {
+			var chars = "abcdefghijklmnopqurstuvwxyzABCDEFGHIJKLMNOPQURSTUVWXYZ";
+			return chars.substr( getRandomNumber(62), 1 );
+		};
+
+		var randomID = function(size) {
+			var str = "";
+			for(var i = 0; i < size; i++) {
+				str += getRandomChar();
+			}
+			return str;
+		};
+		
+		return randomID(size);
+	},
+	
 	getParamString: function (obj) {
 		var params = [];
 		for (var i in obj) {
