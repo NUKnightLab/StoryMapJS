@@ -1,0 +1,64 @@
+!!! 5
+html(lang="en")
+	head
+		title StorySlider Embed
+		meta(charset='utf-8')
+		meta(name='description', content='TimelineJS Embed')
+		meta(name='apple-mobile-web-app-capable', content='yes')
+		meta(name='apple-touch-fullscreen', content='yes')
+		meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0')
+		// CSS
+		link(rel='stylesheet', href='css/storyslider.css?v1')
+		// Style
+		style
+			html, body {
+			height:100%;
+			padding: 0px;
+			margin: 0px;
+			}
+
+		// HTML5 shim, for IE6-8 support of HTML elements
+		//if lt IE 9
+			script(src='http://html5shim.googlecode.com/svn/trunk/html5.js')
+
+	body
+		div#storyslider
+		div#storyslider-another
+		div.vco-storyslider
+			div.vco-slider-container-mask
+				div.vco-slider-container
+					div.vco-slider-item-container
+						div.vco-slide
+							div.vco-content-container
+								div.vco-content
+									div.vco-media
+										img(src="http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg")
+									div.vco-text
+										h2 The Kitchen Sink, Évier de la Cuisine
+										p Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Morbi commodo, ipsum sed pharetra gravida, orci magna rhoncus neque, id pulvinar odio lorem non turpis. 
+										p Nullam sit amet enim. Suspendisse id velit vitae ligula volutpat condimentum. Aliquam erat volutpat. Sed quis velit. Nulla facilisi. Nulla libero. 
+										p Vivamus pharetra posuere sapien. Nam consectetuer. Sed aliquam, nunc eget euismod ullamcorper, lectus nunc ullamcorper orci, fermentum bibendum enim nibh eget ipsum. 
+										p Donec porttitor ligula eu dolor. Maecenas vitae nulla consequat libero cursus venenatis.
+										p Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Morbi commodo, ipsum sed pharetra gravida, orci magna rhoncus neque, id pulvinar odio lorem non turpis. 
+										
+			div.vco-nav-next
+				div.vco-nav-container
+					div.vco-icon
+						| &nbsp;
+					div.vco-date 
+						| 1899
+					div.vco-title 
+						| Next Le portrait mystérieux
+			div.vco-nav-previous
+				div.vco-nav-container
+					div.vco-icon
+						| &nbsp;
+					div.vco-date 
+						| 1899
+					div.vco-title 
+						| Previous Le portrait mystérieux
+		// JavaScript
+		script(src='js/storyslider.js')
+		script
+			var story = new VCO.StorySlider('storyslider');
+			var story_another = new VCO.StorySlider('storyslider-another');
