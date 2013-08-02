@@ -30,7 +30,7 @@ VCO.StorySlider = VCO.Class.extend({
 		container: {},
 		slider_container_mask: {},
 		slider_container: {},
-		slider_item_container: {},
+		slider_item_container: {}
 	},
 	
 	// Slides Array
@@ -67,24 +67,32 @@ VCO.StorySlider = VCO.Class.extend({
 	
 	// Add a slide or slides to the slider
 	addSlides: function(slides) { // array of objects
-		
-		for (var i = 0; i < this._slides; i++) {
-			var slide = new VCO.Slide();
+		trace("addSlides");
+		trace(slides);
+		for (var i = 0; i < slides.length; i++) {
+			trace("TEST");
+			var slide = new VCO.Slide(this._el.slider_item_container, slides[i]);
+			slide.on('slide_added', this._onSLideAdded, this);
 			this._slides.push(slide);
-		}
+		};
 		
 	},
 	
 	// Add a slide or slides to the slider
 	removeSlides: function(slides) { // array of objects
 
-		for (var i = 0; i < this._slides; i++) {
-			var slide = new VCO.Slide();
-			this._slides.push(slide);
+		for (var i = 0; i < slides.length; i++) {
+			//var slide = new VCO.Slide();
+			//this._slides.push(slide);
 		}
 	},
 	
+	
+	
 	// Private Methods
+	_onSLideAdded: function(e) {
+		trace(e);
+	},
 	
 	_initLayout: function () {
 		trace(" _initLayout");
@@ -102,7 +110,7 @@ VCO.StorySlider = VCO.Class.extend({
 				div.vco-slider-container
 					div.vco-slider-item-container
 		*/
-		
+		this.addSlides([{test:"yes"}, {test:"yes"}, {test:"yes"}]);
 		
 	},
 	

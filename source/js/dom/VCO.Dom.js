@@ -7,7 +7,6 @@
 
 VCO.Dom = {
 	
-	
 	initialize: function () {
 		if( typeof( jQuery ) != 'undefined' ){
 			this.type.jQuery = true;

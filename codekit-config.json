@@ -22,10 +22,21 @@
       "outputAbbreviatedPath" : "No Output Path",
       "fileType" : 2048
     },
-    "\/source\/less\/CORE_OLD\/GFX.less" : {
+    "\/source\/js\/CORE_OLD\/Core\/VCO.Library.js" : {
+      "ignoreWasSetByUser" : 1,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Core\/VCO.Library.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Core\/VCO.Library-min.js",
+      "fileType" : 64
+    },
+    "\/source\/less\/CORE_OLD\/Reset.less" : {
       "ieCompatibility" : 1,
-      "inputAbbreviatedPath" : "\/source\/less\/CORE_OLD\/GFX.less",
-      "outputAbbreviatedPath" : "\/source\/less\/css\/GFX.css",
+      "inputAbbreviatedPath" : "\/source\/less\/CORE_OLD\/Reset.less",
+      "outputAbbreviatedPath" : "\/source\/less\/css\/Reset.css",
       "outputPathIsSetByUser" : 0,
       "strictUnits" : 0,
       "relativeURLS" : 0,
@@ -38,17 +49,6 @@
       "outputStyle" : 1,
       "fileType" : 1,
       "debugStyle" : 0
-    },
-    "\/source\/js\/CORE_OLD\/Core\/VCO.Library.js" : {
-      "ignoreWasSetByUser" : 1,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Core\/VCO.Library.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Core\/VCO.Library-min.js",
-      "fileType" : 64
     },
     "\/site\/js\/less.js" : {
       "ignoreWasSetByUser" : 1,
@@ -111,6 +111,17 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
+    "\/compiled\/css\/fancybox_sprite.png" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 0,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/compiled\/css\/fancybox_sprite.png",
+      "processed" : 0,
+      "outputAbbreviatedPath" : "\/compiled\/css\/fancybox_sprite.png",
+      "initialSize" : 1362,
+      "fileType" : 8192
+    },
     "\/site\/about.html" : {
       "ignoreWasSetByUser" : 0,
       "ignore" : 0,
@@ -119,6 +130,17 @@
       "inputAbbreviatedPath" : "\/site\/about.html",
       "outputAbbreviatedPath" : "No Output Path",
       "fileType" : 2048
+    },
+    "\/source\/js\/core\/VCO.js" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/js\/core\/VCO.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/source\/js\/core\/VCO-min.js",
+      "fileType" : 64
     },
     "\/site\/less\/colors.less" : {
       "ieCompatibility" : 1,
@@ -136,28 +158,6 @@
       "outputStyle" : 1,
       "fileType" : 1,
       "debugStyle" : 0
-    },
-    "\/source\/js\/core\/VCO.js" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/core\/VCO.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/core\/VCO-min.js",
-      "fileType" : 64
-    },
-    "\/compiled\/css\/fancybox_sprite.png" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 0,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/compiled\/css\/fancybox_sprite.png",
-      "processed" : 0,
-      "outputAbbreviatedPath" : "\/compiled\/css\/fancybox_sprite.png",
-      "initialSize" : 1362,
-      "fileType" : 8192
     },
     "\/source\/js\/core\/VCO.Class.js" : {
       "ignoreWasSetByUser" : 0,
@@ -286,17 +286,6 @@
       "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Core\/VCO.LoadLib-min.js",
       "fileType" : 64
     },
-    "\/compiled\/css\/fancybox_sprite@2x.png" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 0,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/compiled\/css\/fancybox_sprite@2x.png",
-      "processed" : 0,
-      "outputAbbreviatedPath" : "\/compiled\/css\/fancybox_sprite@2x.png",
-      "initialSize" : 6553,
-      "fileType" : 8192
-    },
     "\/source\/less\/CORE_OLD\/Variables.less" : {
       "ieCompatibility" : 1,
       "inputAbbreviatedPath" : "\/source\/less\/CORE_OLD\/Variables.less",
@@ -314,14 +303,16 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
-    "\/compiled\/css\/storyslider.css" : {
+    "\/compiled\/css\/fancybox_sprite@2x.png" : {
       "ignoreWasSetByUser" : 0,
-      "ignore" : 1,
+      "ignore" : 0,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/compiled\/css\/storyslider.css",
-      "outputAbbreviatedPath" : "\/No Output Path",
-      "fileType" : 16
+      "inputAbbreviatedPath" : "\/compiled\/css\/fancybox_sprite@2x.png",
+      "processed" : 0,
+      "outputAbbreviatedPath" : "\/compiled\/css\/fancybox_sprite@2x.png",
+      "initialSize" : 6553,
+      "fileType" : 8192
     },
     "\/source\/js\/CORE_OLD\/Library\/Leaflet.js" : {
       "ignoreWasSetByUser" : 1,
@@ -344,6 +335,15 @@
       "syntaxCheckerStyle" : 0,
       "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Library\/AES-min.js",
       "fileType" : 64
+    },
+    "\/compiled\/css\/storyslider.css" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/compiled\/css\/storyslider.css",
+      "outputAbbreviatedPath" : "\/No Output Path",
+      "fileType" : 16
     },
     "\/source\/js\/core\/VCO.Util.js" : {
       "ignoreWasSetByUser" : 0,
@@ -530,6 +530,39 @@
       "outputAbbreviatedPath" : "\/source\/js\/media\/VCO.Media-min.js",
       "fileType" : 64
     },
+    "\/compiled\/css\/overlay.png" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 0,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/compiled\/css\/overlay.png",
+      "processed" : 0,
+      "outputAbbreviatedPath" : "\/compiled\/css\/overlay.png",
+      "initialSize" : 1007,
+      "fileType" : 8192
+    },
+    "\/source\/js\/dom\/VCO.Lib.js" : {
+      "ignoreWasSetByUser" : 1,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/js\/dom\/VCO.Lib.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/source\/js\/dom\/VCO.Lib-min.js",
+      "fileType" : 64
+    },
+    "\/source\/js\/CORE_OLD\/Media\/VCO.TextElement.js" : {
+      "ignoreWasSetByUser" : 1,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Media\/VCO.TextElement.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Media\/VCO.TextElement-min.js",
+      "fileType" : 64
+    },
     "\/source\/less\/CORE_OLD\/VCO.Core.less" : {
       "ieCompatibility" : 1,
       "inputAbbreviatedPath" : "\/source\/less\/CORE_OLD\/VCO.Core.less",
@@ -546,39 +579,6 @@
       "outputStyle" : 1,
       "fileType" : 1,
       "debugStyle" : 0
-    },
-    "\/source\/js\/dom\/VCO.Lib.js" : {
-      "ignoreWasSetByUser" : 1,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/dom\/VCO.Lib.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/dom\/VCO.Lib-min.js",
-      "fileType" : 64
-    },
-    "\/compiled\/css\/overlay.png" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 0,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/compiled\/css\/overlay.png",
-      "processed" : 0,
-      "outputAbbreviatedPath" : "\/compiled\/css\/overlay.png",
-      "initialSize" : 1007,
-      "fileType" : 8192
-    },
-    "\/source\/js\/CORE_OLD\/Media\/VCO.TextElement.js" : {
-      "ignoreWasSetByUser" : 1,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Media\/VCO.TextElement.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Media\/VCO.TextElement-min.js",
-      "fileType" : 64
     },
     "\/compiled\/css\/timeline@2x.png" : {
       "ignoreWasSetByUser" : 0,
@@ -613,6 +613,17 @@
       "outputAbbreviatedPath" : "\/site\/js\/jquery-min.js",
       "fileType" : 64
     },
+    "\/source\/jade\/index.jade" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 0,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 1,
+      "inputAbbreviatedPath" : "\/source\/jade\/index.jade",
+      "outputStyle" : 0,
+      "compileDebug" : 1,
+      "outputAbbreviatedPath" : "\/compiled\/index.html",
+      "fileType" : 512
+    },
     "\/source\/less\/CORE_OLD\/Typography.less" : {
       "ieCompatibility" : 1,
       "inputAbbreviatedPath" : "\/source\/less\/CORE_OLD\/Typography.less",
@@ -629,17 +640,6 @@
       "outputStyle" : 1,
       "fileType" : 1,
       "debugStyle" : 0
-    },
-    "\/source\/jade\/index.jade" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 0,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 1,
-      "inputAbbreviatedPath" : "\/source\/jade\/index.jade",
-      "outputStyle" : 0,
-      "compileDebug" : 1,
-      "outputAbbreviatedPath" : "\/compiled\/index.html",
-      "fileType" : 512
     },
     "\/source\/js\/CORE_OLD\/Media\/VCO.MediaType.js" : {
       "ignoreWasSetByUser" : 1,
@@ -680,17 +680,6 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
-    "\/source\/js\/CORE_OLD\/Core\/VCO.Browser.js" : {
-      "ignoreWasSetByUser" : 1,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Core\/VCO.Browser.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Core\/VCO.Browser-min.js",
-      "fileType" : 64
-    },
     "\/source\/js\/CORE_OLD\/Core\/VCO.Date.js" : {
       "ignoreWasSetByUser" : 1,
       "ignore" : 1,
@@ -700,6 +689,17 @@
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 0,
       "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Core\/VCO.Date-min.js",
+      "fileType" : 64
+    },
+    "\/source\/js\/CORE_OLD\/Core\/VCO.Browser.js" : {
+      "ignoreWasSetByUser" : 1,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Core\/VCO.Browser.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Core\/VCO.Browser-min.js",
       "fileType" : 64
     },
     "\/source\/js\/core\/VCO.Events.js" : {
@@ -758,10 +758,10 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
-    "\/source\/less\/CORE_OLD\/Reset.less" : {
+    "\/source\/less\/CORE_OLD\/GFX.less" : {
       "ieCompatibility" : 1,
-      "inputAbbreviatedPath" : "\/source\/less\/CORE_OLD\/Reset.less",
-      "outputAbbreviatedPath" : "\/source\/less\/css\/Reset.css",
+      "inputAbbreviatedPath" : "\/source\/less\/CORE_OLD\/GFX.less",
+      "outputAbbreviatedPath" : "\/source\/less\/css\/GFX.css",
       "outputPathIsSetByUser" : 0,
       "strictUnits" : 0,
       "relativeURLS" : 0,
