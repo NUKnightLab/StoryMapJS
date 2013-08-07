@@ -9,6 +9,18 @@
 
 */
 
+/* Includes
+================================================== */
+@import "Variables.less"; 			// Variables (easy way to make style changes)
+@import "core/Mixins.less"; 		// Less shortcuts and functions
+@import "core/Reset.less"; 			// CSS Reset
+@import "core/Typography.less";
+
+//	Components
+@import "slider/VCO.Slide.less";
+@import "media/VCO.Media.less";
+@import "media/VCO.Text.less";
+
 /* SLIDER CONTAINERS 
 ================================================== */
 .vco-storyslider {
@@ -35,47 +47,7 @@
 			.vco-slider-item-container {
 				width: 100%;
 				height: 100%;
-				.vco-slide {
-					position:absolute;
-					width:100%;
-					height:100%;
-					padding:0px;
-					margin:0px;
-					display:table;
-					overflow-y:auto;
-					.vco-content-container {
-						display:table-cell;
-						vertical-align:middle;
-						width:100%;
-						height:100%;
-						.vco-content {
-							width:100%;
-							display:table;
-							vertical-align:middle;
-							.vco-media {
-								//display:table-cell;
-								//vertical-align:middle;
-								width:100%;
-								min-width:50%;
-								//height:100%;
-								float: left;
-								margin-top:auto;
-								margin-bottom:auto;
-								//margin-right:auto;
-							}
-							.vco-text {
-								width:50%;
-								max-width:50%;
-								min-width:120px;
-								padding: 0 20px 0 20px;
-								display:table-cell;
-								vertical-align:middle;
-								text-align: left;
-								//float:left;
-							}
-						}
-					}
-				}
+				
 			}
 		}
 	}
@@ -88,32 +60,12 @@
 		.vco-slider-container-mask {
 			.vco-slider-container {
 				.vco-slider-item-container {
-					.vco-slider-item {
-						display:block;
-						.vco-content-container {
-							display:block;
-							.vco-content {
-								display:block;
-								.vco-media {
-									width:100%;
-									height:auto;
-									float: none;
-									display:block;
-								}
-								.vco-text {
-									width:100%;
-									max-width:100%;
-									min-width:auto;
-									float:none;
-								}
-							}
-						}
-					}
+					
 				}
 			}
 		}
 	}
-}
+} 
 
 /* NAVIGATION
 ================================================== */

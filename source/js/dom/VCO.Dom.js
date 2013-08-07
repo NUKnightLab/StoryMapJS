@@ -7,7 +7,7 @@
 
 VCO.Dom = {
 	
-	initialize: function () {
+	initialize: function() {
 		if( typeof( jQuery ) != 'undefined' ){
 			this.type.jQuery = true;
 		} else {
@@ -15,13 +15,21 @@ VCO.Dom = {
 		}
 	},
 	
-	get: function (id) {
+	get: function(id) {
 		return (typeof id === 'string' ? document.getElementById(id) : id);
 	},
 	
-	create: function (tagName, className, container) {
+	create: function(tagName, className, container) {
 		var el = document.createElement(tagName);
 		el.className = className;
+		if (container) {
+			container.appendChild(el);
+		}
+		return el;
+	},
+	
+	createText: function(content, container) {
+		var el = document.createTextNode(content);
 		if (container) {
 			container.appendChild(el);
 		}

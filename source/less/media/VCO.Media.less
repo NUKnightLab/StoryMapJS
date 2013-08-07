@@ -1,0 +1,106 @@
+/* Requires Variables.less
+================================================== */
+.vco-media {
+	//display:table-cell;
+	//vertical-align:middle;
+	width:100%;
+	min-width:50%;
+	//height:100%;
+	float: left;
+	margin-top:auto;
+	margin-bottom:auto;
+	//margin-right:auto;
+	.vco-media-content-container {
+		.vco-media-content{
+		
+		}
+	}
+}
+
+/* Media Shodow 
+================================================== */
+.vco-media-shadow {
+	position: relative;
+	z-index: 1;
+	//background:@color-background;
+	
+}
+.vco-media-shadow:before, .vco-media-shadow:after {
+	z-index: -1;
+	position: absolute;
+	content: "";
+	bottom: 15px;
+	left: 10px;
+	width: 50%;
+	top: 80%;
+	max-width:300px;
+	background: #333;
+	.box-shadow(0 15px 10px #666);
+	.transform(rotate(-2deg));
+}
+.vco-media-shadow::after {
+	.transform(rotate(2deg));
+	right: 10px;
+	left: auto;
+}
+
+/* Credit
+================================================== */
+.vco-credit {
+	color: #999999;
+	text-align: right;
+	display: block;
+	margin: 0 auto;
+	margin-top: 6px;
+	font-size: 10px;
+	line-height: 13px;
+}
+
+/* Caption
+================================================== */
+.vco-caption {
+	text-align: left;
+	margin-top: 10px;
+	color: #666666;
+	font-size: 11px;
+	line-height: 14px;
+	text-rendering: optimizeLegibility;
+	word-wrap: break-word;
+}
+
+/* Full Image Background
+================================================== */
+.vco-full-image-background {
+	.vco-caption, .vco-credit {
+		color: #FFF;
+		text-shadow: 1px 1px 2px #000;
+		//.background-opacity(50);
+	}
+	.vco-media-shadow:before, .vco-media-shadow:after {
+		background: none;
+		.box-shadow(0 0px 0px #000);
+	}
+}
+
+/* Mobile, iPhone and skinny
+================================================== */
+@media only screen and (max-width: 500px), only screen and (max-device-width: 500px) {
+	.vco-media {
+		width:100%;
+		height:auto;
+		float: none;
+		display:block;
+		.vco-media-content-container {
+			.vco-media-content{
+		
+			}
+			.vco-credit {
+		
+			}
+			.vco-caption {
+		
+			}
+		}
+	}
+}
+

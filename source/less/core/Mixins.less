@@ -1,0 +1,81 @@
+/*	Mixins.less
+	Snippets of reusable CSS to develop faster and keep code readable
+ * ----------------------------------------------------------------- */
+
+// Opacity
+.opacity(@opacity: 100) {
+ 	filter: e(%("alpha(opacity=%d)", @opacity));
+ 	-khtml-opacity: @opacity / 100;
+ 	  -moz-opacity: @opacity / 100;
+ 	       opacity: @opacity / 100;
+}
+// Background Opacity
+.background-opacity(@opacity: 100) {
+	/* Fallback for web browsers that doesn't support RGBa */
+	background: rgb(0, 0, 0) transparent;
+	/* RGBa with 0.6 opacity */
+	background: rgba(0, 0, 0, @opacity / 100);
+
+
+}
+// Box Shadow
+.box-shadow(@shadow: 1px 1px 7px rgba(0,0,0,.30)) {
+	-webkit-box-shadow: @shadow;
+	   -moz-box-shadow: @shadow;
+	        box-shadow: @shadow;
+}
+// Transform
+.transform(@transform) {
+ 	-webkit-transform: @transform;
+ 	   -moz-transform: @transform;
+ 	    -ms-transform: @transform;
+ 	     -o-transform: @transform;
+ 	        transform: @transform;
+}
+// Transitions
+.transition(@transition) {
+ 	-webkit-transition: @transition;
+ 	   -moz-transition: @transition;
+ 	    -ms-transition: @transition;
+ 	     -o-transition: @transition;
+ 	        transition: @transition;
+}
+// Hyphens
+.hyphens(@hyphens: auto) {
+ 	-webkit-hyphens:@hyphens;
+ 	   -moz-hyphens:@hyphens;
+ 	    -ms-hyphens:@hyphens;
+ 	        hyphens:@hyphens;
+}
+// Clear Fix
+.clearfix() {
+	*zoom: 1;
+	&:before,
+	&:after {
+		display: table;
+		content: "";
+	}
+	&:after {
+		clear: both;
+	}
+}
+// Add an alphatransparency value to any background or border color (via Elyse Holladay)
+#translucent {
+  .background(@color: @white, @alpha: 1) {
+    background-color: hsla(hue(@color), saturation(@color), lightness(@color), @alpha);
+  }
+  .border(@color: @white, @alpha: 1) {
+    border-color: hsla(hue(@color), saturation(@color), lightness(@color), @alpha);
+    background-clip: padding-box;
+  }
+}
+// Reset filters for IE
+.reset-filter() {
+	filter: e(%("progid:DXImageTransform.Microsoft.gradient(enabled = false)"));
+}
+// Center-align a block level element
+.center-block() {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}

@@ -1,0 +1,79 @@
+/* SLIDE 
+================================================== */
+.vco-slide {
+	position:absolute;
+	width:100%;
+	height:100%;
+	padding:0px;
+	margin:0px;
+	display:table;
+	overflow-y:auto;
+	.vco-slide-content-container {
+		display:table-cell;
+		vertical-align:middle;
+		width:100%;
+		height:100%;
+		.vco-slide-content {
+			width:100%;
+			display:table;
+			vertical-align:middle;
+			.vco-media {
+				//display:table-cell;
+				//vertical-align:middle;
+				width:100%;
+				min-width:50%;
+				//height:100%;
+				float: left;
+				margin-top:auto;
+				margin-bottom:auto;
+				//margin-right:auto;
+			}
+			.vco-text {
+				width:50%;
+				max-width:50%;
+				min-width:120px;
+				padding: 0 20px 0 20px;
+				display:table-cell;
+				vertical-align:middle;
+				text-align: left;
+				//float:left;
+			}
+		}
+	}
+}
+
+/* Full Image Background 
+================================================== */
+.vco-slide.vco-full-image-background {
+	background: no-repeat center center; 
+	-webkit-background-size: cover;
+	   -moz-background-size: cover;
+	     -o-background-size: cover;background-size: cover;
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='.myBackground.jpg', sizingMethod='scale');
+	-ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='myBackground.jpg', sizingMethod='scale')";
+}
+
+// Mobile, iPhone and skinny
+@media only screen and (max-width: 500px), only screen and (max-device-width: 500px) {
+	.vco-slide {
+		display:block;
+		.vco-slide-content-container {
+			display:block;
+			.vco-slide-content {
+				display:block;
+				.vco-media {
+					width:100%;
+					height:auto;
+					float: none;
+					display:block;
+				}
+				.vco-text {
+					width:100%;
+					max-width:100%;
+					min-width:auto;
+					float:none;
+				}
+			}
+		}
+	}
+}

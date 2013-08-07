@@ -15,7 +15,9 @@
 // @codekit-prepend "core/VCO.Class.js";
 // @codekit-prepend "core/VCO.Events.js";
 // @codekit-prepend "dom/VCO.Dom.js";
+// @codekit-prepend "media/VCO.MediaType.js";
 // @codekit-prepend "media/VCO.Media.js";
+// @codekit-prepend "media/VCO.Text.js";
 // @codekit-prepend "slider/VCO.Slide.js";
 
 
@@ -39,61 +41,68 @@ VCO.StorySlider = VCO.Class.extend({
 	includes: VCO.Events,
 	
 	options: {
-		
+		uniqueid: 				"",
 		// state
-		full_image_background: null,
+		full_image_background: 	null,
 
 		// interaction
-		dragging: true
+		dragging: 				true
 	},
 	
-	// Constructer
+	/*	Private Methods
+	================================================== */
 	initialize: function (id, options) { // (HTMLElement or String, Object)
 		trace("StorySlider Initialized");
 		
-		VCO.Util.setOptions(this, options);
+		VCO.Util.setOptions(this, this.options);
 		
+		this.options.uniqueid = id;
 		this._el.container = VCO.Dom.get(id);
 		this._initLayout();
-
-
-		if (this.options.maxBounds) {
-			this.setMaxBounds(this.options.maxBounds);
-		}
-
-		var center = this.options.center,
-			zoom = this.options.zoom;
+		
 	},
+	
+	/*	Create Slides
+	================================================== */
+	createSlides: function(slides) { // array of objects
+		trace("createSlides");
+		for (var i = 0; i < slides.length; i++) {
+			trace("TEST");
+			var slide = new VCO.Slide(slides[i]);
+			slide.addTo(this._el.slider_item_container);
+			slide.on('added', this._onSLideAdded, this);
+			this._slides.push(slide);
+			
+		};
+	},
+	
+	/*	Adding and Removing Slide Methods
+	================================================== */
 	
 	// Add a slide or slides to the slider
 	addSlides: function(slides) { // array of objects
 		trace("addSlides");
-		trace(slides);
 		for (var i = 0; i < slides.length; i++) {
-			trace("TEST");
-			var slide = new VCO.Slide(this._el.slider_item_container, slides[i]);
-			slide.on('slide_added', this._onSLideAdded, this);
-			this._slides.push(slide);
+			slides[i].addTo(this._el.slider_item_container);
 		};
+	},
+	
+	// Remove a slide or slides to the slider
+	removeSlides: function(slides) { // array of objects
+		for (var i = 0; i < slides.length; i++) {
+			slides[i].removeFrom(this._el.slider_item_container);
+		};
+	},
+	
+	/*	Private Methods
+	================================================== */
+	
+	// Events
+	_onSLideAdded: function(e) {
 		
 	},
 	
-	// Add a slide or slides to the slider
-	removeSlides: function(slides) { // array of objects
-
-		for (var i = 0; i < slides.length; i++) {
-			//var slide = new VCO.Slide();
-			//this._slides.push(slide);
-		}
-	},
-	
-	
-	
-	// Private Methods
-	_onSLideAdded: function(e) {
-		trace(e);
-	},
-	
+	// Initialize the layout
 	_initLayout: function () {
 		trace(" _initLayout");
 		
@@ -104,13 +113,9 @@ VCO.StorySlider = VCO.Class.extend({
 		this._el.slider_container			= VCO.Dom.create('div', 'vco-slider-container', this._el.slider_container_mask);
 		this._el.slider_item_container		= VCO.Dom.create('div', 'vco-slider-item-container', this._el.slider_container);
 		
-		/*
-		div.vco-storyslider
-			div.vco-slider-container-mask
-				div.vco-slider-container
-					div.vco-slider-item-container
-		*/
-		this.addSlides([{test:"yes"}, {test:"yes"}, {test:"yes"}]);
+		// Create Slides and then add them
+		this.createSlides([{test:"yes"}, {test:"yes"}, {test:"yes"}]);
+		this.addSlides(this._slides);
 		
 	},
 	

@@ -18,6 +18,9 @@ VCO.Util = {
 	
 	setOptions: function (obj, options) {
 		obj.options = VCO.Util.extend({}, obj.options, options);
+		if (obj.options.uniqueid === "") {
+			obj.options.uniqueid = VCO.Util.unique_ID(6);
+		}
 	},
 	
 	stamp: (function () {
@@ -28,15 +31,31 @@ VCO.Util = {
 		};
 	}()),
 	
-	unique_ID: function(size) {
+	isArray: (function () {
+	    // Use compiler's own isArray when available
+	    if (Array.isArray) {
+	        return Array.isArray;
+	    }
+ 
+	    // Retain references to variables for performance
+	    // optimization
+	    var objectToStringFn = Object.prototype.toString,
+	        arrayToStringResult = objectToStringFn.call([]);
+ 
+	    return function (subject) {
+	        return objectToStringFn.call(subject) === arrayToStringResult;
+	    };
+	}()),
+	
+	unique_ID: function(size, prefix) {
 		
 		var getRandomNumber = function(range) {
 			return Math.floor(Math.random() * range);
 		};
 
 		var getRandomChar = function() {
-			var chars = "abcdefghijklmnopqurstuvwxyzABCDEFGHIJKLMNOPQURSTUVWXYZ";
-			return chars.substr( getRandomNumber(62), 1 );
+			var chars = "abcdefghijklmnopqurstuvwxyz";
+			return chars.substr( getRandomNumber(32), 1 );
 		};
 
 		var randomID = function(size) {
@@ -47,7 +66,19 @@ VCO.Util = {
 			return str;
 		};
 		
-		return randomID(size);
+		if (prefix) {
+			return prefix + "-" + randomID(size);
+		} else {
+			return "vco-" + randomID(size);
+		}
+	},
+	
+	htmlify: function(str) {
+		if (str.match(/<\s*p[^>]*>([^<]*)<\s*\/\s*p\s*>/)) {
+			return str;
+		} else {
+			return "<p>" + str + "</p>";
+		}
 	},
 	
 	getParamString: function (obj) {

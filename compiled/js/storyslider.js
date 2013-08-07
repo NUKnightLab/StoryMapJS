@@ -64,6 +64,9 @@ VCO.Util = {
 	
 	setOptions: function (obj, options) {
 		obj.options = VCO.Util.extend({}, obj.options, options);
+		if (obj.options.uniqueid === "") {
+			obj.options.uniqueid = VCO.Util.unique_ID(6);
+		}
 	},
 	
 	stamp: (function () {
@@ -74,15 +77,31 @@ VCO.Util = {
 		};
 	}()),
 	
-	unique_ID: function(size) {
+	isArray: (function () {
+	    // Use compiler's own isArray when available
+	    if (Array.isArray) {
+	        return Array.isArray;
+	    }
+ 
+	    // Retain references to variables for performance
+	    // optimization
+	    var objectToStringFn = Object.prototype.toString,
+	        arrayToStringResult = objectToStringFn.call([]);
+ 
+	    return function (subject) {
+	        return objectToStringFn.call(subject) === arrayToStringResult;
+	    };
+	}()),
+	
+	unique_ID: function(size, prefix) {
 		
 		var getRandomNumber = function(range) {
 			return Math.floor(Math.random() * range);
 		};
 
 		var getRandomChar = function() {
-			var chars = "abcdefghijklmnopqurstuvwxyzABCDEFGHIJKLMNOPQURSTUVWXYZ";
-			return chars.substr( getRandomNumber(62), 1 );
+			var chars = "abcdefghijklmnopqurstuvwxyz";
+			return chars.substr( getRandomNumber(32), 1 );
 		};
 
 		var randomID = function(size) {
@@ -93,7 +112,19 @@ VCO.Util = {
 			return str;
 		};
 		
-		return randomID(size);
+		if (prefix) {
+			return prefix + "-" + randomID(size);
+		} else {
+			return "vco-" + randomID(size);
+		}
+	},
+	
+	htmlify: function(str) {
+		if (str.match(/<\s*p[^>]*>([^<]*)<\s*\/\s*p\s*>/)) {
+			return str;
+		} else {
+			return "<p>" + str + "</p>";
+		}
 	},
 	
 	getParamString: function (obj) {
@@ -265,7 +296,7 @@ VCO.Events.fire = VCO.Events.fireEvent;
 
 VCO.Dom = {
 	
-	initialize: function () {
+	initialize: function() {
 		if( typeof( jQuery ) != 'undefined' ){
 			this.type.jQuery = true;
 		} else {
@@ -273,13 +304,21 @@ VCO.Dom = {
 		}
 	},
 	
-	get: function (id) {
+	get: function(id) {
 		return (typeof id === 'string' ? document.getElementById(id) : id);
 	},
 	
-	create: function (tagName, className, container) {
+	create: function(tagName, className, container) {
 		var el = document.createElement(tagName);
 		el.className = className;
+		if (container) {
+			container.appendChild(el);
+		}
+		return el;
+	},
+	
+	createText: function(content, container) {
+		var el = document.createTextNode(content);
 		if (container) {
 			container.appendChild(el);
 		}
@@ -289,44 +328,344 @@ VCO.Dom = {
 };
 
 /* **********************************************
+     Begin VCO.MediaType.js
+********************************************** */
+
+/*	VCO.MediaType
+	Determines the type of media the url string is.
+	returns an object with .type and .id
+	You can add new media types by adding a regex 
+	to match and the media class name to use to 
+	render the media 
+================================================== */
+VCO.MediaType = function(url) {
+	var media = {}, 
+		media_types = 	[
+			{
+				type: 		"youtube",
+				match_str: 	"(www.)?youtube|youtu\.be",
+				classname: 	VCO.Media.YouTube
+			},
+			{
+				type: 		"vimeo",
+				match_str: 	"(player.)?vimeo\.com",
+				classname: 	VCO.Media.Vimeo
+			},
+			{
+				type: 		"dailymotion",
+				match_str: 	"(www.)?dailymotion\.com",
+				classname: 	VCO.Media.IFrame
+			},
+			{
+				type: 		"vine",
+				match_str: 	"(www.)?vine\.co",
+				classname: 	VCO.Media.Vine
+			},
+			{
+				type: 		"soundcloud",
+				match_str: 	"(player.)?soundcloud\.com",
+				classname: 	VCO.Media.SoundCloud
+			},
+			{
+				type: 		"twitter",
+				match_str: 	"(www.)?twitter\.com",
+				classname: 	VCO.Media.Twitter
+			},
+			{
+				type: 		"googlemaps",
+				match_str: 	"maps.google",
+				classname: 	VCO.Media.Map
+			},
+			{
+				type: 		"googleplus",
+				match_str: 	"plus.google",
+				classname: 	VCO.Media.GooglePlus
+			},
+			{
+				type: 		"flickr",
+				match_str: 	"flickr.com/photos",
+				classname: 	VCO.Media.Flickr
+			},
+			{
+				type: 		"instagram",
+				match_str: 	"instagr.am/p/",
+				classname: 	VCO.Media
+			},
+			{
+				type: 		"image",
+				match_str: 	/jpg|jpeg|png|gif/i,
+				classname: 	VCO.Media
+			},
+			{
+				type: 		"googledocs",
+				match_str: 	/\b.(doc|docx|xls|xlsx|ppt|pptx|pdf|pages|ai|psd|tiff|dxf|svg|eps|ps|ttf|xps|zip|tif)\b/,
+				classname: 	VCO.Media.GoogleDoc
+			},
+			{
+				type: 		"wikipedia",
+				match_str: 	"(www.)?wikipedia\.org",
+				classname: 	VCO.Media.Wikipedia
+			},
+			{
+				type: 		"iframe",
+				match_str: 	"iframe",
+				classname: 	VCO.Media.IFrame
+			},
+			{
+				type: 		"storify",
+				match_str: 	"storify",
+				classname: 	VCO.Media.Storify
+			},
+			{
+				type: 		"blockquote",
+				match_str: 	"blockquote",
+				classname: 	"VCO.Media.Blockquote"
+			},
+			{
+				type: 		"website",
+				match_str: 	"http://",
+				classname: 	VCO.Media.Website
+			},
+			{
+				type: 		"",
+				match_str: 	"",
+				classname: 	VCO.Media
+			}
+		];
+	
+	for (var i = 0; i < media_types.length; i++) {
+		if (url.match(media_types[i].match_str)) {
+			media 		= media_types[i];
+			media.url 	= url;
+			return media;
+			break;
+		}
+	};
+	
+	return false;
+	
+}
+
+/* **********************************************
      Begin VCO.Media.js
 ********************************************** */
 
 VCO.Media = VCO.Class.extend({
 	
 	includes: [VCO.Events],
-	_container: {},
 	
+	// DOM ELEMENTS
+	_el: {
+		container: {},
+		content_container: {},
+		content: {},
+		content_item: {},
+		caption: {},
+		credit: {}
+	},
+	
+	// Media Type
+	mediatype: {},
+	
+	// Options
 	options: {
-		stroke: true,
-		color: '#0033ff',
-		weight: 5,
-		opacity: 0.5,
-
-		fill: false,
-		fillColor: null, //same as color by default
-		fillOpacity: 0.2
+		uniqueid: 			"",
+		url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+		credit:				"Georges Méliès",
+		caption:			"Le portrait mystérieux"
 	},
-
-	initialize: function (id, options) {
+	
+	/*	Constructor
+	================================================== */
+	initialize: function(options, add_to_container) {
 		VCO.Util.setOptions(this, options);
-		this._container = VCO.Dom.get(id);
+		//this._container = VCO.Dom.get(id);
+		this._el.container = VCO.Dom.create("div", "vco-media");
+		this._el.container.id = this.options.uniqueid;
+		
 		this._initLayout();
-	},
-
-	onAdd: function (map) {
+		
+		if (add_to_container) {
+			add_to_container.appendChild(this._el.container);
+		};
 		
 	},
-
-	onRemove: function (map) {
+	/*	Constructor
+	================================================== */
+	loadMedia: function(url) {
 		
 	},
+	
+	/*	Adding, Hiding, Showing etc
+	================================================== */
+	show: function() {
+		
+	},
+	
+	hide: function() {
+		
+	},
+	
+	addTo: function(container) {
+		container.appendChild(this._el.container);
+		//this.onAdd();
+	},
+	
+	removeFrom: function(container) {
+		container.removeChild(this._el.container);
+	},
 
+	/*	Events
+	================================================== */
+	onLoaded: function() {
+		this.fire("loaded", this.options);
+	},
+	
+	onAdd: function() {
+		this.fire("added", this.options);
+	},
+
+	onRemove: function() {
+		this.fire("removed", this.options);
+	},
+	
+	/*	Private Methods
+	================================================== */
 	_initLayout: function () {
 		trace(" _initLayout");
 		
-		var container = this._container;
-		container.className += ' vco-media';
+		// Create Layout
+		this._el.content_container			= VCO.Dom.create("div", "vco-media-content-container", this._el.container);
+		this._el.content					= VCO.Dom.create("div", "vco-media-content", this._el.content_container);
+		
+		// Add Shadow
+		this._el.content.className += ' vco-media-shadow';
+		
+		// Credit
+		if (this.options.credit != "") {
+			this._el.credit					= VCO.Dom.create("div", "vco-credit", this._el.content_container);
+			this._el.credit.innerHTML		= this.options.credit;
+		}
+		
+		// Caption
+		if (this.options.caption != "") {
+			this._el.caption				= VCO.Dom.create("div", "vco-caption", this._el.content_container);
+			this._el.caption.innerHTML		= this.options.caption;
+		}
+		
+		// Load Media
+		//this.mediatype = VCO.MediaType(this.options.url);
+		//trace(this.mediatype);
+		
+		this._el.content_item				= VCO.Dom.create("img", "vco-media-item", this._el.content);
+		this._el.content_item.src			= this.options.url;
+		
+		// Fire event that the slide is loaded
+		//this.onLoaded();
+		
+		
+		
+	}
+	
+});
+
+/* **********************************************
+     Begin VCO.Text.js
+********************************************** */
+
+VCO.Text = VCO.Class.extend({
+	
+	includes: [VCO.Events],
+	
+	// DOM ELEMENTS
+	_el: {
+		container: {},
+		content_container: {},
+		content: {},
+		headline: {}
+	},
+	
+	// Options
+	options: {
+		uniqueid: 			"",
+		headline: 			"Le portrait mystérieux",
+		text: 				"Lorem ipsum dolor sit amet, consectetuer adipiscing elit."
+	},
+	
+	
+	/*	Constructor
+	================================================== */
+	initialize: function(options, add_to_container) {
+		VCO.Util.setOptions(this, options);
+		//this._container = VCO.Dom.get(id);
+		this._el.container = VCO.Dom.create("div", "vco-text");
+		this._el.container.id = this.options.uniqueid;
+		
+		this._initLayout();
+		
+		if (add_to_container) {
+			add_to_container.appendChild(this._el.container);
+		};
+		
+	},
+	
+	/*	Adding, Hiding, Showing etc
+	================================================== */
+	show: function() {
+		
+	},
+	
+	hide: function() {
+		
+	},
+	
+	addTo: function(container) {
+		container.appendChild(this._el.container);
+		//this.onAdd();
+	},
+	
+	removeFrom: function(container) {
+		container.removeChild(this._el.container);
+	},
+	
+	/*	Events
+	================================================== */
+	onLoaded: function() {
+		this.fire("loaded", this.options);
+	},
+	
+	onAdd: function() {
+		this.fire("added", this.options);
+	},
+
+	onRemove: function() {
+		this.fire("removed", this.options);
+	},
+	
+	/*	Private Methods
+	================================================== */
+	_initLayout: function () {
+		trace(" _initLayout");
+		
+		// Create Layout
+		this._el.content_container			= VCO.Dom.create("div", "vco-text-content-container", this._el.container);
+		//this._el.content					= VCO.Dom.create("div", "vco-text-content", this._el.content_container);
+		
+		// Headline
+		if (this.options.headline != "") {
+			this._el.headline				= VCO.Dom.create("h2", "vco-headline", this._el.content_container);
+			this._el.headline.innerHTML		= this.options.headline;
+		}
+		
+		// Text
+		if (this.options.text != "") {
+			this._el.content				= VCO.Dom.create("div", "vco-text-content", this._el.content_container);
+			this._el.content.innerHTML		= VCO.Util.htmlify(this.options.text);
+		}
+		
+		// Fire event that the slide is loaded
+		//this.onLoaded();
+		
 		
 		
 	}
@@ -342,39 +681,68 @@ VCO.Media = VCO.Class.extend({
 VCO.Slide = VCO.Class.extend({
 	
 	includes: [VCO.Events],
+	
 	// DOM ELEMENTS
 	_el: {
 		container: {},
 		content_container: {},
 		content: {}
 	},
-	_container: {},
-	_content_container: {},
-	_content: {},
 	
+	// Components
+	_media: {},
+	_mediaclass: {},
+	_text: {},
+	
+	// Options
 	options: {
-		uniqueid: 				VCO.Util.unique_ID(6),
-		headline: 				"Le portrait mystérieux",
-		date: 					null,
-		lat: 					-9.143962,
-		lon: 					38.731094,
-		zoom: 					13,
-		icon: 					"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
-		asset: {
-			media: 				"http://youtu.be/lIvftGgps24",
-			credit:				"Georges Méliès",
-			caption:			"Le portrait mystérieux"
+		uniqueid: 				"",
+		background: {			// OPTIONAL
+			url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+			color: 				"#cdbfe3",
+			opacity: 			50
 		},
-		full_image_background:	false // Use media image as a background
+		date: 					null,
+		location: {
+			lat: 				-9.143962,
+			lon: 				38.731094,
+			zoom: 				13,
+			icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+		},
+		text: {
+			headline: 			"Le portrait mystérieux",
+			text: 				"Lorem ipsum dolor sit amet, consectetuer adipiscing elit."
+		},
+		media: {
+			url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+			credit:				"Georges Méliès",
+			caption:			"Le portrait mystérieux",
+			mediatype: 			{}
+		}
 		
 	},
-
-	initialize: function(id, options) {
+	
+	/*	Constructor
+	================================================== */
+	initialize: function(options, add_to_container) {
+		
 		VCO.Util.setOptions(this, options);
-		this._container = VCO.Dom.get(id);
+		
+		//this._container = VCO.Dom.get(id);
+		this._el.container = VCO.Dom.create("div", "vco-slide");
+		this._el.container.id = this.options.uniqueid;
+		
 		this._initLayout();
+		
+		if (add_to_container) {
+			add_to_container.appendChild(this._el.container);
+		}
+		
+		//return this;
 	},
 	
+	/*	Adding, Hiding, Showing etc
+	================================================== */
 	show: function() {
 		
 	},
@@ -383,23 +751,79 @@ VCO.Slide = VCO.Class.extend({
 		
 	},
 	
+	addTo: function(container) {
+		container.appendChild(this._el.container);
+		//this.onAdd();
+	},
+	
+	removeFrom: function(container) {
+		container.removeChild(this._el.container);
+	},
+	
+	/*	Events
+	================================================== */
+	onLoaded: function() {
+		this.fire("loaded", this.options);
+	},
+	
 	onAdd: function() {
-		this.fire('slide_added', this.options);
+		this.fire("added", this.options);
 	},
 
 	onRemove: function() {
-		this.fire('slide_removed', this.options);
+		this.fire("removed", this.options);
 	},
-
+	
+	/*	Private Methods
+	================================================== */
 	_initLayout: function () {
 		trace(" _initLayout");
 		
-		this._el.container.className += ' vco-slide';
-		
 		// Create Layout
-		this._el.content_container		= VCO.Dom.create('div', 'vco-content-container', this._el.container);
-		this._el.content				= VCO.Dom.create('div', 'vco-content', this._el.content_container);
-		this.onAdd();
+		this._el.content_container		= VCO.Dom.create("div", "vco-slide-content-container", this._el.container);
+		this._el.content				= VCO.Dom.create("div", "vco-slide-content", this._el.content_container);
+		
+		// Style Slide Background
+		if (this.options.background) {
+			if (this.options.background.url) {
+				this._el.container.className += ' vco-full-image-background';
+				this._el.container.style.backgroundImage="url('" + this.options.background.url + "')";
+			}
+			if (this.options.background.color) {
+				this._el.container.style.backgroundColor = this.options.background.color;
+			}
+		} 
+		
+		// Media
+		if (this.options.media) {
+			this.options.media.mediatype = VCO.MediaType(this.options.media.url);
+			trace(this.options.media.mediatype);
+			//this._media = new this.options.media.mediatype.classname();
+			//var function_name = this.options.media.mediatype.classname;
+			trace("TTTEEESSSTT");
+			//trace(this.options.media.mediatype.classname);
+			//var function_name = eval(this.options.media.mediatype.classname);
+			
+			//trace(function_name());
+			//this._mediaclass = window[this.options.media.mediatype.classname];
+			//this._media = new window[this.options.media.mediatype.classname](this.options.media);
+
+			this._media = new this.options.media.mediatype.classname(this.options.media);
+
+			
+			//this._media = new window[this.options.media.mediatype.classname](this.options.media);
+			//this._media = new VCO.Media(this.options.media);
+			this._media.addTo(this._el.content);
+		}
+		
+		// Text
+		if (this.options.text) {
+			this._text = new VCO.Text(this.options.text);
+			this._text.addTo(this._el.content);
+		}
+		
+		// Fire event that the slide is loaded
+		//this.onLoaded();
 		
 	}
 	
@@ -427,7 +851,9 @@ VCO.Slide = VCO.Class.extend({
 // @codekit-prepend "core/VCO.Class.js";
 // @codekit-prepend "core/VCO.Events.js";
 // @codekit-prepend "dom/VCO.Dom.js";
+// @codekit-prepend "media/VCO.MediaType.js";
 // @codekit-prepend "media/VCO.Media.js";
+// @codekit-prepend "media/VCO.Text.js";
 // @codekit-prepend "slider/VCO.Slide.js";
 
 
@@ -451,61 +877,68 @@ VCO.StorySlider = VCO.Class.extend({
 	includes: VCO.Events,
 	
 	options: {
-		
+		uniqueid: 				"",
 		// state
-		full_image_background: null,
+		full_image_background: 	null,
 
 		// interaction
-		dragging: true
+		dragging: 				true
 	},
 	
-	// Constructer
+	/*	Private Methods
+	================================================== */
 	initialize: function (id, options) { // (HTMLElement or String, Object)
 		trace("StorySlider Initialized");
 		
-		VCO.Util.setOptions(this, options);
+		VCO.Util.setOptions(this, this.options);
 		
+		this.options.uniqueid = id;
 		this._el.container = VCO.Dom.get(id);
 		this._initLayout();
-
-
-		if (this.options.maxBounds) {
-			this.setMaxBounds(this.options.maxBounds);
-		}
-
-		var center = this.options.center,
-			zoom = this.options.zoom;
+		
 	},
+	
+	/*	Create Slides
+	================================================== */
+	createSlides: function(slides) { // array of objects
+		trace("createSlides");
+		for (var i = 0; i < slides.length; i++) {
+			trace("TEST");
+			var slide = new VCO.Slide(slides[i]);
+			slide.addTo(this._el.slider_item_container);
+			slide.on('added', this._onSLideAdded, this);
+			this._slides.push(slide);
+			
+		};
+	},
+	
+	/*	Adding and Removing Slide Methods
+	================================================== */
 	
 	// Add a slide or slides to the slider
 	addSlides: function(slides) { // array of objects
 		trace("addSlides");
-		trace(slides);
 		for (var i = 0; i < slides.length; i++) {
-			trace("TEST");
-			var slide = new VCO.Slide(this._el.slider_item_container, slides[i]);
-			slide.on('slide_added', this._onSLideAdded, this);
-			this._slides.push(slide);
+			slides[i].addTo(this._el.slider_item_container);
 		};
+	},
+	
+	// Remove a slide or slides to the slider
+	removeSlides: function(slides) { // array of objects
+		for (var i = 0; i < slides.length; i++) {
+			slides[i].removeFrom(this._el.slider_item_container);
+		};
+	},
+	
+	/*	Private Methods
+	================================================== */
+	
+	// Events
+	_onSLideAdded: function(e) {
 		
 	},
 	
-	// Add a slide or slides to the slider
-	removeSlides: function(slides) { // array of objects
-
-		for (var i = 0; i < slides.length; i++) {
-			//var slide = new VCO.Slide();
-			//this._slides.push(slide);
-		}
-	},
-	
-	
-	
-	// Private Methods
-	_onSLideAdded: function(e) {
-		trace(e);
-	},
-	
+	// Initialize the layout
 	_initLayout: function () {
 		trace(" _initLayout");
 		
@@ -516,13 +949,9 @@ VCO.StorySlider = VCO.Class.extend({
 		this._el.slider_container			= VCO.Dom.create('div', 'vco-slider-container', this._el.slider_container_mask);
 		this._el.slider_item_container		= VCO.Dom.create('div', 'vco-slider-item-container', this._el.slider_container);
 		
-		/*
-		div.vco-storyslider
-			div.vco-slider-container-mask
-				div.vco-slider-container
-					div.vco-slider-item-container
-		*/
-		this.addSlides([{test:"yes"}, {test:"yes"}, {test:"yes"}]);
+		// Create Slides and then add them
+		this.createSlides([{test:"yes"}, {test:"yes"}, {test:"yes"}]);
+		this.addSlides(this._slides);
 		
 	},
 	
