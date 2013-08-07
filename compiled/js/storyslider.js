@@ -796,23 +796,13 @@ VCO.Slide = VCO.Class.extend({
 		
 		// Media
 		if (this.options.media) {
+			// Determine the media type
 			this.options.media.mediatype = VCO.MediaType(this.options.media.url);
-			trace(this.options.media.mediatype);
-			//this._media = new this.options.media.mediatype.classname();
-			//var function_name = this.options.media.mediatype.classname;
-			trace("TTTEEESSSTT");
-			//trace(this.options.media.mediatype.classname);
-			//var function_name = eval(this.options.media.mediatype.classname);
 			
-			//trace(function_name());
-			//this._mediaclass = window[this.options.media.mediatype.classname];
-			//this._media = new window[this.options.media.mediatype.classname](this.options.media);
-
+			// Create a media object using the matched class name
 			this._media = new this.options.media.mediatype.classname(this.options.media);
-
 			
-			//this._media = new window[this.options.media.mediatype.classname](this.options.media);
-			//this._media = new VCO.Media(this.options.media);
+			// add the object to the dom
 			this._media.addTo(this._el.content);
 		}
 		
