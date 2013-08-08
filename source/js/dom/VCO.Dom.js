@@ -6,15 +6,7 @@
 
 
 VCO.Dom = {
-	
-	initialize: function() {
-		if( typeof( jQuery ) != 'undefined' ){
-			this.type.jQuery = true;
-		} else {
-			this.type.jQuery = false;
-		}
-	},
-	
+
 	get: function(id) {
 		return (typeof id === 'string' ? document.getElementById(id) : id);
 	},

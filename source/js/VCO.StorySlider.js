@@ -14,10 +14,12 @@
 // @codekit-prepend "core/VCO.Util.js";
 // @codekit-prepend "core/VCO.Class.js";
 // @codekit-prepend "core/VCO.Events.js";
+// @codekit-prepend "core/VCO.Animate.js";
 // @codekit-prepend "dom/VCO.Dom.js";
 // @codekit-prepend "media/VCO.MediaType.js";
 // @codekit-prepend "media/VCO.Media.js";
-// @codekit-prepend "media/VCO.Text.js";
+// @codekit-prepend "media/VCO.Media.Image.js";
+// @codekit-prepend "media/VCO.Media.Text.js";
 // @codekit-prepend "slider/VCO.Slide.js";
 
 
@@ -40,23 +42,26 @@ VCO.StorySlider = VCO.Class.extend({
 	
 	includes: VCO.Events,
 	
-	options: {
+	data: {
 		uniqueid: 				"",
-		// state
-		full_image_background: 	null,
-
+	},
+	
+	options: {
+		something: 				"",
+		
 		// interaction
 		dragging: 				true
 	},
 	
 	/*	Private Methods
 	================================================== */
-	initialize: function (id, options) { // (HTMLElement or String, Object)
+	initialize: function (id, data) { // (HTMLElement or String, Object)
 		trace("StorySlider Initialized");
 		
 		VCO.Util.setOptions(this, this.options);
+		VCO.Util.setData(this, this.data);
 		
-		this.options.uniqueid = id;
+		this.data.uniqueid = id;
 		this._el.container = VCO.Dom.get(id);
 		this._initLayout();
 		

@@ -1,4 +1,4 @@
-VCO.Text = VCO.Class.extend({
+VCO.Media.Text = VCO.Class.extend({
 	
 	includes: [VCO.Events],
 	
@@ -10,21 +10,28 @@ VCO.Text = VCO.Class.extend({
 		headline: {}
 	},
 	
-	// Options
-	options: {
+	// Data
+	data: {
 		uniqueid: 			"",
 		headline: 			"Le portrait mystérieux",
 		text: 				"Lorem ipsum dolor sit amet, consectetuer adipiscing elit."
 	},
 	
+	// Options
+	options: {
+		something: 			""
+	},
 	
 	/*	Constructor
 	================================================== */
-	initialize: function(options, add_to_container) {
-		VCO.Util.setOptions(this, options);
+	initialize: function(data, options, add_to_container) {
+		VCO.Util.setData(this, data);
+		if (options) {
+			VCO.Util.setOptions(this, this.options);
+		};
 		//this._container = VCO.Dom.get(id);
 		this._el.container = VCO.Dom.create("div", "vco-text");
-		this._el.container.id = this.options.uniqueid;
+		this._el.container.id = this.data.uniqueid;
 		
 		this._initLayout();
 		
@@ -56,40 +63,39 @@ VCO.Text = VCO.Class.extend({
 	/*	Events
 	================================================== */
 	onLoaded: function() {
-		this.fire("loaded", this.options);
+		this.fire("loaded", this.data);
 	},
 	
 	onAdd: function() {
-		this.fire("added", this.options);
+		this.fire("added", this.data);
 	},
 
 	onRemove: function() {
-		this.fire("removed", this.options);
+		this.fire("removed", this.data);
 	},
 	
 	/*	Private Methods
 	================================================== */
 	_initLayout: function () {
-		trace(" _initLayout");
 		
 		// Create Layout
 		this._el.content_container			= VCO.Dom.create("div", "vco-text-content-container", this._el.container);
 		//this._el.content					= VCO.Dom.create("div", "vco-text-content", this._el.content_container);
 		
 		// Headline
-		if (this.options.headline != "") {
+		if (this.data.headline != "") {
 			this._el.headline				= VCO.Dom.create("h2", "vco-headline", this._el.content_container);
-			this._el.headline.innerHTML		= this.options.headline;
+			this._el.headline.innerHTML		= this.data.headline;
 		}
 		
 		// Text
-		if (this.options.text != "") {
+		if (this.data.text != "") {
 			this._el.content				= VCO.Dom.create("div", "vco-text-content", this._el.content_container);
-			this._el.content.innerHTML		= VCO.Util.htmlify(this.options.text);
+			this._el.content.innerHTML		= VCO.Util.htmlify(this.data.text);
 		}
 		
 		// Fire event that the slide is loaded
-		//this.onLoaded();
+		this.onLoaded();
 		
 		
 		

@@ -69,6 +69,13 @@ VCO.Util = {
 		}
 	},
 	
+	setData: function (obj, data) {
+		obj.data = VCO.Util.extend({}, obj.data, data);
+		if (obj.data.uniqueid === "") {
+			obj.data.uniqueid = VCO.Util.unique_ID(6);
+		}
+	},
+	
 	stamp: (function () {
 		var lastId = 0, key = '_vco_id';
 		return function (/*Object*/ obj) {
@@ -284,6 +291,383 @@ VCO.Events.off	= VCO.Events.removeEventListener;
 VCO.Events.fire = VCO.Events.fireEvent;
 
 /* **********************************************
+     Begin VCO.Animate.js
+********************************************** */
+
+/*	VCO.Animate
+	adds custom animation functionality to VCO classes
+	based on http://www.schillmania.com/projects/javascript-animation-3/
+================================================== */
+VCO.Animate = {};
+
+
+VCO.Animator = function() {
+	var intervalRate = 20;
+	
+	this.tweenTypes = {
+		'default': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1],
+		'blast': [12, 12, 11, 10, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1],
+		'linear': [10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
+	}
+	this.queue = [];
+	this.queueHash = [];
+	this.active = false;
+	this.timer = null;
+	
+	this.createTween = function(start, end, type) {
+		// return array of tween coordinate data (start->end)
+		type = type || 'default';
+		var tween = [start];
+		var tmp = start;
+		var diff = end - start;
+		var x = this.tweenTypes[type].length;
+		for (var i = 0; i < x; i++) {
+		    tmp += diff * this.tweenTypes[type][i] * 0.01;
+		    tween[i] = {};
+		    tween[i].data = tmp;
+		    tween[i].event = null;
+		}
+		return tween;
+    }
+	
+	this.enqueue = function(o, fMethod, fOnComplete) {
+		// add object and associated methods to animation queue
+		trace('animator.enqueue()');
+		if (!fMethod) {
+			trace('animator.enqueue(): missing fMethod');
+		}
+
+		this.queue.push(o);
+		o.active = true;
+	}
+	
+	this.animate = function() {
+		var active = 0;
+		for (var i = 0, j = this.queue.length; i < j; i++) {
+			if (this.queue[i].active) {
+				this.queue[i].animate();
+				active++;
+			}
+		}
+		if (active == 0 && this.timer) {
+			// all animations finished
+			trace('Animations complete');
+			this.stop();
+		} else {
+			trace(active+' active');
+		}
+	}
+	
+	this.start = function() {
+		if (this.timer || this.active) {
+			trace('animator.start(): already active');
+			return false;
+		}
+		trace('animator.start()'); // report only if started
+		this.active = true;
+		this.timer = setInterval(this.animate, intervalRate);
+	}
+	
+    this.stop = function() {
+		trace('animator.stop()', true);
+		// reset some things, clear for next batch of animations
+		clearInterval(this.timer);
+		this.timer = null;
+		this.active = false;
+		this.queue = [];
+	}
+	
+};
+
+VCO.Animation = function(oParams) {
+	// unique animation object
+	/*
+		oParams = {
+			from: 200,
+			to: 300,
+			tweenType: 'default',
+			ontween: function(value) { ... }, // method called each time
+			oncomplete: function() { ... } // when finished
+		}
+	*/
+	this.animator = new VCO.Animator();
+	
+	if (typeof oParams.tweenType == 'undefined') {
+		oParams.tweenType = 'default';
+	}
+	this.ontween = (oParams.ontween || null);
+	this.oncomplete = (oParams.oncomplete || null);
+	this.tween = this.animator.createTween(oParams.from, oParams.to, oParams.tweenType);
+	this.frameCount = this.animator.tweenTypes[oParams.tweenType].length;
+	this.frame = 0;
+	this.active = false;
+	
+    this.animate = function() {
+		// generic animation method
+		if (this.active) {
+			if (this.ontween && this.tween[this.frame]) {
+				this.ontween(this.tween[this.frame].data);
+			}
+			if (this.frame++ >= this.frameCount - 1) {
+				trace('animation(): end');
+				this.active = false;
+				this.frame = 0;
+				if (this.oncomplete) {
+					this.oncomplete();
+					// this.oncomplete = null;
+				}
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
+	this.start = function() {
+		// add this to the main animation queue
+		this.animator.enqueue(this, this.animate, this.oncomplete);
+		if (!this.animator.active) {
+			this.animator.start();
+		}
+	}
+
+	this.stop = function() {
+		this.active = false;
+	}
+};
+
+/*
+ * VCO.Transition native implementation that powers  animation
+ * in browsers that support CSS3 Transitions
+ */
+/*
+VCO.Transition = VCO.Class.extend({
+	statics: (function () {
+		var transition = L.DomUtil.TRANSITION,
+			transitionEnd = (transition === 'webkitTransition' || transition === 'OTransition' ?
+				transition + 'End' : 'transitionend');
+
+		return {
+			NATIVE: !!transition,
+
+			TRANSITION: transition,
+			PROPERTY: transition + 'Property',
+			DURATION: transition + 'Duration',
+			EASING: transition + 'TimingFunction',
+			END: transitionEnd,
+
+			// transition-property value to use with each particular custom property
+			CUSTOM_PROPS_PROPERTIES: {
+				position: L.Browser.webkit ? L.DomUtil.TRANSFORM : 'top, left'
+			}
+		};
+	}()),
+
+	options: {
+		fakeStepInterval: 100
+	},
+
+	initialize: function (el, options) {
+		this._el = el;
+		L.Util.setOptions(this, options);
+
+		L.DomEvent.addListener(el, L.Transition.END, this._onTransitionEnd, this);
+		this._onFakeStep = L.Util.bind(this._onFakeStep, this);
+	},
+
+	run: function (props) {
+		var prop,
+			propsList = [],
+			customProp = L.Transition.CUSTOM_PROPS_PROPERTIES;
+
+		for (prop in props) {
+			if (props.hasOwnProperty(prop)) {
+				prop = customProp[prop] ? customProp[prop] : prop;
+				prop = this._dasherize(prop);
+				propsList.push(prop);
+			}
+		}
+
+		this._el.style[L.Transition.DURATION] = this.options.duration + 's';
+		this._el.style[L.Transition.EASING] = this.options.easing;
+		this._el.style[L.Transition.PROPERTY] = propsList.join(', ');
+
+		for (prop in props) {
+			if (props.hasOwnProperty(prop)) {
+				this._setProperty(prop, props[prop]);
+			}
+		}
+
+		this._inProgress = true;
+
+		this.fire('start');
+
+		if (L.Transition.NATIVE) {
+			clearInterval(this._timer);
+			this._timer = setInterval(this._onFakeStep, this.options.fakeStepInterval);
+		} else {
+			this._onTransitionEnd();
+		}
+	},
+
+	_dasherize: (function () {
+		var re = /([A-Z])/g;
+
+		function replaceFn(w) {
+			return '-' + w.toLowerCase();
+		}
+
+		return function (str) {
+			return str.replace(re, replaceFn);
+		};
+	}()),
+
+	_onFakeStep: function () {
+		this.fire('step');
+	},
+
+	_onTransitionEnd: function () {
+		if (this._inProgress) {
+			this._inProgress = false;
+			clearInterval(this._timer);
+
+			this._el.style[L.Transition.PROPERTY] = 'none';
+
+			this.fire('step');
+			this.fire('end');
+		}
+	}
+});
+*/
+
+/*
+ * L.Transition fallback implementation that powers Leaflet animation
+ * in browsers that don't support CSS3 Transitions
+ */
+/*
+VCO.Transition = VCO.Transition.NATIVE ? VCO.Transition : VCO.Transition.extend({
+	statics: {
+		getTime: Date.now || function () {
+			return +new Date();
+		},
+
+		TIMER: true,
+
+		EASINGS: {
+			'ease': [0.25, 0.1, 0.25, 1.0],
+			'linear': [0.0, 0.0, 1.0, 1.0],
+			'ease-in': [0.42, 0, 1.0, 1.0],
+			'ease-out': [0, 0, 0.58, 1.0],
+			'ease-in-out': [0.42, 0, 0.58, 1.0]
+		},
+
+		CUSTOM_PROPS_GETTERS: {
+			position: L.DomUtil.getPosition
+		},
+
+		//used to get units from strings like "10.5px" (->px)
+		UNIT_RE: /^[\d\.]+(\D*)$/
+	},
+
+	options: {
+		fps: 50
+	},
+
+	initialize: function (el, options) {
+		this._el = el;
+		L.Util.extend(this.options, options);
+
+		var easings = L.Transition.EASINGS[this.options.easing] || L.Transition.EASINGS.ease;
+
+		this._p1 = new L.Point(0, 0);
+		this._p2 = new L.Point(easings[0], easings[1]);
+		this._p3 = new L.Point(easings[2], easings[3]);
+		this._p4 = new L.Point(1, 1);
+
+		this._step = L.Util.bind(this._step, this);
+		this._interval = Math.round(1000 / this.options.fps);
+	},
+
+	run: function (props) {
+		this._props = {};
+
+		var getters = L.Transition.CUSTOM_PROPS_GETTERS,
+			re = L.Transition.UNIT_RE;
+
+		this.fire('start');
+
+		for (var prop in props) {
+			if (props.hasOwnProperty(prop)) {
+				var p = {};
+				if (prop in getters) {
+					p.from = getters[prop](this._el);
+				} else {
+					var matches = this._el.style[prop].match(re);
+					p.from = parseFloat(matches[0]);
+					p.unit = matches[1];
+				}
+				p.to = props[prop];
+				this._props[prop] = p;
+			}
+		}
+
+		clearInterval(this._timer);
+		this._timer = setInterval(this._step, this._interval);
+		this._startTime = L.Transition.getTime();
+	},
+
+	_step: function () {
+		var time = L.Transition.getTime(),
+			elapsed = time - this._startTime,
+			duration = this.options.duration * 1000;
+
+		if (elapsed < duration) {
+			this._runFrame(this._cubicBezier(elapsed / duration));
+		} else {
+			this._runFrame(1);
+			this._complete();
+		}
+	},
+
+	_runFrame: function (percentComplete) {
+		var setters = L.Transition.CUSTOM_PROPS_SETTERS,
+			prop, p, value;
+
+		for (prop in this._props) {
+			if (this._props.hasOwnProperty(prop)) {
+				p = this._props[prop];
+				if (prop in setters) {
+					value = p.to.subtract(p.from).multiplyBy(percentComplete).add(p.from);
+					setters[prop](this._el, value);
+				} else {
+					this._el.style[prop] =
+							((p.to - p.from) * percentComplete + p.from) + p.unit;
+				}
+			}
+		}
+		this.fire('step');
+	},
+
+	_complete: function () {
+		clearInterval(this._timer);
+		this.fire('end');
+	},
+
+	_cubicBezier: function (t) {
+		var a = Math.pow(1 - t, 3),
+			b = 3 * Math.pow(1 - t, 2) * t,
+			c = 3 * (1 - t) * Math.pow(t, 2),
+			d = Math.pow(t, 3),
+			p1 = this._p1.multiplyBy(a),
+			p2 = this._p2.multiplyBy(b),
+			p3 = this._p3.multiplyBy(c),
+			p4 = this._p4.multiplyBy(d);
+
+		return p1.add(p2).add(p3).add(p4).y;
+	}
+});
+*/
+
+/* **********************************************
      Begin VCO.Dom.js
 ********************************************** */
 
@@ -295,15 +679,7 @@ VCO.Events.fire = VCO.Events.fireEvent;
 
 
 VCO.Dom = {
-	
-	initialize: function() {
-		if( typeof( jQuery ) != 'undefined' ){
-			this.type.jQuery = true;
-		} else {
-			this.type.jQuery = false;
-		}
-	},
-	
+
 	get: function(id) {
 		return (typeof id === 'string' ? document.getElementById(id) : id);
 	},
@@ -344,92 +720,92 @@ VCO.MediaType = function(url) {
 			{
 				type: 		"youtube",
 				match_str: 	"(www.)?youtube|youtu\.be",
-				classname: 	VCO.Media.YouTube
+				cls: 		VCO.Media.YouTube
 			},
 			{
 				type: 		"vimeo",
 				match_str: 	"(player.)?vimeo\.com",
-				classname: 	VCO.Media.Vimeo
+				cls: 		VCO.Media.Vimeo
 			},
 			{
 				type: 		"dailymotion",
 				match_str: 	"(www.)?dailymotion\.com",
-				classname: 	VCO.Media.IFrame
+				cls: 		VCO.Media.IFrame
 			},
 			{
 				type: 		"vine",
 				match_str: 	"(www.)?vine\.co",
-				classname: 	VCO.Media.Vine
+				cls: 		VCO.Media.Vine
 			},
 			{
 				type: 		"soundcloud",
 				match_str: 	"(player.)?soundcloud\.com",
-				classname: 	VCO.Media.SoundCloud
+				cls: 		VCO.Media.SoundCloud
 			},
 			{
 				type: 		"twitter",
 				match_str: 	"(www.)?twitter\.com",
-				classname: 	VCO.Media.Twitter
+				cls: 		VCO.Media.Twitter
 			},
 			{
 				type: 		"googlemaps",
 				match_str: 	"maps.google",
-				classname: 	VCO.Media.Map
+				cls: 		VCO.Media.Map
 			},
 			{
 				type: 		"googleplus",
 				match_str: 	"plus.google",
-				classname: 	VCO.Media.GooglePlus
+				cls: 		VCO.Media.GooglePlus
 			},
 			{
 				type: 		"flickr",
 				match_str: 	"flickr.com/photos",
-				classname: 	VCO.Media.Flickr
+				cls: 		VCO.Media.Flickr
 			},
 			{
 				type: 		"instagram",
 				match_str: 	"instagr.am/p/",
-				classname: 	VCO.Media
+				cls: 		VCO.Media
 			},
 			{
 				type: 		"image",
 				match_str: 	/jpg|jpeg|png|gif/i,
-				classname: 	VCO.Media
+				cls: 		VCO.Media.Image
 			},
 			{
 				type: 		"googledocs",
 				match_str: 	/\b.(doc|docx|xls|xlsx|ppt|pptx|pdf|pages|ai|psd|tiff|dxf|svg|eps|ps|ttf|xps|zip|tif)\b/,
-				classname: 	VCO.Media.GoogleDoc
+				cls: 		VCO.Media.GoogleDoc
 			},
 			{
 				type: 		"wikipedia",
 				match_str: 	"(www.)?wikipedia\.org",
-				classname: 	VCO.Media.Wikipedia
+				cls: 		VCO.Media.Wikipedia
 			},
 			{
 				type: 		"iframe",
 				match_str: 	"iframe",
-				classname: 	VCO.Media.IFrame
+				cls: 		VCO.Media.IFrame
 			},
 			{
 				type: 		"storify",
 				match_str: 	"storify",
-				classname: 	VCO.Media.Storify
+				cls: 		VCO.Media.Storify
 			},
 			{
 				type: 		"blockquote",
 				match_str: 	"blockquote",
-				classname: 	"VCO.Media.Blockquote"
+				cls: 		VCO.Media.Blockquote
 			},
 			{
 				type: 		"website",
 				match_str: 	"http://",
-				classname: 	VCO.Media.Website
+				cls: 		VCO.Media.Website
 			},
 			{
 				type: 		"",
 				match_str: 	"",
-				classname: 	VCO.Media
+				cls: 		VCO.Media
 			}
 		];
 	
@@ -450,6 +826,11 @@ VCO.MediaType = function(url) {
      Begin VCO.Media.js
 ********************************************** */
 
+/*	VCO.Media
+	Main media template for media assets.
+	Takes a data object and populates a dom object
+================================================== */
+ 
 VCO.Media = VCO.Class.extend({
 	
 	includes: [VCO.Events],
@@ -467,21 +848,32 @@ VCO.Media = VCO.Class.extend({
 	// Media Type
 	mediatype: {},
 	
-	// Options
-	options: {
+	// Data
+	data: {
 		uniqueid: 			"",
 		url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
 		credit:				"Georges Méliès",
 		caption:			"Le portrait mystérieux"
 	},
 	
+	//Options
+	options: {
+		something: 			""
+	},
+	
+	animator: {},
+	
 	/*	Constructor
 	================================================== */
-	initialize: function(options, add_to_container) {
-		VCO.Util.setOptions(this, options);
-		//this._container = VCO.Dom.get(id);
+	initialize: function(data, options, add_to_container) {
+		//animator = new VCO.Animator();
+		VCO.Util.setData(this, data);
+		if (options) {
+			VCO.Util.setOptions(this, this.options);
+		};
+		
 		this._el.container = VCO.Dom.create("div", "vco-media");
-		this._el.container.id = this.options.uniqueid;
+		this._el.container.id = this.data.uniqueid;
 		
 		this._initLayout();
 		
@@ -490,7 +882,8 @@ VCO.Media = VCO.Class.extend({
 		};
 		
 	},
-	/*	Constructor
+	
+	/*	Load the media
 	================================================== */
 	loadMedia: function(url) {
 		
@@ -508,31 +901,31 @@ VCO.Media = VCO.Class.extend({
 	
 	addTo: function(container) {
 		container.appendChild(this._el.container);
-		//this.onAdd();
+		this.onAdd();
 	},
 	
 	removeFrom: function(container) {
 		container.removeChild(this._el.container);
+		this.onRemove();
 	},
 
 	/*	Events
 	================================================== */
 	onLoaded: function() {
-		this.fire("loaded", this.options);
+		this.fire("loaded", this.data);
 	},
 	
 	onAdd: function() {
-		this.fire("added", this.options);
+		this.fire("added", this.data);
 	},
 
 	onRemove: function() {
-		this.fire("removed", this.options);
+		this.fire("removed", this.data);
 	},
 	
 	/*	Private Methods
 	================================================== */
 	_initLayout: function () {
-		trace(" _initLayout");
 		
 		// Create Layout
 		this._el.content_container			= VCO.Dom.create("div", "vco-media-content-container", this._el.container);
@@ -542,38 +935,56 @@ VCO.Media = VCO.Class.extend({
 		this._el.content.className += ' vco-media-shadow';
 		
 		// Credit
-		if (this.options.credit != "") {
+		if (this.data.credit != "") {
 			this._el.credit					= VCO.Dom.create("div", "vco-credit", this._el.content_container);
-			this._el.credit.innerHTML		= this.options.credit;
+			this._el.credit.innerHTML		= this.data.credit;
 		}
 		
 		// Caption
-		if (this.options.caption != "") {
+		if (this.data.caption != "") {
 			this._el.caption				= VCO.Dom.create("div", "vco-caption", this._el.content_container);
-			this._el.caption.innerHTML		= this.options.caption;
+			this._el.caption.innerHTML		= this.data.caption;
 		}
-		
-		// Load Media
-		//this.mediatype = VCO.MediaType(this.options.url);
-		//trace(this.mediatype);
-		
-		this._el.content_item				= VCO.Dom.create("img", "vco-media-item", this._el.content);
-		this._el.content_item.src			= this.options.url;
-		
-		// Fire event that the slide is loaded
-		//this.onLoaded();
-		
-		
 		
 	}
 	
 });
 
 /* **********************************************
-     Begin VCO.Text.js
+     Begin VCO.Media.Image.js
 ********************************************** */
 
-VCO.Text = VCO.Class.extend({
+/*	VCO.Media.Image
+	Produces image assets.
+	Takes a data object and populates a dom object
+================================================== */
+
+VCO.Media.Image = VCO.Media.extend({
+	
+	includes: [VCO.Events],
+	
+	//Options
+	options: {
+		something: 			""
+	},
+	
+	/*	Load the media
+	================================================== */
+	loadMedia: function(url) {
+		
+		this._el.content_item				= VCO.Dom.create("img", "vco-media-item", this._el.content);
+		this._el.content_item.src			= this.data.url;
+		
+		this.onLoaded();
+	}
+	
+});
+
+/* **********************************************
+     Begin VCO.Media.Text.js
+********************************************** */
+
+VCO.Media.Text = VCO.Class.extend({
 	
 	includes: [VCO.Events],
 	
@@ -585,21 +996,28 @@ VCO.Text = VCO.Class.extend({
 		headline: {}
 	},
 	
-	// Options
-	options: {
+	// Data
+	data: {
 		uniqueid: 			"",
 		headline: 			"Le portrait mystérieux",
 		text: 				"Lorem ipsum dolor sit amet, consectetuer adipiscing elit."
 	},
 	
+	// Options
+	options: {
+		something: 			""
+	},
 	
 	/*	Constructor
 	================================================== */
-	initialize: function(options, add_to_container) {
-		VCO.Util.setOptions(this, options);
+	initialize: function(data, options, add_to_container) {
+		VCO.Util.setData(this, data);
+		if (options) {
+			VCO.Util.setOptions(this, this.options);
+		};
 		//this._container = VCO.Dom.get(id);
 		this._el.container = VCO.Dom.create("div", "vco-text");
-		this._el.container.id = this.options.uniqueid;
+		this._el.container.id = this.data.uniqueid;
 		
 		this._initLayout();
 		
@@ -631,40 +1049,39 @@ VCO.Text = VCO.Class.extend({
 	/*	Events
 	================================================== */
 	onLoaded: function() {
-		this.fire("loaded", this.options);
+		this.fire("loaded", this.data);
 	},
 	
 	onAdd: function() {
-		this.fire("added", this.options);
+		this.fire("added", this.data);
 	},
 
 	onRemove: function() {
-		this.fire("removed", this.options);
+		this.fire("removed", this.data);
 	},
 	
 	/*	Private Methods
 	================================================== */
 	_initLayout: function () {
-		trace(" _initLayout");
 		
 		// Create Layout
 		this._el.content_container			= VCO.Dom.create("div", "vco-text-content-container", this._el.container);
 		//this._el.content					= VCO.Dom.create("div", "vco-text-content", this._el.content_container);
 		
 		// Headline
-		if (this.options.headline != "") {
+		if (this.data.headline != "") {
 			this._el.headline				= VCO.Dom.create("h2", "vco-headline", this._el.content_container);
-			this._el.headline.innerHTML		= this.options.headline;
+			this._el.headline.innerHTML		= this.data.headline;
 		}
 		
 		// Text
-		if (this.options.text != "") {
+		if (this.data.text != "") {
 			this._el.content				= VCO.Dom.create("div", "vco-text-content", this._el.content_container);
-			this._el.content.innerHTML		= VCO.Util.htmlify(this.options.text);
+			this._el.content.innerHTML		= VCO.Util.htmlify(this.data.text);
 		}
 		
 		// Fire event that the slide is loaded
-		//this.onLoaded();
+		this.onLoaded();
 		
 		
 		
@@ -676,7 +1093,10 @@ VCO.Text = VCO.Class.extend({
      Begin VCO.Slide.js
 ********************************************** */
 
-// TODO Create slide element
+/*	VCO.Slide
+	Creates a slide. Takes a data object and
+	populates the slide with content.
+================================================== */
 
 VCO.Slide = VCO.Class.extend({
 	
@@ -694,8 +1114,8 @@ VCO.Slide = VCO.Class.extend({
 	_mediaclass: {},
 	_text: {},
 	
-	// Options
-	options: {
+	// Data
+	data: {
 		uniqueid: 				"",
 		background: {			// OPTIONAL
 			url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
@@ -716,21 +1136,29 @@ VCO.Slide = VCO.Class.extend({
 		media: {
 			url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
 			credit:				"Georges Méliès",
-			caption:			"Le portrait mystérieux",
-			mediatype: 			{}
+			caption:			"Le portrait mystérieux"
 		}
 		
 	},
 	
+	// Options
+	options: {
+		something: 				""
+	},
+	
 	/*	Constructor
 	================================================== */
-	initialize: function(options, add_to_container) {
+	initialize: function(data, options, add_to_container) {
 		
-		VCO.Util.setOptions(this, options);
+		VCO.Util.setData(this, data);
+		
+		if (options) {
+			VCO.Util.setOptions(this, this.options);
+		}
 		
 		//this._container = VCO.Dom.get(id);
 		this._el.container = VCO.Dom.create("div", "vco-slide");
-		this._el.container.id = this.options.uniqueid;
+		this._el.container.id = this.data.uniqueid;
 		
 		this._initLayout();
 		
@@ -763,52 +1191,52 @@ VCO.Slide = VCO.Class.extend({
 	/*	Events
 	================================================== */
 	onLoaded: function() {
-		this.fire("loaded", this.options);
+		this.fire("loaded", this.data);
 	},
 	
 	onAdd: function() {
-		this.fire("added", this.options);
+		this.fire("added", this.data);
 	},
 
 	onRemove: function() {
-		this.fire("removed", this.options);
+		this.fire("removed", this.data);
 	},
 	
 	/*	Private Methods
 	================================================== */
 	_initLayout: function () {
-		trace(" _initLayout");
 		
 		// Create Layout
 		this._el.content_container		= VCO.Dom.create("div", "vco-slide-content-container", this._el.container);
 		this._el.content				= VCO.Dom.create("div", "vco-slide-content", this._el.content_container);
 		
 		// Style Slide Background
-		if (this.options.background) {
-			if (this.options.background.url) {
+		if (this.data.background) {
+			if (this.data.background.url) {
 				this._el.container.className += ' vco-full-image-background';
-				this._el.container.style.backgroundImage="url('" + this.options.background.url + "')";
+				this._el.container.style.backgroundImage="url('" + this.data.background.url + "')";
 			}
-			if (this.options.background.color) {
-				this._el.container.style.backgroundColor = this.options.background.color;
+			if (this.data.background.color) {
+				this._el.container.style.backgroundColor = this.data.background.color;
 			}
 		} 
 		
 		// Media
-		if (this.options.media) {
+		if (this.data.media) {
 			// Determine the media type
-			this.options.media.mediatype = VCO.MediaType(this.options.media.url);
+			this.data.media.mediatype = VCO.MediaType(this.data.media.url);
 			
 			// Create a media object using the matched class name
-			this._media = new this.options.media.mediatype.classname(this.options.media);
+			this._media = new this.data.media.mediatype.cls(this.data.media);
 			
 			// add the object to the dom
 			this._media.addTo(this._el.content);
+			this._media.loadMedia();
 		}
 		
 		// Text
-		if (this.options.text) {
-			this._text = new VCO.Text(this.options.text);
+		if (this.data.text) {
+			this._text = new VCO.Media.Text(this.data.text);
 			this._text.addTo(this._el.content);
 		}
 		
@@ -840,10 +1268,12 @@ VCO.Slide = VCO.Class.extend({
 // @codekit-prepend "core/VCO.Util.js";
 // @codekit-prepend "core/VCO.Class.js";
 // @codekit-prepend "core/VCO.Events.js";
+// @codekit-prepend "core/VCO.Animate.js";
 // @codekit-prepend "dom/VCO.Dom.js";
 // @codekit-prepend "media/VCO.MediaType.js";
 // @codekit-prepend "media/VCO.Media.js";
-// @codekit-prepend "media/VCO.Text.js";
+// @codekit-prepend "media/VCO.Media.Image.js";
+// @codekit-prepend "media/VCO.Media.Text.js";
 // @codekit-prepend "slider/VCO.Slide.js";
 
 
@@ -866,23 +1296,26 @@ VCO.StorySlider = VCO.Class.extend({
 	
 	includes: VCO.Events,
 	
-	options: {
+	data: {
 		uniqueid: 				"",
-		// state
-		full_image_background: 	null,
-
+	},
+	
+	options: {
+		something: 				"",
+		
 		// interaction
 		dragging: 				true
 	},
 	
 	/*	Private Methods
 	================================================== */
-	initialize: function (id, options) { // (HTMLElement or String, Object)
+	initialize: function (id, data) { // (HTMLElement or String, Object)
 		trace("StorySlider Initialized");
 		
 		VCO.Util.setOptions(this, this.options);
+		VCO.Util.setData(this, this.data);
 		
-		this.options.uniqueid = id;
+		this.data.uniqueid = id;
 		this._el.container = VCO.Dom.get(id);
 		this._initLayout();
 		

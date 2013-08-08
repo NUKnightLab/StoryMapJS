@@ -23,6 +23,13 @@ VCO.Util = {
 		}
 	},
 	
+	setData: function (obj, data) {
+		obj.data = VCO.Util.extend({}, obj.data, data);
+		if (obj.data.uniqueid === "") {
+			obj.data.uniqueid = VCO.Util.unique_ID(6);
+		}
+	},
+	
 	stamp: (function () {
 		var lastId = 0, key = '_vco_id';
 		return function (/*Object*/ obj) {
