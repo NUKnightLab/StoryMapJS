@@ -1,4 +1,7 @@
-// TODO Create slide element
+/*	VCO.Slide
+	Creates a slide. Takes a data object and
+	populates the slide with content.
+================================================== */
 
 VCO.Slide = VCO.Class.extend({
 	
@@ -16,8 +19,8 @@ VCO.Slide = VCO.Class.extend({
 	_mediaclass: {},
 	_text: {},
 	
-	// Options
-	options: {
+	// Data
+	data: {
 		uniqueid: 				"",
 		background: {			// OPTIONAL
 			url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
@@ -38,21 +41,29 @@ VCO.Slide = VCO.Class.extend({
 		media: {
 			url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
 			credit:				"Georges Méliès",
-			caption:			"Le portrait mystérieux",
-			mediatype: 			{}
+			caption:			"Le portrait mystérieux"
 		}
 		
 	},
 	
+	// Options
+	options: {
+		something: 				""
+	},
+	
 	/*	Constructor
 	================================================== */
-	initialize: function(options, add_to_container) {
+	initialize: function(data, options, add_to_container) {
 		
-		VCO.Util.setOptions(this, options);
+		VCO.Util.setData(this, data);
+		
+		if (options) {
+			VCO.Util.setOptions(this, this.options);
+		}
 		
 		//this._container = VCO.Dom.get(id);
 		this._el.container = VCO.Dom.create("div", "vco-slide");
-		this._el.container.id = this.options.uniqueid;
+		this._el.container.id = this.data.uniqueid;
 		
 		this._initLayout();
 		
@@ -85,52 +96,52 @@ VCO.Slide = VCO.Class.extend({
 	/*	Events
 	================================================== */
 	onLoaded: function() {
-		this.fire("loaded", this.options);
+		this.fire("loaded", this.data);
 	},
 	
 	onAdd: function() {
-		this.fire("added", this.options);
+		this.fire("added", this.data);
 	},
 
 	onRemove: function() {
-		this.fire("removed", this.options);
+		this.fire("removed", this.data);
 	},
 	
 	/*	Private Methods
 	================================================== */
 	_initLayout: function () {
-		trace(" _initLayout");
 		
 		// Create Layout
 		this._el.content_container		= VCO.Dom.create("div", "vco-slide-content-container", this._el.container);
 		this._el.content				= VCO.Dom.create("div", "vco-slide-content", this._el.content_container);
 		
 		// Style Slide Background
-		if (this.options.background) {
-			if (this.options.background.url) {
+		if (this.data.background) {
+			if (this.data.background.url) {
 				this._el.container.className += ' vco-full-image-background';
-				this._el.container.style.backgroundImage="url('" + this.options.background.url + "')";
+				this._el.container.style.backgroundImage="url('" + this.data.background.url + "')";
 			}
-			if (this.options.background.color) {
-				this._el.container.style.backgroundColor = this.options.background.color;
+			if (this.data.background.color) {
+				this._el.container.style.backgroundColor = this.data.background.color;
 			}
 		} 
 		
 		// Media
-		if (this.options.media) {
+		if (this.data.media) {
 			// Determine the media type
-			this.options.media.mediatype = VCO.MediaType(this.options.media.url);
+			this.data.media.mediatype = VCO.MediaType(this.data.media.url);
 			
 			// Create a media object using the matched class name
-			this._media = new this.options.media.mediatype.classname(this.options.media);
+			this._media = new this.data.media.mediatype.cls(this.data.media);
 			
 			// add the object to the dom
 			this._media.addTo(this._el.content);
+			this._media.loadMedia();
 		}
 		
 		// Text
-		if (this.options.text) {
-			this._text = new VCO.Text(this.options.text);
+		if (this.data.text) {
+			this._text = new VCO.Media.Text(this.data.text);
 			this._text.addTo(this._el.content);
 		}
 		

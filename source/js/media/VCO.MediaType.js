@@ -11,92 +11,92 @@ VCO.MediaType = function(url) {
 			{
 				type: 		"youtube",
 				match_str: 	"(www.)?youtube|youtu\.be",
-				classname: 	VCO.Media.YouTube
+				cls: 		VCO.Media.YouTube
 			},
 			{
 				type: 		"vimeo",
 				match_str: 	"(player.)?vimeo\.com",
-				classname: 	VCO.Media.Vimeo
+				cls: 		VCO.Media.Vimeo
 			},
 			{
 				type: 		"dailymotion",
 				match_str: 	"(www.)?dailymotion\.com",
-				classname: 	VCO.Media.IFrame
+				cls: 		VCO.Media.IFrame
 			},
 			{
 				type: 		"vine",
 				match_str: 	"(www.)?vine\.co",
-				classname: 	VCO.Media.Vine
+				cls: 		VCO.Media.Vine
 			},
 			{
 				type: 		"soundcloud",
 				match_str: 	"(player.)?soundcloud\.com",
-				classname: 	VCO.Media.SoundCloud
+				cls: 		VCO.Media.SoundCloud
 			},
 			{
 				type: 		"twitter",
 				match_str: 	"(www.)?twitter\.com",
-				classname: 	VCO.Media.Twitter
+				cls: 		VCO.Media.Twitter
 			},
 			{
 				type: 		"googlemaps",
 				match_str: 	"maps.google",
-				classname: 	VCO.Media.Map
+				cls: 		VCO.Media.Map
 			},
 			{
 				type: 		"googleplus",
 				match_str: 	"plus.google",
-				classname: 	VCO.Media.GooglePlus
+				cls: 		VCO.Media.GooglePlus
 			},
 			{
 				type: 		"flickr",
 				match_str: 	"flickr.com/photos",
-				classname: 	VCO.Media.Flickr
+				cls: 		VCO.Media.Flickr
 			},
 			{
 				type: 		"instagram",
 				match_str: 	"instagr.am/p/",
-				classname: 	VCO.Media
+				cls: 		VCO.Media
 			},
 			{
 				type: 		"image",
 				match_str: 	/jpg|jpeg|png|gif/i,
-				classname: 	VCO.Media
+				cls: 		VCO.Media.Image
 			},
 			{
 				type: 		"googledocs",
 				match_str: 	/\b.(doc|docx|xls|xlsx|ppt|pptx|pdf|pages|ai|psd|tiff|dxf|svg|eps|ps|ttf|xps|zip|tif)\b/,
-				classname: 	VCO.Media.GoogleDoc
+				cls: 		VCO.Media.GoogleDoc
 			},
 			{
 				type: 		"wikipedia",
 				match_str: 	"(www.)?wikipedia\.org",
-				classname: 	VCO.Media.Wikipedia
+				cls: 		VCO.Media.Wikipedia
 			},
 			{
 				type: 		"iframe",
 				match_str: 	"iframe",
-				classname: 	VCO.Media.IFrame
+				cls: 		VCO.Media.IFrame
 			},
 			{
 				type: 		"storify",
 				match_str: 	"storify",
-				classname: 	VCO.Media.Storify
+				cls: 		VCO.Media.Storify
 			},
 			{
 				type: 		"blockquote",
 				match_str: 	"blockquote",
-				classname: 	"VCO.Media.Blockquote"
+				cls: 		VCO.Media.Blockquote
 			},
 			{
 				type: 		"website",
 				match_str: 	"http://",
-				classname: 	VCO.Media.Website
+				cls: 		VCO.Media.Website
 			},
 			{
 				type: 		"",
 				match_str: 	"",
-				classname: 	VCO.Media
+				cls: 		VCO.Media
 			}
 		];
 	
