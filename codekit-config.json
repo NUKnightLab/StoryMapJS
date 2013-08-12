@@ -2,15 +2,15 @@
   "CodeKitInfo" : "This is a CodeKit project configuration file. It is designed to sync project settings across multiple machines. Modifying the contents of this file can be a poor life decision if you don't know what you're doing. This file is not useful unless accompanied by the project that created it in CodeKit. For more information, see: http:\/\/incident57.com\/codekit",
   "creatorBuild" : "8317",
   "files" : {
-    "\/source\/js\/CORE_OLD\/VCO.StoryJS.js" : {
+    "\/source\/js\/CORE_OLD\/Core\/VCO.Library.js" : {
       "ignoreWasSetByUser" : 1,
       "ignore" : 1,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/VCO.StoryJS.js",
+      "inputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Core\/VCO.Library.js",
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/VCO.StoryJS-min.js",
+      "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Core\/VCO.Library-min.js",
       "fileType" : 64
     },
     "\/site\/index.html" : {
@@ -22,10 +22,10 @@
       "outputAbbreviatedPath" : "No Output Path",
       "fileType" : 2048
     },
-    "\/source\/less\/CORE_OLD\/GFX.less" : {
+    "\/source\/less\/CORE_OLD\/Reset.less" : {
       "ieCompatibility" : 1,
-      "inputAbbreviatedPath" : "\/source\/less\/CORE_OLD\/GFX.less",
-      "outputAbbreviatedPath" : "\/source\/less\/css\/GFX.css",
+      "inputAbbreviatedPath" : "\/source\/less\/CORE_OLD\/Reset.less",
+      "outputAbbreviatedPath" : "\/source\/less\/css\/Reset.css",
       "outputPathIsSetByUser" : 0,
       "strictUnits" : 0,
       "relativeURLS" : 0,
@@ -39,15 +39,15 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
-    "\/source\/js\/CORE_OLD\/Core\/VCO.Library.js" : {
+    "\/source\/js\/CORE_OLD\/VCO.StoryJS.js" : {
       "ignoreWasSetByUser" : 1,
       "ignore" : 1,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Core\/VCO.Library.js",
+      "inputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/VCO.StoryJS.js",
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Core\/VCO.Library-min.js",
+      "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/VCO.StoryJS-min.js",
       "fileType" : 64
     },
     "\/site\/js\/less.js" : {
@@ -226,15 +226,15 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
-    "\/source\/js\/media\/VCO.Media.Image.js" : {
-      "ignoreWasSetByUser" : 0,
+    "\/source\/js\/CORE_OLD\/Core\/VCO.FileExtention.js" : {
+      "ignoreWasSetByUser" : 1,
       "ignore" : 1,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/media\/VCO.Media.Image.js",
+      "inputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Core\/VCO.FileExtention.js",
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/media\/VCO.Media.Image-min.js",
+      "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Core\/VCO.FileExtention-min.js",
       "fileType" : 64
     },
     "\/source\/js\/CORE_OLD\/Library\/LazyLoad.js" : {
@@ -248,26 +248,15 @@
       "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Library\/LazyLoad-min.js",
       "fileType" : 64
     },
-    "\/source\/js\/CORE_OLD\/Core\/VCO.FileExtention.js" : {
-      "ignoreWasSetByUser" : 1,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Core\/VCO.FileExtention.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Core\/VCO.FileExtention-min.js",
-      "fileType" : 64
-    },
-    "\/compiled\/js\/storyslider.js" : {
+    "\/source\/js\/media\/VCO.Media.Image.js" : {
       "ignoreWasSetByUser" : 0,
       "ignore" : 1,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/compiled\/js\/storyslider.js",
+      "inputAbbreviatedPath" : "\/source\/js\/media\/VCO.Media.Image.js",
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/compiled\/js\/storyslider-min.js",
+      "outputAbbreviatedPath" : "\/source\/js\/media\/VCO.Media.Image-min.js",
       "fileType" : 64
     },
     "\/source\/js\/CORE_OLD\/Library\/jquery.fancybox.js" : {
@@ -281,6 +270,17 @@
       "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Library\/jquery.fancybox-min.js",
       "fileType" : 64
     },
+    "\/compiled\/js\/storyslider.js" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/compiled\/js\/storyslider.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/compiled\/js\/storyslider-min.js",
+      "fileType" : 64
+    },
     "\/source\/js\/CORE_OLD\/Library\/jQuery\/easing.js" : {
       "ignoreWasSetByUser" : 1,
       "ignore" : 1,
@@ -290,17 +290,6 @@
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 0,
       "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Library\/jQuery\/easing-min.js",
-      "fileType" : 64
-    },
-    "\/source\/js\/CORE_OLD\/Core\/VCO.LoadLib.js" : {
-      "ignoreWasSetByUser" : 1,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Core\/VCO.LoadLib.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Core\/VCO.LoadLib-min.js",
       "fileType" : 64
     },
     "\/source\/less\/CORE_OLD\/Variables.less" : {
@@ -320,6 +309,17 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
+    "\/source\/js\/CORE_OLD\/Core\/VCO.LoadLib.js" : {
+      "ignoreWasSetByUser" : 1,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Core\/VCO.LoadLib.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Core\/VCO.LoadLib-min.js",
+      "fileType" : 64
+    },
     "\/source\/less\/Core\/Mixins.less" : {
       "ieCompatibility" : 1,
       "inputAbbreviatedPath" : "\/source\/less\/Core\/Mixins.less",
@@ -337,6 +337,15 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
+    "\/compiled\/test\/index.html" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 0,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/compiled\/test\/index.html",
+      "outputAbbreviatedPath" : "No Output Path",
+      "fileType" : 2048
+    },
     "\/compiled\/gfx\/timeline@2x.png" : {
       "ignoreWasSetByUser" : 0,
       "ignore" : 0,
@@ -347,26 +356,6 @@
       "outputAbbreviatedPath" : "\/compiled\/gfx\/timeline@2x.png",
       "initialSize" : 49364,
       "fileType" : 8192
-    },
-    "\/easeljs-NEXT.min.js" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 0,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/easeljs-NEXT.min.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/easeljs-NEXT.min-min.js",
-      "fileType" : 64
-    },
-    "\/compiled\/css\/storyslider.css" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/compiled\/css\/storyslider.css",
-      "outputAbbreviatedPath" : "\/No Output Path",
-      "fileType" : 16
     },
     "\/source\/js\/CORE_OLD\/Library\/Leaflet.js" : {
       "ignoreWasSetByUser" : 1,
@@ -389,6 +378,15 @@
       "syntaxCheckerStyle" : 0,
       "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Library\/AES-min.js",
       "fileType" : 64
+    },
+    "\/compiled\/css\/storyslider.css" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/compiled\/css\/storyslider.css",
+      "outputAbbreviatedPath" : "\/No Output Path",
+      "fileType" : 16
     },
     "\/source\/js\/core\/VCO.Util.js" : {
       "ignoreWasSetByUser" : 0,
@@ -509,6 +507,17 @@
       "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/VCO.StoryJS.License-min.js",
       "fileType" : 64
     },
+    "\/source\/js\/data\/VCO.Data.js" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/js\/data\/VCO.Data.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/source\/js\/data\/VCO.Data-min.js",
+      "fileType" : 64
+    },
     "\/source\/js\/CORE_OLD\/Core\/VCO.Core.js" : {
       "ignoreWasSetByUser" : 1,
       "ignore" : 1,
@@ -592,17 +601,6 @@
       "initialSize" : 1007,
       "fileType" : 8192
     },
-    "\/source\/js\/dom\/VCO.Dom.js" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/dom\/VCO.Dom.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/dom\/VCO.Dom-min.js",
-      "fileType" : 64
-    },
     "\/source\/js\/CORE_OLD\/Core\/VMM.js" : {
       "ignoreWasSetByUser" : 1,
       "ignore" : 1,
@@ -612,6 +610,17 @@
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 0,
       "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Core\/VMM-min.js",
+      "fileType" : 64
+    },
+    "\/source\/js\/VCO.StorySlider.js" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 0,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 1,
+      "inputAbbreviatedPath" : "\/source\/js\/VCO.StorySlider.js",
+      "outputStyle" : 0,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/compiled\/js\/storyslider.js",
       "fileType" : 64
     },
     "\/source\/js\/media\/VCO.Media.js" : {
@@ -625,15 +634,15 @@
       "outputAbbreviatedPath" : "\/source\/js\/media\/VCO.Media-min.js",
       "fileType" : 64
     },
-    "\/source\/js\/VCO.StorySlider.js" : {
+    "\/source\/js\/dom\/VCO.Dom.js" : {
       "ignoreWasSetByUser" : 0,
-      "ignore" : 0,
+      "ignore" : 1,
       "hidden" : 0,
-      "outputPathIsSetByUser" : 1,
-      "inputAbbreviatedPath" : "\/source\/js\/VCO.StorySlider.js",
-      "outputStyle" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/js\/dom\/VCO.Dom.js",
+      "outputStyle" : 1,
       "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/compiled\/js\/storyslider.js",
+      "outputAbbreviatedPath" : "\/source\/js\/dom\/VCO.Dom-min.js",
       "fileType" : 64
     },
     "\/source\/js\/CORE_OLD\/Media\/VCO.TextElement.js" : {
@@ -820,6 +829,15 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
+    "\/compiled\/test\/js\/data\/VCO.getJSON.html" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 0,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/compiled\/test\/js\/data\/VCO.getJSON.html",
+      "outputAbbreviatedPath" : "No Output Path",
+      "fileType" : 2048
+    },
     "\/source\/less\/Core\/Typography.less" : {
       "ieCompatibility" : 1,
       "inputAbbreviatedPath" : "\/source\/less\/Core\/Typography.less",
@@ -837,15 +855,15 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
-    "\/source\/js\/CORE_OLD\/Core\/VCO.Browser.js" : {
+    "\/source\/js\/CORE_OLD\/Core\/VCO.Date.js" : {
       "ignoreWasSetByUser" : 1,
       "ignore" : 1,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Core\/VCO.Browser.js",
+      "inputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Core\/VCO.Date.js",
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Core\/VCO.Browser-min.js",
+      "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Core\/VCO.Date-min.js",
       "fileType" : 64
     },
     "\/source\/js\/core\/VCO.Events.js" : {
@@ -859,15 +877,15 @@
       "outputAbbreviatedPath" : "\/source\/js\/core\/VCO.Events-min.js",
       "fileType" : 64
     },
-    "\/source\/js\/CORE_OLD\/Core\/VCO.Date.js" : {
+    "\/source\/js\/CORE_OLD\/Core\/VCO.Browser.js" : {
       "ignoreWasSetByUser" : 1,
       "ignore" : 1,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Core\/VCO.Date.js",
+      "inputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Core\/VCO.Browser.js",
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Core\/VCO.Date-min.js",
+      "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Core\/VCO.Browser-min.js",
       "fileType" : 64
     },
     "\/compiled\/gfx\/timeline.png" : {
@@ -943,10 +961,10 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
-    "\/source\/less\/CORE_OLD\/Reset.less" : {
+    "\/source\/less\/CORE_OLD\/GFX.less" : {
       "ieCompatibility" : 1,
-      "inputAbbreviatedPath" : "\/source\/less\/CORE_OLD\/Reset.less",
-      "outputAbbreviatedPath" : "\/source\/less\/css\/Reset.css",
+      "inputAbbreviatedPath" : "\/source\/less\/CORE_OLD\/GFX.less",
+      "outputAbbreviatedPath" : "\/source\/less\/css\/GFX.css",
       "outputPathIsSetByUser" : 0,
       "strictUnits" : 0,
       "relativeURLS" : 0,
@@ -1056,8 +1074,8 @@
       "newcap" : 0,
       "forin" : 0,
       "regexdash" : 0,
-      "browser" : 1,
       "node" : 0,
+      "browser" : 1,
       "eqnull" : 1,
       "mootools" : 0,
       "iterator" : 0,

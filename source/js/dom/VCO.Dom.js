@@ -48,10 +48,6 @@ VCO.Dom = {
 			el.style.top = point.y + 'px';
 		}
 	},
-
-	getPosition: function (el) {
-		return el._leaflet_pos;
-	},
 	
 	testProp: function(props) {
 		var style = document.documentElement.style;

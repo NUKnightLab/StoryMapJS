@@ -37,19 +37,19 @@
  */
 
 VCO.Easings = {
-    "ease":        [0.25, 0.1, 0.25, 1.0], 
-    "linear":      [0.00, 0.0, 1.00, 1.0],
-    "ease-in":     [0.42, 0.0, 1.00, 1.0],
-    "ease-out":    [0.00, 0.0, 0.58, 1.0],
-    "ease-in-out": [0.42, 0.0, 0.58, 1.0]
+    ease:        [0.25, 0.1, 0.25, 1.0], 
+    linear:      [0.00, 0.0, 1.00, 1.0],
+    easein:     [0.42, 0.0, 1.00, 1.0],
+    easeout:    [0.00, 0.0, 0.58, 1.0],
+    easeinout: [0.42, 0.0, 0.58, 1.0]
 };
 
 VCO.Ease = {
-
-	KeySpline: function(mX1, mY1, mX2, mY2) {
+	KeySpline: function(a) {
+	//KeySpline: function(mX1, mY1, mX2, mY2) {
 		this.get = function(aX) {
-			if (mX1 == mY1 && mX2 == mY2) return aX; // linear
-			return CalcBezier(GetTForX(aX), mY1, mY2);
+			if (a[0] == a[1] && a[2] == a[3]) return aX; // linear
+			return CalcBezier(GetTForX(aX), a[1], a[3]);
 		}
 
 		function A(aA1, aA2) {
@@ -80,9 +80,9 @@ VCO.Ease = {
 			// Newton raphson iteration
 			var aGuessT = aX;
 			for (var i = 0; i < 4; ++i) {
-				var currentSlope = GetSlope(aGuessT, mX1, mX2);
+				var currentSlope = GetSlope(aGuessT, a[0], a[2]);
 				if (currentSlope == 0.0) return aGuessT;
-				var currentX = CalcBezier(aGuessT, mX1, mX2) - aX;
+				var currentX = CalcBezier(aGuessT, a[0], a[2]) - aX;
 				aGuessT -= currentX / currentSlope;
 			}
 			return aGuessT;
@@ -90,11 +90,16 @@ VCO.Ease = {
 	},
 	
 	easeInSpline: function(t) {
-		var spline = new VCO.Ease.KeySpline(0.42, 0.0, 1.00, 1.0);
+		var spline = new VCO.Ease.KeySpline(VCO.Easings.easein);
 		return spline.get(t);
 	},
+	
+	easeInOutExpo: function(t) {
+		var spline = new VCO.Ease.KeySpline(VCO.Easings.easein);
+		return spline.get(t);
+	},
+	
 	easeOut: function(t) {
-		trace(t);
 		return Math.sin(t * Math.PI / 2);
 	},
 	easeOutStrong: function(t) {
@@ -208,5 +213,29 @@ VCO.Ease = {
 	easeInOutQuint: function (t) { return t<.5 ? 16*t*t*t*t*t : 1+16*(--t)*t*t*t*t }
 };
 
+/*
+Math.easeInExpo = function (t, b, c, d) {
+	return c * Math.pow( 2, 10 * (t/d - 1) ) + b;
+};
+
+		
+
+// exponential easing out - decelerating to zero velocity
 
 
+Math.easeOutExpo = function (t, b, c, d) {
+	return c * ( -Math.pow( 2, -10 * t/d ) + 1 ) + b;
+};
+
+		
+
+// exponential easing in/out - accelerating until halfway, then decelerating
+
+
+Math.easeInOutExpo = function (t, b, c, d) {
+	t /= d/2;
+	if (t < 1) return c/2 * Math.pow( 2, 10 * (t - 1) ) + b;
+	t--;
+	return c/2 * ( -Math.pow( 2, -10 * t) + 2 ) + b;
+};
+*/

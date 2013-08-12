@@ -7,39 +7,43 @@ VCO.Media = VCO.Class.extend({
 	
 	includes: [VCO.Events],
 	
-	// DOM ELEMENTS
-	_el: {
-		container: {},
-		content_container: {},
-		content: {},
-		content_item: {},
-		caption: {},
-		credit: {}
-	},
-	
-	// Media Type
-	mediatype: {},
-	
-	// Data
-	data: {
-		uniqueid: 			"",
-		url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-		credit:				"Georges Méliès",
-		caption:			"Le portrait mystérieux"
-	},
-	
-	//Options
-	options: {
-		something: 			""
-	},
-	
-	animator: {},
+	_el: {},
 	
 	/*	Constructor
 	================================================== */
 	initialize: function(data, options, add_to_container) {
-		//animator = new VCO.Animator();
+		// DOM ELEMENTS
+		this._el = {
+			container: {},
+			content_container: {},
+			content: {},
+			content_item: {},
+			caption: {},
+			credit: {}
+		};
+	
+		// Media Type
+		this.mediatype = {};
+	
+		// Data
+		this.data = {
+			uniqueid: 			"",
+			url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+			credit:				"Georges Méliès",
+			caption:			"Le portrait mystérieux"
+		};
+	
+		//Options
+		this.options = {
+			something: 			""
+		};
+	
+		this.animator = {};
+		
+		// Merge Data
 		VCO.Util.setData(this, data);
+		
+		// Merge Options
 		if (options) {
 			VCO.Util.setOptions(this, this.options);
 		};

@@ -1,4 +1,6 @@
-
+/*	VCO.Animate
+	Basic animation
+================================================== */
 
 VCO.Animate = function(el, options) {
 	var animation = vcoanimate(el, options),
@@ -16,6 +18,11 @@ VCO.Animate = function(el, options) {
 	return animation;
 };
 
+
+/*	Based on: Morpheus
+	https://github.com/ded/morpheus - (c) Dustin Diaz 2011
+	License MIT
+================================================== */
 !function (name, definition) {
   if (typeof define == 'function') {
 	  define(definition)
