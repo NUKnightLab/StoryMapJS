@@ -12,6 +12,7 @@
 ================================================== */
 // @codekit-prepend "core/VCO.js";
 // @codekit-prepend "core/VCO.Util.js";
+// @codekit-prepend "data/VCO.Data.js";
 // @codekit-prepend "core/VCO.Class.js";
 // @codekit-prepend "core/VCO.Events.js";
 // @codekit-prepend "core/VCO.Browser.js";
