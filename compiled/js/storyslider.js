@@ -291,381 +291,713 @@ VCO.Events.off	= VCO.Events.removeEventListener;
 VCO.Events.fire = VCO.Events.fireEvent;
 
 /* **********************************************
+     Begin VCO.Browser.js
+********************************************** */
+
+
+(function () {
+	var ua = navigator.userAgent.toLowerCase(),
+		ie = !!window.ActiveXObject,
+		webkit = ua.indexOf("webkit") !== -1,
+		mobile = typeof orientation !== 'undefined' ? true : false,
+		android = ua.indexOf("android") !== -1,
+		opera = window.opera;
+
+	VCO.Browser = {
+		ie: ie,
+		ie6: ie && !window.XMLHttpRequest,
+
+		webkit: webkit,
+		webkit3d: webkit && ('WebKitCSSMatrix' in window) && ('m11' in new window.WebKitCSSMatrix()),
+
+		gecko: ua.indexOf("gecko") !== -1,
+
+		opera: opera,
+
+		android: android,
+		mobileWebkit: mobile && webkit,
+		mobileOpera: mobile && opera,
+
+		mobile: mobile,
+		touch: (function () {
+			var touchSupported = false,
+				startName = 'ontouchstart';
+
+			// WebKit, etc
+			if (startName in document.documentElement) {
+				return true;
+			}
+
+			// Firefox/Gecko
+			var e = document.createElement('div');
+
+			// If no support for basic event stuff, unlikely to have touch support
+			if (!e.setAttribute || !e.removeAttribute) {
+				return false;
+			}
+
+			e.setAttribute(startName, 'return;');
+			if (typeof e[startName] === 'function') {
+				touchSupported = true;
+			}
+
+			e.removeAttribute(startName);
+			e = null;
+
+			return touchSupported;
+		}())
+	};
+
+}());
+
+/* **********************************************
+     Begin VCO.Ease.js
+********************************************** */
+
+/* The equations defined here are open source under BSD License.
+ * http://www.robertpenner.com/easing_terms_of_use.html (c) 2003 Robert Penner
+ * Adapted to single time-based by
+ * Brian Crescimanno <brian.crescimanno@gmail.com>
+ * Ken Snyder <kendsnyder@gmail.com>
+ */
+
+/** MIT License
+ *
+ * KeySpline - use bezier curve for transition easing function
+ * Copyright (c) 2012 Gaetan Renaudeau <renaudeau.gaetan@gmail.com>
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
+/**
+ * KeySpline - use bezier curve for transition easing function
+ * is inspired from Firefox's nsSMILKeySpline.cpp
+ * Usage:
+ * var spline = new KeySpline(0.25, 0.1, 0.25, 1.0)
+ * spline.get(x) => returns the easing value | x must be in [0, 1] range
+ */
+
+VCO.Easings = {
+    "ease":        [0.25, 0.1, 0.25, 1.0], 
+    "linear":      [0.00, 0.0, 1.00, 1.0],
+    "ease-in":     [0.42, 0.0, 1.00, 1.0],
+    "ease-out":    [0.00, 0.0, 0.58, 1.0],
+    "ease-in-out": [0.42, 0.0, 0.58, 1.0]
+};
+
+VCO.Ease = {
+
+	KeySpline: function(mX1, mY1, mX2, mY2) {
+		this.get = function(aX) {
+			if (mX1 == mY1 && mX2 == mY2) return aX; // linear
+			return CalcBezier(GetTForX(aX), mY1, mY2);
+		}
+
+		function A(aA1, aA2) {
+			return 1.0 - 3.0 * aA2 + 3.0 * aA1;
+		}
+
+		function B(aA1, aA2) {
+			return 3.0 * aA2 - 6.0 * aA1;
+		}
+
+		function C(aA1) {
+			return 3.0 * aA1;
+		}
+
+		// Returns x(t) given t, x1, and x2, or y(t) given t, y1, and y2.
+
+		function CalcBezier(aT, aA1, aA2) {
+			return ((A(aA1, aA2) * aT + B(aA1, aA2)) * aT + C(aA1)) * aT;
+		}
+
+		// Returns dx/dt given t, x1, and x2, or dy/dt given t, y1, and y2.
+
+		function GetSlope(aT, aA1, aA2) {
+			return 3.0 * A(aA1, aA2) * aT * aT + 2.0 * B(aA1, aA2) * aT + C(aA1);
+		}
+
+		function GetTForX(aX) {
+			// Newton raphson iteration
+			var aGuessT = aX;
+			for (var i = 0; i < 4; ++i) {
+				var currentSlope = GetSlope(aGuessT, mX1, mX2);
+				if (currentSlope == 0.0) return aGuessT;
+				var currentX = CalcBezier(aGuessT, mX1, mX2) - aX;
+				aGuessT -= currentX / currentSlope;
+			}
+			return aGuessT;
+		}
+	},
+	
+	easeInSpline: function(t) {
+		var spline = new VCO.Ease.KeySpline(0.42, 0.0, 1.00, 1.0);
+		return spline.get(t);
+	},
+	easeOut: function(t) {
+		trace(t);
+		return Math.sin(t * Math.PI / 2);
+	},
+	easeOutStrong: function(t) {
+		return (t == 1) ? 1 : 1 - Math.pow(2, - 10 * t);
+	},
+	easeIn: function(t) {
+		return t * t;
+	},
+	easeInStrong: function(t) {
+		return (t == 0) ? 0 : Math.pow(2, 10 * (t - 1));
+	},
+	easeOutBounce: function(pos) {
+		if ((pos) < (1 / 2.75)) {
+			return (7.5625 * pos * pos);
+		} else if (pos < (2 / 2.75)) {
+			return (7.5625 * (pos -= (1.5 / 2.75)) * pos + .75);
+		} else if (pos < (2.5 / 2.75)) {
+			return (7.5625 * (pos -= (2.25 / 2.75)) * pos + .9375);
+		} else {
+			return (7.5625 * (pos -= (2.625 / 2.75)) * pos + .984375);
+		}
+	},
+	easeInBack: function(pos) {
+		var s = 1.70158;
+		return (pos) * pos * ((s + 1) * pos - s);
+	},
+	easeOutBack: function(pos) {
+		var s = 1.70158;
+		return (pos = pos - 1) * pos * ((s + 1) * pos + s) + 1;
+	},
+	bounce: function(t) {
+		if (t < (1 / 2.75)) {
+			return 7.5625 * t * t;
+		}
+		if (t < (2 / 2.75)) {
+			return 7.5625 * (t -= (1.5 / 2.75)) * t + 0.75;
+		}
+		if (t < (2.5 / 2.75)) {
+			return 7.5625 * (t -= (2.25 / 2.75)) * t + 0.9375;
+		}
+		return 7.5625 * (t -= (2.625 / 2.75)) * t + 0.984375;
+	},
+	bouncePast: function(pos) {
+		if (pos < (1 / 2.75)) {
+			return (7.5625 * pos * pos);
+		} else if (pos < (2 / 2.75)) {
+			return 2 - (7.5625 * (pos -= (1.5 / 2.75)) * pos + .75);
+		} else if (pos < (2.5 / 2.75)) {
+			return 2 - (7.5625 * (pos -= (2.25 / 2.75)) * pos + .9375);
+		} else {
+			return 2 - (7.5625 * (pos -= (2.625 / 2.75)) * pos + .984375);
+		}
+	},
+	swingTo: function(pos) {
+		var s = 1.70158;
+		return (pos -= 1) * pos * ((s + 1) * pos + s) + 1;
+	},
+	swingFrom: function(pos) {
+		var s = 1.70158;
+		return pos * pos * ((s + 1) * pos - s);
+	},
+	elastic: function(pos) {
+		return -1 * Math.pow(4, - 8 * pos) * Math.sin((pos * 6 - 1) * (2 * Math.PI) / 2) + 1;
+	},
+	spring: function(pos) {
+		return 1 - (Math.cos(pos * 4.5 * Math.PI) * Math.exp(-pos * 6));
+	},
+	blink: function(pos, blinks) {
+		return Math.round(pos * (blinks || 5)) % 2;
+	},
+	pulse: function(pos, pulses) {
+		return (-Math.cos((pos * ((pulses || 5) - .5) * 2) * Math.PI) / 2) + .5;
+	},
+	wobble: function(pos) {
+		return (-Math.cos(pos * Math.PI * (9 * pos)) / 2) + 0.5;
+	},
+	sinusoidal: function(pos) {
+		return (-Math.cos(pos * Math.PI) / 2) + 0.5;
+	},
+	flicker: function(pos) {
+		var pos = pos + (Math.random() - 0.5) / 5;
+		return easings.sinusoidal(pos < 0 ? 0 : pos > 1 ? 1 : pos);
+	},
+	mirror: function(pos) {
+		if (pos < 0.5) return easings.sinusoidal(pos * 2);
+		else return easings.sinusoidal(1 - (pos - 0.5) * 2);
+	},
+	// accelerating from zero velocity
+	easeInQuad: function (t) { return t*t },
+	// decelerating to zero velocity
+	easeOutQuad: function (t) { return t*(2-t) },
+	// acceleration until halfway, then deceleration
+	easeInOutQuad: function (t) { return t<.5 ? 2*t*t : -1+(4-2*t)*t },
+	// accelerating from zero velocity 
+	easeInCubic: function (t) { return t*t*t },
+	// decelerating to zero velocity 
+	easeOutCubic: function (t) { return (--t)*t*t+1 },
+	// acceleration until halfway, then deceleration 
+	easeInOutCubic: function (t) { return t<.5 ? 4*t*t*t : (t-1)*(2*t-2)*(2*t-2)+1 },
+	// accelerating from zero velocity 
+	easeInQuart: function (t) { return t*t*t*t },
+	// decelerating to zero velocity 
+	easeOutQuart: function (t) { return 1-(--t)*t*t*t },
+	// acceleration until halfway, then deceleration
+	easeInOutQuart: function (t) { return t<.5 ? 8*t*t*t*t : 1-8*(--t)*t*t*t },
+	// accelerating from zero velocity
+	easeInQuint: function (t) { return t*t*t*t*t },
+	// decelerating to zero velocity
+	easeOutQuint: function (t) { return 1+(--t)*t*t*t*t },
+	// acceleration until halfway, then deceleration 
+	easeInOutQuint: function (t) { return t<.5 ? 16*t*t*t*t*t : 1+16*(--t)*t*t*t*t }
+};
+
+
+
+
+
+/* **********************************************
      Begin VCO.Animate.js
 ********************************************** */
 
-/*	VCO.Animate
-	adds custom animation functionality to VCO classes
-	based on http://www.schillmania.com/projects/javascript-animation-3/
-================================================== */
-VCO.Animate = {};
 
 
-VCO.Animator = function() {
-	var intervalRate = 20;
-	
-	this.tweenTypes = {
-		'default': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1],
-		'blast': [12, 12, 11, 10, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1],
-		'linear': [10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
-	}
-	this.queue = [];
-	this.queueHash = [];
-	this.active = false;
-	this.timer = null;
-	
-	this.createTween = function(start, end, type) {
-		// return array of tween coordinate data (start->end)
-		type = type || 'default';
-		var tween = [start];
-		var tmp = start;
-		var diff = end - start;
-		var x = this.tweenTypes[type].length;
-		for (var i = 0; i < x; i++) {
-		    tmp += diff * this.tweenTypes[type][i] * 0.01;
-		    tween[i] = {};
-		    tween[i].data = tmp;
-		    tween[i].event = null;
-		}
-		return tween;
-    }
-	
-	this.enqueue = function(o, fMethod, fOnComplete) {
-		// add object and associated methods to animation queue
-		trace('animator.enqueue()');
-		if (!fMethod) {
-			trace('animator.enqueue(): missing fMethod');
-		}
-
-		this.queue.push(o);
-		o.active = true;
-	}
-	
-	this.animate = function() {
-		var active = 0;
-		for (var i = 0, j = this.queue.length; i < j; i++) {
-			if (this.queue[i].active) {
-				this.queue[i].animate();
-				active++;
-			}
-		}
-		if (active == 0 && this.timer) {
-			// all animations finished
-			trace('Animations complete');
-			this.stop();
-		} else {
-			trace(active+' active');
-		}
-	}
-	
-	this.start = function() {
-		if (this.timer || this.active) {
-			trace('animator.start(): already active');
-			return false;
-		}
-		trace('animator.start()'); // report only if started
-		this.active = true;
-		this.timer = setInterval(this.animate, intervalRate);
-	}
-	
-    this.stop = function() {
-		trace('animator.stop()', true);
-		// reset some things, clear for next batch of animations
-		clearInterval(this.timer);
-		this.timer = null;
-		this.active = false;
-		this.queue = [];
-	}
-	
-};
-
-VCO.Animation = function(oParams) {
-	// unique animation object
+VCO.Animate = function(el, options) {
+	var animation = vcoanimate(el, options),
+		webkit_timeout;
 	/*
-		oParams = {
-			from: 200,
-			to: 300,
-			tweenType: 'default',
-			ontween: function(value) { ... }, // method called each time
-			oncomplete: function() { ... } // when finished
-		}
+		// POSSIBLE ISSUE WITH WEBKIT FUTURE BUILDS
+	var onWebKitTimeout = function() {
+		
+		animation.stop(true);
+	}
+	if (VCO.Browser.webkit) {
+		//webkit_timeout = setTimeout(function(){onWebKitTimeout()}, options.duration);
+	}
 	*/
-	this.animator = new VCO.Animator();
-	
-	if (typeof oParams.tweenType == 'undefined') {
-		oParams.tweenType = 'default';
-	}
-	this.ontween = (oParams.ontween || null);
-	this.oncomplete = (oParams.oncomplete || null);
-	this.tween = this.animator.createTween(oParams.from, oParams.to, oParams.tweenType);
-	this.frameCount = this.animator.tweenTypes[oParams.tweenType].length;
-	this.frame = 0;
-	this.active = false;
-	
-    this.animate = function() {
-		// generic animation method
-		if (this.active) {
-			if (this.ontween && this.tween[this.frame]) {
-				this.ontween(this.tween[this.frame].data);
-			}
-			if (this.frame++ >= this.frameCount - 1) {
-				trace('animation(): end');
-				this.active = false;
-				this.frame = 0;
-				if (this.oncomplete) {
-					this.oncomplete();
-					// this.oncomplete = null;
-				}
-				return false;
-			}
-			return true;
-		}
-		return false;
-	}
-	this.start = function() {
-		// add this to the main animation queue
-		this.animator.enqueue(this, this.animate, this.oncomplete);
-		if (!this.animator.active) {
-			this.animator.start();
-		}
-	}
-
-	this.stop = function() {
-		this.active = false;
-	}
+	return animation;
 };
 
-/*
- * VCO.Transition native implementation that powers  animation
- * in browsers that support CSS3 Transitions
- */
-/*
-VCO.Transition = VCO.Class.extend({
-	statics: (function () {
-		var transition = L.DomUtil.TRANSITION,
-			transitionEnd = (transition === 'webkitTransition' || transition === 'OTransition' ?
-				transition + 'End' : 'transitionend');
+!function (name, definition) {
+  if (typeof define == 'function') {
+	  define(definition)
+  } else if (typeof module != 'undefined') {
+	  module.exports = definition()
+  } else {
+	  this[name] = definition()
+  }
+}('vcoanimate', function () {
 
-		return {
-			NATIVE: !!transition,
+	var doc = document,
+		win = window,
+		perf = win.performance,
+		perfNow = perf && (perf.now || perf.webkitNow || perf.msNow || perf.mozNow),
+		now = perfNow ? function () { return perfNow.call(perf) } : function () { return +new Date() },
+		html = doc.documentElement,
+		thousand = 1000,
+		rgbOhex = /^rgb\(|#/,
+		relVal = /^([+\-])=([\d\.]+)/,
+		numUnit = /^(?:[\+\-]=?)?\d+(?:\.\d+)?(%|in|cm|mm|em|ex|pt|pc|px)$/,
+		rotate = /rotate\(((?:[+\-]=)?([\-\d\.]+))deg\)/,
+		scale = /scale\(((?:[+\-]=)?([\d\.]+))\)/,
+		skew = /skew\(((?:[+\-]=)?([\-\d\.]+))deg, ?((?:[+\-]=)?([\-\d\.]+))deg\)/,
+		translate = /translate\(((?:[+\-]=)?([\-\d\.]+))px, ?((?:[+\-]=)?([\-\d\.]+))px\)/,
+		// these elements do not require 'px'
+		unitless = { lineHeight: 1, zoom: 1, zIndex: 1, opacity: 1, transform: 1};
 
-			TRANSITION: transition,
-			PROPERTY: transition + 'Property',
-			DURATION: transition + 'Duration',
-			EASING: transition + 'TimingFunction',
-			END: transitionEnd,
-
-			// transition-property value to use with each particular custom property
-			CUSTOM_PROPS_PROPERTIES: {
-				position: L.Browser.webkit ? L.DomUtil.TRANSFORM : 'top, left'
-			}
+  // which property name does this browser use for transform
+	var transform = function () {
+		var styles = doc.createElement('a').style,
+			props = ['webkitTransform', 'MozTransform', 'OTransform', 'msTransform', 'Transform'],
+			i;
+			
+		for (i = 0; i < props.length; i++) {
+			if (props[i] in styles) return props[i]
 		};
-	}()),
+	}();
 
-	options: {
-		fakeStepInterval: 100
-	},
+	// does this browser support the opacity property?
+	var opasity = function () {
+		return typeof doc.createElement('a').style.opacity !== 'undefined'
+	}();
 
-	initialize: function (el, options) {
-		this._el = el;
-		L.Util.setOptions(this, options);
+	// initial style is determined by the elements themselves
+	var getStyle = doc.defaultView && doc.defaultView.getComputedStyle ?
+	function (el, property) {
+		property = property == 'transform' ? transform : property
+		var value = null,
+			computed = doc.defaultView.getComputedStyle(el, '');
+		computed && (value = computed[camelize(property)]);
+		return el.style[property] || value;
+	} : html.currentStyle ?
 
-		L.DomEvent.addListener(el, L.Transition.END, this._onTransitionEnd, this);
-		this._onFakeStep = L.Util.bind(this._onFakeStep, this);
-	},
+    function (el, property) {
+		property = camelize(property)
 
-	run: function (props) {
-		var prop,
-			propsList = [],
-			customProp = L.Transition.CUSTOM_PROPS_PROPERTIES;
-
-		for (prop in props) {
-			if (props.hasOwnProperty(prop)) {
-				prop = customProp[prop] ? customProp[prop] : prop;
-				prop = this._dasherize(prop);
-				propsList.push(prop);
-			}
-		}
-
-		this._el.style[L.Transition.DURATION] = this.options.duration + 's';
-		this._el.style[L.Transition.EASING] = this.options.easing;
-		this._el.style[L.Transition.PROPERTY] = propsList.join(', ');
-
-		for (prop in props) {
-			if (props.hasOwnProperty(prop)) {
-				this._setProperty(prop, props[prop]);
-			}
-		}
-
-		this._inProgress = true;
-
-		this.fire('start');
-
-		if (L.Transition.NATIVE) {
-			clearInterval(this._timer);
-			this._timer = setInterval(this._onFakeStep, this.options.fakeStepInterval);
-		} else {
-			this._onTransitionEnd();
-		}
-	},
-
-	_dasherize: (function () {
-		var re = /([A-Z])/g;
-
-		function replaceFn(w) {
-			return '-' + w.toLowerCase();
-		}
-
-		return function (str) {
-			return str.replace(re, replaceFn);
-		};
-	}()),
-
-	_onFakeStep: function () {
-		this.fire('step');
-	},
-
-	_onTransitionEnd: function () {
-		if (this._inProgress) {
-			this._inProgress = false;
-			clearInterval(this._timer);
-
-			this._el.style[L.Transition.PROPERTY] = 'none';
-
-			this.fire('step');
-			this.fire('end');
-		}
-	}
-});
-*/
-
-/*
- * L.Transition fallback implementation that powers Leaflet animation
- * in browsers that don't support CSS3 Transitions
- */
-/*
-VCO.Transition = VCO.Transition.NATIVE ? VCO.Transition : VCO.Transition.extend({
-	statics: {
-		getTime: Date.now || function () {
-			return +new Date();
-		},
-
-		TIMER: true,
-
-		EASINGS: {
-			'ease': [0.25, 0.1, 0.25, 1.0],
-			'linear': [0.0, 0.0, 1.0, 1.0],
-			'ease-in': [0.42, 0, 1.0, 1.0],
-			'ease-out': [0, 0, 0.58, 1.0],
-			'ease-in-out': [0.42, 0, 0.58, 1.0]
-		},
-
-		CUSTOM_PROPS_GETTERS: {
-			position: L.DomUtil.getPosition
-		},
-
-		//used to get units from strings like "10.5px" (->px)
-		UNIT_RE: /^[\d\.]+(\D*)$/
-	},
-
-	options: {
-		fps: 50
-	},
-
-	initialize: function (el, options) {
-		this._el = el;
-		L.Util.extend(this.options, options);
-
-		var easings = L.Transition.EASINGS[this.options.easing] || L.Transition.EASINGS.ease;
-
-		this._p1 = new L.Point(0, 0);
-		this._p2 = new L.Point(easings[0], easings[1]);
-		this._p3 = new L.Point(easings[2], easings[3]);
-		this._p4 = new L.Point(1, 1);
-
-		this._step = L.Util.bind(this._step, this);
-		this._interval = Math.round(1000 / this.options.fps);
-	},
-
-	run: function (props) {
-		this._props = {};
-
-		var getters = L.Transition.CUSTOM_PROPS_GETTERS,
-			re = L.Transition.UNIT_RE;
-
-		this.fire('start');
-
-		for (var prop in props) {
-			if (props.hasOwnProperty(prop)) {
-				var p = {};
-				if (prop in getters) {
-					p.from = getters[prop](this._el);
-				} else {
-					var matches = this._el.style[prop].match(re);
-					p.from = parseFloat(matches[0]);
-					p.unit = matches[1];
-				}
-				p.to = props[prop];
-				this._props[prop] = p;
-			}
-		}
-
-		clearInterval(this._timer);
-		this._timer = setInterval(this._step, this._interval);
-		this._startTime = L.Transition.getTime();
-	},
-
-	_step: function () {
-		var time = L.Transition.getTime(),
-			elapsed = time - this._startTime,
-			duration = this.options.duration * 1000;
-
-		if (elapsed < duration) {
-			this._runFrame(this._cubicBezier(elapsed / duration));
-		} else {
-			this._runFrame(1);
-			this._complete();
-		}
-	},
-
-	_runFrame: function (percentComplete) {
-		var setters = L.Transition.CUSTOM_PROPS_SETTERS,
-			prop, p, value;
-
-		for (prop in this._props) {
-			if (this._props.hasOwnProperty(prop)) {
-				p = this._props[prop];
-				if (prop in setters) {
-					value = p.to.subtract(p.from).multiplyBy(percentComplete).add(p.from);
-					setters[prop](this._el, value);
-				} else {
-					this._el.style[prop] =
-							((p.to - p.from) * percentComplete + p.from) + p.unit;
+		if (property == 'opacity') {
+			var val = 100
+			try {
+				val = el.filters['DXImageTransform.Microsoft.Alpha'].opacity
+			} catch (e1) {
+				try {
+					val = el.filters('alpha').opacity
+				} catch (e2) {
+					
 				}
 			}
+			return val / 100
 		}
-		this.fire('step');
-	},
+		var value = el.currentStyle ? el.currentStyle[property] : null
+		return el.style[property] || value
+	} :
+	
+    function (el, property) {
+		return el.style[camelize(property)]
+    }
 
-	_complete: function () {
-		clearInterval(this._timer);
-		this.fire('end');
-	},
+  var frame = function () {
+    // native animation frames
+    // http://webstuff.nfshost.com/anim-timing/Overview.html
+    // http://dev.chromium.org/developers/design-documents/requestanimationframe-implementation
+    return win.requestAnimationFrame  ||
+      win.webkitRequestAnimationFrame ||
+      win.mozRequestAnimationFrame    ||
+      win.msRequestAnimationFrame     ||
+      win.oRequestAnimationFrame      ||
+      function (callback) {
+        win.setTimeout(function () {
+          callback(+new Date())
+        }, 17) // when I was 17..
+      }
+  }()
 
-	_cubicBezier: function (t) {
-		var a = Math.pow(1 - t, 3),
-			b = 3 * Math.pow(1 - t, 2) * t,
-			c = 3 * (1 - t) * Math.pow(t, 2),
-			d = Math.pow(t, 3),
-			p1 = this._p1.multiplyBy(a),
-			p2 = this._p2.multiplyBy(b),
-			p3 = this._p3.multiplyBy(c),
-			p4 = this._p4.multiplyBy(d);
+  var children = []
 
-		return p1.add(p2).add(p3).add(p4).y;
-	}
+  function has(array, elem, i) {
+    if (Array.prototype.indexOf) return array.indexOf(elem)
+    for (i = 0; i < array.length; ++i) {
+      if (array[i] === elem) return i
+    }
+  }
+
+  function render(timestamp) {
+    var i, count = children.length
+    // if we're using a high res timer, make sure timestamp is not the old epoch-based value.
+    // http://updates.html5rocks.com/2012/05/requestAnimationFrame-API-now-with-sub-millisecond-precision
+    if (perfNow && timestamp > 1e12) timestamp = now()
+    for (i = count; i--;) {
+      children[i](timestamp)
+    }
+    children.length && frame(render)
+  }
+
+  function live(f) {
+    if (children.push(f) === 1) frame(render)
+  }
+
+  function die(f) {
+    var rest, index = has(children, f)
+    if (index >= 0) {
+      rest = children.slice(index + 1)
+      children.length = index
+      children = children.concat(rest)
+    }
+  }
+
+  function parseTransform(style, base) {
+    var values = {}, m
+    if (m = style.match(rotate)) values.rotate = by(m[1], base ? base.rotate : null)
+    if (m = style.match(scale)) values.scale = by(m[1], base ? base.scale : null)
+    if (m = style.match(skew)) {values.skewx = by(m[1], base ? base.skewx : null); values.skewy = by(m[3], base ? base.skewy : null)}
+    if (m = style.match(translate)) {values.translatex = by(m[1], base ? base.translatex : null); values.translatey = by(m[3], base ? base.translatey : null)}
+    return values
+  }
+
+  function formatTransform(v) {
+    var s = ''
+    if ('rotate' in v) s += 'rotate(' + v.rotate + 'deg) '
+    if ('scale' in v) s += 'scale(' + v.scale + ') '
+    if ('translatex' in v) s += 'translate(' + v.translatex + 'px,' + v.translatey + 'px) '
+    if ('skewx' in v) s += 'skew(' + v.skewx + 'deg,' + v.skewy + 'deg)'
+    return s
+  }
+
+  function rgb(r, g, b) {
+    return '#' + (1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1)
+  }
+
+  // convert rgb and short hex to long hex
+  function toHex(c) {
+    var m = c.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/)
+    return (m ? rgb(m[1], m[2], m[3]) : c)
+      .replace(/#(\w)(\w)(\w)$/, '#$1$1$2$2$3$3') // short skirt to long jacket
+  }
+
+  // change font-size => fontSize etc.
+  function camelize(s) {
+    return s.replace(/-(.)/g, function (m, m1) {
+      return m1.toUpperCase()
+    })
+  }
+
+  // aren't we having it?
+  function fun(f) {
+    return typeof f == 'function'
+  }
+
+  function nativeTween(t) {
+    // default to a pleasant-to-the-eye easeOut (like native animations)
+    return Math.sin(t * Math.PI / 2)
+  }
+
+  /**
+    * Core tween method that requests each frame
+    * @param duration: time in milliseconds. defaults to 1000
+    * @param fn: tween frame callback function receiving 'position'
+    * @param done {optional}: complete callback function
+    * @param ease {optional}: easing method. defaults to easeOut
+    * @param from {optional}: integer to start from
+    * @param to {optional}: integer to end at
+    * @returns method to stop the animation
+    */
+  function tween(duration, fn, done, ease, from, to) {
+    ease = fun(ease) ? ease : morpheus.easings[ease] || nativeTween
+    var time = duration || thousand
+      , self = this
+      , diff = to - from
+      , start = now()
+      , stop = 0
+      , end = 0
+
+    function run(t) {
+      var delta = t - start
+      if (delta > time || stop) {
+        to = isFinite(to) ? to : 1
+        stop ? end && fn(to) : fn(to)
+        die(run)
+        return done && done.apply(self)
+      }
+      // if you don't specify a 'to' you can use tween as a generic delta tweener
+      // cool, eh?
+      isFinite(to) ?
+        fn((diff * ease(delta / time)) + from) :
+        fn(ease(delta / time))
+    }
+
+    live(run)
+
+    return {
+      stop: function (jump) {
+        stop = 1
+        end = jump // jump to end of animation?
+        if (!jump) done = null // remove callback if not jumping to end
+      }
+    }
+  }
+
+  /**
+    * generic bezier method for animating x|y coordinates
+    * minimum of 2 points required (start and end).
+    * first point start, last point end
+    * additional control points are optional (but why else would you use this anyway ;)
+    * @param points: array containing control points
+       [[0, 0], [100, 200], [200, 100]]
+    * @param pos: current be(tween) position represented as float  0 - 1
+    * @return [x, y]
+    */
+  function bezier(points, pos) {
+    var n = points.length, r = [], i, j
+    for (i = 0; i < n; ++i) {
+      r[i] = [points[i][0], points[i][1]]
+    }
+    for (j = 1; j < n; ++j) {
+      for (i = 0; i < n - j; ++i) {
+        r[i][0] = (1 - pos) * r[i][0] + pos * r[parseInt(i + 1, 10)][0]
+        r[i][1] = (1 - pos) * r[i][1] + pos * r[parseInt(i + 1, 10)][1]
+      }
+    }
+    return [r[0][0], r[0][1]]
+  }
+
+  // this gets you the next hex in line according to a 'position'
+  function nextColor(pos, start, finish) {
+    var r = [], i, e, from, to
+    for (i = 0; i < 6; i++) {
+      from = Math.min(15, parseInt(start.charAt(i),  16))
+      to   = Math.min(15, parseInt(finish.charAt(i), 16))
+      e = Math.floor((to - from) * pos + from)
+      e = e > 15 ? 15 : e < 0 ? 0 : e
+      r[i] = e.toString(16)
+    }
+    return '#' + r.join('')
+  }
+
+  // this retreives the frame value within a sequence
+  function getTweenVal(pos, units, begin, end, k, i, v) {
+    if (k == 'transform') {
+      v = {}
+      for (var t in begin[i][k]) {
+        v[t] = (t in end[i][k]) ? Math.round(((end[i][k][t] - begin[i][k][t]) * pos + begin[i][k][t]) * thousand) / thousand : begin[i][k][t]
+      }
+      return v
+    } else if (typeof begin[i][k] == 'string') {
+      return nextColor(pos, begin[i][k], end[i][k])
+    } else {
+      // round so we don't get crazy long floats
+      v = Math.round(((end[i][k] - begin[i][k]) * pos + begin[i][k]) * thousand) / thousand
+      // some css properties don't require a unit (like zIndex, lineHeight, opacity)
+      if (!(k in unitless)) v += units[i][k] || 'px'
+      return v
+    }
+  }
+
+  // support for relative movement via '+=n' or '-=n'
+  function by(val, start, m, r, i) {
+    return (m = relVal.exec(val)) ?
+      (i = parseFloat(m[2])) && (start + (m[1] == '+' ? 1 : -1) * i) :
+      parseFloat(val)
+  }
+
+  /**
+    * morpheus:
+    * @param element(s): HTMLElement(s)
+    * @param options: mixed bag between CSS Style properties & animation options
+    *  - {n} CSS properties|values
+    *     - value can be strings, integers,
+    *     - or callback function that receives element to be animated. method must return value to be tweened
+    *     - relative animations start with += or -= followed by integer
+    *  - duration: time in ms - defaults to 1000(ms)
+    *  - easing: a transition method - defaults to an 'easeOut' algorithm
+    *  - complete: a callback method for when all elements have finished
+    *  - bezier: array of arrays containing x|y coordinates that define the bezier points. defaults to none
+    *     - this may also be a function that receives element to be animated. it must return a value
+    */
+  function morpheus(elements, options) {
+    var els = elements ? (els = isFinite(elements.length) ? elements : [elements]) : [], i
+      , complete = options.complete
+      , duration = options.duration
+      , ease = options.easing
+      , points = options.bezier
+      , begin = []
+      , end = []
+      , units = []
+      , bez = []
+      , originalLeft
+      , originalTop
+
+    if (points) {
+      // remember the original values for top|left
+      originalLeft = options.left;
+      originalTop = options.top;
+      delete options.right;
+      delete options.bottom;
+      delete options.left;
+      delete options.top;
+    }
+
+    for (i = els.length; i--;) {
+
+      // record beginning and end states to calculate positions
+      begin[i] = {}
+      end[i] = {}
+      units[i] = {}
+
+      // are we 'moving'?
+      if (points) {
+
+        var left = getStyle(els[i], 'left')
+          , top = getStyle(els[i], 'top')
+          , xy = [by(fun(originalLeft) ? originalLeft(els[i]) : originalLeft || 0, parseFloat(left)),
+                  by(fun(originalTop) ? originalTop(els[i]) : originalTop || 0, parseFloat(top))]
+
+        bez[i] = fun(points) ? points(els[i], xy) : points
+        bez[i].push(xy)
+        bez[i].unshift([
+          parseInt(left, 10),
+          parseInt(top, 10)
+        ])
+      }
+
+      for (var k in options) {
+        switch (k) {
+        case 'complete':
+        case 'duration':
+        case 'easing':
+        case 'bezier':
+          continue
+        }
+        var v = getStyle(els[i], k), unit
+          , tmp = fun(options[k]) ? options[k](els[i]) : options[k]
+        if (typeof tmp == 'string' &&
+            rgbOhex.test(tmp) &&
+            !rgbOhex.test(v)) {
+          delete options[k]; // remove key :(
+          continue; // cannot animate colors like 'orange' or 'transparent'
+                    // only #xxx, #xxxxxx, rgb(n,n,n)
+        }
+
+        begin[i][k] = k == 'transform' ? parseTransform(v) :
+          typeof tmp == 'string' && rgbOhex.test(tmp) ?
+            toHex(v).slice(1) :
+            parseFloat(v)
+        end[i][k] = k == 'transform' ? parseTransform(tmp, begin[i][k]) :
+          typeof tmp == 'string' && tmp.charAt(0) == '#' ?
+            toHex(tmp).slice(1) :
+            by(tmp, parseFloat(v));
+        // record original unit
+        (typeof tmp == 'string') && (unit = tmp.match(numUnit)) && (units[i][k] = unit[1])
+      }
+    }
+    // ONE TWEEN TO RULE THEM ALL
+    return tween.apply(els, [duration, function (pos, v, xy) {
+      // normally not a fan of optimizing for() loops, but we want something
+      // fast for animating
+      for (i = els.length; i--;) {
+        if (points) {
+          xy = bezier(bez[i], pos)
+          els[i].style.left = xy[0] + 'px'
+          els[i].style.top = xy[1] + 'px'
+        }
+        for (var k in options) {
+          v = getTweenVal(pos, units, begin, end, k, i)
+          k == 'transform' ?
+            els[i].style[transform] = formatTransform(v) :
+            k == 'opacity' && !opasity ?
+              (els[i].style.filter = 'alpha(opacity=' + (v * 100) + ')') :
+              (els[i].style[camelize(k)] = v)
+        }
+      }
+    }, complete, ease])
+  }
+
+  // expose useful methods
+  morpheus.tween = tween
+  morpheus.getStyle = getStyle
+  morpheus.bezier = bezier
+  morpheus.transform = transform
+  morpheus.parseTransform = parseTransform
+  morpheus.formatTransform = formatTransform
+  morpheus.easings = {}
+
+  return morpheus
+
 });
-*/
+
+
+
+
 
 /* **********************************************
      Begin VCO.Dom.js
@@ -699,9 +1031,53 @@ VCO.Dom = {
 			container.appendChild(el);
 		}
 		return el;
+	},
+	
+	getTranslateString: function (point) {
+		return VCO.Dom.TRANSLATE_OPEN +
+				point.x + 'px,' + point.y + 'px' +
+				VCO.Dom.TRANSLATE_CLOSE;
+	},
+	
+	setPosition: function (el, point) {
+		el._vco_pos = point;
+		if (VCO.Browser.webkit3d) {
+			el.style[VCO.Dom.TRANSFORM] =  VCO.Dom.getTranslateString(point);
+
+			if (VCO.Browser.android) {
+				el.style['-webkit-perspective'] = '1000';
+				el.style['-webkit-backface-visibility'] = 'hidden';
+			}
+		} else {
+			el.style.left = point.x + 'px';
+			el.style.top = point.y + 'px';
+		}
+	},
+
+	getPosition: function (el) {
+		return el._leaflet_pos;
+	},
+	
+	testProp: function(props) {
+		var style = document.documentElement.style;
+
+		for (var i = 0; i < props.length; i++) {
+			if (props[i] in style) {
+				return props[i];
+			}
+		}
+		return false;
 	}
 	
 };
+
+VCO.Util.extend(VCO.Dom, {
+	TRANSITION: VCO.Dom.testProp(['transition', 'webkitTransition', 'OTransition', 'MozTransition', 'msTransition']),
+	TRANSFORM: VCO.Dom.testProp(['transformProperty', 'WebkitTransform', 'OTransform', 'MozTransform', 'msTransform']),
+
+	TRANSLATE_OPEN: 'translate' + (VCO.Browser.webkit3d ? '3d(' : '('),
+	TRANSLATE_CLOSE: VCO.Browser.webkit3d ? ',0)' : ')'
+});
 
 /* **********************************************
      Begin VCO.MediaType.js
@@ -1268,7 +1644,10 @@ VCO.Slide = VCO.Class.extend({
 // @codekit-prepend "core/VCO.Util.js";
 // @codekit-prepend "core/VCO.Class.js";
 // @codekit-prepend "core/VCO.Events.js";
-// @codekit-prepend "core/VCO.Animate.js";
+// @codekit-prepend "core/VCO.Browser.js";
+// @codekit-prepend "animation/VCO.Ease.js";
+// @codekit-prepend "animation/VCO.Animate.js";
+
 // @codekit-prepend "dom/VCO.Dom.js";
 // @codekit-prepend "media/VCO.MediaType.js";
 // @codekit-prepend "media/VCO.Media.js";
@@ -1344,6 +1723,18 @@ VCO.StorySlider = VCO.Class.extend({
 		for (var i = 0; i < slides.length; i++) {
 			slides[i].addTo(this._el.slider_item_container);
 		};
+		this._el.slider_container.style.left="-900px";
+		// TODO add timeout for safari
+		var anim = VCO.Animate(this._el.slider_container, {
+			left: "0px",
+			duration: 1000,
+			easing: VCO.Ease.easeInSpline,
+			complete: function () {
+				trace("DONE");
+			}
+		});
+		//anim.stop(true);
+		
 	},
 	
 	// Remove a slide or slides to the slider
@@ -1361,6 +1752,10 @@ VCO.StorySlider = VCO.Class.extend({
 		
 	},
 	
+	_onResize: function(e) {
+		trace("RESIZE");
+	},
+	
 	// Initialize the layout
 	_initLayout: function () {
 		trace(" _initLayout");
@@ -1372,9 +1767,14 @@ VCO.StorySlider = VCO.Class.extend({
 		this._el.slider_container			= VCO.Dom.create('div', 'vco-slider-container', this._el.slider_container_mask);
 		this._el.slider_item_container		= VCO.Dom.create('div', 'vco-slider-item-container', this._el.slider_container);
 		
+		// Listen for Resize Event
+		window.addEventListener ("resize", this._onResize);
+		
 		// Create Slides and then add them
 		this.createSlides([{test:"yes"}, {test:"yes"}, {test:"yes"}]);
 		this.addSlides(this._slides);
+		
+		
 		
 	},
 	

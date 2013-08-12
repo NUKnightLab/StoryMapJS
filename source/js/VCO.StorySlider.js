@@ -14,7 +14,10 @@
 // @codekit-prepend "core/VCO.Util.js";
 // @codekit-prepend "core/VCO.Class.js";
 // @codekit-prepend "core/VCO.Events.js";
-// @codekit-prepend "core/VCO.Animate.js";
+// @codekit-prepend "core/VCO.Browser.js";
+// @codekit-prepend "animation/VCO.Ease.js";
+// @codekit-prepend "animation/VCO.Animate.js";
+
 // @codekit-prepend "dom/VCO.Dom.js";
 // @codekit-prepend "media/VCO.MediaType.js";
 // @codekit-prepend "media/VCO.Media.js";
@@ -90,6 +93,18 @@ VCO.StorySlider = VCO.Class.extend({
 		for (var i = 0; i < slides.length; i++) {
 			slides[i].addTo(this._el.slider_item_container);
 		};
+		this._el.slider_container.style.left="-900px";
+		// TODO add timeout for safari
+		var anim = VCO.Animate(this._el.slider_container, {
+			left: "0px",
+			duration: 1000,
+			easing: VCO.Ease.easeInSpline,
+			complete: function () {
+				trace("DONE");
+			}
+		});
+		//anim.stop(true);
+		
 	},
 	
 	// Remove a slide or slides to the slider
@@ -107,6 +122,10 @@ VCO.StorySlider = VCO.Class.extend({
 		
 	},
 	
+	_onResize: function(e) {
+		trace("RESIZE");
+	},
+	
 	// Initialize the layout
 	_initLayout: function () {
 		trace(" _initLayout");
@@ -118,9 +137,14 @@ VCO.StorySlider = VCO.Class.extend({
 		this._el.slider_container			= VCO.Dom.create('div', 'vco-slider-container', this._el.slider_container_mask);
 		this._el.slider_item_container		= VCO.Dom.create('div', 'vco-slider-item-container', this._el.slider_container);
 		
+		// Listen for Resize Event
+		window.addEventListener ("resize", this._onResize);
+		
 		// Create Slides and then add them
 		this.createSlides([{test:"yes"}, {test:"yes"}, {test:"yes"}]);
 		this.addSlides(this._slides);
+		
+		
 		
 	},
 	
