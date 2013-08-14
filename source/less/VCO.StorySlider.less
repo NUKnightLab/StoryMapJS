@@ -18,6 +18,7 @@
 
 //	Components
 @import "slider/VCO.Slide.less";
+@import "slider/VCO.SlideNav.less";
 @import "media/VCO.Media.less";
 @import "media/VCO.Media.Text.less";
 
@@ -40,7 +41,7 @@
 		.vco-slider-container {
 			position: relative;
 			top: 0px;
-			left: -2160px;
+			left: 0px;
 			width: 100%;
 			height: 100%;
 			text-align: center;
@@ -55,58 +56,3 @@
 	
 }
 
-// Mobile, iPhone and skinny
-@media only screen and (max-width: 500px), only screen and (max-device-width: 500px) {
-	.vco-storyslider {
-		.vco-slider-container-mask {
-			.vco-slider-container {
-				.vco-slider-item-container {
-					
-				}
-			}
-		}
-	}
-} 
-
-/* NAVIGATION
-================================================== */
-.vco-storyslider {
-	.vco-nav-previous, .vco-nav-next {
-		position:absolute;
-		top: 45%;
-		//width: @feature-nav-width; 
-		color: #DBDBDB;
-		//font-size:@base-font-small;
-		.vco-nav-container {
-			height:100px;
-			width:200px;
-			position:absolute;
-		}
-		.vco-icon {
-			
-		}
-		.vco-date, .vco-title {
-			a {
-				
-			}
-			small {
-				
-			}
-		}
-		.vco-date {
-			
-		}
-		.vco-title {
-			
-		}
-	}
-	.vco-nav-next {
-		//float: right;
-		text-align: right;
-		right:200px;
-	}
-	.vco-nav-previous {
-		//float: left;
-		text-align: left;
-	}
-}

@@ -39,7 +39,7 @@ VCO.Events = {
 			return this;
 		}
 
-		var event = VCO.Extend({
+		var event = VCO.Util.extend({
 			type: type,
 			target: this
 		}, data);

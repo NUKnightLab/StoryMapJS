@@ -1,9 +1,6 @@
 /*	VCO.Dom
 	Utilities for working with the DOM
-	Library abstraction for jQuery
 ================================================== */
-
-
 
 VCO.Dom = {
 

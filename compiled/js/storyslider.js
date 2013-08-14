@@ -47,6 +47,7 @@ trace = function( msg ) {
 /*	VCO.Util
 	Class of utilities
 ================================================== */
+
 VCO.Util = {
 	
 	extend: function (/*Object*/ dest) /*-> Object*/ {	// merge src properties into dest
@@ -76,8 +77,20 @@ VCO.Util = {
 		}
 	},
 	
+	mergeData: function(data_main, data_to_merge) {
+		var x;
+		for (x in data_to_merge) {
+			if (Object.prototype.hasOwnProperty.call(data_to_merge, x)) {
+				data_main[x] = data_to_merge[x];
+			}
+		}
+		return data_main;
+	},
+	
 	stamp: (function () {
 		var lastId = 0, key = '_vco_id';
+		
+
 		return function (/*Object*/ obj) {
 			obj[key] = obj[key] || ++lastId;
 			return obj[key];
@@ -142,6 +155,43 @@ VCO.Util = {
 			}
 		}
 		return '?' + params.join('&');
+	},
+	
+	formatNum: function (num, digits) {
+		var pow = Math.pow(10, digits || 5);
+		return Math.round(num * pow) / pow;
+	},
+	
+	falseFn: function () {
+		return false;
+	},
+	
+	requestAnimFrame: (function () {
+		function timeoutDefer(callback) {
+			window.setTimeout(callback, 1000 / 60);
+		}
+
+		var requestFn = window.requestAnimationFrame ||
+			window.webkitRequestAnimationFrame ||
+			window.mozRequestAnimationFrame ||
+			window.oRequestAnimationFrame ||
+			window.msRequestAnimationFrame ||
+			timeoutDefer;
+
+		return function (callback, context, immediate, contextEl) {
+			callback = context ? VCO.Util.bind(callback, context) : callback;
+			if (immediate && requestFn === timeoutDefer) {
+				callback();
+			} else {
+				requestFn(callback, contextEl);
+			}
+		};
+	}()),
+	
+	bind: function (/*Function*/ fn, /*Object*/ obj) /*-> Object*/ {
+		return function () {
+			return fn.apply(obj, arguments);
+		};
 	},
 	
 	template: function (str, data) {
@@ -1651,7 +1701,7 @@ VCO.Events = {
 			return this;
 		}
 
-		var event = VCO.Extend({
+		var event = VCO.Util.extend({
 			type: type,
 			target: this
 		}, data);
@@ -2415,15 +2465,138 @@ VCO.Animate = function(el, options) {
 
 
 /* **********************************************
+     Begin VCO.Point.js
+********************************************** */
+
+/*	VCO.Point
+	Inspired by Leaflet
+	VCO.Point represents a point with x and y coordinates.
+================================================== */
+
+VCO.Point = function (/*Number*/ x, /*Number*/ y, /*Boolean*/ round) {
+	this.x = (round ? Math.round(x) : x);
+	this.y = (round ? Math.round(y) : y);
+};
+
+VCO.Point.prototype = {
+	add: function (point) {
+		return this.clone()._add(point);
+	},
+
+	_add: function (point) {
+		this.x += point.x;
+		this.y += point.y;
+		return this;
+	},
+
+	subtract: function (point) {
+		return this.clone()._subtract(point);
+	},
+
+	// destructive subtract (faster)
+	_subtract: function (point) {
+		this.x -= point.x;
+		this.y -= point.y;
+		return this;
+	},
+
+	divideBy: function (num, round) {
+		return new VCO.Point(this.x / num, this.y / num, round);
+	},
+
+	multiplyBy: function (num) {
+		return new VCO.Point(this.x * num, this.y * num);
+	},
+
+	distanceTo: function (point) {
+		var x = point.x - this.x,
+			y = point.y - this.y;
+		return Math.sqrt(x * x + y * y);
+	},
+
+	round: function () {
+		return this.clone()._round();
+	},
+
+	// destructive round
+	_round: function () {
+		this.x = Math.round(this.x);
+		this.y = Math.round(this.y);
+		return this;
+	},
+
+	clone: function () {
+		return new VCO.Point(this.x, this.y);
+	},
+
+	toString: function () {
+		return 'Point(' +
+				VCO.Util.formatNum(this.x) + ', ' +
+				VCO.Util.formatNum(this.y) + ')';
+	}
+};
+
+/* **********************************************
+     Begin VCO.DomMixins.js
+********************************************** */
+
+/*	VCO.DomMixins
+	DOM methods used regularly
+	Assumes there is a _el.container and animator
+================================================== */
+VCO.DomMixins = {
+	
+	/*	Adding, Hiding, Showing etc
+	================================================== */
+	show: function() {
+		this.animator = VCO.Animate(this._el.slider_container, {
+			left: 		-(this._el.container.offsetWidth * n) + "px",
+			duration: 	this.options.duration,
+			easing: 	this.options.ease,
+			complete: function () {
+				trace("DONE");
+			}
+		});
+	},
+	
+	hide: function() {
+		
+	},
+	
+	addTo: function(container) {
+		container.appendChild(this._el.container);
+		//this.onAdd();
+	},
+	
+	removeFrom: function(container) {
+		container.removeChild(this._el.container);
+		//this.onRemove();
+	},
+	
+	/*	Set the Position
+	================================================== */
+	setPosition: function(pos, el) {
+		for (var name in pos) {
+			if (pos.hasOwnProperty(name)) {
+				if (el) {
+					el.style[name] = pos[name] + "px";
+				} else {
+					this._el.container.style[name] = pos[name] + "px";
+				};
+			}
+		}
+	}
+	
+};
+
+
+/* **********************************************
      Begin VCO.Dom.js
 ********************************************** */
 
 /*	VCO.Dom
 	Utilities for working with the DOM
-	Library abstraction for jQuery
 ================================================== */
-
-
 
 VCO.Dom = {
 
@@ -2489,6 +2662,474 @@ VCO.Util.extend(VCO.Dom, {
 	TRANSLATE_OPEN: 'translate' + (VCO.Browser.webkit3d ? '3d(' : '('),
 	TRANSLATE_CLOSE: VCO.Browser.webkit3d ? ',0)' : ')'
 });
+
+
+/* **********************************************
+     Begin VCO.DomUtil.js
+********************************************** */
+
+/*	VCO.DomUtil
+	Inspired by Leaflet
+	VCO.DomUtil contains various utility functions for working with DOM
+================================================== */
+
+
+VCO.DomUtil = {
+	get: function (id) {
+		return (typeof id === 'string' ? document.getElementById(id) : id);
+	},
+
+	getStyle: function (el, style) {
+		var value = el.style[style];
+		if (!value && el.currentStyle) {
+			value = el.currentStyle[style];
+		}
+		if (!value || value === 'auto') {
+			var css = document.defaultView.getComputedStyle(el, null);
+			value = css ? css[style] : null;
+		}
+		return (value === 'auto' ? null : value);
+	},
+
+	getViewportOffset: function (element) {
+		var top = 0,
+			left = 0,
+			el = element,
+			docBody = document.body;
+
+		do {
+			top += el.offsetTop || 0;
+			left += el.offsetLeft || 0;
+
+			if (el.offsetParent === docBody &&
+					VCO.DomUtil.getStyle(el, 'position') === 'absolute') {
+				break;
+			}
+			el = el.offsetParent;
+		} while (el);
+
+		el = element;
+
+		do {
+			if (el === docBody) {
+				break;
+			}
+
+			top -= el.scrollTop || 0;
+			left -= el.scrollLeft || 0;
+
+			el = el.parentNode;
+		} while (el);
+
+		return new VCO.Point(left, top);
+	},
+
+	create: function (tagName, className, container) {
+		var el = document.createElement(tagName);
+		el.className = className;
+		if (container) {
+			container.appendChild(el);
+		}
+		return el;
+	},
+
+	disableTextSelection: function () {
+		if (document.selection && document.selection.empty) {
+			document.selection.empty();
+		}
+		if (!this._onselectstart) {
+			this._onselectstart = document.onselectstart;
+			document.onselectstart = VCO.Util.falseFn;
+		}
+	},
+
+	enableTextSelection: function () {
+		document.onselectstart = this._onselectstart;
+		this._onselectstart = null;
+	},
+
+	hasClass: function (el, name) {
+		return (el.className.length > 0) &&
+				new RegExp("(^|\\s)" + name + "(\\s|$)").test(el.className);
+	},
+
+	addClass: function (el, name) {
+		if (!VCO.DomUtil.hasClass(el, name)) {
+			el.className += (el.className ? ' ' : '') + name;
+		}
+	},
+
+	removeClass: function (el, name) {
+		el.className = el.className.replace(/(\S+)\s*/g, function (w, match) {
+			if (match === name) {
+				return '';
+			}
+			return w;
+		}).replace(/^\s+/, '');
+	},
+
+	setOpacity: function (el, value) {
+		if (VCO.Browser.ie) {
+			el.style.filter = 'alpha(opacity=' + Math.round(value * 100) + ')';
+		} else {
+			el.style.opacity = value;
+		}
+	},
+
+
+	testProp: function (props) {
+		var style = document.documentElement.style;
+
+		for (var i = 0; i < props.length; i++) {
+			if (props[i] in style) {
+				return props[i];
+			}
+		}
+		return false;
+	},
+
+	getTranslateString: function (point) {
+		return VCO.DomUtil.TRANSLATE_OPEN +
+				point.x + 'px,' + point.y + 'px' +
+				VCO.DomUtil.TRANSLATE_CLOSE;
+	},
+
+	getScaleString: function (scale, origin) {
+		var preTranslateStr = VCO.DomUtil.getTranslateString(origin),
+			scaleStr = ' scale(' + scale + ') ',
+			postTranslateStr = VCO.DomUtil.getTranslateString(origin.multiplyBy(-1));
+
+		return preTranslateStr + scaleStr + postTranslateStr;
+	},
+
+	setPosition: function (el, point) {
+		el._vco_pos = point;
+		if (VCO.Browser.webkit3d) {
+			el.style[VCO.DomUtil.TRANSFORM] =  VCO.DomUtil.getTranslateString(point);
+
+			if (VCO.Browser.android) {
+				el.style['-webkit-perspective'] = '1000';
+				el.style['-webkit-backface-visibility'] = 'hidden';
+			}
+		} else {
+			el.style.left = point.x + 'px';
+			el.style.top = point.y + 'px';
+		}
+	},
+
+	getPosition: function (el) {
+		return el._vco_pos;
+	}
+};
+
+/* **********************************************
+     Begin VCO.DomEvent.js
+********************************************** */
+
+/*	VCO.DomEvent
+	Inspired by Leaflet 
+	DomEvent contains functions for working with DOM events.
+================================================== */
+// TODO stamp
+
+VCO.DomEvent = {
+	/* inpired by John Resig, Dean Edwards and YUI addEvent implementations */
+	addListener: function (/*HTMLElement*/ obj, /*String*/ type, /*Function*/ fn, /*Object*/ context) {
+		var id = VCO.Util.stamp(fn),
+			key = '_vco_' + type + id;
+
+		if (obj[key]) {
+			return;
+		}
+
+		var handler = function (e) {
+			return fn.call(context || obj, e || VCO.DomEvent._getEvent());
+		};
+
+		if (VCO.Browser.touch && (type === 'dblclick') && this.addDoubleTapListener) {
+			this.addDoubleTapListener(obj, handler, id);
+		} else if ('addEventListener' in obj) {
+			if (type === 'mousewheel') {
+				obj.addEventListener('DOMMouseScroll', handler, false);
+				obj.addEventListener(type, handler, false);
+			} else if ((type === 'mouseenter') || (type === 'mouseleave')) {
+				var originalHandler = handler,
+					newType = (type === 'mouseenter' ? 'mouseover' : 'mouseout');
+				handler = function (e) {
+					if (!VCO.DomEvent._checkMouse(obj, e)) {
+						return;
+					}
+					return originalHandler(e);
+				};
+				obj.addEventListener(newType, handler, false);
+			} else {
+				obj.addEventListener(type, handler, false);
+			}
+		} else if ('attachEvent' in obj) {
+			obj.attachEvent("on" + type, handler);
+		}
+
+		obj[key] = handler;
+	},
+
+	removeListener: function (/*HTMLElement*/ obj, /*String*/ type, /*Function*/ fn) {
+		var id = VCO.Util.stamp(fn),
+			key = '_vco_' + type + id,
+			handler = obj[key];
+
+		if (!handler) {
+			return;
+		}
+
+		if (VCO.Browser.touch && (type === 'dblclick') && this.removeDoubleTapListener) {
+			this.removeDoubleTapListener(obj, id);
+		} else if ('removeEventListener' in obj) {
+			if (type === 'mousewheel') {
+				obj.removeEventListener('DOMMouseScroll', handler, false);
+				obj.removeEventListener(type, handler, false);
+			} else if ((type === 'mouseenter') || (type === 'mouseleave')) {
+				obj.removeEventListener((type === 'mouseenter' ? 'mouseover' : 'mouseout'), handler, false);
+			} else {
+				obj.removeEventListener(type, handler, false);
+			}
+		} else if ('detachEvent' in obj) {
+			obj.detachEvent("on" + type, handler);
+		}
+		obj[key] = null;
+	},
+
+	_checkMouse: function (el, e) {
+		var related = e.relatedTarget;
+
+		if (!related) {
+			return true;
+		}
+
+		try {
+			while (related && (related !== el)) {
+				related = related.parentNode;
+			}
+		} catch (err) {
+			return false;
+		}
+
+		return (related !== el);
+	},
+
+	/*jshint noarg:false */ // evil magic for IE
+	_getEvent: function () {
+		var e = window.event;
+		if (!e) {
+			var caller = arguments.callee.caller;
+			while (caller) {
+				e = caller['arguments'][0];
+				if (e && window.Event === e.constructor) {
+					break;
+				}
+				caller = caller.caller;
+			}
+		}
+		return e;
+	},
+	/*jshint noarg:false */
+
+	stopPropagation: function (/*Event*/ e) {
+		if (e.stopPropagation) {
+			e.stopPropagation();
+		} else {
+			e.cancelBubble = true;
+		}
+	},
+	
+	// TODO VCO.Draggable.START
+	disableClickPropagation: function (/*HTMLElement*/ el) {
+		VCO.DomEvent.addListener(el, VCO.Draggable.START, VCO.DomEvent.stopPropagation);
+		VCO.DomEvent.addListener(el, 'click', VCO.DomEvent.stopPropagation);
+		VCO.DomEvent.addListener(el, 'dblclick', VCO.DomEvent.stopPropagation);
+	},
+
+	preventDefault: function (/*Event*/ e) {
+		if (e.preventDefault) {
+			e.preventDefault();
+		} else {
+			e.returnValue = false;
+		}
+	},
+
+	stop: function (e) {
+		VCO.DomEvent.preventDefault(e);
+		VCO.DomEvent.stopPropagation(e);
+	},
+
+
+	getWheelDelta: function (e) {
+		var delta = 0;
+		if (e.wheelDelta) {
+			delta = e.wheelDelta / 120;
+		}
+		if (e.detail) {
+			delta = -e.detail / 3;
+		}
+		return delta;
+	}
+};
+
+
+
+
+/* **********************************************
+     Begin VCO.Draggable.js
+********************************************** */
+
+/*	VCO.Draggable
+	Inspired by Leaflet
+	VCO.Draggable allows you to add dragging capabilities to any element. Supports mobile devices too.
+================================================== */
+
+VCO.Draggable = VCO.Class.extend({
+	includes: VCO.Events,
+
+	statics: {
+		START: VCO.Browser.touch ? 'touchstart' : 'mousedown',
+		END: VCO.Browser.touch ? 'touchend' : 'mouseup',
+		MOVE: VCO.Browser.touch ? 'touchmove' : 'mousemove',
+		TAP_TOLERANCE: 15
+	},
+
+	initialize: function (element, dragStartTarget) {
+		this._element = element;
+		this._dragStartTarget = dragStartTarget || element;
+	},
+
+	enable: function () {
+		if (this._enabled) {
+			return;
+		}
+		VCO.DomEvent.addListener(this._dragStartTarget, VCO.Draggable.START, this._onDown, this);
+		this._enabled = true;
+	},
+
+	disable: function () {
+		if (!this._enabled) {
+			return;
+		}
+		VCO.DomEvent.removeListener(this._dragStartTarget, VCO.Draggable.START, this._onDown);
+		this._enabled = false;
+	},
+
+	_onDown: function (e) {
+		if ((!VCO.Browser.touch && e.shiftKey) || ((e.which !== 1) && (e.button !== 1) && !e.touches)) {
+			return;
+		}
+
+		if (e.touches && e.touches.length > 1) {
+			return;
+		}
+
+		var first = (e.touches && e.touches.length === 1 ? e.touches[0] : e),
+			el = first.target;
+
+		VCO.DomEvent.preventDefault(e);
+
+		if (VCO.Browser.touch && el.tagName.toLowerCase() === 'a') {
+			el.className += ' leaflet-active';
+		}
+
+		this._moved = false;
+		if (this._moving) {
+			return;
+		}
+
+		if (!VCO.Browser.touch) {
+			VCO.DomUtil.disableTextSelection();
+			this._setMovingCursor();
+		}
+
+		this._startPos = this._newPos = VCO.DomUtil.getPosition(this._element);
+		this._startPoint = new VCO.Point(first.clientX, first.clientY);
+
+		VCO.DomEvent.addListener(document, VCO.Draggable.MOVE, this._onMove, this);
+		VCO.DomEvent.addListener(document, VCO.Draggable.END, this._onUp, this);
+	},
+
+	_onMove: function (e) {
+		if (e.touches && e.touches.length > 1) {
+			return;
+		}
+
+		VCO.DomEvent.preventDefault(e);
+
+		var first = (e.touches && e.touches.length === 1 ? e.touches[0] : e);
+
+		if (!this._moved) {
+			this.fire('dragstart');
+			this._moved = true;
+		}
+		this._moving = true;
+
+		var newPoint = new VCO.Point(first.clientX, first.clientY);
+		this._newPos = this._startPos.add(newPoint).subtract(this._startPoint);
+
+		VCO.Util.requestAnimFrame(this._updatePosition, this, true, this._dragStartTarget);
+	},
+
+	_updatePosition: function () {
+		this.fire('predrag');
+		VCO.DomUtil.setPosition(this._element, this._newPos);
+		this.fire('drag');
+	},
+
+	_onUp: function (e) {
+		if (e.changedTouches) {
+			var first = e.changedTouches[0],
+				el = first.target,
+				dist = (this._newPos && this._newPos.distanceTo(this._startPos)) || 0;
+
+			if (el.tagName.toLowerCase() === 'a') {
+				el.className = el.className.replace(' vco-active', '');
+			}
+
+			if (dist < VCO.Draggable.TAP_TOLERANCE) {
+				this._simulateEvent('click', first);
+			}
+		}
+
+		if (!VCO.Browser.touch) {
+			VCO.DomUtil.enableTextSelection();
+			this._restoreCursor();
+		}
+
+		VCO.DomEvent.removeListener(document, VCO.Draggable.MOVE, this._onMove);
+		VCO.DomEvent.removeListener(document, VCO.Draggable.END, this._onUp);
+
+		if (this._moved) {
+			this.fire('dragend');
+		}
+		this._moving = false;
+	},
+
+	_setMovingCursor: function () {
+		this._bodyCursor = document.body.style.cursor;
+		document.body.style.cursor = 'move';
+	},
+
+	_restoreCursor: function () {
+		document.body.style.cursor = this._bodyCursor;
+	},
+
+	_simulateEvent: function (type, e) {
+		var simulatedEvent = document.createEvent('MouseEvents');
+
+		simulatedEvent.initMouseEvent(
+				type, true, true, window, 1,
+				e.screenX, e.screenY,
+				e.clientX, e.clientY,
+				false, false, false, false, 0, null);
+
+		e.target.dispatchEvent(simulatedEvent);
+	}
+});
+
 
 /* **********************************************
      Begin VCO.MediaType.js
@@ -2893,7 +3534,7 @@ VCO.Media.Text = VCO.Class.extend({
 
 VCO.Slide = VCO.Class.extend({
 	
-	includes: VCO.Events,
+	includes: [VCO.Events, VCO.DomMixins],
 	
 	_el: {},
 	
@@ -3000,15 +3641,7 @@ VCO.Slide = VCO.Class.extend({
 		container.removeChild(this._el.container);
 	},
 	
-	/*	Adding, Hiding, Showing etc
-	================================================== */
-	setPosition: function(pos) {
-		for (var name in pos) {
-			if (pos.hasOwnProperty(name)) {
-				this._el.container.style[name] = pos[name] + "px";
-			}
-		}
-	},
+	
 	
 	/*	Events
 	================================================== */
@@ -3072,6 +3705,159 @@ VCO.Slide = VCO.Class.extend({
 
 
 /* **********************************************
+     Begin VCO.SlideNav.js
+********************************************** */
+
+/*	VCO.SlideNav
+	Navigation for Slideshows
+================================================== */
+// TODO null out data
+
+VCO.SlideNav = VCO.Class.extend({
+	
+	includes: [VCO.Events, VCO.DomMixins],
+	
+	_el: {},
+	
+	/*	Constructor
+	================================================== */
+	initialize: function(data, options, add_to_container) {
+		// DOM ELEMENTS
+		this._el = {
+			container: {},
+			content_container: {},
+			content: {},
+			content_item: {},
+			caption: {},
+			credit: {}
+		};
+	
+		// Media Type
+		this.mediatype = {};
+		
+		// Data
+		this.data = {
+			uniqueid: 				"",
+			date: 					"1899",
+			location: {
+				lat: 				-9.143962,
+				lon: 				38.731094,
+				zoom: 				13,
+				icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+			},
+			text: {
+				headline: 			"Le portrait mystérieux",
+				text: 				"Lorem ipsum dolor sit amet, consectetuer adipiscing elit."
+			}
+		};
+	
+		//Options
+		this.options = {
+			something: 			""
+		};
+	
+		this.animator = {};
+		
+		// Merge Data
+		VCO.Util.setData(this, data);
+		
+		// Merge Options
+		if (options) {
+			VCO.Util.setOptions(this, this.options);
+		};
+		
+		this._el.container = VCO.Dom.create("div", "vco-slidenav-" + this.data.direction);
+		this._el.container.id = this.data.uniqueid;
+		
+		// Click Listener
+		this._el.container.onclick = function(){};
+		
+		this._initLayout();
+		this._initEvents();
+		
+		if (add_to_container) {
+			add_to_container.appendChild(this._el.container);
+		};
+		
+	},
+	
+	/*	Events
+	================================================== */
+	onLoaded: function() {
+		this.fire("loaded", this.data);
+	},
+	
+	onAdd: function() {
+		this.fire("added", this.data);
+	},
+
+	onRemove: function() {
+		this.fire("removed", this.data);
+	},
+	
+	_onMouseClick: function() {
+		trace("NAVIGATION CLICKED");
+		this.fire("clicked", this.data);
+	},
+	
+	/*	Private Methods
+	================================================== */
+	_update: function(d) {
+		// update data
+		this.data = VCO.Util.mergeData(this.data, d);
+		
+		// Title
+		if (this.data.title != "") {
+			this._el.title.innerHTML		= this.data.text.headline;
+		}
+		
+		// Date
+		if (this.data.date != "") {
+			this._el.date.innerHTML			= this.data.date;
+		}
+	},
+	
+	_initLayout: function () {
+		
+		// Create Layout
+		this._el.content_container			= VCO.Dom.create("div", "vco-slidenav-content-container", this._el.container);
+		this._el.icon						= VCO.Dom.create("div", "vco-icon", this._el.content_container);
+		this._el.date						= VCO.Dom.create("div", "vco-date", this._el.content_container);
+		this._el.title						= VCO.Dom.create("div", "vco-title", this._el.content_container);
+		
+		this._el.icon.innerHTML				= "&nbsp;"
+		
+		this._update();
+	},
+	
+	_initEvents: function () {
+		VCO.DomEvent.addListener(this._el.container, 'click', this._onMouseClick, this);
+	}
+	
+	
+});
+
+/*
+		div.vco-slidenav-next
+			div.vco-slidenav-content-container
+				div.vco-icon
+					| &nbsp;
+				div.vco-date 
+					| 1899
+				div.vco-title 
+					| Next Le portrait mystérieux
+		div.vco-slidenav-previous
+			div.vco-slidenav-content-container
+				div.vco-icon
+					| &nbsp;
+				div.vco-date 
+					| 1899
+				div.vco-title 
+					| Previous Le portrait mystérieux
+
+*/
+
+/* **********************************************
      Begin VCO.StorySlider.js
 ********************************************** */
 
@@ -3098,12 +3884,20 @@ VCO.Slide = VCO.Class.extend({
 // @codekit-prepend "animation/VCO.Ease.js";
 // @codekit-prepend "animation/VCO.Animate.js";
 
+// @codekit-prepend "dom/VCO.Point.js";
+// @codekit-prepend "dom/VCO.DomMixins.js";
 // @codekit-prepend "dom/VCO.Dom.js";
+// @codekit-prepend "dom/VCO.DomUtil.js";
+// @codekit-prepend "dom/VCO.DomEvent.js";
+// @codekit-prepend "dom/VCO.Draggable.js";
+
 // @codekit-prepend "media/VCO.MediaType.js";
 // @codekit-prepend "media/VCO.Media.js";
 // @codekit-prepend "media/VCO.Media.Image.js";
 // @codekit-prepend "media/VCO.Media.Text.js";
 // @codekit-prepend "slider/VCO.Slide.js";
+// @codekit-prepend "slider/VCO.SlideNav.js";
+
 
 
 
@@ -3132,7 +3926,12 @@ VCO.StorySlider = VCO.Class.extend({
 			slider_container: {},
 			slider_item_container: {}
 		};
-	
+		
+		
+		this._nav = {};
+		this._nav.previous = {};
+		this._nav.next = {};
+		
 		// Slides Array
 		this._slides = [];
 		
@@ -3150,7 +3949,8 @@ VCO.StorySlider = VCO.Class.extend({
 			duration: 				1000,
 			ease: 					VCO.Ease.easeInOutQuint,
 			// interaction
-			dragging: 				true
+			dragging: 				true,
+			trackResize: 			true
 		};
 		
 		// Animation Object
@@ -3160,6 +3960,7 @@ VCO.StorySlider = VCO.Class.extend({
 		VCO.Util.setData(this, this.data);
 		
 		this._initLayout();
+		this._initEvents();
 		
 	},
 	
@@ -3194,9 +3995,10 @@ VCO.StorySlider = VCO.Class.extend({
 	},
 	
 	/*	Navigation
+	TODO Update Navigation content
 	================================================== */
 	goTo: function(n) { // number
-		if (n < this._slides.length) {
+		if (n < this._slides.length && n >= 0) {
 			this.current_slide = n;
 			this.animator = VCO.Animate(this._el.slider_container, {
 				left: 		-(this._el.container.offsetWidth * n) + "px",
@@ -3207,12 +4009,68 @@ VCO.StorySlider = VCO.Class.extend({
 		}
 	},
 	
+	next: function() {
+		this.goTo(this.current_slide +1);
+		
+	},
+	
+	previous: function() {
+		this.goTo(this.current_slide -1);
+	},
+	
 	/*	Private Methods
 	================================================== */
+
+	// Initialize the layout
+	_initLayout: function () {
+		
+		this._el.container.className += ' vco-storyslider';
+		
+		// Create Layout
+		this._el.slider_container_mask		= VCO.Dom.create('div', 'vco-slider-container-mask', this._el.container);
+		this._el.slider_container			= VCO.Dom.create('div', 'vco-slider-container', this._el.slider_container_mask);
+		this._el.slider_item_container		= VCO.Dom.create('div', 'vco-slider-item-container', this._el.slider_container);
+		
+		// Create Navigation
+		
+		this._nav.previous = new VCO.SlideNav({
+			uniqueid: 			"",
+			title: 				"Left Title",
+			date:				"1899",
+			location:			"Chicago",
+			direction: 			"previous"
+		});
+		this._nav.next = new VCO.SlideNav({
+			uniqueid: 			"",
+			title: 				"Right Title",
+			date:				"1900",
+			location:			"New York",
+			direction: 			"next"
+		});
+		
+		// add the navigation to the dom
+		this._nav.next.addTo(this._el.container);
+		this._nav.previous.addTo(this._el.container);
+		
+		// Create Slides and then add them
+		this.createSlides([{test:"yes"}, {test:"yes"}, {test:"yes"}]);
+		this.addSlides(this._slides);
+		
+		this._updateDisplay();
+		
+		this._el.slider_container.style.left="0px";
+		this.goTo(this.options.start_at_slide);
+		
+	},
 	
 	// Layout the slides
 	_updateDisplay: function() {
-		var w = this._el.container.offsetWidth;
+		var w 			= this._el.container.offsetWidth,
+			nav_pos 	= this._el.container.offsetTop + (this._el.container.offsetHeight/2);
+			
+		// position navigation
+		this._nav.next.setPosition({top:nav_pos});
+		this._nav.previous.setPosition({top:nav_pos});
 		
 		// Position slides
 		for (var i = 0; i < this._slides.length; i++) {
@@ -3220,10 +4078,42 @@ VCO.StorySlider = VCO.Class.extend({
 		};
 	},
 	
-	// Events
+	
+	_initEvents: function () {
+		
+		this._nav.next.on('clicked', this._onNavigation, this);
+		this._nav.previous.on('clicked', this._onNavigation, this);
+		
+		VCO.DomEvent.addListener(this._el.container, 'click', this._onMouseClick, this);
+
+		var events = ['dblclick', 'mousedown', 'mouseenter', 'mouseleave', 'mousemove', 'contextmenu'];
+
+		var i, len;
+
+		for (i = 0, len = events.length; i < len; i++) {
+			VCO.DomEvent.addListener(this._el.container, events[i], this._fireMouseEvent, this);
+		}
+
+		if (this.options.trackResize) {
+			VCO.DomEvent.addListener(window, 'resize', this._onResize, this);
+		}
+	},
+	
+	/*	Events
+	================================================== */
 	_onResize: function(e) {
 		trace("RESIZE");
 		this._updateDisplay();
+	},
+	
+	_onNavigation: function(e) {
+		if (e.direction == "next") {
+			trace("NEXT");
+			this.next();
+		} else if (e.direction == "previous") {
+			trace("PREVIOUS");
+			this.previous();
+		}
 	},
 	
 	_onSlideAdded: function(e) {
@@ -3237,37 +4127,36 @@ VCO.StorySlider = VCO.Class.extend({
 	_onSlideDisplay: function() {
 		this.fire("slideDisplayUpdate", this.current_slide);
 	},
+	
+	_onMouseClick: function(e) {
+		trace("_onMouseClick");
+	},
+	
+	_fireMouseEvent: function (e) {
+		if (!this._loaded) {
+			return;
+		}
 
+		var type = e.type;
+		type = (type === 'mouseenter' ? 'mouseover' : (type === 'mouseleave' ? 'mouseout' : type));
+
+		if (!this.hasEventListeners(type)) {
+			return;
+		}
+
+		if (type === 'contextmenu') {
+			VCO.DomEvent.preventDefault(e);
+		}
+		
+		this.fire(type, {
+			latlng: "something", //this.mouseEventToLatLng(e),
+			layerPoint: "something else" //this.mouseEventToLayerPoint(e)
+		});
+	},
 	
 	_onLoaded: function() {
 		this.fire("loaded", this.data);
-	},
-	
-	// Initialize the layout
-	_initLayout: function () {
-		
-		this._el.container.className += ' vco-storyslider';
-		
-		// Create Layout
-		this._el.slider_container_mask		= VCO.Dom.create('div', 'vco-slider-container-mask', this._el.container);
-		this._el.slider_container			= VCO.Dom.create('div', 'vco-slider-container', this._el.slider_container_mask);
-		this._el.slider_item_container		= VCO.Dom.create('div', 'vco-slider-item-container', this._el.slider_container);
-		
-		// Listen for Resize Event
-		window.addEventListener ("resize", this._onResize);
-		
-		// Create Slides and then add them
-		this.createSlides([{test:"yes"}, {test:"yes"}, {test:"yes"}]);
-		this.addSlides(this._slides);
-		
-		this._updateDisplay();
-		
-		this._el.slider_container.style.left="0px";
-		this.goTo(this.options.start_at_slide);
-		
 	}
-	
-	
 	
 	
 });

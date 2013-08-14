@@ -7,7 +7,7 @@
 
 VCO.Slide = VCO.Class.extend({
 	
-	includes: VCO.Events,
+	includes: [VCO.Events, VCO.DomMixins],
 	
 	_el: {},
 	
@@ -114,15 +114,7 @@ VCO.Slide = VCO.Class.extend({
 		container.removeChild(this._el.container);
 	},
 	
-	/*	Adding, Hiding, Showing etc
-	================================================== */
-	setPosition: function(pos) {
-		for (var name in pos) {
-			if (pos.hasOwnProperty(name)) {
-				this._el.container.style[name] = pos[name] + "px";
-			}
-		}
-	},
+	
 	
 	/*	Events
 	================================================== */

@@ -1,6 +1,7 @@
 /*	VCO.Util
 	Class of utilities
 ================================================== */
+
 VCO.Util = {
 	
 	extend: function (/*Object*/ dest) /*-> Object*/ {	// merge src properties into dest
@@ -30,8 +31,20 @@ VCO.Util = {
 		}
 	},
 	
+	mergeData: function(data_main, data_to_merge) {
+		var x;
+		for (x in data_to_merge) {
+			if (Object.prototype.hasOwnProperty.call(data_to_merge, x)) {
+				data_main[x] = data_to_merge[x];
+			}
+		}
+		return data_main;
+	},
+	
 	stamp: (function () {
 		var lastId = 0, key = '_vco_id';
+		
+
 		return function (/*Object*/ obj) {
 			obj[key] = obj[key] || ++lastId;
 			return obj[key];
@@ -96,6 +109,43 @@ VCO.Util = {
 			}
 		}
 		return '?' + params.join('&');
+	},
+	
+	formatNum: function (num, digits) {
+		var pow = Math.pow(10, digits || 5);
+		return Math.round(num * pow) / pow;
+	},
+	
+	falseFn: function () {
+		return false;
+	},
+	
+	requestAnimFrame: (function () {
+		function timeoutDefer(callback) {
+			window.setTimeout(callback, 1000 / 60);
+		}
+
+		var requestFn = window.requestAnimationFrame ||
+			window.webkitRequestAnimationFrame ||
+			window.mozRequestAnimationFrame ||
+			window.oRequestAnimationFrame ||
+			window.msRequestAnimationFrame ||
+			timeoutDefer;
+
+		return function (callback, context, immediate, contextEl) {
+			callback = context ? VCO.Util.bind(callback, context) : callback;
+			if (immediate && requestFn === timeoutDefer) {
+				callback();
+			} else {
+				requestFn(callback, contextEl);
+			}
+		};
+	}()),
+	
+	bind: function (/*Function*/ fn, /*Object*/ obj) /*-> Object*/ {
+		return function () {
+			return fn.apply(obj, arguments);
+		};
 	},
 	
 	template: function (str, data) {

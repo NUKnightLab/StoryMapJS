@@ -45,24 +45,26 @@ html(lang="en")
 										p Donec porttitor ligula eu dolor. Maecenas vitae nulla consequat libero cursus venenatis.
 										p Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Morbi commodo, ipsum sed pharetra gravida, orci magna rhoncus neque, id pulvinar odio lorem non turpis. 
 										
-			div.vco-nav-next
-				div.vco-nav-container
-					div.vco-icon
-						| &nbsp;
-					div.vco-date 
-						| 1899
-					div.vco-title 
-						| Next Le portrait mystérieux
-			div.vco-nav-previous
-				div.vco-nav-container
-					div.vco-icon
-						| &nbsp;
-					div.vco-date 
-						| 1899
-					div.vco-title 
-						| Previous Le portrait mystérieux
+			
+			//
+				div.vco-slidenav-next
+					div.vco-slidenav-content-container
+						div.vco-icon
+							| &nbsp;
+						div.vco-date 
+							| 1899
+						div.vco-title 
+							| Next Le portrait mystérieux
+				div.vco-slidenav-previous
+					div.vco-slidenav-content-container
+						div.vco-icon
+							| &nbsp;
+						div.vco-date 
+							| 1899
+						div.vco-title 
+							| Previous Le portrait mystérieux
 		// JavaScript
 		script(src='js/storyslider.js')
 		script
 			var story = new VCO.StorySlider('storyslider');
-			//var story_another = new VCO.StorySlider('storyslider-another');
+			var story_another = new VCO.StorySlider('storyslider-another');
