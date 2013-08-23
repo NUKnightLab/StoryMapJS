@@ -68,12 +68,9 @@ VCO.Slide = VCO.Class.extend({
 		// Animation Object
 		this.animator = {};
 		
-		// Merge data
-		VCO.Util.setData(this, data);
-		
-		if (options) {
-			VCO.Util.setOptions(this, this.options);
-		}
+		// Merge Data and Options
+		VCO.Util.mergeData(this.options, options);
+		VCO.Util.mergeData(this.data, data);
 		
 		
 		this._el.container = VCO.Dom.create("div", "vco-slide");

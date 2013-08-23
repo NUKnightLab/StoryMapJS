@@ -40,13 +40,9 @@ VCO.Media = VCO.Class.extend({
 	
 		this.animator = {};
 		
-		// Merge Data
-		VCO.Util.setData(this, data);
-		
-		// Merge Options
-		if (options) {
-			VCO.Util.setOptions(this, this.options);
-		};
+		// Merge Data and Options
+		VCO.Util.mergeData(this.options, options);
+		VCO.Util.mergeData(this.data, data);
 		
 		this._el.container = VCO.Dom.create("div", "vco-media");
 		this._el.container.id = this.data.uniqueid;

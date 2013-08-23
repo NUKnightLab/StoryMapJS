@@ -1,5 +1,5 @@
 /*!
-	StorySlider
+	StoryMap
 	
 	Designed and built by Zach Wise at VeriteCo
 	
@@ -12,47 +12,31 @@
 /* Includes
 ================================================== */
 @import "Variables.less"; 			// Variables (easy way to make style changes)
+
 @import "core/Mixins.less"; 		// Less shortcuts and functions
 @import "core/Reset.less"; 			// CSS Reset
 @import "core/Typography.less";
 
 //	Components
+@import "ui/VCO.SizeBar.less";
+
 @import "slider/VCO.Slide.less";
 @import "slider/VCO.SlideNav.less";
+@import "slider/VCO.StorySlider.less";
+
 @import "media/VCO.Media.less";
 @import "media/VCO.Media.Text.less";
 
-/* SLIDER CONTAINERS 
+@import "map/VCO.Leaflet.less";
+@import "map/VCO.Leaflet.IE.less";
+@import "map/VCO.Map.less";
+
+
+/* STORY MAP CONTAINERS 
 ================================================== */
-.vco-storyslider {
+.vco-storymap {
 	width:100%;
 	height:100%;
 	overflow:hidden;
-	
-	img, embed, object, video, iframe {
-		max-width: 100%;
-	}
-	
-	.vco-slider-container-mask {
-		text-align: center;
-		width: 100%;
-		height: 100%;
-		overflow: hidden;
-		.vco-slider-container {
-			position: relative;
-			top: 0px;
-			left: 0px;
-			width: 100%;
-			height: 100%;
-			text-align: center;
-			.vco-slider-item-container {
-				width: 100%;
-				height: 100%;
-				display:table-cell;
-				vertical-align:middle;
-			}
-		}
-	}
-	
 }
 

@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>StorySlider Embed</title>
+    <title>StoryMap Embed</title>
     <meta charset="utf-8">
     <meta name="description" content="TimelineJS Embed">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-touch-fullscreen" content="yes">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <!-- CSS-->
-    <link rel="stylesheet" href="css/storyslider.css?v1">
+    <link rel="stylesheet" href="css/storymap.css?v1">
     <!-- Style-->
     <style>
       html, body {
@@ -22,66 +22,13 @@
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
   </head>
   <body>
+    <div id="storymap"></div>
     <div id="storyslider"></div>
     <div id="storyslider-another"></div>
-    <div class="vco-storyslider">
-      <div class="vco-slider-container-mask">
-        <div class="vco-slider-container">
-          <div class="vco-slider-item-container">
-            <div class="vco-slide">
-              <div class="vco-slide-content-container">
-                <div class="vco-slide-content">
-                  <div class="vco-media">
-                    <div class="vco-media-content-container">
-                      <div class="vco-media-content"><img src="http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg"></div>
-                      <div class="vco-credit"></div>
-                      <div class="vco-caption"></div>
-                    </div>
-                  </div>
-                  <div class="vco-text">
-                    <h2>The Kitchen Sink, Évier de la Cuisine</h2>
-                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Morbi commodo, ipsum sed pharetra gravida, orci magna rhoncus neque, id pulvinar odio lorem non turpis. </p>
-                    <p>Nullam sit amet enim. Suspendisse id velit vitae ligula volutpat condimentum. Aliquam erat volutpat. Sed quis velit. Nulla facilisi. Nulla libero. </p>
-                    <p>Vivamus pharetra posuere sapien. Nam consectetuer. Sed aliquam, nunc eget euismod ullamcorper, lectus nunc ullamcorper orci, fermentum bibendum enim nibh eget ipsum. </p>
-                    <p>Donec porttitor ligula eu dolor. Maecenas vitae nulla consequat libero cursus venenatis.</p>
-                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Morbi commodo, ipsum sed pharetra gravida, orci magna rhoncus neque, id pulvinar odio lorem non turpis. </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div><!--
-      <div class="vco-slidenav-next">
-        <div class="vco-slidenav-content-container">
-          <div class="vco-icon">&nbsp;</div>
-          <div class="vco-date">
-             
-            1899
-          </div>
-          <div class="vco-title">
-             
-            Next Le portrait mystérieux
-          </div>
-        </div>
-      </div>
-      <div class="vco-slidenav-previous">
-        <div class="vco-slidenav-content-container">
-          <div class="vco-icon">&nbsp;</div>
-          <div class="vco-date">
-             
-            1899
-          </div>
-          <div class="vco-title">
-             
-            Previous Le portrait mystérieux
-          </div>
-        </div>
-      </div>-->
-    </div>
     <!-- JavaScript-->
-    <script src="js/storyslider.js"></script>
+    <script src="js/storymap.js"></script>
     <script>
+      var storymap = new VCO.StoryMap('storymap');
       var story = new VCO.StorySlider('storyslider');
       var story_another = new VCO.StorySlider('storyslider-another');
     </script>

@@ -119,6 +119,7 @@ VCO.DomUtil = {
 	},
 
 	getTranslateString: function (point) {
+
 		return VCO.DomUtil.TRANSLATE_OPEN +
 				point.x + 'px,' + point.y + 'px' +
 				VCO.DomUtil.TRANSLATE_CLOSE;

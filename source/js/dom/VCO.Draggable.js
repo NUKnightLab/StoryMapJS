@@ -16,6 +16,7 @@ VCO.Draggable = VCO.Class.extend({
 	initialize: function (element, dragStartTarget) {
 		this._element = element;
 		this._dragStartTarget = dragStartTarget || element;
+		this._startPos = {};
 	},
 
 	enable: function () {
@@ -49,7 +50,7 @@ VCO.Draggable = VCO.Class.extend({
 		VCO.DomEvent.preventDefault(e);
 
 		if (VCO.Browser.touch && el.tagName.toLowerCase() === 'a') {
-			el.className += ' leaflet-active';
+			el.className += ' vco-active';
 		}
 
 		this._moved = false;
@@ -62,7 +63,9 @@ VCO.Draggable = VCO.Class.extend({
 			this._setMovingCursor();
 		}
 
-		this._startPos = this._newPos = VCO.DomUtil.getPosition(this._element);
+		this._startPos = VCO.DomUtil.getPosition(this._element);
+		this._newPos = VCO.DomUtil.getPosition(this._element);
+		trace(VCO.DomUtil.getPosition(this._element))
 		this._startPoint = new VCO.Point(first.clientX, first.clientY);
 
 		VCO.DomEvent.addListener(document, VCO.Draggable.MOVE, this._onMove, this);
@@ -85,6 +88,7 @@ VCO.Draggable = VCO.Class.extend({
 		this._moving = true;
 
 		var newPoint = new VCO.Point(first.clientX, first.clientY);
+		trace(_startPos);
 		this._newPos = this._startPos.add(newPoint).subtract(this._startPoint);
 
 		VCO.Util.requestAnimFrame(this._updatePosition, this, true, this._dragStartTarget);
