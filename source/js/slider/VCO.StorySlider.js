@@ -26,12 +26,6 @@ VCO.StorySlider = VCO.Class.extend({
 			slider_item_container: {}
 		};
 		
-		if (typeof elem === 'object') {
-			this._el.container = elem;
-		} else {
-			this._el.container = VCO.Dom.get(elem);
-		}
-		
 		this._nav = {};
 		this._nav.previous = {};
 		this._nav.next = {};
@@ -45,10 +39,110 @@ VCO.StorySlider = VCO.Class.extend({
 		// Data Object
 		this.data = {
 			uniqueid: 				"",
-			slides: 				[{test:"yes"}, {test:"yes"}, {test:"yes"}]
+			slides: 				[
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
+						url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						color: 				"#cdbfe3",
+						opacity: 			50
+					},
+					date: 					null,
+					location: {
+						lat: 				-9.143962,
+						lon: 				38.731094,
+						zoom: 				13,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: {
+						headline: 			"Flickr",
+						text: 				""
+					},
+					media: {
+						url: 				"http://farm8.staticflickr.com/7076/7074630607_b1c23532e4.jpg",
+						credit:				"Zach Wise",
+						caption:			"San Francisco"
+					}
+				},
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
+						url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						color: 				"#8b4513",
+						opacity: 			50
+					},
+					date: 					null,
+					location: {
+						lat: 				-9.143962,
+						lon: 				38.731094,
+						zoom: 				13,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: {
+						headline: 			"Flickr",
+						text: 				""
+					},
+					media: {
+						url: 				"http://farm8.staticflickr.com/7076/7074630607_b1c23532e4.jpg",
+						credit:				"Zach Wise",
+						caption:			"San Francisco"
+					}
+				},
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
+						url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						color: 				null,
+						opacity: 			50
+					},
+					date: 					null,
+					location: {
+						lat: 				-9.143962,
+						lon: 				38.731094,
+						zoom: 				13,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: {
+						headline: 			"Flickr",
+						text: 				""
+					},
+					media: {
+						url: 				"http://farm8.staticflickr.com/7076/7074630607_b1c23532e4.jpg",
+						credit:				"Zach Wise",
+						caption:			"San Francisco"
+					}
+				},
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
+						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						color: 				"#cdbfe3",
+						opacity: 			50
+					},
+					date: 					null,
+					location: {
+						lat: 				-9.143962,
+						lon: 				38.731094,
+						zoom: 				13,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: {
+						headline: 			"La Lune",
+						text: 				""
+					},
+					media: {
+						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						credit:				"ETC",
+						caption:			"something"
+					}
+				}
+			]
 		};
-	
+		
 		this.options = {
+			id: 					"",
+			width: 					600,
+			height: 				600,
 			start_at_slide: 		2,
 			// animation
 			duration: 				1000,
@@ -58,8 +152,21 @@ VCO.StorySlider = VCO.Class.extend({
 			trackResize: 			true
 		};
 		
+		// Main element ID
+		if (typeof elem === 'object') {
+			this._el.container = elem;
+			this.options.id = VCO.Util.unique_ID(6, "vco");
+		} else {
+			this.options.id = elem;
+			this._el.container = VCO.Dom.get(elem);
+		}
+
+		if (!this._el.container.id) {
+			this._el.container.id = this.options.id;
+		}
+		
 		// Animation Object
-		this.animator = {};
+		this.animator = null;
 		
 		// Merge Data and Options
 		VCO.Util.mergeData(this.options, options);
@@ -68,6 +175,12 @@ VCO.StorySlider = VCO.Class.extend({
 		this._initLayout();
 		this._initEvents();
 		
+	},
+	
+	/*	Update Display
+	================================================== */
+	updateDisplay: function(w, h) {
+		this._updateDisplay(w, h);
 	},
 	
 	/*	Create Slides
@@ -103,21 +216,59 @@ VCO.StorySlider = VCO.Class.extend({
 	/*	Navigation
 	TODO Update Navigation content
 	================================================== */
-	goTo: function(n) { // number
+	
+	goTo: function(n, fast) { // number
 		if (n < this._slides.length && n >= 0) {
 			this.current_slide = n;
-			this.animator = VCO.Animate(this._el.slider_container, {
-				left: 		-(this._el.container.offsetWidth * n) + "px",
-				duration: 	this.options.duration,
-				easing: 	this.options.ease,
-				complete: 	this._onSlideDisplay()
-			});
+			
+			// Stop animation
+			if (this.animator) {
+				this.animator.stop();
+			}
+			
+			if (fast) {
+				this._el.slider_container.style.left = -(this.options.width * n) + "px";
+				this._onSlideDisplay();
+			} else {
+				
+				this.animator = VCO.Animate(this._el.slider_container, {
+					left: 		-(this.options.width * n) + "px",
+					duration: 	this.options.duration,
+					easing: 	this.options.ease,
+					complete: 	this._onSlideDisplay()
+				});
+				
+			}
+
+			// Update Navigation
+			if (this._slides[this.current_slide + 1]) {
+				this._nav.next.show();
+				var nav_data = {
+					title: this._slides[this.current_slide + 1].data.text.headline,
+					description: this._slides[this.current_slide + 1].data.location.lat
+				};
+				this._nav.next.update(nav_data);
+			} else {
+				this._nav.next.hide();
+			}
+			if (this._slides[this.current_slide - 1]) {
+				this._nav.previous.show();
+				var nav_data = {
+					title: this._slides[this.current_slide - 1].data.text.headline,
+					description: this._slides[this.current_slide - 1].data.location.lat
+				};
+				this._slides[this.current_slide - 1].data
+				this._nav.previous.update(nav_data);
+			} else {
+				this._nav.previous.hide();
+			}
+			
+			
 		}
 	},
 	
 	next: function() {
 		this.goTo(this.current_slide +1);
-		
 	},
 	
 	previous: function() {
@@ -130,6 +281,7 @@ VCO.StorySlider = VCO.Class.extend({
 	// Initialize the layout
 	_initLayout: function () {
 		
+		trace("initLayout " + this.options.id)
 		this._el.container.className += ' vco-storyslider';
 		
 		// Create Layout
@@ -139,20 +291,8 @@ VCO.StorySlider = VCO.Class.extend({
 		
 		// Create Navigation
 		
-		this._nav.previous = new VCO.SlideNav({
-			uniqueid: 			"",
-			title: 				"Left Title",
-			date:				"1899",
-			location:			"Chicago",
-			direction: 			"previous"
-		});
-		this._nav.next = new VCO.SlideNav({
-			uniqueid: 			"",
-			title: 				"Right Title",
-			date:				"1900",
-			location:			"New York",
-			direction: 			"next"
-		});
+		this._nav.previous = new VCO.SlideNav({title: "Previous", description: "description"}, {direction:"previous"});
+		this._nav.next = new VCO.SlideNav({title: "Next",description: "description"}, {direction:"next"});
 		
 		// add the navigation to the dom
 		this._nav.next.addTo(this._el.container);
@@ -169,19 +309,38 @@ VCO.StorySlider = VCO.Class.extend({
 		
 	},
 	
-	// Layout the slides
-	_updateDisplay: function() {
-		var w 			= this._el.container.offsetWidth,
-			nav_pos 	= this._el.container.offsetTop + (this._el.container.offsetHeight/2);
-			
+	// Update Display
+	_updateDisplay: function(width, height, animate) {
+		var nav_pos;
+		
+		if (width) {
+			this.options.width = width;
+		} else {
+			this.options.width = this._el.container.offsetWidth;
+		}
+		
+		if (height) {
+			this.options.height = height;
+		} else {
+			this.options.height = this._el.container.offsetHeight;
+		}
+		
+		//this._el.container.style.height = this.options.height;
+		
 		// position navigation
+		nav_pos = (this.options.height/2);
 		this._nav.next.setPosition({top:nav_pos});
 		this._nav.previous.setPosition({top:nav_pos});
 		
 		// Position slides
 		for (var i = 0; i < this._slides.length; i++) {
-			this._slides[i].setPosition({left:(w * i), top:0});
+			this._slides[i].updateDisplay(this.options.width, this.options.height);
+			this._slides[i].setPosition({left:(this.options.width * i), top:0});
+			
 		};
+		
+		// Go to the current slide
+		this.goTo(this.current_slide, true);
 	},
 	
 	
@@ -189,28 +348,11 @@ VCO.StorySlider = VCO.Class.extend({
 		
 		this._nav.next.on('clicked', this._onNavigation, this);
 		this._nav.previous.on('clicked', this._onNavigation, this);
-		
-		VCO.DomEvent.addListener(this._el.container, 'click', this._onMouseClick, this);
 
-		var events = ['dblclick', 'mousedown', 'mouseenter', 'mouseleave', 'mousemove', 'contextmenu'];
-
-		var i, len;
-
-		for (i = 0, len = events.length; i < len; i++) {
-			VCO.DomEvent.addListener(this._el.container, events[i], this._fireMouseEvent, this);
-		}
-
-		if (this.options.trackResize) {
-			VCO.DomEvent.addListener(window, 'resize', this._onResize, this);
-		}
 	},
 	
 	/*	Events
 	================================================== */
-	_onResize: function(e) {
-		trace("RESIZE");
-		this._updateDisplay();
-	},
 	
 	_onNavigation: function(e) {
 		if (e.direction == "next") {
@@ -235,7 +377,7 @@ VCO.StorySlider = VCO.Class.extend({
 	},
 	
 	_onMouseClick: function(e) {
-		trace("_onMouseClick");
+		
 	},
 	
 	_fireMouseEvent: function (e) {

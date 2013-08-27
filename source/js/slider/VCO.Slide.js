@@ -34,8 +34,8 @@ VCO.Slide = VCO.Class.extend({
 		this.data = {
 			uniqueid: 				"",
 			background: {			// OPTIONAL
-				url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-				color: 				"#cdbfe3",
+				url: 				null,
+				color: 				null,
 				opacity: 			50
 			},
 			date: 					null,
@@ -60,8 +60,10 @@ VCO.Slide = VCO.Class.extend({
 		// Options
 		this.options = {
 			// animation
-			duration: 				1000,
-			ease: 					VCO.Ease.easeInSpline,
+			duration: 			1000,
+			ease: 				VCO.Ease.easeInSpline,
+			width: 				600,
+			height: 			600
 		};
 		
 		
@@ -111,22 +113,14 @@ VCO.Slide = VCO.Class.extend({
 		container.removeChild(this._el.container);
 	},
 	
+	updateDisplay: function(w, h, a) {
+		this._updateDisplay(w, h, a);
+	},
 	
 	
 	/*	Events
 	================================================== */
-	onLoaded: function() {
-		this._loaded = true;
-		this.fire("loaded", this.data);
-	},
-	
-	onAdd: function() {
-		this.fire("added", this.data);
-	},
 
-	onRemove: function() {
-		this.fire("removed", this.data);
-	},
 	
 	/*	Private Methods
 	================================================== */
@@ -169,6 +163,22 @@ VCO.Slide = VCO.Class.extend({
 		// Fire event that the slide is loaded
 		this.onLoaded();
 		
+	},
+	
+	// Update Display
+	_updateDisplay: function(width, height, animate) {
+		if (width) {
+			this.options.width = width;
+			//this._el.container.style.width = this.options.width + "px";
+		} else {
+			this.options.width = this._el.container.offsetWidth;
+		}
+		
+		if (height) {
+			this.options.height = height;
+		} else {
+			this.options.height = this._el.container.offsetHeight;
+		}
 	}
 	
 });

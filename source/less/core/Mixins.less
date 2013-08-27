@@ -47,6 +47,15 @@
  	    -ms-hyphens:@hyphens;
  	        hyphens:@hyphens;
 }
+// User select
+// For selecting text on the page
+.user-select(@select) {
+	-webkit-user-select: @select;
+	   -moz-user-select: @select;
+	    -ms-user-select: @select; // IE10+
+	     -o-user-select: @select;
+	        user-select: @select;
+}
 // Clear Fix
 .clearfix() {
 	*zoom: 1;

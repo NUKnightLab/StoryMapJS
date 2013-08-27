@@ -4,15 +4,16 @@
  
 VCO.SizeBar = VCO.Class.extend({
 	
-	includes: [VCO.Events],
+	includes: [VCO.Events, VCO.DomMixins],
 	
 	_el: {},
 	
 	/*	Constructor
 	================================================== */
-	initialize: function(elem, data, options) {
+	initialize: function(elem, parent_elem, data, options) {
 		// DOM ELEMENTS
 		this._el = {
+			parent: {},
 			container: {},
 			grip: {}
 		};
@@ -22,6 +23,10 @@ VCO.SizeBar = VCO.Class.extend({
 		} else {
 			this._el.container = VCO.Dom.get(elem);
 		}
+		
+		if (parent_elem) {
+			this._el.parent = parent_elem;
+		}
 	
 		// Data
 		this.data = {
@@ -30,7 +35,9 @@ VCO.SizeBar = VCO.Class.extend({
 	
 		//Options
 		this.options = {
-			something: 			""
+			duration: 				1000,
+			ease: 					VCO.Ease.easeInOutQuint,
+			sizebar_default_y: 		600
 		};
 		
 		// Draggable
@@ -51,29 +58,80 @@ VCO.SizeBar = VCO.Class.extend({
 	================================================== */
 	show: function() {
 		
+		this.animator = VCO.Animate(this._el.container, {
+			top: 		VCO.Dom.getPosition(this._el.parent).y + this.options.sizebar_default_y + "px",
+			duration: 	this.options.duration,
+			easing: 	VCO.Ease.easeOutStrong
+		});
 	},
 	
-	hide: function() {
-		
+	hide: function(top) {
+		this.animator = VCO.Animate(this._el.container, {
+			top: 		top,
+			duration: 	this.options.duration,
+			easing: 	VCO.Ease.easeOutStrong
+		});
 	},
+	
+	setSticky: function(y) {
+		this.options.sizebar_default_y = y;
+	},
+	
 
 	/*	Events
 	================================================== */
 
 	
 	_onMouseClick: function() {
-		trace("SIZEBAR CLICKED");
 		this.fire("clicked", this.data);
 	},
 	
-	_onDragStart: function() {
-		trace("SIZEBAR _onDragStart");
+	_onDragStart: function(e) {
+		
 	},
-	_onDrag: function() {
-		trace("SIZEBAR _onDrag");
+	
+	_onDragMove: function(e) {
+		var top_pos = e.new_pos.y - VCO.Dom.getPosition(this._el.parent).y;
+		this.fire("move", {y:top_pos});
 	},
-	_onDragEnd: function() {
-		trace("SIZEBAR _onDragEnd");
+	_onMomentum: function(e) {
+		var top_pos = e.new_pos.y - VCO.Dom.getPosition(this._el.parent).y;
+		if (top_pos < this.options.sizebar_default_y) {
+			this._draggable.stopMomentum();
+			if (e.direction == "down") {
+				this.show();
+				this.fire("momentum", {y:this.options.sizebar_default_y});
+			} else {
+				this.hide(VCO.Dom.getPosition(this._el.parent).y);
+				this.fire("momentum", {y:1});
+			}
+		} else {
+			this.fire("momentum", {y:top_pos});
+		}
+	},
+	_onDragEnd: function(e) {
+		
+	},
+	
+	_onSwipeUp: function(e) {
+		var top_pos = e.new_pos.y - VCO.Dom.getPosition(this._el.parent).y;
+		this._draggable.stopMomentum();
+		if (top_pos > this.options.sizebar_default_y) {
+			this.show();
+			this.fire("momentum", {y:this.options.sizebar_default_y});
+		} else {
+			this.hide(VCO.Dom.getPosition(this._el.parent).y);
+			this.fire("swipe", {y:1});
+		}
+	},
+	
+	_onSwipeDown: function(e) {
+		if (VCO.Dom.getPosition(this._el.container).y < this.options.sizebar_default_y) {
+			this._draggable.stopMomentum();
+			this.show();
+			this.fire("swipe", {y:this.options.sizebar_default_y});
+		}
+		
 	},
 	
 	/*	Private Methods
@@ -81,22 +139,25 @@ VCO.SizeBar = VCO.Class.extend({
 	_initLayout: function () {
 		
 		// Create Layout
+		this._el.container.style.top = this.options.sizebar_default_y + "px";
 		
 		//Make draggable
-		this._draggable = new VCO.Draggable(this._el.container);
+		this._draggable = new VCO.Draggable(this._el.container, {enable:{x:false, y:true}});
 		
-		this._draggable.on({
-			'dragstart': this._onDragStart,
-			'drag': this._onDrag,
-			'dragend': this._onDragEnd
-		}, this);
-		
+		this._draggable.on('dragstart', this._onDragStart, this);
+		this._draggable.on('dragmove', this._onDragMove, this);
+		this._draggable.on('dragend', this._onDragEnd, this);
+		this._draggable.on('swipe_up', this._onSwipeUp, this);
+		this._draggable.on('swipe_down', this._onSwipeDown, this);
+		this._draggable.on('momentum', this._onMomentum, this);
+
 		this._draggable.enable();
+		
+		
 	},
 	
 	_initEvents: function () {
-		VCO.DomEvent.addListener(this._el.container, 'click', this._onMouseClick, this);
-		var events = ['dblclick', 'mousedown', 'mouseenter', 'mouseleave', 'mousemove', 'contextmenu'];
+		
 	}
 	
 });

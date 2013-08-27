@@ -13,6 +13,7 @@ html(lang="en")
 		style
 			html, body {
 			height:100%;
+			width:100%;
 			padding: 0px;
 			margin: 0px;
 			}
@@ -22,6 +23,7 @@ html(lang="en")
 			script(src='http://html5shim.googlecode.com/svn/trunk/html5.js')
 
 	body
+		div#storymap-another(style="width:500px;height:500px")
 		div#storymap
 		div#storyslider
 		div#storyslider-another
@@ -30,5 +32,13 @@ html(lang="en")
 		script(src='js/storymap.js')
 		script
 			var storymap = new VCO.StoryMap('storymap');
+			var storymap_another = new VCO.StoryMap('storymap-another');
 			var story = new VCO.StorySlider('storyslider');
 			var story_another = new VCO.StorySlider('storyslider-another');
+			window.onresize = function(event) {
+				storymap.updateDisplay();
+				storymap_another.updateDisplay();
+				story.updateDisplay();
+				story_another.updateDisplay();
+				//console.log(document.getElementById("storyslider").offsetWidth + " TEST UUUUUU")
+			}

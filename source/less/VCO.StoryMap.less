@@ -18,6 +18,9 @@
 @import "core/Typography.less";
 
 //	Components
+@import "core/VCO.less";
+
+//	Components
 @import "ui/VCO.SizeBar.less";
 
 @import "slider/VCO.Slide.less";
@@ -32,11 +35,12 @@
 @import "map/VCO.Map.less";
 
 
-/* STORY MAP CONTAINERS 
+/* StoryMap
 ================================================== */
 .vco-storymap {
 	width:100%;
 	height:100%;
 	overflow:hidden;
+	.user-select(none);
 }
 

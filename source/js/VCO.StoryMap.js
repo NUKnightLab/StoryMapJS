@@ -41,7 +41,9 @@
 // @codekit-prepend "slider/VCO.StorySlider.js";
 
 // @codekit-prepend "map/VCO.Leaflet.js";
+// @codekit-prepend "map/VCO.StamenMaps.js";
 // @codekit-prepend "map/VCO.Map.js";
+// @codekit-prepend "map/VCO.Map.Leaflet.js";
 
 
 VCO.StoryMap = VCO.Class.extend({
@@ -109,6 +111,54 @@ VCO.StoryMap = VCO.Class.extend({
 				{
 					uniqueid: 				"",
 					background: {			// OPTIONAL
+						url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						color: 				"#8b4513",
+						opacity: 			50
+					},
+					date: 					null,
+					location: {
+						lat: 				-9.143962,
+						lon: 				38.731094,
+						zoom: 				13,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: {
+						headline: 			"Flickr",
+						text: 				""
+					},
+					media: {
+						url: 				"http://farm8.staticflickr.com/7076/7074630607_b1c23532e4.jpg",
+						credit:				"Zach Wise",
+						caption:			"San Francisco"
+					}
+				},
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
+						url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						color: 				null,
+						opacity: 			50
+					},
+					date: 					null,
+					location: {
+						lat: 				-9.143962,
+						lon: 				38.731094,
+						zoom: 				13,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: {
+						headline: 			"Flickr",
+						text: 				""
+					},
+					media: {
+						url: 				"http://farm8.staticflickr.com/7076/7074630607_b1c23532e4.jpg",
+						credit:				"Zach Wise",
+						caption:			"San Francisco"
+					}
+				},
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
 						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
 						color: 				"#cdbfe3",
 						opacity: 			50
@@ -134,18 +184,25 @@ VCO.StoryMap = VCO.Class.extend({
 		};
 	
 		this.options = {
-			start_at_slide: 		2,
+			height: 				this._el.container.offsetHeight,
+			width: 					this._el.container.offsetWidth,
+			map_size_sticky: 		3, // Set as division 1/3 etc
+			start_at_slide: 		0,
 			// animation
 			duration: 				1000,
 			ease: 					VCO.Ease.easeInOutQuint,
 			// interaction
 			dragging: 				true,
 			trackResize: 			true,
-			maptype: 				"toner"
+			map_type: 				"toner-lite",
+			map_height: 			300,
+			storyslider_height: 	600,
+			sizebar_default_y: 		300
 		};
 		
-		// Animation Object
-		this.animator = {};
+		// Animation Objects
+		this.animator_map = null;
+		this.animator_storyslider = null;
 		
 		VCO.Util.setOptions(this, this.options);
 		VCO.Util.setData(this, this.data);
@@ -161,6 +218,9 @@ VCO.StoryMap = VCO.Class.extend({
 
 	},
 
+	updateDisplay: function() {
+		this._updateDisplay();
+	},
 	
 	/*	Private Methods
 	================================================== */
@@ -171,64 +231,111 @@ VCO.StoryMap = VCO.Class.extend({
 		this._el.container.className += ' vco-storymap';
 		
 		// Create Layout
-		this._el.map 			= VCO.Dom.create('div', 'vco-map', this._el.container);
 		this._el.sizebar		= VCO.Dom.create('div', 'vco-sizebar', this._el.container);
+		this._el.map 			= VCO.Dom.create('div', 'vco-map', this._el.container);
 		this._el.storyslider 	= VCO.Dom.create('div', 'vco-storyslider', this._el.container);
 		
+		// Create Map using preferred Map API
+		this._map = new VCO.Map.Leaflet(this._el.map, this.data, this.options);
+		
+		// Create SizeBar
+		this._sizebar = new VCO.SizeBar(this._el.sizebar, this._el.container, this.data, this.options);
 		
 		// Create StorySlider
 		this._storyslider = new VCO.StorySlider(this._el.storyslider, this.data, this.options);
-		//this._storyslider.on('clicked', this._onNavigation, this);
+		this.options.storyslider_height = (this.options.height - this._el.sizebar.offsetHeight - this.options.map_height- 1) + "px";
 		
-		// Create Map
-		this._map = new VCO.Map(this._el.map, this.data, this.options);
 		
-		// Create SizeBar
-		this._sizebar = new VCO.SizeBar(this._el.sizebar, this.data, this.options);
-		this._sizebar.on('clicked', this._onSizeBar, this);
+		// Initial Layout
+		this.options.width = this._el.container.offsetWidth;
+		this.options.height = this._el.container.offsetHeight;
+		this._el.container.style.width = this.options.width + "px";
+		this._el.container.style.height = this.options.height + "px";
 		
-		this._updateDisplay();
-		
+		// Update Display
+		this._updateDisplay(this.options.map_height);
 		
 	},
-	
-	// Update View
-	_updateDisplay: function() {
-
-	},
-	
 	
 	_initEvents: function () {
 		
 		
-		VCO.DomEvent.addListener(this._el.container, 'click', this._onMouseClick, this);
-
-		var events = ['dblclick', 'mousedown', 'mouseenter', 'mouseleave', 'mousemove', 'contextmenu'];
-
-		var i, len;
-
-		for (i = 0, len = events.length; i < len; i++) {
-			VCO.DomEvent.addListener(this._el.container, events[i], this._fireMouseEvent, this);
+		// Sidebar Events
+		this._sizebar.on('clicked', this._onSizeBar, this);
+		this._sizebar.on('move', this._onSizeBarMove, this);
+		this._sizebar.on('swipe', this._onSizeBarSwipe, this);
+		this._sizebar.on('momentum', this._onSizeBarSwipe, this);
+		
+	},
+	
+	// Update View
+	_updateDisplay: function(map_height, animate) {
+		
+		// Set Sticky state of SizeBar
+		this._sizebar.setSticky(this._el.container.offsetHeight/this.options.map_size_sticky);
+		
+		// Map Height
+		if (map_height) {
+			this.options.map_height = map_height;
 		}
-
-		if (this.options.trackResize) {
-			VCO.DomEvent.addListener(window, 'resize', this._onResize, this);
+		
+		// StorySlider Height
+		this.options.storyslider_height = (this.options.height - this._el.sizebar.offsetHeight - this.options.map_height- 1);
+		
+		if (animate) {
+			
+			// Animate Map
+			if (this.animator_map) {
+				this.animator_map.stop();
+			}
+			this.animator_map = VCO.Animate(this._el.map, {
+				height: 	(map_height- 1) + "px",
+				duration: 	this.options.duration,
+				easing: 	VCO.Ease.easeOutStrong
+			});
+			
+			// Animate StorySlider
+			if (this.animator_storyslider) {
+				this.animator_storyslider.stop();
+			}
+			this.animator_storyslider = VCO.Animate(this._el.storyslider, {
+				height: 	this.options.storyslider_height + "px",
+				duration: 	this.options.duration,
+				easing: 	VCO.Ease.easeOutStrong
+			});
+			
+		} else {
+			// Map
+			this._el.map.style.height = map_height + "px";
+			
+			// StorySlider
+			this._el.storyslider.style.height = this.options.storyslider_height + "px";
+			this._el.storyslider.style.top = this._el.sizebar.offsetHeight + "px";
 		}
+		
+		// Update Component Displays
+		this._map.updateDisplay(this.options.width, this.options.map_height);
+		this._storyslider.updateDisplay(this.options.width, this.options.storyslider_height, animate);
+		
 	},
 	
 	/*	Events
 	================================================== */
-	_onResize: function(e) {
-		trace("RESIZE");
-		this._updateDisplay();
-	},
 	
 	_onSizeBar: function(e) {
 		trace("ON SIZEBAR");
 	},
 	
+	_onSizeBarMove: function(e) {
+		this._updateDisplay(e.y);
+	},
+	
+	_onSizeBarSwipe: function(e) {
+		this._updateDisplay(e.y, true);
+	},
+	
 	_onMouseClick: function(e) {
-		trace("_onMouseClick");
+		
 	},
 	
 	_fireMouseEvent: function (e) {

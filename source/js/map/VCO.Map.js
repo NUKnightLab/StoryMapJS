@@ -4,7 +4,7 @@
  
 VCO.Map = VCO.Class.extend({
 	
-	includes: [VCO.Events],
+	includes: [VCO.Events, VCO.DomMixins],
 	
 	_el: {},
 	
@@ -34,7 +34,7 @@ VCO.Map = VCO.Class.extend({
 	
 		//Options
 		this.options = {
-			maptype: 			"toner"
+			map_type: 			"toner"
 		};
 	
 		this.animator = {};
@@ -44,7 +44,19 @@ VCO.Map = VCO.Class.extend({
 		VCO.Util.mergeData(this.data, data);
 		
 		this._initLayout();
+		this._initEvents();
+		this._createMap();
 		
+	},
+	
+	/*	Update Display
+	================================================== */
+	updateDisplay: function(w, h) {
+		this._updateDisplay(w, h);
+	},
+	
+	onResize: function() {
+		this._onResize();
 	},
 	
 	/*	Load the media
@@ -75,33 +87,33 @@ VCO.Map = VCO.Class.extend({
 
 	/*	Events
 	================================================== */
-	onLoaded: function() {
-		this.fire("loaded", this.data);
-	},
 	
-	onAdd: function() {
-		this.fire("added", this.data);
-	},
-
-	onRemove: function() {
-		this.fire("removed", this.data);
-	},
 	
 	/*	Private Methods
 	================================================== */
-	_initLayout: function () {
+	_initLayout: function() {
 		
 		// Create Layout
-		this._el.map	= VCO.Dom.create("div", "vco-leaflet-map", this._el.container);
+		this._el.map = VCO.Dom.create("div", "vco-map-display", this._el.container);
 		
-		this._map 		= new L.map(this._el.map).setView([51.505, -0.09], 13);
+	},
+	
+	// Update Display
+	_updateDisplay: function(width, height, animate) {
+		//trace("UPDATE MAP DISPLAY")
+	},
+	
+	_initEvents: function() {
 		
-		L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png', {
-		    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
-		    maxZoom: 18
-		}).addTo(this._map);
+	},
+	
+	_onResize: function() {
 		
-		
+	},
+	
+	// Extend this map class and use this to create the map using preferred API
+	_createMap: function() {
+		trace("Create Map")
 	}
 	
 });

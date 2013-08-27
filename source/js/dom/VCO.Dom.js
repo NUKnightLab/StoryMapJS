@@ -46,6 +46,19 @@ VCO.Dom = {
 		}
 	},
 	
+	getPosition: function(el){
+	    var pos = {
+	    	x: 0,
+			y: 0
+	    }
+	    while( el && !isNaN( el.offsetLeft ) && !isNaN( el.offsetTop ) ) {
+	        pos.x += el.offsetLeft// - el.scrollLeft;
+	        pos.y += el.offsetTop// - el.scrollTop;
+	        el = el.offsetParent;
+	    }
+	    return pos;
+	},
+
 	testProp: function(props) {
 		var style = document.documentElement.style;
 

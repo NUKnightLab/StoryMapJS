@@ -13,6 +13,7 @@
     <style>
       html, body {
       height:100%;
+      width:100%;
       padding: 0px;
       margin: 0px;
       }
@@ -22,6 +23,7 @@
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
   </head>
   <body>
+    <div id="storymap-another" style="width:500px;height:500px"></div>
     <div id="storymap"></div>
     <div id="storyslider"></div>
     <div id="storyslider-another"></div>
@@ -29,8 +31,16 @@
     <script src="js/storymap.js"></script>
     <script>
       var storymap = new VCO.StoryMap('storymap');
+      var storymap_another = new VCO.StoryMap('storymap-another');
       var story = new VCO.StorySlider('storyslider');
       var story_another = new VCO.StorySlider('storyslider-another');
+      window.onresize = function(event) {
+       storymap.updateDisplay();
+       storymap_another.updateDisplay();
+       story.updateDisplay();
+       story_another.updateDisplay();
+       //console.log(document.getElementById("storyslider").offsetWidth + " TEST UUUUUU")
+      }
     </script>
   </body>
 </html>

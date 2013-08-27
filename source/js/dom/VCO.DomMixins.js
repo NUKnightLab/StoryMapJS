@@ -6,19 +6,22 @@ VCO.DomMixins = {
 	
 	/*	Adding, Hiding, Showing etc
 	================================================== */
-	show: function() {
-		this.animator = VCO.Animate(this._el.slider_container, {
-			left: 		-(this._el.container.offsetWidth * n) + "px",
-			duration: 	this.options.duration,
-			easing: 	this.options.ease,
-			complete: function () {
-				trace("DONE");
-			}
-		});
+	show: function(animate) {
+		if (animate) {
+			/*
+			this.animator = VCO.Animate(this._el.container, {
+				left: 		-(this._el.container.offsetWidth * n) + "px",
+				duration: 	this.options.duration,
+				easing: 	this.options.ease
+			});
+			*/
+		} else {
+			this._el.container.style.display = "block";
+		}
 	},
 	
-	hide: function() {
-		
+	hide: function(animate) {
+		this._el.container.style.display = "none";
 	},
 	
 	addTo: function(container) {
@@ -29,6 +32,40 @@ VCO.DomMixins = {
 	removeFrom: function(container) {
 		container.removeChild(this._el.container);
 		//this.onRemove();
+	},
+	
+	/*	Animate to Position
+	================================================== */
+	animatePosition: function(pos, el) {
+		var ani = {
+			duration: 	this.options.duration,
+			easing: 	this.options.ease
+		};
+		for (var name in pos) {
+			if (pos.hasOwnProperty(name)) {
+				ani[name] = pos[name] + "px";
+			}
+		}
+		
+		if (this.animator) {
+			this.animator.stop();
+		}
+		this.animator = VCO.Animate(el, ani);
+	},
+	
+	/*	Events
+	================================================== */
+	
+	onLoaded: function() {
+		this.fire("loaded", this.data);
+	},
+	
+	onAdd: function() {
+		this.fire("added", this.data);
+	},
+
+	onRemove: function() {
+		this.fire("removed", this.data);
 	},
 	
 	/*	Set the Position
@@ -43,6 +80,10 @@ VCO.DomMixins = {
 				};
 			}
 		}
+	},
+	
+	getPosition: function() {
+		return VCO.Dom.getPosition(this._el.container);
 	}
 	
 };

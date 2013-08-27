@@ -3,7 +3,7 @@
 ================================================== */
 
 VCO.Animate = function(el, options) {
-	var animation = vcoanimate(el, options),
+	var animation = new vcoanimate(el, options),
 		webkit_timeout;
 	/*
 		// POSSIBLE ISSUE WITH WEBKIT FUTURE BUILDS

@@ -1,152 +1,269 @@
 /*	VCO.Draggable
-	Inspired by Leaflet
 	VCO.Draggable allows you to add dragging capabilities to any element. Supports mobile devices too.
+	TODO Enable constraints
 ================================================== */
 
 VCO.Draggable = VCO.Class.extend({
+	
 	includes: VCO.Events,
-
-	statics: {
-		START: VCO.Browser.touch ? 'touchstart' : 'mousedown',
-		END: VCO.Browser.touch ? 'touchend' : 'mouseup',
-		MOVE: VCO.Browser.touch ? 'touchmove' : 'mousemove',
-		TAP_TOLERANCE: 15
+	
+	_el: {},
+	
+	mousedrag: {
+		down:		"mousedown",
+		up:			"mouseup",
+		leave:		"mouseleave",
+		move:		"mousemove"
+	},
+	
+	touchdrag: {
+		down:		"touchstart",
+		up:			"touchend",
+		leave:		"mouseleave",
+		move:		"touchmove"
 	},
 
-	initialize: function (element, dragStartTarget) {
-		this._element = element;
-		this._dragStartTarget = dragStartTarget || element;
-		this._startPos = {};
+	initialize: function (drag_elem, options, move_elem) {
+		
+		// DOM ELements 
+		this._el = {
+			drag: drag_elem,
+			move: drag_elem
+		};
+		
+		if (move_elem) {
+			this._el.move = move_elem;
+		}
+		
+		
+		//Options
+		this.options = {
+			enable:	{
+				x: true,
+				y: true
+			},
+			constraint: {
+				top: false,
+				bottom: false,
+				left: false,
+				right: false
+			},
+			momentum_multiplier: 	2000,
+			duration: 				1000,
+			ease: 					VCO.Ease.easeInOutQuint
+		};
+		
+		
+		// Animation Object
+		this.animator = null;
+		
+		// Drag Event Type
+		this.dragevent = this.mousedrag;
+		
+		if (VCO.Browser.touch) {
+			this.dragevent = this.touchdrag;
+		}
+		
+		// Draggable Data
+		this.data = {
+			sliding:		false,
+			direction: 		"none",
+			pagex: {
+				start:		0,
+				end:		0
+			},
+			pagey: {
+				start:		0,
+				end:		0
+			},
+			pos: {
+				start: {
+					x: 0,
+					y:0
+				},
+				end: {
+					x: 0,
+					y:0
+				}
+			},
+			new_pos: {
+				x: 0,
+				y: 0
+			},
+			new_pos_parent: {
+				x: 0,
+				y: 0
+			},
+			time: {
+				start:		0,
+				end:		0
+			},
+			touch:			false
+		};
+		
+		// Merge Data and Options
+		VCO.Util.mergeData(this.options, options);
+		
+		
 	},
-
-	enable: function () {
-		if (this._enabled) {
-			return;
-		}
-		VCO.DomEvent.addListener(this._dragStartTarget, VCO.Draggable.START, this._onDown, this);
-		this._enabled = true;
+	
+	enable: function(e) {
+		VCO.DomEvent.addListener(this._el.drag, this.dragevent.down, this._onDragStart, this);
+		VCO.DomEvent.addListener(this._el.drag, this.dragevent.up, this._onDragEnd, this);
+		
+		this.data.pos.start = VCO.Dom.getPosition(this._el.move);
+		this._el.move.style.left = this.data.pos.start.x + "px";
+		this._el.move.style.top = this.data.pos.start.y + "px";
+		this._el.move.style.position = "absolute";
+		this._el.move.style.zIndex = "11";
+		this._el.move.style.cursor = "move";
 	},
-
-	disable: function () {
-		if (!this._enabled) {
-			return;
-		}
-		VCO.DomEvent.removeListener(this._dragStartTarget, VCO.Draggable.START, this._onDown);
-		this._enabled = false;
+	
+	disable: function() {
+		VCO.DomEvent.removeListener(this._el.drag, this.dragevent.down, this._onDragStart, this);
+		VCO.DomEvent.removeListener(this._el.drag, this.dragevent.up, this._onDragEnd, this);
 	},
-
-	_onDown: function (e) {
-		if ((!VCO.Browser.touch && e.shiftKey) || ((e.which !== 1) && (e.button !== 1) && !e.touches)) {
-			return;
+	
+	stopMomentum: function() {
+		if (this.animator) {
+			this.animator.stop();
 		}
 
-		if (e.touches && e.touches.length > 1) {
-			return;
-		}
-
-		var first = (e.touches && e.touches.length === 1 ? e.touches[0] : e),
-			el = first.target;
-
-		VCO.DomEvent.preventDefault(e);
-
-		if (VCO.Browser.touch && el.tagName.toLowerCase() === 'a') {
-			el.className += ' vco-active';
-		}
-
-		this._moved = false;
-		if (this._moving) {
-			return;
-		}
-
-		if (!VCO.Browser.touch) {
-			VCO.DomUtil.disableTextSelection();
-			this._setMovingCursor();
-		}
-
-		this._startPos = VCO.DomUtil.getPosition(this._element);
-		this._newPos = VCO.DomUtil.getPosition(this._element);
-		trace(VCO.DomUtil.getPosition(this._element))
-		this._startPoint = new VCO.Point(first.clientX, first.clientY);
-
-		VCO.DomEvent.addListener(document, VCO.Draggable.MOVE, this._onMove, this);
-		VCO.DomEvent.addListener(document, VCO.Draggable.END, this._onUp, this);
 	},
-
-	_onMove: function (e) {
-		if (e.touches && e.touches.length > 1) {
-			return;
+	
+	/*	Private Methods
+	================================================== */
+	_onDragStart: function(e) {
+		if (VCO.Browser.touch) {
+			this.data.pagex.start = e.originalEvent.touches[0].screenX;
+			this.data.pagey.start = e.originalEvent.touches[0].screenY;
+		} else {
+			this.data.pagex.start = e.pageX;
+			this.data.pagey.start = e.pageY;
 		}
-
-		VCO.DomEvent.preventDefault(e);
-
-		var first = (e.touches && e.touches.length === 1 ? e.touches[0] : e);
-
-		if (!this._moved) {
-			this.fire('dragstart');
-			this._moved = true;
+		
+		this.data.pos.start = VCO.Dom.getPosition(this._el.drag);
+		this.data.time.start = new Date().getTime();
+		
+		this.fire("dragstart", this.data);
+		VCO.DomEvent.addListener(this._el.drag, this.dragevent.move, this._onDragMove, this);
+		VCO.DomEvent.addListener(this._el.drag, this.dragevent.leave, this._onDragEnd, this);
+	},
+	
+	_onDragEnd: function(e) {
+		this.data.sliding = false;
+		VCO.DomEvent.removeListener(this._el.drag, this.dragevent.move, this._onDragMove, this);
+		VCO.DomEvent.removeListener(this._el.drag, this.dragevent.leave, this._onDragEnd, this);
+		this.fire("dragend", this.data);
+		
+		//  momentum
+		this._momentum();
+	},
+	
+	_onDragMove: function(e) {
+		this.data.sliding = true;
+		
+		if (VCO.Browser.touch) {
+			this.data.pagex.end = e.originalEvent.touches[0].screenX;
+			this.data.pagey.end = e.originalEvent.touches[0].screenY;
+		} else {
+			this.data.pagex.end = e.pageX;
+			this.data.pagey.end = e.pageY;
 		}
-		this._moving = true;
-
-		var newPoint = new VCO.Point(first.clientX, first.clientY);
-		trace(_startPos);
-		this._newPos = this._startPos.add(newPoint).subtract(this._startPoint);
-
-		VCO.Util.requestAnimFrame(this._updatePosition, this, true, this._dragStartTarget);
+		
+		this.data.pos.end = VCO.Dom.getPosition(this._el.drag);
+		this.data.new_pos.x = -(this.data.pagex.start - this.data.pagex.end - this.data.pos.start.x)//-(this.data.pagex.start - this.data.pagex.end - this.data.pos.end.x);
+		this.data.new_pos.y = -(this.data.pagey.start - this.data.pagey.end - this.data.pos.start.y );
+		
+		if (this.options.enable.x) {
+			this._el.move.style.left = this.data.new_pos.x + "px";
+		}
+		
+		if (this.options.enable.y) {
+			this._el.move.style.top = this.data.new_pos.y + "px";
+		}
+		
+		this.fire("dragmove", this.data);
 	},
+	
+	_momentum: function() {
+		var pos_adjust = {
+				x: 0,
+				y: 0,
+				time: 0
+			},
+			pos_change = {
+				x: 0,
+				y: 0,
+				time: 0
+			},
+			swipe = false,
+			swipe_direction = "";
+		
+		
+		if (VCO.Browser.touch) {
+			this.options.momentum_multiplier = this.options.momentum_multiplier * 2;
+		}
+		
+		pos_adjust.time = (new Date().getTime() - this.data.time.start) * 10;
+		pos_change.time = (new Date().getTime() - this.data.time.start) * 10;
+		
+		pos_change.x = this.options.momentum_multiplier * (Math.abs(this.data.pagex.end) - Math.abs(this.data.pagex.start));
+		pos_change.y = this.options.momentum_multiplier * (Math.abs(this.data.pagey.end) - Math.abs(this.data.pagey.start));
+		
+		pos_adjust.x = Math.round(pos_change.x / pos_change.time);
+		pos_adjust.y = Math.round(pos_change.y / pos_change.time);
+		
+		this.data.new_pos.x = Math.min(this.data.pos.end.x + pos_adjust.x);
+		this.data.new_pos.y = Math.min(this.data.pos.end.y + pos_adjust.y);
 
-	_updatePosition: function () {
-		this.fire('predrag');
-		VCO.DomUtil.setPosition(this._element, this._newPos);
-		this.fire('drag');
-	},
-
-	_onUp: function (e) {
-		if (e.changedTouches) {
-			var first = e.changedTouches[0],
-				el = first.target,
-				dist = (this._newPos && this._newPos.distanceTo(this._startPos)) || 0;
-
-			if (el.tagName.toLowerCase() === 'a') {
-				el.className = el.className.replace(' vco-active', '');
+		
+		if (!this.options.enable.x) {
+			this.data.new_pos.x = this.data.pos.start.x;
+		} else if (this.data.new_pos.x < 0) {
+			this.data.new_pos.x = 0;
+		}
+		
+		if (!this.options.enable.y) {
+			this.data.new_pos.y = this.data.pos.start.y;
+		} else if (this.data.new_pos.y < 0) {
+			this.data.new_pos.y = 0;
+		}
+		
+		// Detect Swipe
+		if (pos_change.time < 3000) {
+			swipe = true;
+		}
+		
+		// Detect Direction
+		if (Math.abs(pos_change.x) > 10000) {
+			this.data.direction = "left";
+			if (pos_change.x > 0) {
+				this.data.direction = "right";
 			}
-
-			if (dist < VCO.Draggable.TAP_TOLERANCE) {
-				this._simulateEvent('click', first);
+		}
+		// Detect Swipe
+		if (Math.abs(pos_change.y) > 10000) {
+			this.data.direction = "up";
+			if (pos_change.y > 0) {
+				this.data.direction = "down";
 			}
 		}
-
-		if (!VCO.Browser.touch) {
-			VCO.DomUtil.enableTextSelection();
-			this._restoreCursor();
+		this._animateMomentum();
+		if (swipe) {
+			this.fire("swipe_" + this.data.direction, this.data);
 		}
-
-		VCO.DomEvent.removeListener(document, VCO.Draggable.MOVE, this._onMove);
-		VCO.DomEvent.removeListener(document, VCO.Draggable.END, this._onUp);
-
-		if (this._moved) {
-			this.fire('dragend');
-		}
-		this._moving = false;
+		
 	},
-
-	_setMovingCursor: function () {
-		this._bodyCursor = document.body.style.cursor;
-		document.body.style.cursor = 'move';
-	},
-
-	_restoreCursor: function () {
-		document.body.style.cursor = this._bodyCursor;
-	},
-
-	_simulateEvent: function (type, e) {
-		var simulatedEvent = document.createEvent('MouseEvents');
-
-		simulatedEvent.initMouseEvent(
-				type, true, true, window, 1,
-				e.screenX, e.screenY,
-				e.clientX, e.clientY,
-				false, false, false, false, 0, null);
-
-		e.target.dispatchEvent(simulatedEvent);
+	
+	
+	_animateMomentum: function() {
+		this.animator = VCO.Animate(this._el.move, {
+			left: 		this.data.new_pos.x + "px",
+			top: 		this.data.new_pos.y + "px",
+			duration: 	this.options.duration,
+			easing: 	VCO.Ease.easeOutStrong
+		});
+		this.fire("momentum", this.data);
 	}
 });
