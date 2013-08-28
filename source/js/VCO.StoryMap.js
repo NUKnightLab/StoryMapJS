@@ -40,10 +40,14 @@
 // @codekit-prepend "slider/VCO.SlideNav.js";
 // @codekit-prepend "slider/VCO.StorySlider.js";
 
-// @codekit-prepend "map/VCO.Leaflet.js";
+// @codekit-prepend "map/leaflet/VCO.Leaflet.js";
+
 // @codekit-prepend "map/VCO.StamenMaps.js";
+// @codekit-prepend "map/VCO.MapMarker.js";
 // @codekit-prepend "map/VCO.Map.js";
-// @codekit-prepend "map/VCO.Map.Leaflet.js";
+
+// @codekit-prepend "map/VCO.MapMarker.Leaflet.js";
+// @codekit-prepend "map/leaflet/VCO.Map.Leaflet.js";
 
 
 VCO.StoryMap = VCO.Class.extend({
@@ -197,7 +201,8 @@ VCO.StoryMap = VCO.Class.extend({
 			map_type: 				"toner-lite",
 			map_height: 			300,
 			storyslider_height: 	600,
-			sizebar_default_y: 		300
+			sizebar_default_y: 		300,
+			path_gfx: 				"gfx"
 		};
 		
 		// Animation Objects
@@ -239,26 +244,34 @@ VCO.StoryMap = VCO.Class.extend({
 		this._map = new VCO.Map.Leaflet(this._el.map, this.data, this.options);
 		
 		// Create SizeBar
-		this._sizebar = new VCO.SizeBar(this._el.sizebar, this._el.container, this.data, this.options);
+		this._sizebar = new VCO.SizeBar(this._el.sizebar, this._el.container, this.options);
 		
 		// Create StorySlider
 		this._storyslider = new VCO.StorySlider(this._el.storyslider, this.data, this.options);
-		this.options.storyslider_height = (this.options.height - this._el.sizebar.offsetHeight - this.options.map_height- 1) + "px";
 		
 		
-		// Initial Layout
+		
+		// Initial Default Layout
 		this.options.width = this._el.container.offsetWidth;
 		this.options.height = this._el.container.offsetHeight;
-		this._el.container.style.width = this.options.width + "px";
-		this._el.container.style.height = this.options.height + "px";
+		this._el.map.style.height = "1px";
+		this._el.storyslider.style.top = "1px";
+		
+		// Set Default Component Sizes
+		this.options.map_height = (this.options.height / this.options.map_size_sticky);
+		this.options.storyslider_height = (this.options.height - this._el.sizebar.offsetHeight - this.options.map_height - 1);
+		this._sizebar.setSticky(this.options.map_height);
 		
 		// Update Display
-		this._updateDisplay(this.options.map_height);
+		this._updateDisplay(this.options.map_height, true, 2000);
+		
+		// Animate Sizebar to Default Location
+		this._sizebar.show(2000);
+		
 		
 	},
 	
 	_initEvents: function () {
-		
 		
 		// Sidebar Events
 		this._sizebar.on('clicked', this._onSizeBar, this);
@@ -269,7 +282,16 @@ VCO.StoryMap = VCO.Class.extend({
 	},
 	
 	// Update View
-	_updateDisplay: function(map_height, animate) {
+	_updateDisplay: function(map_height, animate, d) {
+		
+		var duration = this.options.duration;
+		
+		if (d) {
+			duration = d;
+		}
+		
+		this.options.width = this._el.container.offsetWidth;
+		this.options.height = this._el.container.offsetHeight;
 		
 		// Set Sticky state of SizeBar
 		this._sizebar.setSticky(this._el.container.offsetHeight/this.options.map_size_sticky);
@@ -290,7 +312,7 @@ VCO.StoryMap = VCO.Class.extend({
 			}
 			this.animator_map = VCO.Animate(this._el.map, {
 				height: 	(map_height- 1) + "px",
-				duration: 	this.options.duration,
+				duration: 	duration,
 				easing: 	VCO.Ease.easeOutStrong
 			});
 			
@@ -300,7 +322,8 @@ VCO.StoryMap = VCO.Class.extend({
 			}
 			this.animator_storyslider = VCO.Animate(this._el.storyslider, {
 				height: 	this.options.storyslider_height + "px",
-				duration: 	this.options.duration,
+				top: 		this._el.sizebar.offsetHeight + "px",
+				duration: 	duration,
 				easing: 	VCO.Ease.easeOutStrong
 			});
 			
@@ -314,8 +337,9 @@ VCO.StoryMap = VCO.Class.extend({
 		}
 		
 		// Update Component Displays
-		this._map.updateDisplay(this.options.width, this.options.map_height);
+		this._map.updateDisplay(this.options.width, this.options.map_height, animate, d);
 		this._storyslider.updateDisplay(this.options.width, this.options.storyslider_height, animate);
+		this._sizebar.updateDisplay(this.options.width, this.options.height, animate);
 		
 	},
 	

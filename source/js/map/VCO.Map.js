@@ -1,5 +1,9 @@
 /*	VCO.Map
 	Makes a Map
+
+	Events:
+	markerAdded
+	markerRemoved
 ================================================== */
  
 VCO.Map = VCO.Class.extend({
@@ -24,7 +28,10 @@ VCO.Map = VCO.Class.extend({
 		}
 		
 		// MAP
-		this._map = {};
+		this._map = null;
+		
+		// Markers
+		this._markers = [];
 	
 		// Data
 		this.data = {
@@ -34,10 +41,15 @@ VCO.Map = VCO.Class.extend({
 	
 		//Options
 		this.options = {
-			map_type: 			"toner"
+			map_type: 			"toner",
+			path_gfx: 			"gfx"
 		};
-	
-		this.animator = {};
+		
+		// Animation
+		this.animator = null;
+		
+		// Timer
+		this.timer = null;
 		
 		// Merge Data and Options
 		VCO.Util.mergeData(this.options, options);
@@ -46,23 +58,14 @@ VCO.Map = VCO.Class.extend({
 		this._initLayout();
 		this._initEvents();
 		this._createMap();
+		this._initData();
 		
 	},
 	
-	/*	Update Display
+	/*	Public
 	================================================== */
-	updateDisplay: function(w, h) {
-		this._updateDisplay(w, h);
-	},
-	
-	onResize: function() {
-		this._onResize();
-	},
-	
-	/*	Load the media
-	================================================== */
-	loadMedia: function(url) {
-		
+	updateDisplay: function(w, h, animate, d) {
+		this._updateDisplay(w, h, animate, d);
 	},
 	
 	/*	Adding, Hiding, Showing etc
@@ -84,10 +87,79 @@ VCO.Map = VCO.Class.extend({
 		container.removeChild(this._el.container);
 		this.onRemove();
 	},
-
-	/*	Events
+	
+	/*	Adding and Removing Markers
+	================================================== */
+	createMarkers: function(array) { // array of objects
+		this._createMarkers(array)
+	},
+	
+	createMarker: function(d) {
+		this._createMarker(d);
+	},
+	
+	_destroyMarker: function(marker) { // marker
+		this._removeMarker(marker);
+		for (var i = 0; i < this._markers.length; i++) {
+			if (this._markers[i] == marker) {
+				this._markers.splice(i, 1);
+			}
+		}
+		this.fire("markerRemoved", marker);
+	},
+	
+	_createMarkers: function(array) { // array of objects
+		for (var i = 0; i < array.length; i++) {
+			this._createMarker(array[i]);
+		};
+	},
+	
+	
+	/*	Map Specific
 	================================================== */
 	
+		/*	Map Specific Create
+		================================================== */
+		// Extend this map class and use this to create the map using preferred API
+		_createMap: function() {
+			trace("Create Map")
+		},
+	
+		/*	Map Specific Marker
+		================================================== */
+		
+		// Specific Marker Methods based on preferred Map API
+		_createMarker: function(d) { // data and options
+			var marker = {};
+			this._addMarker(marker);
+			this._markers.push(marker);
+			this.fire("markerAdded", marker);
+		},
+	
+		_addMarker: function(marker) {
+		
+		},
+	
+		_removeMarker: function(marker) {
+		
+		},
+	
+		/*	Map Specific Data
+		================================================== */
+		_initData: function() {
+			this._createMarkers(this.data.slides);
+		},
+		
+		_updateMapDisplay: function(w, h, animate, d) {
+			
+		},
+		
+		_refreshMap: function() {
+			
+		},
+	
+	/*	Events
+	================================================== */
 	
 	/*	Private Methods
 	================================================== */
@@ -99,21 +171,14 @@ VCO.Map = VCO.Class.extend({
 	},
 	
 	// Update Display
-	_updateDisplay: function(width, height, animate) {
+	_updateDisplay: function(w, h, animate, d) {
 		//trace("UPDATE MAP DISPLAY")
+		this._updateMapDisplay(w, h, animate, d);
+		
 	},
 	
 	_initEvents: function() {
 		
-	},
-	
-	_onResize: function() {
-		
-	},
-	
-	// Extend this map class and use this to create the map using preferred API
-	_createMap: function() {
-		trace("Create Map")
 	}
 	
 });

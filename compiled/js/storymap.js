@@ -3709,7 +3709,7 @@ VCO.SizeBar = VCO.Class.extend({
 	
 	/*	Constructor
 	================================================== */
-	initialize: function(elem, parent_elem, data, options) {
+	initialize: function(elem, parent_elem, options) {
 		// DOM ELEMENTS
 		this._el = {
 			parent: {},
@@ -3727,13 +3727,10 @@ VCO.SizeBar = VCO.Class.extend({
 			this._el.parent = parent_elem;
 		}
 	
-		// Data
-		this.data = {
-			uniqueid: 			""
-		};
-	
 		//Options
 		this.options = {
+			width: 					600,
+			height: 				600,
 			duration: 				1000,
 			ease: 					VCO.Ease.easeInOutQuint,
 			sizebar_default_y: 		600
@@ -3747,19 +3744,23 @@ VCO.SizeBar = VCO.Class.extend({
 		
 		// Merge Data and Options
 		VCO.Util.mergeData(this.options, options);
-		VCO.Util.mergeData(this.data, data);
 		
 		this._initLayout();
 		this._initEvents();
 	},
 	
-	/*	Adding, Hiding, Showing etc
+	/*	Public
 	================================================== */
-	show: function() {
+	show: function(d) {
+		
+		var duration = this.options.duration;
+		if (d) {
+			duration = d;
+		}
 		
 		this.animator = VCO.Animate(this._el.container, {
 			top: 		VCO.Dom.getPosition(this._el.parent).y + this.options.sizebar_default_y + "px",
-			duration: 	this.options.duration,
+			duration: 	duration,
 			easing: 	VCO.Ease.easeOutStrong
 		});
 	},
@@ -3776,13 +3777,19 @@ VCO.SizeBar = VCO.Class.extend({
 		this.options.sizebar_default_y = y;
 	},
 	
+	/*	Update Display
+	================================================== */
+	updateDisplay: function(w, h) {
+		this._updateDisplay(w, h);
+	},
+	
 
 	/*	Events
 	================================================== */
 
 	
 	_onMouseClick: function() {
-		this.fire("clicked", this.data);
+		this.fire("clicked", this.options);
 	},
 	
 	_onDragStart: function(e) {
@@ -3857,6 +3864,19 @@ VCO.SizeBar = VCO.Class.extend({
 	
 	_initEvents: function () {
 		
+	},
+	
+	// Update Display
+	_updateDisplay: function(width, height, animate) {
+		
+		if (width) {
+			this.options.width = width;
+		}
+		if (height) {
+			this.options.height = height;
+		}
+		
+		this._el.container.style.width = this.options.width + "px";
 	}
 	
 });
@@ -3880,7 +3900,7 @@ VCO.Slide = VCO.Class.extend({
 	
 	/*	Constructor
 	================================================== */
-	initialize: function(data, options, add_to_container) {
+	initialize: function(data, options) {
 		
 		// DOM Elements
 		this._el = {
@@ -3941,17 +3961,10 @@ VCO.Slide = VCO.Class.extend({
 		VCO.Util.mergeData(this.options, options);
 		VCO.Util.mergeData(this.data, data);
 		
-		
-		this._el.container = VCO.Dom.create("div", "vco-slide");
-		this._el.container.id = this.data.uniqueid;
-		
 		this._initLayout();
+		this._initEvents();
 		
-		if (add_to_container) {
-			add_to_container.appendChild(this._el.container);
-		}
 		
-		//return this;
 	},
 	
 	/*	Adding, Hiding, Showing etc
@@ -3994,6 +4007,8 @@ VCO.Slide = VCO.Class.extend({
 	_initLayout: function () {
 		
 		// Create Layout
+		this._el.container 				= VCO.Dom.create("div", "vco-slide");
+		this._el.container.id 			= this.data.uniqueid;
 		this._el.content_container		= VCO.Dom.create("div", "vco-slide-content-container", this._el.container);
 		this._el.content				= VCO.Dom.create("div", "vco-slide-content", this._el.content_container);
 		
@@ -4029,6 +4044,10 @@ VCO.Slide = VCO.Class.extend({
 		
 		// Fire event that the slide is loaded
 		this.onLoaded();
+		
+	},
+	
+	_initEvents: function() {
 		
 	},
 	
@@ -4168,7 +4187,9 @@ VCO.SlideNav = VCO.Class.extend({
 /*	StorySlider
 	is the central class of the API - it is used to create a StorySlider
 
-	Events
+	Events:
+	nav_next
+	nav_previous
 	slideDisplayUpdate
 	loaded
 	slideAdded
@@ -4341,50 +4362,68 @@ VCO.StorySlider = VCO.Class.extend({
 		
 		this._initLayout();
 		this._initEvents();
+		this._initData();
+		this._updateDisplay();
+		
+		// Go to initial slide
+		this.goTo(this.options.start_at_slide);
 		
 	},
 	
-	/*	Update Display
+	/*	Public
 	================================================== */
 	updateDisplay: function(w, h) {
 		this._updateDisplay(w, h);
 	},
 	
+	// Create a slide
+	createSlide: function(d) {
+		this._createSlide(d);
+	},
+	
+	// Create Many Slides from an array
+	createSlides: function(array) {
+		this._createSlides(array);
+	},
+	
+	
 	/*	Create Slides
 	================================================== */
-	createSlides: function(slides) { // array of objects
+	_createSlides: function(slides) { // array of objects
 		for (var i = 0; i < slides.length; i++) {
-			var slide = new VCO.Slide(slides[i], this.options);
-			slide.addTo(this._el.slider_item_container);
-			slide.on('added', this._onSlideAdded, this);
-			this._slides.push(slide);
+			this._createSlide(slides[i]);
 		};
 	},
 	
-	/*	Adding and Removing Slide Methods
-	================================================== */
-	
-	// Add a slide or slides to the slider
-	addSlides: function(slides) { // array of objects
-		for (var i = 0; i < slides.length; i++) {
-			slides[i].addTo(this._el.slider_item_container);
-		};
-		this.fire("slideAdded", slides);
+	_createSlide: function(d) {
+		var slide = new VCO.Slide(d, this.options);
+		this._addSlide(slide);
+		this._slides.push(slide);
 	},
 	
-	// Remove a slide or slides to the slider
-	removeSlides: function(slides) { // array of objects
-		for (var i = 0; i < slides.length; i++) {
-			slides[i].removeFrom(this._el.slider_item_container);
-		};
-		this.fire("slideRemoved", slides);
+	_destroySlide: function(slide) {
+		this._removeSlide(slide);
+		for (var i = 0; i < this._slides.length; i++) {
+			if (this._slides[i] == slide) {
+				this._slides.splice(i, 1);
+			}
+		}
+	},
+	
+	_addSlide:function(slide) {
+		slide.addTo(this._el.slider_item_container);
+		slide.on('added', this._onSlideAdded, this);
+	},
+	
+	_removeSlide: function(slide) {
+		slide.removeFrom(this._el.slider_item_container);
+		slide.off('added', this._onSlideAdded, this);
 	},
 	
 	/*	Navigation
-	TODO Update Navigation content
 	================================================== */
 	
-	goTo: function(n, fast) { // number
+	goTo: function(n, fast) {
 		if (n < this._slides.length && n >= 0) {
 			this.current_slide = n;
 			
@@ -4444,37 +4483,6 @@ VCO.StorySlider = VCO.Class.extend({
 	
 	/*	Private Methods
 	================================================== */
-
-	// Initialize the layout
-	_initLayout: function () {
-		
-		trace("initLayout " + this.options.id)
-		this._el.container.className += ' vco-storyslider';
-		
-		// Create Layout
-		this._el.slider_container_mask		= VCO.Dom.create('div', 'vco-slider-container-mask', this._el.container);
-		this._el.slider_container			= VCO.Dom.create('div', 'vco-slider-container', this._el.slider_container_mask);
-		this._el.slider_item_container		= VCO.Dom.create('div', 'vco-slider-item-container', this._el.slider_container);
-		
-		// Create Navigation
-		
-		this._nav.previous = new VCO.SlideNav({title: "Previous", description: "description"}, {direction:"previous"});
-		this._nav.next = new VCO.SlideNav({title: "Next",description: "description"}, {direction:"next"});
-		
-		// add the navigation to the dom
-		this._nav.next.addTo(this._el.container);
-		this._nav.previous.addTo(this._el.container);
-		
-		// Create Slides and then add them
-		this.createSlides(this.data.slides);
-		this.addSlides(this._slides);
-		
-		this._updateDisplay();
-		
-		this._el.slider_container.style.left="0px";
-		this.goTo(this.options.start_at_slide);
-		
-	},
 	
 	// Update Display
 	_updateDisplay: function(width, height, animate) {
@@ -4510,6 +4518,32 @@ VCO.StorySlider = VCO.Class.extend({
 		this.goTo(this.current_slide, true);
 	},
 	
+	/*	Init
+	================================================== */
+	_initLayout: function () {
+		
+		trace("initLayout " + this.options.id)
+		this._el.container.className += ' vco-storyslider';
+		
+		// Create Layout
+		this._el.slider_container_mask		= VCO.Dom.create('div', 'vco-slider-container-mask', this._el.container);
+		this._el.slider_container			= VCO.Dom.create('div', 'vco-slider-container', this._el.slider_container_mask);
+		this._el.slider_item_container		= VCO.Dom.create('div', 'vco-slider-item-container', this._el.slider_container);
+		
+		// Create Navigation
+		
+		this._nav.previous = new VCO.SlideNav({title: "Previous", description: "description"}, {direction:"previous"});
+		this._nav.next = new VCO.SlideNav({title: "Next",description: "description"}, {direction:"next"});
+		
+		// add the navigation to the dom
+		this._nav.next.addTo(this._el.container);
+		this._nav.previous.addTo(this._el.container);
+		
+		
+		this._el.slider_container.style.left="0px";
+		
+	},
+	
 	
 	_initEvents: function () {
 		
@@ -4518,17 +4552,21 @@ VCO.StorySlider = VCO.Class.extend({
 
 	},
 	
+	_initData: function() {
+		// Create Slides and then add them
+		this._createSlides(this.data.slides);
+	},
+	
 	/*	Events
 	================================================== */
 	
 	_onNavigation: function(e) {
 		if (e.direction == "next") {
-			trace("NEXT");
 			this.next();
 		} else if (e.direction == "previous") {
-			trace("PREVIOUS");
 			this.previous();
 		}
+		this.fire("nav_" + e.direction, this.data);
 	},
 	
 	_onSlideAdded: function(e) {
@@ -13675,11 +13713,141 @@ L.Map.include({
 
 
 /* **********************************************
+     Begin VCO.MapMarker.js
+********************************************** */
+
+/*	VCO.MapMarker
+	Creates a marker. Takes a data object and
+	populates the marker with content.
+================================================== */
+
+VCO.MapMarker = VCO.Class.extend({
+	
+	includes: [VCO.Events],
+	
+	/*	Constructor
+	================================================== */
+	initialize: function(data, options) {
+		
+		// DOM Elements
+		this._el = {
+			container: {},
+			content_container: {},
+			content: {}
+		};
+	
+		// Components
+		this._marker 				= {};
+	
+		// Data
+		this.data = {
+			uniqueid: 				"",
+			background: {			// OPTIONAL
+				url: 				null,
+				color: 				null,
+				opacity: 			50
+			},
+			date: 					null,
+			location: {
+				lat: 				-9.143962,
+				lon: 				38.731094,
+				zoom: 				13,
+				icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+			},
+			text: {
+				headline: 			"Le portrait mystérieux",
+				text: 				"Lorem ipsum dolor sit amet, consectetuer adipiscing elit."
+			},
+			media: {
+				url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+				credit:				"Georges Méliès",
+				caption:			"Le portrait mystérieux"
+			}
+		
+		};
+	
+		// Options
+		this.options = {
+			// animation
+			duration: 			1000,
+			ease: 				VCO.Ease.easeInSpline,
+			width: 				600,
+			height: 			600
+		};
+		
+		
+		// Animation Object
+		this.animator = null;
+		
+		// Merge Data and Options
+		VCO.Util.mergeData(this.options, options);
+		VCO.Util.mergeData(this.data, data);
+		
+		this._initLayout();
+		
+	},
+	
+	/*	Public
+	================================================== */
+	show: function() {
+		
+	},
+	
+	hide: function() {
+		
+	},
+	
+	addTo: function(container) {
+		container.appendChild(this._el.container);
+	},
+	
+	removeFrom: function(container) {
+		container.removeChild(this._el.container);
+	},
+	
+	updateDisplay: function(w, h, a) {
+		this._updateDisplay(w, h, a);
+	},
+	
+	createMarker: function(d, o) {
+		this._createMarker(d, o);
+	},
+	
+	/*	Marker Specific
+		Specific to Map API
+	================================================== */
+		_createMarker: function() {
+			
+		},
+	
+	/*	Events
+	================================================== */
+
+	
+	/*	Private Methods
+	================================================== */
+	_initLayout: function () {
+		this._marker
+	},
+	
+	// Update Display
+	_updateDisplay: function(width, height, animate) {
+		
+	}
+	
+});
+
+
+/* **********************************************
      Begin VCO.Map.js
 ********************************************** */
 
 /*	VCO.Map
 	Makes a Map
+
+	Events:
+	markerAdded
+	markerRemoved
 ================================================== */
  
 VCO.Map = VCO.Class.extend({
@@ -13704,7 +13872,10 @@ VCO.Map = VCO.Class.extend({
 		}
 		
 		// MAP
-		this._map = {};
+		this._map = null;
+		
+		// Markers
+		this._markers = [];
 	
 		// Data
 		this.data = {
@@ -13714,10 +13885,15 @@ VCO.Map = VCO.Class.extend({
 	
 		//Options
 		this.options = {
-			map_type: 			"toner"
+			map_type: 			"toner",
+			path_gfx: 			"gfx"
 		};
-	
-		this.animator = {};
+		
+		// Animation
+		this.animator = null;
+		
+		// Timer
+		this.timer = null;
 		
 		// Merge Data and Options
 		VCO.Util.mergeData(this.options, options);
@@ -13726,23 +13902,14 @@ VCO.Map = VCO.Class.extend({
 		this._initLayout();
 		this._initEvents();
 		this._createMap();
+		this._initData();
 		
 	},
 	
-	/*	Update Display
+	/*	Public
 	================================================== */
-	updateDisplay: function(w, h) {
-		this._updateDisplay(w, h);
-	},
-	
-	onResize: function() {
-		this._onResize();
-	},
-	
-	/*	Load the media
-	================================================== */
-	loadMedia: function(url) {
-		
+	updateDisplay: function(w, h, animate, d) {
+		this._updateDisplay(w, h, animate, d);
 	},
 	
 	/*	Adding, Hiding, Showing etc
@@ -13764,10 +13931,79 @@ VCO.Map = VCO.Class.extend({
 		container.removeChild(this._el.container);
 		this.onRemove();
 	},
-
-	/*	Events
+	
+	/*	Adding and Removing Markers
+	================================================== */
+	createMarkers: function(array) { // array of objects
+		this._createMarkers(array)
+	},
+	
+	createMarker: function(d) {
+		this._createMarker(d);
+	},
+	
+	_destroyMarker: function(marker) { // marker
+		this._removeMarker(marker);
+		for (var i = 0; i < this._markers.length; i++) {
+			if (this._markers[i] == marker) {
+				this._markers.splice(i, 1);
+			}
+		}
+		this.fire("markerRemoved", marker);
+	},
+	
+	_createMarkers: function(array) { // array of objects
+		for (var i = 0; i < array.length; i++) {
+			this._createMarker(array[i]);
+		};
+	},
+	
+	
+	/*	Map Specific
 	================================================== */
 	
+		/*	Map Specific Create
+		================================================== */
+		// Extend this map class and use this to create the map using preferred API
+		_createMap: function() {
+			trace("Create Map")
+		},
+	
+		/*	Map Specific Marker
+		================================================== */
+		
+		// Specific Marker Methods based on preferred Map API
+		_createMarker: function(d) { // data and options
+			var marker = {};
+			this._addMarker(marker);
+			this._markers.push(marker);
+			this.fire("markerAdded", marker);
+		},
+	
+		_addMarker: function(marker) {
+		
+		},
+	
+		_removeMarker: function(marker) {
+		
+		},
+	
+		/*	Map Specific Data
+		================================================== */
+		_initData: function() {
+			this._createMarkers(this.data.slides);
+		},
+		
+		_updateMapDisplay: function(w, h, animate, d) {
+			
+		},
+		
+		_refreshMap: function() {
+			
+		},
+	
+	/*	Events
+	================================================== */
 	
 	/*	Private Methods
 	================================================== */
@@ -13779,21 +14015,14 @@ VCO.Map = VCO.Class.extend({
 	},
 	
 	// Update Display
-	_updateDisplay: function(width, height, animate) {
+	_updateDisplay: function(w, h, animate, d) {
 		//trace("UPDATE MAP DISPLAY")
+		this._updateMapDisplay(w, h, animate, d);
+		
 	},
 	
 	_initEvents: function() {
 		
-	},
-	
-	_onResize: function() {
-		
-	},
-	
-	// Extend this map class and use this to create the map using preferred API
-	_createMap: function() {
-		trace("Create Map")
 	}
 	
 });
@@ -13813,18 +14042,83 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	/*	Create the Map
 	================================================== */
 	_createMap: function() {
-		this._map 		= new L.map(this._el.map).setView([51.505, -0.09], 13);
+		
+		// Set Marker Path
+		L.Icon.Default.imagePath = this.options.path_gfx;
+		
+		this._map 		= new L.map(this._el.map, {scrollWheelZoom:false}).setView([51.505, -0.09], 13);
+		
 		/*
 		L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png', {
 		    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
 		    maxZoom: 18
 		}).addTo(this._map);
 		*/
-		// replace "toner" here with "terrain" or "watercolor"
+		
 		var layer = new L.StamenTileLayer(this.options.map_type);
 
 		this._map.addLayer(layer);
 		
+	},
+	
+	/*	Marker
+	================================================== */
+	_createMarker: function(d) {
+		trace(d);
+		/*
+		var marker = L.circle([51.508, -0.11], 500, {
+		    color: 'red',
+		    fillColor: '#f03',
+		    fillOpacity: 0.5
+		}).addTo(this._map);
+		*/
+		var marker = L.marker([51.5, -0.09]);
+		
+		this._addMarker(marker);
+		this._markers.push(marker);
+		this.fire("markerAdded", marker);
+		
+	},
+
+	_addMarker: function(marker) {
+		marker.addTo(this._map);
+	},
+
+	_removeMarker: function(marker) {
+	
+	},
+	
+	/*	Display
+	================================================== */
+	_updateMapDisplay: function(w, h, animate, d) {
+		if (animate) {
+			var duration = this.options.duration,
+				self = this;
+				
+			if (d) {duration = d };
+			if (this.timer) {clearTimeout(this.timer)};
+			
+			this.timer = setTimeout(function() {
+				self._refreshMap();
+			}, duration);
+			
+		} else {
+			if (!this.timer) {
+				this._refreshMap();
+			};
+		}
+	},
+	
+	_refreshMap: function() {
+		if (this._map) {
+			if (this.timer) {
+				clearTimeout(this.timer);
+				this.timer = null;
+			};
+			
+			trace("Refresh Map");
+			this._map.invalidateSize();
+		};
 	}
 	
 	
@@ -13877,10 +14171,14 @@ VCO.Map.Leaflet = VCO.Map.extend({
 // @codekit-prepend "slider/VCO.SlideNav.js";
 // @codekit-prepend "slider/VCO.StorySlider.js";
 
-// @codekit-prepend "map/VCO.Leaflet.js";
+// @codekit-prepend "map/leaflet/VCO.Leaflet.js";
+
 // @codekit-prepend "map/VCO.StamenMaps.js";
+// @codekit-prepend "map/VCO.MapMarker.js";
 // @codekit-prepend "map/VCO.Map.js";
-// @codekit-prepend "map/VCO.Map.Leaflet.js";
+
+// @codekit-prepend "map/VCO.MapMarker.Leaflet.js";
+// @codekit-prepend "map/leaflet/VCO.Map.Leaflet.js";
 
 
 VCO.StoryMap = VCO.Class.extend({
@@ -14034,7 +14332,8 @@ VCO.StoryMap = VCO.Class.extend({
 			map_type: 				"toner-lite",
 			map_height: 			300,
 			storyslider_height: 	600,
-			sizebar_default_y: 		300
+			sizebar_default_y: 		300,
+			path_gfx: 				"gfx"
 		};
 		
 		// Animation Objects
@@ -14076,26 +14375,34 @@ VCO.StoryMap = VCO.Class.extend({
 		this._map = new VCO.Map.Leaflet(this._el.map, this.data, this.options);
 		
 		// Create SizeBar
-		this._sizebar = new VCO.SizeBar(this._el.sizebar, this._el.container, this.data, this.options);
+		this._sizebar = new VCO.SizeBar(this._el.sizebar, this._el.container, this.options);
 		
 		// Create StorySlider
 		this._storyslider = new VCO.StorySlider(this._el.storyslider, this.data, this.options);
-		this.options.storyslider_height = (this.options.height - this._el.sizebar.offsetHeight - this.options.map_height- 1) + "px";
 		
 		
-		// Initial Layout
+		
+		// Initial Default Layout
 		this.options.width = this._el.container.offsetWidth;
 		this.options.height = this._el.container.offsetHeight;
-		this._el.container.style.width = this.options.width + "px";
-		this._el.container.style.height = this.options.height + "px";
+		this._el.map.style.height = "1px";
+		this._el.storyslider.style.top = "1px";
+		
+		// Set Default Component Sizes
+		this.options.map_height = (this.options.height / this.options.map_size_sticky);
+		this.options.storyslider_height = (this.options.height - this._el.sizebar.offsetHeight - this.options.map_height - 1);
+		this._sizebar.setSticky(this.options.map_height);
 		
 		// Update Display
-		this._updateDisplay(this.options.map_height);
+		this._updateDisplay(this.options.map_height, true, 2000);
+		
+		// Animate Sizebar to Default Location
+		this._sizebar.show(2000);
+		
 		
 	},
 	
 	_initEvents: function () {
-		
 		
 		// Sidebar Events
 		this._sizebar.on('clicked', this._onSizeBar, this);
@@ -14106,7 +14413,16 @@ VCO.StoryMap = VCO.Class.extend({
 	},
 	
 	// Update View
-	_updateDisplay: function(map_height, animate) {
+	_updateDisplay: function(map_height, animate, d) {
+		
+		var duration = this.options.duration;
+		
+		if (d) {
+			duration = d;
+		}
+		
+		this.options.width = this._el.container.offsetWidth;
+		this.options.height = this._el.container.offsetHeight;
 		
 		// Set Sticky state of SizeBar
 		this._sizebar.setSticky(this._el.container.offsetHeight/this.options.map_size_sticky);
@@ -14127,7 +14443,7 @@ VCO.StoryMap = VCO.Class.extend({
 			}
 			this.animator_map = VCO.Animate(this._el.map, {
 				height: 	(map_height- 1) + "px",
-				duration: 	this.options.duration,
+				duration: 	duration,
 				easing: 	VCO.Ease.easeOutStrong
 			});
 			
@@ -14137,7 +14453,8 @@ VCO.StoryMap = VCO.Class.extend({
 			}
 			this.animator_storyslider = VCO.Animate(this._el.storyslider, {
 				height: 	this.options.storyslider_height + "px",
-				duration: 	this.options.duration,
+				top: 		this._el.sizebar.offsetHeight + "px",
+				duration: 	duration,
 				easing: 	VCO.Ease.easeOutStrong
 			});
 			
@@ -14151,8 +14468,9 @@ VCO.StoryMap = VCO.Class.extend({
 		}
 		
 		// Update Component Displays
-		this._map.updateDisplay(this.options.width, this.options.map_height);
+		this._map.updateDisplay(this.options.width, this.options.map_height, animate, d);
 		this._storyslider.updateDisplay(this.options.width, this.options.storyslider_height, animate);
+		this._sizebar.updateDisplay(this.options.width, this.options.height, animate);
 		
 	},
 	

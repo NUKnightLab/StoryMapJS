@@ -13,7 +13,7 @@ VCO.Slide = VCO.Class.extend({
 	
 	/*	Constructor
 	================================================== */
-	initialize: function(data, options) {
+	initialize: function(data, options, add_to_container) {
 		
 		// DOM Elements
 		this._el = {
@@ -74,10 +74,17 @@ VCO.Slide = VCO.Class.extend({
 		VCO.Util.mergeData(this.options, options);
 		VCO.Util.mergeData(this.data, data);
 		
+		
+		this._el.container = VCO.Dom.create("div", "vco-slide");
+		this._el.container.id = this.data.uniqueid;
+		
 		this._initLayout();
-		this._initEvents();
 		
+		if (add_to_container) {
+			add_to_container.appendChild(this._el.container);
+		}
 		
+		//return this;
 	},
 	
 	/*	Adding, Hiding, Showing etc
@@ -120,8 +127,6 @@ VCO.Slide = VCO.Class.extend({
 	_initLayout: function () {
 		
 		// Create Layout
-		this._el.container 				= VCO.Dom.create("div", "vco-slide");
-		this._el.container.id 			= this.data.uniqueid;
 		this._el.content_container		= VCO.Dom.create("div", "vco-slide-content-container", this._el.container);
 		this._el.content				= VCO.Dom.create("div", "vco-slide-content", this._el.content_container);
 		
@@ -157,10 +162,6 @@ VCO.Slide = VCO.Class.extend({
 		
 		// Fire event that the slide is loaded
 		this.onLoaded();
-		
-	},
-	
-	_initEvents: function() {
 		
 	},
 	

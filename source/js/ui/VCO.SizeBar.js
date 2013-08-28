@@ -10,7 +10,7 @@ VCO.SizeBar = VCO.Class.extend({
 	
 	/*	Constructor
 	================================================== */
-	initialize: function(elem, parent_elem, data, options) {
+	initialize: function(elem, parent_elem, options) {
 		// DOM ELEMENTS
 		this._el = {
 			parent: {},
@@ -28,13 +28,10 @@ VCO.SizeBar = VCO.Class.extend({
 			this._el.parent = parent_elem;
 		}
 	
-		// Data
-		this.data = {
-			uniqueid: 			""
-		};
-	
 		//Options
 		this.options = {
+			width: 					600,
+			height: 				600,
 			duration: 				1000,
 			ease: 					VCO.Ease.easeInOutQuint,
 			sizebar_default_y: 		600
@@ -48,19 +45,23 @@ VCO.SizeBar = VCO.Class.extend({
 		
 		// Merge Data and Options
 		VCO.Util.mergeData(this.options, options);
-		VCO.Util.mergeData(this.data, data);
 		
 		this._initLayout();
 		this._initEvents();
 	},
 	
-	/*	Adding, Hiding, Showing etc
+	/*	Public
 	================================================== */
-	show: function() {
+	show: function(d) {
+		
+		var duration = this.options.duration;
+		if (d) {
+			duration = d;
+		}
 		
 		this.animator = VCO.Animate(this._el.container, {
 			top: 		VCO.Dom.getPosition(this._el.parent).y + this.options.sizebar_default_y + "px",
-			duration: 	this.options.duration,
+			duration: 	duration,
 			easing: 	VCO.Ease.easeOutStrong
 		});
 	},
@@ -77,13 +78,19 @@ VCO.SizeBar = VCO.Class.extend({
 		this.options.sizebar_default_y = y;
 	},
 	
+	/*	Update Display
+	================================================== */
+	updateDisplay: function(w, h) {
+		this._updateDisplay(w, h);
+	},
+	
 
 	/*	Events
 	================================================== */
 
 	
 	_onMouseClick: function() {
-		this.fire("clicked", this.data);
+		this.fire("clicked", this.options);
 	},
 	
 	_onDragStart: function(e) {
@@ -158,6 +165,19 @@ VCO.SizeBar = VCO.Class.extend({
 	
 	_initEvents: function () {
 		
+	},
+	
+	// Update Display
+	_updateDisplay: function(width, height, animate) {
+		
+		if (width) {
+			this.options.width = width;
+		}
+		if (height) {
+			this.options.height = height;
+		}
+		
+		this._el.container.style.width = this.options.width + "px";
 	}
 	
 });

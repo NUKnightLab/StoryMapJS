@@ -1,7 +1,9 @@
 /*	StorySlider
 	is the central class of the API - it is used to create a StorySlider
 
-	Events
+	Events:
+	nav_next
+	nav_previous
 	slideDisplayUpdate
 	loaded
 	slideAdded
@@ -174,50 +176,68 @@ VCO.StorySlider = VCO.Class.extend({
 		
 		this._initLayout();
 		this._initEvents();
+		this._initData();
+		this._updateDisplay();
+		
+		// Go to initial slide
+		this.goTo(this.options.start_at_slide);
 		
 	},
 	
-	/*	Update Display
+	/*	Public
 	================================================== */
 	updateDisplay: function(w, h) {
 		this._updateDisplay(w, h);
 	},
 	
+	// Create a slide
+	createSlide: function(d) {
+		this._createSlide(d);
+	},
+	
+	// Create Many Slides from an array
+	createSlides: function(array) {
+		this._createSlides(array);
+	},
+	
+	
 	/*	Create Slides
 	================================================== */
-	createSlides: function(slides) { // array of objects
+	_createSlides: function(slides) { // array of objects
 		for (var i = 0; i < slides.length; i++) {
-			var slide = new VCO.Slide(slides[i], this.options);
-			slide.addTo(this._el.slider_item_container);
-			slide.on('added', this._onSlideAdded, this);
-			this._slides.push(slide);
+			this._createSlide(slides[i]);
 		};
 	},
 	
-	/*	Adding and Removing Slide Methods
-	================================================== */
-	
-	// Add a slide or slides to the slider
-	addSlides: function(slides) { // array of objects
-		for (var i = 0; i < slides.length; i++) {
-			slides[i].addTo(this._el.slider_item_container);
-		};
-		this.fire("slideAdded", slides);
+	_createSlide: function(d) {
+		var slide = new VCO.Slide(d, this.options);
+		this._addSlide(slide);
+		this._slides.push(slide);
 	},
 	
-	// Remove a slide or slides to the slider
-	removeSlides: function(slides) { // array of objects
-		for (var i = 0; i < slides.length; i++) {
-			slides[i].removeFrom(this._el.slider_item_container);
-		};
-		this.fire("slideRemoved", slides);
+	_destroySlide: function(slide) {
+		this._removeSlide(slide);
+		for (var i = 0; i < this._slides.length; i++) {
+			if (this._slides[i] == slide) {
+				this._slides.splice(i, 1);
+			}
+		}
+	},
+	
+	_addSlide:function(slide) {
+		slide.addTo(this._el.slider_item_container);
+		slide.on('added', this._onSlideAdded, this);
+	},
+	
+	_removeSlide: function(slide) {
+		slide.removeFrom(this._el.slider_item_container);
+		slide.off('added', this._onSlideAdded, this);
 	},
 	
 	/*	Navigation
-	TODO Update Navigation content
 	================================================== */
 	
-	goTo: function(n, fast) { // number
+	goTo: function(n, fast) {
 		if (n < this._slides.length && n >= 0) {
 			this.current_slide = n;
 			
@@ -277,37 +297,6 @@ VCO.StorySlider = VCO.Class.extend({
 	
 	/*	Private Methods
 	================================================== */
-
-	// Initialize the layout
-	_initLayout: function () {
-		
-		trace("initLayout " + this.options.id)
-		this._el.container.className += ' vco-storyslider';
-		
-		// Create Layout
-		this._el.slider_container_mask		= VCO.Dom.create('div', 'vco-slider-container-mask', this._el.container);
-		this._el.slider_container			= VCO.Dom.create('div', 'vco-slider-container', this._el.slider_container_mask);
-		this._el.slider_item_container		= VCO.Dom.create('div', 'vco-slider-item-container', this._el.slider_container);
-		
-		// Create Navigation
-		
-		this._nav.previous = new VCO.SlideNav({title: "Previous", description: "description"}, {direction:"previous"});
-		this._nav.next = new VCO.SlideNav({title: "Next",description: "description"}, {direction:"next"});
-		
-		// add the navigation to the dom
-		this._nav.next.addTo(this._el.container);
-		this._nav.previous.addTo(this._el.container);
-		
-		// Create Slides and then add them
-		this.createSlides(this.data.slides);
-		this.addSlides(this._slides);
-		
-		this._updateDisplay();
-		
-		this._el.slider_container.style.left="0px";
-		this.goTo(this.options.start_at_slide);
-		
-	},
 	
 	// Update Display
 	_updateDisplay: function(width, height, animate) {
@@ -343,6 +332,32 @@ VCO.StorySlider = VCO.Class.extend({
 		this.goTo(this.current_slide, true);
 	},
 	
+	/*	Init
+	================================================== */
+	_initLayout: function () {
+		
+		trace("initLayout " + this.options.id)
+		this._el.container.className += ' vco-storyslider';
+		
+		// Create Layout
+		this._el.slider_container_mask		= VCO.Dom.create('div', 'vco-slider-container-mask', this._el.container);
+		this._el.slider_container			= VCO.Dom.create('div', 'vco-slider-container', this._el.slider_container_mask);
+		this._el.slider_item_container		= VCO.Dom.create('div', 'vco-slider-item-container', this._el.slider_container);
+		
+		// Create Navigation
+		
+		this._nav.previous = new VCO.SlideNav({title: "Previous", description: "description"}, {direction:"previous"});
+		this._nav.next = new VCO.SlideNav({title: "Next",description: "description"}, {direction:"next"});
+		
+		// add the navigation to the dom
+		this._nav.next.addTo(this._el.container);
+		this._nav.previous.addTo(this._el.container);
+		
+		
+		this._el.slider_container.style.left="0px";
+		
+	},
+	
 	
 	_initEvents: function () {
 		
@@ -351,17 +366,21 @@ VCO.StorySlider = VCO.Class.extend({
 
 	},
 	
+	_initData: function() {
+		// Create Slides and then add them
+		this._createSlides(this.data.slides);
+	},
+	
 	/*	Events
 	================================================== */
 	
 	_onNavigation: function(e) {
 		if (e.direction == "next") {
-			trace("NEXT");
 			this.next();
 		} else if (e.direction == "previous") {
-			trace("PREVIOUS");
 			this.previous();
 		}
+		this.fire("nav_" + e.direction, this.data);
 	},
 	
 	_onSlideAdded: function(e) {
