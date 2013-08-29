@@ -18,7 +18,7 @@ VCO.StorySlider = VCO.Class.extend({
 	
 	/*	Private Methods
 	================================================== */
-	initialize: function (elem, data, options) { // (HTMLElement or String, Object)
+	initialize: function (elem, data, options) {
 		
 		// DOM ELEMENTS
 		this._el = {
@@ -200,12 +200,11 @@ VCO.StorySlider = VCO.Class.extend({
 		this._createSlides(array);
 	},
 	
-	
 	/*	Create Slides
 	================================================== */
-	_createSlides: function(slides) { // array of objects
-		for (var i = 0; i < slides.length; i++) {
-			this._createSlide(slides[i]);
+	_createSlides: function(array) {
+		for (var i = 0; i < array.length; i++) {
+			this._createSlide(array[i]);
 		};
 	},
 	
@@ -248,14 +247,14 @@ VCO.StorySlider = VCO.Class.extend({
 			
 			if (fast) {
 				this._el.slider_container.style.left = -(this.options.width * n) + "px";
-				this._onSlideDisplay();
+				this._onSlideChange();
 			} else {
 				
 				this.animator = VCO.Animate(this._el.slider_container, {
 					left: 		-(this.options.width * n) + "px",
 					duration: 	this.options.duration,
 					easing: 	this.options.ease,
-					complete: 	this._onSlideDisplay()
+					complete: 	this._onSlideChange()
 				});
 				
 			}
@@ -336,7 +335,7 @@ VCO.StorySlider = VCO.Class.extend({
 	================================================== */
 	_initLayout: function () {
 		
-		trace("initLayout " + this.options.id)
+		trace("initLayout " + this.options.id);
 		this._el.container.className += ' vco-storyslider';
 		
 		// Create Layout
@@ -357,7 +356,6 @@ VCO.StorySlider = VCO.Class.extend({
 		this._el.slider_container.style.left="0px";
 		
 	},
-	
 	
 	_initEvents: function () {
 		
@@ -391,8 +389,8 @@ VCO.StorySlider = VCO.Class.extend({
 		this.fire("slideAdded", this.data);
 	},
 	
-	_onSlideDisplay: function() {
-		this.fire("slideDisplayUpdate", this.current_slide);
+	_onSlideChange: function() {
+		this.fire("change", {current_slide:this.current_slide});
 	},
 	
 	_onMouseClick: function(e) {

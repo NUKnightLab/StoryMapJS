@@ -31,18 +31,11 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	/*	Marker
 	================================================== */
 	_createMarker: function(d) {
-		trace(d);
-		/*
-		var marker = L.circle([51.508, -0.11], 500, {
-		    color: 'red',
-		    fillColor: '#f03',
-		    fillOpacity: 0.5
-		}).addTo(this._map);
-		*/
-		var marker = L.marker([51.5, -0.09]);
-		
+		var marker = new VCO.MapMarker.Leaflet(d, this.options);
+		marker.on('markerclick', this._onMarkerClick, this);
 		this._addMarker(marker);
 		this._markers.push(marker);
+		marker.marker_number = this._markers.length - 1;
 		this.fire("markerAdded", marker);
 		
 	},

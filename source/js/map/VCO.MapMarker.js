@@ -20,6 +20,9 @@ VCO.MapMarker = VCO.Class.extend({
 	
 		// Components
 		this._marker 				= {};
+		
+		// Marker Number
+		this.marker_number = 0;
 	
 		// Data
 		this.data = {
@@ -54,7 +57,8 @@ VCO.MapMarker = VCO.Class.extend({
 			duration: 			1000,
 			ease: 				VCO.Ease.easeInSpline,
 			width: 				600,
-			height: 			600
+			height: 			600,
+			map_popup: 			false
 		};
 		
 		
@@ -79,12 +83,12 @@ VCO.MapMarker = VCO.Class.extend({
 		
 	},
 	
-	addTo: function(container) {
-		container.appendChild(this._el.container);
+	addTo: function(m) {
+		this._addTo(m);
 	},
 	
-	removeFrom: function(container) {
-		container.removeChild(this._el.container);
+	removeFrom: function(m) {
+		this._removeFrom(m)
 	},
 	
 	updateDisplay: function(w, h, a) {
@@ -95,21 +99,48 @@ VCO.MapMarker = VCO.Class.extend({
 		this._createMarker(d, o);
 	},
 	
+	createPopup: function(d, o) {
+		this._createPopup(d, o);
+	},
+	
+	active: function(a) {
+		this._active(a);
+	},
+	
 	/*	Marker Specific
 		Specific to Map API
 	================================================== */
-		_createMarker: function() {
+		_createMarker: function(d, o) {
+			
+		},
+		
+		_addTo: function(m) {
+			
+		},
+		
+		_removeFrom: function(m) {
+			
+		},
+		
+		_createPopup: function(d, o) {
+		
+		},
+		
+		_active: function(a) {
 			
 		},
 	
 	/*	Events
 	================================================== */
-
+	_onMarkerClick: function(e) {
+		trace("MARKER CLICK");
+		this.fire("markerclick", {marker_number: this.marker_number});
+	},
 	
 	/*	Private Methods
 	================================================== */
 	_initLayout: function () {
-		this._marker
+		this._createMarker(this.data, this.options);
 	},
 	
 	// Update Display

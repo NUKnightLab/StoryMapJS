@@ -31,8 +31,9 @@
 
 // @codekit-prepend "media/VCO.MediaType.js";
 // @codekit-prepend "media/VCO.Media.js";
-// @codekit-prepend "media/VCO.Media.Image.js";
-// @codekit-prepend "media/VCO.Media.Text.js";
+
+// @codekit-prepend "media/types/VCO.Media.Image.js";
+// @codekit-prepend "media/types/VCO.Media.Text.js";
 
 // @codekit-prepend "ui/VCO.SizeBar.js";
 
@@ -46,7 +47,7 @@
 // @codekit-prepend "map/VCO.MapMarker.js";
 // @codekit-prepend "map/VCO.Map.js";
 
-// @codekit-prepend "map/VCO.MapMarker.Leaflet.js";
+// @codekit-prepend "map/leaflet/VCO.MapMarker.Leaflet.js";
 // @codekit-prepend "map/leaflet/VCO.Map.Leaflet.js";
 
 
@@ -56,7 +57,7 @@ VCO.StoryMap = VCO.Class.extend({
 	
 	/*	Private Methods
 	================================================== */
-	initialize: function (elem, data, options) { // (HTMLElement or String, Object)
+	initialize: function (elem, data, options) {
 		
 		// DOM ELEMENTS
 		this._el = {
@@ -66,6 +67,7 @@ VCO.StoryMap = VCO.Class.extend({
 			sizebar: {}
 		};
 		
+		// Determine Container Element
 		if (typeof elem === 'object') {
 			this._el.container = elem;
 		} else {
@@ -97,14 +99,14 @@ VCO.StoryMap = VCO.Class.extend({
 					},
 					date: 					null,
 					location: {
-						lat: 				-9.143962,
-						lon: 				38.731094,
+						lat: 				51.5,
+						lon: 				-0.09,
 						zoom: 				13,
 						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
 					},
 					text: {
 						headline: 			"Flickr",
-						text: 				""
+						text: 				"Lorem ipsum dolor sit amet, consectetuer adipiscing. Morbi commodo, ipsum sed pharetra gravida, orci magna rhoncus neque, id pulvinar odio lorem non turpis. Nullam sit amet enim."
 					},
 					media: {
 						url: 				"http://farm8.staticflickr.com/7076/7074630607_b1c23532e4.jpg",
@@ -121,14 +123,14 @@ VCO.StoryMap = VCO.Class.extend({
 					},
 					date: 					null,
 					location: {
-						lat: 				-9.143962,
-						lon: 				38.731094,
+						lat: 				51.5,
+						lon: 				-0.099,
 						zoom: 				13,
 						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
 					},
 					text: {
 						headline: 			"Flickr",
-						text: 				""
+						text: 				"blah blah"
 					},
 					media: {
 						url: 				"http://farm8.staticflickr.com/7076/7074630607_b1c23532e4.jpg",
@@ -145,8 +147,8 @@ VCO.StoryMap = VCO.Class.extend({
 					},
 					date: 					null,
 					location: {
-						lat: 				-9.143962,
-						lon: 				38.731094,
+						lat: 				51.5,
+						lon: 				-0.08,
 						zoom: 				13,
 						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
 					},
@@ -169,8 +171,8 @@ VCO.StoryMap = VCO.Class.extend({
 					},
 					date: 					null,
 					location: {
-						lat: 				-9.143962,
-						lon: 				38.731094,
+						lat: 				51.5,
+						lon: 				-0.07,
 						zoom: 				13,
 						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
 					},
@@ -202,15 +204,17 @@ VCO.StoryMap = VCO.Class.extend({
 			map_height: 			300,
 			storyslider_height: 	600,
 			sizebar_default_y: 		300,
-			path_gfx: 				"gfx"
+			path_gfx: 				"gfx",
+			map_popup: 				true
 		};
 		
 		// Animation Objects
 		this.animator_map = null;
 		this.animator_storyslider = null;
 		
-		VCO.Util.setOptions(this, this.options);
-		VCO.Util.setData(this, this.data);
+		// Merge Data and Options
+		VCO.Util.mergeData(this.options, options);
+		VCO.Util.mergeData(this.data, data);
 		
 		this._initLayout();
 		this._initEvents();
@@ -249,8 +253,6 @@ VCO.StoryMap = VCO.Class.extend({
 		// Create StorySlider
 		this._storyslider = new VCO.StorySlider(this._el.storyslider, this.data, this.options);
 		
-		
-		
 		// Initial Default Layout
 		this.options.width = this._el.container.offsetWidth;
 		this.options.height = this._el.container.offsetHeight;
@@ -279,6 +281,11 @@ VCO.StoryMap = VCO.Class.extend({
 		this._sizebar.on('swipe', this._onSizeBarSwipe, this);
 		this._sizebar.on('momentum', this._onSizeBarSwipe, this);
 		
+		// StorySlider Events
+		this._storyslider.on('change', this._onSlideChange, this);
+		
+		// Map Events
+		this._map.on('change', this._onMapChange, this);
 	},
 	
 	// Update View
@@ -345,6 +352,22 @@ VCO.StoryMap = VCO.Class.extend({
 	
 	/*	Events
 	================================================== */
+	
+	_onSlideChange: function(e) {
+		trace("_onSlideChange");
+		if (this.current_slide != e.current_slide) {
+			this.current_slide = e.current_slide;
+			this._map.goTo(this.current_slide);
+		}
+	},
+	
+	_onMapChange: function(e) {
+		trace("_onMapChange");
+		if (this.current_slide != e.current_marker) {
+			this.current_slide = e.current_marker;
+			this._storyslider.goTo(this.current_slide);
+		}
+	},
 	
 	_onSizeBar: function(e) {
 		trace("ON SIZEBAR");

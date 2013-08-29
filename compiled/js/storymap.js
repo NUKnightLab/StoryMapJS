@@ -4204,7 +4204,7 @@ VCO.StorySlider = VCO.Class.extend({
 	
 	/*	Private Methods
 	================================================== */
-	initialize: function (elem, data, options) { // (HTMLElement or String, Object)
+	initialize: function (elem, data, options) {
 		
 		// DOM ELEMENTS
 		this._el = {
@@ -4386,12 +4386,11 @@ VCO.StorySlider = VCO.Class.extend({
 		this._createSlides(array);
 	},
 	
-	
 	/*	Create Slides
 	================================================== */
-	_createSlides: function(slides) { // array of objects
-		for (var i = 0; i < slides.length; i++) {
-			this._createSlide(slides[i]);
+	_createSlides: function(array) {
+		for (var i = 0; i < array.length; i++) {
+			this._createSlide(array[i]);
 		};
 	},
 	
@@ -4434,14 +4433,14 @@ VCO.StorySlider = VCO.Class.extend({
 			
 			if (fast) {
 				this._el.slider_container.style.left = -(this.options.width * n) + "px";
-				this._onSlideDisplay();
+				this._onSlideChange();
 			} else {
 				
 				this.animator = VCO.Animate(this._el.slider_container, {
 					left: 		-(this.options.width * n) + "px",
 					duration: 	this.options.duration,
 					easing: 	this.options.ease,
-					complete: 	this._onSlideDisplay()
+					complete: 	this._onSlideChange()
 				});
 				
 			}
@@ -4522,7 +4521,7 @@ VCO.StorySlider = VCO.Class.extend({
 	================================================== */
 	_initLayout: function () {
 		
-		trace("initLayout " + this.options.id)
+		trace("initLayout " + this.options.id);
 		this._el.container.className += ' vco-storyslider';
 		
 		// Create Layout
@@ -4543,7 +4542,6 @@ VCO.StorySlider = VCO.Class.extend({
 		this._el.slider_container.style.left="0px";
 		
 	},
-	
 	
 	_initEvents: function () {
 		
@@ -4577,8 +4575,8 @@ VCO.StorySlider = VCO.Class.extend({
 		this.fire("slideAdded", this.data);
 	},
 	
-	_onSlideDisplay: function() {
-		this.fire("slideDisplayUpdate", this.current_slide);
+	_onSlideChange: function() {
+		this.fire("change", {current_slide:this.current_slide});
 	},
 	
 	_onMouseClick: function(e) {
@@ -13738,6 +13736,9 @@ VCO.MapMarker = VCO.Class.extend({
 	
 		// Components
 		this._marker 				= {};
+		
+		// Marker Number
+		this.marker_number = 0;
 	
 		// Data
 		this.data = {
@@ -13772,7 +13773,8 @@ VCO.MapMarker = VCO.Class.extend({
 			duration: 			1000,
 			ease: 				VCO.Ease.easeInSpline,
 			width: 				600,
-			height: 			600
+			height: 			600,
+			map_popup: 			false
 		};
 		
 		
@@ -13797,12 +13799,12 @@ VCO.MapMarker = VCO.Class.extend({
 		
 	},
 	
-	addTo: function(container) {
-		container.appendChild(this._el.container);
+	addTo: function(m) {
+		this._addTo(m);
 	},
 	
-	removeFrom: function(container) {
-		container.removeChild(this._el.container);
+	removeFrom: function(m) {
+		this._removeFrom(m)
 	},
 	
 	updateDisplay: function(w, h, a) {
@@ -13813,21 +13815,48 @@ VCO.MapMarker = VCO.Class.extend({
 		this._createMarker(d, o);
 	},
 	
+	createPopup: function(d, o) {
+		this._createPopup(d, o);
+	},
+	
+	active: function(a) {
+		this._active(a);
+	},
+	
 	/*	Marker Specific
 		Specific to Map API
 	================================================== */
-		_createMarker: function() {
+		_createMarker: function(d, o) {
+			
+		},
+		
+		_addTo: function(m) {
+			
+		},
+		
+		_removeFrom: function(m) {
+			
+		},
+		
+		_createPopup: function(d, o) {
+		
+		},
+		
+		_active: function(a) {
 			
 		},
 	
 	/*	Events
 	================================================== */
-
+	_onMarkerClick: function(e) {
+		trace("MARKER CLICK");
+		this.fire("markerclick", {marker_number: this.marker_number});
+	},
 	
 	/*	Private Methods
 	================================================== */
 	_initLayout: function () {
-		this._marker
+		this._createMarker(this.data, this.options);
 	},
 	
 	// Update Display
@@ -13876,6 +13905,9 @@ VCO.Map = VCO.Class.extend({
 		
 		// Markers
 		this._markers = [];
+		
+		// Current Marker
+		this.current_marker = 0;
 	
 		// Data
 		this.data = {
@@ -13886,7 +13918,8 @@ VCO.Map = VCO.Class.extend({
 		//Options
 		this.options = {
 			map_type: 			"toner",
-			path_gfx: 			"gfx"
+			path_gfx: 			"gfx",
+			map_popup: 			false, 
 		};
 		
 		// Animation
@@ -13912,6 +13945,23 @@ VCO.Map = VCO.Class.extend({
 		this._updateDisplay(w, h, animate, d);
 	},
 	
+	goTo: function(n, fast) {
+		if (n < this._markers.length && n >= 0) {
+			this.current_marker = n;
+			
+			// Stop animation
+			if (this.animator) {
+				this.animator.stop();
+			}
+			
+			// Make marker active
+			this._resetMarkersActive();
+			this._markers[this.current_marker].active(true);
+			
+			this._onMarkerChange();
+		}
+	},
+	
 	/*	Adding, Hiding, Showing etc
 	================================================== */
 	show: function() {
@@ -13934,7 +13984,7 @@ VCO.Map = VCO.Class.extend({
 	
 	/*	Adding and Removing Markers
 	================================================== */
-	createMarkers: function(array) { // array of objects
+	createMarkers: function(array) {
 		this._createMarkers(array)
 	},
 	
@@ -13942,7 +13992,7 @@ VCO.Map = VCO.Class.extend({
 		this._createMarker(d);
 	},
 	
-	_destroyMarker: function(marker) { // marker
+	_destroyMarker: function(marker) {
 		this._removeMarker(marker);
 		for (var i = 0; i < this._markers.length; i++) {
 			if (this._markers[i] == marker) {
@@ -13952,7 +14002,7 @@ VCO.Map = VCO.Class.extend({
 		this.fire("markerRemoved", marker);
 	},
 	
-	_createMarkers: function(array) { // array of objects
+	_createMarkers: function(array) {
 		for (var i = 0; i < array.length; i++) {
 			this._createMarker(array[i]);
 		};
@@ -13973,10 +14023,12 @@ VCO.Map = VCO.Class.extend({
 		================================================== */
 		
 		// Specific Marker Methods based on preferred Map API
-		_createMarker: function(d) { // data and options
+		_createMarker: function(d) {
 			var marker = {};
+			marker.on("markerclick", this._onMarkerClick);
 			this._addMarker(marker);
 			this._markers.push(marker);
+			marker.marker_number = this._markers.length - 1;
 			this.fire("markerAdded", marker);
 		},
 	
@@ -13987,11 +14039,19 @@ VCO.Map = VCO.Class.extend({
 		_removeMarker: function(marker) {
 		
 		},
+		
+		_resetMarkersActive: function() {
+			for (var i = 0; i < this._markers.length; i++) {
+				this._markers[i].active(false);
+			};
+		},
 	
 		/*	Map Specific Data
 		================================================== */
 		_initData: function() {
 			this._createMarkers(this.data.slides);
+			this._resetMarkersActive();
+			this._markers[this.current_marker].active(true);
 		},
 		
 		_updateMapDisplay: function(w, h, animate, d) {
@@ -14004,6 +14064,16 @@ VCO.Map = VCO.Class.extend({
 	
 	/*	Events
 	================================================== */
+	_onMarkerChange: function(e) {
+		this.fire("change", {current_marker:this.current_marker});
+	},
+	
+	_onMarkerClick: function(e) {
+		trace("MAP MARKER CLICK");
+		if (this.current_marker != e.marker_number) {
+			this.goTo(e.marker_number);
+		}
+	},
 	
 	/*	Private Methods
 	================================================== */
@@ -14016,9 +14086,7 @@ VCO.Map = VCO.Class.extend({
 	
 	// Update Display
 	_updateDisplay: function(w, h, animate, d) {
-		//trace("UPDATE MAP DISPLAY")
 		this._updateMapDisplay(w, h, animate, d);
-		
 	},
 	
 	_initEvents: function() {
@@ -14026,6 +14094,63 @@ VCO.Map = VCO.Class.extend({
 	}
 	
 });
+
+/* **********************************************
+     Begin VCO.MapMarker.Leaflet.js
+********************************************** */
+
+/*	VCO.MapMarker.Leaflet
+	Produces a marker for Leaflet Maps
+================================================== */
+
+VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
+	
+	
+	/*	Create Marker
+	================================================== */
+	_createMarker: function(d, o) {
+		var icon = new L.Icon.Default();
+		
+		if (d.location.icon && d.location.icon != "") {
+			icon = L.icon({iconUrl: d.location.icon, iconSize: [41]});
+			//icon = L.icon({iconUrl: d.media.url, iconSize: [41]});
+			
+		};
+		
+		this._marker = L.marker([d.location.lat, d.location.lon], {
+			title: 		d.text.headline,
+			icon: 		icon
+		});
+		
+		this._marker.on("click", this._onMarkerClick, this); 
+		
+		if (o.map_popup) {
+			this._createPopup(d, o);
+		}
+		
+	},
+	
+	_addTo: function(m) {
+		this._marker.addTo(m);
+	},
+	
+	_createPopup: function(d, o) {
+		var html = "";
+		html += "<h3>" + this.data.text.headline + "</h3>";
+		html += "<p>" + this.data.text.text + "</p>";
+		this._marker.bindPopup(html);
+	},
+	
+	_active: function(a) {
+		if (a) {
+			this._marker.setOpacity(1);
+		} else {
+			this._marker.setOpacity(.33);
+		}
+	}
+	
+});
+
 
 /* **********************************************
      Begin VCO.Map.Leaflet.js
@@ -14064,18 +14189,11 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	/*	Marker
 	================================================== */
 	_createMarker: function(d) {
-		trace(d);
-		/*
-		var marker = L.circle([51.508, -0.11], 500, {
-		    color: 'red',
-		    fillColor: '#f03',
-		    fillOpacity: 0.5
-		}).addTo(this._map);
-		*/
-		var marker = L.marker([51.5, -0.09]);
-		
+		var marker = new VCO.MapMarker.Leaflet(d, this.options);
+		marker.on('markerclick', this._onMarkerClick, this);
 		this._addMarker(marker);
 		this._markers.push(marker);
+		marker.marker_number = this._markers.length - 1;
 		this.fire("markerAdded", marker);
 		
 	},
@@ -14162,8 +14280,9 @@ VCO.Map.Leaflet = VCO.Map.extend({
 
 // @codekit-prepend "media/VCO.MediaType.js";
 // @codekit-prepend "media/VCO.Media.js";
-// @codekit-prepend "media/VCO.Media.Image.js";
-// @codekit-prepend "media/VCO.Media.Text.js";
+
+// @codekit-prepend "media/types/VCO.Media.Image.js";
+// @codekit-prepend "media/types/VCO.Media.Text.js";
 
 // @codekit-prepend "ui/VCO.SizeBar.js";
 
@@ -14177,7 +14296,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 // @codekit-prepend "map/VCO.MapMarker.js";
 // @codekit-prepend "map/VCO.Map.js";
 
-// @codekit-prepend "map/VCO.MapMarker.Leaflet.js";
+// @codekit-prepend "map/leaflet/VCO.MapMarker.Leaflet.js";
 // @codekit-prepend "map/leaflet/VCO.Map.Leaflet.js";
 
 
@@ -14187,7 +14306,7 @@ VCO.StoryMap = VCO.Class.extend({
 	
 	/*	Private Methods
 	================================================== */
-	initialize: function (elem, data, options) { // (HTMLElement or String, Object)
+	initialize: function (elem, data, options) {
 		
 		// DOM ELEMENTS
 		this._el = {
@@ -14197,6 +14316,7 @@ VCO.StoryMap = VCO.Class.extend({
 			sizebar: {}
 		};
 		
+		// Determine Container Element
 		if (typeof elem === 'object') {
 			this._el.container = elem;
 		} else {
@@ -14228,14 +14348,14 @@ VCO.StoryMap = VCO.Class.extend({
 					},
 					date: 					null,
 					location: {
-						lat: 				-9.143962,
-						lon: 				38.731094,
+						lat: 				51.5,
+						lon: 				-0.09,
 						zoom: 				13,
 						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
 					},
 					text: {
 						headline: 			"Flickr",
-						text: 				""
+						text: 				"Lorem ipsum dolor sit amet, consectetuer adipiscing. Morbi commodo, ipsum sed pharetra gravida, orci magna rhoncus neque, id pulvinar odio lorem non turpis. Nullam sit amet enim."
 					},
 					media: {
 						url: 				"http://farm8.staticflickr.com/7076/7074630607_b1c23532e4.jpg",
@@ -14252,14 +14372,14 @@ VCO.StoryMap = VCO.Class.extend({
 					},
 					date: 					null,
 					location: {
-						lat: 				-9.143962,
-						lon: 				38.731094,
+						lat: 				51.5,
+						lon: 				-0.099,
 						zoom: 				13,
 						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
 					},
 					text: {
 						headline: 			"Flickr",
-						text: 				""
+						text: 				"blah blah"
 					},
 					media: {
 						url: 				"http://farm8.staticflickr.com/7076/7074630607_b1c23532e4.jpg",
@@ -14276,8 +14396,8 @@ VCO.StoryMap = VCO.Class.extend({
 					},
 					date: 					null,
 					location: {
-						lat: 				-9.143962,
-						lon: 				38.731094,
+						lat: 				51.5,
+						lon: 				-0.08,
 						zoom: 				13,
 						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
 					},
@@ -14300,8 +14420,8 @@ VCO.StoryMap = VCO.Class.extend({
 					},
 					date: 					null,
 					location: {
-						lat: 				-9.143962,
-						lon: 				38.731094,
+						lat: 				51.5,
+						lon: 				-0.07,
 						zoom: 				13,
 						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
 					},
@@ -14333,15 +14453,17 @@ VCO.StoryMap = VCO.Class.extend({
 			map_height: 			300,
 			storyslider_height: 	600,
 			sizebar_default_y: 		300,
-			path_gfx: 				"gfx"
+			path_gfx: 				"gfx",
+			map_popup: 				true
 		};
 		
 		// Animation Objects
 		this.animator_map = null;
 		this.animator_storyslider = null;
 		
-		VCO.Util.setOptions(this, this.options);
-		VCO.Util.setData(this, this.data);
+		// Merge Data and Options
+		VCO.Util.mergeData(this.options, options);
+		VCO.Util.mergeData(this.data, data);
 		
 		this._initLayout();
 		this._initEvents();
@@ -14380,8 +14502,6 @@ VCO.StoryMap = VCO.Class.extend({
 		// Create StorySlider
 		this._storyslider = new VCO.StorySlider(this._el.storyslider, this.data, this.options);
 		
-		
-		
 		// Initial Default Layout
 		this.options.width = this._el.container.offsetWidth;
 		this.options.height = this._el.container.offsetHeight;
@@ -14410,6 +14530,11 @@ VCO.StoryMap = VCO.Class.extend({
 		this._sizebar.on('swipe', this._onSizeBarSwipe, this);
 		this._sizebar.on('momentum', this._onSizeBarSwipe, this);
 		
+		// StorySlider Events
+		this._storyslider.on('change', this._onSlideChange, this);
+		
+		// Map Events
+		this._map.on('change', this._onMapChange, this);
 	},
 	
 	// Update View
@@ -14476,6 +14601,22 @@ VCO.StoryMap = VCO.Class.extend({
 	
 	/*	Events
 	================================================== */
+	
+	_onSlideChange: function(e) {
+		trace("_onSlideChange");
+		if (this.current_slide != e.current_slide) {
+			this.current_slide = e.current_slide;
+			this._map.goTo(this.current_slide);
+		}
+	},
+	
+	_onMapChange: function(e) {
+		trace("_onMapChange");
+		if (this.current_slide != e.current_marker) {
+			this.current_slide = e.current_marker;
+			this._storyslider.goTo(this.current_slide);
+		}
+	},
 	
 	_onSizeBar: function(e) {
 		trace("ON SIZEBAR");

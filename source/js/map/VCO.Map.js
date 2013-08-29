@@ -32,6 +32,9 @@ VCO.Map = VCO.Class.extend({
 		
 		// Markers
 		this._markers = [];
+		
+		// Current Marker
+		this.current_marker = 0;
 	
 		// Data
 		this.data = {
@@ -42,7 +45,8 @@ VCO.Map = VCO.Class.extend({
 		//Options
 		this.options = {
 			map_type: 			"toner",
-			path_gfx: 			"gfx"
+			path_gfx: 			"gfx",
+			map_popup: 			false, 
 		};
 		
 		// Animation
@@ -68,6 +72,23 @@ VCO.Map = VCO.Class.extend({
 		this._updateDisplay(w, h, animate, d);
 	},
 	
+	goTo: function(n, fast) {
+		if (n < this._markers.length && n >= 0) {
+			this.current_marker = n;
+			
+			// Stop animation
+			if (this.animator) {
+				this.animator.stop();
+			}
+			
+			// Make marker active
+			this._resetMarkersActive();
+			this._markers[this.current_marker].active(true);
+			
+			this._onMarkerChange();
+		}
+	},
+	
 	/*	Adding, Hiding, Showing etc
 	================================================== */
 	show: function() {
@@ -90,7 +111,7 @@ VCO.Map = VCO.Class.extend({
 	
 	/*	Adding and Removing Markers
 	================================================== */
-	createMarkers: function(array) { // array of objects
+	createMarkers: function(array) {
 		this._createMarkers(array)
 	},
 	
@@ -98,7 +119,7 @@ VCO.Map = VCO.Class.extend({
 		this._createMarker(d);
 	},
 	
-	_destroyMarker: function(marker) { // marker
+	_destroyMarker: function(marker) {
 		this._removeMarker(marker);
 		for (var i = 0; i < this._markers.length; i++) {
 			if (this._markers[i] == marker) {
@@ -108,7 +129,7 @@ VCO.Map = VCO.Class.extend({
 		this.fire("markerRemoved", marker);
 	},
 	
-	_createMarkers: function(array) { // array of objects
+	_createMarkers: function(array) {
 		for (var i = 0; i < array.length; i++) {
 			this._createMarker(array[i]);
 		};
@@ -129,10 +150,12 @@ VCO.Map = VCO.Class.extend({
 		================================================== */
 		
 		// Specific Marker Methods based on preferred Map API
-		_createMarker: function(d) { // data and options
+		_createMarker: function(d) {
 			var marker = {};
+			marker.on("markerclick", this._onMarkerClick);
 			this._addMarker(marker);
 			this._markers.push(marker);
+			marker.marker_number = this._markers.length - 1;
 			this.fire("markerAdded", marker);
 		},
 	
@@ -143,11 +166,19 @@ VCO.Map = VCO.Class.extend({
 		_removeMarker: function(marker) {
 		
 		},
+		
+		_resetMarkersActive: function() {
+			for (var i = 0; i < this._markers.length; i++) {
+				this._markers[i].active(false);
+			};
+		},
 	
 		/*	Map Specific Data
 		================================================== */
 		_initData: function() {
 			this._createMarkers(this.data.slides);
+			this._resetMarkersActive();
+			this._markers[this.current_marker].active(true);
 		},
 		
 		_updateMapDisplay: function(w, h, animate, d) {
@@ -160,6 +191,16 @@ VCO.Map = VCO.Class.extend({
 	
 	/*	Events
 	================================================== */
+	_onMarkerChange: function(e) {
+		this.fire("change", {current_marker:this.current_marker});
+	},
+	
+	_onMarkerClick: function(e) {
+		trace("MAP MARKER CLICK");
+		if (this.current_marker != e.marker_number) {
+			this.goTo(e.marker_number);
+		}
+	},
 	
 	/*	Private Methods
 	================================================== */
@@ -172,9 +213,7 @@ VCO.Map = VCO.Class.extend({
 	
 	// Update Display
 	_updateDisplay: function(w, h, animate, d) {
-		//trace("UPDATE MAP DISPLAY")
 		this._updateMapDisplay(w, h, animate, d);
-		
 	},
 	
 	_initEvents: function() {
