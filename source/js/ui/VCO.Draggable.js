@@ -142,6 +142,15 @@ VCO.Draggable = VCO.Class.extend({
 			this.data.pagey.start = e.pageY;
 		}
 		
+		// Center element to finger or mouse
+		if (this.options.enable.x) {
+			this._el.move.style.left = this.data.pagex.start - (this._el.move.offsetWidth / 2) + "px";
+		}
+		
+		if (this.options.enable.y) {
+			this._el.move.style.top = this.data.pagey.start - (this._el.move.offsetHeight / 2) + "px";
+		}
+		
 		this.data.pos.start = VCO.Dom.getPosition(this._el.drag);
 		this.data.time.start = new Date().getTime();
 		

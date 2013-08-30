@@ -1,0 +1,35 @@
+/* Requires Variables.less
+================================================== */
+.vco-map {
+	.leaflet-zoom-anim .leaflet-zoom-animated {
+		-webkit-transition: -webkit-transform 0.8s cubic-bezier(0.25,0.1,0.25,0.75);
+		   -moz-transition: -moz-transform 0.8s cubic-bezier(0.25,0.1,0.25,0.75);
+		     -o-transition: -o-transform 0.8s cubic-bezier(0.25,0.1,0.25,0.75);
+		        transition: transform 0.8s cubic-bezier(0.25,0.1,0.25,0.75);
+	}
+	/*
+	.leaflet-zoom-anim .leaflet-zoom-animated {
+		-webkit-transition: -webkit-transform 1s cubic-bezier(1, 0, 0, 1);
+		   -moz-transition: -moz-transform 1s cubic-bezier(1, 0, 0, 1);
+		     -o-transition: -o-transform 1s cubic-bezier(1, 0, 0, 1);
+		        transition: transform 1s cubic-bezier(1, 0, 0, 1); 
+	}
+	*/
+	.leaflet-zoom-anim .leaflet-zoom-animated {
+		-webkit-transition: -webkit-transform 1s cubic-bezier(0.75, 0.1, 0.2, 1);
+		   -moz-transition: -moz-transform 1s cubic-bezier(0.75, 0.1, 0.2, 1);
+		     -o-transition: -o-transform 1s cubic-bezier(0.75, 0.1, 0.2, 1);
+		        transition: transform 1s cubic-bezier(0.75, 0.1, 0.2, 1); 
+	}
+}
+
+
+
+/* Mobile, iPhone and skinny
+================================================== */
+@media only screen and (max-width: 500px), only screen and (max-device-width: 500px) {
+	.vco-map {
+
+	}
+}
+

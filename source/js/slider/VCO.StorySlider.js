@@ -236,7 +236,7 @@ VCO.StorySlider = VCO.Class.extend({
 	/*	Navigation
 	================================================== */
 	
-	goTo: function(n, fast) {
+	goTo: function(n, fast, displayupdate) {
 		if (n < this._slides.length && n >= 0) {
 			this.current_slide = n;
 			
@@ -247,14 +247,14 @@ VCO.StorySlider = VCO.Class.extend({
 			
 			if (fast) {
 				this._el.slider_container.style.left = -(this.options.width * n) + "px";
-				this._onSlideChange();
+				this._onSlideChange(displayupdate);
 			} else {
 				
 				this.animator = VCO.Animate(this._el.slider_container, {
 					left: 		-(this.options.width * n) + "px",
 					duration: 	this.options.duration,
 					easing: 	this.options.ease,
-					complete: 	this._onSlideChange()
+					complete: 	this._onSlideChange(displayupdate)
 				});
 				
 			}
@@ -328,7 +328,7 @@ VCO.StorySlider = VCO.Class.extend({
 		};
 		
 		// Go to the current slide
-		this.goTo(this.current_slide, true);
+		this.goTo(this.current_slide, true, true);
 	},
 	
 	/*	Init
@@ -389,8 +389,10 @@ VCO.StorySlider = VCO.Class.extend({
 		this.fire("slideAdded", this.data);
 	},
 	
-	_onSlideChange: function() {
-		this.fire("change", {current_slide:this.current_slide});
+	_onSlideChange: function(displayupdate) {
+		if (!displayupdate) {
+			this.fire("change", {current_slide:this.current_slide});
+		}
 	},
 	
 	_onMouseClick: function(e) {

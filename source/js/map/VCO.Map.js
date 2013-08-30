@@ -47,6 +47,13 @@ VCO.Map = VCO.Class.extend({
 			map_type: 			"toner",
 			path_gfx: 			"gfx",
 			map_popup: 			false, 
+			zoom_distance: 		100,
+			calculate_zoom: 	true, // Allow map to determine best zoom level between markers (recommended)
+			default_map_location: {
+				lat: 	51.505,
+				lon: 	-0.09,
+				zoom: 	13
+			}
 		};
 		
 		// Animation
@@ -74,7 +81,10 @@ VCO.Map = VCO.Class.extend({
 	
 	goTo: function(n, fast) {
 		if (n < this._markers.length && n >= 0) {
+			var zoom = 0;
 			this.current_marker = n;
+			
+			var marker = this._markers[this.current_marker];
 			
 			// Stop animation
 			if (this.animator) {
@@ -83,11 +93,30 @@ VCO.Map = VCO.Class.extend({
 			
 			// Make marker active
 			this._resetMarkersActive();
-			this._markers[this.current_marker].active(true);
+			marker.active(true);
+			
+			// Calculate Zoom
+			zoom = this._calculateZoomChange(this._getMapCenter(), marker.location());
+			
+			// Set Map View
+			this._viewTo(marker.data.location, {calculate_zoom: this.options.calculate_zoom, zoom:zoom});
 			
 			this._onMarkerChange();
 		}
 	},
+	
+	panTo: function(loc, animate) {
+		this._panTo(loc, animate);
+	},
+	
+	zoomTo: function(z, animate) {
+		this._zoomTo(z, animate);
+	},
+	
+	viewTo: function(loc, duration) {
+		this._viewTo(loc, duration);
+	},
+	
 	
 	/*	Adding, Hiding, Showing etc
 	================================================== */
@@ -173,12 +202,19 @@ VCO.Map = VCO.Class.extend({
 			};
 		},
 	
-		/*	Map Specific Data
+		/*	Map Specific Methods
 		================================================== */
-		_initData: function() {
-			this._createMarkers(this.data.slides);
-			this._resetMarkersActive();
-			this._markers[this.current_marker].active(true);
+		
+		_panTo: function(loc, animate) {
+			
+		},
+		
+		_zoomTo: function(z, animate) {
+		
+		},
+		
+		_viewTo: function(loc, duration) {
+		
 		},
 		
 		_updateMapDisplay: function(w, h, animate, d) {
@@ -188,6 +224,19 @@ VCO.Map = VCO.Class.extend({
 		_refreshMap: function() {
 			
 		},
+		
+		_getMapLocation: function(m) {
+			return {x:0, y:0};
+		},
+		
+		_getMapZoom: function() {
+			return 1;
+		},
+		
+		_getMapCenter: function() {
+			return {lat:0, lng:0};
+		},
+		
 	
 	/*	Events
 	================================================== */
@@ -196,7 +245,6 @@ VCO.Map = VCO.Class.extend({
 	},
 	
 	_onMarkerClick: function(e) {
-		trace("MAP MARKER CLICK");
 		if (this.current_marker != e.marker_number) {
 			this.goTo(e.marker_number);
 		}
@@ -204,6 +252,58 @@ VCO.Map = VCO.Class.extend({
 	
 	/*	Private Methods
 	================================================== */
+	
+	_calculateZoomChange: function(m1, m2) {
+		var _m1 	= this._getMapLocation(m1),
+			_m2 	= this._getMapLocation(m2),
+			zoom 	= {
+				in: 	false,
+				out: 	false,
+				amount: 1,
+				current: this._getMapZoom(),
+				max: 	16,
+				min: 	4
+			};
+			
+		// Calculate Zoom in or zoom out
+		if (Math.abs(_m1.x - _m2.x) >= (this._el.container.offsetWidth / 2)) {
+			zoom.out 	= true;
+			zoom.in 	= false;
+		} else if (Math.abs(_m1.x - _m2.x) <= this.options.zoom_distance) {
+			zoom.in 	= true;
+		}
+		
+		if (Math.abs(_m1.y - _m2.y) >= (this._el.container.offsetHeight)) {
+			zoom.out	= true;
+			zoom.in		= false;
+			zoom.amount = Math.round(Math.abs(_m1.y - _m2.y) / (this._el.container.offsetHeight));
+
+		} else if ((Math.abs(_m1.y - _m2.y) <= this.options.zoom_distance)) {
+		
+		} else {
+			zoom.in = false;
+		}
+		
+		// Return New Zoom Number
+		if (zoom.in) {
+			if (zoom.current < zoom.max) {
+				return zoom.current + zoom.amount;
+			}
+		} else if (zoom.out) {
+			if (zoom.current > zoom.min) {
+				return zoom.current - zoom.amount;
+			}
+		} else {
+			return zoom.current;
+		}
+		
+	},
+	
+	_updateDisplay: function(w, h, animate, d) {
+		// Update Map Display
+		this._updateMapDisplay();
+	},
+	
 	_initLayout: function() {
 		
 		// Create Layout
@@ -211,9 +311,12 @@ VCO.Map = VCO.Class.extend({
 		
 	},
 	
-	// Update Display
-	_updateDisplay: function(w, h, animate, d) {
-		this._updateMapDisplay(w, h, animate, d);
+	_initData: function() {
+		if (this.data.slides) {
+			this._createMarkers(this.data.slides);
+			this._resetMarkersActive();
+			this._markers[this.current_marker].active(true);
+		}
 	},
 	
 	_initEvents: function() {

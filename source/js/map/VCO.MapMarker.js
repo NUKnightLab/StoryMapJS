@@ -107,6 +107,10 @@ VCO.MapMarker = VCO.Class.extend({
 		this._active(a);
 	},
 	
+	location: function() {
+		return this._location();
+	},
+	
 	/*	Marker Specific
 		Specific to Map API
 	================================================== */
@@ -128,6 +132,10 @@ VCO.MapMarker = VCO.Class.extend({
 		
 		_active: function(a) {
 			
+		},
+		
+		_location: function() {
+			return {lat:0, lng:0}
 		},
 	
 	/*	Events

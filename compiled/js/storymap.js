@@ -3033,281 +3033,6 @@ VCO.DomEvent = {
 
 
 /* **********************************************
-     Begin VCO.Draggable.js
-********************************************** */
-
-/*	VCO.Draggable
-	VCO.Draggable allows you to add dragging capabilities to any element. Supports mobile devices too.
-	TODO Enable constraints
-================================================== */
-
-VCO.Draggable = VCO.Class.extend({
-	
-	includes: VCO.Events,
-	
-	_el: {},
-	
-	mousedrag: {
-		down:		"mousedown",
-		up:			"mouseup",
-		leave:		"mouseleave",
-		move:		"mousemove"
-	},
-	
-	touchdrag: {
-		down:		"touchstart",
-		up:			"touchend",
-		leave:		"mouseleave",
-		move:		"touchmove"
-	},
-
-	initialize: function (drag_elem, options, move_elem) {
-		
-		// DOM ELements 
-		this._el = {
-			drag: drag_elem,
-			move: drag_elem
-		};
-		
-		if (move_elem) {
-			this._el.move = move_elem;
-		}
-		
-		
-		//Options
-		this.options = {
-			enable:	{
-				x: true,
-				y: true
-			},
-			constraint: {
-				top: false,
-				bottom: false,
-				left: false,
-				right: false
-			},
-			momentum_multiplier: 	2000,
-			duration: 				1000,
-			ease: 					VCO.Ease.easeInOutQuint
-		};
-		
-		
-		// Animation Object
-		this.animator = null;
-		
-		// Drag Event Type
-		this.dragevent = this.mousedrag;
-		
-		if (VCO.Browser.touch) {
-			this.dragevent = this.touchdrag;
-		}
-		
-		// Draggable Data
-		this.data = {
-			sliding:		false,
-			direction: 		"none",
-			pagex: {
-				start:		0,
-				end:		0
-			},
-			pagey: {
-				start:		0,
-				end:		0
-			},
-			pos: {
-				start: {
-					x: 0,
-					y:0
-				},
-				end: {
-					x: 0,
-					y:0
-				}
-			},
-			new_pos: {
-				x: 0,
-				y: 0
-			},
-			new_pos_parent: {
-				x: 0,
-				y: 0
-			},
-			time: {
-				start:		0,
-				end:		0
-			},
-			touch:			false
-		};
-		
-		// Merge Data and Options
-		VCO.Util.mergeData(this.options, options);
-		
-		
-	},
-	
-	enable: function(e) {
-		VCO.DomEvent.addListener(this._el.drag, this.dragevent.down, this._onDragStart, this);
-		VCO.DomEvent.addListener(this._el.drag, this.dragevent.up, this._onDragEnd, this);
-		
-		this.data.pos.start = VCO.Dom.getPosition(this._el.move);
-		this._el.move.style.left = this.data.pos.start.x + "px";
-		this._el.move.style.top = this.data.pos.start.y + "px";
-		this._el.move.style.position = "absolute";
-		this._el.move.style.zIndex = "11";
-		this._el.move.style.cursor = "move";
-	},
-	
-	disable: function() {
-		VCO.DomEvent.removeListener(this._el.drag, this.dragevent.down, this._onDragStart, this);
-		VCO.DomEvent.removeListener(this._el.drag, this.dragevent.up, this._onDragEnd, this);
-	},
-	
-	stopMomentum: function() {
-		if (this.animator) {
-			this.animator.stop();
-		}
-
-	},
-	
-	/*	Private Methods
-	================================================== */
-	_onDragStart: function(e) {
-		if (VCO.Browser.touch) {
-			this.data.pagex.start = e.originalEvent.touches[0].screenX;
-			this.data.pagey.start = e.originalEvent.touches[0].screenY;
-		} else {
-			this.data.pagex.start = e.pageX;
-			this.data.pagey.start = e.pageY;
-		}
-		
-		this.data.pos.start = VCO.Dom.getPosition(this._el.drag);
-		this.data.time.start = new Date().getTime();
-		
-		this.fire("dragstart", this.data);
-		VCO.DomEvent.addListener(this._el.drag, this.dragevent.move, this._onDragMove, this);
-		VCO.DomEvent.addListener(this._el.drag, this.dragevent.leave, this._onDragEnd, this);
-	},
-	
-	_onDragEnd: function(e) {
-		this.data.sliding = false;
-		VCO.DomEvent.removeListener(this._el.drag, this.dragevent.move, this._onDragMove, this);
-		VCO.DomEvent.removeListener(this._el.drag, this.dragevent.leave, this._onDragEnd, this);
-		this.fire("dragend", this.data);
-		
-		//  momentum
-		this._momentum();
-	},
-	
-	_onDragMove: function(e) {
-		this.data.sliding = true;
-		
-		if (VCO.Browser.touch) {
-			this.data.pagex.end = e.originalEvent.touches[0].screenX;
-			this.data.pagey.end = e.originalEvent.touches[0].screenY;
-		} else {
-			this.data.pagex.end = e.pageX;
-			this.data.pagey.end = e.pageY;
-		}
-		
-		this.data.pos.end = VCO.Dom.getPosition(this._el.drag);
-		this.data.new_pos.x = -(this.data.pagex.start - this.data.pagex.end - this.data.pos.start.x)//-(this.data.pagex.start - this.data.pagex.end - this.data.pos.end.x);
-		this.data.new_pos.y = -(this.data.pagey.start - this.data.pagey.end - this.data.pos.start.y );
-		
-		if (this.options.enable.x) {
-			this._el.move.style.left = this.data.new_pos.x + "px";
-		}
-		
-		if (this.options.enable.y) {
-			this._el.move.style.top = this.data.new_pos.y + "px";
-		}
-		
-		this.fire("dragmove", this.data);
-	},
-	
-	_momentum: function() {
-		var pos_adjust = {
-				x: 0,
-				y: 0,
-				time: 0
-			},
-			pos_change = {
-				x: 0,
-				y: 0,
-				time: 0
-			},
-			swipe = false,
-			swipe_direction = "";
-		
-		
-		if (VCO.Browser.touch) {
-			this.options.momentum_multiplier = this.options.momentum_multiplier * 2;
-		}
-		
-		pos_adjust.time = (new Date().getTime() - this.data.time.start) * 10;
-		pos_change.time = (new Date().getTime() - this.data.time.start) * 10;
-		
-		pos_change.x = this.options.momentum_multiplier * (Math.abs(this.data.pagex.end) - Math.abs(this.data.pagex.start));
-		pos_change.y = this.options.momentum_multiplier * (Math.abs(this.data.pagey.end) - Math.abs(this.data.pagey.start));
-		
-		pos_adjust.x = Math.round(pos_change.x / pos_change.time);
-		pos_adjust.y = Math.round(pos_change.y / pos_change.time);
-		
-		this.data.new_pos.x = Math.min(this.data.pos.end.x + pos_adjust.x);
-		this.data.new_pos.y = Math.min(this.data.pos.end.y + pos_adjust.y);
-
-		
-		if (!this.options.enable.x) {
-			this.data.new_pos.x = this.data.pos.start.x;
-		} else if (this.data.new_pos.x < 0) {
-			this.data.new_pos.x = 0;
-		}
-		
-		if (!this.options.enable.y) {
-			this.data.new_pos.y = this.data.pos.start.y;
-		} else if (this.data.new_pos.y < 0) {
-			this.data.new_pos.y = 0;
-		}
-		
-		// Detect Swipe
-		if (pos_change.time < 3000) {
-			swipe = true;
-		}
-		
-		// Detect Direction
-		if (Math.abs(pos_change.x) > 10000) {
-			this.data.direction = "left";
-			if (pos_change.x > 0) {
-				this.data.direction = "right";
-			}
-		}
-		// Detect Swipe
-		if (Math.abs(pos_change.y) > 10000) {
-			this.data.direction = "up";
-			if (pos_change.y > 0) {
-				this.data.direction = "down";
-			}
-		}
-		this._animateMomentum();
-		if (swipe) {
-			this.fire("swipe_" + this.data.direction, this.data);
-		}
-		
-	},
-	
-	
-	_animateMomentum: function() {
-		this.animator = VCO.Animate(this._el.move, {
-			left: 		this.data.new_pos.x + "px",
-			top: 		this.data.new_pos.y + "px",
-			duration: 	this.options.duration,
-			easing: 	VCO.Ease.easeOutStrong
-		});
-		this.fire("momentum", this.data);
-	}
-});
-
-
-/* **********************************************
      Begin VCO.MediaType.js
 ********************************************** */
 
@@ -3692,6 +3417,290 @@ VCO.Media.Text = VCO.Class.extend({
 	}
 	
 });
+
+/* **********************************************
+     Begin VCO.Draggable.js
+********************************************** */
+
+/*	VCO.Draggable
+	VCO.Draggable allows you to add dragging capabilities to any element. Supports mobile devices too.
+	TODO Enable constraints
+================================================== */
+
+VCO.Draggable = VCO.Class.extend({
+	
+	includes: VCO.Events,
+	
+	_el: {},
+	
+	mousedrag: {
+		down:		"mousedown",
+		up:			"mouseup",
+		leave:		"mouseleave",
+		move:		"mousemove"
+	},
+	
+	touchdrag: {
+		down:		"touchstart",
+		up:			"touchend",
+		leave:		"mouseleave",
+		move:		"touchmove"
+	},
+
+	initialize: function (drag_elem, options, move_elem) {
+		
+		// DOM ELements 
+		this._el = {
+			drag: drag_elem,
+			move: drag_elem
+		};
+		
+		if (move_elem) {
+			this._el.move = move_elem;
+		}
+		
+		
+		//Options
+		this.options = {
+			enable:	{
+				x: true,
+				y: true
+			},
+			constraint: {
+				top: false,
+				bottom: false,
+				left: false,
+				right: false
+			},
+			momentum_multiplier: 	2000,
+			duration: 				1000,
+			ease: 					VCO.Ease.easeInOutQuint
+		};
+		
+		
+		// Animation Object
+		this.animator = null;
+		
+		// Drag Event Type
+		this.dragevent = this.mousedrag;
+		
+		if (VCO.Browser.touch) {
+			this.dragevent = this.touchdrag;
+		}
+		
+		// Draggable Data
+		this.data = {
+			sliding:		false,
+			direction: 		"none",
+			pagex: {
+				start:		0,
+				end:		0
+			},
+			pagey: {
+				start:		0,
+				end:		0
+			},
+			pos: {
+				start: {
+					x: 0,
+					y:0
+				},
+				end: {
+					x: 0,
+					y:0
+				}
+			},
+			new_pos: {
+				x: 0,
+				y: 0
+			},
+			new_pos_parent: {
+				x: 0,
+				y: 0
+			},
+			time: {
+				start:		0,
+				end:		0
+			},
+			touch:			false
+		};
+		
+		// Merge Data and Options
+		VCO.Util.mergeData(this.options, options);
+		
+		
+	},
+	
+	enable: function(e) {
+		VCO.DomEvent.addListener(this._el.drag, this.dragevent.down, this._onDragStart, this);
+		VCO.DomEvent.addListener(this._el.drag, this.dragevent.up, this._onDragEnd, this);
+		
+		this.data.pos.start = VCO.Dom.getPosition(this._el.move);
+		this._el.move.style.left = this.data.pos.start.x + "px";
+		this._el.move.style.top = this.data.pos.start.y + "px";
+		this._el.move.style.position = "absolute";
+		this._el.move.style.zIndex = "11";
+		this._el.move.style.cursor = "move";
+	},
+	
+	disable: function() {
+		VCO.DomEvent.removeListener(this._el.drag, this.dragevent.down, this._onDragStart, this);
+		VCO.DomEvent.removeListener(this._el.drag, this.dragevent.up, this._onDragEnd, this);
+	},
+	
+	stopMomentum: function() {
+		if (this.animator) {
+			this.animator.stop();
+		}
+
+	},
+	
+	/*	Private Methods
+	================================================== */
+	_onDragStart: function(e) {
+		if (VCO.Browser.touch) {
+			this.data.pagex.start = e.originalEvent.touches[0].screenX;
+			this.data.pagey.start = e.originalEvent.touches[0].screenY;
+		} else {
+			this.data.pagex.start = e.pageX;
+			this.data.pagey.start = e.pageY;
+		}
+		
+		// Center element to finger or mouse
+		if (this.options.enable.x) {
+			this._el.move.style.left = this.data.pagex.start - (this._el.move.offsetWidth / 2) + "px";
+		}
+		
+		if (this.options.enable.y) {
+			this._el.move.style.top = this.data.pagey.start - (this._el.move.offsetHeight / 2) + "px";
+		}
+		
+		this.data.pos.start = VCO.Dom.getPosition(this._el.drag);
+		this.data.time.start = new Date().getTime();
+		
+		this.fire("dragstart", this.data);
+		VCO.DomEvent.addListener(this._el.drag, this.dragevent.move, this._onDragMove, this);
+		VCO.DomEvent.addListener(this._el.drag, this.dragevent.leave, this._onDragEnd, this);
+	},
+	
+	_onDragEnd: function(e) {
+		this.data.sliding = false;
+		VCO.DomEvent.removeListener(this._el.drag, this.dragevent.move, this._onDragMove, this);
+		VCO.DomEvent.removeListener(this._el.drag, this.dragevent.leave, this._onDragEnd, this);
+		this.fire("dragend", this.data);
+		
+		//  momentum
+		this._momentum();
+	},
+	
+	_onDragMove: function(e) {
+		this.data.sliding = true;
+		
+		if (VCO.Browser.touch) {
+			this.data.pagex.end = e.originalEvent.touches[0].screenX;
+			this.data.pagey.end = e.originalEvent.touches[0].screenY;
+		} else {
+			this.data.pagex.end = e.pageX;
+			this.data.pagey.end = e.pageY;
+		}
+		
+		this.data.pos.end = VCO.Dom.getPosition(this._el.drag);
+		this.data.new_pos.x = -(this.data.pagex.start - this.data.pagex.end - this.data.pos.start.x)//-(this.data.pagex.start - this.data.pagex.end - this.data.pos.end.x);
+		this.data.new_pos.y = -(this.data.pagey.start - this.data.pagey.end - this.data.pos.start.y );
+		
+		if (this.options.enable.x) {
+			this._el.move.style.left = this.data.new_pos.x + "px";
+		}
+		
+		if (this.options.enable.y) {
+			this._el.move.style.top = this.data.new_pos.y + "px";
+		}
+		
+		this.fire("dragmove", this.data);
+	},
+	
+	_momentum: function() {
+		var pos_adjust = {
+				x: 0,
+				y: 0,
+				time: 0
+			},
+			pos_change = {
+				x: 0,
+				y: 0,
+				time: 0
+			},
+			swipe = false,
+			swipe_direction = "";
+		
+		
+		if (VCO.Browser.touch) {
+			this.options.momentum_multiplier = this.options.momentum_multiplier * 2;
+		}
+		
+		pos_adjust.time = (new Date().getTime() - this.data.time.start) * 10;
+		pos_change.time = (new Date().getTime() - this.data.time.start) * 10;
+		
+		pos_change.x = this.options.momentum_multiplier * (Math.abs(this.data.pagex.end) - Math.abs(this.data.pagex.start));
+		pos_change.y = this.options.momentum_multiplier * (Math.abs(this.data.pagey.end) - Math.abs(this.data.pagey.start));
+		
+		pos_adjust.x = Math.round(pos_change.x / pos_change.time);
+		pos_adjust.y = Math.round(pos_change.y / pos_change.time);
+		
+		this.data.new_pos.x = Math.min(this.data.pos.end.x + pos_adjust.x);
+		this.data.new_pos.y = Math.min(this.data.pos.end.y + pos_adjust.y);
+
+		
+		if (!this.options.enable.x) {
+			this.data.new_pos.x = this.data.pos.start.x;
+		} else if (this.data.new_pos.x < 0) {
+			this.data.new_pos.x = 0;
+		}
+		
+		if (!this.options.enable.y) {
+			this.data.new_pos.y = this.data.pos.start.y;
+		} else if (this.data.new_pos.y < 0) {
+			this.data.new_pos.y = 0;
+		}
+		
+		// Detect Swipe
+		if (pos_change.time < 3000) {
+			swipe = true;
+		}
+		
+		// Detect Direction
+		if (Math.abs(pos_change.x) > 10000) {
+			this.data.direction = "left";
+			if (pos_change.x > 0) {
+				this.data.direction = "right";
+			}
+		}
+		// Detect Swipe
+		if (Math.abs(pos_change.y) > 10000) {
+			this.data.direction = "up";
+			if (pos_change.y > 0) {
+				this.data.direction = "down";
+			}
+		}
+		this._animateMomentum();
+		if (swipe) {
+			this.fire("swipe_" + this.data.direction, this.data);
+		}
+		
+	},
+	
+	
+	_animateMomentum: function() {
+		this.animator = VCO.Animate(this._el.move, {
+			left: 		this.data.new_pos.x + "px",
+			top: 		this.data.new_pos.y + "px",
+			duration: 	this.options.duration,
+			easing: 	VCO.Ease.easeOutStrong
+		});
+		this.fire("momentum", this.data);
+	}
+});
+
 
 /* **********************************************
      Begin VCO.SizeBar.js
@@ -4422,7 +4431,7 @@ VCO.StorySlider = VCO.Class.extend({
 	/*	Navigation
 	================================================== */
 	
-	goTo: function(n, fast) {
+	goTo: function(n, fast, displayupdate) {
 		if (n < this._slides.length && n >= 0) {
 			this.current_slide = n;
 			
@@ -4433,14 +4442,14 @@ VCO.StorySlider = VCO.Class.extend({
 			
 			if (fast) {
 				this._el.slider_container.style.left = -(this.options.width * n) + "px";
-				this._onSlideChange();
+				this._onSlideChange(displayupdate);
 			} else {
 				
 				this.animator = VCO.Animate(this._el.slider_container, {
 					left: 		-(this.options.width * n) + "px",
 					duration: 	this.options.duration,
 					easing: 	this.options.ease,
-					complete: 	this._onSlideChange()
+					complete: 	this._onSlideChange(displayupdate)
 				});
 				
 			}
@@ -4514,7 +4523,7 @@ VCO.StorySlider = VCO.Class.extend({
 		};
 		
 		// Go to the current slide
-		this.goTo(this.current_slide, true);
+		this.goTo(this.current_slide, true, true);
 	},
 	
 	/*	Init
@@ -4575,8 +4584,10 @@ VCO.StorySlider = VCO.Class.extend({
 		this.fire("slideAdded", this.data);
 	},
 	
-	_onSlideChange: function() {
-		this.fire("change", {current_slide:this.current_slide});
+	_onSlideChange: function(displayupdate) {
+		if (!displayupdate) {
+			this.fire("change", {current_slide:this.current_slide});
+		}
 	},
 	
 	_onMouseClick: function(e) {
@@ -13823,6 +13834,10 @@ VCO.MapMarker = VCO.Class.extend({
 		this._active(a);
 	},
 	
+	location: function() {
+		return this._location();
+	},
+	
 	/*	Marker Specific
 		Specific to Map API
 	================================================== */
@@ -13844,6 +13859,10 @@ VCO.MapMarker = VCO.Class.extend({
 		
 		_active: function(a) {
 			
+		},
+		
+		_location: function() {
+			return {lat:0, lng:0}
 		},
 	
 	/*	Events
@@ -13920,6 +13939,13 @@ VCO.Map = VCO.Class.extend({
 			map_type: 			"toner",
 			path_gfx: 			"gfx",
 			map_popup: 			false, 
+			zoom_distance: 		100,
+			calculate_zoom: 	true, // Allow map to determine best zoom level between markers (recommended)
+			default_map_location: {
+				lat: 	51.505,
+				lon: 	-0.09,
+				zoom: 	13
+			}
 		};
 		
 		// Animation
@@ -13947,7 +13973,10 @@ VCO.Map = VCO.Class.extend({
 	
 	goTo: function(n, fast) {
 		if (n < this._markers.length && n >= 0) {
+			var zoom = 0;
 			this.current_marker = n;
+			
+			var marker = this._markers[this.current_marker];
 			
 			// Stop animation
 			if (this.animator) {
@@ -13956,11 +13985,30 @@ VCO.Map = VCO.Class.extend({
 			
 			// Make marker active
 			this._resetMarkersActive();
-			this._markers[this.current_marker].active(true);
+			marker.active(true);
+			
+			// Calculate Zoom
+			zoom = this._calculateZoomChange(this._getMapCenter(), marker.location());
+			
+			// Set Map View
+			this._viewTo(marker.data.location, {calculate_zoom: this.options.calculate_zoom, zoom:zoom});
 			
 			this._onMarkerChange();
 		}
 	},
+	
+	panTo: function(loc, animate) {
+		this._panTo(loc, animate);
+	},
+	
+	zoomTo: function(z, animate) {
+		this._zoomTo(z, animate);
+	},
+	
+	viewTo: function(loc, duration) {
+		this._viewTo(loc, duration);
+	},
+	
 	
 	/*	Adding, Hiding, Showing etc
 	================================================== */
@@ -14046,12 +14094,19 @@ VCO.Map = VCO.Class.extend({
 			};
 		},
 	
-		/*	Map Specific Data
+		/*	Map Specific Methods
 		================================================== */
-		_initData: function() {
-			this._createMarkers(this.data.slides);
-			this._resetMarkersActive();
-			this._markers[this.current_marker].active(true);
+		
+		_panTo: function(loc, animate) {
+			
+		},
+		
+		_zoomTo: function(z, animate) {
+		
+		},
+		
+		_viewTo: function(loc, duration) {
+		
 		},
 		
 		_updateMapDisplay: function(w, h, animate, d) {
@@ -14061,6 +14116,19 @@ VCO.Map = VCO.Class.extend({
 		_refreshMap: function() {
 			
 		},
+		
+		_getMapLocation: function(m) {
+			return {x:0, y:0};
+		},
+		
+		_getMapZoom: function() {
+			return 1;
+		},
+		
+		_getMapCenter: function() {
+			return {lat:0, lng:0};
+		},
+		
 	
 	/*	Events
 	================================================== */
@@ -14069,7 +14137,6 @@ VCO.Map = VCO.Class.extend({
 	},
 	
 	_onMarkerClick: function(e) {
-		trace("MAP MARKER CLICK");
 		if (this.current_marker != e.marker_number) {
 			this.goTo(e.marker_number);
 		}
@@ -14077,6 +14144,58 @@ VCO.Map = VCO.Class.extend({
 	
 	/*	Private Methods
 	================================================== */
+	
+	_calculateZoomChange: function(m1, m2) {
+		var _m1 	= this._getMapLocation(m1),
+			_m2 	= this._getMapLocation(m2),
+			zoom 	= {
+				in: 	false,
+				out: 	false,
+				amount: 1,
+				current: this._getMapZoom(),
+				max: 	16,
+				min: 	4
+			};
+			
+		// Calculate Zoom in or zoom out
+		if (Math.abs(_m1.x - _m2.x) >= (this._el.container.offsetWidth / 2)) {
+			zoom.out 	= true;
+			zoom.in 	= false;
+		} else if (Math.abs(_m1.x - _m2.x) <= this.options.zoom_distance) {
+			zoom.in 	= true;
+		}
+		
+		if (Math.abs(_m1.y - _m2.y) >= (this._el.container.offsetHeight)) {
+			zoom.out	= true;
+			zoom.in		= false;
+			zoom.amount = Math.round(Math.abs(_m1.y - _m2.y) / (this._el.container.offsetHeight));
+
+		} else if ((Math.abs(_m1.y - _m2.y) <= this.options.zoom_distance)) {
+		
+		} else {
+			zoom.in = false;
+		}
+		
+		// Return New Zoom Number
+		if (zoom.in) {
+			if (zoom.current < zoom.max) {
+				return zoom.current + zoom.amount;
+			}
+		} else if (zoom.out) {
+			if (zoom.current > zoom.min) {
+				return zoom.current - zoom.amount;
+			}
+		} else {
+			return zoom.current;
+		}
+		
+	},
+	
+	_updateDisplay: function(w, h, animate, d) {
+		// Update Map Display
+		this._updateMapDisplay();
+	},
+	
 	_initLayout: function() {
 		
 		// Create Layout
@@ -14084,9 +14203,12 @@ VCO.Map = VCO.Class.extend({
 		
 	},
 	
-	// Update Display
-	_updateDisplay: function(w, h, animate, d) {
-		this._updateMapDisplay(w, h, animate, d);
+	_initData: function() {
+		if (this.data.slides) {
+			this._createMarkers(this.data.slides);
+			this._resetMarkersActive();
+			this._markers[this.current_marker].active(true);
+		}
 	},
 	
 	_initEvents: function() {
@@ -14147,6 +14269,10 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 		} else {
 			this._marker.setOpacity(.33);
 		}
+	},
+	
+	_location: function() {
+		return this._marker.getLatLng();
 	}
 	
 });
@@ -14171,14 +14297,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		// Set Marker Path
 		L.Icon.Default.imagePath = this.options.path_gfx;
 		
-		this._map 		= new L.map(this._el.map, {scrollWheelZoom:false}).setView([51.505, -0.09], 13);
-		
-		/*
-		L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png', {
-		    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
-		    maxZoom: 18
-		}).addTo(this._map);
-		*/
+		this._map = new L.map(this._el.map, {scrollWheelZoom:false}).setView([this.options.default_map_location.lat, this.options.default_map_location.lon], this.options.default_map_location.zoom);
 		
 		var layer = new L.StamenTileLayer(this.options.map_type);
 
@@ -14206,6 +14325,63 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	
 	},
 	
+	/*	Map
+	================================================== */
+	_panTo: function(loc, animate) {
+		this._map.panTo({lat:loc.lat, lon:loc.lon}, {animate: true, duration: this.options.duration/1000, easeLinearity:.10});
+	},
+	
+	_zoomTo: function(z, animate) {
+		this._map.setZoom(z);
+	},
+	
+	_viewTo: function(loc, opts) {
+		var _animate 	= true,
+			_duration 	= this.options.duration/1000,
+			_zoom 		= this._getMapZoom();
+		
+		
+		if (loc.zoom) {
+			_zoom = loc.zoom;
+		}
+		
+		// Options
+		if (opts) {
+			if (opts.duration) {
+				if (opts.duration == 0) {
+					_animate = false;
+				} else {
+					_duration = duration;
+				}
+			}
+		
+			if (opts.zoom && opts.calculate_zoom) {
+				_zoom = opts.zoom;
+			}
+		}	
+		
+		this._map.setView(
+			{lat:loc.lat, lon:loc.lon}, 
+			_zoom,
+			{
+				pan:{animate: _animate, duration: _duration, easeLinearity:.10},
+				zoom:{animate: _animate, duration: _duration, easeLinearity:.10}
+			}
+		)
+	},
+	
+	_getMapLocation: function(m) {
+		return this._map.latLngToContainerPoint(m);
+	},
+	
+	_getMapZoom: function() {
+		return this._map.getZoom();
+	},
+	
+	_getMapCenter: function() {
+		return this._map.getCenter();
+	},
+	
 	/*	Display
 	================================================== */
 	_updateMapDisplay: function(w, h, animate, d) {
@@ -14229,13 +14405,15 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	
 	_refreshMap: function() {
 		if (this._map) {
+			//this._viewTo(this._markers[this.current_marker].data.location, {zoom:this._getMapZoom(), calculate_zoom:true});
 			if (this.timer) {
 				clearTimeout(this.timer);
 				this.timer = null;
 			};
 			
-			trace("Refresh Map");
 			this._map.invalidateSize();
+			//this._viewTo(this._markers[this.current_marker].data.location);
+			this._viewTo(this._markers[this.current_marker].data.location, {zoom:this._getMapZoom(), calculate_zoom:true});
 		};
 	}
 	
@@ -14276,7 +14454,6 @@ VCO.Map.Leaflet = VCO.Map.extend({
 // @codekit-prepend "dom/VCO.Dom.js";
 // @codekit-prepend "dom/VCO.DomUtil.js";
 // @codekit-prepend "dom/VCO.DomEvent.js";
-// @codekit-prepend "dom/VCO.Draggable.js";
 
 // @codekit-prepend "media/VCO.MediaType.js";
 // @codekit-prepend "media/VCO.Media.js";
@@ -14284,6 +14461,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 // @codekit-prepend "media/types/VCO.Media.Image.js";
 // @codekit-prepend "media/types/VCO.Media.Text.js";
 
+// @codekit-prepend "ui/VCO.Draggable.js";
 // @codekit-prepend "ui/VCO.SizeBar.js";
 
 // @codekit-prepend "slider/VCO.Slide.js";
@@ -14336,6 +14514,7 @@ VCO.StoryMap = VCO.Class.extend({
 		this.current_slide = 0;
 		
 		// Data Object
+		// Test Data compiled from http://www.pbs.org/marktwain/learnmore/chronology.html
 		this.data = {
 			uniqueid: 				"",
 			slides: 				[
@@ -14346,16 +14525,16 @@ VCO.StoryMap = VCO.Class.extend({
 						color: 				"#cdbfe3",
 						opacity: 			50
 					},
-					date: 					null,
+					date: 					"1835",
 					location: {
-						lat: 				51.5,
-						lon: 				-0.09,
-						zoom: 				13,
+						lat: 				39.491711,
+						lon: 				-91.793260,
+						zoom: 				12,
 						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
 					},
 					text: {
-						headline: 			"Flickr",
-						text: 				"Lorem ipsum dolor sit amet, consectetuer adipiscing. Morbi commodo, ipsum sed pharetra gravida, orci magna rhoncus neque, id pulvinar odio lorem non turpis. Nullam sit amet enim."
+						headline: 			"Florida, Missouri",
+						text: 				"Born in Florida, Missouri. Halley’s comet visible from earth."
 					},
 					media: {
 						url: 				"http://farm8.staticflickr.com/7076/7074630607_b1c23532e4.jpg",
@@ -14370,16 +14549,16 @@ VCO.StoryMap = VCO.Class.extend({
 						color: 				"#8b4513",
 						opacity: 			50
 					},
-					date: 					null,
+					date: 					"1839",
 					location: {
-						lat: 				51.5,
-						lon: 				-0.099,
-						zoom: 				13,
+						lat: 				39.712304,
+						lon: 				-91.358088,
+						zoom: 				10,
 						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
 					},
 					text: {
-						headline: 			"Flickr",
-						text: 				"blah blah"
+						headline: 			"Hannibal, Missouri",
+						text: 				"Moves to Hannibal, Missouri, which later serves as the model town for Tom Sawyer and Huckleberry Finn."
 					},
 					media: {
 						url: 				"http://farm8.staticflickr.com/7076/7074630607_b1c23532e4.jpg",
@@ -14394,19 +14573,19 @@ VCO.StoryMap = VCO.Class.extend({
 						color: 				null,
 						opacity: 			50
 					},
-					date: 					null,
+					date: 					"1851",
 					location: {
-						lat: 				51.5,
-						lon: 				-0.08,
-						zoom: 				13,
+						lat: 				39.710083,
+						lon: 				-91.357441,
+						zoom: 				12,
 						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
 					},
 					text: {
-						headline: 			"Flickr",
-						text: 				""
+						headline: 			"Hannibal Gazette",
+						text: 				"Begins work as a journeyman printer with the Hannibal Gazette. Publishes first sketches."
 					},
 					media: {
-						url: 				"http://farm8.staticflickr.com/7076/7074630607_b1c23532e4.jpg",
+						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
 						credit:				"Zach Wise",
 						caption:			"San Francisco"
 					}
@@ -14420,14 +14599,254 @@ VCO.StoryMap = VCO.Class.extend({
 					},
 					date: 					null,
 					location: {
-						lat: 				51.5,
-						lon: 				-0.07,
-						zoom: 				13,
+						lat: 				40.714353,
+						lon: 				-74.005973,
+						zoom: 				11,
 						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
 					},
 					text: {
-						headline: 			"La Lune",
-						text: 				""
+						headline: 			"Itinerant Printer",
+						text: 				"Visits St. Louis, New York, and Philadelphia as an itinerant printer."
+					},
+					media: {
+						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						credit:				"ETC",
+						caption:			"something"
+					}
+				},
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
+						url: 				null,
+						color: 				"#cdbfe3",
+						opacity: 			50
+					},
+					date: 					"1862",
+					location: {
+						lat: 				39.309514,
+						lon: 				-119.649979,
+						zoom: 				11,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: {
+						headline: 			"Virginia City Territorial Enterprise",
+						text: 				"Travels around Nevada and California. Takes job as reporter for the Virginia City Territorial Enterprise."
+					},
+					media: {
+						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						credit:				"ETC",
+						caption:			"something"
+					}
+				},
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
+						url: 				null,
+						color: 				"#cdbfe3",
+						opacity: 			50
+					},
+					date: 					"1865",
+					location: {
+						lat: 				37.774929,
+						lon: 				-122.419416,
+						zoom: 				11,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: {
+						headline: 			"San Francisco",
+						text: 				"Forced to leave Nevada for breaking dueling laws. Prospects in Calaveras County, settles in San Francisco. Writes for magazines and newspapers."
+					},
+					media: {
+						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						credit:				"ETC",
+						caption:			"something"
+					}
+				},
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
+						url: 				null,
+						color: 				"#cdbfe3",
+						opacity: 			50
+					},
+					date: 					"1866",
+					location: {
+						lat: 				19.896766,
+						lon: 				-155.582782,
+						zoom: 				11,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: {
+						headline: 			"Hawaii",
+						text: 				"Takes trip to Hawaii as correspondent of the Sacramento Alta Californian. Reports on shipwreck of the Hornet. Gives first public lecture."
+					},
+					media: {
+						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						credit:				"ETC",
+						caption:			"something"
+					}
+				},
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
+						url: 				null,
+						color: 				"#cdbfe3",
+						opacity: 			50
+					},
+					date: 					"1867",
+					location: {
+						lat: 				54.525961,
+						lon: 				15.255119,
+						zoom: 				11,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: {
+						headline: 			"Travels",
+						text: 				"Travels as correspondent to Europe and the Holy Land on the Quaker City. Sees a picture of Olivia Langdon (Livy). Publishes The Celebrated Jumping Frog of Calaveras County, and Other Sketches. Sales are light."
+					},
+					media: {
+						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						credit:				"ETC",
+						caption:			"something"
+					}
+				},
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
+						url: 				null,
+						color: 				"#cdbfe3",
+						opacity: 			50
+					},
+					date: 					"1868",
+					location: {
+						lat: 				42.089796,
+						lon: 				-76.807734,
+						zoom: 				11,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: {
+						headline: 			"Livy",
+						text: 				"Lectures across the United States. Meets and falls in love with Livy in Elmira, New York."
+					},
+					media: {
+						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						credit:				"ETC",
+						caption:			"something"
+					}
+				},
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
+						url: 				null,
+						color: 				"#cdbfe3",
+						opacity: 			50
+					},
+					date: 					"1870",
+					location: {
+						lat: 				42.886447,
+						lon: 				-78.878369,
+						zoom: 				11,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: {
+						headline: 			"Married",
+						text: 				"Marries Livy in Elmira. Her father buys them a house in Buffalo, New York. Son Langdon is born."
+					},
+					media: {
+						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						credit:				"ETC",
+						caption:			"something"
+					}
+				},
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
+						url: 				null,
+						color: 				"#cdbfe3",
+						opacity: 			50
+					},
+					date: 					"1872",
+					location: {
+						lat: 				41.763711,
+						lon: 				-72.685093,
+						zoom: 				11,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: {
+						headline: 			"Roughing It",
+						text: 				"Moves with Livy to Hartford. Publishes Roughing It. Daughter is born. Son Langdon dies."
+					},
+					media: {
+						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						credit:				"ETC",
+						caption:			"something"
+					}
+				},
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
+						url: 				null,
+						color: 				"#cdbfe3",
+						opacity: 			50
+					},
+					date: 					"1891",
+					location: {
+						lat: 				54.525961,
+						lon: 				15.255119,
+						zoom: 				11,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: {
+						headline: 			"Financial",
+						text: 				"Leaves Hartford to live in Europe because of financial difficulties."
+					},
+					media: {
+						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						credit:				"ETC",
+						caption:			"something"
+					}
+				},
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
+						url: 				null,
+						color: 				"#cdbfe3",
+						opacity: 			50
+					},
+					date: 					"1891",
+					location: {
+						lat: 				40.714353,
+						lon: 				-74.005973,
+						zoom: 				11,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: {
+						headline: 			"Livy dies",
+						text: 				"Livy dies. Begins dictating autobiography. Moves to New York City."
+					},
+					media: {
+						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						credit:				"ETC",
+						caption:			"something"
+					}
+				},
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
+						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						color: 				"#cdbfe3",
+						opacity: 			50
+					},
+					date: 					"1891",
+					location: {
+						lat: 				41.304540,
+						lon: 				-73.392898,
+						zoom: 				11,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: {
+						headline: 			"Stormfield",
+						text: 				"Moves into Stormfield in Redding, CT. Forms the Angelfish Club for young girls."
 					},
 					media: {
 						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
@@ -14454,7 +14873,9 @@ VCO.StoryMap = VCO.Class.extend({
 			storyslider_height: 	600,
 			sizebar_default_y: 		300,
 			path_gfx: 				"gfx",
-			map_popup: 				true
+			map_popup: 				false,
+			zoom_distance: 			100,
+			calculate_zoom: 		true, // Allow map to determine best zoom level between markers (recommended)
 		};
 		
 		// Animation Objects
@@ -14464,6 +14885,9 @@ VCO.StoryMap = VCO.Class.extend({
 		// Merge Data and Options
 		VCO.Util.mergeData(this.options, options);
 		VCO.Util.mergeData(this.data, data);
+		
+		// Set Default Location
+		this.options.default_map_location = this.data.slides[0].location;
 		
 		this._initLayout();
 		this._initEvents();
@@ -14540,7 +14964,8 @@ VCO.StoryMap = VCO.Class.extend({
 	// Update View
 	_updateDisplay: function(map_height, animate, d) {
 		
-		var duration = this.options.duration;
+		var duration 	= this.options.duration,
+			self		= this;
 		
 		if (d) {
 			duration = d;
@@ -14566,10 +14991,14 @@ VCO.StoryMap = VCO.Class.extend({
 			if (this.animator_map) {
 				this.animator_map.stop();
 			}
+			
 			this.animator_map = VCO.Animate(this._el.map, {
 				height: 	(map_height- 1) + "px",
 				duration: 	duration,
-				easing: 	VCO.Ease.easeOutStrong
+				easing: 	VCO.Ease.easeOutStrong,
+				complete: function () {
+					self._map.updateDisplay(self.options.width, self.options.map_height, animate, d);
+				}
 			});
 			
 			// Animate StorySlider
@@ -14593,7 +15022,7 @@ VCO.StoryMap = VCO.Class.extend({
 		}
 		
 		// Update Component Displays
-		this._map.updateDisplay(this.options.width, this.options.map_height, animate, d);
+		//this._map.updateDisplay(this.options.width, this.options.map_height, animate, d);
 		this._storyslider.updateDisplay(this.options.width, this.options.storyslider_height, animate);
 		this._sizebar.updateDisplay(this.options.width, this.options.height, animate);
 		
@@ -14603,18 +15032,18 @@ VCO.StoryMap = VCO.Class.extend({
 	================================================== */
 	
 	_onSlideChange: function(e) {
-		trace("_onSlideChange");
 		if (this.current_slide != e.current_slide) {
 			this.current_slide = e.current_slide;
 			this._map.goTo(this.current_slide);
+			this.fire("change", {current_slide: this.current_slide}, this);
 		}
 	},
 	
 	_onMapChange: function(e) {
-		trace("_onMapChange");
 		if (this.current_slide != e.current_marker) {
 			this.current_slide = e.current_marker;
 			this._storyslider.goTo(this.current_slide);
+			this.fire("change", {current_slide: this.current_slide}, this);
 		}
 	},
 	

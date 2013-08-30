@@ -27,7 +27,6 @@
 // @codekit-prepend "dom/VCO.Dom.js";
 // @codekit-prepend "dom/VCO.DomUtil.js";
 // @codekit-prepend "dom/VCO.DomEvent.js";
-// @codekit-prepend "dom/VCO.Draggable.js";
 
 // @codekit-prepend "media/VCO.MediaType.js";
 // @codekit-prepend "media/VCO.Media.js";
@@ -35,6 +34,7 @@
 // @codekit-prepend "media/types/VCO.Media.Image.js";
 // @codekit-prepend "media/types/VCO.Media.Text.js";
 
+// @codekit-prepend "ui/VCO.Draggable.js";
 // @codekit-prepend "ui/VCO.SizeBar.js";
 
 // @codekit-prepend "slider/VCO.Slide.js";
@@ -87,6 +87,7 @@ VCO.StoryMap = VCO.Class.extend({
 		this.current_slide = 0;
 		
 		// Data Object
+		// Test Data compiled from http://www.pbs.org/marktwain/learnmore/chronology.html
 		this.data = {
 			uniqueid: 				"",
 			slides: 				[
@@ -97,16 +98,16 @@ VCO.StoryMap = VCO.Class.extend({
 						color: 				"#cdbfe3",
 						opacity: 			50
 					},
-					date: 					null,
+					date: 					"1835",
 					location: {
-						lat: 				51.5,
-						lon: 				-0.09,
-						zoom: 				13,
+						lat: 				39.491711,
+						lon: 				-91.793260,
+						zoom: 				12,
 						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
 					},
 					text: {
-						headline: 			"Flickr",
-						text: 				"Lorem ipsum dolor sit amet, consectetuer adipiscing. Morbi commodo, ipsum sed pharetra gravida, orci magna rhoncus neque, id pulvinar odio lorem non turpis. Nullam sit amet enim."
+						headline: 			"Florida, Missouri",
+						text: 				"Born in Florida, Missouri. Halley’s comet visible from earth."
 					},
 					media: {
 						url: 				"http://farm8.staticflickr.com/7076/7074630607_b1c23532e4.jpg",
@@ -121,16 +122,16 @@ VCO.StoryMap = VCO.Class.extend({
 						color: 				"#8b4513",
 						opacity: 			50
 					},
-					date: 					null,
+					date: 					"1839",
 					location: {
-						lat: 				51.5,
-						lon: 				-0.099,
-						zoom: 				13,
+						lat: 				39.712304,
+						lon: 				-91.358088,
+						zoom: 				10,
 						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
 					},
 					text: {
-						headline: 			"Flickr",
-						text: 				"blah blah"
+						headline: 			"Hannibal, Missouri",
+						text: 				"Moves to Hannibal, Missouri, which later serves as the model town for Tom Sawyer and Huckleberry Finn."
 					},
 					media: {
 						url: 				"http://farm8.staticflickr.com/7076/7074630607_b1c23532e4.jpg",
@@ -145,19 +146,19 @@ VCO.StoryMap = VCO.Class.extend({
 						color: 				null,
 						opacity: 			50
 					},
-					date: 					null,
+					date: 					"1851",
 					location: {
-						lat: 				51.5,
-						lon: 				-0.08,
-						zoom: 				13,
+						lat: 				39.710083,
+						lon: 				-91.357441,
+						zoom: 				12,
 						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
 					},
 					text: {
-						headline: 			"Flickr",
-						text: 				""
+						headline: 			"Hannibal Gazette",
+						text: 				"Begins work as a journeyman printer with the Hannibal Gazette. Publishes first sketches."
 					},
 					media: {
-						url: 				"http://farm8.staticflickr.com/7076/7074630607_b1c23532e4.jpg",
+						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
 						credit:				"Zach Wise",
 						caption:			"San Francisco"
 					}
@@ -171,14 +172,254 @@ VCO.StoryMap = VCO.Class.extend({
 					},
 					date: 					null,
 					location: {
-						lat: 				51.5,
-						lon: 				-0.07,
-						zoom: 				13,
+						lat: 				40.714353,
+						lon: 				-74.005973,
+						zoom: 				11,
 						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
 					},
 					text: {
-						headline: 			"La Lune",
-						text: 				""
+						headline: 			"Itinerant Printer",
+						text: 				"Visits St. Louis, New York, and Philadelphia as an itinerant printer."
+					},
+					media: {
+						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						credit:				"ETC",
+						caption:			"something"
+					}
+				},
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
+						url: 				null,
+						color: 				"#cdbfe3",
+						opacity: 			50
+					},
+					date: 					"1862",
+					location: {
+						lat: 				39.309514,
+						lon: 				-119.649979,
+						zoom: 				11,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: {
+						headline: 			"Virginia City Territorial Enterprise",
+						text: 				"Travels around Nevada and California. Takes job as reporter for the Virginia City Territorial Enterprise."
+					},
+					media: {
+						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						credit:				"ETC",
+						caption:			"something"
+					}
+				},
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
+						url: 				null,
+						color: 				"#cdbfe3",
+						opacity: 			50
+					},
+					date: 					"1865",
+					location: {
+						lat: 				37.774929,
+						lon: 				-122.419416,
+						zoom: 				11,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: {
+						headline: 			"San Francisco",
+						text: 				"Forced to leave Nevada for breaking dueling laws. Prospects in Calaveras County, settles in San Francisco. Writes for magazines and newspapers."
+					},
+					media: {
+						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						credit:				"ETC",
+						caption:			"something"
+					}
+				},
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
+						url: 				null,
+						color: 				"#cdbfe3",
+						opacity: 			50
+					},
+					date: 					"1866",
+					location: {
+						lat: 				19.896766,
+						lon: 				-155.582782,
+						zoom: 				11,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: {
+						headline: 			"Hawaii",
+						text: 				"Takes trip to Hawaii as correspondent of the Sacramento Alta Californian. Reports on shipwreck of the Hornet. Gives first public lecture."
+					},
+					media: {
+						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						credit:				"ETC",
+						caption:			"something"
+					}
+				},
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
+						url: 				null,
+						color: 				"#cdbfe3",
+						opacity: 			50
+					},
+					date: 					"1867",
+					location: {
+						lat: 				54.525961,
+						lon: 				15.255119,
+						zoom: 				11,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: {
+						headline: 			"Travels",
+						text: 				"Travels as correspondent to Europe and the Holy Land on the Quaker City. Sees a picture of Olivia Langdon (Livy). Publishes The Celebrated Jumping Frog of Calaveras County, and Other Sketches. Sales are light."
+					},
+					media: {
+						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						credit:				"ETC",
+						caption:			"something"
+					}
+				},
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
+						url: 				null,
+						color: 				"#cdbfe3",
+						opacity: 			50
+					},
+					date: 					"1868",
+					location: {
+						lat: 				42.089796,
+						lon: 				-76.807734,
+						zoom: 				11,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: {
+						headline: 			"Livy",
+						text: 				"Lectures across the United States. Meets and falls in love with Livy in Elmira, New York."
+					},
+					media: {
+						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						credit:				"ETC",
+						caption:			"something"
+					}
+				},
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
+						url: 				null,
+						color: 				"#cdbfe3",
+						opacity: 			50
+					},
+					date: 					"1870",
+					location: {
+						lat: 				42.886447,
+						lon: 				-78.878369,
+						zoom: 				11,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: {
+						headline: 			"Married",
+						text: 				"Marries Livy in Elmira. Her father buys them a house in Buffalo, New York. Son Langdon is born."
+					},
+					media: {
+						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						credit:				"ETC",
+						caption:			"something"
+					}
+				},
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
+						url: 				null,
+						color: 				"#cdbfe3",
+						opacity: 			50
+					},
+					date: 					"1872",
+					location: {
+						lat: 				41.763711,
+						lon: 				-72.685093,
+						zoom: 				11,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: {
+						headline: 			"Roughing It",
+						text: 				"Moves with Livy to Hartford. Publishes Roughing It. Daughter is born. Son Langdon dies."
+					},
+					media: {
+						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						credit:				"ETC",
+						caption:			"something"
+					}
+				},
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
+						url: 				null,
+						color: 				"#cdbfe3",
+						opacity: 			50
+					},
+					date: 					"1891",
+					location: {
+						lat: 				54.525961,
+						lon: 				15.255119,
+						zoom: 				11,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: {
+						headline: 			"Financial",
+						text: 				"Leaves Hartford to live in Europe because of financial difficulties."
+					},
+					media: {
+						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						credit:				"ETC",
+						caption:			"something"
+					}
+				},
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
+						url: 				null,
+						color: 				"#cdbfe3",
+						opacity: 			50
+					},
+					date: 					"1891",
+					location: {
+						lat: 				40.714353,
+						lon: 				-74.005973,
+						zoom: 				11,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: {
+						headline: 			"Livy dies",
+						text: 				"Livy dies. Begins dictating autobiography. Moves to New York City."
+					},
+					media: {
+						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						credit:				"ETC",
+						caption:			"something"
+					}
+				},
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
+						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						color: 				"#cdbfe3",
+						opacity: 			50
+					},
+					date: 					"1891",
+					location: {
+						lat: 				41.304540,
+						lon: 				-73.392898,
+						zoom: 				11,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: {
+						headline: 			"Stormfield",
+						text: 				"Moves into Stormfield in Redding, CT. Forms the Angelfish Club for young girls."
 					},
 					media: {
 						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
@@ -205,7 +446,9 @@ VCO.StoryMap = VCO.Class.extend({
 			storyslider_height: 	600,
 			sizebar_default_y: 		300,
 			path_gfx: 				"gfx",
-			map_popup: 				true
+			map_popup: 				false,
+			zoom_distance: 			100,
+			calculate_zoom: 		true, // Allow map to determine best zoom level between markers (recommended)
 		};
 		
 		// Animation Objects
@@ -215,6 +458,9 @@ VCO.StoryMap = VCO.Class.extend({
 		// Merge Data and Options
 		VCO.Util.mergeData(this.options, options);
 		VCO.Util.mergeData(this.data, data);
+		
+		// Set Default Location
+		this.options.default_map_location = this.data.slides[0].location;
 		
 		this._initLayout();
 		this._initEvents();
@@ -291,7 +537,8 @@ VCO.StoryMap = VCO.Class.extend({
 	// Update View
 	_updateDisplay: function(map_height, animate, d) {
 		
-		var duration = this.options.duration;
+		var duration 	= this.options.duration,
+			self		= this;
 		
 		if (d) {
 			duration = d;
@@ -317,10 +564,14 @@ VCO.StoryMap = VCO.Class.extend({
 			if (this.animator_map) {
 				this.animator_map.stop();
 			}
+			
 			this.animator_map = VCO.Animate(this._el.map, {
 				height: 	(map_height- 1) + "px",
 				duration: 	duration,
-				easing: 	VCO.Ease.easeOutStrong
+				easing: 	VCO.Ease.easeOutStrong,
+				complete: function () {
+					self._map.updateDisplay(self.options.width, self.options.map_height, animate, d);
+				}
 			});
 			
 			// Animate StorySlider
@@ -344,7 +595,7 @@ VCO.StoryMap = VCO.Class.extend({
 		}
 		
 		// Update Component Displays
-		this._map.updateDisplay(this.options.width, this.options.map_height, animate, d);
+		//this._map.updateDisplay(this.options.width, this.options.map_height, animate, d);
 		this._storyslider.updateDisplay(this.options.width, this.options.storyslider_height, animate);
 		this._sizebar.updateDisplay(this.options.width, this.options.height, animate);
 		
@@ -354,18 +605,18 @@ VCO.StoryMap = VCO.Class.extend({
 	================================================== */
 	
 	_onSlideChange: function(e) {
-		trace("_onSlideChange");
 		if (this.current_slide != e.current_slide) {
 			this.current_slide = e.current_slide;
 			this._map.goTo(this.current_slide);
+			this.fire("change", {current_slide: this.current_slide}, this);
 		}
 	},
 	
 	_onMapChange: function(e) {
-		trace("_onMapChange");
 		if (this.current_slide != e.current_marker) {
 			this.current_slide = e.current_marker;
 			this._storyslider.goTo(this.current_slide);
+			this.fire("change", {current_slide: this.current_slide}, this);
 		}
 	},
 	

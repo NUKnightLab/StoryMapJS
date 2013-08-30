@@ -46,6 +46,10 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 		} else {
 			this._marker.setOpacity(.33);
 		}
+	},
+	
+	_location: function() {
+		return this._marker.getLatLng();
 	}
 	
 });
