@@ -8602,7 +8602,7 @@ L.PosAnimation = L.DomUtil.TRANSITION ? L.PosAnimation : L.PosAnimation.extend({
 
 L.Map.mergeOptions({
 	zoomAnimation: true,
-	zoomAnimationThreshold: 4
+	zoomAnimationThreshold: 16
 });
 
 if (L.DomUtil.TRANSITION) {

@@ -24,6 +24,9 @@ VCO.Media = VCO.Class.extend({
 	
 		// Media Type
 		this.mediatype = {};
+		
+		// Media ID
+		this.media_id = null;
 	
 		// Data
 		this.data = {
@@ -57,7 +60,7 @@ VCO.Media = VCO.Class.extend({
 	
 	/*	Load the media
 	================================================== */
-	loadMedia: function(url) {
+	loadMedia: function() {
 		
 	},
 	

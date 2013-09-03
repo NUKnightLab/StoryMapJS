@@ -10,7 +10,7 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 	_createMarker: function(d, o) {
 		var icon = new L.Icon.Default();
 		
-		if (d.location.icon && d.location.icon != "") {
+		if (o.use_custom_markers && d.location.icon && d.location.icon != "") {
 			icon = L.icon({iconUrl: d.location.icon, iconSize: [41]});
 			//icon = L.icon({iconUrl: d.media.url, iconSize: [41]});
 			

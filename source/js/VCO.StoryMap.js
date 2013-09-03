@@ -31,8 +31,21 @@
 // @codekit-prepend "media/VCO.MediaType.js";
 // @codekit-prepend "media/VCO.Media.js";
 
+// @codekit-prepend "media/types/VCO.Media.Blockquote.js";
+// @codekit-prepend "media/types/VCO.Media.Flickr.js";
+// @codekit-prepend "media/types/VCO.Media.GoogleDoc.js";
+// @codekit-prepend "media/types/VCO.Media.GooglePlus.js";
+// @codekit-prepend "media/types/VCO.Media.IFrame.js";
 // @codekit-prepend "media/types/VCO.Media.Image.js";
+// @codekit-prepend "media/types/VCO.Media.SoundCloud.js";
+// @codekit-prepend "media/types/VCO.Media.Storify.js";
 // @codekit-prepend "media/types/VCO.Media.Text.js";
+// @codekit-prepend "media/types/VCO.Media.Twitter.js";
+// @codekit-prepend "media/types/VCO.Media.Vimeo.js";
+// @codekit-prepend "media/types/VCO.Media.Vine.js";
+// @codekit-prepend "media/types/VCO.Media.Website.js";
+// @codekit-prepend "media/types/VCO.Media.Wikipedia.js";
+// @codekit-prepend "media/types/VCO.Media.YouTube.js";
 
 // @codekit-prepend "ui/VCO.Draggable.js";
 // @codekit-prepend "ui/VCO.SizeBar.js";
@@ -102,15 +115,17 @@ VCO.StoryMap = VCO.Class.extend({
 					location: {
 						lat: 				39.491711,
 						lon: 				-91.793260,
+						name: 				"Florida, Missouri",
 						zoom: 				12,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+						line: 				true
 					},
 					text: {
 						headline: 			"Florida, Missouri",
 						text: 				"Born in Florida, Missouri. Halley’s comet visible from earth."
 					},
 					media: {
-						url: 				"http://farm8.staticflickr.com/7076/7074630607_b1c23532e4.jpg",
+						url: 				"https://twitter.com/ThisAmerLife/status/374975945825722368",
 						credit:				"Zach Wise",
 						caption:			"San Francisco"
 					}
@@ -127,7 +142,8 @@ VCO.StoryMap = VCO.Class.extend({
 						lat: 				39.712304,
 						lon: 				-91.358088,
 						zoom: 				10,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+						line: 				true
 					},
 					text: {
 						headline: 			"Hannibal, Missouri",
@@ -151,7 +167,8 @@ VCO.StoryMap = VCO.Class.extend({
 						lat: 				39.710083,
 						lon: 				-91.357441,
 						zoom: 				12,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+						line: 				true
 					},
 					text: {
 						headline: 			"Hannibal Gazette",
@@ -175,7 +192,8 @@ VCO.StoryMap = VCO.Class.extend({
 						lat: 				40.714353,
 						lon: 				-74.005973,
 						zoom: 				11,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+						line: 				true
 					},
 					text: {
 						headline: 			"Itinerant Printer",
@@ -199,7 +217,8 @@ VCO.StoryMap = VCO.Class.extend({
 						lat: 				39.309514,
 						lon: 				-119.649979,
 						zoom: 				11,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+						line: 				true
 					},
 					text: {
 						headline: 			"Virginia City Territorial Enterprise",
@@ -223,7 +242,8 @@ VCO.StoryMap = VCO.Class.extend({
 						lat: 				37.774929,
 						lon: 				-122.419416,
 						zoom: 				11,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+						line: 				true
 					},
 					text: {
 						headline: 			"San Francisco",
@@ -247,7 +267,8 @@ VCO.StoryMap = VCO.Class.extend({
 						lat: 				19.896766,
 						lon: 				-155.582782,
 						zoom: 				11,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+						line: 				true
 					},
 					text: {
 						headline: 			"Hawaii",
@@ -271,7 +292,8 @@ VCO.StoryMap = VCO.Class.extend({
 						lat: 				54.525961,
 						lon: 				15.255119,
 						zoom: 				11,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+						line: 				true
 					},
 					text: {
 						headline: 			"Travels",
@@ -295,7 +317,8 @@ VCO.StoryMap = VCO.Class.extend({
 						lat: 				42.089796,
 						lon: 				-76.807734,
 						zoom: 				11,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+						line: 				true
 					},
 					text: {
 						headline: 			"Livy",
@@ -343,7 +366,8 @@ VCO.StoryMap = VCO.Class.extend({
 						lat: 				41.763711,
 						lon: 				-72.685093,
 						zoom: 				11,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+						line: 				true
 					},
 					text: {
 						headline: 			"Roughing It",
@@ -415,7 +439,8 @@ VCO.StoryMap = VCO.Class.extend({
 						lat: 				41.304540,
 						lon: 				-73.392898,
 						zoom: 				11,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+						line: 				true
 					},
 					text: {
 						headline: 			"Stormfield",
@@ -449,6 +474,11 @@ VCO.StoryMap = VCO.Class.extend({
 			map_popup: 				false,
 			zoom_distance: 			100,
 			calculate_zoom: 		true, // Allow map to determine best zoom level between markers (recommended)
+			use_custom_markers: 	false, // Allow use of custom map marker icons
+			line_color: 			"#0088cc",
+			line_weight: 			5,
+			line_opacity: 			0.5
+			
 		};
 		
 		// Animation Objects
@@ -538,7 +568,8 @@ VCO.StoryMap = VCO.Class.extend({
 	_updateDisplay: function(map_height, animate, d) {
 		
 		var duration 	= this.options.duration,
-			self		= this;
+			self		= this,
+			sizebar_height = this._el.sizebar.offsetHeight;
 		
 		if (d) {
 			duration = d;
@@ -556,7 +587,7 @@ VCO.StoryMap = VCO.Class.extend({
 		}
 		
 		// StorySlider Height
-		this.options.storyslider_height = (this.options.height - this._el.sizebar.offsetHeight - this.options.map_height- 1);
+		this.options.storyslider_height = (this.options.height - sizebar_height - this.options.map_height- 1);
 		
 		if (animate) {
 			
@@ -570,7 +601,7 @@ VCO.StoryMap = VCO.Class.extend({
 				duration: 	duration,
 				easing: 	VCO.Ease.easeOutStrong,
 				complete: function () {
-					self._map.updateDisplay(self.options.width, self.options.map_height, animate, d);
+					self._map.updateDisplay(self.options.width, self.options.map_height, animate, d, sizebar_height);
 				}
 			});
 			
@@ -580,7 +611,7 @@ VCO.StoryMap = VCO.Class.extend({
 			}
 			this.animator_storyslider = VCO.Animate(this._el.storyslider, {
 				height: 	this.options.storyslider_height + "px",
-				top: 		this._el.sizebar.offsetHeight + "px",
+				top: 		sizebar_height + "px",
 				duration: 	duration,
 				easing: 	VCO.Ease.easeOutStrong
 			});
@@ -591,12 +622,12 @@ VCO.StoryMap = VCO.Class.extend({
 			
 			// StorySlider
 			this._el.storyslider.style.height = this.options.storyslider_height + "px";
-			this._el.storyslider.style.top = this._el.sizebar.offsetHeight + "px";
+			this._el.storyslider.style.top = sizebar_height + "px";
 		}
 		
 		// Update Component Displays
-		//this._map.updateDisplay(this.options.width, this.options.map_height, animate, d);
-		this._storyslider.updateDisplay(this.options.width, this.options.storyslider_height, animate);
+		//this._map.updateDisplay(this.options.width, this.options.map_height, animate, d, sizebar_height);
+		this._storyslider.updateDisplay(this.options.width, this.options.storyslider_height, animate );
 		this._sizebar.updateDisplay(this.options.width, this.options.height, animate);
 		
 	},

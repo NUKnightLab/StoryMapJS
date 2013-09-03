@@ -23,7 +23,7 @@
 .vco-storyjs input[type="search"]::-webkit-search-decoration{-webkit-appearance:none}
 .vco-storyjs textarea{overflow:auto;vertical-align:top}
 .vco-dragging{-webkit-touch-callout:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;-o-user-select:none;user-select:none}
-.vco-sizebar{width:100%;height:50px;background-color:#ccc}
+.vco-sizebar{width:100%;height:50px;background-color:#ccc;filter:alpha(opacity=75);-khtml-opacity:.75;-moz-opacity:.75;opacity:.75}
 .vco-slide{position:absolute;width:100%;height:100%;padding:0;margin:0;display:table;overflow-y:auto}.vco-slide .vco-slide-content-container{display:table-cell;vertical-align:middle;width:100%;height:100%}.vco-slide .vco-slide-content-container .vco-slide-content{width:100%;display:table;vertical-align:middle}.vco-slide .vco-slide-content-container .vco-slide-content .vco-media{width:100%;min-width:50%;float:left;margin-top:auto;margin-bottom:auto}
 .vco-slide .vco-slide-content-container .vco-slide-content .vco-text{width:50%;max-width:50%;min-width:120px;padding:0 20px 0 20px;display:table-cell;vertical-align:middle;text-align:left}
 .vco-slide.vco-full-image-background{background:no-repeat center center;-webkit-background-size:cover;-moz-background-size:cover;-o-background-size:cover;background-size:cover;filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='.myBackground.jpg', sizingMethod='scale');-ms-filter:"progid:DXImageTransform.Microsoft.AlphaImageLoader(src='myBackground.jpg', sizingMethod='scale')"}
@@ -42,7 +42,11 @@
 .vco-full-image-background .vco-media-shadow:before,.vco-full-image-background .vco-media-shadow:after{background:none;-webkit-box-shadow:0 0 0 #000;-moz-box-shadow:0 0 0 #000;box-shadow:0 0 0 #000}
 @media only screen and (max-width:500px),only screen and (max-device-width:500px){.vco-media{width:100%;height:auto;float:none;display:block}}.vco-text{width:50%;max-width:50%;min-width:120px;padding:0 20px 0 20px;display:table-cell;vertical-align:middle;text-align:left}
 .vco-full-image-background .vco-text{color:#fff;text-shadow:1px 1px 2px #000}
-@media only screen and (max-width:500px),only screen and (max-device-width:500px){.vco-text{width:100%;max-width:100%;min-width:auto;float:none}}.leaflet-map-pane,.leaflet-tile,.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-tile-pane,.leaflet-tile-container,.leaflet-overlay-pane,.leaflet-shadow-pane,.leaflet-marker-pane,.leaflet-popup-pane,.leaflet-overlay-pane svg,.leaflet-zoom-box,.leaflet-image-layer,.leaflet-layer{position:absolute;left:0;top:0}
+@media only screen and (max-width:500px),only screen and (max-device-width:500px){.vco-text{width:100%;max-width:100%;min-width:auto;float:none}}
+@media only screen and (max-width:500px),only screen and (max-device-width:500px){}.vco-media .vco-media-twitter{text-align:left;margin-left:auto;margin-right:auto;clear:both}.vco-media .vco-media-twitter blockquote p{margin-bottom:6px;padding-top:10px}
+@media only screen and (max-width:500px),only screen and (max-device-width:500px){}
+@media only screen and (max-width:500px),only screen and (max-device-width:500px){}
+@media only screen and (max-width:500px),only screen and (max-device-width:500px){}.leaflet-map-pane,.leaflet-tile,.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-tile-pane,.leaflet-tile-container,.leaflet-overlay-pane,.leaflet-shadow-pane,.leaflet-marker-pane,.leaflet-popup-pane,.leaflet-overlay-pane svg,.leaflet-zoom-box,.leaflet-image-layer,.leaflet-layer{position:absolute;left:0;top:0}
 .leaflet-container{overflow:hidden;-ms-touch-action:none}
 .leaflet-tile,.leaflet-marker-icon,.leaflet-marker-shadow{-webkit-user-select:none;-moz-user-select:none;user-select:none;-webkit-user-drag:none}
 .leaflet-marker-icon,.leaflet-marker-shadow{display:block}
@@ -143,5 +147,5 @@
 .leaflet-control-attribution{border-top:1px solid #bbb;border-left:1px solid #bbb}
 .vco-map{}.vco-map .leaflet-zoom-anim .leaflet-zoom-animated{-webkit-transition:-webkit-transform .8s cubic-bezier(.25, .1, .25, .75);-moz-transition:-moz-transform .8s cubic-bezier(.25, .1, .25, .75);-o-transition:-o-transform .8s cubic-bezier(.25, .1, .25, .75);transition:transform .8s cubic-bezier(.25, .1, .25, .75)}
 .vco-map .leaflet-zoom-anim .leaflet-zoom-animated{-webkit-transition:-webkit-transform 1s cubic-bezier(.75, .1, .2, 1);-moz-transition:-moz-transform 1s cubic-bezier(.75, .1, .2, 1);-o-transition:-o-transform 1s cubic-bezier(.75, .1, .2, 1);transition:transform 1s cubic-bezier(.75, .1, .2, 1)}
-@media only screen and (max-width:500px),only screen and (max-device-width:500px){}.vco-map{height:100%;display:relative;top:0}.vco-map .vco-map-display{width:100%;height:100%}
+@media only screen and (max-width:500px),only screen and (max-device-width:500px){}.vco-map{height:100%;display:relative;top:0}.vco-map .vco-map-mask{width:100%;height:100%;overflow:hidden}.vco-map .vco-map-mask .vco-map-display{width:100%;height:100%}
 @media only screen and (max-width:500px),only screen and (max-device-width:500px){}.vco-storymap{width:100%;height:100%;overflow:hidden;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;-o-user-select:none;user-select:none}

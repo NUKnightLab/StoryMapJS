@@ -18,7 +18,8 @@ VCO.Map = VCO.Class.extend({
 		// DOM ELEMENTS
 		this._el = {
 			container: {},
-			map: {}
+			map: {},
+			map_mask: {}
 		};
 		
 		if (typeof elem === 'object') {
@@ -32,6 +33,9 @@ VCO.Map = VCO.Class.extend({
 		
 		// Markers
 		this._markers = [];
+		
+		// Line
+		this._line = null;
 		
 		// Current Marker
 		this.current_marker = 0;
@@ -53,7 +57,10 @@ VCO.Map = VCO.Class.extend({
 				lat: 	51.505,
 				lon: 	-0.09,
 				zoom: 	13
-			}
+			},
+			line_color: 		"#03f",
+			line_weight: 		5,
+			line_opacity: 		0.5
 		};
 		
 		// Animation
@@ -75,8 +82,8 @@ VCO.Map = VCO.Class.extend({
 	
 	/*	Public
 	================================================== */
-	updateDisplay: function(w, h, animate, d) {
-		this._updateDisplay(w, h, animate, d);
+	updateDisplay: function(w, h, animate, d, offset) {
+		this._updateDisplay(w, h, animate, d, offset);
 	},
 	
 	goTo: function(n, fast) {
@@ -115,6 +122,10 @@ VCO.Map = VCO.Class.extend({
 	
 	viewTo: function(loc, duration) {
 		this._viewTo(loc, duration);
+	},
+	
+	getBoundsZoom: function(m1, m2, inside, padding) {
+		this.__getBoundsZoom(m1, m2, inside, padding); // (LatLngBounds[, Boolean, Point]) -> Number
 	},
 	
 	
@@ -161,6 +172,9 @@ VCO.Map = VCO.Class.extend({
 	_createMarkers: function(array) {
 		for (var i = 0; i < array.length; i++) {
 			this._createMarker(array[i]);
+			if (array[i].location.line) {
+				this._addToLine(this._line, array[i])
+			}
 		};
 	},
 	
@@ -202,6 +216,21 @@ VCO.Map = VCO.Class.extend({
 			};
 		},
 	
+		/*	Map Specific Line
+		================================================== */
+		
+		_createLine: function() {
+			this.line = {};
+		},
+		
+		_addToLine: function(line, d) {
+			if (!this._line) {
+				this._createLine(line, d);
+			}
+			
+			
+		},
+		
 		/*	Map Specific Methods
 		================================================== */
 		
@@ -237,6 +266,9 @@ VCO.Map = VCO.Class.extend({
 			return {lat:0, lng:0};
 		},
 		
+		_getBoundsZoom: function(m1, m2, inside, padding) {
+		
+		},
 	
 	/*	Events
 	================================================== */
@@ -254,6 +286,9 @@ VCO.Map = VCO.Class.extend({
 	================================================== */
 	
 	_calculateZoomChange: function(m1, m2) {
+		return this._getBoundsZoom(m1, m2, false);
+		
+		/*
 		var _m1 	= this._getMapLocation(m1),
 			_m2 	= this._getMapLocation(m2),
 			zoom 	= {
@@ -296,10 +331,18 @@ VCO.Map = VCO.Class.extend({
 		} else {
 			return zoom.current;
 		}
+		*/
 		
 	},
 	
-	_updateDisplay: function(w, h, animate, d) {
+	_updateDisplay: function(w, h, animate, d, offset) {
+		
+		if (h) {
+			this._el.map.style.height = ((h *2) - offset) + "px";
+			this._el.map_mask.style.height = (h + offset) + "px";
+		}
+		
+		
 		// Update Map Display
 		this._updateMapDisplay();
 	},
@@ -307,7 +350,8 @@ VCO.Map = VCO.Class.extend({
 	_initLayout: function() {
 		
 		// Create Layout
-		this._el.map = VCO.Dom.create("div", "vco-map-display", this._el.container);
+		this._el.map_mask = VCO.Dom.create("div", "vco-map-mask", this._el.container);
+		this._el.map = VCO.Dom.create("div", "vco-map-display", this._el.map_mask);
 		
 	},
 	

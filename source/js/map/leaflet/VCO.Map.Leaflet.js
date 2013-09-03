@@ -41,6 +41,24 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	
 	},
 	
+	/*	Line
+	================================================== */
+	
+	_createLine: function(d) {
+		this._line = new L.Polyline([{lon: d.location.lon, lat: d.location.lat}], {clickable: false, color: this.options.line_color, weight: this.options.line_weight, opacity: this.options.line_opacity} );
+		this._map.addLayer(this._line);
+	},
+	
+	_addToLine: function(line, d) {
+		trace("ADD TO LINE")
+		if (!this._line) {
+			this._createLine(d);
+		} else {
+			this._line.addLatLng({lon: d.location.lon, lat: d.location.lat});
+		}
+		
+		
+	},
 	/*	Map
 	================================================== */
 	_panTo: function(loc, animate) {
@@ -96,6 +114,11 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	
 	_getMapCenter: function() {
 		return this._map.getCenter();
+	},
+	
+	_getBoundsZoom: function(m1, m2, inside, padding) {
+		var bounds = new L.LatLngBounds([m1, m2]);
+		return this._map.getBoundsZoom(bounds, inside, padding);
 	},
 	
 	/*	Display
