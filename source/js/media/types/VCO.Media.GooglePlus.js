@@ -11,53 +11,29 @@ VCO.Media.GooglePlus = VCO.Media.extend({
 		var api_url,
 			self = this;
 		
+		// Loading Messege
+		this.messege.updateMessege(VCO.Language.messeges.loading + " SoundCloud");
+		
 		// Create Dom element
-		this._el.content_item = VCO.Dom.create("div", "vco-media-twitter", this._el.content);
+		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe", this._el.content);
 		
 		// Get Media ID
-		if (this.data.url.match("status\/")) {
-			this.media_id = this.data.url.split("status\/")[1];
-		} else if (url.match("statuses\/")) {
-			this.media_id = this.data.url.split("statuses\/")[1];
-		} else {
-			this.media_id = "";
-		}
+		this.media_id = this.data.url;
 		
 		// API URL
-		api_url = "http://api.twitter.com/1/statuses/oembed.json?id=" + this.media_id + "&omit_script=true&include_entities=true&callback=?";
+		api_url = this.media_id;
 		
 		// API Call
-		VCO.getJSON(api_url, function(d) {
-			self.createMedia(d);
-		});
-		
-	},
-	
-	createMedia: function(d) {		
-		var tweet		= "",
-			tweetuser	= "";
-			
-		//	TWEET CONTENT
-		tweet += d.html.split("<\/p>\&mdash;")[0] + "</p></blockquote>";
-		tweetuser = d.author_url.split("twitter.com\/")[1];
-		
-		//	TWEET AUTHOR
-		tweet += "<div class='vcard author'>";
-		tweet += "<a class='screen-name url' href='" + d.author_url + "' target='_blank'>";
-		tweet += "<span class='avatar'></span>";
-		tweet += "<span class='fn'>" + d.author_name + "</span>";
-		tweet += "<span class='nickname'>@" + tweetuser + "<span class='thumbnail-inline'></span></span>";
-		tweet += "</a>";
-		tweet += "</div>";
-		
-		// Add to DOM
-		this._el.content_item.innerHTML	= tweet;
+		this._el.content_item.innerHTML = "<iframe frameborder='0' width='100%' height='100%' src='" + api_url + "'></iframe>"		
 		
 		// After Loaded
 		this.onLoaded();
-			
+	},
+	
+	// Update Media Display
+	_updateMediaDisplay: function() {
+		this._el.content_item.style.height = this.options.height + "px";
 	}
-	
-	
+
 	
 });

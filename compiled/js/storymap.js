@@ -1781,6 +1781,44 @@ VCO.Events.fire = VCO.Events.fireEvent;
 }());
 
 /* **********************************************
+     Begin VCO.Language.js
+********************************************** */
+
+VCO.Language = {
+	name: "English",
+	lang: "en",
+	api: {
+		wikipedia: "en"
+	},
+	date: {
+		month: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+		month_abbr: ["Jan.", "Feb.", "March", "April", "May", "June", "July", "Aug.", "Sept.", "Oct.", "Nov.", "Dec."],
+		day: ["Sunday","Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+		day_abbr: ["Sun.","Mon.", "Tues.", "Wed.", "Thurs.", "Fri.", "Sat."]
+	}, 
+	dateformats: {
+		year: "yyyy",
+		month_short: "mmm",
+		month: "mmmm yyyy",
+		full_short: "mmm d",
+		full: "mmmm d',' yyyy",
+		time_no_seconds_short: "h:MM TT",
+		time_no_seconds_small_date: "h:MM TT'<br/><small>'mmmm d',' yyyy'</small>'",
+		full_long: "mmm d',' yyyy 'at' h:MM TT",
+		full_long_small_date: "h:MM TT'<br/><small>mmm d',' yyyy'</small>'"
+	},
+	messeges: {
+		loading_timeline: "Loading Timeline... ",
+		return_to_title: "Return to Title",
+		expand_timeline: "Expand Timeline",
+		contract_timeline: "Contract Timeline",
+		wikipedia: "From Wikipedia, the free encyclopedia",
+		loading_content: "Loading Content",
+		loading: "Loading"
+	}
+}
+
+/* **********************************************
      Begin VCO.Ease.js
 ********************************************** */
 
@@ -2568,12 +2606,12 @@ VCO.DomMixins = {
 	
 	addTo: function(container) {
 		container.appendChild(this._el.container);
-		//this.onAdd();
+		this.onAdd();
 	},
 	
 	removeFrom: function(container) {
 		container.removeChild(this._el.container);
-		//this.onRemove();
+		this.onRemove();
 	},
 	
 	/*	Animate to Position
@@ -3030,1285 +3068,6 @@ VCO.DomEvent = {
 };
 
 
-
-
-/* **********************************************
-     Begin VCO.MediaType.js
-********************************************** */
-
-/*	VCO.MediaType
-	Determines the type of media the url string is.
-	returns an object with .type and .id
-	You can add new media types by adding a regex 
-	to match and the media class name to use to 
-	render the media 
-================================================== */
-VCO.MediaType = function(url) {
-	var media = {}, 
-		media_types = 	[
-			{
-				type: 		"youtube",
-				match_str: 	"(www.)?youtube|youtu\.be",
-				cls: 		VCO.Media.YouTube
-			},
-			{
-				type: 		"vimeo",
-				match_str: 	"(player.)?vimeo\.com",
-				cls: 		VCO.Media.Vimeo
-			},
-			{
-				type: 		"dailymotion",
-				match_str: 	"(www.)?dailymotion\.com",
-				cls: 		VCO.Media.IFrame
-			},
-			{
-				type: 		"vine",
-				match_str: 	"(www.)?vine\.co",
-				cls: 		VCO.Media.Vine
-			},
-			{
-				type: 		"soundcloud",
-				match_str: 	"(player.)?soundcloud\.com",
-				cls: 		VCO.Media.SoundCloud
-			},
-			{
-				type: 		"twitter",
-				match_str: 	"(www.)?twitter\.com",
-				cls: 		VCO.Media.Twitter
-			},
-			{
-				type: 		"googlemaps",
-				match_str: 	"maps.google",
-				cls: 		VCO.Media.Map
-			},
-			{
-				type: 		"googleplus",
-				match_str: 	"plus.google",
-				cls: 		VCO.Media.GooglePlus
-			},
-			{
-				type: 		"flickr",
-				match_str: 	"flickr.com/photos",
-				cls: 		VCO.Media.Flickr
-			},
-			{
-				type: 		"instagram",
-				match_str: 	"instagr.am/p/",
-				cls: 		VCO.Media
-			},
-			{
-				type: 		"image",
-				match_str: 	/jpg|jpeg|png|gif/i,
-				cls: 		VCO.Media.Image
-			},
-			{
-				type: 		"googledocs",
-				match_str: 	/\b.(doc|docx|xls|xlsx|ppt|pptx|pdf|pages|ai|psd|tiff|dxf|svg|eps|ps|ttf|xps|zip|tif)\b/,
-				cls: 		VCO.Media.GoogleDoc
-			},
-			{
-				type: 		"wikipedia",
-				match_str: 	"(www.)?wikipedia\.org",
-				cls: 		VCO.Media.Wikipedia
-			},
-			{
-				type: 		"iframe",
-				match_str: 	"iframe",
-				cls: 		VCO.Media.IFrame
-			},
-			{
-				type: 		"storify",
-				match_str: 	"storify",
-				cls: 		VCO.Media.Storify
-			},
-			{
-				type: 		"blockquote",
-				match_str: 	"blockquote",
-				cls: 		VCO.Media.Blockquote
-			},
-			{
-				type: 		"website",
-				match_str: 	"http://",
-				cls: 		VCO.Media.Website
-			},
-			{
-				type: 		"",
-				match_str: 	"",
-				cls: 		VCO.Media
-			}
-		];
-	
-	for (var i = 0; i < media_types.length; i++) {
-		if (url.match(media_types[i].match_str)) {
-			media 		= media_types[i];
-			media.url 	= url;
-			return media;
-			break;
-		}
-	};
-	
-	return false;
-	
-}
-
-/* **********************************************
-     Begin VCO.Media.js
-********************************************** */
-
-/*	VCO.Media
-	Main media template for media assets.
-	Takes a data object and populates a dom object
-================================================== */
- 
-VCO.Media = VCO.Class.extend({
-	
-	includes: [VCO.Events],
-	
-	_el: {},
-	
-	/*	Constructor
-	================================================== */
-	initialize: function(data, options, add_to_container) {
-		// DOM ELEMENTS
-		this._el = {
-			container: {},
-			content_container: {},
-			content: {},
-			content_item: {},
-			caption: {},
-			credit: {}
-		};
-	
-		// Media Type
-		this.mediatype = {};
-		
-		// Media ID
-		this.media_id = null;
-	
-		// Data
-		this.data = {
-			uniqueid: 			"",
-			url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-			credit:				"Georges Méliès",
-			caption:			"Le portrait mystérieux"
-		};
-	
-		//Options
-		this.options = {
-			something: 			""
-		};
-	
-		this.animator = {};
-		
-		// Merge Data and Options
-		VCO.Util.mergeData(this.options, options);
-		VCO.Util.mergeData(this.data, data);
-		
-		this._el.container = VCO.Dom.create("div", "vco-media");
-		this._el.container.id = this.data.uniqueid;
-		
-		this._initLayout();
-		
-		if (add_to_container) {
-			add_to_container.appendChild(this._el.container);
-		};
-		
-	},
-	
-	/*	Load the media
-	================================================== */
-	loadMedia: function() {
-		
-	},
-	
-	/*	Adding, Hiding, Showing etc
-	================================================== */
-	show: function() {
-		
-	},
-	
-	hide: function() {
-		
-	},
-	
-	addTo: function(container) {
-		container.appendChild(this._el.container);
-		this.onAdd();
-	},
-	
-	removeFrom: function(container) {
-		container.removeChild(this._el.container);
-		this.onRemove();
-	},
-
-	/*	Events
-	================================================== */
-	onLoaded: function() {
-		this.fire("loaded", this.data);
-	},
-	
-	onAdd: function() {
-		this.fire("added", this.data);
-	},
-
-	onRemove: function() {
-		this.fire("removed", this.data);
-	},
-	
-	/*	Private Methods
-	================================================== */
-	_initLayout: function () {
-		
-		// Create Layout
-		this._el.content_container			= VCO.Dom.create("div", "vco-media-content-container", this._el.container);
-		this._el.content					= VCO.Dom.create("div", "vco-media-content", this._el.content_container);
-		
-		// Add Shadow
-		this._el.content.className += ' vco-media-shadow';
-		
-		// Credit
-		if (this.data.credit != "") {
-			this._el.credit					= VCO.Dom.create("div", "vco-credit", this._el.content_container);
-			this._el.credit.innerHTML		= this.data.credit;
-		}
-		
-		// Caption
-		if (this.data.caption != "") {
-			this._el.caption				= VCO.Dom.create("div", "vco-caption", this._el.content_container);
-			this._el.caption.innerHTML		= this.data.caption;
-		}
-		
-	}
-	
-});
-
-/* **********************************************
-     Begin VCO.Media.Blockquote.js
-********************************************** */
-
-/*	VCO.Media.Blockquote
-================================================== */
-
-VCO.Media.Blockquote = VCO.Media.extend({
-	
-	includes: [VCO.Events],
-	
-	/*	Load the media
-	================================================== */
-	loadMedia: function() {
-		var api_url,
-			self = this;
-		
-		// Create Dom element
-		this._el.content_item = VCO.Dom.create("div", "vco-media-twitter", this._el.content);
-		
-		// Get Media ID
-		if (this.data.url.match("status\/")) {
-			this.media_id = this.data.url.split("status\/")[1];
-		} else if (url.match("statuses\/")) {
-			this.media_id = this.data.url.split("statuses\/")[1];
-		} else {
-			this.media_id = "";
-		}
-		
-		// API URL
-		api_url = "http://api.twitter.com/1/statuses/oembed.json?id=" + this.media_id + "&omit_script=true&include_entities=true&callback=?";
-		
-		// API Call
-		VCO.getJSON(api_url, function(d) {
-			self.createMedia(d);
-		});
-		
-	},
-	
-	createMedia: function(d) {		
-		var tweet		= "",
-			tweetuser	= "";
-			
-		//	TWEET CONTENT
-		tweet += d.html.split("<\/p>\&mdash;")[0] + "</p></blockquote>";
-		tweetuser = d.author_url.split("twitter.com\/")[1];
-		
-		//	TWEET AUTHOR
-		tweet += "<div class='vcard author'>";
-		tweet += "<a class='screen-name url' href='" + d.author_url + "' target='_blank'>";
-		tweet += "<span class='avatar'></span>";
-		tweet += "<span class='fn'>" + d.author_name + "</span>";
-		tweet += "<span class='nickname'>@" + tweetuser + "<span class='thumbnail-inline'></span></span>";
-		tweet += "</a>";
-		tweet += "</div>";
-		
-		// Add to DOM
-		this._el.content_item.innerHTML	= tweet;
-		
-		// After Loaded
-		this.onLoaded();
-			
-	}
-	
-	
-	
-});
-
-
-/* **********************************************
-     Begin VCO.Media.Flickr.js
-********************************************** */
-
-/*	VCO.Media.Flickr
-
-================================================== */
-
-VCO.Media.Flickr = VCO.Media.extend({
-	
-	includes: [VCO.Events],
-	
-	/*	Load the media
-	================================================== */
-	loadMedia: function() {
-		var api_url,
-			self = this;
-		
-		// Create Dom element
-		this._el.content_item = VCO.Dom.create("div", "vco-media-twitter", this._el.content);
-		
-		// Get Media ID
-		this.media_id = this.data.url.split("photos\/")[1].split("/")[1];
-		
-		// API URL
-		api_url = "http://api.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key=" + api_key + "&photo_id=" + this.media_id + "&format=json&jsoncallback=?";
-		
-		// API Call
-		VCO.getJSON(api_url, function(d) {
-			self.createMedia(d);
-		});
-		
-	},
-	
-	createMedia: function(d) {		
-		var tweet		= "",
-			tweetuser	= "";
-			
-		//	TWEET CONTENT
-		tweet += d.html.split("<\/p>\&mdash;")[0] + "</p></blockquote>";
-		tweetuser = d.author_url.split("twitter.com\/")[1];
-		
-		//	TWEET AUTHOR
-		tweet += "<div class='vcard author'>";
-		tweet += "<a class='screen-name url' href='" + d.author_url + "' target='_blank'>";
-		tweet += "<span class='avatar'></span>";
-		tweet += "<span class='fn'>" + d.author_name + "</span>";
-		tweet += "<span class='nickname'>@" + tweetuser + "<span class='thumbnail-inline'></span></span>";
-		tweet += "</a>";
-		tweet += "</div>";
-		
-		// Add to DOM
-		this._el.content_item.innerHTML	= tweet;
-		
-		// After Loaded
-		this.onLoaded();
-			
-	}
-	
-	
-	
-});
-
-
-/* **********************************************
-     Begin VCO.Media.GoogleDoc.js
-********************************************** */
-
-/*	VCO.Media.GoogleDoc
-
-================================================== */
-
-VCO.Media.GoogleDoc = VCO.Media.extend({
-	
-	includes: [VCO.Events],
-	
-	/*	Load the media
-	================================================== */
-	loadMedia: function() {
-		var api_url,
-			self = this;
-		
-		// Create Dom element
-		this._el.content_item = VCO.Dom.create("div", "vco-media-twitter", this._el.content);
-		
-		// Get Media ID
-		if (this.data.url.match("status\/")) {
-			this.media_id = this.data.url.split("status\/")[1];
-		} else if (url.match("statuses\/")) {
-			this.media_id = this.data.url.split("statuses\/")[1];
-		} else {
-			this.media_id = "";
-		}
-		
-		// API URL
-		api_url = "http://api.twitter.com/1/statuses/oembed.json?id=" + this.media_id + "&omit_script=true&include_entities=true&callback=?";
-		
-		// API Call
-		VCO.getJSON(api_url, function(d) {
-			self.createMedia(d);
-		});
-		
-	},
-	
-	createMedia: function(d) {		
-		var tweet		= "",
-			tweetuser	= "";
-			
-		//	TWEET CONTENT
-		tweet += d.html.split("<\/p>\&mdash;")[0] + "</p></blockquote>";
-		tweetuser = d.author_url.split("twitter.com\/")[1];
-		
-		//	TWEET AUTHOR
-		tweet += "<div class='vcard author'>";
-		tweet += "<a class='screen-name url' href='" + d.author_url + "' target='_blank'>";
-		tweet += "<span class='avatar'></span>";
-		tweet += "<span class='fn'>" + d.author_name + "</span>";
-		tweet += "<span class='nickname'>@" + tweetuser + "<span class='thumbnail-inline'></span></span>";
-		tweet += "</a>";
-		tweet += "</div>";
-		
-		// Add to DOM
-		this._el.content_item.innerHTML	= tweet;
-		
-		// After Loaded
-		this.onLoaded();
-			
-	}
-	
-	
-	
-});
-
-
-/* **********************************************
-     Begin VCO.Media.GooglePlus.js
-********************************************** */
-
-/*	VCO.Media.GooglePlus
-================================================== */
-
-VCO.Media.GooglePlus = VCO.Media.extend({
-	
-	includes: [VCO.Events],
-	
-	/*	Load the media
-	================================================== */
-	loadMedia: function() {
-		var api_url,
-			self = this;
-		
-		// Create Dom element
-		this._el.content_item = VCO.Dom.create("div", "vco-media-twitter", this._el.content);
-		
-		// Get Media ID
-		if (this.data.url.match("status\/")) {
-			this.media_id = this.data.url.split("status\/")[1];
-		} else if (url.match("statuses\/")) {
-			this.media_id = this.data.url.split("statuses\/")[1];
-		} else {
-			this.media_id = "";
-		}
-		
-		// API URL
-		api_url = "http://api.twitter.com/1/statuses/oembed.json?id=" + this.media_id + "&omit_script=true&include_entities=true&callback=?";
-		
-		// API Call
-		VCO.getJSON(api_url, function(d) {
-			self.createMedia(d);
-		});
-		
-	},
-	
-	createMedia: function(d) {		
-		var tweet		= "",
-			tweetuser	= "";
-			
-		//	TWEET CONTENT
-		tweet += d.html.split("<\/p>\&mdash;")[0] + "</p></blockquote>";
-		tweetuser = d.author_url.split("twitter.com\/")[1];
-		
-		//	TWEET AUTHOR
-		tweet += "<div class='vcard author'>";
-		tweet += "<a class='screen-name url' href='" + d.author_url + "' target='_blank'>";
-		tweet += "<span class='avatar'></span>";
-		tweet += "<span class='fn'>" + d.author_name + "</span>";
-		tweet += "<span class='nickname'>@" + tweetuser + "<span class='thumbnail-inline'></span></span>";
-		tweet += "</a>";
-		tweet += "</div>";
-		
-		// Add to DOM
-		this._el.content_item.innerHTML	= tweet;
-		
-		// After Loaded
-		this.onLoaded();
-			
-	}
-	
-	
-	
-});
-
-
-/* **********************************************
-     Begin VCO.Media.IFrame.js
-********************************************** */
-
-/*	VCO.Media.IFrame
-================================================== */
-
-VCO.Media.IFrame = VCO.Media.extend({
-	
-	includes: [VCO.Events],
-	
-	/*	Load the media
-	================================================== */
-	loadMedia: function() {
-		var api_url,
-			self = this;
-		
-		// Create Dom element
-		this._el.content_item = VCO.Dom.create("div", "vco-media-twitter", this._el.content);
-		
-		// Get Media ID
-		if (this.data.url.match("status\/")) {
-			this.media_id = this.data.url.split("status\/")[1];
-		} else if (url.match("statuses\/")) {
-			this.media_id = this.data.url.split("statuses\/")[1];
-		} else {
-			this.media_id = "";
-		}
-		
-		// API URL
-		api_url = "http://api.twitter.com/1/statuses/oembed.json?id=" + this.media_id + "&omit_script=true&include_entities=true&callback=?";
-		
-		// API Call
-		VCO.getJSON(api_url, function(d) {
-			self.createMedia(d);
-		});
-		
-	},
-	
-	createMedia: function(d) {		
-		var tweet		= "",
-			tweetuser	= "";
-			
-		//	TWEET CONTENT
-		tweet += d.html.split("<\/p>\&mdash;")[0] + "</p></blockquote>";
-		tweetuser = d.author_url.split("twitter.com\/")[1];
-		
-		//	TWEET AUTHOR
-		tweet += "<div class='vcard author'>";
-		tweet += "<a class='screen-name url' href='" + d.author_url + "' target='_blank'>";
-		tweet += "<span class='avatar'></span>";
-		tweet += "<span class='fn'>" + d.author_name + "</span>";
-		tweet += "<span class='nickname'>@" + tweetuser + "<span class='thumbnail-inline'></span></span>";
-		tweet += "</a>";
-		tweet += "</div>";
-		
-		// Add to DOM
-		this._el.content_item.innerHTML	= tweet;
-		
-		// After Loaded
-		this.onLoaded();
-			
-	}
-	
-	
-	
-});
-
-
-/* **********************************************
-     Begin VCO.Media.Image.js
-********************************************** */
-
-/*	VCO.Media.Image
-	Produces image assets.
-	Takes a data object and populates a dom object
-================================================== */
-
-VCO.Media.Image = VCO.Media.extend({
-	
-	includes: [VCO.Events],
-	
-	/*	Load the media
-	================================================== */
-	loadMedia: function() {
-		
-		this._el.content_item				= VCO.Dom.create("img", "vco-media-item vco-media-image", this._el.content);
-		this._el.content_item.src			= this.data.url;
-		
-		this.onLoaded();
-	}
-	
-});
-
-/* **********************************************
-     Begin VCO.Media.SoundCloud.js
-********************************************** */
-
-/*	VCO.Media.SoundCloud
-================================================== */
-
-VCO.Media.SoundCloud = VCO.Media.extend({
-	
-	includes: [VCO.Events],
-	
-	/*	Load the media
-	================================================== */
-	loadMedia: function() {
-		var api_url,
-			self = this;
-		
-		// Create Dom element
-		this._el.content_item = VCO.Dom.create("div", "vco-media-twitter", this._el.content);
-		
-		// Get Media ID
-		if (this.data.url.match("status\/")) {
-			this.media_id = this.data.url.split("status\/")[1];
-		} else if (url.match("statuses\/")) {
-			this.media_id = this.data.url.split("statuses\/")[1];
-		} else {
-			this.media_id = "";
-		}
-		
-		// API URL
-		api_url = "http://api.twitter.com/1/statuses/oembed.json?id=" + this.media_id + "&omit_script=true&include_entities=true&callback=?";
-		
-		// API Call
-		VCO.getJSON(api_url, function(d) {
-			self.createMedia(d);
-		});
-		
-	},
-	
-	createMedia: function(d) {		
-		var tweet		= "",
-			tweetuser	= "";
-			
-		//	TWEET CONTENT
-		tweet += d.html.split("<\/p>\&mdash;")[0] + "</p></blockquote>";
-		tweetuser = d.author_url.split("twitter.com\/")[1];
-		
-		//	TWEET AUTHOR
-		tweet += "<div class='vcard author'>";
-		tweet += "<a class='screen-name url' href='" + d.author_url + "' target='_blank'>";
-		tweet += "<span class='avatar'></span>";
-		tweet += "<span class='fn'>" + d.author_name + "</span>";
-		tweet += "<span class='nickname'>@" + tweetuser + "<span class='thumbnail-inline'></span></span>";
-		tweet += "</a>";
-		tweet += "</div>";
-		
-		// Add to DOM
-		this._el.content_item.innerHTML	= tweet;
-		
-		// After Loaded
-		this.onLoaded();
-			
-	}
-	
-	
-	
-});
-
-
-/* **********************************************
-     Begin VCO.Media.Storify.js
-********************************************** */
-
-/*	VCO.Media.Storify
-================================================== */
-
-VCO.Media.Storify = VCO.Media.extend({
-	
-	includes: [VCO.Events],
-	
-	/*	Load the media
-	================================================== */
-	loadMedia: function() {
-		var api_url,
-			self = this;
-		
-		// Create Dom element
-		this._el.content_item = VCO.Dom.create("div", "vco-media-twitter", this._el.content);
-		
-		// Get Media ID
-		if (this.data.url.match("status\/")) {
-			this.media_id = this.data.url.split("status\/")[1];
-		} else if (url.match("statuses\/")) {
-			this.media_id = this.data.url.split("statuses\/")[1];
-		} else {
-			this.media_id = "";
-		}
-		
-		// API URL
-		api_url = "http://api.twitter.com/1/statuses/oembed.json?id=" + this.media_id + "&omit_script=true&include_entities=true&callback=?";
-		
-		// API Call
-		VCO.getJSON(api_url, function(d) {
-			self.createMedia(d);
-		});
-		
-	},
-	
-	createMedia: function(d) {		
-		var tweet		= "",
-			tweetuser	= "";
-			
-		//	TWEET CONTENT
-		tweet += d.html.split("<\/p>\&mdash;")[0] + "</p></blockquote>";
-		tweetuser = d.author_url.split("twitter.com\/")[1];
-		
-		//	TWEET AUTHOR
-		tweet += "<div class='vcard author'>";
-		tweet += "<a class='screen-name url' href='" + d.author_url + "' target='_blank'>";
-		tweet += "<span class='avatar'></span>";
-		tweet += "<span class='fn'>" + d.author_name + "</span>";
-		tweet += "<span class='nickname'>@" + tweetuser + "<span class='thumbnail-inline'></span></span>";
-		tweet += "</a>";
-		tweet += "</div>";
-		
-		// Add to DOM
-		this._el.content_item.innerHTML	= tweet;
-		
-		// After Loaded
-		this.onLoaded();
-			
-	}
-	
-	
-	
-});
-
-
-/* **********************************************
-     Begin VCO.Media.Text.js
-********************************************** */
-
-VCO.Media.Text = VCO.Class.extend({
-	
-	includes: [VCO.Events],
-	
-	// DOM ELEMENTS
-	_el: {
-		container: {},
-		content_container: {},
-		content: {},
-		headline: {}
-	},
-	
-	// Data
-	data: {
-		uniqueid: 			"",
-		headline: 			"Le portrait mystérieux",
-		text: 				"Lorem ipsum dolor sit amet, consectetuer adipiscing elit."
-	},
-	
-	// Options
-	options: {
-		something: 			""
-	},
-	
-	/*	Constructor
-	================================================== */
-	initialize: function(data, options, add_to_container) {
-		VCO.Util.setData(this, data);
-		if (options) {
-			VCO.Util.setOptions(this, this.options);
-		};
-		//this._container = VCO.Dom.get(id);
-		this._el.container = VCO.Dom.create("div", "vco-text");
-		this._el.container.id = this.data.uniqueid;
-		
-		this._initLayout();
-		
-		if (add_to_container) {
-			add_to_container.appendChild(this._el.container);
-		};
-		
-	},
-	
-	/*	Adding, Hiding, Showing etc
-	================================================== */
-	show: function() {
-		
-	},
-	
-	hide: function() {
-		
-	},
-	
-	addTo: function(container) {
-		container.appendChild(this._el.container);
-		//this.onAdd();
-	},
-	
-	removeFrom: function(container) {
-		container.removeChild(this._el.container);
-	},
-	
-	/*	Events
-	================================================== */
-	onLoaded: function() {
-		this.fire("loaded", this.data);
-	},
-	
-	onAdd: function() {
-		this.fire("added", this.data);
-	},
-
-	onRemove: function() {
-		this.fire("removed", this.data);
-	},
-	
-	/*	Private Methods
-	================================================== */
-	_initLayout: function () {
-		
-		// Create Layout
-		this._el.content_container			= VCO.Dom.create("div", "vco-text-content-container", this._el.container);
-		//this._el.content					= VCO.Dom.create("div", "vco-text-content", this._el.content_container);
-		
-		// Headline
-		if (this.data.headline != "") {
-			this._el.headline				= VCO.Dom.create("h2", "vco-headline", this._el.content_container);
-			this._el.headline.innerHTML		= this.data.headline;
-		}
-		
-		// Text
-		if (this.data.text != "") {
-			this._el.content				= VCO.Dom.create("div", "vco-text-content", this._el.content_container);
-			this._el.content.innerHTML		= VCO.Util.htmlify(this.data.text);
-		}
-		
-		// Fire event that the slide is loaded
-		this.onLoaded();
-		
-		
-		
-	}
-	
-});
-
-/* **********************************************
-     Begin VCO.Media.Twitter.js
-********************************************** */
-
-/*	VCO.Media.Twitter
-	Produces Twitter Display
-================================================== */
-
-VCO.Media.Twitter = VCO.Media.extend({
-	
-	includes: [VCO.Events],
-	
-	/*	Load the media
-	================================================== */
-	loadMedia: function() {
-		var api_url,
-			self = this;
-		
-		// Create Dom element
-		this._el.content_item = VCO.Dom.create("div", "vco-media-twitter", this._el.content);
-		
-		// Get Media ID
-		if (this.data.url.match("status\/")) {
-			this.media_id = this.data.url.split("status\/")[1];
-		} else if (url.match("statuses\/")) {
-			this.media_id = this.data.url.split("statuses\/")[1];
-		} else {
-			this.media_id = "";
-		}
-		
-		// API URL
-		api_url = "http://api.twitter.com/1/statuses/oembed.json?id=" + this.media_id + "&omit_script=true&include_entities=true&callback=?";
-		
-		// API Call
-		VCO.getJSON(api_url, function(d) {
-			self.createMedia(d);
-		});
-		
-	},
-	
-	createMedia: function(d) {		
-		var tweet		= "",
-			tweetuser	= "";
-			
-		//	TWEET CONTENT
-		tweet += d.html.split("<\/p>\&mdash;")[0] + "</p></blockquote>";
-		tweetuser = d.author_url.split("twitter.com\/")[1];
-		
-		//	TWEET AUTHOR
-		tweet += "<div class='vcard author'>";
-		tweet += "<a class='screen-name url' href='" + d.author_url + "' target='_blank'>";
-		tweet += "<span class='avatar'></span>";
-		tweet += "<span class='fn'>" + d.author_name + "</span>";
-		tweet += "<span class='nickname'>@" + tweetuser + "<span class='thumbnail-inline'></span></span>";
-		tweet += "</a>";
-		tweet += "</div>";
-		
-		// Add to DOM
-		this._el.content_item.innerHTML	= tweet;
-		
-		// After Loaded
-		this.onLoaded();
-			
-	}
-	
-	
-	
-});
-
-
-/* **********************************************
-     Begin VCO.Media.Vimeo.js
-********************************************** */
-
-/*	VCO.Media.Vimeo
-================================================== */
-
-VCO.Media.Vimeo = VCO.Media.extend({
-	
-	includes: [VCO.Events],
-	
-	/*	Load the media
-	================================================== */
-	loadMedia: function() {
-		var api_url,
-			self = this;
-		
-		// Create Dom element
-		this._el.content_item = VCO.Dom.create("div", "vco-media-twitter", this._el.content);
-		
-		// Get Media ID
-		if (this.data.url.match("status\/")) {
-			this.media_id = this.data.url.split("status\/")[1];
-		} else if (url.match("statuses\/")) {
-			this.media_id = this.data.url.split("statuses\/")[1];
-		} else {
-			this.media_id = "";
-		}
-		
-		// API URL
-		api_url = "http://api.twitter.com/1/statuses/oembed.json?id=" + this.media_id + "&omit_script=true&include_entities=true&callback=?";
-		
-		// API Call
-		VCO.getJSON(api_url, function(d) {
-			self.createMedia(d);
-		});
-		
-	},
-	
-	createMedia: function(d) {		
-		var tweet		= "",
-			tweetuser	= "";
-			
-		//	TWEET CONTENT
-		tweet += d.html.split("<\/p>\&mdash;")[0] + "</p></blockquote>";
-		tweetuser = d.author_url.split("twitter.com\/")[1];
-		
-		//	TWEET AUTHOR
-		tweet += "<div class='vcard author'>";
-		tweet += "<a class='screen-name url' href='" + d.author_url + "' target='_blank'>";
-		tweet += "<span class='avatar'></span>";
-		tweet += "<span class='fn'>" + d.author_name + "</span>";
-		tweet += "<span class='nickname'>@" + tweetuser + "<span class='thumbnail-inline'></span></span>";
-		tweet += "</a>";
-		tweet += "</div>";
-		
-		// Add to DOM
-		this._el.content_item.innerHTML	= tweet;
-		
-		// After Loaded
-		this.onLoaded();
-			
-	}
-	
-	
-	
-});
-
-
-/* **********************************************
-     Begin VCO.Media.Vine.js
-********************************************** */
-
-/*	VCO.Media.Vine
-
-================================================== */
-
-VCO.Media.Vine = VCO.Media.extend({
-	
-	includes: [VCO.Events],
-	
-	/*	Load the media
-	================================================== */
-	loadMedia: function() {
-		var api_url,
-			self = this;
-		
-		// Create Dom element
-		this._el.content_item = VCO.Dom.create("div", "vco-media-twitter", this._el.content);
-		
-		// Get Media ID
-		if (this.data.url.match("status\/")) {
-			this.media_id = this.data.url.split("status\/")[1];
-		} else if (url.match("statuses\/")) {
-			this.media_id = this.data.url.split("statuses\/")[1];
-		} else {
-			this.media_id = "";
-		}
-		
-		// API URL
-		api_url = "http://api.twitter.com/1/statuses/oembed.json?id=" + this.media_id + "&omit_script=true&include_entities=true&callback=?";
-		
-		// API Call
-		VCO.getJSON(api_url, function(d) {
-			self.createMedia(d);
-		});
-		
-	},
-	
-	createMedia: function(d) {		
-		var tweet		= "",
-			tweetuser	= "";
-			
-		//	TWEET CONTENT
-		tweet += d.html.split("<\/p>\&mdash;")[0] + "</p></blockquote>";
-		tweetuser = d.author_url.split("twitter.com\/")[1];
-		
-		//	TWEET AUTHOR
-		tweet += "<div class='vcard author'>";
-		tweet += "<a class='screen-name url' href='" + d.author_url + "' target='_blank'>";
-		tweet += "<span class='avatar'></span>";
-		tweet += "<span class='fn'>" + d.author_name + "</span>";
-		tweet += "<span class='nickname'>@" + tweetuser + "<span class='thumbnail-inline'></span></span>";
-		tweet += "</a>";
-		tweet += "</div>";
-		
-		// Add to DOM
-		this._el.content_item.innerHTML	= tweet;
-		
-		// After Loaded
-		this.onLoaded();
-			
-	}
-	
-	
-	
-});
-
-
-/* **********************************************
-     Begin VCO.Media.Website.js
-********************************************** */
-
-/*	VCO.Media.Website
-================================================== */
-
-VCO.Media.Website = VCO.Media.extend({
-	
-	includes: [VCO.Events],
-	
-	/*	Load the media
-	================================================== */
-	loadMedia: function() {
-		var api_url,
-			self = this;
-		
-		// Create Dom element
-		this._el.content_item = VCO.Dom.create("div", "vco-media-twitter", this._el.content);
-		
-		// Get Media ID
-		if (this.data.url.match("status\/")) {
-			this.media_id = this.data.url.split("status\/")[1];
-		} else if (url.match("statuses\/")) {
-			this.media_id = this.data.url.split("statuses\/")[1];
-		} else {
-			this.media_id = "";
-		}
-		
-		// API URL
-		api_url = "http://api.twitter.com/1/statuses/oembed.json?id=" + this.media_id + "&omit_script=true&include_entities=true&callback=?";
-		
-		// API Call
-		VCO.getJSON(api_url, function(d) {
-			self.createMedia(d);
-		});
-		
-	},
-	
-	createMedia: function(d) {		
-		var tweet		= "",
-			tweetuser	= "";
-			
-		//	TWEET CONTENT
-		tweet += d.html.split("<\/p>\&mdash;")[0] + "</p></blockquote>";
-		tweetuser = d.author_url.split("twitter.com\/")[1];
-		
-		//	TWEET AUTHOR
-		tweet += "<div class='vcard author'>";
-		tweet += "<a class='screen-name url' href='" + d.author_url + "' target='_blank'>";
-		tweet += "<span class='avatar'></span>";
-		tweet += "<span class='fn'>" + d.author_name + "</span>";
-		tweet += "<span class='nickname'>@" + tweetuser + "<span class='thumbnail-inline'></span></span>";
-		tweet += "</a>";
-		tweet += "</div>";
-		
-		// Add to DOM
-		this._el.content_item.innerHTML	= tweet;
-		
-		// After Loaded
-		this.onLoaded();
-			
-	}
-	
-	
-	
-});
-
-
-/* **********************************************
-     Begin VCO.Media.Wikipedia.js
-********************************************** */
-
-/*	VCO.Media.Wikipedia
-================================================== */
-
-VCO.Media.Wikipedia = VCO.Media.extend({
-	
-	includes: [VCO.Events],
-	
-	/*	Load the media
-	================================================== */
-	loadMedia: function() {
-		var api_url,
-			self = this;
-		
-		// Create Dom element
-		this._el.content_item = VCO.Dom.create("div", "vco-media-twitter", this._el.content);
-		
-		// Get Media ID
-		if (this.data.url.match("status\/")) {
-			this.media_id = this.data.url.split("status\/")[1];
-		} else if (url.match("statuses\/")) {
-			this.media_id = this.data.url.split("statuses\/")[1];
-		} else {
-			this.media_id = "";
-		}
-		
-		// API URL
-		api_url = "http://api.twitter.com/1/statuses/oembed.json?id=" + this.media_id + "&omit_script=true&include_entities=true&callback=?";
-		
-		// API Call
-		VCO.getJSON(api_url, function(d) {
-			self.createMedia(d);
-		});
-		
-	},
-	
-	createMedia: function(d) {		
-		var tweet		= "",
-			tweetuser	= "";
-			
-		//	TWEET CONTENT
-		tweet += d.html.split("<\/p>\&mdash;")[0] + "</p></blockquote>";
-		tweetuser = d.author_url.split("twitter.com\/")[1];
-		
-		//	TWEET AUTHOR
-		tweet += "<div class='vcard author'>";
-		tweet += "<a class='screen-name url' href='" + d.author_url + "' target='_blank'>";
-		tweet += "<span class='avatar'></span>";
-		tweet += "<span class='fn'>" + d.author_name + "</span>";
-		tweet += "<span class='nickname'>@" + tweetuser + "<span class='thumbnail-inline'></span></span>";
-		tweet += "</a>";
-		tweet += "</div>";
-		
-		// Add to DOM
-		this._el.content_item.innerHTML	= tweet;
-		
-		// After Loaded
-		this.onLoaded();
-			
-	}
-	
-	
-	
-});
-
-
-/* **********************************************
-     Begin VCO.Media.YouTube.js
-********************************************** */
-
-/*	VCO.Media.YouTube
-================================================== */
-
-VCO.Media.YouTube = VCO.Media.extend({
-	
-	includes: [VCO.Events],
-	
-	/*	Load the media
-	================================================== */
-	loadMedia: function() {
-		var api_url,
-			self = this;
-		
-		// Create Dom element
-		this._el.content_item = VCO.Dom.create("div", "vco-media-twitter", this._el.content);
-		
-		// Get Media ID
-		if (this.data.url.match("status\/")) {
-			this.media_id = this.data.url.split("status\/")[1];
-		} else if (url.match("statuses\/")) {
-			this.media_id = this.data.url.split("statuses\/")[1];
-		} else {
-			this.media_id = "";
-		}
-		
-		// API URL
-		api_url = "http://api.twitter.com/1/statuses/oembed.json?id=" + this.media_id + "&omit_script=true&include_entities=true&callback=?";
-		
-		// API Call
-		VCO.getJSON(api_url, function(d) {
-			self.createMedia(d);
-		});
-		
-	},
-	
-	createMedia: function(d) {		
-		var tweet		= "",
-			tweetuser	= "";
-			
-		//	TWEET CONTENT
-		tweet += d.html.split("<\/p>\&mdash;")[0] + "</p></blockquote>";
-		tweetuser = d.author_url.split("twitter.com\/")[1];
-		
-		//	TWEET AUTHOR
-		tweet += "<div class='vcard author'>";
-		tweet += "<a class='screen-name url' href='" + d.author_url + "' target='_blank'>";
-		tweet += "<span class='avatar'></span>";
-		tweet += "<span class='fn'>" + d.author_name + "</span>";
-		tweet += "<span class='nickname'>@" + tweetuser + "<span class='thumbnail-inline'></span></span>";
-		tweet += "</a>";
-		tweet += "</div>";
-		
-		// Add to DOM
-		this._el.content_item.innerHTML	= tweet;
-		
-		// After Loaded
-		this.onLoaded();
-			
-	}
-	
-	
-	
-});
 
 
 /* **********************************************
@@ -4784,15 +3543,1245 @@ VCO.SizeBar = VCO.Class.extend({
 });
 
 /* **********************************************
+     Begin VCO.Messege.js
+********************************************** */
+
+/*	VCO.SizeBar
+	Draggable component to control size
+================================================== */
+ 
+VCO.Messege = VCO.Class.extend({
+	
+	includes: [VCO.Events, VCO.DomMixins],
+	
+	_el: {},
+	
+	/*	Constructor
+	================================================== */
+	initialize: function(data, options, add_to_container) {
+		// DOM ELEMENTS
+		this._el = {
+			parent: {},
+			container: {},
+			messege_container: {},
+			loading_icon: {},
+			messege: {}
+		};
+	
+		//Options
+		this.options = {
+			width: 					600,
+			height: 				600
+		};
+		
+		this._el.container = VCO.Dom.create("div", "vco-messege");
+		
+		if (add_to_container) {
+			add_to_container.appendChild(this._el.container);
+			this._el.parent = add_to_container;
+		};
+		
+		
+		// Animation
+		this.animator = {};
+		
+		// Merge Data and Options
+		VCO.Util.mergeData(this.data, data);
+		VCO.Util.mergeData(this.options, options);
+		
+		this._initLayout();
+		this._initEvents();
+	},
+	
+	/*	Public
+	================================================== */
+	updateMessege: function(t) {
+		this._updateMessege(t);
+	},
+	
+	
+	/*	Update Display
+	================================================== */
+	updateDisplay: function(w, h) {
+		this._updateDisplay(w, h);
+	},
+	
+	_updateMessege: function(t) {
+		if (!t) {
+			if (VCO.Language) {
+				this._el.messege.innerHTML = VCO.Language.messeges.loading;
+			} else {
+				this._el.messege.innerHTML = "Loading";
+			}
+		} else {
+			this._el.messege.innerHTML = t;
+		}
+	},
+	
+
+	/*	Events
+	================================================== */
+
+	
+	_onMouseClick: function() {
+		this.fire("clicked", this.options);
+	},
+
+	
+	/*	Private Methods
+	================================================== */
+	_initLayout: function () {
+		
+		// Create Layout
+		this._el.messege_container = VCO.Dom.create("div", "vco-messege-container", this._el.container);
+		this._el.loading_icon = VCO.Dom.create("div", "vco-loading-icon", this._el.messege_container);
+		this._el.messege = VCO.Dom.create("div", "vco-messege-content", this._el.messege_container);
+		
+		this._updateMessege();
+		
+	},
+	
+	_initEvents: function () {
+		
+	},
+	
+	// Update Display
+	_updateDisplay: function(width, height, animate) {
+		
+	}
+	
+});
+
+/* **********************************************
+     Begin VCO.MediaType.js
+********************************************** */
+
+/*	VCO.MediaType
+	Determines the type of media the url string is.
+	returns an object with .type and .id
+	You can add new media types by adding a regex 
+	to match and the media class name to use to 
+	render the media 
+================================================== */
+VCO.MediaType = function(url) {
+	var media = {}, 
+		media_types = 	[
+			{
+				type: 		"youtube",
+				match_str: 	"(www.)?youtube|youtu\.be",
+				cls: 		VCO.Media.YouTube
+			},
+			{
+				type: 		"vimeo",
+				match_str: 	"(player.)?vimeo\.com",
+				cls: 		VCO.Media.Vimeo
+			},
+			{
+				type: 		"dailymotion",
+				match_str: 	"(www.)?dailymotion\.com",
+				cls: 		VCO.Media.IFrame
+			},
+			{
+				type: 		"vine",
+				match_str: 	"(www.)?vine\.co",
+				cls: 		VCO.Media.Vine
+			},
+			{
+				type: 		"soundcloud",
+				match_str: 	"(player.)?soundcloud\.com",
+				cls: 		VCO.Media.SoundCloud
+			},
+			{
+				type: 		"twitter",
+				match_str: 	"(www.)?twitter\.com",
+				cls: 		VCO.Media.Twitter
+			},
+			{
+				type: 		"googlemaps",
+				match_str: 	"maps.google",
+				cls: 		VCO.Media.Map
+			},
+			{
+				type: 		"googleplus",
+				match_str: 	"plus.google",
+				cls: 		VCO.Media.GooglePlus
+			},
+			{
+				type: 		"flickr",
+				match_str: 	"flickr.com/photos",
+				cls: 		VCO.Media.Flickr
+			},
+			{
+				type: 		"instagram",
+				match_str: 	"instagr.am/p/",
+				cls: 		VCO.Media
+			},
+			{
+				type: 		"image",
+				match_str: 	/jpg|jpeg|png|gif/i,
+				cls: 		VCO.Media.Image
+			},
+			{
+				type: 		"googledocs",
+				match_str: 	/\b.(doc|docx|xls|xlsx|ppt|pptx|pdf|pages|ai|psd|tiff|dxf|svg|eps|ps|ttf|xps|zip|tif)\b/,
+				cls: 		VCO.Media.GoogleDoc
+			},
+			{
+				type: 		"wikipedia",
+				match_str: 	"(www.)?wikipedia\.org",
+				cls: 		VCO.Media.Wikipedia
+			},
+			{
+				type: 		"iframe",
+				match_str: 	"iframe",
+				cls: 		VCO.Media.IFrame
+			},
+			{
+				type: 		"storify",
+				match_str: 	"storify",
+				cls: 		VCO.Media.Storify
+			},
+			{
+				type: 		"blockquote",
+				match_str: 	"blockquote",
+				cls: 		VCO.Media.Blockquote
+			},
+			{
+				type: 		"website",
+				match_str: 	"http://",
+				cls: 		VCO.Media.Website
+			},
+			{
+				type: 		"",
+				match_str: 	"",
+				cls: 		VCO.Media
+			}
+		];
+	
+	for (var i = 0; i < media_types.length; i++) {
+		if (url.match(media_types[i].match_str)) {
+			media 		= media_types[i];
+			media.url 	= url;
+			return media;
+			break;
+		}
+	};
+	
+	return false;
+	
+}
+
+/* **********************************************
+     Begin VCO.Media.js
+********************************************** */
+
+/*	VCO.Media
+	Main media template for media assets.
+	Takes a data object and populates a dom object
+================================================== */
+ 
+VCO.Media = VCO.Class.extend({
+	
+	includes: [VCO.Events],
+	
+	_el: {},
+	
+	/*	Constructor
+	================================================== */
+	initialize: function(data, options, add_to_container) {
+		// DOM ELEMENTS
+		this._el = {
+			container: {},
+			content_container: {},
+			content: {},
+			content_item: {},
+			caption: {},
+			credit: {},
+			parent: {}
+		};
+		
+		// Messege
+		this.messege = null;
+		
+		// Media ID
+		this.media_id = null;
+	
+		// Data
+		this.data = {
+			uniqueid: 			null,
+			url: 				null,
+			credit:				null,
+			caption:			null
+		};
+	
+		//Options
+		this.options = {
+			api_key_flickr: 		"f2cc870b4d233dd0a5bfe73fd0d64ef0"
+		};
+	
+		this.animator = {};
+		
+		// Merge Data and Options
+		VCO.Util.mergeData(this.options, options);
+		VCO.Util.mergeData(this.data, data);
+		
+		this._el.container = VCO.Dom.create("div", "vco-media");
+		this._el.container.id = this.data.uniqueid;
+		
+		this._initLayout();
+		
+		if (add_to_container) {
+			add_to_container.appendChild(this._el.container);
+			this._el.parent = add_to_container;
+		};
+		
+	},
+	
+	/*	Media Specific
+	================================================== */
+		loadMedia: function() {
+		
+		},
+		
+		_updateMediaDisplay: function() {
+			
+		},
+	
+	/*	Public
+	================================================== */
+	show: function() {
+		
+	},
+	
+	hide: function() {
+		
+	},
+	
+	addTo: function(container) {
+		container.appendChild(this._el.container);
+		this.onAdd();
+	},
+	
+	removeFrom: function(container) {
+		container.removeChild(this._el.container);
+		this.onRemove();
+	},
+	
+	// Update Display
+	updateDisplay: function(w, h, animate) {
+		this._updateDisplay(w, h, animate);
+	},
+
+	/*	Events
+	================================================== */
+	onLoaded: function() {
+		this.fire("loaded", this.data);
+		if (this.messege) {
+			this.messege.hide();
+		}
+	},
+	
+	onAdd: function() {
+		this.fire("added", this.data);
+	},
+
+	onRemove: function() {
+		this.fire("removed", this.data);
+	},
+	
+	/*	Private Methods
+	================================================== */
+	_initLayout: function () {
+		
+		// Messege
+		this.messege = new VCO.Messege({}, this.options);
+		this.messege.addTo(this._el.container);
+		
+		// Create Layout
+		this._el.content_container			= VCO.Dom.create("div", "vco-media-content-container", this._el.container);
+		this._el.content					= VCO.Dom.create("div", "vco-media-content", this._el.content_container);
+		
+		
+		
+		// Credit
+		if (this.data.credit != "") {
+			this._el.credit					= VCO.Dom.create("div", "vco-credit", this._el.content_container);
+			this._el.credit.innerHTML		= this.data.credit;
+		}
+		
+		// Caption
+		if (this.data.caption != "") {
+			this._el.caption				= VCO.Dom.create("div", "vco-caption", this._el.content_container);
+			this._el.caption.innerHTML		= this.data.caption;
+		}
+		
+		
+	},
+	
+	// Update Display
+	_updateDisplay: function(w, h, animate) {
+		if (w) {
+			this.options.width = w;
+		}
+		if (h) {
+			this.options.height = h;
+		}
+		this._updateMediaDisplay();
+		
+	}
+	
+});
+
+/* **********************************************
+     Begin VCO.Media.Blockquote.js
+********************************************** */
+
+/*	VCO.Media.Blockquote
+================================================== */
+
+VCO.Media.Blockquote = VCO.Media.extend({
+	
+	includes: [VCO.Events],
+	
+	/*	Load the media
+	================================================== */
+	loadMedia: function() {
+		var api_url,
+			self = this;
+		
+		// Loading Messege
+		this.messege.updateMessege(VCO.Language.messeges.loading + " SoundCloud");
+		
+		// Create Dom element
+		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe", this._el.content);
+		
+		// Get Media ID
+		this.media_id = this.data.url;
+		
+		// API URL
+		api_url = this.media_id;
+		
+		// API Call
+		this._el.content_item.innerHTML = "<iframe frameborder='0' width='100%' height='100%' src='" + api_url + "'></iframe>"		
+		
+		// After Loaded
+		this.onLoaded();
+	},
+	
+	// Update Media Display
+	_updateMediaDisplay: function() {
+		this._el.content_item.style.height = this.options.height + "px";
+	}
+
+	
+});
+
+
+/* **********************************************
+     Begin VCO.Media.Flickr.js
+********************************************** */
+
+/*	VCO.Media.Flickr
+
+================================================== */
+
+VCO.Media.Flickr = VCO.Media.extend({
+	
+	includes: [VCO.Events],
+	
+	/*	Load the media
+	================================================== */
+	loadMedia: function() {
+		var api_url,
+			self = this;
+		
+		// Loading Messege
+		this.messege.updateMessege(VCO.Language.messeges.loading + " Flickr");
+		
+		// Create Dom element
+		this._el.content_item	= VCO.Dom.create("img", "vco-media-item vco-media-image vco-media-flickr", this._el.content);
+		
+		// Get Media ID
+		this.media_id = this.data.url.split("photos\/")[1].split("/")[1];
+		
+		// API URL
+		api_url = "http://api.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key=" + this.options.api_key_flickr + "&photo_id=" + this.media_id + "&format=json&jsoncallback=?";
+		
+		// API Call
+		VCO.getJSON(api_url, function(d) {
+			self.createMedia(d);
+		});
+		
+	},
+	
+	createMedia: function(d) {
+		var best_size 	= this.sizes(this.options.height),
+			size 		= d.sizes.size[d.sizes.size.length - 2].source;
+		
+		for(var i = 0; i < d.sizes.size.length; i++) {
+			if (d.sizes.size[i].label == best_size) {
+				size = d.sizes.size[i].source;
+			}
+		}
+		
+		// Set Image Source
+		this._el.content_item.src			= size;
+		
+		// After Loaded
+		this.onLoaded();
+	},
+	
+	sizes: function(s) {
+		var _size = "";
+		
+		if (s <= 75) {
+			if (s <= 0) {
+				_size = "Large";
+			} else {
+				_size = "Thumbnail";
+			}
+		} else if (s <= 180) {
+			_size = "Small";
+		} else if (s <= 240) {
+			_size = "Small 320";
+		} else if (s <= 375) {
+			_size = "Medium";
+		} else if (s <= 480) {
+			_size = "Medium 640";
+		} else if (s <= 600) {
+			_size = "Large";
+		} else {
+			_size = "Large";
+		}
+		
+		return _size;
+	}
+	
+	
+	
+});
+
+
+/* **********************************************
+     Begin VCO.Media.GoogleDoc.js
+********************************************** */
+
+/*	VCO.Media.GoogleDoc
+
+================================================== */
+
+VCO.Media.GoogleDoc = VCO.Media.extend({
+	
+	includes: [VCO.Events],
+	
+	/*	Load the media
+	================================================== */
+	loadMedia: function() {
+		var api_url,
+			self = this;
+		
+		// Loading Messege
+		this.messege.updateMessege(VCO.Language.messeges.loading + " SoundCloud");
+		
+		// Create Dom element
+		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe", this._el.content);
+		
+		// Get Media ID
+		this.media_id = this.data.url;
+		
+		// API URL
+		api_url = this.media_id;
+		
+		// API Call
+		this._el.content_item.innerHTML = "<iframe frameborder='0' width='100%' height='100%' src='" + api_url + "'></iframe>"		
+		
+		// After Loaded
+		this.onLoaded();
+	},
+	
+	// Update Media Display
+	_updateMediaDisplay: function() {
+		this._el.content_item.style.height = this.options.height + "px";
+	}
+
+	
+});
+
+
+/* **********************************************
+     Begin VCO.Media.GooglePlus.js
+********************************************** */
+
+/*	VCO.Media.GooglePlus
+================================================== */
+
+VCO.Media.GooglePlus = VCO.Media.extend({
+	
+	includes: [VCO.Events],
+	
+	/*	Load the media
+	================================================== */
+	loadMedia: function() {
+		var api_url,
+			self = this;
+		
+		// Loading Messege
+		this.messege.updateMessege(VCO.Language.messeges.loading + " SoundCloud");
+		
+		// Create Dom element
+		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe", this._el.content);
+		
+		// Get Media ID
+		this.media_id = this.data.url;
+		
+		// API URL
+		api_url = this.media_id;
+		
+		// API Call
+		this._el.content_item.innerHTML = "<iframe frameborder='0' width='100%' height='100%' src='" + api_url + "'></iframe>"		
+		
+		// After Loaded
+		this.onLoaded();
+	},
+	
+	// Update Media Display
+	_updateMediaDisplay: function() {
+		this._el.content_item.style.height = this.options.height + "px";
+	}
+
+	
+});
+
+
+/* **********************************************
+     Begin VCO.Media.IFrame.js
+********************************************** */
+
+/*	VCO.Media.IFrame
+================================================== */
+
+VCO.Media.IFrame = VCO.Media.extend({
+	
+	includes: [VCO.Events],
+	
+	/*	Load the media
+	================================================== */
+	loadMedia: function() {
+		var api_url,
+			self = this;
+		
+		// Loading Messege
+		this.messege.updateMessege(VCO.Language.messeges.loading + " SoundCloud");
+		
+		// Create Dom element
+		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe", this._el.content);
+		
+		// Get Media ID
+		this.media_id = this.data.url;
+		
+		// API URL
+		api_url = this.media_id;
+		
+		// API Call
+		this._el.content_item.innerHTML = "<iframe frameborder='0' width='100%' height='100%' src='" + api_url + "'></iframe>"		
+		
+		// After Loaded
+		this.onLoaded();
+	},
+	
+	// Update Media Display
+	_updateMediaDisplay: function() {
+		this._el.content_item.style.height = this.options.height + "px";
+	}
+	
+});
+
+
+/* **********************************************
+     Begin VCO.Media.Image.js
+********************************************** */
+
+/*	VCO.Media.Image
+	Produces image assets.
+	Takes a data object and populates a dom object
+================================================== */
+
+VCO.Media.Image = VCO.Media.extend({
+	
+	includes: [VCO.Events],
+	
+	/*	Load the media
+	================================================== */
+	loadMedia: function() {
+		
+		this._el.content_item				= VCO.Dom.create("img", "vco-media-item vco-media-image", this._el.content);
+		this._el.content_item.src			= this.data.url;
+		
+		this.onLoaded();
+	}
+	
+});
+
+/* **********************************************
+     Begin VCO.Media.SoundCloud.js
+********************************************** */
+
+/*	VCO.Media.SoundCloud
+================================================== */
+
+VCO.Media.SoundCloud = VCO.Media.extend({
+	
+	includes: [VCO.Events],
+	
+	/*	Load the media
+	================================================== */
+	loadMedia: function() {
+		var api_url,
+			self = this;
+		
+		// Loading Messege
+		this.messege.updateMessege(VCO.Language.messeges.loading + " SoundCloud");
+		
+		// Create Dom element
+		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe vco-media-soundcloud", this._el.content);
+		
+		// Get Media ID
+		this.media_id = this.data.url;
+		
+		// API URL
+		api_url = "http://soundcloud.com/oembed?url=" + this.media_id + "&format=js&callback=?"
+		
+		// API Call
+		VCO.getJSON(api_url, function(d) {
+			self.createMedia(d);
+		});
+		
+	},
+	
+	createMedia: function(d) {
+		this._el.content_item.innerHTML = d.html;
+		
+		// After Loaded
+		this.onLoaded();
+	}
+	
+});
+
+
+/* **********************************************
+     Begin VCO.Media.Storify.js
+********************************************** */
+
+/*	VCO.Media.Storify
+================================================== */
+
+VCO.Media.Storify = VCO.Media.extend({
+	
+	includes: [VCO.Events],
+	
+	/*	Load the media
+	================================================== */
+	loadMedia: function() {
+		var api_url,
+			self = this;
+		
+		// Loading Messege
+		this.messege.updateMessege(VCO.Language.messeges.loading + " SoundCloud");
+		
+		// Create Dom element
+		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe", this._el.content);
+		
+		// Get Media ID
+		this.media_id = this.data.url;
+		
+		// API URL
+		api_url = this.media_id;
+		
+		// API Call
+		this._el.content_item.innerHTML = "<iframe frameborder='0' width='100%' height='100%' src='" + api_url + "'></iframe>"		
+		
+		// After Loaded
+		this.onLoaded();
+	},
+	
+	// Update Media Display
+	_updateMediaDisplay: function() {
+		this._el.content_item.style.height = this.options.height + "px";
+	}
+	
+	
+});
+
+
+/* **********************************************
+     Begin VCO.Media.Text.js
+********************************************** */
+
+VCO.Media.Text = VCO.Class.extend({
+	
+	includes: [VCO.Events],
+	
+	// DOM ELEMENTS
+	_el: {
+		container: {},
+		content_container: {},
+		content: {},
+		headline: {}
+	},
+	
+	// Data
+	data: {
+		uniqueid: 			"",
+		headline: 			"Le portrait mystérieux",
+		text: 				"Lorem ipsum dolor sit amet, consectetuer adipiscing elit."
+	},
+	
+	// Options
+	options: {
+		something: 			""
+	},
+	
+	/*	Constructor
+	================================================== */
+	initialize: function(data, options, add_to_container) {
+		VCO.Util.setData(this, data);
+		if (options) {
+			VCO.Util.setOptions(this, this.options);
+		};
+		//this._container = VCO.Dom.get(id);
+		this._el.container = VCO.Dom.create("div", "vco-text");
+		this._el.container.id = this.data.uniqueid;
+		
+		this._initLayout();
+		
+		if (add_to_container) {
+			add_to_container.appendChild(this._el.container);
+		};
+		
+	},
+	
+	/*	Adding, Hiding, Showing etc
+	================================================== */
+	show: function() {
+		
+	},
+	
+	hide: function() {
+		
+	},
+	
+	addTo: function(container) {
+		container.appendChild(this._el.container);
+		//this.onAdd();
+	},
+	
+	removeFrom: function(container) {
+		container.removeChild(this._el.container);
+	},
+	
+	/*	Events
+	================================================== */
+	onLoaded: function() {
+		this.fire("loaded", this.data);
+	},
+	
+	onAdd: function() {
+		this.fire("added", this.data);
+	},
+
+	onRemove: function() {
+		this.fire("removed", this.data);
+	},
+	
+	/*	Private Methods
+	================================================== */
+	_initLayout: function () {
+		
+		// Create Layout
+		this._el.content_container			= VCO.Dom.create("div", "vco-text-content-container", this._el.container);
+		//this._el.content					= VCO.Dom.create("div", "vco-text-content", this._el.content_container);
+		
+		// Headline
+		if (this.data.headline != "") {
+			this._el.headline				= VCO.Dom.create("h2", "vco-headline", this._el.content_container);
+			this._el.headline.innerHTML		= this.data.headline;
+		}
+		
+		// Text
+		if (this.data.text != "") {
+			this._el.content				= VCO.Dom.create("div", "vco-text-content", this._el.content_container);
+			this._el.content.innerHTML		= VCO.Util.htmlify(this.data.text);
+		}
+		
+		// Fire event that the slide is loaded
+		this.onLoaded();
+		
+		
+		
+	}
+	
+});
+
+/* **********************************************
+     Begin VCO.Media.Twitter.js
+********************************************** */
+
+/*	VCO.Media.Twitter
+	Produces Twitter Display
+================================================== */
+
+VCO.Media.Twitter = VCO.Media.extend({
+	
+	includes: [VCO.Events],
+	
+	/*	Load the media
+	================================================== */
+	loadMedia: function() {
+		var api_url,
+			self = this;
+			
+		// Loading Messege
+		this.messege.updateMessege(VCO.Language.messeges.loading + " Tweet");
+		
+		// Create Dom element
+		this._el.content_item = VCO.Dom.create("div", "vco-media-twitter", this._el.content);
+		
+		// Get Media ID
+		if (this.data.url.match("status\/")) {
+			this.media_id = this.data.url.split("status\/")[1];
+		} else if (url.match("statuses\/")) {
+			this.media_id = this.data.url.split("statuses\/")[1];
+		} else {
+			this.media_id = "";
+		}
+		
+		// API URL
+		api_url = "http://api.twitter.com/1/statuses/oembed.json?id=" + this.media_id + "&omit_script=true&include_entities=true&callback=?";
+		
+		// API Call
+		VCO.getJSON(api_url, function(d) {
+			self.createMedia(d);
+		});
+		
+	},
+	
+	createMedia: function(d) {		
+		var tweet		= "",
+			tweetuser	= "";
+			
+		//	TWEET CONTENT
+		tweet += d.html.split("<\/p>\&mdash;")[0] + "</p></blockquote>";
+		tweetuser = d.author_url.split("twitter.com\/")[1];
+		
+		//	TWEET AUTHOR
+		tweet += "<div class='vcard author'>";
+		tweet += "<a class='screen-name url' href='" + d.author_url + "' target='_blank'>";
+		tweet += "<span class='avatar'></span>";
+		tweet += "<span class='fn'>" + d.author_name + "</span>";
+		tweet += "<span class='nickname'>@" + tweetuser + "<span class='thumbnail-inline'></span></span>";
+		tweet += "</a>";
+		tweet += "</div>";
+		
+		// Add to DOM
+		this._el.content_item.innerHTML	= tweet;
+		
+		// After Loaded
+		this.onLoaded();
+			
+	}
+	
+	
+	
+});
+
+
+/* **********************************************
+     Begin VCO.Media.Vimeo.js
+********************************************** */
+
+/*	VCO.Media.Vimeo
+================================================== */
+
+VCO.Media.Vimeo = VCO.Media.extend({
+	
+	includes: [VCO.Events],
+	
+	/*	Load the media
+	================================================== */
+	loadMedia: function() {
+		var api_url,
+			self = this;
+		
+		// Loading Messege
+		this.messege.updateMessege(VCO.Language.messeges.loading + " SoundCloud");
+		
+		// Create Dom element
+		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe", this._el.content);
+		
+		// Get Media ID
+		this.media_id = this.data.url;
+		
+		// API URL
+		api_url = this.media_id;
+		
+		// API Call
+		this._el.content_item.innerHTML = "<iframe frameborder='0' width='100%' height='100%' src='" + api_url + "'></iframe>"		
+		
+		// After Loaded
+		this.onLoaded();
+	},
+	
+	// Update Media Display
+	_updateMediaDisplay: function() {
+		this._el.content_item.style.height = this.options.height + "px";
+	}
+	
+	
+	
+	
+});
+
+
+/* **********************************************
+     Begin VCO.Media.Vine.js
+********************************************** */
+
+/*	VCO.Media.Vine
+
+================================================== */
+
+VCO.Media.Vine = VCO.Media.extend({
+	
+	includes: [VCO.Events],
+	
+	/*	Load the media
+	================================================== */
+	loadMedia: function() {
+		var api_url,
+			self = this;
+		
+		// Loading Messege
+		this.messege.updateMessege(VCO.Language.messeges.loading + " SoundCloud");
+		
+		// Create Dom element
+		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe vco-media-vine", this._el.content);
+		
+		// Get Media ID
+		this.media_id = this.data.url.split("vine.co/v/")[1];
+		
+		// API URL
+		api_url = "https://vine.co/v/" + this.media_id + "/embed/simple";
+		
+		// API Call
+		this._el.content_item.innerHTML = "<iframe frameborder='0' width='100%' height='100%' src='" + api_url + "'></iframe><script async src='http://platform.vine.co/static/scripts/embed.js' charset='utf-8'></script>"		
+		
+		// After Loaded
+		this.onLoaded();
+	},
+	
+	// Update Media Display
+	_updateMediaDisplay: function() {
+		this._el.content_item.style.height = this.options.height + "px";
+	}
+	
+});
+
+
+/* **********************************************
+     Begin VCO.Media.Website.js
+********************************************** */
+
+/*	VCO.Media.Website
+================================================== */
+
+VCO.Media.Website = VCO.Media.extend({
+	
+	includes: [VCO.Events],
+	
+	/*	Load the media
+	================================================== */
+	loadMedia: function() {
+		var api_url,
+			self = this;
+		
+		// Create Dom element
+		this._el.content_item = VCO.Dom.create("div", "vco-media-twitter", this._el.content);
+		
+		// Get Media ID
+		if (this.data.url.match("status\/")) {
+			this.media_id = this.data.url.split("status\/")[1];
+		} else if (url.match("statuses\/")) {
+			this.media_id = this.data.url.split("statuses\/")[1];
+		} else {
+			this.media_id = "";
+		}
+		
+		// API URL
+		api_url = "http://api.twitter.com/1/statuses/oembed.json?id=" + this.media_id + "&omit_script=true&include_entities=true&callback=?";
+		
+		// API Call
+		VCO.getJSON(api_url, function(d) {
+			self.createMedia(d);
+		});
+		
+	},
+	
+	createMedia: function(d) {		
+		var tweet		= "",
+			tweetuser	= "";
+			
+		//	TWEET CONTENT
+		tweet += d.html.split("<\/p>\&mdash;")[0] + "</p></blockquote>";
+		tweetuser = d.author_url.split("twitter.com\/")[1];
+		
+		//	TWEET AUTHOR
+		tweet += "<div class='vcard author'>";
+		tweet += "<a class='screen-name url' href='" + d.author_url + "' target='_blank'>";
+		tweet += "<span class='avatar'></span>";
+		tweet += "<span class='fn'>" + d.author_name + "</span>";
+		tweet += "<span class='nickname'>@" + tweetuser + "<span class='thumbnail-inline'></span></span>";
+		tweet += "</a>";
+		tweet += "</div>";
+		
+		// Add to DOM
+		this._el.content_item.innerHTML	= tweet;
+		
+		// After Loaded
+		this.onLoaded();
+			
+	}
+	
+	
+	
+});
+
+
+/* **********************************************
+     Begin VCO.Media.Wikipedia.js
+********************************************** */
+
+/*	VCO.Media.Wikipedia
+================================================== */
+
+VCO.Media.Wikipedia = VCO.Media.extend({
+	
+	includes: [VCO.Events],
+	
+	/*	Load the media
+	================================================== */
+	loadMedia: function() {
+		var api_url,
+			self = this;
+		
+		// Loading Messege
+		this.messege.updateMessege(VCO.Language.messeges.loading + " SoundCloud");
+		
+		// Create Dom element
+		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe", this._el.content);
+		
+		// Get Media ID
+		this.media_id = this.data.url;
+		
+		// API URL
+		api_url = this.media_id;
+		
+		// API Call
+		this._el.content_item.innerHTML = "<iframe frameborder='0' width='100%' height='100%' src='" + api_url + "'></iframe>"		
+		
+		// After Loaded
+		this.onLoaded();
+	},
+	
+	// Update Media Display
+	_updateMediaDisplay: function() {
+		this._el.content_item.style.height = this.options.height + "px";
+	}
+
+	
+	
+});
+
+
+/* **********************************************
+     Begin VCO.Media.YouTube.js
+********************************************** */
+
+/*	VCO.Media.YouTube
+================================================== */
+
+VCO.Media.YouTube = VCO.Media.extend({
+	
+	includes: [VCO.Events],
+	
+	/*	Load the media
+	================================================== */
+	loadMedia: function() {
+		var api_url,
+			self = this;
+		
+		// Loading Messege
+		this.messege.updateMessege(VCO.Language.messeges.loading + " SoundCloud");
+		
+		// Create Dom element
+		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe", this._el.content);
+		
+		// Get Media ID
+		this.media_id = this.data.url;
+		
+		// API URL
+		api_url = this.media_id;
+		
+		// API Call
+		this._el.content_item.innerHTML = "<iframe frameborder='0' width='100%' height='100%' src='" + api_url + "'></iframe>"		
+		
+		// After Loaded
+		this.onLoaded();
+	},
+	
+	// Update Media Display
+	_updateMediaDisplay: function() {
+		this._el.content_item.style.height = this.options.height + "px";
+	}
+
+	
+});
+
+
+/* **********************************************
      Begin VCO.Slide.js
 ********************************************** */
 
 /*	VCO.Slide
 	Creates a slide. Takes a data object and
 	populates the slide with content.
-================================================== */
 
-// TODO null out data
+	Object Model
+	this.data = {
+		uniqueid: 				"",
+		background: {			// OPTIONAL
+			url: 				null,
+			color: 				null,
+			opacity: 			50
+		},
+		date: 					null,
+		location: {
+			lat: 				-9.143962,
+			lon: 				38.731094,
+			zoom: 				13,
+			icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+		},
+		text: {
+			headline: 			"Le portrait mystérieux",
+			text: 				"Lorem ipsum dolor sit amet, consectetuer adipiscing elit."
+		},
+		media: {
+			url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+			credit:				"Georges Méliès",
+			caption:			"Le portrait mystérieux"
+		}
+	
+	};
+================================================== */
 
 VCO.Slide = VCO.Class.extend({
 	
@@ -4812,7 +4801,7 @@ VCO.Slide = VCO.Class.extend({
 		};
 	
 		// Components
-		this._media 		= {};
+		this._media 		= null;
 		this._mediaclass	= {};
 		this._text			= {};
 	
@@ -4821,29 +4810,12 @@ VCO.Slide = VCO.Class.extend({
 	
 		// Data
 		this.data = {
-			uniqueid: 				"",
-			background: {			// OPTIONAL
-				url: 				null,
-				color: 				null,
-				opacity: 			50
-			},
+			uniqueid: 				null,
+			background: 			null,
 			date: 					null,
-			location: {
-				lat: 				-9.143962,
-				lon: 				38.731094,
-				zoom: 				13,
-				icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-			},
-			text: {
-				headline: 			"Le portrait mystérieux",
-				text: 				"Lorem ipsum dolor sit amet, consectetuer adipiscing elit."
-			},
-			media: {
-				url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-				credit:				"Georges Méliès",
-				caption:			"Le portrait mystérieux"
-			}
-		
+			location: 				null,
+			text: 					null,
+			media: 					null
 		};
 	
 		// Options
@@ -4931,7 +4903,7 @@ VCO.Slide = VCO.Class.extend({
 			this.data.media.mediatype = VCO.MediaType(this.data.media.url);
 			
 			// Create a media object using the matched class name
-			this._media = new this.data.media.mediatype.cls(this.data.media);
+			this._media = new this.data.media.mediatype.cls(this.data.media, this.options);
 			
 			// add the object to the dom
 			this._media.addTo(this._el.content);
@@ -4967,6 +4939,11 @@ VCO.Slide = VCO.Class.extend({
 		} else {
 			this.options.height = this._el.container.offsetHeight;
 		}
+		
+		if (this._media) {
+			this._media.updateDisplay(this.options.width, this.options.height);
+		}
+		//this._el.content_container.style.height = this.options.height + "px";
 	}
 	
 });
@@ -5149,9 +5126,9 @@ VCO.StorySlider = VCO.Class.extend({
 						text: 				""
 					},
 					media: {
-						url: 				"http://farm8.staticflickr.com/7076/7074630607_b1c23532e4.jpg",
-						credit:				"Zach Wise",
-						caption:			"San Francisco"
+						url: 				"http://www.flickr.com/photos/neera/6147067542/",
+						credit:				"Nosy Iranja",
+						caption:			""
 					}
 				},
 				{
@@ -5173,9 +5150,7 @@ VCO.StorySlider = VCO.Class.extend({
 						text: 				""
 					},
 					media: {
-						url: 				"http://farm8.staticflickr.com/7076/7074630607_b1c23532e4.jpg",
-						credit:				"Zach Wise",
-						caption:			"San Francisco"
+						url: 				"https://twitter.com/ThisAmerLife/status/374975945825722368"
 					}
 				},
 				{
@@ -5192,14 +5167,11 @@ VCO.StorySlider = VCO.Class.extend({
 						zoom: 				13,
 						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
 					},
-					text: {
-						headline: 			"Flickr",
-						text: 				""
-					},
+					text: 					null,
 					media: {
-						url: 				"http://farm8.staticflickr.com/7076/7074630607_b1c23532e4.jpg",
-						credit:				"Zach Wise",
-						caption:			"San Francisco"
+						url: 				"http://www.flickr.com/photos/neera/6147067542/",
+						credit:				"Nosy Iranja",
+						caption:			""
 					}
 				},
 				{
@@ -5221,9 +5193,72 @@ VCO.StorySlider = VCO.Class.extend({
 						text: 				""
 					},
 					media: {
-						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						credit:				"ETC",
-						caption:			"something"
+						url: 				"https://soundcloud.com/beastieboys/make-some-noise",
+						credit:				null,
+						caption:			null
+					}
+				},
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
+						url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						color: 				null,
+						opacity: 			50
+					},
+					date: 					null,
+					location: {
+						lat: 				-9.143962,
+						lon: 				38.731094,
+						zoom: 				13,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: 					null,
+					media: {
+						url: 				"https://soundcloud.com/beastieboys/make-some-noise",
+						credit:				null,
+						caption:			null
+					}
+				},
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
+						url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						color: 				null,
+						opacity: 			50
+					},
+					date: 					null,
+					location: {
+						lat: 				-9.143962,
+						lon: 				38.731094,
+						zoom: 				13,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: 					null,
+					media: {
+						url: 				"https://vine.co/v/bjHh0zHdgZT",
+						credit:				null,
+						caption:			null
+					}
+				},
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
+						url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						color: 				null,
+						opacity: 			50
+					},
+					date: 					null,
+					location: {
+						lat: 				-9.143962,
+						lon: 				38.731094,
+						zoom: 				13,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: 					null,
+					media: {
+						url: 				"http://www.flickr.com/photos/neera/6147067542/",
+						credit:				"Nosy Iranja",
+						caption:			""
 					}
 				}
 			]
@@ -5350,28 +5385,40 @@ VCO.StorySlider = VCO.Class.extend({
 			// Update Navigation
 			if (this._slides[this.current_slide + 1]) {
 				this._nav.next.show();
-				var nav_data = {
-					title: this._slides[this.current_slide + 1].data.text.headline,
-					description: this._slides[this.current_slide + 1].data.location.lat
-				};
-				this._nav.next.update(nav_data);
+				this._nav.next.update(this.getNavInfo(this._slides[this.current_slide + 1]));
 			} else {
 				this._nav.next.hide();
 			}
 			if (this._slides[this.current_slide - 1]) {
 				this._nav.previous.show();
-				var nav_data = {
-					title: this._slides[this.current_slide - 1].data.text.headline,
-					description: this._slides[this.current_slide - 1].data.location.lat
-				};
-				this._slides[this.current_slide - 1].data
-				this._nav.previous.update(nav_data);
+				this._nav.previous.update(this.getNavInfo(this._slides[this.current_slide - 1]));
 			} else {
 				this._nav.previous.hide();
 			}
 			
 			
 		}
+	},
+	
+	getNavInfo: function(slide) {
+		var n = {
+			title: "",
+			description: ""
+		};
+		
+		if (slide.data.text) {
+			if (slide.data.text.headline) {
+				n.title = slide.data.text.headline;
+			}
+			if (slide.data.location) {
+				if (slide.data.location.name) {
+					n.description = slide.data.location.name;
+				}
+			}
+		}
+		
+		return n;
+		
 	},
 	
 	next: function() {
@@ -5431,8 +5478,11 @@ VCO.StorySlider = VCO.Class.extend({
 		this._el.slider_container			= VCO.Dom.create('div', 'vco-slider-container', this._el.slider_container_mask);
 		this._el.slider_item_container		= VCO.Dom.create('div', 'vco-slider-item-container', this._el.slider_container);
 		
-		// Create Navigation
+		// Update Size
+		this.options.width = this._el.container.offsetWidth;
+		this.options.height = this._el.container.offsetHeight;
 		
+		// Create Navigation
 		this._nav.previous = new VCO.SlideNav({title: "Previous", description: "description"}, {direction:"previous"});
 		this._nav.next = new VCO.SlideNav({title: "Next",description: "description"}, {direction:"next"});
 		
@@ -15407,6 +15457,8 @@ VCO.Map.Leaflet = VCO.Map.extend({
 // @codekit-prepend "core/VCO.Events.js";
 // @codekit-prepend "core/VCO.Browser.js";
 
+// @codekit-prepend "language/VCO.Language.js";
+
 // @codekit-prepend "animation/VCO.Ease.js";
 // @codekit-prepend "animation/VCO.Animate.js";
 
@@ -15415,6 +15467,10 @@ VCO.Map.Leaflet = VCO.Map.extend({
 // @codekit-prepend "dom/VCO.Dom.js";
 // @codekit-prepend "dom/VCO.DomUtil.js";
 // @codekit-prepend "dom/VCO.DomEvent.js";
+
+// @codekit-prepend "ui/VCO.Draggable.js";
+// @codekit-prepend "ui/VCO.SizeBar.js";
+// @codekit-prepend "ui/VCO.Messege.js";
 
 // @codekit-prepend "media/VCO.MediaType.js";
 // @codekit-prepend "media/VCO.Media.js";
@@ -15434,9 +15490,6 @@ VCO.Map.Leaflet = VCO.Map.extend({
 // @codekit-prepend "media/types/VCO.Media.Website.js";
 // @codekit-prepend "media/types/VCO.Media.Wikipedia.js";
 // @codekit-prepend "media/types/VCO.Media.YouTube.js";
-
-// @codekit-prepend "ui/VCO.Draggable.js";
-// @codekit-prepend "ui/VCO.SizeBar.js";
 
 // @codekit-prepend "slider/VCO.Slide.js";
 // @codekit-prepend "slider/VCO.SlideNav.js";
@@ -15538,9 +15591,9 @@ VCO.StoryMap = VCO.Class.extend({
 						text: 				"Moves to Hannibal, Missouri, which later serves as the model town for Tom Sawyer and Huckleberry Finn."
 					},
 					media: {
-						url: 				"http://farm8.staticflickr.com/7076/7074630607_b1c23532e4.jpg",
-						credit:				"Zach Wise",
-						caption:			"San Francisco"
+						url: 				"http://www.flickr.com/photos/neera/6147067542/",
+						credit:				"Nosy Iranja",
+						caption:			""
 					}
 				},
 				{
@@ -15563,9 +15616,9 @@ VCO.StoryMap = VCO.Class.extend({
 						text: 				"Begins work as a journeyman printer with the Hannibal Gazette. Publishes first sketches."
 					},
 					media: {
-						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						credit:				"Zach Wise",
-						caption:			"San Francisco"
+						url: 				"https://soundcloud.com/beastieboys/make-some-noise",
+						credit:				null,
+						caption:			null
 					}
 				},
 				{
@@ -15588,9 +15641,9 @@ VCO.StoryMap = VCO.Class.extend({
 						text: 				"Visits St. Louis, New York, and Philadelphia as an itinerant printer."
 					},
 					media: {
-						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						credit:				"ETC",
-						caption:			"something"
+						url: 				"https://vine.co/v/bjHh0zHdgZT",
+						credit:				null,
+						caption:			null
 					}
 				},
 				{
@@ -15865,7 +15918,12 @@ VCO.StoryMap = VCO.Class.extend({
 			use_custom_markers: 	false, // Allow use of custom map marker icons
 			line_color: 			"#0088cc",
 			line_weight: 			5,
-			line_opacity: 			0.5
+			line_opacity: 			0.5,
+			api_key_flickr: 		"f2cc870b4d233dd0a5bfe73fd0d64ef0",
+			language: {
+				name: "English",
+				
+			}
 			
 		};
 		
@@ -15908,6 +15966,12 @@ VCO.StoryMap = VCO.Class.extend({
 		this._el.map 			= VCO.Dom.create('div', 'vco-map', this._el.container);
 		this._el.storyslider 	= VCO.Dom.create('div', 'vco-storyslider', this._el.container);
 		
+		// Initial Default Layout
+		this.options.width = this._el.container.offsetWidth;
+		this.options.height = this._el.container.offsetHeight;
+		this._el.map.style.height = "1px";
+		this._el.storyslider.style.top = "1px";
+		
 		// Create Map using preferred Map API
 		this._map = new VCO.Map.Leaflet(this._el.map, this.data, this.options);
 		
@@ -15916,12 +15980,6 @@ VCO.StoryMap = VCO.Class.extend({
 		
 		// Create StorySlider
 		this._storyslider = new VCO.StorySlider(this._el.storyslider, this.data, this.options);
-		
-		// Initial Default Layout
-		this.options.width = this._el.container.offsetWidth;
-		this.options.height = this._el.container.offsetHeight;
-		this._el.map.style.height = "1px";
-		this._el.storyslider.style.top = "1px";
 		
 		// Set Default Component Sizes
 		this.options.map_height = (this.options.height / this.options.map_size_sticky);

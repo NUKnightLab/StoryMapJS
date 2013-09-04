@@ -26,12 +26,12 @@ VCO.DomMixins = {
 	
 	addTo: function(container) {
 		container.appendChild(this._el.container);
-		//this.onAdd();
+		this.onAdd();
 	},
 	
 	removeFrom: function(container) {
 		container.removeChild(this._el.container);
-		//this.onRemove();
+		this.onRemove();
 	},
 	
 	/*	Animate to Position

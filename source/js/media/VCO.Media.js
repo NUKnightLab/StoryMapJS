@@ -19,26 +19,27 @@ VCO.Media = VCO.Class.extend({
 			content: {},
 			content_item: {},
 			caption: {},
-			credit: {}
+			credit: {},
+			parent: {}
 		};
-	
-		// Media Type
-		this.mediatype = {};
+		
+		// Messege
+		this.messege = null;
 		
 		// Media ID
 		this.media_id = null;
 	
 		// Data
 		this.data = {
-			uniqueid: 			"",
-			url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-			credit:				"Georges Méliès",
-			caption:			"Le portrait mystérieux"
+			uniqueid: 			null,
+			url: 				null,
+			credit:				null,
+			caption:			null
 		};
 	
 		//Options
 		this.options = {
-			something: 			""
+			api_key_flickr: 		"f2cc870b4d233dd0a5bfe73fd0d64ef0"
 		};
 	
 		this.animator = {};
@@ -54,17 +55,22 @@ VCO.Media = VCO.Class.extend({
 		
 		if (add_to_container) {
 			add_to_container.appendChild(this._el.container);
+			this._el.parent = add_to_container;
 		};
 		
 	},
 	
-	/*	Load the media
+	/*	Media Specific
 	================================================== */
-	loadMedia: function() {
+		loadMedia: function() {
 		
-	},
+		},
+		
+		_updateMediaDisplay: function() {
+			
+		},
 	
-	/*	Adding, Hiding, Showing etc
+	/*	Public
 	================================================== */
 	show: function() {
 		
@@ -83,11 +89,19 @@ VCO.Media = VCO.Class.extend({
 		container.removeChild(this._el.container);
 		this.onRemove();
 	},
+	
+	// Update Display
+	updateDisplay: function(w, h, animate) {
+		this._updateDisplay(w, h, animate);
+	},
 
 	/*	Events
 	================================================== */
 	onLoaded: function() {
 		this.fire("loaded", this.data);
+		if (this.messege) {
+			this.messege.hide();
+		}
 	},
 	
 	onAdd: function() {
@@ -102,12 +116,15 @@ VCO.Media = VCO.Class.extend({
 	================================================== */
 	_initLayout: function () {
 		
+		// Messege
+		this.messege = new VCO.Messege({}, this.options);
+		this.messege.addTo(this._el.container);
+		
 		// Create Layout
 		this._el.content_container			= VCO.Dom.create("div", "vco-media-content-container", this._el.container);
 		this._el.content					= VCO.Dom.create("div", "vco-media-content", this._el.content_container);
 		
-		// Add Shadow
-		this._el.content.className += ' vco-media-shadow';
+		
 		
 		// Credit
 		if (this.data.credit != "") {
@@ -120,6 +137,19 @@ VCO.Media = VCO.Class.extend({
 			this._el.caption				= VCO.Dom.create("div", "vco-caption", this._el.content_container);
 			this._el.caption.innerHTML		= this.data.caption;
 		}
+		
+		
+	},
+	
+	// Update Display
+	_updateDisplay: function(w, h, animate) {
+		if (w) {
+			this.options.width = w;
+		}
+		if (h) {
+			this.options.height = h;
+		}
+		this._updateMediaDisplay();
 		
 	}
 	

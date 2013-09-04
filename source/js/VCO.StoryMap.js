@@ -19,6 +19,8 @@
 // @codekit-prepend "core/VCO.Events.js";
 // @codekit-prepend "core/VCO.Browser.js";
 
+// @codekit-prepend "language/VCO.Language.js";
+
 // @codekit-prepend "animation/VCO.Ease.js";
 // @codekit-prepend "animation/VCO.Animate.js";
 
@@ -27,6 +29,10 @@
 // @codekit-prepend "dom/VCO.Dom.js";
 // @codekit-prepend "dom/VCO.DomUtil.js";
 // @codekit-prepend "dom/VCO.DomEvent.js";
+
+// @codekit-prepend "ui/VCO.Draggable.js";
+// @codekit-prepend "ui/VCO.SizeBar.js";
+// @codekit-prepend "ui/VCO.Messege.js";
 
 // @codekit-prepend "media/VCO.MediaType.js";
 // @codekit-prepend "media/VCO.Media.js";
@@ -46,9 +52,6 @@
 // @codekit-prepend "media/types/VCO.Media.Website.js";
 // @codekit-prepend "media/types/VCO.Media.Wikipedia.js";
 // @codekit-prepend "media/types/VCO.Media.YouTube.js";
-
-// @codekit-prepend "ui/VCO.Draggable.js";
-// @codekit-prepend "ui/VCO.SizeBar.js";
 
 // @codekit-prepend "slider/VCO.Slide.js";
 // @codekit-prepend "slider/VCO.SlideNav.js";
@@ -150,9 +153,9 @@ VCO.StoryMap = VCO.Class.extend({
 						text: 				"Moves to Hannibal, Missouri, which later serves as the model town for Tom Sawyer and Huckleberry Finn."
 					},
 					media: {
-						url: 				"http://farm8.staticflickr.com/7076/7074630607_b1c23532e4.jpg",
-						credit:				"Zach Wise",
-						caption:			"San Francisco"
+						url: 				"http://www.flickr.com/photos/neera/6147067542/",
+						credit:				"Nosy Iranja",
+						caption:			""
 					}
 				},
 				{
@@ -175,9 +178,9 @@ VCO.StoryMap = VCO.Class.extend({
 						text: 				"Begins work as a journeyman printer with the Hannibal Gazette. Publishes first sketches."
 					},
 					media: {
-						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						credit:				"Zach Wise",
-						caption:			"San Francisco"
+						url: 				"https://soundcloud.com/beastieboys/make-some-noise",
+						credit:				null,
+						caption:			null
 					}
 				},
 				{
@@ -200,9 +203,9 @@ VCO.StoryMap = VCO.Class.extend({
 						text: 				"Visits St. Louis, New York, and Philadelphia as an itinerant printer."
 					},
 					media: {
-						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						credit:				"ETC",
-						caption:			"something"
+						url: 				"https://vine.co/v/bjHh0zHdgZT",
+						credit:				null,
+						caption:			null
 					}
 				},
 				{
@@ -477,7 +480,12 @@ VCO.StoryMap = VCO.Class.extend({
 			use_custom_markers: 	false, // Allow use of custom map marker icons
 			line_color: 			"#0088cc",
 			line_weight: 			5,
-			line_opacity: 			0.5
+			line_opacity: 			0.5,
+			api_key_flickr: 		"f2cc870b4d233dd0a5bfe73fd0d64ef0",
+			language: {
+				name: "English",
+				
+			}
 			
 		};
 		
@@ -520,6 +528,12 @@ VCO.StoryMap = VCO.Class.extend({
 		this._el.map 			= VCO.Dom.create('div', 'vco-map', this._el.container);
 		this._el.storyslider 	= VCO.Dom.create('div', 'vco-storyslider', this._el.container);
 		
+		// Initial Default Layout
+		this.options.width = this._el.container.offsetWidth;
+		this.options.height = this._el.container.offsetHeight;
+		this._el.map.style.height = "1px";
+		this._el.storyslider.style.top = "1px";
+		
 		// Create Map using preferred Map API
 		this._map = new VCO.Map.Leaflet(this._el.map, this.data, this.options);
 		
@@ -528,12 +542,6 @@ VCO.StoryMap = VCO.Class.extend({
 		
 		// Create StorySlider
 		this._storyslider = new VCO.StorySlider(this._el.storyslider, this.data, this.options);
-		
-		// Initial Default Layout
-		this.options.width = this._el.container.offsetWidth;
-		this.options.height = this._el.container.offsetHeight;
-		this._el.map.style.height = "1px";
-		this._el.storyslider.style.top = "1px";
 		
 		// Set Default Component Sizes
 		this.options.map_height = (this.options.height / this.options.map_size_sticky);

@@ -61,9 +61,9 @@ VCO.StorySlider = VCO.Class.extend({
 						text: 				""
 					},
 					media: {
-						url: 				"http://farm8.staticflickr.com/7076/7074630607_b1c23532e4.jpg",
-						credit:				"Zach Wise",
-						caption:			"San Francisco"
+						url: 				"http://www.flickr.com/photos/neera/6147067542/",
+						credit:				"Nosy Iranja",
+						caption:			""
 					}
 				},
 				{
@@ -85,9 +85,7 @@ VCO.StorySlider = VCO.Class.extend({
 						text: 				""
 					},
 					media: {
-						url: 				"http://farm8.staticflickr.com/7076/7074630607_b1c23532e4.jpg",
-						credit:				"Zach Wise",
-						caption:			"San Francisco"
+						url: 				"https://twitter.com/ThisAmerLife/status/374975945825722368"
 					}
 				},
 				{
@@ -104,14 +102,11 @@ VCO.StorySlider = VCO.Class.extend({
 						zoom: 				13,
 						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
 					},
-					text: {
-						headline: 			"Flickr",
-						text: 				""
-					},
+					text: 					null,
 					media: {
-						url: 				"http://farm8.staticflickr.com/7076/7074630607_b1c23532e4.jpg",
-						credit:				"Zach Wise",
-						caption:			"San Francisco"
+						url: 				"http://www.flickr.com/photos/neera/6147067542/",
+						credit:				"Nosy Iranja",
+						caption:			""
 					}
 				},
 				{
@@ -133,9 +128,72 @@ VCO.StorySlider = VCO.Class.extend({
 						text: 				""
 					},
 					media: {
-						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						credit:				"ETC",
-						caption:			"something"
+						url: 				"https://soundcloud.com/beastieboys/make-some-noise",
+						credit:				null,
+						caption:			null
+					}
+				},
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
+						url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						color: 				null,
+						opacity: 			50
+					},
+					date: 					null,
+					location: {
+						lat: 				-9.143962,
+						lon: 				38.731094,
+						zoom: 				13,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: 					null,
+					media: {
+						url: 				"https://soundcloud.com/beastieboys/make-some-noise",
+						credit:				null,
+						caption:			null
+					}
+				},
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
+						url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						color: 				null,
+						opacity: 			50
+					},
+					date: 					null,
+					location: {
+						lat: 				-9.143962,
+						lon: 				38.731094,
+						zoom: 				13,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: 					null,
+					media: {
+						url: 				"https://vine.co/v/bjHh0zHdgZT",
+						credit:				null,
+						caption:			null
+					}
+				},
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
+						url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						color: 				null,
+						opacity: 			50
+					},
+					date: 					null,
+					location: {
+						lat: 				-9.143962,
+						lon: 				38.731094,
+						zoom: 				13,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: 					null,
+					media: {
+						url: 				"http://www.flickr.com/photos/neera/6147067542/",
+						credit:				"Nosy Iranja",
+						caption:			""
 					}
 				}
 			]
@@ -262,28 +320,40 @@ VCO.StorySlider = VCO.Class.extend({
 			// Update Navigation
 			if (this._slides[this.current_slide + 1]) {
 				this._nav.next.show();
-				var nav_data = {
-					title: this._slides[this.current_slide + 1].data.text.headline,
-					description: this._slides[this.current_slide + 1].data.location.lat
-				};
-				this._nav.next.update(nav_data);
+				this._nav.next.update(this.getNavInfo(this._slides[this.current_slide + 1]));
 			} else {
 				this._nav.next.hide();
 			}
 			if (this._slides[this.current_slide - 1]) {
 				this._nav.previous.show();
-				var nav_data = {
-					title: this._slides[this.current_slide - 1].data.text.headline,
-					description: this._slides[this.current_slide - 1].data.location.lat
-				};
-				this._slides[this.current_slide - 1].data
-				this._nav.previous.update(nav_data);
+				this._nav.previous.update(this.getNavInfo(this._slides[this.current_slide - 1]));
 			} else {
 				this._nav.previous.hide();
 			}
 			
 			
 		}
+	},
+	
+	getNavInfo: function(slide) {
+		var n = {
+			title: "",
+			description: ""
+		};
+		
+		if (slide.data.text) {
+			if (slide.data.text.headline) {
+				n.title = slide.data.text.headline;
+			}
+			if (slide.data.location) {
+				if (slide.data.location.name) {
+					n.description = slide.data.location.name;
+				}
+			}
+		}
+		
+		return n;
+		
 	},
 	
 	next: function() {
@@ -343,8 +413,11 @@ VCO.StorySlider = VCO.Class.extend({
 		this._el.slider_container			= VCO.Dom.create('div', 'vco-slider-container', this._el.slider_container_mask);
 		this._el.slider_item_container		= VCO.Dom.create('div', 'vco-slider-item-container', this._el.slider_container);
 		
-		// Create Navigation
+		// Update Size
+		this.options.width = this._el.container.offsetWidth;
+		this.options.height = this._el.container.offsetHeight;
 		
+		// Create Navigation
 		this._nav.previous = new VCO.SlideNav({title: "Previous", description: "description"}, {direction:"previous"});
 		this._nav.next = new VCO.SlideNav({title: "Next",description: "description"}, {direction:"next"});
 		

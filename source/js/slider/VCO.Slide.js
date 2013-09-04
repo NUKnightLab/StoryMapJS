@@ -1,9 +1,34 @@
 /*	VCO.Slide
 	Creates a slide. Takes a data object and
 	populates the slide with content.
-================================================== */
 
-// TODO null out data
+	Object Model
+	this.data = {
+		uniqueid: 				"",
+		background: {			// OPTIONAL
+			url: 				null,
+			color: 				null,
+			opacity: 			50
+		},
+		date: 					null,
+		location: {
+			lat: 				-9.143962,
+			lon: 				38.731094,
+			zoom: 				13,
+			icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+		},
+		text: {
+			headline: 			"Le portrait mystérieux",
+			text: 				"Lorem ipsum dolor sit amet, consectetuer adipiscing elit."
+		},
+		media: {
+			url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+			credit:				"Georges Méliès",
+			caption:			"Le portrait mystérieux"
+		}
+	
+	};
+================================================== */
 
 VCO.Slide = VCO.Class.extend({
 	
@@ -23,7 +48,7 @@ VCO.Slide = VCO.Class.extend({
 		};
 	
 		// Components
-		this._media 		= {};
+		this._media 		= null;
 		this._mediaclass	= {};
 		this._text			= {};
 	
@@ -32,29 +57,12 @@ VCO.Slide = VCO.Class.extend({
 	
 		// Data
 		this.data = {
-			uniqueid: 				"",
-			background: {			// OPTIONAL
-				url: 				null,
-				color: 				null,
-				opacity: 			50
-			},
+			uniqueid: 				null,
+			background: 			null,
 			date: 					null,
-			location: {
-				lat: 				-9.143962,
-				lon: 				38.731094,
-				zoom: 				13,
-				icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-			},
-			text: {
-				headline: 			"Le portrait mystérieux",
-				text: 				"Lorem ipsum dolor sit amet, consectetuer adipiscing elit."
-			},
-			media: {
-				url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-				credit:				"Georges Méliès",
-				caption:			"Le portrait mystérieux"
-			}
-		
+			location: 				null,
+			text: 					null,
+			media: 					null
 		};
 	
 		// Options
@@ -142,7 +150,7 @@ VCO.Slide = VCO.Class.extend({
 			this.data.media.mediatype = VCO.MediaType(this.data.media.url);
 			
 			// Create a media object using the matched class name
-			this._media = new this.data.media.mediatype.cls(this.data.media);
+			this._media = new this.data.media.mediatype.cls(this.data.media, this.options);
 			
 			// add the object to the dom
 			this._media.addTo(this._el.content);
@@ -178,6 +186,11 @@ VCO.Slide = VCO.Class.extend({
 		} else {
 			this.options.height = this._el.container.offsetHeight;
 		}
+		
+		if (this._media) {
+			this._media.updateDisplay(this.options.width, this.options.height);
+		}
+		//this._el.content_container.style.height = this.options.height + "px";
 	}
 	
 });
