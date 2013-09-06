@@ -45,6 +45,136 @@ VCO.StorySlider = VCO.Class.extend({
 				{
 					uniqueid: 				"",
 					background: {			// OPTIONAL
+						url: 				null,
+						color: 				null,
+						opacity: 			50
+					},
+					date: 					null,
+					location: {
+						lat: 				-9.143962,
+						lon: 				38.731094,
+						zoom: 				13,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: {
+						headline: 			"YouTube",
+						text: 				"Just add a link to the video in the media field."
+					},
+					media: {
+						url: 				"http://www.youtube.com/watch?v=lIvftGgps24",
+						credit:				"",
+						caption:			"",
+						link: 				null,
+						link_target: 		null
+					}
+				},
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
+						url: 				null,
+						color: 				null,
+						opacity: 			50
+					},
+					date: 					null,
+					location: {
+						lat: 				-9.143962,
+						lon: 				38.731094,
+						zoom: 				13,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: {
+						headline: 			"Wikipedia",
+						text: 				"Just add a link to the video in the media field."
+					},
+					media: {
+						url: 				"http://en.wikipedia.org/wiki/Mark_Twain",
+						credit:				"",
+						caption:			"",
+						link: 				null,
+						link_target: 		null
+					}
+				},
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
+						url: 				null,
+						color: 				null,
+						opacity: 			50
+					},
+					date: 					null,
+					location: {
+						lat: 				-9.143962,
+						lon: 				38.731094,
+						zoom: 				13,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: {
+						headline: 			"Storify",
+						text: 				"Just add a link to the video in the media field."
+					},
+					media: {
+						url: 				"https://storify.com/kqednews/art-at-burning-man-2013",
+						credit:				"",
+						caption:			"",
+						link: 				null,
+						link_target: 		null
+					}
+				},
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
+						url: 				"https://secure-b.vimeocdn.com/ts/225/276/225276903_960.jpg",
+						color: 				null,
+						opacity: 			50
+					},
+					date: 					null,
+					location: {
+						lat: 				-9.143962,
+						lon: 				38.731094,
+						zoom: 				13,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: {
+						headline: 			"Vimeo",
+						text: 				"Just add a link to the video in the media field."
+					},
+					media: {
+						url: 				"https://vimeo.com/33211636",
+						credit:				"",
+						caption:			"",
+						link: 				null,
+						link_target: 		null
+					}
+				},
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
+						url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						color: 				null,
+						opacity: 			50
+					},
+					date: 					null,
+					location: {
+						lat: 				-9.143962,
+						lon: 				38.731094,
+						zoom: 				13,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: {
+						headline: 			"iFrame",
+						text: 				""
+					},
+					media: {
+						url: 				"<iframe src='http://www.w3schools.com'></iframe>",
+						credit:				"",
+						caption:			"w3schools",
+						link: 				null,
+						link_target: 		null
+					}
+				},
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
 						url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
 						color: 				"#cdbfe3",
 						opacity: 			50
@@ -63,7 +193,9 @@ VCO.StorySlider = VCO.Class.extend({
 					media: {
 						url: 				"http://www.flickr.com/photos/neera/6147067542/",
 						credit:				"Nosy Iranja",
-						caption:			""
+						caption:			"",
+						link: 				"http://www.flickr.com/photos/neera/6147067542/",
+						link_target: 		"_self"
 					}
 				},
 				{
@@ -203,7 +335,7 @@ VCO.StorySlider = VCO.Class.extend({
 			id: 					"",
 			width: 					600,
 			height: 				600,
-			start_at_slide: 		2,
+			start_at_slide: 		0,
 			// animation
 			duration: 				1000,
 			ease: 					VCO.Ease.easeInOutQuint,

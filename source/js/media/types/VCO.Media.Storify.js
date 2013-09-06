@@ -8,23 +8,23 @@ VCO.Media.Storify = VCO.Media.extend({
 	/*	Load the media
 	================================================== */
 	loadMedia: function() {
-		var api_url,
-			self = this;
+		var content;
 		
 		// Loading Messege
-		this.messege.updateMessege(VCO.Language.messeges.loading + " SoundCloud");
+		this.messege.updateMessege(VCO.Language.messeges.loading + " Storify");
 		
 		// Create Dom element
-		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe", this._el.content);
+		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe vco-media-storify", this._el.content);
 		
 		// Get Media ID
 		this.media_id = this.data.url;
 		
-		// API URL
-		api_url = this.media_id;
+		// Content
+		content =	"<iframe frameborder='0' width='100%' height='100%' src='" + this.media_id + "/embed'></iframe>";
+		content +=	"<script src='" + this.media_id + ".js'></script>";
 		
 		// API Call
-		this._el.content_item.innerHTML = "<iframe frameborder='0' width='100%' height='100%' src='" + api_url + "'></iframe>"		
+		this._el.content_item.innerHTML = content;
 		
 		// After Loaded
 		this.onLoaded();

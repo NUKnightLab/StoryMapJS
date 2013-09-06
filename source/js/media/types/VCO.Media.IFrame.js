@@ -12,7 +12,7 @@ VCO.Media.IFrame = VCO.Media.extend({
 			self = this;
 		
 		// Loading Messege
-		this.messege.updateMessege(VCO.Language.messeges.loading + " SoundCloud");
+		this.messege.updateMessege(VCO.Language.messeges.loading + " iFrame");
 		
 		// Create Dom element
 		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe", this._el.content);
@@ -24,7 +24,7 @@ VCO.Media.IFrame = VCO.Media.extend({
 		api_url = this.media_id;
 		
 		// API Call
-		this._el.content_item.innerHTML = "<iframe frameborder='0' width='100%' height='100%' src='" + api_url + "'></iframe>"		
+		this._el.content_item.innerHTML = api_url;
 		
 		// After Loaded
 		this.onLoaded();

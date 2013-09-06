@@ -12,10 +12,10 @@ VCO.Media.GooglePlus = VCO.Media.extend({
 			self = this;
 		
 		// Loading Messege
-		this.messege.updateMessege(VCO.Language.messeges.loading + " SoundCloud");
+		this.messege.updateMessege(VCO.Language.messeges.loading + " GooglePlus");
 		
 		// Create Dom element
-		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe", this._el.content);
+		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-googleplus", this._el.content);
 		
 		// Get Media ID
 		this.media_id = this.data.url;

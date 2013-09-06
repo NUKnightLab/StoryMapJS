@@ -202,6 +202,81 @@ VCO.Util = {
 			}
 			return value;
 		});
+	},
+	ratio: {
+		square: function(size) {
+			var s = {
+				w: 0,
+				h: 0
+			}
+			if (size.w > size.h && size.h > 0) {
+				s.h = size.h;
+				s.w = size.h;
+			} else {
+				s.w = size.w;
+				s.h = size.w;
+			}
+			return s;
+		},
+		
+		r16_9: function(size) {
+			if (size.w !== null && size.w !== "") {
+				return Math.round((size.w / 16) * 9);
+			} else if (size.h !== null && size.h !== "") {
+				return Math.round((size.h / 9) * 16);
+			} else {
+				return 0;
+			}
+		},
+		r4_3: function(size) {
+			if (size.w !== null && size.w !== "") {
+				return Math.round((size.w / 4) * 3);
+			} else if (size.h !== null && size.h !== "") {
+				return Math.round((size.h / 3) * 4);
+			}
+		}
+	},
+	getObjectAttributeByIndex: function(obj, index) {
+		if(typeof obj != 'undefined') {
+			var i = 0;
+			for (var attr in obj){
+				if (index === i){
+					return obj[attr];
+				}
+				i++;
+			}
+			return "";
+		} else {
+			return "";
+		}
+		
+	},
+	getUrlVars: function(string) {
+		var str,
+			vars = [],
+			hash,
+			hashes;
+		
+		str = string.toString();
+		
+		if (str.match('&#038;')) { 
+			str = str.replace("&#038;", "&");
+		} else if (str.match('&#38;')) {
+			str = str.replace("&#38;", "&");
+		} else if (str.match('&amp;')) {
+			str = str.replace("&amp;", "&");
+		}
+		
+		hashes = str.slice(str.indexOf('?') + 1).split('&');
+		
+		for(var i = 0; i < hashes.length; i++) {
+			hash = hashes[i].split('=');
+			vars.push(hash[0]);
+			vars[hash[0]] = hash[1];
+		}
+		
+		
+		return vars;
 	}
 };
 
@@ -1779,6 +1854,462 @@ VCO.Events.fire = VCO.Events.fireEvent;
 	};
 
 }());
+
+/* **********************************************
+     Begin VCO.Load.js
+********************************************** */
+
+/*	VCO.Load
+	Loads External Javascript and CSS
+================================================== */
+
+/*
+	LoadLib
+	Designed and built by Zach Wise digitalartwork.net
+*/
+
+/*	* CodeKit Import
+	* http://incident57.com/codekit/
+================================================== */
+// @codekit-prepend "../Library/LazyLoad.js";
+
+VCO.Load = (function (doc) {
+	var loaded	= [];
+	
+	function isLoaded(url) {
+		
+		var i			= 0,
+			has_loaded	= false;
+		
+		for (i = 0; i < loaded.length; i++) {
+			if (loaded[i] == url) {
+				has_loaded = true;
+			}
+		}
+		
+		if (has_loaded) {
+			return true;
+		} else {
+			loaded.push(url);
+			return false;
+		}
+		
+	}
+	
+	return {
+		
+		css: function (urls, callback, obj, context) {
+			if (!isLoaded(urls)) {
+				VCO.LoadIt.css(urls, callback, obj, context);
+			} else {
+				callback();
+			}
+		},
+
+		js: function (urls, callback, obj, context) {
+			if (!isLoaded(urls)) {
+				VCO.LoadIt.js(urls, callback, obj, context);
+			} else {
+				callback();
+			}
+		}
+    };
+	
+})(this.document);
+
+
+/*jslint browser: true, eqeqeq: true, bitwise: true, newcap: true, immed: true, regexp: false */
+
+/*
+LazyLoad makes it easy and painless to lazily load one or more external
+JavaScript or CSS files on demand either during or after the rendering of a web
+page.
+
+Supported browsers include Firefox 2+, IE6+, Safari 3+ (including Mobile
+Safari), Google Chrome, and Opera 9+. Other browsers may or may not work and
+are not officially supported.
+
+Visit https://github.com/rgrove/lazyload/ for more info.
+
+Copyright (c) 2011 Ryan Grove <ryan@wonko.com>
+All rights reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the 'Software'), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+@module lazyload
+@class LazyLoad
+@static
+@version 2.0.3 (git)
+*/
+
+VCO.LoadIt = (function (doc) {
+  // -- Private Variables ------------------------------------------------------
+
+  // User agent and feature test information.
+  var env,
+
+  // Reference to the <head> element (populated lazily).
+  head,
+
+  // Requests currently in progress, if any.
+  pending = {},
+
+  // Number of times we've polled to check whether a pending stylesheet has
+  // finished loading. If this gets too high, we're probably stalled.
+  pollCount = 0,
+
+  // Queued requests.
+  queue = {css: [], js: []},
+
+  // Reference to the browser's list of stylesheets.
+  styleSheets = doc.styleSheets;
+
+  // -- Private Methods --------------------------------------------------------
+
+  /**
+  Creates and returns an HTML element with the specified name and attributes.
+
+  @method createNode
+  @param {String} name element name
+  @param {Object} attrs name/value mapping of element attributes
+  @return {HTMLElement}
+  @private
+  */
+  function createNode(name, attrs) {
+    var node = doc.createElement(name), attr;
+
+    for (attr in attrs) {
+      if (attrs.hasOwnProperty(attr)) {
+        node.setAttribute(attr, attrs[attr]);
+      }
+    }
+
+    return node;
+  }
+
+  /**
+  Called when the current pending resource of the specified type has finished
+  loading. Executes the associated callback (if any) and loads the next
+  resource in the queue.
+
+  @method finish
+  @param {String} type resource type ('css' or 'js')
+  @private
+  */
+  function finish(type) {
+    var p = pending[type],
+        callback,
+        urls;
+
+    if (p) {
+      callback = p.callback;
+      urls     = p.urls;
+
+      urls.shift();
+      pollCount = 0;
+
+      // If this is the last of the pending URLs, execute the callback and
+      // start the next request in the queue (if any).
+      if (!urls.length) {
+        callback && callback.call(p.context, p.obj);
+        pending[type] = null;
+        queue[type].length && load(type);
+      }
+    }
+  }
+
+  /**
+  Populates the <code>env</code> variable with user agent and feature test
+  information.
+
+  @method getEnv
+  @private
+  */
+  function getEnv() {
+    var ua = navigator.userAgent;
+
+    env = {
+      // True if this browser supports disabling async mode on dynamically
+      // created script nodes. See
+      // http://wiki.whatwg.org/wiki/Dynamic_Script_Execution_Order
+      async: doc.createElement('script').async === true
+    };
+
+    (env.webkit = /AppleWebKit\//.test(ua))
+      || (env.ie = /MSIE/.test(ua))
+      || (env.opera = /Opera/.test(ua))
+      || (env.gecko = /Gecko\//.test(ua))
+      || (env.unknown = true);
+  }
+
+  /**
+  Loads the specified resources, or the next resource of the specified type
+  in the queue if no resources are specified. If a resource of the specified
+  type is already being loaded, the new request will be queued until the
+  first request has been finished.
+
+  When an array of resource URLs is specified, those URLs will be loaded in
+  parallel if it is possible to do so while preserving execution order. All
+  browsers support parallel loading of CSS, but only Firefox and Opera
+  support parallel loading of scripts. In other browsers, scripts will be
+  queued and loaded one at a time to ensure correct execution order.
+
+  @method load
+  @param {String} type resource type ('css' or 'js')
+  @param {String|Array} urls (optional) URL or array of URLs to load
+  @param {Function} callback (optional) callback function to execute when the
+    resource is loaded
+  @param {Object} obj (optional) object to pass to the callback function
+  @param {Object} context (optional) if provided, the callback function will
+    be executed in this object's context
+  @private
+  */
+  function load(type, urls, callback, obj, context) {
+    var _finish = function () { finish(type); },
+        isCSS   = type === 'css',
+        nodes   = [],
+        i, len, node, p, pendingUrls, url;
+
+    env || getEnv();
+
+    if (urls) {
+      // If urls is a string, wrap it in an array. Otherwise assume it's an
+      // array and create a copy of it so modifications won't be made to the
+      // original.
+      urls = typeof urls === 'string' ? [urls] : urls.concat();
+
+      // Create a request object for each URL. If multiple URLs are specified,
+      // the callback will only be executed after all URLs have been loaded.
+      //
+      // Sadly, Firefox and Opera are the only browsers capable of loading
+      // scripts in parallel while preserving execution order. In all other
+      // browsers, scripts must be loaded sequentially.
+      //
+      // All browsers respect CSS specificity based on the order of the link
+      // elements in the DOM, regardless of the order in which the stylesheets
+      // are actually downloaded.
+      if (isCSS || env.async || env.gecko || env.opera) {
+        // Load in parallel.
+        queue[type].push({
+          urls    : urls,
+          callback: callback,
+          obj     : obj,
+          context : context
+        });
+      } else {
+        // Load sequentially.
+        for (i = 0, len = urls.length; i < len; ++i) {
+          queue[type].push({
+            urls    : [urls[i]],
+            callback: i === len - 1 ? callback : null, // callback is only added to the last URL
+            obj     : obj,
+            context : context
+          });
+        }
+      }
+    }
+
+    // If a previous load request of this type is currently in progress, we'll
+    // wait our turn. Otherwise, grab the next item in the queue.
+    if (pending[type] || !(p = pending[type] = queue[type].shift())) {
+      return;
+    }
+
+    head || (head = doc.head || doc.getElementsByTagName('head')[0]);
+    pendingUrls = p.urls;
+
+    for (i = 0, len = pendingUrls.length; i < len; ++i) {
+      url = pendingUrls[i];
+
+      if (isCSS) {
+          node = env.gecko ? createNode('style') : createNode('link', {
+            href: url,
+            rel : 'stylesheet'
+          });
+      } else {
+        node = createNode('script', {src: url});
+        node.async = false;
+      }
+
+      node.className = 'lazyload';
+      node.setAttribute('charset', 'utf-8');
+
+      if (env.ie && !isCSS) {
+        node.onreadystatechange = function () {
+          if (/loaded|complete/.test(node.readyState)) {
+            node.onreadystatechange = null;
+            _finish();
+          }
+        };
+      } else if (isCSS && (env.gecko || env.webkit)) {
+        // Gecko and WebKit don't support the onload event on link nodes.
+        if (env.webkit) {
+          // In WebKit, we can poll for changes to document.styleSheets to
+          // figure out when stylesheets have loaded.
+          p.urls[i] = node.href; // resolve relative URLs (or polling won't work)
+          pollWebKit();
+        } else {
+          // In Gecko, we can import the requested URL into a <style> node and
+          // poll for the existence of node.sheet.cssRules. Props to Zach
+          // Leatherman for calling my attention to this technique.
+          node.innerHTML = '@import "' + url + '";';
+          pollGecko(node);
+        }
+      } else {
+        node.onload = node.onerror = _finish;
+      }
+
+      nodes.push(node);
+    }
+
+    for (i = 0, len = nodes.length; i < len; ++i) {
+      head.appendChild(nodes[i]);
+    }
+  }
+
+  /**
+  Begins polling to determine when the specified stylesheet has finished loading
+  in Gecko. Polling stops when all pending stylesheets have loaded or after 10
+  seconds (to prevent stalls).
+
+  Thanks to Zach Leatherman for calling my attention to the @import-based
+  cross-domain technique used here, and to Oleg Slobodskoi for an earlier
+  same-domain implementation. See Zach's blog for more details:
+  http://www.zachleat.com/web/2010/07/29/load-css-dynamically/
+
+  @method pollGecko
+  @param {HTMLElement} node Style node to poll.
+  @private
+  */
+  function pollGecko(node) {
+    var hasRules;
+
+    try {
+      // We don't really need to store this value or ever refer to it again, but
+      // if we don't store it, Closure Compiler assumes the code is useless and
+      // removes it.
+      hasRules = !!node.sheet.cssRules;
+    } catch (ex) {
+      // An exception means the stylesheet is still loading.
+      pollCount += 1;
+
+      if (pollCount < 200) {
+        setTimeout(function () { pollGecko(node); }, 50);
+      } else {
+        // We've been polling for 10 seconds and nothing's happened. Stop
+        // polling and finish the pending requests to avoid blocking further
+        // requests.
+        hasRules && finish('css');
+      }
+
+      return;
+    }
+
+    // If we get here, the stylesheet has loaded.
+    finish('css');
+  }
+
+  /**
+  Begins polling to determine when pending stylesheets have finished loading
+  in WebKit. Polling stops when all pending stylesheets have loaded or after 10
+  seconds (to prevent stalls).
+
+  @method pollWebKit
+  @private
+  */
+  function pollWebKit() {
+    var css = pending.css, i;
+
+    if (css) {
+      i = styleSheets.length;
+
+      // Look for a stylesheet matching the pending URL.
+      while (--i >= 0) {
+        if (styleSheets[i].href === css.urls[0]) {
+          finish('css');
+          break;
+        }
+      }
+
+      pollCount += 1;
+
+      if (css) {
+        if (pollCount < 200) {
+          setTimeout(pollWebKit, 50);
+        } else {
+          // We've been polling for 10 seconds and nothing's happened, which may
+          // indicate that the stylesheet has been removed from the document
+          // before it had a chance to load. Stop polling and finish the pending
+          // request to prevent blocking further requests.
+          finish('css');
+        }
+      }
+    }
+  }
+
+  return {
+
+    /**
+    Requests the specified CSS URL or URLs and executes the specified
+    callback (if any) when they have finished loading. If an array of URLs is
+    specified, the stylesheets will be loaded in parallel and the callback
+    will be executed after all stylesheets have finished loading.
+
+    @method css
+    @param {String|Array} urls CSS URL or array of CSS URLs to load
+    @param {Function} callback (optional) callback function to execute when
+      the specified stylesheets are loaded
+    @param {Object} obj (optional) object to pass to the callback function
+    @param {Object} context (optional) if provided, the callback function
+      will be executed in this object's context
+    @static
+    */
+    css: function (urls, callback, obj, context) {
+      load('css', urls, callback, obj, context);
+    },
+
+    /**
+    Requests the specified JavaScript URL or URLs and executes the specified
+    callback (if any) when they have finished loading. If an array of URLs is
+    specified and the browser supports it, the scripts will be loaded in
+    parallel and the callback will be executed after all scripts have
+    finished loading.
+
+    Currently, only Firefox and Opera support parallel loading of scripts while
+    preserving execution order. In other browsers, scripts will be
+    queued and loaded one at a time to ensure correct execution order.
+
+    @method js
+    @param {String|Array} urls JS URL or array of JS URLs to load
+    @param {Function} callback (optional) callback function to execute when
+      the specified scripts are loaded
+    @param {Object} obj (optional) object to pass to the callback function
+    @param {Object} context (optional) if provided, the callback function
+      will be executed in this object's context
+    @static
+    */
+    js: function (urls, callback, obj, context) {
+      load('js', urls, callback, obj, context);
+    }
+
+  };
+})(this.document);
+
 
 /* **********************************************
      Begin VCO.Language.js
@@ -3779,7 +4310,8 @@ VCO.MediaType = function(url) {
 	Main media template for media assets.
 	Takes a data object and populates a dom object
 ================================================== */
- 
+// TODO add link
+
 VCO.Media = VCO.Class.extend({
 	
 	includes: [VCO.Events],
@@ -3797,8 +4329,15 @@ VCO.Media = VCO.Class.extend({
 			content_item: {},
 			caption: {},
 			credit: {},
-			parent: {}
+			parent: {},
+			link: null
 		};
+		
+		// Player (If Needed)
+		this.player = null;
+		
+		// Timer (If Needed)
+		this.timer = null;
 		
 		// Messege
 		this.messege = null;
@@ -3811,7 +4350,9 @@ VCO.Media = VCO.Class.extend({
 			uniqueid: 			null,
 			url: 				null,
 			credit:				null,
-			caption:			null
+			caption:			null,
+			link: 				null,
+			link_target: 		null
 		};
 	
 		//Options
@@ -3898,19 +4439,33 @@ VCO.Media = VCO.Class.extend({
 		this.messege.addTo(this._el.container);
 		
 		// Create Layout
-		this._el.content_container			= VCO.Dom.create("div", "vco-media-content-container", this._el.container);
-		this._el.content					= VCO.Dom.create("div", "vco-media-content", this._el.content_container);
+		this._el.content_container = VCO.Dom.create("div", "vco-media-content-container", this._el.container);
 		
-		
+		// Link
+		if (this.data.link && this.data.link != "") {
+			
+			this._el.link = VCO.Dom.create("a", "vco-media-link", this._el.content_container);
+			this._el.link.href = this.data.link;
+			if (this.data.link_target && this.data.link_target != "") {
+				this._el.link.target = this.data.link_target;
+			} else {
+				this._el.link.target = "_blank";
+			}
+			
+			this._el.content = VCO.Dom.create("div", "vco-media-content", this._el.link);
+			
+		} else {
+			this._el.content = VCO.Dom.create("div", "vco-media-content", this._el.content_container);
+		}
 		
 		// Credit
-		if (this.data.credit != "") {
+		if (this.data.credit && this.data.credit != "") {
 			this._el.credit					= VCO.Dom.create("div", "vco-credit", this._el.content_container);
 			this._el.credit.innerHTML		= this.data.credit;
 		}
 		
 		// Caption
-		if (this.data.caption != "") {
+		if (this.data.caption && this.data.caption != "") {
 			this._el.caption				= VCO.Dom.create("div", "vco-caption", this._el.content_container);
 			this._el.caption.innerHTML		= this.data.caption;
 		}
@@ -3946,8 +4501,6 @@ VCO.Media.Blockquote = VCO.Media.extend({
 	/*	Load the media
 	================================================== */
 	loadMedia: function() {
-		var api_url,
-			self = this;
 		
 		// Loading Messege
 		this.messege.updateMessege(VCO.Language.messeges.loading + " SoundCloud");
@@ -3958,11 +4511,8 @@ VCO.Media.Blockquote = VCO.Media.extend({
 		// Get Media ID
 		this.media_id = this.data.url;
 		
-		// API URL
-		api_url = this.media_id;
-		
 		// API Call
-		this._el.content_item.innerHTML = "<iframe frameborder='0' width='100%' height='100%' src='" + api_url + "'></iframe>"		
+		this._el.content_item.innerHTML = this.media_id;
 		
 		// After Loaded
 		this.onLoaded();
@@ -4081,7 +4631,7 @@ VCO.Media.GoogleDoc = VCO.Media.extend({
 			self = this;
 		
 		// Loading Messege
-		this.messege.updateMessege(VCO.Language.messeges.loading + " SoundCloud");
+		this.messege.updateMessege(VCO.Language.messeges.loading + " Google Doc");
 		
 		// Create Dom element
 		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe", this._el.content);
@@ -4094,6 +4644,16 @@ VCO.Media.GoogleDoc = VCO.Media.extend({
 		
 		// API Call
 		this._el.content_item.innerHTML = "<iframe frameborder='0' width='100%' height='100%' src='" + api_url + "'></iframe>"		
+		
+		/*
+		var mediaElem = ""; 
+		if (m.id.match(/docs.google.com/i)) {
+			mediaElem	=	"<iframe class='doc' frameborder='0' width='100%' height='100%' src='" + m.id + "&amp;embedded=true'></iframe>";
+		} else {
+			mediaElem	=	"<iframe class='doc' frameborder='0' width='100%' height='100%' src='" + "http://docs.google.com/viewer?url=" + m.id + "&amp;embedded=true'></iframe>";
+		}
+		VMM.attachElement("#"+m.uid, mediaElem);
+		*/
 		
 		// After Loaded
 		this.onLoaded();
@@ -4126,10 +4686,10 @@ VCO.Media.GooglePlus = VCO.Media.extend({
 			self = this;
 		
 		// Loading Messege
-		this.messege.updateMessege(VCO.Language.messeges.loading + " SoundCloud");
+		this.messege.updateMessege(VCO.Language.messeges.loading + " GooglePlus");
 		
 		// Create Dom element
-		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe", this._el.content);
+		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-googleplus", this._el.content);
 		
 		// Get Media ID
 		this.media_id = this.data.url;
@@ -4171,7 +4731,7 @@ VCO.Media.IFrame = VCO.Media.extend({
 			self = this;
 		
 		// Loading Messege
-		this.messege.updateMessege(VCO.Language.messeges.loading + " SoundCloud");
+		this.messege.updateMessege(VCO.Language.messeges.loading + " iFrame");
 		
 		// Create Dom element
 		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe", this._el.content);
@@ -4183,7 +4743,7 @@ VCO.Media.IFrame = VCO.Media.extend({
 		api_url = this.media_id;
 		
 		// API Call
-		this._el.content_item.innerHTML = "<iframe frameborder='0' width='100%' height='100%' src='" + api_url + "'></iframe>"		
+		this._el.content_item.innerHTML = api_url;
 		
 		// After Loaded
 		this.onLoaded();
@@ -4205,6 +4765,7 @@ VCO.Media.IFrame = VCO.Media.extend({
 	Produces image assets.
 	Takes a data object and populates a dom object
 ================================================== */
+// TODO Add link
 
 VCO.Media.Image = VCO.Media.extend({
 	
@@ -4282,23 +4843,23 @@ VCO.Media.Storify = VCO.Media.extend({
 	/*	Load the media
 	================================================== */
 	loadMedia: function() {
-		var api_url,
-			self = this;
+		var content;
 		
 		// Loading Messege
-		this.messege.updateMessege(VCO.Language.messeges.loading + " SoundCloud");
+		this.messege.updateMessege(VCO.Language.messeges.loading + " Storify");
 		
 		// Create Dom element
-		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe", this._el.content);
+		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe vco-media-storify", this._el.content);
 		
 		// Get Media ID
 		this.media_id = this.data.url;
 		
-		// API URL
-		api_url = this.media_id;
+		// Content
+		content =	"<iframe frameborder='0' width='100%' height='100%' src='" + this.media_id + "/embed'></iframe>";
+		content +=	"<script src='" + this.media_id + ".js'></script>";
 		
 		// API Call
-		this._el.content_item.innerHTML = "<iframe frameborder='0' width='100%' height='100%' src='" + api_url + "'></iframe>"		
+		this._el.content_item.innerHTML = content;
 		
 		// After Loaded
 		this.onLoaded();
@@ -4513,19 +5074,19 @@ VCO.Media.Vimeo = VCO.Media.extend({
 			self = this;
 		
 		// Loading Messege
-		this.messege.updateMessege(VCO.Language.messeges.loading + " SoundCloud");
+		this.messege.updateMessege(VCO.Language.messeges.loading + " Vimeo");
 		
 		// Create Dom element
-		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe", this._el.content);
+		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe vco-media-vimeo", this._el.content);
 		
 		// Get Media ID
-		this.media_id = this.data.url;
+		this.media_id = this.data.url.split(/video\/|\/\/vimeo\.com\//)[1].split(/[?&]/)[0];
 		
 		// API URL
-		api_url = this.media_id;
+		api_url = "http://player.vimeo.com/video/" + this.media_id + "?title=0&amp;byline=0&amp;portrait=0&amp;color=ffffff";
 		
 		// API Call
-		this._el.content_item.innerHTML = "<iframe frameborder='0' width='100%' height='100%' src='" + api_url + "'></iframe>"		
+		this._el.content_item.innerHTML = "<iframe autostart='false' frameborder='0' width='100%' height='100%' src='" + api_url + "'></iframe>"		
 		
 		// After Loaded
 		this.onLoaded();
@@ -4533,11 +5094,8 @@ VCO.Media.Vimeo = VCO.Media.extend({
 	
 	// Update Media Display
 	_updateMediaDisplay: function() {
-		this._el.content_item.style.height = this.options.height + "px";
+		this._el.content_item.style.height = VCO.Util.ratio.r16_9({w:this._el.content_item.offsetWidth}) + "px";
 	}
-	
-	
-	
 	
 });
 
@@ -4581,7 +5139,9 @@ VCO.Media.Vine = VCO.Media.extend({
 	
 	// Update Media Display
 	_updateMediaDisplay: function() {
-		this._el.content_item.style.height = this.options.height + "px";
+		var size = VCO.Util.ratio.square({w:this._el.content_item.offsetWidth , h:this.options.height});
+		this._el.content_item.style.height = size.h + "px";
+		this._el.content_item.style.width = size.w + "px";
 	}
 	
 });
@@ -4671,33 +5231,78 @@ VCO.Media.Wikipedia = VCO.Media.extend({
 	================================================== */
 	loadMedia: function() {
 		var api_url,
+			api_language,
 			self = this;
 		
 		// Loading Messege
-		this.messege.updateMessege(VCO.Language.messeges.loading + " SoundCloud");
+		this.messege.updateMessege(VCO.Language.messeges.loading + " Wikipedia");
 		
 		// Create Dom element
-		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe", this._el.content);
+		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-wikipedia", this._el.content);
 		
 		// Get Media ID
-		this.media_id = this.data.url;
+		this.media_id	 = this.data.url.split("wiki\/")[1].split("#")[0].replace("_", " ");
+		this.media_id	 = this.media_id.replace(" ", "%20");
+		api_language	 = this.data.url.split("//")[1].split(".wikipedia")[0];
 		
 		// API URL
-		api_url = this.media_id;
+		api_url = "http://" + api_language + ".wikipedia.org/w/api.php?action=query&prop=extracts&redirects=&titles=" + this.media_id + "&exintro=1&format=json&callback=?";
 		
 		// API Call
-		this._el.content_item.innerHTML = "<iframe frameborder='0' width='100%' height='100%' src='" + api_url + "'></iframe>"		
+		VCO.getJSON(api_url, function(d) {
+			self.createMedia(d);
+		});
 		
 		// After Loaded
 		this.onLoaded();
 	},
-	
-	// Update Media Display
-	_updateMediaDisplay: function() {
-		this._el.content_item.style.height = this.options.height + "px";
+	createMedia: function(d) {
+		var wiki = "";
+		
+		if (d.query) {
+			var content,
+				wiki = {
+					entry: {},
+					title: "",
+					text: "",
+					extract: "",
+					paragraphs: 1,
+					text_array: []
+				};
+			
+			wiki.entry		 = VCO.Util.getObjectAttributeByIndex(d.query.pages, 0);
+			wiki.extract	 = wiki.entry.extract;
+			wiki.title		 = wiki.entry.title;
+			
+			if (wiki.extract.match("<p>")) {
+				wiki.text_array = wiki.extract.split("<p>");
+			} else {
+				wiki.text_array.push(wiki.extract);
+			}
+			
+			for(var i = 0; i < wiki.text_array.length; i++) {
+				if (i+1 <= wiki.paragraphs && i+1 < wiki.text_array.length) {
+					wiki.text	+= "<p>" + wiki.text_array[i+1];
+				}
+			}
+			
+			content		=	"<h4><a href='" + this.data.url + "' target='_blank'>" + wiki.title + "</a></h4>";
+			content		+=	"<span class='wiki-source'>" + VCO.Language.messeges.wikipedia + "</span>";
+			content		+=	wiki.text;
+			
+			if (wiki.extract.match("REDIRECT")) {
+			
+			} else {
+				// Add to DOM
+				this._el.content_item.innerHTML	= content;
+				// After Loaded
+				this.onLoaded();
+			}
+			
+			
+		}
+			
 	}
-
-	
 	
 });
 
@@ -4716,31 +5321,128 @@ VCO.Media.YouTube = VCO.Media.extend({
 	/*	Load the media
 	================================================== */
 	loadMedia: function() {
-		var api_url,
-			self = this;
+		var self = this,
+			url_vars;
 		
 		// Loading Messege
-		this.messege.updateMessege(VCO.Language.messeges.loading + " SoundCloud");
+		this.messege.updateMessege(VCO.Language.messeges.loading + " YouTube");
 		
 		// Create Dom element
-		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe", this._el.content);
+		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-youtube", this._el.content);
+		this._el.content_item.id = VCO.Util.unique_ID(7)
+		
+		// URL Vars
+		url_vars = VCO.Util.getUrlVars(this.data.url);
 		
 		// Get Media ID
-		this.media_id = this.data.url;
+		this.media_id = {};
 		
-		// API URL
-		api_url = this.media_id;
+		if (this.data.url.match('v=')) {
+			this.media_id.id	= url_vars["v"];
+		} else if (this.data.url.match('\/embed\/')) {
+			this.media_id.id	= this.data.url.split("embed\/")[1].split(/[?&]/)[0];
+		} else if (this.data.url.match(/v\/|v=|youtu\.be\//)){
+			this.media_id.id	= this.data.url.split(/v\/|v=|youtu\.be\//)[1].split(/[?&]/)[0];
+		} else {
+			trace("YOUTUBE IN URL BUT NOT A VALID VIDEO");
+		}
+		
+		this.media_id.start		= url_vars["t"];
+		this.media_id.hd		= url_vars["hd"];
+		
 		
 		// API Call
-		this._el.content_item.innerHTML = "<iframe frameborder='0' width='100%' height='100%' src='" + api_url + "'></iframe>"		
+		VCO.Load.js('http://www.youtube.com/player_api', function() {
+			trace("YouTube API Library Loaded");
+			self.createMedia();
+		});
 		
-		// After Loaded
-		this.onLoaded();
 	},
 	
 	// Update Media Display
 	_updateMediaDisplay: function() {
-		this._el.content_item.style.height = this.options.height + "px";
+		//this._el.content_item.style.height = this.options.height + "px";
+		this._el.content_item.style.width = "100%";
+		this._el.content_item.style.height = VCO.Util.ratio.r16_9({w:this._el.content_item.offsetWidth}) + "px";
+	},
+	
+	createMedia: function() {
+		var self = this;
+		
+		// Determine Start of Media
+		if (typeof(this.media_id.start) != 'undefined') {
+			
+			var vidstart			= this.media_id.start.toString(),
+				vid_start_minutes	= 0,
+				vid_start_seconds	= 0;
+				
+			if (vidstart.match('m')) {
+				vid_start_minutes = parseInt(vidstart.split("m")[0], 10);
+				vid_start_seconds = parseInt(vidstart.split("m")[1].split("s")[0], 10);
+				this.media_id.start = (vid_start_minutes * 60) + vid_start_seconds;
+			} else {
+				this.media_id.start = 0;
+			}
+		} else {
+			this.media_id.start = 0;
+		}
+		
+		// Determine HD
+		if (typeof(this.media_id.hd) != 'undefined') {
+			this.media_id.hd = true;
+		} else {
+			this.media_id.hd = false;
+		}
+		
+		this.createPlayer();
+		
+			
+	},
+	
+	createPlayer: function() {
+		var self = this;
+		
+		trace("createPlayer");
+		
+		clearTimeout(this.timer);
+		
+		if(typeof YT != 'undefined' && typeof YT.Player != 'undefined') {
+			// Create Player
+			this.player = new YT.Player(this._el.content_item.id, {
+				playerVars: {
+					enablejsapi:		1,
+					color: 				'white',
+					showinfo:			0,
+					theme:				'light',
+					start:				this.media_id.start,
+					rel:				0
+				},
+				videoId: this.media_id.id,
+				events: {
+					onReady: 			function() {
+						self.onPlayerReady();
+						// After Loaded
+						self.onLoaded();
+					},
+					'onStateChange': 	self.onStateChange
+				}
+			});
+		} else {
+			this.timer = setTimeout(function() {
+				self.createPlayer();
+			}, 1000);
+		}
+		
+	},
+	
+	/*	Events
+	================================================== */
+	onPlayerReady: function(e) {
+		trace("onPlayerReady");
+	},
+	
+	onStateChange: function(e) {
+		trace("onStateChange");
 	}
 
 	
@@ -5110,6 +5812,136 @@ VCO.StorySlider = VCO.Class.extend({
 				{
 					uniqueid: 				"",
 					background: {			// OPTIONAL
+						url: 				null,
+						color: 				null,
+						opacity: 			50
+					},
+					date: 					null,
+					location: {
+						lat: 				-9.143962,
+						lon: 				38.731094,
+						zoom: 				13,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: {
+						headline: 			"YouTube",
+						text: 				"Just add a link to the video in the media field."
+					},
+					media: {
+						url: 				"http://www.youtube.com/watch?v=lIvftGgps24",
+						credit:				"",
+						caption:			"",
+						link: 				null,
+						link_target: 		null
+					}
+				},
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
+						url: 				null,
+						color: 				null,
+						opacity: 			50
+					},
+					date: 					null,
+					location: {
+						lat: 				-9.143962,
+						lon: 				38.731094,
+						zoom: 				13,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: {
+						headline: 			"Wikipedia",
+						text: 				"Just add a link to the video in the media field."
+					},
+					media: {
+						url: 				"http://en.wikipedia.org/wiki/Mark_Twain",
+						credit:				"",
+						caption:			"",
+						link: 				null,
+						link_target: 		null
+					}
+				},
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
+						url: 				null,
+						color: 				null,
+						opacity: 			50
+					},
+					date: 					null,
+					location: {
+						lat: 				-9.143962,
+						lon: 				38.731094,
+						zoom: 				13,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: {
+						headline: 			"Storify",
+						text: 				"Just add a link to the video in the media field."
+					},
+					media: {
+						url: 				"https://storify.com/kqednews/art-at-burning-man-2013",
+						credit:				"",
+						caption:			"",
+						link: 				null,
+						link_target: 		null
+					}
+				},
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
+						url: 				"https://secure-b.vimeocdn.com/ts/225/276/225276903_960.jpg",
+						color: 				null,
+						opacity: 			50
+					},
+					date: 					null,
+					location: {
+						lat: 				-9.143962,
+						lon: 				38.731094,
+						zoom: 				13,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: {
+						headline: 			"Vimeo",
+						text: 				"Just add a link to the video in the media field."
+					},
+					media: {
+						url: 				"https://vimeo.com/33211636",
+						credit:				"",
+						caption:			"",
+						link: 				null,
+						link_target: 		null
+					}
+				},
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
+						url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						color: 				null,
+						opacity: 			50
+					},
+					date: 					null,
+					location: {
+						lat: 				-9.143962,
+						lon: 				38.731094,
+						zoom: 				13,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: {
+						headline: 			"iFrame",
+						text: 				""
+					},
+					media: {
+						url: 				"<iframe src='http://www.w3schools.com'></iframe>",
+						credit:				"",
+						caption:			"w3schools",
+						link: 				null,
+						link_target: 		null
+					}
+				},
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
 						url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
 						color: 				"#cdbfe3",
 						opacity: 			50
@@ -5128,7 +5960,9 @@ VCO.StorySlider = VCO.Class.extend({
 					media: {
 						url: 				"http://www.flickr.com/photos/neera/6147067542/",
 						credit:				"Nosy Iranja",
-						caption:			""
+						caption:			"",
+						link: 				"http://www.flickr.com/photos/neera/6147067542/",
+						link_target: 		"_self"
 					}
 				},
 				{
@@ -5268,7 +6102,7 @@ VCO.StorySlider = VCO.Class.extend({
 			id: 					"",
 			width: 					600,
 			height: 				600,
-			start_at_slide: 		2,
+			start_at_slide: 		0,
 			// animation
 			duration: 				1000,
 			ease: 					VCO.Ease.easeInOutQuint,
@@ -15444,7 +16278,10 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	file, You can obtain one at http://mozilla.org/MPL/2.0/.
 	
 ================================================== */
-
+/* 
+	TODO
+	Start Slide with Overview Map - Make changes to map and slide
+*/ 
 
 /*	Required Files
 	CodeKit Import
@@ -15456,6 +16293,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 // @codekit-prepend "core/VCO.Class.js";
 // @codekit-prepend "core/VCO.Events.js";
 // @codekit-prepend "core/VCO.Browser.js";
+// @codekit-prepend "core/VCO.Load.js";
 
 // @codekit-prepend "language/VCO.Language.js";
 
@@ -15547,6 +16385,33 @@ VCO.StoryMap = VCO.Class.extend({
 			slides: 				[
 				{
 					uniqueid: 				"",
+					type: 					"overview", // Optional
+					background: {			// OPTIONAL
+						url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						color: 				"#cdbfe3",
+						opacity: 			50
+					},
+					date: 					"1835",
+					location: {
+						lat: 				39.491711,
+						lon: 				-91.793260,
+						name: 				"Florida, Missouri",
+						zoom: 				12,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+						line: 				true
+					},
+					text: {
+						headline: 			"Mark Twain",
+						text: 				"Samuel Langhorne Clemens (November 30, 1835 – April 21, 1910), better known by his pen name Mark Twain, was an American author and humorist. He wrote The Adventures of Tom Sawyer (1876) and its sequel, Adventures of Huckleberry Finn (1885), the latter often called \"the Great American Novel.\""
+					},
+					media: {
+						url: 				"http://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Mark_Twain_Vanity_Fair_1908-05-13.jpeg/375px-Mark_Twain_Vanity_Fair_1908-05-13.jpeg",
+						credit:				"Vanity Fair",
+						caption:			"Twain caricatured by Spy for Vanity Fair, 1908"
+					}
+				},
+				{
+					uniqueid: 				"",
 					background: {			// OPTIONAL
 						url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
 						color: 				"#cdbfe3",
@@ -15566,9 +16431,9 @@ VCO.StoryMap = VCO.Class.extend({
 						text: 				"Born in Florida, Missouri. Halley’s comet visible from earth."
 					},
 					media: {
-						url: 				"https://twitter.com/ThisAmerLife/status/374975945825722368",
-						credit:				"Zach Wise",
-						caption:			"San Francisco"
+						url: 				"http://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Mark_Twain_birthplace.jpg/800px-Mark_Twain_birthplace.jpg",
+						credit:				"",
+						caption:			"Mark Twain's birthplace, Florida, Missouri"
 					}
 				},
 				{
@@ -15591,9 +16456,9 @@ VCO.StoryMap = VCO.Class.extend({
 						text: 				"Moves to Hannibal, Missouri, which later serves as the model town for Tom Sawyer and Huckleberry Finn."
 					},
 					media: {
-						url: 				"http://www.flickr.com/photos/neera/6147067542/",
-						credit:				"Nosy Iranja",
-						caption:			""
+						url: 				"http://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Mark_Twain_Boyhood_Home_1.jpg/800px-Mark_Twain_Boyhood_Home_1.jpg",
+						credit:				"",
+						caption:			"Mark Twain's boyhood home in Hannibal, Missouri."
 					}
 				},
 				{
@@ -15666,9 +16531,9 @@ VCO.StoryMap = VCO.Class.extend({
 						text: 				"Travels around Nevada and California. Takes job as reporter for the Virginia City Territorial Enterprise."
 					},
 					media: {
-						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						credit:				"ETC",
-						caption:			"something"
+						url: 				"http://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Mark_Twain%27s_desk_at_the_Mark_Twain_Territorial_Enterprise_Museum%2C_Virginia_City%2C_NV.jpg/794px-Mark_Twain%27s_desk_at_the_Mark_Twain_Territorial_Enterprise_Museum%2C_Virginia_City%2C_NV.jpg",
+						credit:				"",
+						caption:			"Mark Twain's desk when he was editor of the Territorial Enterprise. Mark Twain Territorial Enterprise Museum, Virginia City, NV."
 					}
 				},
 				{
@@ -15716,9 +16581,9 @@ VCO.StoryMap = VCO.Class.extend({
 						text: 				"Takes trip to Hawaii as correspondent of the Sacramento Alta Californian. Reports on shipwreck of the Hornet. Gives first public lecture."
 					},
 					media: {
-						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						credit:				"ETC",
-						caption:			"something"
+						url: 				"http://photos.wikimapia.org/p/00/00/56/17/28_big.jpg",
+						credit:				"",
+						caption:			"Wreck of USS Hornet."
 					}
 				},
 				{
@@ -15741,9 +16606,9 @@ VCO.StoryMap = VCO.Class.extend({
 						text: 				"Travels as correspondent to Europe and the Holy Land on the Quaker City. Sees a picture of Olivia Langdon (Livy). Publishes The Celebrated Jumping Frog of Calaveras County, and Other Sketches. Sales are light."
 					},
 					media: {
-						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						credit:				"ETC",
-						caption:			"something"
+						url: 				"http://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/1867._The_Celebrated_Jumping_Frog_of_Calaveras_County%2C_and_Other_Sketches.djvu/page1-395px-1867._The_Celebrated_Jumping_Frog_of_Calaveras_County%2C_and_Other_Sketches.djvu.jpg",
+						credit:				"",
+						caption:			""
 					}
 				},
 				{
@@ -15871,8 +16736,8 @@ VCO.StoryMap = VCO.Class.extend({
 				{
 					uniqueid: 				"",
 					background: {			// OPTIONAL
-						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						color: 				"#cdbfe3",
+						url: 				null,
+						color: 				null,
 						opacity: 			50
 					},
 					date: 					"1891",
@@ -15888,9 +16753,9 @@ VCO.StoryMap = VCO.Class.extend({
 						text: 				"Moves into Stormfield in Redding, CT. Forms the Angelfish Club for young girls."
 					},
 					media: {
-						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						credit:				"ETC",
-						caption:			"something"
+						url: 				"http://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Mark_Twain%27s_house%2C_front_view._-_NARA_-_516527.tif/lossy-page1-800px-Mark_Twain%27s_house%2C_front_view._-_NARA_-_516527.tif.jpg",
+						credit:				"",
+						caption:			"Twain\'s house, \"Stormfield\", in Redding, Connecticut (front view)"
 					}
 				}
 			]

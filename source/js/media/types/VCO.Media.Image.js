@@ -2,6 +2,7 @@
 	Produces image assets.
 	Takes a data object and populates a dom object
 ================================================== */
+// TODO Add link
 
 VCO.Media.Image = VCO.Media.extend({
 	

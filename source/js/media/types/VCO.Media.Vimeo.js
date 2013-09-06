@@ -12,19 +12,19 @@ VCO.Media.Vimeo = VCO.Media.extend({
 			self = this;
 		
 		// Loading Messege
-		this.messege.updateMessege(VCO.Language.messeges.loading + " SoundCloud");
+		this.messege.updateMessege(VCO.Language.messeges.loading + " Vimeo");
 		
 		// Create Dom element
-		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe", this._el.content);
+		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe vco-media-vimeo", this._el.content);
 		
 		// Get Media ID
-		this.media_id = this.data.url;
+		this.media_id = this.data.url.split(/video\/|\/\/vimeo\.com\//)[1].split(/[?&]/)[0];
 		
 		// API URL
-		api_url = this.media_id;
+		api_url = "http://player.vimeo.com/video/" + this.media_id + "?title=0&amp;byline=0&amp;portrait=0&amp;color=ffffff";
 		
 		// API Call
-		this._el.content_item.innerHTML = "<iframe frameborder='0' width='100%' height='100%' src='" + api_url + "'></iframe>"		
+		this._el.content_item.innerHTML = "<iframe autostart='false' frameborder='0' width='100%' height='100%' src='" + api_url + "'></iframe>"		
 		
 		// After Loaded
 		this.onLoaded();
@@ -32,10 +32,7 @@ VCO.Media.Vimeo = VCO.Media.extend({
 	
 	// Update Media Display
 	_updateMediaDisplay: function() {
-		this._el.content_item.style.height = this.options.height + "px";
+		this._el.content_item.style.height = VCO.Util.ratio.r16_9({w:this._el.content_item.offsetWidth}) + "px";
 	}
-	
-	
-	
 	
 });

@@ -8,8 +8,6 @@ VCO.Media.Blockquote = VCO.Media.extend({
 	/*	Load the media
 	================================================== */
 	loadMedia: function() {
-		var api_url,
-			self = this;
 		
 		// Loading Messege
 		this.messege.updateMessege(VCO.Language.messeges.loading + " SoundCloud");
@@ -20,11 +18,8 @@ VCO.Media.Blockquote = VCO.Media.extend({
 		// Get Media ID
 		this.media_id = this.data.url;
 		
-		// API URL
-		api_url = this.media_id;
-		
 		// API Call
-		this._el.content_item.innerHTML = "<iframe frameborder='0' width='100%' height='100%' src='" + api_url + "'></iframe>"		
+		this._el.content_item.innerHTML = this.media_id;
 		
 		// After Loaded
 		this.onLoaded();

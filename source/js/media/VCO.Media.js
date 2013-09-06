@@ -2,7 +2,8 @@
 	Main media template for media assets.
 	Takes a data object and populates a dom object
 ================================================== */
- 
+// TODO add link
+
 VCO.Media = VCO.Class.extend({
 	
 	includes: [VCO.Events],
@@ -20,8 +21,15 @@ VCO.Media = VCO.Class.extend({
 			content_item: {},
 			caption: {},
 			credit: {},
-			parent: {}
+			parent: {},
+			link: null
 		};
+		
+		// Player (If Needed)
+		this.player = null;
+		
+		// Timer (If Needed)
+		this.timer = null;
 		
 		// Messege
 		this.messege = null;
@@ -34,7 +42,9 @@ VCO.Media = VCO.Class.extend({
 			uniqueid: 			null,
 			url: 				null,
 			credit:				null,
-			caption:			null
+			caption:			null,
+			link: 				null,
+			link_target: 		null
 		};
 	
 		//Options
@@ -121,19 +131,33 @@ VCO.Media = VCO.Class.extend({
 		this.messege.addTo(this._el.container);
 		
 		// Create Layout
-		this._el.content_container			= VCO.Dom.create("div", "vco-media-content-container", this._el.container);
-		this._el.content					= VCO.Dom.create("div", "vco-media-content", this._el.content_container);
+		this._el.content_container = VCO.Dom.create("div", "vco-media-content-container", this._el.container);
 		
-		
+		// Link
+		if (this.data.link && this.data.link != "") {
+			
+			this._el.link = VCO.Dom.create("a", "vco-media-link", this._el.content_container);
+			this._el.link.href = this.data.link;
+			if (this.data.link_target && this.data.link_target != "") {
+				this._el.link.target = this.data.link_target;
+			} else {
+				this._el.link.target = "_blank";
+			}
+			
+			this._el.content = VCO.Dom.create("div", "vco-media-content", this._el.link);
+			
+		} else {
+			this._el.content = VCO.Dom.create("div", "vco-media-content", this._el.content_container);
+		}
 		
 		// Credit
-		if (this.data.credit != "") {
+		if (this.data.credit && this.data.credit != "") {
 			this._el.credit					= VCO.Dom.create("div", "vco-credit", this._el.content_container);
 			this._el.credit.innerHTML		= this.data.credit;
 		}
 		
 		// Caption
-		if (this.data.caption != "") {
+		if (this.data.caption && this.data.caption != "") {
 			this._el.caption				= VCO.Dom.create("div", "vco-caption", this._el.content_container);
 			this._el.caption.innerHTML		= this.data.caption;
 		}

@@ -6,7 +6,10 @@
 	file, You can obtain one at http://mozilla.org/MPL/2.0/.
 	
 ================================================== */
-
+/* 
+	TODO
+	Start Slide with Overview Map - Make changes to map and slide
+*/ 
 
 /*	Required Files
 	CodeKit Import
@@ -18,6 +21,7 @@
 // @codekit-prepend "core/VCO.Class.js";
 // @codekit-prepend "core/VCO.Events.js";
 // @codekit-prepend "core/VCO.Browser.js";
+// @codekit-prepend "core/VCO.Load.js";
 
 // @codekit-prepend "language/VCO.Language.js";
 
@@ -109,6 +113,33 @@ VCO.StoryMap = VCO.Class.extend({
 			slides: 				[
 				{
 					uniqueid: 				"",
+					type: 					"overview", // Optional
+					background: {			// OPTIONAL
+						url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						color: 				"#cdbfe3",
+						opacity: 			50
+					},
+					date: 					"1835",
+					location: {
+						lat: 				39.491711,
+						lon: 				-91.793260,
+						name: 				"Florida, Missouri",
+						zoom: 				12,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+						line: 				true
+					},
+					text: {
+						headline: 			"Mark Twain",
+						text: 				"Samuel Langhorne Clemens (November 30, 1835 – April 21, 1910), better known by his pen name Mark Twain, was an American author and humorist. He wrote The Adventures of Tom Sawyer (1876) and its sequel, Adventures of Huckleberry Finn (1885), the latter often called \"the Great American Novel.\""
+					},
+					media: {
+						url: 				"http://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Mark_Twain_Vanity_Fair_1908-05-13.jpeg/375px-Mark_Twain_Vanity_Fair_1908-05-13.jpeg",
+						credit:				"Vanity Fair",
+						caption:			"Twain caricatured by Spy for Vanity Fair, 1908"
+					}
+				},
+				{
+					uniqueid: 				"",
 					background: {			// OPTIONAL
 						url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
 						color: 				"#cdbfe3",
@@ -128,9 +159,9 @@ VCO.StoryMap = VCO.Class.extend({
 						text: 				"Born in Florida, Missouri. Halley’s comet visible from earth."
 					},
 					media: {
-						url: 				"https://twitter.com/ThisAmerLife/status/374975945825722368",
-						credit:				"Zach Wise",
-						caption:			"San Francisco"
+						url: 				"http://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Mark_Twain_birthplace.jpg/800px-Mark_Twain_birthplace.jpg",
+						credit:				"",
+						caption:			"Mark Twain's birthplace, Florida, Missouri"
 					}
 				},
 				{
@@ -153,9 +184,9 @@ VCO.StoryMap = VCO.Class.extend({
 						text: 				"Moves to Hannibal, Missouri, which later serves as the model town for Tom Sawyer and Huckleberry Finn."
 					},
 					media: {
-						url: 				"http://www.flickr.com/photos/neera/6147067542/",
-						credit:				"Nosy Iranja",
-						caption:			""
+						url: 				"http://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Mark_Twain_Boyhood_Home_1.jpg/800px-Mark_Twain_Boyhood_Home_1.jpg",
+						credit:				"",
+						caption:			"Mark Twain's boyhood home in Hannibal, Missouri."
 					}
 				},
 				{
@@ -228,9 +259,9 @@ VCO.StoryMap = VCO.Class.extend({
 						text: 				"Travels around Nevada and California. Takes job as reporter for the Virginia City Territorial Enterprise."
 					},
 					media: {
-						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						credit:				"ETC",
-						caption:			"something"
+						url: 				"http://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Mark_Twain%27s_desk_at_the_Mark_Twain_Territorial_Enterprise_Museum%2C_Virginia_City%2C_NV.jpg/794px-Mark_Twain%27s_desk_at_the_Mark_Twain_Territorial_Enterprise_Museum%2C_Virginia_City%2C_NV.jpg",
+						credit:				"",
+						caption:			"Mark Twain's desk when he was editor of the Territorial Enterprise. Mark Twain Territorial Enterprise Museum, Virginia City, NV."
 					}
 				},
 				{
@@ -278,9 +309,9 @@ VCO.StoryMap = VCO.Class.extend({
 						text: 				"Takes trip to Hawaii as correspondent of the Sacramento Alta Californian. Reports on shipwreck of the Hornet. Gives first public lecture."
 					},
 					media: {
-						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						credit:				"ETC",
-						caption:			"something"
+						url: 				"http://photos.wikimapia.org/p/00/00/56/17/28_big.jpg",
+						credit:				"",
+						caption:			"Wreck of USS Hornet."
 					}
 				},
 				{
@@ -303,9 +334,9 @@ VCO.StoryMap = VCO.Class.extend({
 						text: 				"Travels as correspondent to Europe and the Holy Land on the Quaker City. Sees a picture of Olivia Langdon (Livy). Publishes The Celebrated Jumping Frog of Calaveras County, and Other Sketches. Sales are light."
 					},
 					media: {
-						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						credit:				"ETC",
-						caption:			"something"
+						url: 				"http://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/1867._The_Celebrated_Jumping_Frog_of_Calaveras_County%2C_and_Other_Sketches.djvu/page1-395px-1867._The_Celebrated_Jumping_Frog_of_Calaveras_County%2C_and_Other_Sketches.djvu.jpg",
+						credit:				"",
+						caption:			""
 					}
 				},
 				{
@@ -433,8 +464,8 @@ VCO.StoryMap = VCO.Class.extend({
 				{
 					uniqueid: 				"",
 					background: {			// OPTIONAL
-						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						color: 				"#cdbfe3",
+						url: 				null,
+						color: 				null,
 						opacity: 			50
 					},
 					date: 					"1891",
@@ -450,9 +481,9 @@ VCO.StoryMap = VCO.Class.extend({
 						text: 				"Moves into Stormfield in Redding, CT. Forms the Angelfish Club for young girls."
 					},
 					media: {
-						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						credit:				"ETC",
-						caption:			"something"
+						url: 				"http://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Mark_Twain%27s_house%2C_front_view._-_NARA_-_516527.tif/lossy-page1-800px-Mark_Twain%27s_house%2C_front_view._-_NARA_-_516527.tif.jpg",
+						credit:				"",
+						caption:			"Twain\'s house, \"Stormfield\", in Redding, Connecticut (front view)"
 					}
 				}
 			]
