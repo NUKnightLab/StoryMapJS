@@ -16,6 +16,8 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 			
 		};
 		
+		icon = L.icon({iconUrl: "gfx/map-pin.png", iconSize: [28, 43], iconAnchor: [14, 33]});
+		
 		this._marker = L.marker([d.location.lat, d.location.lon], {
 			title: 		d.text.headline,
 			icon: 		icon
@@ -44,7 +46,7 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 		if (a) {
 			this._marker.setOpacity(1);
 		} else {
-			this._marker.setOpacity(.33);
+			this._marker.setOpacity(.25);
 		}
 	},
 	

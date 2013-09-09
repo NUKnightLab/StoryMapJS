@@ -4193,8 +4193,11 @@ VCO.Messege = VCO.Class.extend({
 	You can add new media types by adding a regex 
 	to match and the media class name to use to 
 	render the media 
+
+	TODO
+	Allow array so a slideshow can be a mediatype
 ================================================== */
-VCO.MediaType = function(url) {
+VCO.MediaType = function(m) {
 	var media = {}, 
 		media_types = 	[
 			{
@@ -4290,9 +4293,15 @@ VCO.MediaType = function(url) {
 		];
 	
 	for (var i = 0; i < media_types.length; i++) {
-		if (url.match(media_types[i].match_str)) {
+		if (m instanceof Array) {
+			trace("SLIDER");
+			return media = {
+				type: 		"slider",
+				cls: 		VCO.Media.Slider
+			};
+		} else if (m.url.match(media_types[i].match_str)) {
 			media 		= media_types[i];
-			media.url 	= url;
+			media.url 	= m.url;
 			return media;
 			break;
 		}
@@ -5450,6 +5459,31 @@ VCO.Media.YouTube = VCO.Media.extend({
 
 
 /* **********************************************
+     Begin VCO.Media.Slider.js
+********************************************** */
+
+/*	VCO.Media.SLider
+	Produces a Slider
+	Takes a data object and populates a dom object
+================================================== */
+
+VCO.Media.Slider = VCO.Media.extend({
+	
+	includes: [VCO.Events],
+	
+	/*	Load the media
+	================================================== */
+	loadMedia: function() {
+		
+		this._el.content_item				= VCO.Dom.create("img", "vco-media-item vco-media-image", this._el.content);
+		this._el.content_item.src			= this.data.url;
+		
+		this.onLoaded();
+	}
+	
+});
+
+/* **********************************************
      Begin VCO.Slide.js
 ********************************************** */
 
@@ -5483,6 +5517,10 @@ VCO.Media.YouTube = VCO.Media.extend({
 		}
 	
 	};
+
+	TODO
+	Active state and memory management
+	video play state
 ================================================== */
 
 VCO.Slide = VCO.Class.extend({
@@ -5602,7 +5640,7 @@ VCO.Slide = VCO.Class.extend({
 		// Media
 		if (this.data.media) {
 			// Determine the media type
-			this.data.media.mediatype = VCO.MediaType(this.data.media.url);
+			this.data.media.mediatype = VCO.MediaType(this.data.media);
 			
 			// Create a media object using the matched class name
 			this._media = new this.data.media.mediatype.cls(this.data.media, this.options);
@@ -5776,6 +5814,9 @@ VCO.SlideNav = VCO.Class.extend({
 	slideAdded
 	slideLoaded
 	slideRemoved
+
+	TODO
+	Memory handling
 	
 ================================================== */
 
@@ -5809,6 +5850,83 @@ VCO.StorySlider = VCO.Class.extend({
 		this.data = {
 			uniqueid: 				"",
 			slides: 				[
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
+						url: 				null,
+						color: 				null,
+						opacity: 			50
+					},
+					date: 					null,
+					location: {
+						lat: 				-9.143962,
+						lon: 				38.731094,
+						zoom: 				13,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: {
+						headline: 			"Slideshow Example",
+						text: 				"Example slideshow slide "
+					},
+					media: [
+						{
+							uniqueid: 				"",
+							text: {
+								headline: 			"Slideshow Example",
+								text: 				""
+							},
+							media: {
+								url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+								credit:				"",
+								caption:			"",
+								link: 				null,
+								link_target: 		null
+							}
+						},
+						{
+							uniqueid: 				"",
+							text: {
+								headline: 			"Slideshow Example",
+								text: 				""
+							},
+							media: {
+								url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+								credit:				"",
+								caption:			"",
+								link: 				null,
+								link_target: 		null
+							}
+						},
+						{
+							uniqueid: 				"",
+							text: {
+								headline: 			"Slideshow Example",
+								text: 				""
+							},
+							media: {
+								url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+								credit:				"",
+								caption:			"",
+								link: 				null,
+								link_target: 		null
+							}
+						},
+						{
+							uniqueid: 				"",
+							text: {
+								headline: 			"Slideshow Example",
+								text: 				""
+							},
+							media: {
+								url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+								credit:				"",
+								caption:			"",
+								link: 				null,
+								link_target: 		null
+							}
+						}
+					]
+				},
 				{
 					uniqueid: 				"",
 					background: {			// OPTIONAL
@@ -15730,7 +15848,8 @@ VCO.Map = VCO.Class.extend({
 			},
 			line_color: 		"#03f",
 			line_weight: 		5,
-			line_opacity: 		0.5
+			line_opacity: 		0.5,
+			map_center_offset:  10
 		};
 		
 		// Animation
@@ -15773,7 +15892,7 @@ VCO.Map = VCO.Class.extend({
 			marker.active(true);
 			
 			// Calculate Zoom
-			zoom = this._calculateZoomChange(this._getMapCenter(), marker.location());
+			zoom = this._calculateZoomChange(this._getMapCenter(true), marker.location());
 			
 			// Set Map View
 			this._viewTo(marker.data.location, {calculate_zoom: this.options.calculate_zoom, zoom:zoom});
@@ -15955,8 +16074,8 @@ VCO.Map = VCO.Class.extend({
 	/*	Private Methods
 	================================================== */
 	
-	_calculateZoomChange: function(m1, m2) {
-		return this._getBoundsZoom(m1, m2, false);
+	_calculateZoomChange: function(origin, destination) {
+		return this._getBoundsZoom(origin, destination, true);
 		
 		/*
 		var _m1 	= this._getMapLocation(m1),
@@ -16008,8 +16127,10 @@ VCO.Map = VCO.Class.extend({
 	_updateDisplay: function(w, h, animate, d, offset) {
 		
 		if (h) {
-			this._el.map.style.height = ((h *2) - offset) + "px";
-			this._el.map_mask.style.height = (h + offset) + "px";
+			//this._el.map.style.height = ((h *2) - offset) + "px";
+			//this._el.map_mask.style.height = (h + offset) + "px";
+			this._el.map.style.height = h + "px";
+			this._el.map_mask.style.height = h + "px";
 		}
 		
 		
@@ -16061,6 +16182,8 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 			
 		};
 		
+		icon = L.icon({iconUrl: "gfx/map-pin.png", iconSize: [28, 43], iconAnchor: [14, 33]});
+		
 		this._marker = L.marker([d.location.lat, d.location.lon], {
 			title: 		d.text.headline,
 			icon: 		icon
@@ -16089,7 +16212,7 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 		if (a) {
 			this._marker.setOpacity(1);
 		} else {
-			this._marker.setOpacity(.33);
+			this._marker.setOpacity(.25);
 		}
 	},
 	
@@ -16181,6 +16304,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 			_zoom 		= this._getMapZoom();
 		
 		
+			
 		if (loc.zoom) {
 			_zoom = loc.zoom;
 		}
@@ -16200,14 +16324,28 @@ VCO.Map.Leaflet = VCO.Map.extend({
 			}
 		}	
 		
-		this._map.setView(
-			{lat:loc.lat, lon:loc.lon}, 
-			_zoom,
-			{
-				pan:{animate: _animate, duration: _duration, easeLinearity:.10},
-				zoom:{animate: _animate, duration: _duration, easeLinearity:.10}
-			}
-		)
+		// OFFSET VIEW
+		if (this.options.map_center_offset) {
+			this._map.setView(
+				this._getMapCenterOffset({lat:loc.lat, lon:loc.lon}, _zoom), 
+				_zoom,
+				{
+					pan:{animate: _animate, duration: _duration, easeLinearity:.10},
+					zoom:{animate: _animate, duration: _duration, easeLinearity:.10}
+				}
+			)
+		} else {
+			this._map.setView(
+				{lat:loc.lat, lon:loc.lon}, 
+				_zoom,
+				{
+					pan:{animate: _animate, duration: _duration, easeLinearity:.10},
+					zoom:{animate: _animate, duration: _duration, easeLinearity:.10}
+				}
+			)
+		}
+		
+		
 	},
 	
 	_getMapLocation: function(m) {
@@ -16218,13 +16356,44 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		return this._map.getZoom();
 	},
 	
-	_getMapCenter: function() {
+	_getMapCenter: function(offset) {
+		if (offset) {
+			
+		}
 		return this._map.getCenter();
 	},
 	
-	_getBoundsZoom: function(m1, m2, inside, padding) {
-		var bounds = new L.LatLngBounds([m1, m2]);
-		return this._map.getBoundsZoom(bounds, inside, padding);
+	_getMapCenterOffset: function(location, zoom, add) {
+		var point, offset_y;
+		
+		offset_y = (this._map.getSize().y/2);
+		
+		if (add) {
+			offset_y = offset_y + this.options.map_center_offset;
+			point = this._map.project(location, zoom).add([0, offset_y]);
+		} else {
+			offset_y = offset_y - this.options.map_center_offset;
+			point = this._map.project(location, zoom).subtract([0, offset_y]);
+		}
+
+		return this._map.unproject(point, zoom);
+	},
+	
+	_getBoundsZoom: function(origin, destination, correct_for_center) {
+		var _origin = origin;
+		
+		if (this.options.map_center_offset) {
+			_origin = this._getMapCenterOffset(origin, this._getMapZoom(), true);
+		}
+		
+		if (correct_for_center) {
+			var _lat = _origin.lat + (_origin.lat - destination.lat)/2,
+				_lng = _origin.lng + (_origin.lng - destination.lng)/2;
+			_origin = new L.LatLng(_lat, _lng);
+		}
+		
+		var bounds = new L.LatLngBounds([_origin, destination]);
+		return this._map.getBoundsZoom(bounds, false);
 	},
 	
 	/*	Display
@@ -16328,6 +16497,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 // @codekit-prepend "media/types/VCO.Media.Website.js";
 // @codekit-prepend "media/types/VCO.Media.Wikipedia.js";
 // @codekit-prepend "media/types/VCO.Media.YouTube.js";
+// @codekit-prepend "media/types/VCO.Media.Slider.js";
 
 // @codekit-prepend "slider/VCO.Slide.js";
 // @codekit-prepend "slider/VCO.SlideNav.js";
@@ -16765,6 +16935,7 @@ VCO.StoryMap = VCO.Class.extend({
 			height: 				this._el.container.offsetHeight,
 			width: 					this._el.container.offsetWidth,
 			map_size_sticky: 		3, // Set as division 1/3 etc
+			map_center_offset: 		false, 
 			start_at_slide: 		0,
 			// animation
 			duration: 				1000,

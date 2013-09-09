@@ -9,6 +9,9 @@
 	slideAdded
 	slideLoaded
 	slideRemoved
+
+	TODO
+	Memory handling
 	
 ================================================== */
 
@@ -42,6 +45,83 @@ VCO.StorySlider = VCO.Class.extend({
 		this.data = {
 			uniqueid: 				"",
 			slides: 				[
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
+						url: 				null,
+						color: 				null,
+						opacity: 			50
+					},
+					date: 					null,
+					location: {
+						lat: 				-9.143962,
+						lon: 				38.731094,
+						zoom: 				13,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: {
+						headline: 			"Slideshow Example",
+						text: 				"Example slideshow slide "
+					},
+					media: [
+						{
+							uniqueid: 				"",
+							text: {
+								headline: 			"Slideshow Example",
+								text: 				""
+							},
+							media: {
+								url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+								credit:				"",
+								caption:			"",
+								link: 				null,
+								link_target: 		null
+							}
+						},
+						{
+							uniqueid: 				"",
+							text: {
+								headline: 			"Slideshow Example",
+								text: 				""
+							},
+							media: {
+								url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+								credit:				"",
+								caption:			"",
+								link: 				null,
+								link_target: 		null
+							}
+						},
+						{
+							uniqueid: 				"",
+							text: {
+								headline: 			"Slideshow Example",
+								text: 				""
+							},
+							media: {
+								url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+								credit:				"",
+								caption:			"",
+								link: 				null,
+								link_target: 		null
+							}
+						},
+						{
+							uniqueid: 				"",
+							text: {
+								headline: 			"Slideshow Example",
+								text: 				""
+							},
+							media: {
+								url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+								credit:				"",
+								caption:			"",
+								link: 				null,
+								link_target: 		null
+							}
+						}
+					]
+				},
 				{
 					uniqueid: 				"",
 					background: {			// OPTIONAL

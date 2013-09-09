@@ -28,6 +28,10 @@
 		}
 	
 	};
+
+	TODO
+	Active state and memory management
+	video play state
 ================================================== */
 
 VCO.Slide = VCO.Class.extend({
@@ -147,7 +151,7 @@ VCO.Slide = VCO.Class.extend({
 		// Media
 		if (this.data.media) {
 			// Determine the media type
-			this.data.media.mediatype = VCO.MediaType(this.data.media.url);
+			this.data.media.mediatype = VCO.MediaType(this.data.media);
 			
 			// Create a media object using the matched class name
 			this._media = new this.data.media.mediatype.cls(this.data.media, this.options);

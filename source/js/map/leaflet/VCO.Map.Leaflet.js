@@ -75,6 +75,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 			_zoom 		= this._getMapZoom();
 		
 		
+			
 		if (loc.zoom) {
 			_zoom = loc.zoom;
 		}
@@ -94,14 +95,28 @@ VCO.Map.Leaflet = VCO.Map.extend({
 			}
 		}	
 		
-		this._map.setView(
-			{lat:loc.lat, lon:loc.lon}, 
-			_zoom,
-			{
-				pan:{animate: _animate, duration: _duration, easeLinearity:.10},
-				zoom:{animate: _animate, duration: _duration, easeLinearity:.10}
-			}
-		)
+		// OFFSET VIEW
+		if (this.options.map_center_offset) {
+			this._map.setView(
+				this._getMapCenterOffset({lat:loc.lat, lon:loc.lon}, _zoom), 
+				_zoom,
+				{
+					pan:{animate: _animate, duration: _duration, easeLinearity:.10},
+					zoom:{animate: _animate, duration: _duration, easeLinearity:.10}
+				}
+			)
+		} else {
+			this._map.setView(
+				{lat:loc.lat, lon:loc.lon}, 
+				_zoom,
+				{
+					pan:{animate: _animate, duration: _duration, easeLinearity:.10},
+					zoom:{animate: _animate, duration: _duration, easeLinearity:.10}
+				}
+			)
+		}
+		
+		
 	},
 	
 	_getMapLocation: function(m) {
@@ -112,13 +127,44 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		return this._map.getZoom();
 	},
 	
-	_getMapCenter: function() {
+	_getMapCenter: function(offset) {
+		if (offset) {
+			
+		}
 		return this._map.getCenter();
 	},
 	
-	_getBoundsZoom: function(m1, m2, inside, padding) {
-		var bounds = new L.LatLngBounds([m1, m2]);
-		return this._map.getBoundsZoom(bounds, inside, padding);
+	_getMapCenterOffset: function(location, zoom, add) {
+		var point, offset_y;
+		
+		offset_y = (this._map.getSize().y/2);
+		
+		if (add) {
+			offset_y = offset_y + this.options.map_center_offset;
+			point = this._map.project(location, zoom).add([0, offset_y]);
+		} else {
+			offset_y = offset_y - this.options.map_center_offset;
+			point = this._map.project(location, zoom).subtract([0, offset_y]);
+		}
+
+		return this._map.unproject(point, zoom);
+	},
+	
+	_getBoundsZoom: function(origin, destination, correct_for_center) {
+		var _origin = origin;
+		
+		if (this.options.map_center_offset) {
+			_origin = this._getMapCenterOffset(origin, this._getMapZoom(), true);
+		}
+		
+		if (correct_for_center) {
+			var _lat = _origin.lat + (_origin.lat - destination.lat)/2,
+				_lng = _origin.lng + (_origin.lng - destination.lng)/2;
+			_origin = new L.LatLng(_lat, _lng);
+		}
+		
+		var bounds = new L.LatLngBounds([_origin, destination]);
+		return this._map.getBoundsZoom(bounds, false);
 	},
 	
 	/*	Display

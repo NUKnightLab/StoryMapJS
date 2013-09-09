@@ -4,8 +4,11 @@
 	You can add new media types by adding a regex 
 	to match and the media class name to use to 
 	render the media 
+
+	TODO
+	Allow array so a slideshow can be a mediatype
 ================================================== */
-VCO.MediaType = function(url) {
+VCO.MediaType = function(m) {
 	var media = {}, 
 		media_types = 	[
 			{
@@ -101,9 +104,15 @@ VCO.MediaType = function(url) {
 		];
 	
 	for (var i = 0; i < media_types.length; i++) {
-		if (url.match(media_types[i].match_str)) {
+		if (m instanceof Array) {
+			trace("SLIDER");
+			return media = {
+				type: 		"slider",
+				cls: 		VCO.Media.Slider
+			};
+		} else if (m.url.match(media_types[i].match_str)) {
 			media 		= media_types[i];
-			media.url 	= url;
+			media.url 	= m.url;
 			return media;
 			break;
 		}

@@ -60,7 +60,8 @@ VCO.Map = VCO.Class.extend({
 			},
 			line_color: 		"#03f",
 			line_weight: 		5,
-			line_opacity: 		0.5
+			line_opacity: 		0.5,
+			map_center_offset:  10
 		};
 		
 		// Animation
@@ -103,7 +104,7 @@ VCO.Map = VCO.Class.extend({
 			marker.active(true);
 			
 			// Calculate Zoom
-			zoom = this._calculateZoomChange(this._getMapCenter(), marker.location());
+			zoom = this._calculateZoomChange(this._getMapCenter(true), marker.location());
 			
 			// Set Map View
 			this._viewTo(marker.data.location, {calculate_zoom: this.options.calculate_zoom, zoom:zoom});
@@ -285,8 +286,8 @@ VCO.Map = VCO.Class.extend({
 	/*	Private Methods
 	================================================== */
 	
-	_calculateZoomChange: function(m1, m2) {
-		return this._getBoundsZoom(m1, m2, false);
+	_calculateZoomChange: function(origin, destination) {
+		return this._getBoundsZoom(origin, destination, true);
 		
 		/*
 		var _m1 	= this._getMapLocation(m1),
@@ -338,8 +339,10 @@ VCO.Map = VCO.Class.extend({
 	_updateDisplay: function(w, h, animate, d, offset) {
 		
 		if (h) {
-			this._el.map.style.height = ((h *2) - offset) + "px";
-			this._el.map_mask.style.height = (h + offset) + "px";
+			//this._el.map.style.height = ((h *2) - offset) + "px";
+			//this._el.map_mask.style.height = (h + offset) + "px";
+			this._el.map.style.height = h + "px";
+			this._el.map_mask.style.height = h + "px";
 		}
 		
 		
