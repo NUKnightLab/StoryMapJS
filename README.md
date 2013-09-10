@@ -10,7 +10,8 @@ Install [Node.js](http://nodejs.org)
     # Change into the parent directory containing your repositories
     cd path_to_your_repos_root
     
-    # Clone the project repository
+    # Clone repositories
+    git clone https://github.com/NUKnightLab/fablib.git
     git clone https://github.com/NUKnightLab/storymapjs.git
     
     # Change into the project repository
