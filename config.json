@@ -23,24 +23,31 @@
     // This order is determined in code by fabfile/__init__.py.
     //
     "build": {
-        // copy files to build directory
-        // input: list of objects, where
-        //      @src: source directory
-        //      @regex: regular expression to match files in @src
+        // copy files
+        // input: list of objects specifying inputs and outputs
+        //      @src: source file/directory
+        //      @dst: destination file/directory
+        //      @regex: regular expression to match files (if @src is directory)
+        //
         "copy": [
             {
                 "src": "site",
+                "dst": "build",
                 "regex": "(css/.*|img/.*|js/.*|.*\\.(ico|html))$"
             },
             {
                 "src": "source",
+                "dst": "build",
                 "regex": "(css/.*|img/.*|.*\\.(ico|html))$"
             }
         ],
         // compile less files
+        // input: list of objects specifying inputs and output
         // input: list of objects, where
-        //      @src: source file
-        //      @dst: destination file
+        //      @src: source file/directory
+        //      @dst: destination file/directory
+        //      @regex: regular expression to match files (if @src is directory)
+        //
         "lessc": [
             {
                 "src": "source/less/VCO.StoryMap.less",
@@ -69,11 +76,28 @@
         //      @dst: destination file
         "concat": [
         ],
-        // minify files
-        // input: list of file paths
+        // minify files using uglifyjs
+        // input list of objects specifying inputs and output
+        //      @src:   source file/directory
+        //      @dst:   destination file/directory 
+        //      @opt:   options to pass to uglifyjs
+        //      @ext:   extension to prepend to destination file name (optional, default = none)
+        //
         "minify": [
-            "build/js/storymap.js"
+            {
+                "src": "build/js/storymap.js",
+                "dst": "build/js/storymap.min.js",
+                "opt": "--no-seqs"            
+            }
         ],
+        //
+        // process usermin style build blocks on html files
+        // input: list of files/directorys to process in-place
+        "usemin": [
+            "build/index.html",
+            "build/about.html"
+        ],
+        //
         // banner
         // input: list of file paths
         "banner": [
