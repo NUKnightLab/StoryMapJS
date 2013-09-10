@@ -4,13 +4,15 @@ Install [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/)
 
 Install [Node.js](http://nodejs.org)
 
-    # Install LESS globally (you may need to use 'sudo npm' instead)
+    # Install LESS and UglifyJS globally (you may need to use 'sudo npm' instead)
     npm install -g less
+    npm install -g uglify-js@1
     
     # Change into the parent directory containing your repositories
     cd path_to_your_repos_root
     
-    # Clone the project repository
+    # Clone repositories
+    git clone https://github.com/NUKnightLab/fablib.git
     git clone https://github.com/NUKnightLab/storymapjs.git
     
     # Change into the project repository
