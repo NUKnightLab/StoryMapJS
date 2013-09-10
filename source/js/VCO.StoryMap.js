@@ -587,7 +587,7 @@ VCO.StoryMap = VCO.Class.extend({
 		// Animate Sizebar to Default Location
 		this._sizebar.show(2000);
 		
-		
+		this._map.markerOverview();
 	},
 	
 	_initEvents: function () {

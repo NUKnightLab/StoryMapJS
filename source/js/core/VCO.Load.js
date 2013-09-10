@@ -7,10 +7,6 @@
 	Designed and built by Zach Wise digitalartwork.net
 */
 
-/*	* CodeKit Import
-	* http://incident57.com/codekit/
-================================================== */
-// @codekit-prepend "../Library/LazyLoad.js";
 
 VCO.Load = (function (doc) {
 	var loaded	= [];

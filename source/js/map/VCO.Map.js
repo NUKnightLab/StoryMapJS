@@ -28,6 +28,12 @@ VCO.Map = VCO.Class.extend({
 			this._el.container = VCO.Dom.get(elem);
 		}
 		
+		// LOADED
+		this._loaded = {
+			data: 	false,
+			map: 	false
+		};
+		
 		// MAP
 		this._map = null;
 		
@@ -53,11 +59,6 @@ VCO.Map = VCO.Class.extend({
 			map_popup: 			false, 
 			zoom_distance: 		100,
 			calculate_zoom: 	true, // Allow map to determine best zoom level between markers (recommended)
-			default_map_location: {
-				lat: 	51.505,
-				lon: 	-0.09,
-				zoom: 	13
-			},
 			line_color: 		"#03f",
 			line_weight: 		5,
 			line_opacity: 		0.5,
@@ -79,6 +80,7 @@ VCO.Map = VCO.Class.extend({
 		this._createMap();
 		this._initData();
 		
+		
 	},
 	
 	/*	Public
@@ -87,7 +89,8 @@ VCO.Map = VCO.Class.extend({
 		this._updateDisplay(w, h, animate, d, offset);
 	},
 	
-	goTo: function(n, fast) {
+	goTo: function(n, change) {
+		trace("MAP GOTO " + n)
 		if (n < this._markers.length && n >= 0) {
 			var zoom = 0;
 			this.current_marker = n;
@@ -99,17 +102,27 @@ VCO.Map = VCO.Class.extend({
 				this.animator.stop();
 			}
 			
-			// Make marker active
+			// Reset Active Markers
 			this._resetMarkersActive();
-			marker.active(true);
 			
-			// Calculate Zoom
-			zoom = this._calculateZoomChange(this._getMapCenter(true), marker.location());
+			// Check to see if it's an overview
+			if (marker.data.type && marker.data.type == "overview") {
+				this._markerOverview();
+			} else {
+				// Make marker active
+				marker.active(true);
 			
-			// Set Map View
-			this._viewTo(marker.data.location, {calculate_zoom: this.options.calculate_zoom, zoom:zoom});
+				// Calculate Zoom
+				zoom = this._calculateZoomChange(this._getMapCenter(true), marker.location());
 			
-			this._onMarkerChange();
+				// Set Map View
+				this._viewTo(marker.data.location, {calculate_zoom: this.options.calculate_zoom, zoom:zoom});
+			}
+			
+			
+			if (!change) {
+				this._onMarkerChange();
+			}
 		}
 	},
 	
@@ -129,6 +142,9 @@ VCO.Map = VCO.Class.extend({
 		this.__getBoundsZoom(m1, m2, inside, padding); // (LatLngBounds[, Boolean, Point]) -> Number
 	},
 	
+	markerOverview: function() {
+		this._markerOverview();
+	},
 	
 	/*	Adding, Hiding, Showing etc
 	================================================== */
@@ -270,6 +286,10 @@ VCO.Map = VCO.Class.extend({
 		_getBoundsZoom: function(m1, m2, inside, padding) {
 		
 		},
+		
+		_markerOverview: function() {
+			
+		},
 	
 	/*	Events
 	================================================== */
@@ -280,6 +300,18 @@ VCO.Map = VCO.Class.extend({
 	_onMarkerClick: function(e) {
 		if (this.current_marker != e.marker_number) {
 			this.goTo(e.marker_number);
+		}
+	},
+	
+	_onMapLoaded: function(e) {
+		trace("MAP LOADED");
+		this._loaded.map = true;
+		this._initialMapLocation();
+	},
+	
+	_initialMapLocation: function() {
+		if (this._loaded.data && this._loaded.map) {
+			//this.goTo(this.options.start_at_slide);
 		}
 	},
 	
@@ -363,6 +395,9 @@ VCO.Map = VCO.Class.extend({
 			this._createMarkers(this.data.slides);
 			this._resetMarkersActive();
 			this._markers[this.current_marker].active(true);
+			this._loaded.data = true;
+			this._initialMapLocation();
+			
 		}
 	},
 	
