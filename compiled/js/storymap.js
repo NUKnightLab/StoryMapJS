@@ -1868,10 +1868,6 @@ VCO.Events.fire = VCO.Events.fireEvent;
 	Designed and built by Zach Wise digitalartwork.net
 */
 
-/*	* CodeKit Import
-	* http://incident57.com/codekit/
-================================================== */
-// @codekit-prepend "../Library/LazyLoad.js";
 
 VCO.Load = (function (doc) {
 	var loaded	= [];
@@ -4515,7 +4511,7 @@ VCO.Media.Blockquote = VCO.Media.extend({
 		this.messege.updateMessege(VCO.Language.messeges.loading + " SoundCloud");
 		
 		// Create Dom element
-		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe", this._el.content);
+		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-blockquote", this._el.content);
 		
 		// Get Media ID
 		this.media_id = this.data.url;
@@ -4652,17 +4648,11 @@ VCO.Media.GoogleDoc = VCO.Media.extend({
 		api_url = this.media_id;
 		
 		// API Call
-		this._el.content_item.innerHTML = "<iframe frameborder='0' width='100%' height='100%' src='" + api_url + "'></iframe>"		
-		
-		/*
-		var mediaElem = ""; 
-		if (m.id.match(/docs.google.com/i)) {
-			mediaElem	=	"<iframe class='doc' frameborder='0' width='100%' height='100%' src='" + m.id + "&amp;embedded=true'></iframe>";
+		if (this.media_id.match(/docs.google.com/i)) {
+			this._el.content_item.innerHTML	=	"<iframe class='doc' frameborder='0' width='100%' height='100%' src='" + this.media_id + "&amp;embedded=true'></iframe>";
 		} else {
-			mediaElem	=	"<iframe class='doc' frameborder='0' width='100%' height='100%' src='" + "http://docs.google.com/viewer?url=" + m.id + "&amp;embedded=true'></iframe>";
+			this._el.content_item.innerHTML	=	"<iframe class='doc' frameborder='0' width='100%' height='100%' src='" + "http://docs.google.com/viewer?url=" + this.media_id + "&amp;embedded=true'></iframe>";
 		}
-		VMM.attachElement("#"+m.uid, mediaElem);
-		*/
 		
 		// After Loaded
 		this.onLoaded();
@@ -5465,6 +5455,8 @@ VCO.Media.YouTube = VCO.Media.extend({
 /*	VCO.Media.SLider
 	Produces a Slider
 	Takes a data object and populates a dom object
+	TODO
+	Placeholder
 ================================================== */
 
 VCO.Media.Slider = VCO.Media.extend({
@@ -15816,6 +15808,12 @@ VCO.Map = VCO.Class.extend({
 			this._el.container = VCO.Dom.get(elem);
 		}
 		
+		// LOADED
+		this._loaded = {
+			data: 	false,
+			map: 	false
+		};
+		
 		// MAP
 		this._map = null;
 		
@@ -15841,11 +15839,6 @@ VCO.Map = VCO.Class.extend({
 			map_popup: 			false, 
 			zoom_distance: 		100,
 			calculate_zoom: 	true, // Allow map to determine best zoom level between markers (recommended)
-			default_map_location: {
-				lat: 	51.505,
-				lon: 	-0.09,
-				zoom: 	13
-			},
 			line_color: 		"#03f",
 			line_weight: 		5,
 			line_opacity: 		0.5,
@@ -15867,6 +15860,7 @@ VCO.Map = VCO.Class.extend({
 		this._createMap();
 		this._initData();
 		
+		
 	},
 	
 	/*	Public
@@ -15875,7 +15869,8 @@ VCO.Map = VCO.Class.extend({
 		this._updateDisplay(w, h, animate, d, offset);
 	},
 	
-	goTo: function(n, fast) {
+	goTo: function(n, change) {
+		trace("MAP GOTO " + n)
 		if (n < this._markers.length && n >= 0) {
 			var zoom = 0;
 			this.current_marker = n;
@@ -15887,17 +15882,27 @@ VCO.Map = VCO.Class.extend({
 				this.animator.stop();
 			}
 			
-			// Make marker active
+			// Reset Active Markers
 			this._resetMarkersActive();
-			marker.active(true);
 			
-			// Calculate Zoom
-			zoom = this._calculateZoomChange(this._getMapCenter(true), marker.location());
+			// Check to see if it's an overview
+			if (marker.data.type && marker.data.type == "overview") {
+				this._markerOverview();
+			} else {
+				// Make marker active
+				marker.active(true);
 			
-			// Set Map View
-			this._viewTo(marker.data.location, {calculate_zoom: this.options.calculate_zoom, zoom:zoom});
+				// Calculate Zoom
+				zoom = this._calculateZoomChange(this._getMapCenter(true), marker.location());
 			
-			this._onMarkerChange();
+				// Set Map View
+				this._viewTo(marker.data.location, {calculate_zoom: this.options.calculate_zoom, zoom:zoom});
+			}
+			
+			
+			if (!change) {
+				this._onMarkerChange();
+			}
 		}
 	},
 	
@@ -15917,6 +15922,9 @@ VCO.Map = VCO.Class.extend({
 		this.__getBoundsZoom(m1, m2, inside, padding); // (LatLngBounds[, Boolean, Point]) -> Number
 	},
 	
+	markerOverview: function() {
+		this._markerOverview();
+	},
 	
 	/*	Adding, Hiding, Showing etc
 	================================================== */
@@ -16058,6 +16066,10 @@ VCO.Map = VCO.Class.extend({
 		_getBoundsZoom: function(m1, m2, inside, padding) {
 		
 		},
+		
+		_markerOverview: function() {
+			
+		},
 	
 	/*	Events
 	================================================== */
@@ -16068,6 +16080,18 @@ VCO.Map = VCO.Class.extend({
 	_onMarkerClick: function(e) {
 		if (this.current_marker != e.marker_number) {
 			this.goTo(e.marker_number);
+		}
+	},
+	
+	_onMapLoaded: function(e) {
+		trace("MAP LOADED");
+		this._loaded.map = true;
+		this._initialMapLocation();
+	},
+	
+	_initialMapLocation: function() {
+		if (this._loaded.data && this._loaded.map) {
+			//this.goTo(this.options.start_at_slide);
 		}
 	},
 	
@@ -16151,6 +16175,9 @@ VCO.Map = VCO.Class.extend({
 			this._createMarkers(this.data.slides);
 			this._resetMarkersActive();
 			this._markers[this.current_marker].active(true);
+			this._loaded.data = true;
+			this._initialMapLocation();
+			
 		}
 	},
 	
@@ -16242,11 +16269,16 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		// Set Marker Path
 		L.Icon.Default.imagePath = this.options.path_gfx;
 		
-		this._map = new L.map(this._el.map, {scrollWheelZoom:false}).setView([this.options.default_map_location.lat, this.options.default_map_location.lon], this.options.default_map_location.zoom);
+		this._map = new L.map(this._el.map, {scrollWheelZoom:false});
+		//this._map = new L.map(this._el.map, {scrollWheelZoom:false}).setView([51.505, -0.09], 13);
+		
+		this._map.on("load", this._onMapLoaded, this);
 		
 		var layer = new L.StamenTileLayer(this.options.map_type);
 
 		this._map.addLayer(layer);
+		
+		
 		
 	},
 	
@@ -16270,6 +16302,16 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	
 	},
 	
+	_markerOverview: function() {
+		var bounds_array = [];
+		
+		for (var i = 0; i < this._markers.length; i++) {
+			bounds_array.push( [this._markers[i].data.location.lat, this._markers[i].data.location.lon]);
+		};
+		
+		this._map.fitBounds(bounds_array, {padding:[15,15]});
+	},
+	
 	/*	Line
 	================================================== */
 	
@@ -16288,6 +16330,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		
 		
 	},
+	
 	/*	Map
 	================================================== */
 	_panTo: function(loc, animate) {
@@ -16396,6 +16439,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		return this._map.getBoundsZoom(bounds, false);
 	},
 	
+	
 	/*	Display
 	================================================== */
 	_updateMapDisplay: function(w, h, animate, d) {
@@ -16427,7 +16471,13 @@ VCO.Map.Leaflet = VCO.Map.extend({
 			
 			this._map.invalidateSize();
 			//this._viewTo(this._markers[this.current_marker].data.location);
-			this._viewTo(this._markers[this.current_marker].data.location, {zoom:this._getMapZoom(), calculate_zoom:true});
+			//this._viewTo(this._markers[this.current_marker].data.location, {zoom:this._getMapZoom(), calculate_zoom:true});
+			// Check to see if it's an overview
+			if (this._markers[this.current_marker].data.type && this._markers[this.current_marker].data.type == "overview") {
+				this._markerOverview();
+			} else {
+				this._viewTo(this._markers[this.current_marker].data.location, {zoom:this._getMapZoom(), calculate_zoom:true});
+			}
 		};
 	}
 	
@@ -17028,7 +17078,7 @@ VCO.StoryMap = VCO.Class.extend({
 		// Animate Sizebar to Default Location
 		this._sizebar.show(2000);
 		
-		
+		this._map.markerOverview();
 	},
 	
 	_initEvents: function () {

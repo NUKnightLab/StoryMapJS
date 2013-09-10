@@ -13,11 +13,16 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		// Set Marker Path
 		L.Icon.Default.imagePath = this.options.path_gfx;
 		
-		this._map = new L.map(this._el.map, {scrollWheelZoom:false}).setView([this.options.default_map_location.lat, this.options.default_map_location.lon], this.options.default_map_location.zoom);
+		this._map = new L.map(this._el.map, {scrollWheelZoom:false});
+		//this._map = new L.map(this._el.map, {scrollWheelZoom:false}).setView([51.505, -0.09], 13);
+		
+		this._map.on("load", this._onMapLoaded, this);
 		
 		var layer = new L.StamenTileLayer(this.options.map_type);
 
 		this._map.addLayer(layer);
+		
+		
 		
 	},
 	
@@ -41,6 +46,16 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	
 	},
 	
+	_markerOverview: function() {
+		var bounds_array = [];
+		
+		for (var i = 0; i < this._markers.length; i++) {
+			bounds_array.push( [this._markers[i].data.location.lat, this._markers[i].data.location.lon]);
+		};
+		
+		this._map.fitBounds(bounds_array, {padding:[15,15]});
+	},
+	
 	/*	Line
 	================================================== */
 	
@@ -59,6 +74,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		
 		
 	},
+	
 	/*	Map
 	================================================== */
 	_panTo: function(loc, animate) {
@@ -167,6 +183,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		return this._map.getBoundsZoom(bounds, false);
 	},
 	
+	
 	/*	Display
 	================================================== */
 	_updateMapDisplay: function(w, h, animate, d) {
@@ -198,7 +215,13 @@ VCO.Map.Leaflet = VCO.Map.extend({
 			
 			this._map.invalidateSize();
 			//this._viewTo(this._markers[this.current_marker].data.location);
-			this._viewTo(this._markers[this.current_marker].data.location, {zoom:this._getMapZoom(), calculate_zoom:true});
+			//this._viewTo(this._markers[this.current_marker].data.location, {zoom:this._getMapZoom(), calculate_zoom:true});
+			// Check to see if it's an overview
+			if (this._markers[this.current_marker].data.type && this._markers[this.current_marker].data.type == "overview") {
+				this._markerOverview();
+			} else {
+				this._viewTo(this._markers[this.current_marker].data.location, {zoom:this._getMapZoom(), calculate_zoom:true});
+			}
 		};
 	}
 	

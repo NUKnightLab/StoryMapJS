@@ -1,6 +1,8 @@
 /*	VCO.Media.SLider
 	Produces a Slider
 	Takes a data object and populates a dom object
+	TODO
+	Placeholder
 ================================================== */
 
 VCO.Media.Slider = VCO.Media.extend({

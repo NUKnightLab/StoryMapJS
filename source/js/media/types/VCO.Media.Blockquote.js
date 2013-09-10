@@ -13,7 +13,7 @@ VCO.Media.Blockquote = VCO.Media.extend({
 		this.messege.updateMessege(VCO.Language.messeges.loading + " SoundCloud");
 		
 		// Create Dom element
-		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe", this._el.content);
+		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-blockquote", this._el.content);
 		
 		// Get Media ID
 		this.media_id = this.data.url;
