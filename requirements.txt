@@ -8,3 +8,5 @@ pycrypto==2.6
 slimit==0.8.1
 tornado==3.1
 wsgiref==0.1.2
+Flask==0.10.1
+
