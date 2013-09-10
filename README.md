@@ -4,7 +4,7 @@ Install [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/)
 
 Install [Node.js](http://nodejs.org)
 
-    # Install LESS AND UglifyJS globally (you may need to use 'sudo npm' instead)
+    # Install LESS and UglifyJS globally (you may need to use 'sudo npm' instead)
     npm install -g less
     npm install -g uglify-js@1
     
