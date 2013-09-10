@@ -43,7 +43,7 @@
         //      @dst: destination file
         "lessc": [
             {
-                "src": "source/less/storymap.less",
+                "src": "source/less/VCO.StoryMap.less",
                 "dst": "build/css/storymap.css"
             },
             {
@@ -51,18 +51,23 @@
                 "dst": "build/css/site.css"
             }
         ],
+        // 
+        // process codekit style imports on files
+        // input: list of objects specifying inputs and output
+        //      @src:    source file
+        //      @dst:    destination file
+        //
+        "process": [
+            {
+                "src": "source/js/VCO.StoryMap.js",
+                "dst": "build/js/storymap.js"
+            }            
+        ],
         // concatenate files
         // input: list of objects, where
         //      @src: list of source files
         //      @dst: destination file
         "concat": [
-            {
-                "src": [
-                    "source/js/storymap_a.js",
-                    "source/js/storymap_b.js"
-                ],
-                "dst": "build/js/storymap.js"
-            }
         ],
         // minify files
         // input: list of file paths

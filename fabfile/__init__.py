@@ -218,6 +218,58 @@ def _minify(path):
     else:
         warn('%s does not exist' % path)
 
+def process(conf):
+    """
+    Process codekit style imports
+    """
+    puts("process")
+    _re_prepend = re.compile(r'@codekit-prepend\s*[\'"](?P<file>.+)[\'"]\s*;')
+    _re_append = re.compile(r'@codekit-append\s*[\'"](?P<file>.+)[\'"]\s*;')
+
+    def _mark(f_out, path):
+        f_out.write("""
+/* **********************************************
+     Begin %s
+********************************************** */
+
+""" % os.path.basename(path))
+
+    def _do(f_out, path, imported):
+        s = ''
+        dirpath = dirname(path)      
+        with _open_file(path, 'r') as f_in:
+            s = f_in.read()
+
+        # Write out prepends
+        for m in _re_prepend.finditer(s):
+            file_path = _find_file(m.group('file'), dirpath)
+            if not file_path in imported:
+                puts('  prepend: %s' % file_path)
+                imported.append(file_path)
+                _do(f_out, file_path, imported)
+
+        # Write out file
+        _mark(f_out, os.path.basename(path))  
+        f_out.write(s+'\n')
+
+        # Write out appends    
+        for m in _re_append.finditer(s):
+            file_path = _find_file(m.group('file'), dirpath)
+            if not file_path in imported:
+                puts('  append: %s' % file_path)
+                imported.append(file_path)
+                _do(f_out, file_path, imported)
+
+    for r in conf:
+        src = join(env.project_path, r['src'])
+        dst = join(env.project_path, r['dst'])       
+        puts('process: %s >> %s' % (src, dst))
+
+        _makedirs(dst, isfile=True)
+        with _open_file(dst, 'w', 'utf-8') as out_file:
+            _do(out_file, src, [])
+
+
 
 def _process_build_block(m):
     """Process a usemin-style build block"""
