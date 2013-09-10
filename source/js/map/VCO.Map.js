@@ -42,6 +42,7 @@ VCO.Map = VCO.Class.extend({
 		
 		// Line
 		this._line = null;
+		this._line_active = null;
 		
 		// Current Marker
 		this.current_marker = 0;
@@ -62,6 +63,7 @@ VCO.Map = VCO.Class.extend({
 			line_color: 		"#03f",
 			line_weight: 		5,
 			line_opacity: 		0.5,
+			line_dash: 			"5,5",
 			map_center_offset:  10
 		};
 		
@@ -108,21 +110,31 @@ VCO.Map = VCO.Class.extend({
 			// Check to see if it's an overview
 			if (marker.data.type && marker.data.type == "overview") {
 				this._markerOverview();
+				if (!change) {
+					this._onMarkerChange();
+				}
 			} else {
 				// Make marker active
 				marker.active(true);
+				
+				if (change) {
+					// Set Map View
+					this._viewTo(marker.data.location);
+					
+				} else {
+					// Calculate Zoom
+					zoom = this._calculateZoomChange(this._getMapCenter(true), marker.location());
 			
-				// Calculate Zoom
-				zoom = this._calculateZoomChange(this._getMapCenter(true), marker.location());
-			
-				// Set Map View
-				this._viewTo(marker.data.location, {calculate_zoom: this.options.calculate_zoom, zoom:zoom});
+					// Set Map View
+					this._viewTo(marker.data.location, {calculate_zoom: this.options.calculate_zoom, zoom:zoom});
+					
+					// Fire Event
+					this._onMarkerChange();
+					
+				}
+				
 			}
 			
-			
-			if (!change) {
-				this._onMarkerChange();
-			}
 		}
 	},
 	
@@ -134,8 +146,8 @@ VCO.Map = VCO.Class.extend({
 		this._zoomTo(z, animate);
 	},
 	
-	viewTo: function(loc, duration) {
-		this._viewTo(loc, duration);
+	viewTo: function(loc, opts) {
+		this._viewTo(loc, opts);
 	},
 	
 	getBoundsZoom: function(m1, m2, inside, padding) {
@@ -244,7 +256,9 @@ VCO.Map = VCO.Class.extend({
 			if (!this._line) {
 				this._createLine(line, d);
 			}
-			
+		},
+		
+		_activeLine: function(m1, m2) {
 			
 		},
 		
@@ -259,7 +273,7 @@ VCO.Map = VCO.Class.extend({
 		
 		},
 		
-		_viewTo: function(loc, duration) {
+		_viewTo: function(loc, opts) {
 		
 		},
 		
@@ -311,7 +325,7 @@ VCO.Map = VCO.Class.extend({
 	
 	_initialMapLocation: function() {
 		if (this._loaded.data && this._loaded.map) {
-			//this.goTo(this.options.start_at_slide);
+			this.goTo(this.options.start_at_slide, true);
 		}
 	},
 	

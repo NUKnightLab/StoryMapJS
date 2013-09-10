@@ -104,9 +104,6 @@ VCO.StoryMap = VCO.Class.extend({
 		// SizeBar
 		this._sizebar = {};
 		
-		// Current Slide
-		this.current_slide = 0;
-		
 		// Data Object
 		// Test Data compiled from http://www.pbs.org/marktwain/learnmore/chronology.html
 		this.data = {
@@ -512,8 +509,9 @@ VCO.StoryMap = VCO.Class.extend({
 			calculate_zoom: 		true, // Allow map to determine best zoom level between markers (recommended)
 			use_custom_markers: 	false, // Allow use of custom map marker icons
 			line_color: 			"#0088cc",
-			line_weight: 			5,
+			line_weight: 			3,
 			line_opacity: 			0.5,
+			line_dash: 				"5,5",
 			api_key_flickr: 		"f2cc870b4d233dd0a5bfe73fd0d64ef0",
 			language: {
 				name: "English",
@@ -521,6 +519,9 @@ VCO.StoryMap = VCO.Class.extend({
 			}
 			
 		};
+		
+		// Current Slide
+		this.current_slide = this.options.start_at_slide;
 		
 		// Animation Objects
 		this.animator_map = null;
@@ -587,7 +588,6 @@ VCO.StoryMap = VCO.Class.extend({
 		// Animate Sizebar to Default Location
 		this._sizebar.show(2000);
 		
-		this._map.markerOverview();
 	},
 	
 	_initEvents: function () {

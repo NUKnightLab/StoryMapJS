@@ -3,6 +3,9 @@
 # Ignore the build directory
 /build
 
+# Ignore the old source code as it is ported
+/CORE_OLD
+
 # Other
 .DS_Store
 codekit-config.json

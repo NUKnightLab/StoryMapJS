@@ -2,12 +2,6 @@
 	Loads External Javascript and CSS
 ================================================== */
 
-/*
-	LoadLib
-	Designed and built by Zach Wise digitalartwork.net
-*/
-
-
 VCO.Load = (function (doc) {
 	var loaded	= [];
 	

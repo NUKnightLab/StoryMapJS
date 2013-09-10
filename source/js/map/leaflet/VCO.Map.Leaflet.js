@@ -59,20 +59,45 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	/*	Line
 	================================================== */
 	
-	_createLine: function(d) {
-		this._line = new L.Polyline([{lon: d.location.lon, lat: d.location.lat}], {clickable: false, color: this.options.line_color, weight: this.options.line_weight, opacity: this.options.line_opacity} );
-		this._map.addLayer(this._line);
+	_createLine: function(line, d) {
+		trace("Create Line");
+		var _line = line;
+		_line = new L.Polyline([{lon: d.location.lon, lat: d.location.lat}], {
+			clickable: false,
+			color: this.options.line_color,
+			weight: this.options.line_weight,
+			opacity: this.options.line_opacity,
+			dashArray: this.options.line_dash
+		} );
+		trace(_line)
+		this._map.addLayer(_line);
 	},
 	
 	_addToLine: function(line, d) {
-		trace("ADD TO LINE")
-		if (!this._line) {
-			this._createLine(d);
+		trace("ADD TO LINE");
+		trace(line)
+		trace(this._line)
+		if (!line) {
+			this._createLine(line, d);
 		} else {
-			this._line.addLatLng({lon: d.location.lon, lat: d.location.lat});
+			line.addLatLng({lon: d.location.lon, lat: d.location.lat});
 		}
 		
 		
+	},
+	
+	_activeLine: function(m1, m2) {
+		
+		this._line_active = new L.Polyline([{lon: d.location.lon, lat: d.location.lat}], {
+			clickable: false,
+			color: this.options.line_color,
+			weight: this.options.line_weight,
+			opacity: 1,
+			dashArray: this.options.line_dash
+		} );
+		
+		this._line_active.addLatLng({lon: d.location.lon, lat: d.location.lat});
+		this._map.addLayer(this._line_active);
 	},
 	
 	/*	Map

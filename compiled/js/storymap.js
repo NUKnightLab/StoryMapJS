@@ -1863,12 +1863,6 @@ VCO.Events.fire = VCO.Events.fireEvent;
 	Loads External Javascript and CSS
 ================================================== */
 
-/*
-	LoadLib
-	Designed and built by Zach Wise digitalartwork.net
-*/
-
-
 VCO.Load = (function (doc) {
 	var loaded	= [];
 	
@@ -6212,7 +6206,7 @@ VCO.StorySlider = VCO.Class.extend({
 			id: 					"",
 			width: 					600,
 			height: 				600,
-			start_at_slide: 		0,
+			start_at_slide: 		1,
 			// animation
 			duration: 				1000,
 			ease: 					VCO.Ease.easeInOutQuint,
@@ -6370,6 +6364,7 @@ VCO.StorySlider = VCO.Class.extend({
 	},
 	
 	previous: function() {
+		trace("current_slide " + this.current_slide);
 		this.goTo(this.current_slide -1);
 	},
 	
@@ -15822,6 +15817,7 @@ VCO.Map = VCO.Class.extend({
 		
 		// Line
 		this._line = null;
+		this._line_active = null;
 		
 		// Current Marker
 		this.current_marker = 0;
@@ -15842,6 +15838,7 @@ VCO.Map = VCO.Class.extend({
 			line_color: 		"#03f",
 			line_weight: 		5,
 			line_opacity: 		0.5,
+			line_dash: 			"5,5",
 			map_center_offset:  10
 		};
 		
@@ -15888,21 +15885,31 @@ VCO.Map = VCO.Class.extend({
 			// Check to see if it's an overview
 			if (marker.data.type && marker.data.type == "overview") {
 				this._markerOverview();
+				if (!change) {
+					this._onMarkerChange();
+				}
 			} else {
 				// Make marker active
 				marker.active(true);
+				
+				if (change) {
+					// Set Map View
+					this._viewTo(marker.data.location);
+					
+				} else {
+					// Calculate Zoom
+					zoom = this._calculateZoomChange(this._getMapCenter(true), marker.location());
 			
-				// Calculate Zoom
-				zoom = this._calculateZoomChange(this._getMapCenter(true), marker.location());
-			
-				// Set Map View
-				this._viewTo(marker.data.location, {calculate_zoom: this.options.calculate_zoom, zoom:zoom});
+					// Set Map View
+					this._viewTo(marker.data.location, {calculate_zoom: this.options.calculate_zoom, zoom:zoom});
+					
+					// Fire Event
+					this._onMarkerChange();
+					
+				}
+				
 			}
 			
-			
-			if (!change) {
-				this._onMarkerChange();
-			}
 		}
 	},
 	
@@ -15914,8 +15921,8 @@ VCO.Map = VCO.Class.extend({
 		this._zoomTo(z, animate);
 	},
 	
-	viewTo: function(loc, duration) {
-		this._viewTo(loc, duration);
+	viewTo: function(loc, opts) {
+		this._viewTo(loc, opts);
 	},
 	
 	getBoundsZoom: function(m1, m2, inside, padding) {
@@ -16024,7 +16031,9 @@ VCO.Map = VCO.Class.extend({
 			if (!this._line) {
 				this._createLine(line, d);
 			}
-			
+		},
+		
+		_activeLine: function(m1, m2) {
 			
 		},
 		
@@ -16039,7 +16048,7 @@ VCO.Map = VCO.Class.extend({
 		
 		},
 		
-		_viewTo: function(loc, duration) {
+		_viewTo: function(loc, opts) {
 		
 		},
 		
@@ -16091,7 +16100,7 @@ VCO.Map = VCO.Class.extend({
 	
 	_initialMapLocation: function() {
 		if (this._loaded.data && this._loaded.map) {
-			//this.goTo(this.options.start_at_slide);
+			this.goTo(this.options.start_at_slide, true);
 		}
 	},
 	
@@ -16315,20 +16324,45 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	/*	Line
 	================================================== */
 	
-	_createLine: function(d) {
-		this._line = new L.Polyline([{lon: d.location.lon, lat: d.location.lat}], {clickable: false, color: this.options.line_color, weight: this.options.line_weight, opacity: this.options.line_opacity} );
-		this._map.addLayer(this._line);
+	_createLine: function(line, d) {
+		trace("Create Line");
+		var _line = line;
+		_line = new L.Polyline([{lon: d.location.lon, lat: d.location.lat}], {
+			clickable: false,
+			color: this.options.line_color,
+			weight: this.options.line_weight,
+			opacity: this.options.line_opacity,
+			dashArray: this.options.line_dash
+		} );
+		trace(_line)
+		this._map.addLayer(_line);
 	},
 	
 	_addToLine: function(line, d) {
-		trace("ADD TO LINE")
-		if (!this._line) {
-			this._createLine(d);
+		trace("ADD TO LINE");
+		trace(line)
+		trace(this._line)
+		if (!line) {
+			this._createLine(line, d);
 		} else {
-			this._line.addLatLng({lon: d.location.lon, lat: d.location.lat});
+			line.addLatLng({lon: d.location.lon, lat: d.location.lat});
 		}
 		
 		
+	},
+	
+	_activeLine: function(m1, m2) {
+		
+		this._line_active = new L.Polyline([{lon: d.location.lon, lat: d.location.lat}], {
+			clickable: false,
+			color: this.options.line_color,
+			weight: this.options.line_weight,
+			opacity: 1,
+			dashArray: this.options.line_dash
+		} );
+		
+		this._line_active.addLatLng({lon: d.location.lon, lat: d.location.lat});
+		this._map.addLayer(this._line_active);
 	},
 	
 	/*	Map
@@ -16594,9 +16628,6 @@ VCO.StoryMap = VCO.Class.extend({
 		
 		// SizeBar
 		this._sizebar = {};
-		
-		// Current Slide
-		this.current_slide = 0;
 		
 		// Data Object
 		// Test Data compiled from http://www.pbs.org/marktwain/learnmore/chronology.html
@@ -17003,8 +17034,9 @@ VCO.StoryMap = VCO.Class.extend({
 			calculate_zoom: 		true, // Allow map to determine best zoom level between markers (recommended)
 			use_custom_markers: 	false, // Allow use of custom map marker icons
 			line_color: 			"#0088cc",
-			line_weight: 			5,
+			line_weight: 			3,
 			line_opacity: 			0.5,
+			line_dash: 				"5,5",
 			api_key_flickr: 		"f2cc870b4d233dd0a5bfe73fd0d64ef0",
 			language: {
 				name: "English",
@@ -17012,6 +17044,9 @@ VCO.StoryMap = VCO.Class.extend({
 			}
 			
 		};
+		
+		// Current Slide
+		this.current_slide = this.options.start_at_slide;
 		
 		// Animation Objects
 		this.animator_map = null;
@@ -17078,7 +17113,6 @@ VCO.StoryMap = VCO.Class.extend({
 		// Animate Sizebar to Default Location
 		this._sizebar.show(2000);
 		
-		this._map.markerOverview();
 	},
 	
 	_initEvents: function () {

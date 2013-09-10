@@ -415,7 +415,7 @@ VCO.StorySlider = VCO.Class.extend({
 			id: 					"",
 			width: 					600,
 			height: 				600,
-			start_at_slide: 		0,
+			start_at_slide: 		1,
 			// animation
 			duration: 				1000,
 			ease: 					VCO.Ease.easeInOutQuint,
@@ -573,6 +573,7 @@ VCO.StorySlider = VCO.Class.extend({
 	},
 	
 	previous: function() {
+		trace("current_slide " + this.current_slide);
 		this.goTo(this.current_slide -1);
 	},
 	
