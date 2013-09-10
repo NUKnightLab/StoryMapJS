@@ -4,8 +4,9 @@ Install [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/)
 
 Install [Node.js](http://nodejs.org)
 
-    # Install LESS globally (you may need to use 'sudo npm' instead)
+    # Install LESS AND UglifyJS globally (you may need to use 'sudo npm' instead)
     npm install -g less
+    npm install -g uglify-js@1
     
     # Change into the parent directory containing your repositories
     cd path_to_your_repos_root
