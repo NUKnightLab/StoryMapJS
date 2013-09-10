@@ -1,0 +1,62 @@
+{% extends "_base.html" %}
+
+{% block content %}
+<!-- Overview-->
+<header id="overview" class="hero-unit">
+  <div class="row-fluid">
+    <hgroup class="span12">
+      <h1 class="logo-mark xl">StoryMap<span><em>JS</em></span></h1>
+      <h2 class="intro">La de dah.</h2>
+    </hgroup>
+  </div>
+</header>
+
+<section id="description" class="container">
+  <h2>How it Works</h2>
+  <div class="row">
+    <div class="span6">
+      <p>explain it already</p>
+    </div>
+    <div class="span6">
+      <div class="well">
+      <h4>Sign up for updates</h4>
+      <p>Get updates, tips and news by email. No Spam.</p>
+      <!-- MailChimp Signup Form-->
+      <div id="mc_embed_signup">
+        <form id="mc-embedded-subscribe-form" action="http://verite.us4.list-manage.com/subscribe/post?u=7cc197123f5f6d3b8dc4e176f&amp;id=d7f2b5d664" method="post" name="mc-embedded-subscribe-form" target="_blank" class="validate form-inline"><span class="mc-field-group">
+            <input id="mce-EMAIL" type="email" value="" name="EMAIL" placeholder="Email" class="input-medium required email"></span><span class="mc-field-group">
+            <input id="mce-NAME" type="text" value="" name="NAME" placeholder="Name" class="input-medium required"></span>
+          <button id="mc-embedded-subscribe" type="submit" value="Subscribe" name="subscribe" class="btn">Subscribe</button>
+          <div id="mce-responses" class="clear">
+            <div id="mce-error-response" style="display: none;" class="response alert alert-error"></div>
+            <div id="mce-success-response" style="display: none;" class="response alert alert-success"></div>
+          </div>
+          <div class="clear"></div>
+        </form>
+      </div>
+
+      <h4>Stay connected with us on twitter</h4>
+      {# <p> #}
+      {#   <iframe allowtransparency="true" frameborder="0" scrolling="no" src="//platform.twitter.com/widgets/follow_button.html?screen_name=TimelineJS&amp;show_count=true" style="width:220px; height:20px;"></iframe> #}
+      {# </p> #}
+      <p>
+        <iframe allowtransparency="true" frameborder="0" scrolling="no" src="//platform.twitter.com/widgets/follow_button.html?screen_name=zlwise&amp;show_count=true" style="width:220px; height:20px;"></iframe>
+      </p>
+      <p>
+        <iframe allowtransparency="true" frameborder="0" scrolling="no" src="//platform.twitter.com/widgets/follow_button.html?screen_name=knightlab&amp;show_count=true" style="width:220px; height:20px;"></iframe>
+      </p>
+    </div>
+    </div>
+  </div>  </div>
+</section>
+
+
+<section id="examples" class="container">
+  <h2>Examples</h2>
+  <p>Have you made a StoryMap?</p>
+</section>
+
+{% include "_help.html" %}
+
+
+{% endblock %}
