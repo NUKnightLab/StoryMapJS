@@ -4,7 +4,7 @@
 /build
 
 # Ignore the old source code as it is ported
-/CORE_OLD
+/source/CORE_OLD
 
 # Other
 .DS_Store

@@ -24,17 +24,6 @@
       "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Core\/VCO.Util-min.js",
       "fileType" : 64
     },
-    "\/site\/js\/less.js" : {
-      "ignoreWasSetByUser" : 1,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/site\/js\/less.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/site\/js\/less-min.js",
-      "fileType" : 64
-    },
     "\/source\/js\/CORE_OLD\/Media\/VCO.MediaType.js" : {
       "ignoreWasSetByUser" : 1,
       "ignore" : 1,
@@ -44,6 +33,17 @@
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 0,
       "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Media\/VCO.MediaType-min.js",
+      "fileType" : 64
+    },
+    "\/site\/js\/less.js" : {
+      "ignoreWasSetByUser" : 1,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/site\/js\/less.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/site\/js\/less-min.js",
       "fileType" : 64
     },
     "\/source\/less\/CORE_OLD\/VCO.Core.less" : {
@@ -191,17 +191,6 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
-    "\/source\/js\/CORE_OLD\/Embed\/Embed.js" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Embed\/Embed.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Embed\/Embed-min.js",
-      "fileType" : 64
-    },
     "\/source\/less\/map\/leaflet\/VCO.Leaflet.less" : {
       "ieCompatibility" : 1,
       "inputAbbreviatedPath" : "\/source\/less\/map\/leaflet\/VCO.Leaflet.less",
@@ -235,6 +224,17 @@
       "outputStyle" : 1,
       "fileType" : 1,
       "debugStyle" : 0
+    },
+    "\/source\/js\/CORE_OLD\/Embed\/Embed.js" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Embed\/Embed.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Embed\/Embed-min.js",
+      "fileType" : 64
     },
     "\/source\/js\/CORE_OLD\/Core\/VCO.Core.js" : {
       "ignoreWasSetByUser" : 1,
@@ -352,17 +352,6 @@
       "initialSize" : 2120,
       "fileType" : 8192
     },
-    "\/source\/js\/dom\/VCO.DomEvent.js" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/dom\/VCO.DomEvent.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/dom\/VCO.DomEvent-min.js",
-      "fileType" : 64
-    },
     "\/source\/js\/media\/types\/VCO.Media.Vine.js" : {
       "ignoreWasSetByUser" : 0,
       "ignore" : 1,
@@ -372,6 +361,17 @@
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 0,
       "outputAbbreviatedPath" : "\/source\/js\/media\/types\/VCO.Media.Vine-min.js",
+      "fileType" : 64
+    },
+    "\/source\/js\/dom\/VCO.DomEvent.js" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/js\/dom\/VCO.DomEvent.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/source\/js\/dom\/VCO.DomEvent-min.js",
       "fileType" : 64
     },
     "\/source\/js\/CORE_OLD\/Core\/VMM.js" : {
@@ -697,17 +697,6 @@
       "outputAbbreviatedPath" : "\/source\/js\/ui\/VCO.Messege-min.js",
       "fileType" : 64
     },
-    "\/source\/js\/slider\/VCO.SlideNav.js" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/slider\/VCO.SlideNav.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/slider\/VCO.SlideNav-min.js",
-      "fileType" : 64
-    },
     "\/source\/less\/Variables.less" : {
       "ieCompatibility" : 1,
       "inputAbbreviatedPath" : "\/source\/less\/Variables.less",
@@ -724,6 +713,17 @@
       "outputStyle" : 1,
       "fileType" : 1,
       "debugStyle" : 0
+    },
+    "\/source\/js\/slider\/VCO.SlideNav.js" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/js\/slider\/VCO.SlideNav.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/source\/js\/slider\/VCO.SlideNav-min.js",
+      "fileType" : 64
     },
     "\/compiled\/lib\/jquery-min.js" : {
       "ignoreWasSetByUser" : 1,
@@ -1002,23 +1002,6 @@
       "outputAbbreviatedPath" : "No Output Path",
       "fileType" : 2048
     },
-    "\/source\/less\/media\/types\/VCO.Media.IFrame.less" : {
-      "ieCompatibility" : 1,
-      "inputAbbreviatedPath" : "\/source\/less\/media\/types\/VCO.Media.IFrame.less",
-      "outputAbbreviatedPath" : "\/source\/less\/media\/css\/VCO.Media.IFrame.css",
-      "outputPathIsSetByUser" : 0,
-      "strictUnits" : 0,
-      "relativeURLS" : 0,
-      "ignore" : 1,
-      "strictImports" : 0,
-      "ignoreWasSetByUser" : 0,
-      "shouldRunBless" : 0,
-      "hidden" : 0,
-      "strictMath" : 0,
-      "outputStyle" : 1,
-      "fileType" : 1,
-      "debugStyle" : 0
-    },
     "\/source\/js\/CORE_OLD\/Media\/VCO.Media.js" : {
       "ignoreWasSetByUser" : 1,
       "ignore" : 1,
@@ -1034,6 +1017,23 @@
       "ieCompatibility" : 1,
       "inputAbbreviatedPath" : "\/source\/less\/media\/types\/VCO.Media.Wikipedia.less",
       "outputAbbreviatedPath" : "\/source\/less\/media\/css\/VCO.Media.Wikipedia.css",
+      "outputPathIsSetByUser" : 0,
+      "strictUnits" : 0,
+      "relativeURLS" : 0,
+      "ignore" : 1,
+      "strictImports" : 0,
+      "ignoreWasSetByUser" : 0,
+      "shouldRunBless" : 0,
+      "hidden" : 0,
+      "strictMath" : 0,
+      "outputStyle" : 1,
+      "fileType" : 1,
+      "debugStyle" : 0
+    },
+    "\/source\/less\/media\/types\/VCO.Media.IFrame.less" : {
+      "ieCompatibility" : 1,
+      "inputAbbreviatedPath" : "\/source\/less\/media\/types\/VCO.Media.IFrame.less",
+      "outputAbbreviatedPath" : "\/source\/less\/media\/css\/VCO.Media.IFrame.css",
       "outputPathIsSetByUser" : 0,
       "strictUnits" : 0,
       "relativeURLS" : 0,
@@ -1506,14 +1506,16 @@
       "initialSize" : 2898,
       "fileType" : 8192
     },
-    "\/compiled\/test\/index.html" : {
+    "\/source\/js\/CORE_OLD\/Library\/LazyLoad.js" : {
       "ignoreWasSetByUser" : 0,
-      "ignore" : 0,
+      "ignore" : 1,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/compiled\/test\/index.html",
-      "outputAbbreviatedPath" : "No Output Path",
-      "fileType" : 2048
+      "inputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Library\/LazyLoad.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Library\/LazyLoad-min.js",
+      "fileType" : 64
     },
     "\/source\/js\/core\/VCO.js" : {
       "ignoreWasSetByUser" : 0,
@@ -1582,17 +1584,6 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
-    "\/source\/js\/CORE_OLD\/Library\/LazyLoad.js" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Library\/LazyLoad.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Library\/LazyLoad-min.js",
-      "fileType" : 64
-    },
     "\/source\/less\/CORE_OLD\/Variables.less" : {
       "ieCompatibility" : 1,
       "inputAbbreviatedPath" : "\/source\/less\/CORE_OLD\/Variables.less",
@@ -1609,6 +1600,15 @@
       "outputStyle" : 1,
       "fileType" : 1,
       "debugStyle" : 0
+    },
+    "\/compiled\/test\/index.html" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 0,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/compiled\/test\/index.html",
+      "outputAbbreviatedPath" : "No Output Path",
+      "fileType" : 2048
     },
     "\/compiled\/gfx\/marker-shadow.png" : {
       "ignoreWasSetByUser" : 0,
