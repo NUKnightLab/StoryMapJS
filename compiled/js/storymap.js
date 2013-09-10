@@ -3731,6 +3731,7 @@ VCO.Draggable = VCO.Class.extend({
 	/*	Private Methods
 	================================================== */
 	_onDragStart: function(e) {
+		trace(e);
 		if (VCO.Browser.touch) {
 			this.data.pagex.start = e.originalEvent.touches[0].screenX;
 			this.data.pagey.start = e.originalEvent.touches[0].screenY;
@@ -15837,8 +15838,9 @@ VCO.Map = VCO.Class.extend({
 			calculate_zoom: 	true, // Allow map to determine best zoom level between markers (recommended)
 			line_color: 		"#03f",
 			line_weight: 		5,
-			line_opacity: 		0.5,
+			line_opacity: 		0.20,
 			line_dash: 			"5,5",
+			show_history_line: 	true,
 			map_center_offset:  10
 		};
 		
@@ -15869,7 +15871,9 @@ VCO.Map = VCO.Class.extend({
 	goTo: function(n, change) {
 		trace("MAP GOTO " + n)
 		if (n < this._markers.length && n >= 0) {
-			var zoom = 0;
+			var zoom = 0,
+				previous_marker = this.current_marker;
+				
 			this.current_marker = n;
 			
 			var marker = this._markers[this.current_marker];
@@ -15902,6 +15906,21 @@ VCO.Map = VCO.Class.extend({
 			
 					// Set Map View
 					this._viewTo(marker.data.location, {calculate_zoom: this.options.calculate_zoom, zoom:zoom});
+					
+					// Show Line
+					trace(this._markers[previous_marker].data.location)
+					if (this.options.show_history_line) {
+						this._replaceLines(this._line_active, [
+							{
+								lat:marker.data.location.lat,
+								lon:marker.data.location.lon
+							}, 
+							{
+								lat:this._markers[previous_marker].data.location.lat,
+								lon:this._markers[previous_marker].data.location.lon
+							}
+						])
+					}
 					
 					// Fire Event
 					this._onMarkerChange();
@@ -15977,9 +15996,13 @@ VCO.Map = VCO.Class.extend({
 		for (var i = 0; i < array.length; i++) {
 			this._createMarker(array[i]);
 			if (array[i].location.line) {
-				this._addToLine(this._line, array[i])
+				this._addToLine(this._line, array[i]);
 			}
 		};
+	},
+	
+	_createLines: function(array) {
+		
 	},
 	
 	
@@ -16023,17 +16046,19 @@ VCO.Map = VCO.Class.extend({
 		/*	Map Specific Line
 		================================================== */
 		
-		_createLine: function() {
-			this.line = {};
+		_createLine: function(d) {
+			return {data: d};
 		},
 		
 		_addToLine: function(line, d) {
-			if (!this._line) {
-				this._createLine(line, d);
-			}
+			
 		},
 		
-		_activeLine: function(m1, m2) {
+		_replaceLines: function(line, d) {
+		
+		},
+		
+		_addLineToMap: function(line) {
 			
 		},
 		
@@ -16287,8 +16312,14 @@ VCO.Map.Leaflet = VCO.Map.extend({
 
 		this._map.addLayer(layer);
 		
+		// Create Overall Connection Line
+		this._line = this._createLine(this._line);
+		this._addLineToMap(this._line);
 		
-		
+		// Create Active Line
+		this._line_active = this._createLine(this._line_active);
+		this._line_active.setStyle({opacity:1});
+		this._addLineToMap(this._line_active);
 	},
 	
 	/*	Marker
@@ -16324,45 +16355,29 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	/*	Line
 	================================================== */
 	
-	_createLine: function(line, d) {
+	_createLine: function(d) {
 		trace("Create Line");
-		var _line = line;
-		_line = new L.Polyline([{lon: d.location.lon, lat: d.location.lat}], {
+		return new L.Polyline([], {
 			clickable: false,
 			color: this.options.line_color,
 			weight: this.options.line_weight,
 			opacity: this.options.line_opacity,
 			dashArray: this.options.line_dash
 		} );
-		trace(_line)
-		this._map.addLayer(_line);
+		
+	},
+	
+	_addLineToMap: function(line) {
+		this._map.addLayer(line);
 	},
 	
 	_addToLine: function(line, d) {
-		trace("ADD TO LINE");
-		trace(line)
-		trace(this._line)
-		if (!line) {
-			this._createLine(line, d);
-		} else {
-			line.addLatLng({lon: d.location.lon, lat: d.location.lat});
-		}
-		
-		
+		line.addLatLng({lon: d.location.lon, lat: d.location.lat});
 	},
 	
-	_activeLine: function(m1, m2) {
-		
-		this._line_active = new L.Polyline([{lon: d.location.lon, lat: d.location.lat}], {
-			clickable: false,
-			color: this.options.line_color,
-			weight: this.options.line_weight,
-			opacity: 1,
-			dashArray: this.options.line_dash
-		} );
-		
-		this._line_active.addLatLng({lon: d.location.lon, lat: d.location.lat});
-		this._map.addLayer(this._line_active);
+	_replaceLines: function(line, array) {
+		trace(array);
+		line.setLatLngs(array);
 	},
 	
 	/*	Map
@@ -17035,8 +17050,9 @@ VCO.StoryMap = VCO.Class.extend({
 			use_custom_markers: 	false, // Allow use of custom map marker icons
 			line_color: 			"#0088cc",
 			line_weight: 			3,
-			line_opacity: 			0.5,
+			line_opacity: 			0.20,
 			line_dash: 				"5,5",
+			show_history_line: 		true,
 			api_key_flickr: 		"f2cc870b4d233dd0a5bfe73fd0d64ef0",
 			language: {
 				name: "English",

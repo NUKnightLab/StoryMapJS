@@ -510,8 +510,9 @@ VCO.StoryMap = VCO.Class.extend({
 			use_custom_markers: 	false, // Allow use of custom map marker icons
 			line_color: 			"#0088cc",
 			line_weight: 			3,
-			line_opacity: 			0.5,
+			line_opacity: 			0.20,
 			line_dash: 				"5,5",
+			show_history_line: 		true,
 			api_key_flickr: 		"f2cc870b4d233dd0a5bfe73fd0d64ef0",
 			language: {
 				name: "English",

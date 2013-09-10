@@ -22,8 +22,14 @@ VCO.Map.Leaflet = VCO.Map.extend({
 
 		this._map.addLayer(layer);
 		
+		// Create Overall Connection Line
+		this._line = this._createLine(this._line);
+		this._addLineToMap(this._line);
 		
-		
+		// Create Active Line
+		this._line_active = this._createLine(this._line_active);
+		this._line_active.setStyle({opacity:1});
+		this._addLineToMap(this._line_active);
 	},
 	
 	/*	Marker
@@ -59,45 +65,29 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	/*	Line
 	================================================== */
 	
-	_createLine: function(line, d) {
+	_createLine: function(d) {
 		trace("Create Line");
-		var _line = line;
-		_line = new L.Polyline([{lon: d.location.lon, lat: d.location.lat}], {
+		return new L.Polyline([], {
 			clickable: false,
 			color: this.options.line_color,
 			weight: this.options.line_weight,
 			opacity: this.options.line_opacity,
 			dashArray: this.options.line_dash
 		} );
-		trace(_line)
-		this._map.addLayer(_line);
+		
+	},
+	
+	_addLineToMap: function(line) {
+		this._map.addLayer(line);
 	},
 	
 	_addToLine: function(line, d) {
-		trace("ADD TO LINE");
-		trace(line)
-		trace(this._line)
-		if (!line) {
-			this._createLine(line, d);
-		} else {
-			line.addLatLng({lon: d.location.lon, lat: d.location.lat});
-		}
-		
-		
+		line.addLatLng({lon: d.location.lon, lat: d.location.lat});
 	},
 	
-	_activeLine: function(m1, m2) {
-		
-		this._line_active = new L.Polyline([{lon: d.location.lon, lat: d.location.lat}], {
-			clickable: false,
-			color: this.options.line_color,
-			weight: this.options.line_weight,
-			opacity: 1,
-			dashArray: this.options.line_dash
-		} );
-		
-		this._line_active.addLatLng({lon: d.location.lon, lat: d.location.lat});
-		this._map.addLayer(this._line_active);
+	_replaceLines: function(line, array) {
+		trace(array);
+		line.setLatLngs(array);
 	},
 	
 	/*	Map

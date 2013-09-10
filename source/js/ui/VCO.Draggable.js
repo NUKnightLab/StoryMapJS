@@ -134,6 +134,7 @@ VCO.Draggable = VCO.Class.extend({
 	/*	Private Methods
 	================================================== */
 	_onDragStart: function(e) {
+		trace(e);
 		if (VCO.Browser.touch) {
 			this.data.pagex.start = e.originalEvent.touches[0].screenX;
 			this.data.pagey.start = e.originalEvent.touches[0].screenY;

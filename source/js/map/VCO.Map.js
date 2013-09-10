@@ -62,8 +62,9 @@ VCO.Map = VCO.Class.extend({
 			calculate_zoom: 	true, // Allow map to determine best zoom level between markers (recommended)
 			line_color: 		"#03f",
 			line_weight: 		5,
-			line_opacity: 		0.5,
+			line_opacity: 		0.20,
 			line_dash: 			"5,5",
+			show_history_line: 	true,
 			map_center_offset:  10
 		};
 		
@@ -94,7 +95,9 @@ VCO.Map = VCO.Class.extend({
 	goTo: function(n, change) {
 		trace("MAP GOTO " + n)
 		if (n < this._markers.length && n >= 0) {
-			var zoom = 0;
+			var zoom = 0,
+				previous_marker = this.current_marker;
+				
 			this.current_marker = n;
 			
 			var marker = this._markers[this.current_marker];
@@ -127,6 +130,21 @@ VCO.Map = VCO.Class.extend({
 			
 					// Set Map View
 					this._viewTo(marker.data.location, {calculate_zoom: this.options.calculate_zoom, zoom:zoom});
+					
+					// Show Line
+					trace(this._markers[previous_marker].data.location)
+					if (this.options.show_history_line) {
+						this._replaceLines(this._line_active, [
+							{
+								lat:marker.data.location.lat,
+								lon:marker.data.location.lon
+							}, 
+							{
+								lat:this._markers[previous_marker].data.location.lat,
+								lon:this._markers[previous_marker].data.location.lon
+							}
+						])
+					}
 					
 					// Fire Event
 					this._onMarkerChange();
@@ -202,9 +220,13 @@ VCO.Map = VCO.Class.extend({
 		for (var i = 0; i < array.length; i++) {
 			this._createMarker(array[i]);
 			if (array[i].location.line) {
-				this._addToLine(this._line, array[i])
+				this._addToLine(this._line, array[i]);
 			}
 		};
+	},
+	
+	_createLines: function(array) {
+		
 	},
 	
 	
@@ -248,17 +270,19 @@ VCO.Map = VCO.Class.extend({
 		/*	Map Specific Line
 		================================================== */
 		
-		_createLine: function() {
-			this.line = {};
+		_createLine: function(d) {
+			return {data: d};
 		},
 		
 		_addToLine: function(line, d) {
-			if (!this._line) {
-				this._createLine(line, d);
-			}
+			
 		},
 		
-		_activeLine: function(m1, m2) {
+		_replaceLines: function(line, d) {
+		
+		},
+		
+		_addLineToMap: function(line) {
 			
 		},
 		
