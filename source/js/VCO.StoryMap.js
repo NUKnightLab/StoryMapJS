@@ -8,7 +8,7 @@
 ================================================== */
 /* 
 	TODO
-	Start Slide with Overview Map - Make changes to map and slide
+	Messege for Data Loading
 */ 
 
 /*	Required Files
@@ -79,6 +79,9 @@ VCO.StoryMap = VCO.Class.extend({
 	/*	Private Methods
 	================================================== */
 	initialize: function (elem, data, options) {
+		
+		// Ready
+		this.ready = false;
 		
 		// DOM ELEMENTS
 		this._el = {
@@ -528,15 +531,10 @@ VCO.StoryMap = VCO.Class.extend({
 		this.animator_map = null;
 		this.animator_storyslider = null;
 		
-		// Merge Data and Options
+		// Merge Options
 		VCO.Util.mergeData(this.options, options);
-		VCO.Util.mergeData(this.data, data);
 		
-		// Set Default Location
-		this.options.default_map_location = this.data.slides[0].location;
-		
-		this._initLayout();
-		this._initEvents();
+		this._initData(data);
 		
 	},
 
@@ -547,12 +545,32 @@ VCO.StoryMap = VCO.Class.extend({
 	},
 
 	updateDisplay: function() {
-		this._updateDisplay();
+		if (this.ready) {
+			this._updateDisplay();
+		}
 	},
 	
 	/*	Private Methods
 	================================================== */
-
+	// Initialize the data
+	_initData: function(data) {
+		trace("initData");
+		var self = this;
+		
+		if (typeof data === 'string') {
+			VCO.getJSON(data, function(d) {
+				var temp_data = d.storymap;
+				trace(temp_data);
+				VCO.Util.mergeData(self.data, temp_data);
+				self._onDataLoaded();
+			});
+		} else if (typeof data === 'object') {
+			// Merge Data
+			VCO.Util.mergeData(this.data, data);
+			self._onDataLoaded();
+		}
+	},
+	
 	// Initialize the layout
 	_initLayout: function () {
 		
@@ -676,6 +694,17 @@ VCO.StoryMap = VCO.Class.extend({
 	
 	/*	Events
 	================================================== */
+	
+	_onDataLoaded: function(e) {
+		this.fire("dataloaded");
+		
+		// Merge Data
+		//VCO.Util.mergeData(this.data, data);
+		
+		this._initLayout();
+		this._initEvents();
+		this.ready = true;
+	},
 	
 	_onSlideChange: function(e) {
 		if (this.current_slide != e.current_slide) {
