@@ -41,7 +41,7 @@ settings = sys.modules[settings_module]
 app = Flask(__name__)
 
 build_dir = os.path.join(settings.PROJECT_ROOT, 'build')
-source_dir = os.path.join(settings.PROJECT_ROOT, 'soundcite')
+compiled_dir = os.path.join(settings.PROJECT_ROOT, 'compiled')
 
 @app.context_processor
 def inject_static_url():
@@ -56,20 +56,12 @@ def inject_static_url():
     return dict(static_url=static_url, STATIC_URL=static_url)
 
 
-@app.route('/build/<path:path>')
-def catch_build(path):
+@app.route('/compiled/<path:path>')
+def catch_compiled(path):
     """
-    Serve /build/... urls from the build directory
+    Serve /compiled/... urls from the compiled directory
     """
-    return send_from_directory(build_dir, path)    
-
-@app.route('/soundcite/<path:path>')
-@app.route('/source/<path:path>')
-def catch_source(path):
-    """
-    Serve /source/... urls from the source directory
-    """
-    return send_from_directory(source_dir, path)    
+    return send_from_directory(compiled_dir, path)    
 
 @app.route('/')
 @app.route('/<path:path>')

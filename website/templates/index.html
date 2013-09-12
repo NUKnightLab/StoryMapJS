@@ -6,10 +6,23 @@
   <div class="row-fluid">
     <hgroup class="span12">
       <h1 class="logo-mark xl">StoryMap<span><em>JS</em></span></h1>
-      <h2 class="intro">La de dah.</h2>
+      <h2 class="intro">Lah de dah.</h2>
     </hgroup>
   </div>
 </header>
+
+
+<section id="demo">
+  <div id="storymap">
+  </div>
+</section>
+<script>
+  var storymap = new VCO.StoryMap('storymap', '{{ static_url }}/demo/demo.json');
+  window.onresize = function(event) {
+   storymap.updateDisplay();
+  }
+</script>
+
 
 <section id="description" class="container">
   <h2>How it Works</h2>
