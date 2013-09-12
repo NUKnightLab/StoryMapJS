@@ -31,7 +31,7 @@
         //
         "copy": [
             {
-                "src": "site",
+                "src": "website",
                 "dst": "build",
                 "regex": "(css/.*|img/.*|js/.*|.*\\.(ico|html))$"
             },
@@ -54,7 +54,7 @@
                 "dst": "build/css/storymap.css"
             },
             {
-                "src": "site/less/site.less",
+                "src": "website/less/site.less",
                 "dst": "build/css/site.css"
             }
         ],
