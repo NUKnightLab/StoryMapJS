@@ -93,7 +93,6 @@ VCO.Map = VCO.Class.extend({
 	},
 	
 	goTo: function(n, change) {
-		trace("MAP GOTO " + n)
 		if (n < this._markers.length && n >= 0) {
 			var zoom = 0,
 				previous_marker = this.current_marker;
@@ -132,7 +131,6 @@ VCO.Map = VCO.Class.extend({
 					this._viewTo(marker.data.location, {calculate_zoom: this.options.calculate_zoom, zoom:zoom});
 					
 					// Show Line
-					trace(this._markers[previous_marker].data.location)
 					if (this.options.show_history_line) {
 						this._replaceLines(this._line_active, [
 							{

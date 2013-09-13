@@ -2596,14 +2596,14 @@ Math.easeInOutExpo = function (t, b, c, d) {
 VCO.Animate = function(el, options) {
 	var animation = new vcoanimate(el, options),
 		webkit_timeout;
-	/*
+		/*
 		// POSSIBLE ISSUE WITH WEBKIT FUTURE BUILDS
 	var onWebKitTimeout = function() {
 		
 		animation.stop(true);
 	}
 	if (VCO.Browser.webkit) {
-		//webkit_timeout = setTimeout(function(){onWebKitTimeout()}, options.duration);
+		webkit_timeout = setTimeout(function(){onWebKitTimeout()}, options.duration);
 	}
 	*/
 	return animation;
@@ -2661,9 +2661,11 @@ VCO.Animate = function(el, options) {
 	var getStyle = doc.defaultView && doc.defaultView.getComputedStyle ?
 	function (el, property) {
 		property = property == 'transform' ? transform : property
+		property = camelize(property)
 		var value = null,
 			computed = doc.defaultView.getComputedStyle(el, '');
-		computed && (value = computed[camelize(property)]);
+		
+		computed && (value = computed[property]);
 		return el.style[property] || value;
 	} : html.currentStyle ?
 
@@ -3733,8 +3735,13 @@ VCO.Draggable = VCO.Class.extend({
 	_onDragStart: function(e) {
 		trace(e);
 		if (VCO.Browser.touch) {
-			this.data.pagex.start = e.originalEvent.touches[0].screenX;
-			this.data.pagey.start = e.originalEvent.touches[0].screenY;
+			if (e.originalEvent) {
+				this.data.pagex.start = e.originalEvent.touches[0].screenX;
+				this.data.pagey.start = e.originalEvent.touches[0].screenY;
+			} else {
+				this.data.pagex.start = e.targetTouches[0].screenX;
+				this.data.pagey.start = e.targetTouches[0].screenY;
+			}
 		} else {
 			this.data.pagex.start = e.pageX;
 			this.data.pagey.start = e.pageY;
@@ -3758,6 +3765,7 @@ VCO.Draggable = VCO.Class.extend({
 	},
 	
 	_onDragEnd: function(e) {
+		trace(e)
 		this.data.sliding = false;
 		VCO.DomEvent.removeListener(this._el.drag, this.dragevent.move, this._onDragMove, this);
 		VCO.DomEvent.removeListener(this._el.drag, this.dragevent.leave, this._onDragEnd, this);
@@ -3768,11 +3776,19 @@ VCO.Draggable = VCO.Class.extend({
 	},
 	
 	_onDragMove: function(e) {
+		e.preventDefault();
+		trace(e);
 		this.data.sliding = true;
 		
 		if (VCO.Browser.touch) {
-			this.data.pagex.end = e.originalEvent.touches[0].screenX;
-			this.data.pagey.end = e.originalEvent.touches[0].screenY;
+			if (e.originalEvent) {
+				this.data.pagex.end = e.originalEvent.touches[0].screenX;
+				this.data.pagey.end = e.originalEvent.touches[0].screenY;
+			} else {
+				this.data.pagex.end = e.targetTouches[0].screenX;
+				this.data.pagey.end = e.targetTouches[0].screenY;
+			}
+
 		} else {
 			this.data.pagex.end = e.pageX;
 			this.data.pagey.end = e.pageY;
@@ -3809,7 +3825,7 @@ VCO.Draggable = VCO.Class.extend({
 		
 		
 		if (VCO.Browser.touch) {
-			this.options.momentum_multiplier = this.options.momentum_multiplier * 2;
+			//this.options.momentum_multiplier = this.options.momentum_multiplier * 2;
 		}
 		
 		pos_adjust.time = (new Date().getTime() - this.data.time.start) * 10;
@@ -6311,7 +6327,6 @@ VCO.StorySlider = VCO.Class.extend({
 				this._el.slider_container.style.left = -(this.options.width * n) + "px";
 				this._onSlideChange(displayupdate);
 			} else {
-				
 				this.animator = VCO.Animate(this._el.slider_container, {
 					left: 		-(this.options.width * n) + "px",
 					duration: 	this.options.duration,
@@ -6415,7 +6430,7 @@ VCO.StorySlider = VCO.Class.extend({
 		
 		// Create Layout
 		this._el.slider_container_mask		= VCO.Dom.create('div', 'vco-slider-container-mask', this._el.container);
-		this._el.slider_container			= VCO.Dom.create('div', 'vco-slider-container', this._el.slider_container_mask);
+		this._el.slider_container			= VCO.Dom.create('div', 'vco-slider-container vcoanimate', this._el.slider_container_mask);
 		this._el.slider_item_container		= VCO.Dom.create('div', 'vco-slider-item-container', this._el.slider_container);
 		
 		// Update Size
@@ -15869,7 +15884,6 @@ VCO.Map = VCO.Class.extend({
 	},
 	
 	goTo: function(n, change) {
-		trace("MAP GOTO " + n)
 		if (n < this._markers.length && n >= 0) {
 			var zoom = 0,
 				previous_marker = this.current_marker;
@@ -15908,7 +15922,6 @@ VCO.Map = VCO.Class.extend({
 					this._viewTo(marker.data.location, {calculate_zoom: this.options.calculate_zoom, zoom:zoom});
 					
 					// Show Line
-					trace(this._markers[previous_marker].data.location)
 					if (this.options.show_history_line) {
 						this._replaceLines(this._line_active, [
 							{
@@ -16303,8 +16316,8 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		// Set Marker Path
 		L.Icon.Default.imagePath = this.options.path_gfx;
 		
-		this._map = new L.map(this._el.map, {scrollWheelZoom:false});
-		//this._map = new L.map(this._el.map, {scrollWheelZoom:false}).setView([51.505, -0.09], 13);
+		//this._map = new L.map(this._el.map, {scrollWheelZoom:false});
+		this._map = new L.map(this._el.map, {scrollWheelZoom:false}).setView([51.505, -0.09], 13);
 		
 		this._map.on("load", this._onMapLoaded, this);
 		
@@ -16356,7 +16369,6 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	================================================== */
 	
 	_createLine: function(d) {
-		trace("Create Line");
 		return new L.Polyline([], {
 			clickable: false,
 			color: this.options.line_color,
@@ -16376,7 +16388,6 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	},
 	
 	_replaceLines: function(line, array) {
-		trace(array);
 		line.setLatLngs(array);
 	},
 	
@@ -17080,8 +17091,12 @@ VCO.StoryMap = VCO.Class.extend({
 
 	/*	Navigation
 	================================================== */
-	goTo: function(n) { // number
-
+	goTo: function(n) {
+		if (n != this.current_slide) {
+			this.current_slide = n;
+			this._storyslider.goTo(this.current_slide);
+			this._map.goTo(this.current_slide);
+		}
 	},
 
 	updateDisplay: function() {
@@ -17099,14 +17114,14 @@ VCO.StoryMap = VCO.Class.extend({
 		
 		if (typeof data === 'string') {
 			VCO.getJSON(data, function(d) {
-				var temp_data = d.storymap;
-				trace(temp_data);
-				VCO.Util.mergeData(self.data, temp_data);
+				VCO.Util.mergeData(self.data, d.storymap);
 				self._onDataLoaded();
 			});
 		} else if (typeof data === 'object') {
 			// Merge Data
 			VCO.Util.mergeData(this.data, data);
+			self._onDataLoaded();
+		} else {
 			self._onDataLoaded();
 		}
 	},
@@ -17237,10 +17252,6 @@ VCO.StoryMap = VCO.Class.extend({
 	
 	_onDataLoaded: function(e) {
 		this.fire("dataloaded");
-		
-		// Merge Data
-		//VCO.Util.mergeData(this.data, data);
-		
 		this._initLayout();
 		this._initEvents();
 		this.ready = true;

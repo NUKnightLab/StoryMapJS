@@ -540,8 +540,12 @@ VCO.StoryMap = VCO.Class.extend({
 
 	/*	Navigation
 	================================================== */
-	goTo: function(n) { // number
-
+	goTo: function(n) {
+		if (n != this.current_slide) {
+			this.current_slide = n;
+			this._storyslider.goTo(this.current_slide);
+			this._map.goTo(this.current_slide);
+		}
 	},
 
 	updateDisplay: function() {
@@ -559,14 +563,14 @@ VCO.StoryMap = VCO.Class.extend({
 		
 		if (typeof data === 'string') {
 			VCO.getJSON(data, function(d) {
-				var temp_data = d.storymap;
-				trace(temp_data);
-				VCO.Util.mergeData(self.data, temp_data);
+				VCO.Util.mergeData(self.data, d.storymap);
 				self._onDataLoaded();
 			});
 		} else if (typeof data === 'object') {
 			// Merge Data
 			VCO.Util.mergeData(this.data, data);
+			self._onDataLoaded();
+		} else {
 			self._onDataLoaded();
 		}
 	},
@@ -697,10 +701,6 @@ VCO.StoryMap = VCO.Class.extend({
 	
 	_onDataLoaded: function(e) {
 		this.fire("dataloaded");
-		
-		// Merge Data
-		//VCO.Util.mergeData(this.data, data);
-		
 		this._initLayout();
 		this._initEvents();
 		this.ready = true;

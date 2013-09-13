@@ -5,14 +5,14 @@
 VCO.Animate = function(el, options) {
 	var animation = new vcoanimate(el, options),
 		webkit_timeout;
-	/*
+		/*
 		// POSSIBLE ISSUE WITH WEBKIT FUTURE BUILDS
 	var onWebKitTimeout = function() {
 		
 		animation.stop(true);
 	}
 	if (VCO.Browser.webkit) {
-		//webkit_timeout = setTimeout(function(){onWebKitTimeout()}, options.duration);
+		webkit_timeout = setTimeout(function(){onWebKitTimeout()}, options.duration);
 	}
 	*/
 	return animation;
@@ -70,9 +70,11 @@ VCO.Animate = function(el, options) {
 	var getStyle = doc.defaultView && doc.defaultView.getComputedStyle ?
 	function (el, property) {
 		property = property == 'transform' ? transform : property
+		property = camelize(property)
 		var value = null,
 			computed = doc.defaultView.getComputedStyle(el, '');
-		computed && (value = computed[camelize(property)]);
+		
+		computed && (value = computed[property]);
 		return el.style[property] || value;
 	} : html.currentStyle ?
 

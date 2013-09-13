@@ -136,8 +136,13 @@ VCO.Draggable = VCO.Class.extend({
 	_onDragStart: function(e) {
 		trace(e);
 		if (VCO.Browser.touch) {
-			this.data.pagex.start = e.originalEvent.touches[0].screenX;
-			this.data.pagey.start = e.originalEvent.touches[0].screenY;
+			if (e.originalEvent) {
+				this.data.pagex.start = e.originalEvent.touches[0].screenX;
+				this.data.pagey.start = e.originalEvent.touches[0].screenY;
+			} else {
+				this.data.pagex.start = e.targetTouches[0].screenX;
+				this.data.pagey.start = e.targetTouches[0].screenY;
+			}
 		} else {
 			this.data.pagex.start = e.pageX;
 			this.data.pagey.start = e.pageY;
@@ -161,6 +166,7 @@ VCO.Draggable = VCO.Class.extend({
 	},
 	
 	_onDragEnd: function(e) {
+		trace(e)
 		this.data.sliding = false;
 		VCO.DomEvent.removeListener(this._el.drag, this.dragevent.move, this._onDragMove, this);
 		VCO.DomEvent.removeListener(this._el.drag, this.dragevent.leave, this._onDragEnd, this);
@@ -171,11 +177,19 @@ VCO.Draggable = VCO.Class.extend({
 	},
 	
 	_onDragMove: function(e) {
+		e.preventDefault();
+		trace(e);
 		this.data.sliding = true;
 		
 		if (VCO.Browser.touch) {
-			this.data.pagex.end = e.originalEvent.touches[0].screenX;
-			this.data.pagey.end = e.originalEvent.touches[0].screenY;
+			if (e.originalEvent) {
+				this.data.pagex.end = e.originalEvent.touches[0].screenX;
+				this.data.pagey.end = e.originalEvent.touches[0].screenY;
+			} else {
+				this.data.pagex.end = e.targetTouches[0].screenX;
+				this.data.pagey.end = e.targetTouches[0].screenY;
+			}
+
 		} else {
 			this.data.pagex.end = e.pageX;
 			this.data.pagey.end = e.pageY;
@@ -212,7 +226,7 @@ VCO.Draggable = VCO.Class.extend({
 		
 		
 		if (VCO.Browser.touch) {
-			this.options.momentum_multiplier = this.options.momentum_multiplier * 2;
+			//this.options.momentum_multiplier = this.options.momentum_multiplier * 2;
 		}
 		
 		pos_adjust.time = (new Date().getTime() - this.data.time.start) * 10;

@@ -13,8 +13,8 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		// Set Marker Path
 		L.Icon.Default.imagePath = this.options.path_gfx;
 		
-		this._map = new L.map(this._el.map, {scrollWheelZoom:false});
-		//this._map = new L.map(this._el.map, {scrollWheelZoom:false}).setView([51.505, -0.09], 13);
+		//this._map = new L.map(this._el.map, {scrollWheelZoom:false});
+		this._map = new L.map(this._el.map, {scrollWheelZoom:false}).setView([51.505, -0.09], 13);
 		
 		this._map.on("load", this._onMapLoaded, this);
 		
@@ -66,7 +66,6 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	================================================== */
 	
 	_createLine: function(d) {
-		trace("Create Line");
 		return new L.Polyline([], {
 			clickable: false,
 			color: this.options.line_color,
@@ -86,7 +85,6 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	},
 	
 	_replaceLines: function(line, array) {
-		trace(array);
 		line.setLatLngs(array);
 	},
 	

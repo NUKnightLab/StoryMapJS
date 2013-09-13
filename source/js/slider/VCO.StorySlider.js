@@ -519,7 +519,6 @@ VCO.StorySlider = VCO.Class.extend({
 				this._el.slider_container.style.left = -(this.options.width * n) + "px";
 				this._onSlideChange(displayupdate);
 			} else {
-				
 				this.animator = VCO.Animate(this._el.slider_container, {
 					left: 		-(this.options.width * n) + "px",
 					duration: 	this.options.duration,
@@ -623,7 +622,7 @@ VCO.StorySlider = VCO.Class.extend({
 		
 		// Create Layout
 		this._el.slider_container_mask		= VCO.Dom.create('div', 'vco-slider-container-mask', this._el.container);
-		this._el.slider_container			= VCO.Dom.create('div', 'vco-slider-container', this._el.slider_container_mask);
+		this._el.slider_container			= VCO.Dom.create('div', 'vco-slider-container vcoanimate', this._el.slider_container_mask);
 		this._el.slider_item_container		= VCO.Dom.create('div', 'vco-slider-item-container', this._el.slider_container);
 		
 		// Update Size
