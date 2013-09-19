@@ -131,10 +131,13 @@ VCO.Draggable = VCO.Class.extend({
 
 	},
 	
+	updateConstraint: function(c) {
+		this.options.constraint = c;
+	},
+	
 	/*	Private Methods
 	================================================== */
 	_onDragStart: function(e) {
-		trace(e);
 		if (VCO.Browser.touch) {
 			if (e.originalEvent) {
 				this.data.pagex.start = e.originalEvent.touches[0].screenX;
@@ -166,7 +169,6 @@ VCO.Draggable = VCO.Class.extend({
 	},
 	
 	_onDragEnd: function(e) {
-		trace(e)
 		this.data.sliding = false;
 		VCO.DomEvent.removeListener(this._el.drag, this.dragevent.move, this._onDragMove, this);
 		VCO.DomEvent.removeListener(this._el.drag, this.dragevent.leave, this._onDragEnd, this);
@@ -178,7 +180,6 @@ VCO.Draggable = VCO.Class.extend({
 	
 	_onDragMove: function(e) {
 		e.preventDefault();
-		trace(e);
 		this.data.sliding = true;
 		
 		if (VCO.Browser.touch) {
@@ -282,9 +283,34 @@ VCO.Draggable = VCO.Class.extend({
 	
 	
 	_animateMomentum: function() {
+		var pos = {
+			x: this.data.new_pos.x,
+			y: this.data.new_pos.y
+		}
+		
+		if (this.options.constraint.top || this.options.constraint.bottom) {
+			if (pos.y > this.options.constraint.bottom) {
+				pos.y = this.options.constraint.bottom;
+			} else if (pos.y < this.options.constraint.top) {
+				pos.y = this.options.constraint.top;
+			}
+		}
+		
+		if (this.options.constraint.left || this.options.constraint.right) {
+			if (pos.x > this.options.constraint.left) {
+				pos.x = this.options.constraint.left;
+			} else if (pos.x < this.options.constraint.right) {
+				pos.x = this.options.constraint.right;
+			}
+		}
+		
+		trace(this._el.move.offsetParent);
+		trace("this._el.move.offsetTop " + this._el.move.offsetTop);
+		trace("pos.y " + pos.y);
+		trace("this._el.move.offsetTop - pos.y " + (this._el.move.offsetTop - pos.y));
 		this.animator = VCO.Animate(this._el.move, {
-			left: 		this.data.new_pos.x + "px",
-			top: 		this.data.new_pos.y + "px",
+			left: 		pos.x + "px",
+			top: 		pos.y + "px",
 			duration: 	this.options.duration,
 			easing: 	VCO.Ease.easeOutStrong
 		});

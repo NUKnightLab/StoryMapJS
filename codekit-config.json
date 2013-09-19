@@ -1,6 +1,6 @@
 {
   "CodeKitInfo" : "This is a CodeKit project configuration file. It is designed to sync project settings across multiple machines. Modifying the contents of this file can be a poor life decision if you don't know what you're doing. This file is not useful unless accompanied by the project that created it in CodeKit. For more information, see: http:\/\/incident57.com\/codekit",
-  "creatorBuild" : "8322",
+  "creatorBuild" : "8326",
   "files" : {
     "\/compiled\/js\/storymap.js" : {
       "ignoreWasSetByUser" : 0,
@@ -84,23 +84,6 @@
       "syntaxCheckerStyle" : 0,
       "outputAbbreviatedPath" : "\/source\/js\/language\/VCO.Language-min.js",
       "fileType" : 64
-    },
-    "\/source\/less\/Core\/VCO.less" : {
-      "ieCompatibility" : 1,
-      "inputAbbreviatedPath" : "\/source\/less\/Core\/VCO.less",
-      "outputAbbreviatedPath" : "\/source\/less\/css\/VCO.css",
-      "outputPathIsSetByUser" : 0,
-      "strictUnits" : 0,
-      "relativeURLS" : 0,
-      "ignore" : 1,
-      "strictImports" : 0,
-      "ignoreWasSetByUser" : 0,
-      "shouldRunBless" : 0,
-      "hidden" : 0,
-      "strictMath" : 0,
-      "outputStyle" : 1,
-      "fileType" : 1,
-      "debugStyle" : 0
     },
     "\/source\/js\/CORE_OLD\/Library\/jQuery\/easing.js" : {
       "ignoreWasSetByUser" : 1,
@@ -495,10 +478,10 @@
       "outputAbbreviatedPath" : "No Output Path",
       "fileType" : 2048
     },
-    "\/source\/less\/Core\/Reset.less" : {
+    "\/source\/less\/core\/Typography.less" : {
       "ieCompatibility" : 1,
-      "inputAbbreviatedPath" : "\/source\/less\/Core\/Reset.less",
-      "outputAbbreviatedPath" : "\/source\/less\/css\/Reset.css",
+      "inputAbbreviatedPath" : "\/source\/less\/core\/Typography.less",
+      "outputAbbreviatedPath" : "\/source\/less\/css\/Typography.css",
       "outputPathIsSetByUser" : 0,
       "strictUnits" : 0,
       "relativeURLS" : 0,
@@ -679,17 +662,6 @@
       "outputAbbreviatedPath" : "\/source\/js\/ui\/VCO.Messege-min.js",
       "fileType" : 64
     },
-    "\/source\/js\/slider\/VCO.SlideNav.js" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/slider\/VCO.SlideNav.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/slider\/VCO.SlideNav-min.js",
-      "fileType" : 64
-    },
     "\/source\/less\/Variables.less" : {
       "ieCompatibility" : 1,
       "inputAbbreviatedPath" : "\/source\/less\/Variables.less",
@@ -707,6 +679,17 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
+    "\/source\/js\/slider\/VCO.SlideNav.js" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/js\/slider\/VCO.SlideNav.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/source\/js\/slider\/VCO.SlideNav-min.js",
+      "fileType" : 64
+    },
     "\/compiled\/lib\/jquery-min.js" : {
       "ignoreWasSetByUser" : 1,
       "ignore" : 1,
@@ -717,6 +700,23 @@
       "syntaxCheckerStyle" : 0,
       "outputAbbreviatedPath" : "\/compiled\/lib\/jquery-min-min.js",
       "fileType" : 64
+    },
+    "\/source\/less\/core\/Mixins.less" : {
+      "ieCompatibility" : 1,
+      "inputAbbreviatedPath" : "\/source\/less\/core\/Mixins.less",
+      "outputAbbreviatedPath" : "\/source\/less\/css\/Mixins.css",
+      "outputPathIsSetByUser" : 0,
+      "strictUnits" : 0,
+      "relativeURLS" : 0,
+      "ignore" : 1,
+      "strictImports" : 0,
+      "ignoreWasSetByUser" : 0,
+      "shouldRunBless" : 0,
+      "hidden" : 0,
+      "strictMath" : 0,
+      "outputStyle" : 1,
+      "fileType" : 1,
+      "debugStyle" : 0
     },
     "\/source\/less\/map\/leaflet\/VCO.Leaflet.IE.less" : {
       "ieCompatibility" : 1,
@@ -796,23 +796,6 @@
       "outputAbbreviatedPath" : "\/source\/js\/media\/types\/VCO.Media.Twitter-min.js",
       "fileType" : 64
     },
-    "\/source\/less\/media\/types\/VCO.Media.YouTube.less" : {
-      "ieCompatibility" : 1,
-      "inputAbbreviatedPath" : "\/source\/less\/media\/types\/VCO.Media.YouTube.less",
-      "outputAbbreviatedPath" : "\/source\/less\/media\/css\/VCO.Media.YouTube.css",
-      "outputPathIsSetByUser" : 0,
-      "strictUnits" : 0,
-      "relativeURLS" : 0,
-      "ignore" : 1,
-      "strictImports" : 0,
-      "ignoreWasSetByUser" : 0,
-      "shouldRunBless" : 0,
-      "hidden" : 0,
-      "strictMath" : 0,
-      "outputStyle" : 1,
-      "fileType" : 1,
-      "debugStyle" : 0
-    },
     "\/source\/less\/slider\/VCO.StorySlider.less" : {
       "ieCompatibility" : 1,
       "inputAbbreviatedPath" : "\/source\/less\/slider\/VCO.StorySlider.less",
@@ -823,6 +806,23 @@
       "ignore" : 1,
       "strictImports" : 0,
       "ignoreWasSetByUser" : 1,
+      "shouldRunBless" : 0,
+      "hidden" : 0,
+      "strictMath" : 0,
+      "outputStyle" : 1,
+      "fileType" : 1,
+      "debugStyle" : 0
+    },
+    "\/source\/less\/media\/types\/VCO.Media.YouTube.less" : {
+      "ieCompatibility" : 1,
+      "inputAbbreviatedPath" : "\/source\/less\/media\/types\/VCO.Media.YouTube.less",
+      "outputAbbreviatedPath" : "\/source\/less\/media\/css\/VCO.Media.YouTube.css",
+      "outputPathIsSetByUser" : 0,
+      "strictUnits" : 0,
+      "relativeURLS" : 0,
+      "ignore" : 1,
+      "strictImports" : 0,
+      "ignoreWasSetByUser" : 0,
       "shouldRunBless" : 0,
       "hidden" : 0,
       "strictMath" : 0,
@@ -1012,23 +1012,6 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
-    "\/source\/less\/media\/types\/VCO.Media.Wikipedia.less" : {
-      "ieCompatibility" : 1,
-      "inputAbbreviatedPath" : "\/source\/less\/media\/types\/VCO.Media.Wikipedia.less",
-      "outputAbbreviatedPath" : "\/source\/less\/media\/css\/VCO.Media.Wikipedia.css",
-      "outputPathIsSetByUser" : 0,
-      "strictUnits" : 0,
-      "relativeURLS" : 0,
-      "ignore" : 1,
-      "strictImports" : 0,
-      "ignoreWasSetByUser" : 0,
-      "shouldRunBless" : 0,
-      "hidden" : 0,
-      "strictMath" : 0,
-      "outputStyle" : 1,
-      "fileType" : 1,
-      "debugStyle" : 0
-    },
     "\/source\/js\/CORE_OLD\/Media\/VCO.Media.js" : {
       "ignoreWasSetByUser" : 1,
       "ignore" : 1,
@@ -1040,10 +1023,10 @@
       "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Media\/VCO.Media-min.js",
       "fileType" : 64
     },
-    "\/source\/less\/CORE_OLD\/Typography.less" : {
+    "\/source\/less\/media\/types\/VCO.Media.Wikipedia.less" : {
       "ieCompatibility" : 1,
-      "inputAbbreviatedPath" : "\/source\/less\/CORE_OLD\/Typography.less",
-      "outputAbbreviatedPath" : "\/source\/less\/css\/Typography.css",
+      "inputAbbreviatedPath" : "\/source\/less\/media\/types\/VCO.Media.Wikipedia.less",
+      "outputAbbreviatedPath" : "\/source\/less\/media\/css\/VCO.Media.Wikipedia.css",
       "outputPathIsSetByUser" : 0,
       "strictUnits" : 0,
       "relativeURLS" : 0,
@@ -1068,6 +1051,23 @@
       "outputAbbreviatedPath" : "\/source\/js\/dom\/VCO.Dom-min.js",
       "fileType" : 64
     },
+    "\/source\/less\/CORE_OLD\/Typography.less" : {
+      "ieCompatibility" : 1,
+      "inputAbbreviatedPath" : "\/source\/less\/CORE_OLD\/Typography.less",
+      "outputAbbreviatedPath" : "\/source\/less\/css\/Typography.css",
+      "outputPathIsSetByUser" : 0,
+      "strictUnits" : 0,
+      "relativeURLS" : 0,
+      "ignore" : 1,
+      "strictImports" : 0,
+      "ignoreWasSetByUser" : 0,
+      "shouldRunBless" : 0,
+      "hidden" : 0,
+      "strictMath" : 0,
+      "outputStyle" : 1,
+      "fileType" : 1,
+      "debugStyle" : 0
+    },
     "\/source\/js\/CORE_OLD\/Embed\/Embed.LoadLib.js" : {
       "ignoreWasSetByUser" : 0,
       "ignore" : 1,
@@ -1089,6 +1089,23 @@
       "outputAbbreviatedPath" : "\/compiled\/gfx\/fancybox_sprite.png",
       "initialSize" : 1362,
       "fileType" : 8192
+    },
+    "\/source\/less\/core\/Reset.less" : {
+      "ieCompatibility" : 1,
+      "inputAbbreviatedPath" : "\/source\/less\/core\/Reset.less",
+      "outputAbbreviatedPath" : "\/source\/less\/css\/Reset.css",
+      "outputPathIsSetByUser" : 0,
+      "strictUnits" : 0,
+      "relativeURLS" : 0,
+      "ignore" : 1,
+      "strictImports" : 0,
+      "ignoreWasSetByUser" : 0,
+      "shouldRunBless" : 0,
+      "hidden" : 0,
+      "strictMath" : 0,
+      "outputStyle" : 1,
+      "fileType" : 1,
+      "debugStyle" : 0
     },
     "\/compiled\/gfx\/overlay.png" : {
       "ignoreWasSetByUser" : 0,
@@ -1150,23 +1167,6 @@
       "compileDebug" : 1,
       "outputAbbreviatedPath" : "\/compiled\/index.html",
       "fileType" : 512
-    },
-    "\/source\/less\/Core\/Mixins.less" : {
-      "ieCompatibility" : 1,
-      "inputAbbreviatedPath" : "\/source\/less\/Core\/Mixins.less",
-      "outputAbbreviatedPath" : "\/source\/less\/css\/Mixins.css",
-      "outputPathIsSetByUser" : 0,
-      "strictUnits" : 0,
-      "relativeURLS" : 0,
-      "ignore" : 1,
-      "strictImports" : 0,
-      "ignoreWasSetByUser" : 0,
-      "shouldRunBless" : 0,
-      "hidden" : 0,
-      "strictMath" : 0,
-      "outputStyle" : 1,
-      "fileType" : 1,
-      "debugStyle" : 0
     },
     "\/website\/less\/site.less" : {
       "ieCompatibility" : 1,
@@ -1430,17 +1430,6 @@
       "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Media\/VCO.TextElement-min.js",
       "fileType" : 64
     },
-    "\/source\/js\/map\/VCO.MapMarker.js" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/map\/VCO.MapMarker.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/map\/VCO.MapMarker-min.js",
-      "fileType" : 64
-    },
     "\/compiled\/gfx\/fancybox_sprite@2x.png" : {
       "ignoreWasSetByUser" : 0,
       "ignore" : 0,
@@ -1451,6 +1440,17 @@
       "outputAbbreviatedPath" : "\/compiled\/gfx\/fancybox_sprite@2x.png",
       "initialSize" : 6553,
       "fileType" : 8192
+    },
+    "\/source\/js\/map\/VCO.MapMarker.js" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/js\/map\/VCO.MapMarker.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/source\/js\/map\/VCO.MapMarker-min.js",
+      "fileType" : 64
     },
     "\/compiled\/gfx\/timeline.png" : {
       "ignoreWasSetByUser" : 0,
@@ -1478,6 +1478,23 @@
       "ieCompatibility" : 1,
       "inputAbbreviatedPath" : "\/source\/less\/media\/types\/VCO.Media.Flickr.less",
       "outputAbbreviatedPath" : "\/source\/less\/media\/css\/VCO.Media.Flickr.css",
+      "outputPathIsSetByUser" : 0,
+      "strictUnits" : 0,
+      "relativeURLS" : 0,
+      "ignore" : 1,
+      "strictImports" : 0,
+      "ignoreWasSetByUser" : 0,
+      "shouldRunBless" : 0,
+      "hidden" : 0,
+      "strictMath" : 0,
+      "outputStyle" : 1,
+      "fileType" : 1,
+      "debugStyle" : 0
+    },
+    "\/source\/less\/core\/VCO.less" : {
+      "ieCompatibility" : 1,
+      "inputAbbreviatedPath" : "\/source\/less\/core\/VCO.less",
+      "outputAbbreviatedPath" : "\/source\/less\/css\/VCO.css",
       "outputPathIsSetByUser" : 0,
       "strictUnits" : 0,
       "relativeURLS" : 0,
@@ -1566,17 +1583,6 @@
       "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Library\/LazyLoad-min.js",
       "fileType" : 64
     },
-    "\/source\/js\/media\/types\/VCO.Media.Vimeo.js" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/media\/types\/VCO.Media.Vimeo.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/media\/types\/VCO.Media.Vimeo-min.js",
-      "fileType" : 64
-    },
     "\/source\/less\/VCO.StoryMap.less" : {
       "ieCompatibility" : 1,
       "inputAbbreviatedPath" : "\/source\/less\/VCO.StoryMap.less",
@@ -1594,27 +1600,21 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
+    "\/source\/js\/media\/types\/VCO.Media.Vimeo.js" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/js\/media\/types\/VCO.Media.Vimeo.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/source\/js\/media\/types\/VCO.Media.Vimeo-min.js",
+      "fileType" : 64
+    },
     "\/source\/less\/CORE_OLD\/Variables.less" : {
       "ieCompatibility" : 1,
       "inputAbbreviatedPath" : "\/source\/less\/CORE_OLD\/Variables.less",
       "outputAbbreviatedPath" : "\/source\/less\/css\/Variables.css",
-      "outputPathIsSetByUser" : 0,
-      "strictUnits" : 0,
-      "relativeURLS" : 0,
-      "ignore" : 1,
-      "strictImports" : 0,
-      "ignoreWasSetByUser" : 0,
-      "shouldRunBless" : 0,
-      "hidden" : 0,
-      "strictMath" : 0,
-      "outputStyle" : 1,
-      "fileType" : 1,
-      "debugStyle" : 0
-    },
-    "\/source\/less\/Core\/Typography.less" : {
-      "ieCompatibility" : 1,
-      "inputAbbreviatedPath" : "\/source\/less\/Core\/Typography.less",
-      "outputAbbreviatedPath" : "\/source\/less\/css\/Typography.css",
       "outputPathIsSetByUser" : 0,
       "strictUnits" : 0,
       "relativeURLS" : 0,
@@ -1800,8 +1800,8 @@
       "newcap" : 0,
       "forin" : 0,
       "regexdash" : 0,
-      "node" : 0,
       "browser" : 1,
+      "node" : 0,
       "eqnull" : 1,
       "mootools" : 0,
       "iterator" : 0,

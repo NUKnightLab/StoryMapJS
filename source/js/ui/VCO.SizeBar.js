@@ -87,16 +87,13 @@ VCO.SizeBar = VCO.Class.extend({
 
 	/*	Events
 	================================================== */
-
 	
 	_onMouseClick: function() {
 		this.fire("clicked", this.options);
 	},
-	
 	_onDragStart: function(e) {
 		
 	},
-	
 	_onDragMove: function(e) {
 		var top_pos = e.new_pos.y - VCO.Dom.getPosition(this._el.parent).y;
 		this.fire("move", {y:top_pos});
@@ -119,7 +116,6 @@ VCO.SizeBar = VCO.Class.extend({
 	_onDragEnd: function(e) {
 		
 	},
-	
 	_onSwipeUp: function(e) {
 		var top_pos = e.new_pos.y - VCO.Dom.getPosition(this._el.parent).y;
 		this._draggable.stopMomentum();
@@ -149,7 +145,7 @@ VCO.SizeBar = VCO.Class.extend({
 		this._el.container.style.top = this.options.sizebar_default_y + "px";
 		
 		//Make draggable
-		this._draggable = new VCO.Draggable(this._el.container, {enable:{x:false, y:true}});
+		this._draggable = new VCO.Draggable(this._el.container, {enable:{x:false, y:true}, constraint:{bottom:this.options.height}});
 		
 		this._draggable.on('dragstart', this._onDragStart, this);
 		this._draggable.on('dragmove', this._onDragMove, this);
@@ -176,6 +172,9 @@ VCO.SizeBar = VCO.Class.extend({
 		if (height) {
 			this.options.height = height;
 		}
+		
+		// Update draggable constraint
+		this._draggable.updateConstraint({bottom:this.options.height - this._el.container.offsetHeight });
 		
 		this._el.container.style.width = this.options.width + "px";
 	}

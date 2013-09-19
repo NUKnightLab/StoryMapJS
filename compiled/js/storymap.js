@@ -1630,6 +1630,7 @@ VCO.Util = {
       }
     })(Zepto)
     VCO.getJSON = Zepto.getJSON;
+	VCO.ajax = Zepto.ajax;
 })(VCO)
 
 //     Based on https://github.com/madrobby/zepto/blob/5585fe00f1828711c04208372265a5d71e3238d1/src/ajax.js
@@ -3730,10 +3731,13 @@ VCO.Draggable = VCO.Class.extend({
 
 	},
 	
+	updateConstraint: function(c) {
+		this.options.constraint = c;
+	},
+	
 	/*	Private Methods
 	================================================== */
 	_onDragStart: function(e) {
-		trace(e);
 		if (VCO.Browser.touch) {
 			if (e.originalEvent) {
 				this.data.pagex.start = e.originalEvent.touches[0].screenX;
@@ -3765,7 +3769,6 @@ VCO.Draggable = VCO.Class.extend({
 	},
 	
 	_onDragEnd: function(e) {
-		trace(e)
 		this.data.sliding = false;
 		VCO.DomEvent.removeListener(this._el.drag, this.dragevent.move, this._onDragMove, this);
 		VCO.DomEvent.removeListener(this._el.drag, this.dragevent.leave, this._onDragEnd, this);
@@ -3777,7 +3780,6 @@ VCO.Draggable = VCO.Class.extend({
 	
 	_onDragMove: function(e) {
 		e.preventDefault();
-		trace(e);
 		this.data.sliding = true;
 		
 		if (VCO.Browser.touch) {
@@ -3881,9 +3883,34 @@ VCO.Draggable = VCO.Class.extend({
 	
 	
 	_animateMomentum: function() {
+		var pos = {
+			x: this.data.new_pos.x,
+			y: this.data.new_pos.y
+		}
+		
+		if (this.options.constraint.top || this.options.constraint.bottom) {
+			if (pos.y > this.options.constraint.bottom) {
+				pos.y = this.options.constraint.bottom;
+			} else if (pos.y < this.options.constraint.top) {
+				pos.y = this.options.constraint.top;
+			}
+		}
+		
+		if (this.options.constraint.left || this.options.constraint.right) {
+			if (pos.x > this.options.constraint.left) {
+				pos.x = this.options.constraint.left;
+			} else if (pos.x < this.options.constraint.right) {
+				pos.x = this.options.constraint.right;
+			}
+		}
+		
+		trace(this._el.move.offsetParent);
+		trace("this._el.move.offsetTop " + this._el.move.offsetTop);
+		trace("pos.y " + pos.y);
+		trace("this._el.move.offsetTop - pos.y " + (this._el.move.offsetTop - pos.y));
 		this.animator = VCO.Animate(this._el.move, {
-			left: 		this.data.new_pos.x + "px",
-			top: 		this.data.new_pos.y + "px",
+			left: 		pos.x + "px",
+			top: 		pos.y + "px",
 			duration: 	this.options.duration,
 			easing: 	VCO.Ease.easeOutStrong
 		});
@@ -3985,16 +4012,13 @@ VCO.SizeBar = VCO.Class.extend({
 
 	/*	Events
 	================================================== */
-
 	
 	_onMouseClick: function() {
 		this.fire("clicked", this.options);
 	},
-	
 	_onDragStart: function(e) {
 		
 	},
-	
 	_onDragMove: function(e) {
 		var top_pos = e.new_pos.y - VCO.Dom.getPosition(this._el.parent).y;
 		this.fire("move", {y:top_pos});
@@ -4017,7 +4041,6 @@ VCO.SizeBar = VCO.Class.extend({
 	_onDragEnd: function(e) {
 		
 	},
-	
 	_onSwipeUp: function(e) {
 		var top_pos = e.new_pos.y - VCO.Dom.getPosition(this._el.parent).y;
 		this._draggable.stopMomentum();
@@ -4047,7 +4070,7 @@ VCO.SizeBar = VCO.Class.extend({
 		this._el.container.style.top = this.options.sizebar_default_y + "px";
 		
 		//Make draggable
-		this._draggable = new VCO.Draggable(this._el.container, {enable:{x:false, y:true}});
+		this._draggable = new VCO.Draggable(this._el.container, {enable:{x:false, y:true}, constraint:{bottom:this.options.height}});
 		
 		this._draggable.on('dragstart', this._onDragStart, this);
 		this._draggable.on('dragmove', this._onDragMove, this);
@@ -4074,6 +4097,9 @@ VCO.SizeBar = VCO.Class.extend({
 		if (height) {
 			this.options.height = height;
 		}
+		
+		// Update draggable constraint
+		this._draggable.updateConstraint({bottom:this.options.height - this._el.container.offsetHeight });
 		
 		this._el.container.style.width = this.options.width + "px";
 	}
@@ -17113,8 +17139,11 @@ VCO.StoryMap = VCO.Class.extend({
 		var self = this;
 		
 		if (typeof data === 'string') {
+			
 			VCO.getJSON(data, function(d) {
-				VCO.Util.mergeData(self.data, d.storymap);
+				if (d && d.storymap) {
+					VCO.Util.mergeData(self.data, d.storymap);
+				}
 				self._onDataLoaded();
 			});
 		} else if (typeof data === 'object') {

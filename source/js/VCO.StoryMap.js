@@ -562,8 +562,11 @@ VCO.StoryMap = VCO.Class.extend({
 		var self = this;
 		
 		if (typeof data === 'string') {
+			
 			VCO.getJSON(data, function(d) {
-				VCO.Util.mergeData(self.data, d.storymap);
+				if (d && d.storymap) {
+					VCO.Util.mergeData(self.data, d.storymap);
+				}
 				self._onDataLoaded();
 			});
 		} else if (typeof data === 'object') {

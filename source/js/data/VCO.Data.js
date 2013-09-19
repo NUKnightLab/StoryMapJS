@@ -1344,6 +1344,7 @@
       }
     })(Zepto)
     VCO.getJSON = Zepto.getJSON;
+	VCO.ajax = Zepto.ajax;
 })(VCO)
 
 //     Based on https://github.com/madrobby/zepto/blob/5585fe00f1828711c04208372265a5d71e3238d1/src/ajax.js
