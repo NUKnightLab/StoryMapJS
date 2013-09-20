@@ -116,8 +116,8 @@ VCO.StoryMap = VCO.Class.extend({
 					uniqueid: 				"",
 					type: 					"overview", // Optional
 					background: {			// OPTIONAL
-						url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						color: 				"#cdbfe3",
+						url: 				"http://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Mark_Twain_by_Abdullah_Fr%C3%A8res%2C_1867.jpg/418px-Mark_Twain_by_Abdullah_Fr%C3%A8res%2C_1867.jpg",
+						color: 				"",
 						opacity: 			50
 					},
 					date: 					"1835",
@@ -133,17 +133,13 @@ VCO.StoryMap = VCO.Class.extend({
 						headline: 			"Mark Twain",
 						text: 				"Samuel Langhorne Clemens (November 30, 1835 – April 21, 1910), better known by his pen name Mark Twain, was an American author and humorist. He wrote The Adventures of Tom Sawyer (1876) and its sequel, Adventures of Huckleberry Finn (1885), the latter often called \"the Great American Novel.\""
 					},
-					media: {
-						url: 				"http://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Mark_Twain_Vanity_Fair_1908-05-13.jpeg/375px-Mark_Twain_Vanity_Fair_1908-05-13.jpeg",
-						credit:				"Vanity Fair",
-						caption:			"Twain caricatured by Spy for Vanity Fair, 1908"
-					}
+					media: null
 				},
 				{
 					uniqueid: 				"",
 					background: {			// OPTIONAL
 						url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						color: 				"#cdbfe3",
+						color: 				"",
 						opacity: 			50
 					},
 					date: 					"1835",
@@ -169,7 +165,7 @@ VCO.StoryMap = VCO.Class.extend({
 					uniqueid: 				"",
 					background: {			// OPTIONAL
 						url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						color: 				"#8b4513",
+						color: 				"",
 						opacity: 			50
 					},
 					date: 					"1839",
@@ -219,7 +215,7 @@ VCO.StoryMap = VCO.Class.extend({
 					uniqueid: 				"",
 					background: {			// OPTIONAL
 						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						color: 				"#cdbfe3",
+						color: 				"",
 						opacity: 			50
 					},
 					date: 					null,
@@ -294,7 +290,7 @@ VCO.StoryMap = VCO.Class.extend({
 					uniqueid: 				"",
 					background: {			// OPTIONAL
 						url: 				null,
-						color: 				"#cdbfe3",
+						color: 				"",
 						opacity: 			50
 					},
 					date: 					"1866",
@@ -319,7 +315,7 @@ VCO.StoryMap = VCO.Class.extend({
 					uniqueid: 				"",
 					background: {			// OPTIONAL
 						url: 				null,
-						color: 				"#cdbfe3",
+						color: 				"",
 						opacity: 			50
 					},
 					date: 					"1867",
@@ -442,7 +438,7 @@ VCO.StoryMap = VCO.Class.extend({
 					uniqueid: 				"",
 					background: {			// OPTIONAL
 						url: 				null,
-						color: 				"#cdbfe3",
+						color: 				"",
 						opacity: 			50
 					},
 					date: 					"1891",
