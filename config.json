@@ -103,7 +103,10 @@
     // stage
     // input: regular expression to match files in the build directory
     //  
-    "stage": "(css/storymap\\.css|img/.*|js/storymap\\.js)$",
+    "stage": [{
+        "src": "build",
+        "regex": "(css/storymap\\.css|js/storymap.*\\.js)$"
+    }],
     //
     // deploy
     // input: name of the S3 bucket that will host the website 
