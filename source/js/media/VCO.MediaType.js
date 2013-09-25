@@ -24,7 +24,7 @@ VCO.MediaType = function(m) {
 			{
 				type: 		"dailymotion",
 				match_str: 	"(www.)?dailymotion\.com",
-				cls: 		VCO.Media.IFrame
+				cls: 		VCO.Media.DailyMotion
 			},
 			{
 				type: 		"vine",

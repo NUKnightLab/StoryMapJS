@@ -52,6 +52,7 @@
 // @codekit-prepend "media/types/VCO.Media.Text.js";
 // @codekit-prepend "media/types/VCO.Media.Twitter.js";
 // @codekit-prepend "media/types/VCO.Media.Vimeo.js";
+// @codekit-prepend "media/types/VCO.Media.DailyMotion.js";
 // @codekit-prepend "media/types/VCO.Media.Vine.js";
 // @codekit-prepend "media/types/VCO.Media.Website.js";
 // @codekit-prepend "media/types/VCO.Media.Wikipedia.js";

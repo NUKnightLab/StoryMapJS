@@ -4246,7 +4246,7 @@ VCO.MediaType = function(m) {
 			{
 				type: 		"dailymotion",
 				match_str: 	"(www.)?dailymotion\.com",
-				cls: 		VCO.Media.IFrame
+				cls: 		VCO.Media.DailyMotion
 			},
 			{
 				type: 		"vine",
@@ -5120,6 +5120,50 @@ VCO.Media.Vimeo = VCO.Media.extend({
 		
 		// API URL
 		api_url = "http://player.vimeo.com/video/" + this.media_id + "?title=0&amp;byline=0&amp;portrait=0&amp;color=ffffff";
+		
+		// API Call
+		this._el.content_item.innerHTML = "<iframe autostart='false' frameborder='0' width='100%' height='100%' src='" + api_url + "'></iframe>"		
+		
+		// After Loaded
+		this.onLoaded();
+	},
+	
+	// Update Media Display
+	_updateMediaDisplay: function() {
+		this._el.content_item.style.height = VCO.Util.ratio.r16_9({w:this._el.content_item.offsetWidth}) + "px";
+	}
+	
+});
+
+
+/* **********************************************
+     Begin VCO.Media.DailyMotion.js
+********************************************** */
+
+/*	VCO.Media.DailyMotion
+================================================== */
+
+VCO.Media.DailyMotion = VCO.Media.extend({
+	
+	includes: [VCO.Events],
+	
+	/*	Load the media
+	================================================== */
+	loadMedia: function() {
+		var api_url,
+			self = this;
+		
+		// Loading Messege
+		this.messege.updateMessege(VCO.Language.messeges.loading + " DailyMotion");
+		
+		// Create Dom element
+		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe vco-media-dailymotion", this._el.content);
+		
+		// Get Media ID
+		this.media_id = this.data.url.split("embed\/")[1].split(/[?&]/)[0];
+		
+		// API URL
+		api_url = "http://www.dailymotion.com/embed/video/" + this.media_id;
 		
 		// API Call
 		this._el.content_item.innerHTML = "<iframe autostart='false' frameborder='0' width='100%' height='100%' src='" + api_url + "'></iframe>"		
@@ -16629,6 +16673,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 // @codekit-prepend "media/types/VCO.Media.Text.js";
 // @codekit-prepend "media/types/VCO.Media.Twitter.js";
 // @codekit-prepend "media/types/VCO.Media.Vimeo.js";
+// @codekit-prepend "media/types/VCO.Media.DailyMotion.js";
 // @codekit-prepend "media/types/VCO.Media.Vine.js";
 // @codekit-prepend "media/types/VCO.Media.Website.js";
 // @codekit-prepend "media/types/VCO.Media.Wikipedia.js";
