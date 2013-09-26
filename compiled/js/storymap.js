@@ -3904,10 +3904,10 @@ VCO.Draggable = VCO.Class.extend({
 			}
 		}
 		
-		trace(this._el.move.offsetParent);
-		trace("this._el.move.offsetTop " + this._el.move.offsetTop);
-		trace("pos.y " + pos.y);
-		trace("this._el.move.offsetTop - pos.y " + (this._el.move.offsetTop - pos.y));
+		//trace(this._el.move.offsetParent);
+		//trace("this._el.move.offsetTop " + this._el.move.offsetTop);
+		//trace("pos.y " + pos.y);
+		//trace("this._el.move.offsetTop - pos.y " + (this._el.move.offsetTop - pos.y));
 		this.animator = VCO.Animate(this._el.move, {
 			left: 		pos.x + "px",
 			top: 		pos.y + "px",
@@ -4369,8 +4369,8 @@ VCO.Media = VCO.Class.extend({
 			content_container: {},
 			content: {},
 			content_item: {},
-			caption: {},
-			credit: {},
+			caption: null,
+			credit: null,
 			parent: {},
 			link: null
 		};
@@ -4399,7 +4399,9 @@ VCO.Media = VCO.Class.extend({
 	
 		//Options
 		this.options = {
-			api_key_flickr: 		"f2cc870b4d233dd0a5bfe73fd0d64ef0"
+			api_key_flickr: 		"f2cc870b4d233dd0a5bfe73fd0d64ef0",
+			credit_height: 			0,
+			caption_height: 		0
 		};
 	
 		this.animator = {};
@@ -4427,6 +4429,12 @@ VCO.Media = VCO.Class.extend({
 		},
 		
 		_updateMediaDisplay: function() {
+			//trace(this.options.height);
+			//this._el.content.style.height = this.options.height + "px";
+			//this._el.content_container.style.height = this.options.height + "px";
+			trace(this.options.credit_height)
+			trace(this.options.caption_height)
+			this._el.content_item.style.maxHeight = (this.options.height - this.options.credit_height - this.options.caption_height - 16) + "px";
 			
 		},
 	
@@ -4504,12 +4512,14 @@ VCO.Media = VCO.Class.extend({
 		if (this.data.credit && this.data.credit != "") {
 			this._el.credit					= VCO.Dom.create("div", "vco-credit", this._el.content_container);
 			this._el.credit.innerHTML		= this.data.credit;
+			this.options.credit_height 		= this._el.credit.offsetHeight;
 		}
 		
 		// Caption
 		if (this.data.caption && this.data.caption != "") {
 			this._el.caption				= VCO.Dom.create("div", "vco-caption", this._el.content_container);
 			this._el.caption.innerHTML		= this.data.caption;
+			this.options.caption_height 	= this._el.caption.offsetHeight;
 		}
 		
 		
@@ -4517,12 +4527,21 @@ VCO.Media = VCO.Class.extend({
 	
 	// Update Display
 	_updateDisplay: function(w, h, animate) {
+		trace("UPDATE MEDIA DISPLAY")
 		if (w) {
 			this.options.width = w;
 		}
 		if (h) {
 			this.options.height = h;
 		}
+		
+		if (this._el.credit) {
+			this.options.credit_height 		= this._el.credit.offsetHeight;
+		}
+		if (this._el.caption) {
+			this.options.caption_height 	= this._el.caption.offsetHeight;
+		}
+		
 		this._updateMediaDisplay();
 		
 	}
@@ -5219,7 +5238,8 @@ VCO.Media.Vine = VCO.Media.extend({
 	
 	// Update Media Display
 	_updateMediaDisplay: function() {
-		var size = VCO.Util.ratio.square({w:this._el.content_item.offsetWidth , h:this.options.height});
+		//var size = VCO.Util.ratio.square({w:this._el.content_item.offsetWidth , h:this.options.height});
+		var size = VCO.Util.ratio.square({w:this.options.width , h:this.options.height});
 		this._el.content_item.style.height = size.h + "px";
 		this._el.content_item.style.width = size.w + "px";
 	}
@@ -5740,6 +5760,7 @@ VCO.Slide = VCO.Class.extend({
 	
 	// Update Display
 	_updateDisplay: function(width, height, animate) {
+		
 		if (width) {
 			this.options.width = width;
 			//this._el.container.style.width = this.options.width + "px";
@@ -6450,7 +6471,6 @@ VCO.StorySlider = VCO.Class.extend({
 	},
 	
 	previous: function() {
-		trace("current_slide " + this.current_slide);
 		this.goTo(this.current_slide -1);
 	},
 	
@@ -6459,6 +6479,7 @@ VCO.StorySlider = VCO.Class.extend({
 	
 	// Update Display
 	_updateDisplay: function(width, height, animate) {
+		
 		var nav_pos;
 		
 		if (width) {

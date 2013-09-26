@@ -304,10 +304,10 @@ VCO.Draggable = VCO.Class.extend({
 			}
 		}
 		
-		trace(this._el.move.offsetParent);
-		trace("this._el.move.offsetTop " + this._el.move.offsetTop);
-		trace("pos.y " + pos.y);
-		trace("this._el.move.offsetTop - pos.y " + (this._el.move.offsetTop - pos.y));
+		//trace(this._el.move.offsetParent);
+		//trace("this._el.move.offsetTop " + this._el.move.offsetTop);
+		//trace("pos.y " + pos.y);
+		//trace("this._el.move.offsetTop - pos.y " + (this._el.move.offsetTop - pos.y));
 		this.animator = VCO.Animate(this._el.move, {
 			left: 		pos.x + "px",
 			top: 		pos.y + "px",
