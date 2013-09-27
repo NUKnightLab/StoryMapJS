@@ -3904,10 +3904,10 @@ VCO.Draggable = VCO.Class.extend({
 			}
 		}
 		
-		trace(this._el.move.offsetParent);
-		trace("this._el.move.offsetTop " + this._el.move.offsetTop);
-		trace("pos.y " + pos.y);
-		trace("this._el.move.offsetTop - pos.y " + (this._el.move.offsetTop - pos.y));
+		//trace(this._el.move.offsetParent);
+		//trace("this._el.move.offsetTop " + this._el.move.offsetTop);
+		//trace("pos.y " + pos.y);
+		//trace("this._el.move.offsetTop - pos.y " + (this._el.move.offsetTop - pos.y));
 		this.animator = VCO.Animate(this._el.move, {
 			left: 		pos.x + "px",
 			top: 		pos.y + "px",
@@ -4246,7 +4246,7 @@ VCO.MediaType = function(m) {
 			{
 				type: 		"dailymotion",
 				match_str: 	"(www.)?dailymotion\.com",
-				cls: 		VCO.Media.IFrame
+				cls: 		VCO.Media.DailyMotion
 			},
 			{
 				type: 		"vine",
@@ -4369,8 +4369,8 @@ VCO.Media = VCO.Class.extend({
 			content_container: {},
 			content: {},
 			content_item: {},
-			caption: {},
-			credit: {},
+			caption: null,
+			credit: null,
 			parent: {},
 			link: null
 		};
@@ -4399,7 +4399,9 @@ VCO.Media = VCO.Class.extend({
 	
 		//Options
 		this.options = {
-			api_key_flickr: 		"f2cc870b4d233dd0a5bfe73fd0d64ef0"
+			api_key_flickr: 		"f2cc870b4d233dd0a5bfe73fd0d64ef0",
+			credit_height: 			0,
+			caption_height: 		0
 		};
 	
 		this.animator = {};
@@ -4427,6 +4429,12 @@ VCO.Media = VCO.Class.extend({
 		},
 		
 		_updateMediaDisplay: function() {
+			//trace(this.options.height);
+			//this._el.content.style.height = this.options.height + "px";
+			//this._el.content_container.style.height = this.options.height + "px";
+			trace(this.options.credit_height)
+			trace(this.options.caption_height)
+			this._el.content_item.style.maxHeight = (this.options.height - this.options.credit_height - this.options.caption_height - 16) + "px";
 			
 		},
 	
@@ -4504,12 +4512,14 @@ VCO.Media = VCO.Class.extend({
 		if (this.data.credit && this.data.credit != "") {
 			this._el.credit					= VCO.Dom.create("div", "vco-credit", this._el.content_container);
 			this._el.credit.innerHTML		= this.data.credit;
+			this.options.credit_height 		= this._el.credit.offsetHeight;
 		}
 		
 		// Caption
 		if (this.data.caption && this.data.caption != "") {
 			this._el.caption				= VCO.Dom.create("div", "vco-caption", this._el.content_container);
 			this._el.caption.innerHTML		= this.data.caption;
+			this.options.caption_height 	= this._el.caption.offsetHeight;
 		}
 		
 		
@@ -4517,12 +4527,21 @@ VCO.Media = VCO.Class.extend({
 	
 	// Update Display
 	_updateDisplay: function(w, h, animate) {
+		trace("UPDATE MEDIA DISPLAY")
 		if (w) {
 			this.options.width = w;
 		}
 		if (h) {
 			this.options.height = h;
 		}
+		
+		if (this._el.credit) {
+			this.options.credit_height 		= this._el.credit.offsetHeight;
+		}
+		if (this._el.caption) {
+			this.options.caption_height 	= this._el.caption.offsetHeight;
+		}
+		
 		this._updateMediaDisplay();
 		
 	}
@@ -5137,6 +5156,50 @@ VCO.Media.Vimeo = VCO.Media.extend({
 
 
 /* **********************************************
+     Begin VCO.Media.DailyMotion.js
+********************************************** */
+
+/*	VCO.Media.DailyMotion
+================================================== */
+
+VCO.Media.DailyMotion = VCO.Media.extend({
+	
+	includes: [VCO.Events],
+	
+	/*	Load the media
+	================================================== */
+	loadMedia: function() {
+		var api_url,
+			self = this;
+		
+		// Loading Messege
+		this.messege.updateMessege(VCO.Language.messeges.loading + " DailyMotion");
+		
+		// Create Dom element
+		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe vco-media-dailymotion", this._el.content);
+		
+		// Get Media ID
+		this.media_id = this.data.url.split("embed\/")[1].split(/[?&]/)[0];
+		
+		// API URL
+		api_url = "http://www.dailymotion.com/embed/video/" + this.media_id;
+		
+		// API Call
+		this._el.content_item.innerHTML = "<iframe autostart='false' frameborder='0' width='100%' height='100%' src='" + api_url + "'></iframe>"		
+		
+		// After Loaded
+		this.onLoaded();
+	},
+	
+	// Update Media Display
+	_updateMediaDisplay: function() {
+		this._el.content_item.style.height = VCO.Util.ratio.r16_9({w:this._el.content_item.offsetWidth}) + "px";
+	}
+	
+});
+
+
+/* **********************************************
      Begin VCO.Media.Vine.js
 ********************************************** */
 
@@ -5175,7 +5238,8 @@ VCO.Media.Vine = VCO.Media.extend({
 	
 	// Update Media Display
 	_updateMediaDisplay: function() {
-		var size = VCO.Util.ratio.square({w:this._el.content_item.offsetWidth , h:this.options.height});
+		//var size = VCO.Util.ratio.square({w:this._el.content_item.offsetWidth , h:this.options.height});
+		var size = VCO.Util.ratio.square({w:this.options.width , h:this.options.height});
 		this._el.content_item.style.height = size.h + "px";
 		this._el.content_item.style.width = size.w + "px";
 	}
@@ -5696,6 +5760,7 @@ VCO.Slide = VCO.Class.extend({
 	
 	// Update Display
 	_updateDisplay: function(width, height, animate) {
+		
 		if (width) {
 			this.options.width = width;
 			//this._el.container.style.width = this.options.width + "px";
@@ -6406,7 +6471,6 @@ VCO.StorySlider = VCO.Class.extend({
 	},
 	
 	previous: function() {
-		trace("current_slide " + this.current_slide);
 		this.goTo(this.current_slide -1);
 	},
 	
@@ -6415,6 +6479,7 @@ VCO.StorySlider = VCO.Class.extend({
 	
 	// Update Display
 	_updateDisplay: function(width, height, animate) {
+		
 		var nav_pos;
 		
 		if (width) {
@@ -16629,6 +16694,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 // @codekit-prepend "media/types/VCO.Media.Text.js";
 // @codekit-prepend "media/types/VCO.Media.Twitter.js";
 // @codekit-prepend "media/types/VCO.Media.Vimeo.js";
+// @codekit-prepend "media/types/VCO.Media.DailyMotion.js";
 // @codekit-prepend "media/types/VCO.Media.Vine.js";
 // @codekit-prepend "media/types/VCO.Media.Website.js";
 // @codekit-prepend "media/types/VCO.Media.Wikipedia.js";

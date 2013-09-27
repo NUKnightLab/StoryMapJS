@@ -178,6 +178,7 @@ VCO.Slide = VCO.Class.extend({
 	
 	// Update Display
 	_updateDisplay: function(width, height, animate) {
+		
 		if (width) {
 			this.options.width = width;
 			//this._el.container.style.width = this.options.width + "px";

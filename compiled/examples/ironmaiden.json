@@ -1,0 +1,184 @@
+{
+    "storymap": {
+        "slides": [{
+            "type": "overview",
+            "background": {         
+                    "url":              "http://www.psp-themes.net/data/media/7/iron%20maiden_6.jpg",
+                    "color":                "#cdbfe3",
+                    "opacity":          25
+                },
+            "date": "2013",
+            "text": {
+                "headline": "Iron Maiden 2013 US Tour",
+                "text": "Earlier this year Iron Maiden announced they would be appearing on a limited, seven date tour in the US with opening band Megadeth.<br></br><b><i>An example of embedding Wikipedia.</i></b>"
+            },
+            "location": {
+                "name": "Raleigh, North Carolina",
+                "lon": "-78.574619",
+                "zoom": 10,
+                "lat": "35.74902",
+                "line": true,
+                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+            },
+            "media": {
+                    "url":              "http://en.wikipedia.org/wiki/Iron_Maiden",
+                    "credit":               "wikipedia",
+                    "caption":          "Iron Maiden"
+                }
+        }, {
+            "date": "Sept 3",
+            "text": {
+                "headline": "Sept 3",
+                "text": "Kicking off the tour at Time Warner Cable Music Pavilion, Raleigh, North Carolina.<br></br><b><i>Embed a YouTube video with a URL.</i></b>"
+            },
+            "location": {
+                "name": "Raleigh, North Carolina",
+                "lon": "-78.574619",
+                "zoom": 10,
+                "lat": "35.74902",
+                "line": true,
+                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+            },
+            "media": {
+                    "url":              "https://www.youtube.com/watch?v=CYk56B9l4dU",
+                    "credit":               "Youtube",
+                    "caption":          "Iron Maiden 'The Trooper' Live"
+                }
+        },{
+            "date": "Sept 5",
+            "text": {
+                "headline": "Sept 5",
+                "text": "Bridgestone Arena, Nashville, Tennesee.<br></br><b><i>Example of embedding a tweet.<i></b>"
+            },
+            "location": {
+                "name": "Nashville, Tennesee",
+                "lon": "-86.778542",
+                "zoom": 10,
+                "lat": "36.159862",
+                "line": true,
+                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+            },
+            "media": {
+                    "url":              "https://twitter.com/IronMaiden/status/375889845094080512",
+                    "credit":               "Twitter",
+                    "caption":          "Iron Maiden Twitter crew"
+                }
+        }, {
+            "date": "Sept 7",
+            "text": {
+                "headline": "Sept 7",
+                "text": "Sprint Center, Kansas City, Missouri. <br></br><b><i>Embed a track from Soundcloud like one of Iron Maiden fans' favorite live songs.</i></b>"
+            },
+            "location": {
+                "name": "Kansas City, Missouri",
+                "lon": "-94.58053",
+                "zoom": 10,
+                "lat": "39.097911",
+                "line": true,
+                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+            },
+            "media": {
+                    "url":              "https://soundcloud.com/slymnoncul/iron-maiden-fear-of-the-dark",
+                    "credit":               "Soundcloud",
+                    "caption":          "Iron Maiden 'Fear of the Dark' Live"
+                }
+        }, {
+            "date": "Sept 8",
+            "text": {
+                "headline": "Sept 8",
+                "text": "Verizon Wireless Amphitheatre, St Louis, Missouri.<br></br><b><i>Embed a Storify like this riff lesson.</i></b>"
+            },
+            "location": {
+                "name": "St Louis, Missouri",
+                "lon": "-84.3063",
+                "zoom": 10,
+                "lat": "34.054259",
+                "line": true,
+                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+            },
+            "media": {
+                    "url":              "http://storify.com/GtRiffOfTheDay/the-trooper-iron-maiden",
+                    "credit":               "GtRiffOfTheDay",
+                    "caption":          "Iron Maiden 'The Trooper' Riff Lesson"
+                }
+        }, {
+            "date": "Sept 10",
+            "text": {
+                "headline": "Sept 10",
+                "text": "Austin 360 Amphitheater, Austin, TX.<br></br><b><i>Embed a Vine like this one of the crowd in Austin.</i></b>"
+            },
+            "location": {
+                "name": "Austin, TX",
+                "lon": "-97.740047",
+                "zoom": 10,
+                "lat": "30.26674",
+                "line": true,
+                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+            },
+            "media": {
+                    "url":              "https://vine.co/v/h1dPDlW2ZMa",
+                    "credit":               "Bon Scott",
+                    "caption":          "Iron Maiden crowd in Austin, TX"
+                }
+        }, {
+            "date": "Sept 12",
+            "text": {
+                "headline": "Sept 12",
+                "text": "Mandalay Bay Events Center, Las Vegas, Nevada.<br></br><b><i>Insert a photo that is hosted on the web.</i></b>"
+            },
+            "location": {
+                "name": "Las Vegas, Nevada",
+                "lon": "-115.17673",
+                "zoom": 10,
+                "lat": "36.095857",
+                "line": true,
+                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+            },
+            "media": {
+                    "url":              "http://www.revolvermag.com/wp-content/gallery/iron-maiden_1/06_ironmaiden.jpg",
+                    "credit":               "Stephanie Cabral",
+                    "caption":          "Bruce Dickinson live in Vegas"
+                }
+        }, {
+            "date": "Sept 13",
+            "text": {
+                "headline": "Sept 13",
+                "text": "Ending the US tour at San Manuel Amphitheatre, San Bernardino, California.<br></br><b><i>Embed a Vimeo using the URL.</i></b>"
+            },
+            "location": {
+                "name": "San Bernardino, California",
+                "lon": "-117.401991",
+                "zoom": 10,
+                "lat": "34.203284",
+                "line": true,
+                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+            },
+            "media": {
+                    "url":              "https://vimeo.com/74553894",
+                    "credit":               "Kaley Nelson",
+                    "caption":          "Iron Maiden San Bernardino"
+                }
+        }, {
+            "type": "overview",
+            "date": "2013",
+            "text": {
+                "headline": "Iron Maiden 2013 US Tour",
+                "text": "Iron Maiden used some of their set from their 7th Tour of a 7th Tour in 1988 for their album Seventh Son of a Seventh Son.<br></br><b><i>Embed from Flickr.</i></b>"
+            },
+            "location": {
+                "name": "San Bernardino",
+                "lon": "-117.401991",
+                "zoom": 10,
+                "lat": "34.203284",
+                "line": true,
+                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+            },
+            "media": {
+                    "url":              "http://www.flickr.com/photos/39746512@N05/8921983686/in/photolist-eApuUW-faUEup-fb9Vsd-fb9VAE-fb9VR5-fEvX7Y-fEvWA9-fqZdrk-freuPd-fEemy2-fEvVSb-fretQ1-fqZctP-fEema2-fretMs-fqZcme-fEvWCU-fEekJT-fEemDc-freu4L-fEvVKw-fEvVNU-freu7j-fqZcX8-fEvWgW-fqZcvX-fqZcEk-fEemt4-fqZcyx-fEvX4Y-freuhu-fEvWFE-fqZcQx-fEeky6-freuoj-fEvWbb-fEvW4S-fEemnt-fEvWnE-freu9U-fEekQt-fEekDR-fEem6F-fEvWPC-fEvVYj-fEvWqo-fEvWZb-fEvWUL-fb9z5b-fEemk2-fqZd7T",
+                    "credit":               "dr_zoidberg",
+                    "caption":          "Iron Maiden set in Madrid"
+                }
+        
+        }]
+    }
+}

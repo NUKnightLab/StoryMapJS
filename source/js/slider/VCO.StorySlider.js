@@ -572,7 +572,6 @@ VCO.StorySlider = VCO.Class.extend({
 	},
 	
 	previous: function() {
-		trace("current_slide " + this.current_slide);
 		this.goTo(this.current_slide -1);
 	},
 	
@@ -581,6 +580,7 @@ VCO.StorySlider = VCO.Class.extend({
 	
 	// Update Display
 	_updateDisplay: function(width, height, animate) {
+		
 		var nav_pos;
 		
 		if (width) {
