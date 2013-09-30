@@ -8,7 +8,7 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 	/*	Create Marker
 	================================================== */
 	_createMarker: function(d, o) {
-		var icon = new L.Icon.Default();
+		var icon = {}; //new L.Icon.Default();
 		
 		if (o.use_custom_markers && d.location.icon && d.location.icon != "") {
 			icon = L.icon({iconUrl: d.location.icon, iconSize: [41]});
@@ -16,7 +16,8 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 			
 		};
 		
-		icon = L.icon({iconUrl: "gfx/map-pin.png", iconSize: [28, 43], iconAnchor: [14, 33]});
+		//icon = L.icon({iconUrl: "gfx/map-pin.png", iconSize: [28, 43], iconAnchor: [14, 33]});
+		icon = L.divIcon({className: 'vco-mapmarker-leaflet'});
 		
 		this._marker = L.marker([d.location.lat, d.location.lon], {
 			title: 		d.text.headline,

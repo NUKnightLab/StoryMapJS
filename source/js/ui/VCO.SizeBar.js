@@ -15,6 +15,7 @@ VCO.SizeBar = VCO.Class.extend({
 		this._el = {
 			parent: {},
 			container: {},
+			arrow: {},
 			grip: {}
 		};
 		
@@ -142,6 +143,7 @@ VCO.SizeBar = VCO.Class.extend({
 	_initLayout: function () {
 		
 		// Create Layout
+		this._el.arrow = VCO.Dom.create("div", "vco-arrow-up", this._el.container);
 		this._el.container.style.top = this.options.sizebar_default_y + "px";
 		
 		//Make draggable
@@ -177,6 +179,7 @@ VCO.SizeBar = VCO.Class.extend({
 		this._draggable.updateConstraint({bottom:this.options.height - this._el.container.offsetHeight });
 		
 		this._el.container.style.width = this.options.width + "px";
+		this._el.arrow.style.left = ((this.options.width/2) - 30) + "px";
 	}
 	
 });

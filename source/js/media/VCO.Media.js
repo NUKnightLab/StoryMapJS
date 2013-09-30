@@ -79,11 +79,6 @@ VCO.Media = VCO.Class.extend({
 		},
 		
 		_updateMediaDisplay: function() {
-			//trace(this.options.height);
-			//this._el.content.style.height = this.options.height + "px";
-			//this._el.content_container.style.height = this.options.height + "px";
-			trace(this.options.credit_height)
-			trace(this.options.caption_height)
 			this._el.content_item.style.maxHeight = (this.options.height - this.options.credit_height - this.options.caption_height - 16) + "px";
 			
 		},
