@@ -127,7 +127,8 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		// OFFSET VIEW
 		if (this.options.map_center_offset) {
 			this._map.setView(
-				this._getMapCenterOffset({lat:loc.lat, lon:loc.lon}, _zoom), 
+				//this._getMapCenterOffset({lat:loc.lat, lon:loc.lon}, _zoom), 
+				{lat:loc.lat, lon:loc.lon}, 
 				_zoom,
 				{
 					pan:{animate: _animate, duration: _duration, easeLinearity:.10},
@@ -183,7 +184,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		var _origin = origin;
 		
 		if (this.options.map_center_offset) {
-			_origin = this._getMapCenterOffset(origin, this._getMapZoom(), true);
+			//_origin = this._getMapCenterOffset(origin, this._getMapZoom(), true);
 		}
 		
 		if (correct_for_center) {

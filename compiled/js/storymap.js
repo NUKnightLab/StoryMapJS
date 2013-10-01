@@ -3716,7 +3716,7 @@ VCO.Draggable = VCO.Class.extend({
 		this._el.move.style.top = this.data.pos.start.y + "px";
 		this._el.move.style.position = "absolute";
 		this._el.move.style.zIndex = "11";
-		this._el.move.style.cursor = "move";
+		//this._el.move.style.cursor = "move";
 	},
 	
 	disable: function() {
@@ -3940,6 +3940,7 @@ VCO.SizeBar = VCO.Class.extend({
 		this._el = {
 			parent: {},
 			container: {},
+			arrow: {},
 			grip: {}
 		};
 		
@@ -4067,6 +4068,7 @@ VCO.SizeBar = VCO.Class.extend({
 	_initLayout: function () {
 		
 		// Create Layout
+		this._el.arrow = VCO.Dom.create("div", "vco-arrow-up", this._el.container);
 		this._el.container.style.top = this.options.sizebar_default_y + "px";
 		
 		//Make draggable
@@ -4102,6 +4104,7 @@ VCO.SizeBar = VCO.Class.extend({
 		this._draggable.updateConstraint({bottom:this.options.height - this._el.container.offsetHeight });
 		
 		this._el.container.style.width = this.options.width + "px";
+		this._el.arrow.style.left = ((this.options.width/2) - 30) + "px";
 	}
 	
 });
@@ -4429,11 +4432,6 @@ VCO.Media = VCO.Class.extend({
 		},
 		
 		_updateMediaDisplay: function() {
-			//trace(this.options.height);
-			//this._el.content.style.height = this.options.height + "px";
-			//this._el.content_container.style.height = this.options.height + "px";
-			trace(this.options.credit_height)
-			trace(this.options.caption_height)
 			this._el.content_item.style.maxHeight = (this.options.height - this.options.credit_height - this.options.caption_height - 16) + "px";
 			
 		},
@@ -5464,7 +5462,10 @@ VCO.Media.YouTube = VCO.Media.extend({
 		//this._el.content_item.style.height = this.options.height + "px";
 		this._el.content_item.style.width = "100%";
 		this._el.content_item.style.height = VCO.Util.ratio.r16_9({w:this._el.content_item.offsetWidth}) + "px";
+		//this._el.content_item.style.height = size.h + "px";
+		//this._el.content_item.style.width = size.w + "px";
 	},
+	
 	
 	createMedia: function() {
 		var self = this;
@@ -16339,7 +16340,7 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 	/*	Create Marker
 	================================================== */
 	_createMarker: function(d, o) {
-		var icon = new L.Icon.Default();
+		var icon = {}; //new L.Icon.Default();
 		
 		if (o.use_custom_markers && d.location.icon && d.location.icon != "") {
 			icon = L.icon({iconUrl: d.location.icon, iconSize: [41]});
@@ -16347,7 +16348,8 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 			
 		};
 		
-		icon = L.icon({iconUrl: "gfx/map-pin.png", iconSize: [28, 43], iconAnchor: [14, 33]});
+		//icon = L.icon({iconUrl: "gfx/map-pin.png", iconSize: [28, 43], iconAnchor: [14, 33]});
+		icon = L.divIcon({className: 'vco-mapmarker-leaflet'});
 		
 		this._marker = L.marker([d.location.lat, d.location.lon], {
 			title: 		d.text.headline,
@@ -16521,7 +16523,8 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		// OFFSET VIEW
 		if (this.options.map_center_offset) {
 			this._map.setView(
-				this._getMapCenterOffset({lat:loc.lat, lon:loc.lon}, _zoom), 
+				//this._getMapCenterOffset({lat:loc.lat, lon:loc.lon}, _zoom), 
+				{lat:loc.lat, lon:loc.lon}, 
 				_zoom,
 				{
 					pan:{animate: _animate, duration: _duration, easeLinearity:.10},
@@ -16577,7 +16580,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		var _origin = origin;
 		
 		if (this.options.map_center_offset) {
-			_origin = this._getMapCenterOffset(origin, this._getMapZoom(), true);
+			//_origin = this._getMapCenterOffset(origin, this._getMapZoom(), true);
 		}
 		
 		if (correct_for_center) {
@@ -17133,7 +17136,7 @@ VCO.StoryMap = VCO.Class.extend({
 			height: 				this._el.container.offsetHeight,
 			width: 					this._el.container.offsetWidth,
 			map_size_sticky: 		3, // Set as division 1/3 etc
-			map_center_offset: 		false, 
+			map_center_offset: 		60, 
 			start_at_slide: 		0,
 			// animation
 			duration: 				1000,

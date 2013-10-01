@@ -116,7 +116,7 @@ VCO.Draggable = VCO.Class.extend({
 		this._el.move.style.top = this.data.pos.start.y + "px";
 		this._el.move.style.position = "absolute";
 		this._el.move.style.zIndex = "11";
-		this._el.move.style.cursor = "move";
+		//this._el.move.style.cursor = "move";
 	},
 	
 	disable: function() {
