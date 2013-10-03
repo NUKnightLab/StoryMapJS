@@ -14,15 +14,21 @@
 #slides {height: 40px;font-size: 0.7em;}
 .slide {
     float: left;
+    position: relative;
     background: #fff;
     height: 100%;
     width: 50px;
     margin-left: 8px;
     margin-right: 8px;
-    overflow: hidden;
     text-align: center;
     line-height: 40px;
     cursor: pointer;
+}
+.slide a.close {
+    position: absolute;
+    top: -4px;
+    right: 0;
+    z-index: 99;
 }
 .selected {background: #1dacd6;}
 
@@ -95,12 +101,30 @@
 </div>
 
 <div class="row control-row">
-    <button id="slide_save" class="btn">Save</button>
+    <button id="storymap_save" class="btn">Save</button>
+    <button id="storymap_publish" class="btn">Publish</button>
     <button id="slide_add" class="btn">Add Slide</button>
-    <button id="slide_publish" class="btn btn-danger">Publish</button>
 </div>
 </section>
 
+<!-- START MODALS -->
+<div id="progress_modal" class="modal hide fade" role="dialog" aria-hidden="true">
+    <div class="modal-body">
+        <p><i class="icon-spinner icon-spin"></i><span id="progress_msg"></span>...</p>
+    </div>
+</div>
+
+<div id="confirm_modal" class="modal hide fade" role="dialog" aria-hidden="true">
+    <div class="modal-body">
+        <p id="confirm_msg"></p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+        <button class="btn btn-primary">Delete</button>
+    </div>
+</div>
+<!-- END MODALS -->
+  
 <script type="text/javascript">
 
 function parseQuerystring() {
@@ -115,7 +139,7 @@ function parseQuerystring() {
 }
 
 var _map;
-var _map_marker;
+var _marker;
  
 var _storymap;
 var _current_slide_index = -1;
@@ -123,11 +147,21 @@ var _current_slide_index = -1;
 var _dirty = 0;
    
 /*
-  var storymap = new VCO.StoryMap('storymap', '{{ static_url }}/demo/demo.json');
-  window.onresize = function(event) {
-   storymap.updateDisplay();
-  }
+var storymap = new VCO.StoryMap('storymap', '{{ static_url }}/demo/demo.json');
+window.onresize = function(event) {
+    storymap.updateDisplay();
+}
 */
+
+function show_confirm(msg, callback) {
+    $('#confirm_msg').html(msg);
+    $('#confirm_modal .btn-primary').bind('click.confirm', function(event) {
+        $(this).unbind('click.confirm');
+        $('#confirm_modal').modal('hide');
+        callback();
+    });
+    $('#confirm_modal').modal('show');
+}
 
 function do_ajax(url, data, on_error, on_success) {
     $.ajax({
@@ -148,33 +182,36 @@ function do_ajax(url, data, on_error, on_success) {
     });
 }
 
-function handle_drag_map_marker() {
-    var pos = _map_marker.getPosition();
-    _storymap.slides[_current_slide_index].location.lat = pos.lat();
-    _storymap.slides[_current_slide_index].location.lon = pos.lng();
+function location_set(loc_data) {
+    $.extend(_storymap.slides[_current_slide_index].location, loc_data);      
+    storymap_dirty(1);
 }
 
-function set_map_marker(location) {
+function location_drag() {
+    var pos = _marker.getPosition();
+    location_set({lat: pos.lat(), lon: pos.lng()});
+}
+
+function location_mark(loc_data) {
     // Clear old marker
-    if(_map_marker) {
-        _map_marker.setMap(null);
+    if(_marker) {
+        _marker.setMap(null);
     }    
     
     // Set new marker
-    if(location) {
-        var latlng = new google.maps.LatLng(location.lat, location.lon);
+    if(loc_data) {
+        var latlng = new google.maps.LatLng(loc_data.lat, loc_data.lon);
     
-        _map_marker = new google.maps.Marker({
+        _marker = new google.maps.Marker({
             map: _map,
             draggable: true,
-            title: location.name,
+            title: loc_data.name,
             position: latlng
         });
    
         _map.panTo(latlng);
      
-        google.maps.event.addListener(_map_marker, 'dragend', 
-            handle_drag_map_marker);
+        google.maps.event.addListener(_marker, 'dragend', location_drag);
     }
 }
 
@@ -182,7 +219,7 @@ function slide_load(slide_index) {
     _current_slide_index = slide_index;    
     var slide = _storymap.slides[slide_index];
 
-    set_map_marker(slide.location);         
+    location_mark(slide.location);         
     
     $('#url').val(slide.media.url);
     $('#credit').val(slide.media.credit);
@@ -191,6 +228,46 @@ function slide_load(slide_index) {
     $('#date').val(slide.date || '');
     $('#headline').val(slide.text.headline || '');
     $('#text').val(slide.text.text || '');    
+}
+
+function slide_delete(e) {
+    var delete_index = $(this).closest('.slide').index();
+    
+    show_confirm('Delete slide '+(delete_index+1)+'?', function() {
+        var slide_to_delete = $('div.slide:eq('+delete_index+')');
+        var width = $('#slides').width() - slide_to_delete.outerWidth(true);
+        
+        // Renumber slides after slide to delete
+        var i = delete_index + 1;
+        slide_to_delete.nextAll().each(function() { $(this).find('span').html(i++); });
+  
+        // Delete the slide
+        _storymap.slides.splice(delete_index, 1); 
+        slide_to_delete.remove();
+        
+        // Adjust slide container width
+        $('#slides').css('width', width+"px");       
+        
+        // Adjust scroll position!!!
+        // TODO 
+                     
+        // Reset current slide
+        if(delete_index < _current_slide_index) {
+            _current_slide_index--;
+        } else if(delete_index == _current_slide_index) {
+            var n = _storymap.slides.length;
+            
+            if(n > 0) {
+                slide_load(Math.min(_current_slide_index, n - 1));
+            } else {
+                slide_add();
+            }
+        } 
+        
+        storymap_dirty(1);        
+    });
+    
+    return false;
 }
 
 function slide_select() {
@@ -236,6 +313,9 @@ function slide_add() {
 
     // Edit new slide
     slide.click();
+    
+    storymap_dirty(1);
+
 }
 
 function storymap_load(id) {
@@ -248,28 +328,45 @@ function storymap_load(id) {
             
             $('#slides').html();            
             for(var i = 0; i < _storymap.slides.length; i++) {
-                $('<div class="slide">'+(i+1)+'</div>')
+                $('<div class="slide"><span>'+(i+1)+'</span><a class="close" href="#">&times;</a></div>')
                     .appendTo('#slides')
-                    .click(slide_select);
+                    .click(slide_select);                    
             }
+            $('.slide a.close').click(slide_delete);
             
             var width = 0;
             $('#slides div.slide').each(function() {
                 width += $(this).outerWidth(true);
             })   
             $('#slides').css('width', width + "px");
-            
-            $('#slides div.slide:first-child').click();
+        
+            if(_storymap.slides.length) { 
+                slide_load(0);           
+            } else {
+                slide_add();
+            }
         }
     );   
 }
 
+function storymap_dirty(is_dirty) {
+    _dirty = is_dirty;
+    
+    if(is_dirty) {
+        $('#storymap_save').addClass('btn-primary');
+    } else {
+        $('#storymap_save').removeClass('btn-primary');
+    }
+}
+
 function storymap_save() {
     alert('TODO');
+    storymap_dirty(0);
 }
 
 function storymap_publish() {
     alert('TODO');
+    storymap_dirty(0);
 }
 
 
@@ -278,10 +375,9 @@ function initialize() {
     var params = parseQuerystring();
     
     if(!params.id) {
-        alert('NO ID');
+        alert('you would need to pass an id as a query parameter');
         return;
     }
-    
     
     // make map
     var mapOptions = {
@@ -306,24 +402,21 @@ function initialize() {
     map_search_box = new google.maps.places.SearchBox(
         document.getElementById('map_search_input'));
         
-    // set default map marker
-    set_map_marker({
-        name: 'Chicago',
-        lat: 41.850033,
-        lon: -87.6500523
-    });
-
     // handle search
     google.maps.event.addListener(map_search_box, 'places_changed', function() {
         var places = map_search_box.getPlaces();
         
         if(places.length) {
             var place = places[0];
-            set_map_marker({
+            
+            var loc_data = {
                 name: place.name,
                 lat: place.geometry.location.lat(),
                 lon: place.geometry.location.lng()
-            });
+            };
+            
+            location_mark(loc_data);
+            location_set(loc_data);
          } 
     });
     
@@ -333,10 +426,14 @@ function initialize() {
 
 google.maps.event.addDomListener(window, 'load', initialize);
 
-$(function() {
+$(function() {    
+    $('#url, #credit, #caption, #date, #headline, #text').change(function() {
+        storymap_dirty(1);
+    });
+    
     $('#slide_add').click(slide_add);
-    $('#slide_save').click(storymap_save);
-    $('#slide_publish').click(storymap_publish);
+    $('#storymap_save').click(storymap_save);
+    $('#storymap_publish').click(storymap_publish);
 });
 
 </script>
