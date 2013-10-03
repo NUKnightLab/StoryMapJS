@@ -1,0 +1,69 @@
+{% extends "_base.html" %}
+
+{% block head %}
+
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+
+<style>
+#selector, label,select,input[type="text"],textarea {font-size: 0.9em;}
+#selector{padding-top: 10px;padding-bottom: 10px;}
+
+#storymap_new {float: right;}
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<section id="selector" class="container">
+
+<div class="row">
+    <div class="span12">
+
+        <p>TODO: Page to choose an existing storymap or make a new one. 
+        For now, just hard-coded sample data and passing the url around.
+        </p>
+    </div>
+</div>
+ 
+<div class="row">
+    <div class="span12"">
+        <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tr>
+            <td>
+            <a href="edit.html?id=/compiled/examples/ironmaiden.json">/compiled/examples/ironmaiden</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+            <a href="edit.html?id=/compiled/examples/population.json">/compiled/examples/population</a>
+            </td>
+        </tr>        
+        </table>
+    </div>
+</div>
+
+<div class="row">
+    <button id="storymap_new" class="btn">New</button>    
+</div>
+ 
+</section>
+ 
+<script type="text/javascript">
+
+function handle_storymap_new() {
+    alert('TODO');
+}
+
+$(function() {
+    $('#storymap_new').click(handle_storymap_new);
+});
+
+</script>
+
+{% endblock %}

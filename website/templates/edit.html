@@ -1,0 +1,345 @@
+{% extends "_base.html" %}
+
+{% block head %}
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places"></script>
+
+<style>
+#editor {margin: 10px auto;}
+#editor label,select,input[type="text"],textarea {font-size: 0.9em;}
+#editor > .row {padding: 8px 0 8px 0;margin: 0;}
+
+.slides-row {position: relative;background: #ccc;height: 44px;border: 1px solid darkgray;}
+.slides-container {position: absolute;top: 8px;left: 0px;bottom:0;right: 0;overflow: scroll;}
+#slides {height: 40px;font-size: 0.7em;}
+.slide {
+    float: left;
+    background: #fff;
+    height: 100%;
+    width: 50px;
+    margin-left: 8px;
+    margin-right: 8px;
+    overflow: hidden;
+    text-align: center;
+    line-height: 40px;
+    cursor: pointer;
+}
+.selected {background: #1dacd6;}
+
+.map-row {
+    padding: 0;
+    position: relative;
+    border-left: 1px solid darkgrey;
+    border-right: 1px solid darkgrey;
+    height: 260px;
+}
+#map {position: absolute;left: 0;top: 0;right: 0;bottom: 0;}
+#map_search_input {position: absolute; top: 6px;right: 6px;}
+
+.data-row {border: 1px solid darkgrey;padding-top: 8px;}
+
+.control-row * {float: right;margin: 8px 0 8px 8px;}
+
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<section id="editor" class="container"> 
+
+<div class="row">
+    <div class="span12">
+        <a href="select.html">&lt;&lt; back</a>
+    </div>
+</div>
+
+<div class="row slides-row">
+    <div class="slides-container">
+        <div id="slides">      
+        </div>
+    </div>
+</div>
+
+<div class="row map-row">
+    <div id="map"></div>
+    <input id="map_search_input" type="text" placeholder="Search Box">
+</div>
+
+<div class="row data-row">
+    <div class="span12">
+        <div class="row">   
+             
+            <div class="span6">
+                <label>URL</label>
+                <input id="url" type="text" style="width: 90%"/>
+                 <label>Credit</label>
+                <input id="credit" type="text" style="width: 90%"/>
+                 <label>Caption</label>
+                <input id="caption" type="text" style="width: 90%"/>
+            </div>
+        
+            <div class="span6">                     
+                <label>Date</label>
+                <input id="date" type="text" style="width: 90%"/>
+                
+                <label>Headline</label>
+                <textarea id="headline" rows="3" style="width: 90%"></textarea>
+
+                <label>Text</label>
+                <textarea id="text" rows="6"  style="width: 90%"></textarea>  
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<div class="row control-row">
+    <button id="slide_save" class="btn">Save</button>
+    <button id="slide_add" class="btn">Add Slide</button>
+    <button id="slide_publish" class="btn btn-danger">Publish</button>
+</div>
+</section>
+
+<script type="text/javascript">
+
+function parseQuerystring() {
+    var nvpair = {};
+    var qs = window.location.search.replace('?', '');
+    var pairs = qs.split('&');
+    $.each(pairs, function(i, v){
+        var pair = v.split('=');
+        nvpair[pair[0]] = pair[1];
+    });
+    return nvpair;
+}
+
+var _map;
+var _map_marker;
+ 
+var _storymap;
+var _current_slide_index = -1;
+
+var _dirty = 0;
+   
+/*
+  var storymap = new VCO.StoryMap('storymap', '{{ static_url }}/demo/demo.json');
+  window.onresize = function(event) {
+   storymap.updateDisplay();
+  }
+*/
+
+function do_ajax(url, data, on_error, on_success) {
+    $.ajax({
+        url: url,
+        data: data,
+        dataType: 'json',
+        timeout: 45000, // ms
+        error: function(xhr, status, err) {
+            on_error(err || status);
+        },
+        success: function(data) {
+            if(data.error) {
+                on_error(data.error);
+            } else {
+                on_success(data);
+            }
+        }
+    });
+}
+
+function handle_drag_map_marker() {
+    var pos = _map_marker.getPosition();
+    _storymap.slides[_current_slide_index].location.lat = pos.lat();
+    _storymap.slides[_current_slide_index].location.lon = pos.lng();
+}
+
+function set_map_marker(location) {
+    // Clear old marker
+    if(_map_marker) {
+        _map_marker.setMap(null);
+    }    
+    
+    // Set new marker
+    if(location) {
+        var latlng = new google.maps.LatLng(location.lat, location.lon);
+    
+        _map_marker = new google.maps.Marker({
+            map: _map,
+            draggable: true,
+            title: location.name,
+            position: latlng
+        });
+   
+        _map.panTo(latlng);
+     
+        google.maps.event.addListener(_map_marker, 'dragend', 
+            handle_drag_map_marker);
+    }
+}
+
+function slide_load(slide_index) {
+    _current_slide_index = slide_index;    
+    var slide = _storymap.slides[slide_index];
+
+    set_map_marker(slide.location);         
+    
+    $('#url').val(slide.media.url);
+    $('#credit').val(slide.media.credit);
+    $('#caption').val(slide.media.caption);
+    
+    $('#date').val(slide.date || '');
+    $('#headline').val(slide.text.headline || '');
+    $('#text').val(slide.text.text || '');    
+}
+
+function slide_select() {
+    $('div.slide.selected').removeClass('selected');    
+    $(this).addClass('selected');     
+    slide_load($(this).index());      
+}
+
+function slide_add() {
+    // Push new slide
+    _storymap.slides.push({
+        date: "",
+        text: {
+            headline: "",
+            text: ""
+        },
+        location: {
+            name: "Chicago, IL",
+            lat: "41.850033",
+            lon: "-87.6500523",
+            zoom: 10,
+            line: true,
+            icon: "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+        },
+        media: {
+            url: "",
+            credit: "",
+            caption: ""
+        }
+    });
+    
+    // Append slide element
+     var slide = $('<div class="slide">'+_storymap.slides.length+'</div>')
+        .appendTo('#slides')
+        .click(slide_select);
+            
+    // Adjust slide container width
+    var width = $('#slides').width() + slide.outerWidth(true);
+    $('#slides').css('width', width+"px");
+    
+    // Scroll new slide into view
+    $('.slides-container').scrollLeft(Math.max(0, width - $('#slides').parent().width()));
+
+    // Edit new slide
+    slide.click();
+}
+
+function storymap_load(id) {
+    do_ajax(id, {},
+        function(error) {
+            alert(error);
+        },
+        function(data) {
+            _storymap = data.storymap;
+            
+            $('#slides').html();            
+            for(var i = 0; i < _storymap.slides.length; i++) {
+                $('<div class="slide">'+(i+1)+'</div>')
+                    .appendTo('#slides')
+                    .click(slide_select);
+            }
+            
+            var width = 0;
+            $('#slides div.slide').each(function() {
+                width += $(this).outerWidth(true);
+            })   
+            $('#slides').css('width', width + "px");
+            
+            $('#slides div.slide:first-child').click();
+        }
+    );   
+}
+
+function storymap_save() {
+    alert('TODO');
+}
+
+function storymap_publish() {
+    alert('TODO');
+}
+
+
+function initialize() {
+    // check for id parameter
+    var params = parseQuerystring();
+    
+    if(!params.id) {
+        alert('NO ID');
+        return;
+    }
+    
+    
+    // make map
+    var mapOptions = {
+        mapTypeControl: false,
+        panControl: true,
+        zoomControl: true,
+        zoomControlOptions: {
+            style: google.maps.ZoomControlStyle.SMALL
+        },
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+    };   
+    _map = new google.maps.Map(document.getElementById('map'), mapOptions);
+    
+    // center over Chicago
+    var defaultBounds = new google.maps.LatLngBounds(
+        new google.maps.LatLng(41.644, -87.96),
+        new google.maps.LatLng(42.04, -87.40)
+    );
+    _map.fitBounds(defaultBounds);
+
+    // make search box
+    map_search_box = new google.maps.places.SearchBox(
+        document.getElementById('map_search_input'));
+        
+    // set default map marker
+    set_map_marker({
+        name: 'Chicago',
+        lat: 41.850033,
+        lon: -87.6500523
+    });
+
+    // handle search
+    google.maps.event.addListener(map_search_box, 'places_changed', function() {
+        var places = map_search_box.getPlaces();
+        
+        if(places.length) {
+            var place = places[0];
+            set_map_marker({
+                name: place.name,
+                lat: place.geometry.location.lat(),
+                lon: place.geometry.location.lng()
+            });
+         } 
+    });
+    
+    // load storymap
+    storymap_load(params.id);
+}
+
+google.maps.event.addDomListener(window, 'load', initialize);
+
+$(function() {
+    $('#slide_add').click(slide_add);
+    $('#slide_save').click(storymap_save);
+    $('#slide_publish').click(storymap_publish);
+});
+
+</script>
+
+
+{% endblock %}
