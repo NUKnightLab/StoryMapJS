@@ -19,11 +19,26 @@
 
 /* COLOR SCHEME
 ================================================== */
+@color-background: 				#FFF;
+@color-foreground: 				#333;
+
 @color-theme:					#08C;
+
+@color-theme-dark:				darken(@color-theme, 15);
+
+@color-theme-complement:		spin(@color-theme, 180);
+
 @color-theme-triad1:			spin(@color-theme, -135);
 @color-theme-triad2:			spin(@color-theme, 135);
 
+@color-theme-split1:			spin(@color-theme, -158);
+@color-theme-split2:			spin(@color-theme, 158);
+
 /* UI COLOR
 ================================================== */
-@ui-background-color:			@color-theme;
+@ui-background-color:			darken(@color-background, 15);
 @map-marker-color: 				@color-theme;
+
+/* UI
+================================================== */
+@arrow-size: 					40px;

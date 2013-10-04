@@ -115,7 +115,7 @@ VCO.Draggable = VCO.Class.extend({
 		this._el.move.style.left = this.data.pos.start.x + "px";
 		this._el.move.style.top = this.data.pos.start.y + "px";
 		this._el.move.style.position = "absolute";
-		this._el.move.style.zIndex = "11";
+		//this._el.move.style.zIndex = "11";
 		//this._el.move.style.cursor = "move";
 	},
 	
@@ -309,8 +309,8 @@ VCO.Draggable = VCO.Class.extend({
 		//trace("pos.y " + pos.y);
 		//trace("this._el.move.offsetTop - pos.y " + (this._el.move.offsetTop - pos.y));
 		this.animator = VCO.Animate(this._el.move, {
-			left: 		pos.x + "px",
-			top: 		pos.y + "px",
+			left: 		Math.floor(pos.x) + "px",
+			top: 		Math.floor(pos.y) + "px",
 			duration: 	this.options.duration,
 			easing: 	VCO.Ease.easeOutStrong
 		});
