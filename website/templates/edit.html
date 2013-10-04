@@ -2,57 +2,14 @@
 
 {% block head %}
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}/js/tool.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places"></script>
-
-<style>
-#editor {margin: 10px auto;}
-#editor label,select,input[type="text"],textarea {font-size: 0.9em;}
-#editor > .row {padding: 8px 0 8px 0;margin: 0;}
-
-.slides-row {position: relative;background: #ccc;height: 44px;border: 1px solid darkgray;}
-.slides-container {position: absolute;top: 8px;left: 0px;bottom:0;right: 0;overflow: scroll;}
-#slides {height: 40px;font-size: 0.7em;}
-.slide {
-    float: left;
-    position: relative;
-    background: #fff;
-    height: 100%;
-    width: 50px;
-    margin-left: 8px;
-    margin-right: 8px;
-    text-align: center;
-    line-height: 40px;
-    cursor: pointer;
-}
-.slide a.close {
-    position: absolute;
-    top: -4px;
-    right: 0;
-    z-index: 99;
-}
-.selected {background: #1dacd6;}
-
-.map-row {
-    padding: 0;
-    position: relative;
-    border-left: 1px solid darkgrey;
-    border-right: 1px solid darkgrey;
-    height: 260px;
-}
-#map {position: absolute;left: 0;top: 0;right: 0;bottom: 0;}
-#map_search_input {position: absolute; top: 6px;right: 6px;}
-
-.data-row {border: 1px solid darkgrey;padding-top: 8px;}
-
-.control-row * {float: right;margin: 8px 0 8px 8px;}
-
-</style>
-
+<link rel="stylesheet" type="text/css" href="{{ static_url }}/css/tool.css">
 {% endblock %}
 
 {% block content %}
 
-<section id="editor" class="container"> 
+<section id="editor" class="container shrinktext"> 
 
 <div class="row">
     <div class="span12">
@@ -78,22 +35,22 @@
              
             <div class="span6">
                 <label>URL</label>
-                <input id="url" type="text" style="width: 90%"/>
+                <input id="url" type="text" />
                  <label>Credit</label>
-                <input id="credit" type="text" style="width: 90%"/>
+                <input id="credit" type="text" />
                  <label>Caption</label>
-                <input id="caption" type="text" style="width: 90%"/>
+                <input id="caption" type="text" />
             </div>
         
             <div class="span6">                     
                 <label>Date</label>
-                <input id="date" type="text" style="width: 90%"/>
+                <input id="date" type="text" placeholder="TODO: put examples here" />
                 
                 <label>Headline</label>
-                <textarea id="headline" rows="3" style="width: 90%"></textarea>
+                <textarea id="headline" rows="3"></textarea>
 
                 <label>Text</label>
-                <textarea id="text" rows="6"  style="width: 90%"></textarea>  
+                <textarea id="text" rows="6"></textarea>  
             </div>
             
         </div>
@@ -108,6 +65,13 @@
 </section>
 
 <!-- START MODALS -->
+<div id="error_modal" class="modal hide fade" role="dialog" aria-hidden="true">
+    <div class="modal-body">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <p><span id="error_msg">Boo</span></p>
+   </div>
+</div>
+
 <div id="progress_modal" class="modal hide fade" role="dialog" aria-hidden="true">
     <div class="modal-body">
         <p><i class="icon-spinner icon-spin"></i><span id="progress_msg"></span>...</p>
@@ -127,17 +91,6 @@
   
 <script type="text/javascript">
 
-function parseQuerystring() {
-    var nvpair = {};
-    var qs = window.location.search.replace('?', '');
-    var pairs = qs.split('&');
-    $.each(pairs, function(i, v){
-        var pair = v.split('=');
-        nvpair[pair[0]] = pair[1];
-    });
-    return nvpair;
-}
-
 var _map;
 var _marker;
  
@@ -152,35 +105,6 @@ window.onresize = function(event) {
     storymap.updateDisplay();
 }
 */
-
-function show_confirm(msg, callback) {
-    $('#confirm_msg').html(msg);
-    $('#confirm_modal .btn-primary').bind('click.confirm', function(event) {
-        $(this).unbind('click.confirm');
-        $('#confirm_modal').modal('hide');
-        callback();
-    });
-    $('#confirm_modal').modal('show');
-}
-
-function do_ajax(url, data, on_error, on_success) {
-    $.ajax({
-        url: url,
-        data: data,
-        dataType: 'json',
-        timeout: 45000, // ms
-        error: function(xhr, status, err) {
-            on_error(err || status);
-        },
-        success: function(data) {
-            if(data.error) {
-                on_error(data.error);
-            } else {
-                on_success(data);
-            }
-        }
-    });
-}
 
 function location_set(loc_data) {
     $.extend(_storymap.slides[_current_slide_index].location, loc_data);      

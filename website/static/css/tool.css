@@ -1,0 +1,68 @@
+/* styles for storymap editor tool */
+
+/*
+common
+*/
+#error_modal {background-color: #f2dede;color: #b94a48;border-color: #eed3d7;}
+
+.shrinktext label,select,input[type="text"],textarea {font-size: 0.9em;}
+
+.control-row * {float: right;margin: 8px 0 8px 8px;}
+
+/*
+select page
+*/
+
+#selector {margin: 10px auto;}
+
+/*
+edit page
+*/
+
+#editor {margin: 10px auto;}
+
+/*
+#editor > .row {padding: 0;margin: 0;}
+*/
+.slides-row {
+    position: relative;
+    padding: 0;
+    margin: 0;
+    background: #ccc;
+    height: 56px;
+    border: 1px solid darkgray;
+}
+.slides-container {position: absolute;top: 8px;left: 0;bottom:0;right: 0;overflow: scroll;}
+#slides {height: 40px;font-size: 0.7em;}
+.slide {
+    float: left;
+    position: relative;
+    background: #fff;
+    height: 100%;
+    width: 50px;
+    margin: 0 8px;
+    text-align: center;
+    line-height: 40px;
+    cursor: pointer;
+}
+.slide a.close {position: absolute;top: -4px;right: 0;z-index: 99;}
+.selected {background: #1dacd6;}
+
+.map-row {
+    position: relative;
+    padding: 0;
+    margin: 0;
+    border-left: 1px solid darkgrey;
+    border-right: 1px solid darkgrey;
+    height: 260px;
+}
+#map {position: absolute;left: 0;top: 0;right: 0;bottom: 0;}
+#map_search_input {position: absolute; top: 6px;right: 6px;}
+
+.data-row {
+    padding: 8px 8px 8px 0;
+    margin: 0;
+    border: 1px solid darkgrey;
+}
+.data-row input[type="text"],textarea {width: 85%;}
+

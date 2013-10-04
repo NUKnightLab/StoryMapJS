@@ -1,21 +1,14 @@
 {% extends "_base.html" %}
 
 {% block head %}
-
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
-
-<style>
-#selector, label,select,input[type="text"],textarea {font-size: 0.9em;}
-#selector{padding-top: 10px;padding-bottom: 10px;}
-
-#storymap_new {float: right;}
-</style>
-
+<script type="text/javascript" src="{{ STATIC_URL }}/js/tool.js"></script>
+<link rel="stylesheet" type="text/css" href="{{ static_url }}/css/tool.css">
 {% endblock %}
 
 {% block content %}
 
-<section id="selector" class="container">
+<section id="selector" class="container shrinktext">
 
 <div class="row">
     <div class="span12">
@@ -48,16 +41,25 @@
     </div>
 </div>
 
-<div class="row">
+<div class="row control-row">
     <button id="storymap_new" class="btn">New</button>    
 </div>
  
 </section>
  
+ <!-- START MODALS -->
+<div id="error_modal" class="modal hide fade" role="dialog" aria-hidden="true">
+    <div class="modal-body">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <p><span id="error_msg">Boo</span></p>
+   </div>
+</div>
+<!-- END MODALS -->
+
 <script type="text/javascript">
 
 function handle_storymap_new() {
-    alert('TODO');
+    show_error('This is a test of the emergency broadcast system');
 }
 
 $(function() {
