@@ -3715,7 +3715,7 @@ VCO.Draggable = VCO.Class.extend({
 		this._el.move.style.left = this.data.pos.start.x + "px";
 		this._el.move.style.top = this.data.pos.start.y + "px";
 		this._el.move.style.position = "absolute";
-		this._el.move.style.zIndex = "11";
+		//this._el.move.style.zIndex = "11";
 		//this._el.move.style.cursor = "move";
 	},
 	
@@ -3909,8 +3909,8 @@ VCO.Draggable = VCO.Class.extend({
 		//trace("pos.y " + pos.y);
 		//trace("this._el.move.offsetTop - pos.y " + (this._el.move.offsetTop - pos.y));
 		this.animator = VCO.Animate(this._el.move, {
-			left: 		pos.x + "px",
-			top: 		pos.y + "px",
+			left: 		Math.floor(pos.x) + "px",
+			top: 		Math.floor(pos.y) + "px",
 			duration: 	this.options.duration,
 			easing: 	VCO.Ease.easeOutStrong
 		});
@@ -15943,7 +15943,7 @@ VCO.Map = VCO.Class.extend({
 			map_popup: 			false, 
 			zoom_distance: 		100,
 			calculate_zoom: 	true, // Allow map to determine best zoom level between markers (recommended)
-			line_color: 		"#03f",
+			line_color: 		"#333",
 			line_weight: 		5,
 			line_opacity: 		0.20,
 			line_dash: 			"5,5",
@@ -17153,7 +17153,7 @@ VCO.StoryMap = VCO.Class.extend({
 			zoom_distance: 			100,
 			calculate_zoom: 		true, // Allow map to determine best zoom level between markers (recommended)
 			use_custom_markers: 	false, // Allow use of custom map marker icons
-			line_color: 			"#0088cc",
+			line_color: 			"#000",
 			line_weight: 			3,
 			line_opacity: 			0.20,
 			line_dash: 				"5,5",
@@ -17288,7 +17288,7 @@ VCO.StoryMap = VCO.Class.extend({
 		this.options.height = this._el.container.offsetHeight;
 		
 		// Set Sticky state of SizeBar
-		this._sizebar.setSticky(this._el.container.offsetHeight/this.options.map_size_sticky);
+		this._sizebar.setSticky(Math.floor(this._el.container.offsetHeight/this.options.map_size_sticky));
 		
 		// Map Height
 		if (map_height) {
@@ -17306,7 +17306,7 @@ VCO.StoryMap = VCO.Class.extend({
 			}
 			
 			this.animator_map = VCO.Animate(this._el.map, {
-				height: 	(map_height- 1) + "px",
+				height: 	(map_height) + "px",
 				duration: 	duration,
 				easing: 	VCO.Ease.easeOutStrong,
 				complete: function () {
@@ -17327,7 +17327,7 @@ VCO.StoryMap = VCO.Class.extend({
 			
 		} else {
 			// Map
-			this._el.map.style.height = map_height + "px";
+			this._el.map.style.height = Math.ceil(map_height) + "px";
 			
 			// StorySlider
 			this._el.storyslider.style.height = this.options.storyslider_height + "px";

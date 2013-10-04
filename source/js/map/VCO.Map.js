@@ -60,7 +60,7 @@ VCO.Map = VCO.Class.extend({
 			map_popup: 			false, 
 			zoom_distance: 		100,
 			calculate_zoom: 	true, // Allow map to determine best zoom level between markers (recommended)
-			line_color: 		"#03f",
+			line_color: 		"#333",
 			line_weight: 		5,
 			line_opacity: 		0.20,
 			line_dash: 			"5,5",
