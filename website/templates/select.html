@@ -54,12 +54,24 @@
         <p><span id="error_msg">Boo</span></p>
    </div>
 </div>
+
+<div id="progress_modal" class="modal hide fade" role="dialog" aria-hidden="true">
+    <div class="modal-body">
+        <p><i class="icon-spinner icon-spin"></i><span id="progress_msg"></span>...</p>
+    </div>
+</div>
 <!-- END MODALS -->
 
 <script type="text/javascript">
 
 function handle_storymap_new() {
-    show_error('This is a test of the emergency broadcast system');
+    //show_error('This is a test of the emergency broadcast system');
+    show_progress('Faking creating a new, empty StoryMap...');
+    
+    setTimeout(function() {
+        hide_progress();        
+        document.location.href = 'edit.html?id=/compiled/examples/empty.json';
+    }, 2000);
 }
 
 $(function() {
