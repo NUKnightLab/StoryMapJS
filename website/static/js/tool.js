@@ -34,6 +34,20 @@ function show_error(msg) {
     $('#error_modal').modal('show');
 }
 
+function hide_error() {
+    $('#error_modal').modal('hide');
+}
+
+function show_progress(msg) {
+    hide_error();
+    $('#progress_msg').html(msg);
+    $('#progress_modal').modal('show');
+}
+
+function hide_progress() {
+    $('#progress_modal').modal('hide');
+}
+
 function show_confirm(msg, callback) {
     $('#confirm_msg').html(msg);
     $('#confirm_modal .btn-primary').bind('click.confirm', function(event) {

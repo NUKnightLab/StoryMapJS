@@ -5,6 +5,8 @@ common
 */
 #error_modal {background-color: #f2dede;color: #b94a48;border-color: #eed3d7;}
 
+#progress_msg {margin-left: 10px;}
+
 .shrinktext label,select,input[type="text"],textarea {font-size: 0.9em;}
 
 .control-row * {float: right;margin: 8px 0 8px 8px;}
