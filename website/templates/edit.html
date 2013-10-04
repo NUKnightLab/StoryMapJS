@@ -58,8 +58,8 @@
 </div>
 
 <div class="row control-row">
-    <button id="storymap_save" class="btn">Save</button>
-    <button id="storymap_publish" class="btn">Publish</button>
+    <button id="storymap_save" class="btn disabled">Save</button>
+    <button id="storymap_publish" class="btn disabled">Publish</button>
     <button id="slide_add" class="btn">Add Slide</button>
 </div>
 </section>
@@ -268,7 +268,7 @@ function storymap_load(id) {
             $('#slides').css('width', width + "px");
         
             if(_storymap.slides.length) { 
-                $('div.slide:first').click();           
+                $('div.slide:first').click();     
             } else {
                 slide_add();
             }
@@ -280,15 +280,21 @@ function storymap_dirty(is_dirty) {
     _dirty = is_dirty;
     
     if(is_dirty) {
-        $('#storymap_save').addClass('btn-primary');
+        $('#storymap_save').removeClass('disabled').addClass('btn-primary');
+        $('#storymap_publish').addClass('disabled').removeClass('btn-primary');
     } else {
-        $('#storymap_save').removeClass('btn-primary');
+        $('#storymap_save').addClass('disabled').removeClass('btn-primary');
+        $('#storymap_publish').removeClass('disabled').addClass('btn-primary');
     }
 }
 
 function storymap_save() {
-    alert('TODO');
-    storymap_dirty(0);
+    show_progress('Faking pretending to save StoryMap')
+    
+    setTimeout(function() {
+        storymap_dirty(0);
+        hide_progress();
+    }, 4000);
 }
 
 function storymap_publish() {
