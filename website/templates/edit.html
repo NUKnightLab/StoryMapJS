@@ -249,9 +249,12 @@ function slide_add() {
 }
 
 function storymap_load(id) {    
+    show_progress('Loading StoryMap');
+    
     do_ajax(id, {},
-        function(error) {
-            alert(error);
+        function(error) {   
+            hide_progress();
+            show_error(error);
         },
         function(data) {
             _storymap = data.storymap;
@@ -272,6 +275,8 @@ function storymap_load(id) {
             } else {
                 slide_add();
             }
+
+            hide_progress();
         }
     );   
 }
