@@ -35,7 +35,7 @@
 
 <div class="row map-row">
     <div id="map"></div>
-    <input id="map_search_input" type="text" placeholder="Search Box">
+    <input id="map_search_input" type="text" placeholder="Search">
 </div>
 
 <div class="row data-row">
@@ -365,6 +365,7 @@ function initialize() {
     var mapOptions = {
         mapTypeControl: false,
         panControl: true,
+        streetViewControl: false,
         zoomControl: true,
         zoomControlOptions: {
             style: google.maps.ZoomControlStyle.SMALL

@@ -59,6 +59,7 @@ edit page
     height: 260px;
 }
 #map {position: absolute;left: 0;top: 0;right: 0;bottom: 0;}
+#map img{max-width:none}
 #map_search_input {position: absolute; top: 6px;right: 6px;}
 
 .infobox-wrapper {display:none;}
