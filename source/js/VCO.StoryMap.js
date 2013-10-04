@@ -691,8 +691,8 @@ VCO.StoryMap = VCO.Class.extend({
 		
 		// Update Component Displays
 		//this._map.updateDisplay(this.options.width, this.options.map_height, animate, d, sizebar_height);
-		this._storyslider.updateDisplay(this.options.width, this.options.storyslider_height, animate );
-		this._sizebar.updateDisplay(this.options.width, this.options.height, animate);
+		this._storyslider.updateDisplay(this.options.width, this.options.storyslider_height, animate);
+		this._sizebar.updateDisplay(this.options.width, this.options.height, animate, this.options.map_height);
 		
 	},
 	
