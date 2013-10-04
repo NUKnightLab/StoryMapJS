@@ -4,7 +4,16 @@
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}/js/tool.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places"></script>
+<script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/infobox/src/infobox.js"></script>
+
 <link rel="stylesheet" type="text/css" href="{{ static_url }}/css/tool.css">
+<!-- for preview -->
+<link rel="stylesheet" href="/compiled/css/storymap.css?v1">
+
+<style>
+
+
+</style>
 {% endblock %}
 
 {% block content %}
@@ -88,11 +97,27 @@
     </div>
 </div>
 <!-- END MODALS -->
+
+<!-- START PREVIEW -->
+<!--
+<div id="storymap" style="background-color: white;position: absolute;top: 20px;left: 20px;right: 20px;bottom: 20px;"></div>
+-->
+
+<!-- END PREVIEW -->
   
+<div class="infobox-wrapper">
+    <div id="infobox">
+        <input type="text" id="location_name" value="Chicago, IL" />
+    </div>
+</div>
+
+
 <script type="text/javascript">
 
 var _map;
 var _marker;
+var _marker_info;
+
  
 var _storymap;
 var _current_slide_index = -1;
@@ -134,8 +159,16 @@ function location_mark(loc_data) {
         });
    
         _map.panTo(latlng);
-     
+             
+        $('#location_name').val(loc_data.name);
+        _marker_info.open(_map, _marker);
+        
+        google.maps.event.addListener(_marker, 'click', function() {
+            _marker_info.open(_map, this);
+        });
+        
         google.maps.event.addListener(_marker, 'dragend', location_drag);
+ 
     }
 }
 
@@ -248,17 +281,29 @@ function slide_add() {
     storymap_dirty(1);
 }
 
+function storymap_preview() {
+           /*
+            new VCO.StoryMap('storymap', '/compiled/examples/ironmaiden.json');
+            
+             window.onresize = function(event) {
+                storymap.updateDisplay();
+            }
+            */
+
+
+}
+
 function storymap_load(id) {    
-    show_progress('Loading StoryMap');
+    //show_progress('Loading StoryMap');
     
     do_ajax(id, {},
         function(error) {   
-            hide_progress();
-            show_error(error);
+            //hide_progress();
+            show_error('Error loading StoryMap ('+error+')');
         },
         function(data) {
             _storymap = data.storymap;
-            
+                       
             $('#slides').html();            
             for(var i = 0; i < _storymap.slides.length; i++) {
                 slide_append_element();
@@ -276,7 +321,7 @@ function storymap_load(id) {
                 slide_add();
             }
 
-            hide_progress();
+            //hide_progress();
         }
     );   
 }
@@ -335,7 +380,20 @@ function initialize() {
     );
     _map.fitBounds(defaultBounds);
 
-    // make search box
+    // info box
+   _marker_info = new InfoBox({
+        content: document.getElementById("infobox"),
+        closeBoxURL: "",
+        pixelOffset: new google.maps.Size(-140, 0), // top-left corner
+        /*
+        boxStyle: {
+            background: "url('http://google-maps-utility-library-v3.googlecode.com/svn/trunk/infobox/examples/tipbox.gif') no-repeat",
+            width: "280px"       
+        }
+        */
+    });
+    
+    // search box
     map_search_box = new google.maps.places.SearchBox(
         document.getElementById('map_search_input'));
         
@@ -363,14 +421,33 @@ function initialize() {
 
 google.maps.event.addDomListener(window, 'load', initialize);
 
+
 $(function() {    
-    $('#url, #credit, #caption, #date, #headline, #text').change(function() {
+    $('#location_name').change(function(event) {
+         _storymap.slides[_current_slide_index].location.name = $(this).val();
+        storymap_dirty(1);
+    });
+    
+    $('#url, #credit, #caption').change(function(event) { 
+        var id = $(this).attr('id');
+        _storymap.slides[_current_slide_index].media[id] = $(this).val();
+        storymap_dirty(1);
+    });
+
+    $('#date').change(function() {
+        _storymap.slides[_current_slide_index].date = $(this).val();
+        storymap_dirty(1);
+    });
+   
+    $('#headline, #text').change(function() {
+        var id = $(this).attr('id');
+        _storymap.slides[_current_slide_index].text[id] = $(this).val();
         storymap_dirty(1);
     });
     
     $('#slide_add').click(slide_add);
     $('#storymap_save').click(storymap_save);
-    $('#storymap_publish').click(storymap_publish);
+    $('#storymap_publish').click(storymap_publish);    
 });
 
 </script>
