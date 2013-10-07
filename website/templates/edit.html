@@ -7,7 +7,7 @@
 <script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/infobox/src/infobox.js"></script>
 
 <link rel="stylesheet" type="text/css" href="{{ static_url }}/css/tool.css">
-<!-- for preview -->
+<!-- for preview? -->
 <link rel="stylesheet" href="/compiled/css/storymap.css?v1">
 
 <style>
@@ -28,8 +28,8 @@
 
 <div class="row slides-row">
     <div class="slides-container">
-        <div id="slides">      
-        </div>
+        <ul id="slides">            
+        </ul>
     </div>
 </div>
 
@@ -172,21 +172,21 @@ function location_mark(loc_data) {
 }
 
 function slide_append_element() {
-    var i = $('div.slide').length;
-    
-    var elem = $('<div class="slide"><span>'+(i+1)+'</span></div>')
+    var i = $('.slide').length;
+  
+    var elem = $('<li class="slide"><span>'+(i+1)+'</span></li>')
         .appendTo('#slides')
         .click(slide_select);
             
     $('<a class="close" href="#">&times;</a>')
         .appendTo(elem)
         .click(slide_delete); 
-    
+
     return elem;
 }
 
 function slide_select(event) {   
-    $('div.slide.selected').removeClass('selected');    
+    $('.slide.selected').removeClass('selected');    
     $(this).addClass('selected');     
 
     _current_slide_index = $(this).index();   
@@ -205,7 +205,7 @@ function slide_select(event) {
 }
 
 function slide_delete(event) {
-    var slide_elem = $(this).closest('div.slide');
+    var slide_elem = $(this).closest('.slide');
     var slide_index = slide_elem.index();
     
     show_confirm('Delete slide '+(slide_index+1)+'?', function() {
@@ -231,7 +231,7 @@ function slide_delete(event) {
             if(n < 0) {                
                 slide_add();
             } else {
-                $('div.slide:eq('+n+')').click();
+                $('li.slide:eq('+n+')').click();
             }
         } 
         
@@ -281,13 +281,13 @@ function slide_add() {
 }
 
 function storymap_preview() {
-           /*
-            new VCO.StoryMap('storymap', '/compiled/examples/ironmaiden.json');
-            
-             window.onresize = function(event) {
-                storymap.updateDisplay();
-            }
-            */
+   /*
+    new VCO.StoryMap('storymap', '/compiled/examples/ironmaiden.json');
+    
+     window.onresize = function(event) {
+        storymap.updateDisplay();
+    }
+    */
 }
 
 function storymap_load(id) {    
@@ -307,13 +307,13 @@ function storymap_load(id) {
             }
             
             var width = 0;
-            $('#slides div.slide').each(function() {
+            $('#slides .slide').each(function() {
                 width += $(this).outerWidth(true);
             })   
             $('#slides').css('width', width + "px");
         
             if(_storymap.slides.length) { 
-                $('div.slide:first').click();     
+                $('.slide:first').click();     
             } else {
                 slide_add();
             }
@@ -464,10 +464,10 @@ $(function() {
                 var i = Math.min(sortable_i, sortable_j);
                 var j = Math.max(sortable_i, sortable_j);                
                 var k = i + 1;               
-                $('div.slide').slice(i, j+1).each(function() { $(this).find('span').html(k++); });                
+                $('.slide').slice(i, j+1).each(function() { $(this).find('span').html(k++); });                
 
                  // Adjust current slide index
-                _current_slide_index = $('div.slide.selected').index();
+                _current_slide_index = $('.slide.selected').index();
                 
                 storymap_dirty(1);
             }             

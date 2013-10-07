@@ -23,9 +23,6 @@ edit page
 
 #editor {margin: 10px auto;}
 
-/*
-#editor > .row {padding: 0;margin: 0;}
-*/
 .slides-row {
     position: relative;
     padding: 0;
@@ -34,8 +31,8 @@ edit page
     height: 56px;
     border: 1px solid darkgray;
 }
-.slides-container {position: absolute;top: 8px;left: 0;bottom:0;right: 0;overflow: scroll;}
-#slides {height: 40px;font-size: 0.7em;}
+.slides-container {position: absolute;top: 8px;left: 0;bottom:8;right: 0;overflow: scroll;}
+#slides {position: relative;display: block;list-style: none;height: 40px;font-size: 0.7em;margin: 0;padding: 0;}
 .slide {
     float: left;
     position: relative;
@@ -43,6 +40,7 @@ edit page
     height: 100%;
     width: 50px;
     margin: 0 8px;
+    padding: 0;
     text-align: center;
     line-height: 40px;
     cursor: pointer;
