@@ -17,6 +17,8 @@ select page
 
 #selector {margin: 10px auto;}
 
+#new_modal .error {color: #cc0000;font-size: 0.9em;font-style: italic;}
+
 /*
 edit page
 */
