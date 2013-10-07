@@ -66,11 +66,9 @@
 </div>
 
 <div class="row control-row">
-<!--
+    <button id="storymap_publish" class="btn">Publish</button>
     <button id="storymap_preview" class="btn">Preview</button>
--->
     <button id="storymap_save" class="btn disabled">Save</button>
-    <button id="storymap_publish" class="btn disabled">Publish</button>
     <button id="slide_add" class="btn">Add Slide</button>
 </div>
 </section>
@@ -99,15 +97,6 @@
     </div>
 </div>
 <!-- END MODALS -->
-
-<!-- START PREVIEW -->
-<!--
-<div id="storymap_container" class="modal hide fade" aria-hidden=true" 
-style="background-color: white;left: 0%;top: 5%;width: 100%;height: 90%;margin: 0;padding: 0;">
-<div id="storymap"></div>
-</div>
--->
-<!-- END PREVIEW -->
   
 <div class="infobox-wrapper">
     <div id="infobox">
@@ -118,17 +107,7 @@ style="background-color: white;left: 0%;top: 5%;width: 100%;height: 90%;margin: 
 
 <script type="text/javascript">
 
-  
-function storymap_preview() {
-    var storymap = new VCO.StoryMap('storymap', _storymap); //'/compiled/examples/ironmaiden.json');
-    
-     window.onresize = function(event) {
-        storymap.updateDisplay();
-    }
- 
-    $('#storymap_container').modal('show');
-}
-
+var _id;
 
 var _map;
 var _marker;
@@ -334,9 +313,11 @@ function storymap_dirty(is_dirty) {
     
     if(is_dirty) {
         $('#storymap_save').removeClass('disabled').addClass('btn-primary');
+        $('#storymap_preview').addClass('disabled');
         $('#storymap_publish').addClass('disabled').removeClass('btn-primary');
     } else {
         $('#storymap_save').addClass('disabled').removeClass('btn-primary');
+        $('#storymap_preview').removeClass('disabled');
         $('#storymap_publish').removeClass('disabled').addClass('btn-primary');
     }
 }
@@ -348,6 +329,13 @@ function storymap_save() {
         storymap_dirty(0);
         hide_progress();
     }, 4000);
+}
+
+function storymap_preview() {
+    var preview_url = 'preview.html?url=' + encodeURIComponent(_id)
+        + '&start_at_slide='+_current_slide_index; // not working
+        
+    window.open(preview_url, 'StoryMap Preview');
 }
 
 function storymap_publish() {
@@ -363,6 +351,7 @@ function initialize() {
         alert('you would need to pass an id as a query parameter');
         return;
     }
+    _id = params.id;
     
     // make map
     var mapOptions = {
@@ -414,7 +403,7 @@ function initialize() {
     });
     
     // load storymap
-    storymap_load(params.id);
+    storymap_load(_id);
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);
@@ -453,8 +442,8 @@ $(function() {
     
     $('#slide_add').click(slide_add);
     $('#storymap_save').click(storymap_save);
-    $('#storymap_publish').click(storymap_publish);   
     $('#storymap_preview').click(storymap_preview); 
+    $('#storymap_publish').click(storymap_publish);   
     
     // blah
     var sortable_i = 0;

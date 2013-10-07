@@ -7,10 +7,11 @@ function parseQuerystring() {
     var nvpair = {};
     var qs = window.location.search.replace('?', '');
     var pairs = qs.split('&');
-    $.each(pairs, function(i, v) {
-        var pair = v.split('=');
-        nvpair[pair[0]] = pair[1];
-    });
+    
+    for(var i = 0, p; i < pairs.length;i++) {
+        p = pairs[i].split('=');
+        nvpair[p[0]] = p[1];
+    }
     return nvpair;
 }
 
