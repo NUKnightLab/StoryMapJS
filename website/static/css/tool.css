@@ -25,6 +25,8 @@ edit page
 
 #editor {margin: 10px auto;}
 
+#editor label.example {font-size: .8em;font-style: italic;color: #999;}
+
 .slides-row {
     position: relative;
     padding: 0;
@@ -63,11 +65,12 @@ edit page
 #map_search_input {position: absolute; top: 6px;right: 6px;}
 
 .infobox-wrapper {display:none;}
-#infobox {background: white;border: 1px solid darkgray;margin-top: 8px;padding: 8px;font-size 1em;}
-#infobox form {margin: 0;white-space: nowrap;}
+#infobox {background: white;border: 1px solid darkgray;margin-top: 8px;padding: 8px;}
+#infobox form {margin: 0;padding: 0;white-space: nowrap;}
 #infobox * { font-size: 14px; }
+/*
 #infobox input[type="text"] {margin: 0 8px 0 0;}
-
+*/
 
 .data-row {
     padding: 8px 8px 8px 0;
