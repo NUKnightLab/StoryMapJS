@@ -110,6 +110,7 @@
 var _id;
 
 var _map;
+var _map_zoom_listener;
 var _marker;
 var _marker_info;
 
@@ -133,6 +134,10 @@ function location_set(loc_data) {
 function location_drag() {
     var pos = _marker.getPosition();
     location_set({lat: pos.lat(), lon: pos.lng()});
+}
+
+function location_zoom() {
+    location_set({zoom: _map.getZoom()});
 }
 
 function location_mark(loc_data) {
@@ -161,8 +166,7 @@ function location_mark(loc_data) {
             _marker_info.open(_map, this);
         });
         
-        google.maps.event.addListener(_marker, 'dragend', location_drag);
- 
+        google.maps.event.addListener(_marker, 'dragend', location_drag); 
     }
 }
 
@@ -188,8 +192,14 @@ function slide_select(event) {
      
     var data = _storymap.slides[_current_slide_index];
 
-    location_mark(data.location);         
+    location_mark(data.location);     
     
+    if(_map_zoom_listener) {
+        google.maps.event.removeListener(_map_zoom_listener);
+    } 
+    _map.setZoom(data.location.zoom);   
+    _map_zoom_listener = google.maps.event.addListener(_map, 'zoom_changed', location_zoom);
+       
     $('#url').val(data.media.url);
     $('#credit').val(data.media.credit);
     $('#caption').val(data.media.caption);
@@ -372,7 +382,7 @@ function initialize() {
         new google.maps.LatLng(42.04, -87.40)
     );
     _map.fitBounds(defaultBounds);
-
+    
     // info box
     _marker_info = new InfoBox({
         content: document.getElementById("infobox"),
