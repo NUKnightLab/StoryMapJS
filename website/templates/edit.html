@@ -100,7 +100,12 @@
   
 <div class="infobox-wrapper">
     <div id="infobox">
-        <input type="text" id="location_name" value="Chicago, IL" />
+        <form class="form-inline">
+        <input type="text" id="location_name" value="Chicago, IL" >
+        <label class="checkbox">
+            <input type="checkbox" id="location_line" value=""> Line
+        </label>
+        </form>
     </div>
 </div>
 
@@ -160,6 +165,7 @@ function location_mark(loc_data) {
         _map.panTo(latlng);
              
         $('#location_name').val(loc_data.name);
+        $('#location_line').prop('checked', loc_data.line);
         _marker_info.open(_map, _marker);
         
         google.maps.event.addListener(_marker, 'click', function() {
@@ -429,8 +435,10 @@ window.onbeforeunload = function confirmExit() {
 $(function() {    
 
     $('#location_name').change(function(event) {
-         _storymap.slides[_current_slide_index].location.name = $(this).val().trim();
-        storymap_dirty(1);
+        location_set({name: $(this).val().trim()});
+    });
+    $('#location_line').change(function(event) {
+        location_set({line: $(this).prop('checked')});
     });
     
     $('#url, #credit, #caption').change(function(event) { 

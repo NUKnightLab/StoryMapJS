@@ -63,15 +63,10 @@ edit page
 #map_search_input {position: absolute; top: 6px;right: 6px;}
 
 .infobox-wrapper {display:none;}
-#infobox {margin-top: 8px;padding: 0;width: 280px;font-size: 1em;}
-#infobox input[type="text"] {
-    width: 280px;
-    font-size: 14px;
-    margin: 0;
-    opacity: 1;
-    text-align: center;
-    border: 1px solid darkgray;
-}
+#infobox {background: white;border: 1px solid darkgray;margin-top: 8px;padding: 8px;font-size 1em;}
+#infobox form {margin: 0;white-space: nowrap;}
+#infobox * { font-size: 14px; }
+#infobox input[type="text"] {margin: 0 8px 0 0;}
 
 
 .data-row {
