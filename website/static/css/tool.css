@@ -61,7 +61,7 @@ edit page
     line-height: 40px;
     cursor: pointer;
 }
-.slide a.close {position: absolute;top: -4px;right: 0;z-index: 99;}
+.slide a.close {position: absolute;top: -4px;right: 0;z-index: 99;color: #FF0000;}
 .selected {background: #1dacd6;}
 
 .map-row {
