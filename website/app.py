@@ -40,6 +40,7 @@ settings = sys.modules[settings_module]
 
 app = Flask(__name__)
 
+compiled_dir = os.path.join(settings.PROJECT_ROOT, 'compiled')
 build_dir = os.path.join(settings.PROJECT_ROOT, 'build')
 
 @app.context_processor
@@ -54,6 +55,12 @@ def inject_static_url():
         static_url = static_url.rstrip('/')
     return dict(static_url=static_url, STATIC_URL=static_url)
 
+@app.route('/compiled/<path:path>')
+def catch_compiled(path):
+    """
+    Serve /compiled/... urls from the compiled directory
+    """
+    return send_from_directory(compiled_dir, path)    
 
 @app.route('/build/<path:path>')
 def catch_build(path):
