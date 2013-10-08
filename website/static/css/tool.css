@@ -35,15 +35,27 @@ edit page
     height: 56px;
     border: 1px solid darkgray;
 }
-.slides-container {position: absolute;top: 8px;left: 0;bottom:8;right: 0;overflow: scroll;}
-#slides {position: relative;display: block;list-style: none;height: 40px;font-size: 0.7em;margin: 0;padding: 0;}
+
+.overview-container {
+    position: absolute;
+    top: 0px;
+    bottom:0;
+    left: 0;
+    width: 65px;
+    border-style:solid;
+    border-width: 0 4px 0 0;
+    border-right-color: darkgray;
+}
+.overview-container .slide {font-size: 0.6em;}
+.slides-container {position: absolute;top: 0px;bottom:0;left: 68px;right: 0;overflow: scroll;}
+#slides {position: relative;display: block;list-style: none;height: 100%;font-size: 0.7em;margin: 0;padding: 0;}
 .slide {
     float: left;
     position: relative;
     background: #fff;
-    height: 100%;
+    height: 40px;
     width: 50px;
-    margin: 0 8px;
+    margin: 8px;
     padding: 0;
     text-align: center;
     line-height: 40px;
@@ -62,12 +74,13 @@ edit page
 }
 #map {position: absolute;left: 0;top: 0;right: 0;bottom: 0;}
 #map img{max-width:none}
-#map_search_input {position: absolute; top: 6px;right: 6px;}
+#map_search_input {position: absolute; top: 6px;right: 6px;display: none;}
 
 .infobox-wrapper {display:none;}
-#infobox {background: white;border: 1px solid darkgray;margin-top: 8px;padding: 8px;}
-#infobox form {margin: 0;padding: 0;white-space: nowrap;}
-#infobox * { font-size: 14px; }
+.infobox {background: white;border: 1px solid darkgray;margin-top: 8px;padding: 8px;}
+.infobox form {margin: 0;padding: 0;white-space: nowrap;}
+.infobox * { font-size: 14px; }
+
 /*
 #infobox input[type="text"] {margin: 0 8px 0 0;}
 */
