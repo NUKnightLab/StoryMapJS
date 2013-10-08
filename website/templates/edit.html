@@ -5,14 +5,12 @@
 <script type="text/javascript" src="{{ STATIC_URL }}/js/tool.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places"></script>
 <script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/infobox/src/infobox.js"></script>
-
+<!-- start bootstrap-wysihtml5 -->
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/bootstrap-wysihtml5/bootstrap-wysihtml5-0.0.2.css"></link>
+<script type="text/javascript" src="{{ STATIC_URL }}/bootstrap-wysihtml5/lib/js/wysihtml5-0.3.0.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}/bootstrap-wysihtml5/bootstrap-wysihtml5-0.0.2.min.js"></script>
+<!-- end bootstrap-wysihtml5 -->
 <link rel="stylesheet" type="text/css" href="{{ static_url }}/css/tool.css">
-<!-- for preview? -->
-<script type="text/javascript" src="/compiled/js/storymap.js"></script>
-<link rel="stylesheet" href="/compiled/css/storymap.css?v1">
-
-<style>
-</style>
 {% endblock %}
 
 {% block content %}
@@ -21,7 +19,9 @@
 
 <div class="row">
     <div class="span12">
+        <p>
         <a href="select.html">&lt;&lt; back</a>
+        </p>
     </div>
 </div>
 
@@ -100,6 +100,7 @@
 </div>
 <!-- END MODALS -->
   
+<!-- START MAP INFOBOX -->
 <div class="infobox-wrapper">
     <div class="infobox">
         <form class="form-horizontal">
@@ -108,14 +109,44 @@
         </form>
     </div>
 </div>
+<!-- END MAP INFOBOX -->
 
+<!-- START BOOTSTRAP-WYSIHTML5 BUTTON TEMPLATES -->
+
+<ul id="wysihtml5_emphasis" style="display: none;">
+    <li>
+    <div class="btn-group">
+    <a class="btn btn-small" data-wysihtml5-command="bold" title="CTRL+B" tabindex="-1" href="javascript:;" unselectable="on"><i class="icon-bold"></i></a>
+    <a class="btn btn-small" data-wysihtml5-command="italic" title="CTRL+I" tabindex="-1" href="javascript:;" unselectable="on"><i class="icon-italic"></i></a>
+    <a class="btn btn-small" data-wysihtml5-command="underline" title="CTRL+U" tabindex="-1" href="javascript:;" unselectable="on"><i class="icon-underline"></i></a>
+    </div>
+    </li>
+</ul>
+<ul id="wysihtml5_link" style="display: none;">
+<li>
+    <div class="bootstrap-wysihtml5-insert-link-modal modal hide fade">
+    <div class="modal-body">
+    <p><input value="http://" class="bootstrap-wysihtml5-insert-link-url input-xlarge"></p>
+    <label class="checkbox"> <input type="checkbox" class="bootstrap-wysihtml5-insert-link-target" checked="">Open link in new window</label>
+    </div>
+    <div class="modal-footer">
+    <a href="#" class="btn" data-dismiss="modal">Cancel</a><a href="#" class="btn btn-primary" data-dismiss="modal">Insert link</a>
+    </div>
+    </div>
+    <a class="btn btn-small" data-wysihtml5-command="createLink" title="Insert link" tabindex="-1" href="javascript:;" unselectable="on"><i class="icon-link"></i></a>
+</li>      
+</ul>
+<ul id="wysihtml5_html" style="display: none;">
+<li>
+    <div class="btn-group">
+    <a class="btn btn-small" data-wysihtml5-action="change_view" title="Edit HTML" tabindex="-1" href="javascript:;" unselectable="on">&lt;/&gt;</a>
+    </div>
+</li>
+</ul>
+
+<!-- END BOOTSTRAP-WYSIHTML5 BUTTON TEMPLATES -->
 
 <script type="text/javascript">
-
-
-function doit() {
-    console.log('doit');
-}
 
 var _id;
 
@@ -130,12 +161,6 @@ var _current_slide_index = -1;
 
 var _dirty = 0;
    
-/*
-var storymap = new VCO.StoryMap('storymap', '{{ static_url }}/demo/demo.json');
-window.onresize = function(event) {
-    storymap.updateDisplay();
-}
-*/
 
 function map_clear_overlays() {
     if(_map_line) {
@@ -289,7 +314,9 @@ function slide_select(event) {
     $('#caption').val(data.media.caption);
     
     $('#headline').val(data.text.headline || '');
+    
     $('#text').val(data.text.text || '');    
+    $('iframe').contents().find('body').html(data.text.text || '');
 }
 
 function slide_delete(event) {
@@ -423,7 +450,7 @@ function storymap_save() {
     storymap_dirty(0);
     return;
     
-    show_progress('Faking pretending to save StoryMap')
+    show_progress('Pretending to save StoryMap')
     
     setTimeout(function() {
         storymap_dirty(0);
@@ -433,8 +460,7 @@ function storymap_save() {
 
 function storymap_preview() {
     var preview_url = 'preview.html?url=' + encodeURIComponent(_id)
-        + '&start_at_slide='+_current_slide_index; // not working
-        
+        + '&start_at_slide='+_current_slide_index; // not working       
     window.open(preview_url, 'StoryMap Preview');
 }
 
@@ -453,7 +479,7 @@ function initialize() {
     }
     _id = params.id;
     
-    // make map
+    // Make map
     var mapOptions = {
         mapTypeControl: false,
         panControl: true,
@@ -466,27 +492,10 @@ function initialize() {
     };   
     _map = new google.maps.Map(document.getElementById('map'), mapOptions);
     
-    // center over Chicago
-    var defaultBounds = new google.maps.LatLngBounds(
-        new google.maps.LatLng(41.644, -87.96),
-        new google.maps.LatLng(42.04, -87.40)
-    );
-    _map.fitBounds(defaultBounds);
-    
-    // info box
-    /*
-    var width = $('.infobox-wrapper').outerWidth(true);
-    _map_infobox = new InfoBox({
-        content: document.getElementById("infobox"),
-        closeBoxURL: "",
-        pixelOffset: new google.maps.Size(-(width/2), 0)
-    });
-*/
-    // search box
+    // Make search box
     map_search_box = new google.maps.places.SearchBox(
         document.getElementById('map_search_input'));
         
-    // handle search
     google.maps.event.addListener(map_search_box, 'places_changed', function() {
         var places = map_search_box.getPlaces();
         
@@ -504,13 +513,14 @@ function initialize() {
          } 
     });
     
-    // load storymap
+    // Load storymap
     storymap_load(_id);
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);
 
 /*
+TEMPORARILY COMMENTED OUT FOR DEVELOPMENT
 
 window.onbeforeunload = function confirmExit() {
     if(_dirty) {
@@ -521,7 +531,7 @@ window.onbeforeunload = function confirmExit() {
 }
 */
 
-$(function() {    
+$(function() {        
     $('.overview-container .slide').click(slide_select);
         
     $('#url, #credit, #caption').change(function(event) { 
@@ -530,18 +540,45 @@ $(function() {
         storymap_dirty(1);
     });
 
-    $('#headline, #text').change(function() {
+    $('#headline').change(function() {
         var id = $(this).attr('id');
         _storymap.slides[_current_slide_index].text[id] = $(this).val().trim();
         storymap_dirty(1);
     });
-    
+
+    $('#text').wysihtml5({
+        "font-styles": false,   // Font styling, e.g. h1, h2, etc. Default true
+        "emphasis": true,       // Italics, bold, etc. Default true
+        "lists": false,         // (Un)ordered lists, e.g. Bullets, Numbers. Default true
+        "link": true,           // Button to insert a link. Default true
+        "html": true,           // Button which allows you to edit the generated HTML. Default false
+        "image": false,         // Button to insert an image. Default true,
+        "color": false,         // Button to change color of font,
+        customTemplates: {
+            'emphasis': function(locale) { 
+                return $('#wysihtml5_emphasis').html();
+            },
+            'link': function(locale) {
+                return $('#wysihtml5_link').html();
+            },
+            'html': function(locale) {
+                return $('#wysihtml5_html').html();
+            }
+        },
+        'events': {
+            'change': function() { 
+                _storymap.slides[_current_slide_index].text['text'] = $('#text').val().trim();
+                storymap_dirty(1);
+             }
+        }
+    });
+        
     $('#slide_add').click(slide_add);
     $('#storymap_save').click(storymap_save);
     $('#storymap_preview').click(storymap_preview); 
     $('#storymap_publish').click(storymap_publish);   
     
-    // blah
+    
     var sortable_i = 0;
     var sortable_j = 0;
     
