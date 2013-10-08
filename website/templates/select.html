@@ -98,7 +98,9 @@ function handle_storymap_new() {
         }, 2000);
     });
     
-    $('#new_modal').modal('show');
+    $('#new_modal').modal('show').on('shown', function() { 
+        $('#new_name').focus();
+    });
 }
 
 $(function() {
