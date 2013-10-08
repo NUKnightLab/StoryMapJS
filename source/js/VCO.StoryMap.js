@@ -508,7 +508,7 @@ VCO.StoryMap = VCO.Class.extend({
 			zoom_distance: 			100,
 			calculate_zoom: 		true, // Allow map to determine best zoom level between markers (recommended)
 			use_custom_markers: 	false, // Allow use of custom map marker icons
-			line_color: 			"#0088cc",
+			line_color: 			"#000",
 			line_weight: 			3,
 			line_opacity: 			0.20,
 			line_dash: 				"5,5",
@@ -643,7 +643,7 @@ VCO.StoryMap = VCO.Class.extend({
 		this.options.height = this._el.container.offsetHeight;
 		
 		// Set Sticky state of SizeBar
-		this._sizebar.setSticky(this._el.container.offsetHeight/this.options.map_size_sticky);
+		this._sizebar.setSticky(Math.floor(this._el.container.offsetHeight/this.options.map_size_sticky));
 		
 		// Map Height
 		if (map_height) {
@@ -661,7 +661,7 @@ VCO.StoryMap = VCO.Class.extend({
 			}
 			
 			this.animator_map = VCO.Animate(this._el.map, {
-				height: 	(map_height- 1) + "px",
+				height: 	(map_height) + "px",
 				duration: 	duration,
 				easing: 	VCO.Ease.easeOutStrong,
 				complete: function () {
@@ -682,7 +682,7 @@ VCO.StoryMap = VCO.Class.extend({
 			
 		} else {
 			// Map
-			this._el.map.style.height = map_height + "px";
+			this._el.map.style.height = Math.ceil(map_height) + "px";
 			
 			// StorySlider
 			this._el.storyslider.style.height = this.options.storyslider_height + "px";
@@ -691,8 +691,8 @@ VCO.StoryMap = VCO.Class.extend({
 		
 		// Update Component Displays
 		//this._map.updateDisplay(this.options.width, this.options.map_height, animate, d, sizebar_height);
-		this._storyslider.updateDisplay(this.options.width, this.options.storyslider_height, animate );
-		this._sizebar.updateDisplay(this.options.width, this.options.height, animate);
+		this._storyslider.updateDisplay(this.options.width, this.options.storyslider_height, animate);
+		this._sizebar.updateDisplay(this.options.width, this.options.height, animate, this.options.map_height);
 		
 	},
 	

@@ -3715,7 +3715,7 @@ VCO.Draggable = VCO.Class.extend({
 		this._el.move.style.left = this.data.pos.start.x + "px";
 		this._el.move.style.top = this.data.pos.start.y + "px";
 		this._el.move.style.position = "absolute";
-		this._el.move.style.zIndex = "11";
+		//this._el.move.style.zIndex = "11";
 		//this._el.move.style.cursor = "move";
 	},
 	
@@ -3909,8 +3909,8 @@ VCO.Draggable = VCO.Class.extend({
 		//trace("pos.y " + pos.y);
 		//trace("this._el.move.offsetTop - pos.y " + (this._el.move.offsetTop - pos.y));
 		this.animator = VCO.Animate(this._el.move, {
-			left: 		pos.x + "px",
-			top: 		pos.y + "px",
+			left: 		Math.floor(pos.x) + "px",
+			top: 		Math.floor(pos.y) + "px",
 			duration: 	this.options.duration,
 			easing: 	VCO.Ease.easeOutStrong
 		});
@@ -3941,6 +3941,8 @@ VCO.SizeBar = VCO.Class.extend({
 			parent: {},
 			container: {},
 			arrow: {},
+			line: {},
+			coverbar: {},
 			grip: {}
 		};
 		
@@ -4006,8 +4008,8 @@ VCO.SizeBar = VCO.Class.extend({
 	
 	/*	Update Display
 	================================================== */
-	updateDisplay: function(w, h) {
-		this._updateDisplay(w, h);
+	updateDisplay: function(w, h, a, l) {
+		this._updateDisplay(w, h, a, l);
 	},
 	
 
@@ -4071,6 +4073,11 @@ VCO.SizeBar = VCO.Class.extend({
 		this._el.arrow = VCO.Dom.create("div", "vco-arrow-up", this._el.container);
 		this._el.container.style.top = this.options.sizebar_default_y + "px";
 		
+		this._el.line = VCO.Dom.create("div", "vco-map-line", this._el.container);
+		this._el.coverbar = VCO.Dom.create("div", "vco-coverbar", this._el.container);
+		
+		//this._el.line.style.top = this.options.sizebar_default_y + "px";
+		
 		//Make draggable
 		this._draggable = new VCO.Draggable(this._el.container, {enable:{x:false, y:true}, constraint:{bottom:this.options.height}});
 		
@@ -4091,7 +4098,7 @@ VCO.SizeBar = VCO.Class.extend({
 	},
 	
 	// Update Display
-	_updateDisplay: function(width, height, animate) {
+	_updateDisplay: function(width, height, animate, line_height) {
 		
 		if (width) {
 			this.options.width = width;
@@ -4104,7 +4111,16 @@ VCO.SizeBar = VCO.Class.extend({
 		this._draggable.updateConstraint({bottom:this.options.height - this._el.container.offsetHeight });
 		
 		this._el.container.style.width = this.options.width + "px";
-		this._el.arrow.style.left = ((this.options.width/2) - 30) + "px";
+		this._el.arrow.style.left = ((this.options.width/2) - 17) + "px";
+		
+		this._el.line.style.left = ((this.options.width/2) ) + "px";
+		this._el.line.style.top = -((line_height/2) - 14) + "px";
+		this._el.line.style.height = ((line_height/2) - 20) + "px";
+		
+		this._el.coverbar.style.height = ((line_height/2) - 6) + "px";
+		this._el.coverbar.style.top = -((line_height/2) - 14) + "px";
+		this._el.coverbar.style.left = ((this.options.width/2) +1) + "px";
+		trace(line_height);
 	}
 	
 });
@@ -15943,7 +15959,7 @@ VCO.Map = VCO.Class.extend({
 			map_popup: 			false, 
 			zoom_distance: 		100,
 			calculate_zoom: 	true, // Allow map to determine best zoom level between markers (recommended)
-			line_color: 		"#03f",
+			line_color: 		"#333",
 			line_weight: 		5,
 			line_opacity: 		0.20,
 			line_dash: 			"5,5",
@@ -17153,7 +17169,7 @@ VCO.StoryMap = VCO.Class.extend({
 			zoom_distance: 			100,
 			calculate_zoom: 		true, // Allow map to determine best zoom level between markers (recommended)
 			use_custom_markers: 	false, // Allow use of custom map marker icons
-			line_color: 			"#0088cc",
+			line_color: 			"#000",
 			line_weight: 			3,
 			line_opacity: 			0.20,
 			line_dash: 				"5,5",
@@ -17288,7 +17304,7 @@ VCO.StoryMap = VCO.Class.extend({
 		this.options.height = this._el.container.offsetHeight;
 		
 		// Set Sticky state of SizeBar
-		this._sizebar.setSticky(this._el.container.offsetHeight/this.options.map_size_sticky);
+		this._sizebar.setSticky(Math.floor(this._el.container.offsetHeight/this.options.map_size_sticky));
 		
 		// Map Height
 		if (map_height) {
@@ -17306,7 +17322,7 @@ VCO.StoryMap = VCO.Class.extend({
 			}
 			
 			this.animator_map = VCO.Animate(this._el.map, {
-				height: 	(map_height- 1) + "px",
+				height: 	(map_height) + "px",
 				duration: 	duration,
 				easing: 	VCO.Ease.easeOutStrong,
 				complete: function () {
@@ -17327,7 +17343,7 @@ VCO.StoryMap = VCO.Class.extend({
 			
 		} else {
 			// Map
-			this._el.map.style.height = map_height + "px";
+			this._el.map.style.height = Math.ceil(map_height) + "px";
 			
 			// StorySlider
 			this._el.storyslider.style.height = this.options.storyslider_height + "px";
@@ -17336,8 +17352,8 @@ VCO.StoryMap = VCO.Class.extend({
 		
 		// Update Component Displays
 		//this._map.updateDisplay(this.options.width, this.options.map_height, animate, d, sizebar_height);
-		this._storyslider.updateDisplay(this.options.width, this.options.storyslider_height, animate );
-		this._sizebar.updateDisplay(this.options.width, this.options.height, animate);
+		this._storyslider.updateDisplay(this.options.width, this.options.storyslider_height, animate);
+		this._sizebar.updateDisplay(this.options.width, this.options.height, animate, this.options.map_height);
 		
 	},
 	

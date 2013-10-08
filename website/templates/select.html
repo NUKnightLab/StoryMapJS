@@ -1,0 +1,110 @@
+{% extends "_base.html" %}
+
+{% block head %}
+<script type="text/javascript" src="{{ STATIC_URL }}/js/tool.js"></script>
+<link rel="stylesheet" type="text/css" href="{{ static_url }}/css/tool.css">
+{% endblock %}
+
+{% block content %}
+
+<section id="selector" class="container shrinktext">
+
+<div class="row">
+    <div class="span12">
+
+        <p>TODO: Page to choose an existing storymap or make a new one. 
+        For now, just hard-coded sample data and passing the url around.
+        </p>
+    </div>
+</div>
+ 
+<div class="row">
+    <div class="span12"">
+        <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tr>
+            <td>
+            <a href="edit.html?id=/compiled/examples/ironmaiden.json">/compiled/examples/ironmaiden</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+            <a href="edit.html?id=/compiled/examples/population.json">/compiled/examples/population</a>
+            </td>
+        </tr>        
+        </table>
+    </div>
+</div>
+
+<div class="row control-row">
+    <button id="storymap_new" class="btn">New</button>    
+</div>
+ 
+</section>
+ 
+ <!-- START MODALS -->
+<div id="error_modal" class="modal hide fade" role="dialog" aria-hidden="true">
+    <div class="modal-body">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <p><span id="error_msg">Boo</span></p>
+   </div>
+</div>
+
+<div id="progress_modal" class="modal hide fade" role="dialog" aria-hidden="true">
+    <div class="modal-body">
+        <p><i class="icon-spinner icon-spin"></i><span id="progress_msg"></span>...</p>
+    </div>
+</div>
+
+<div id="new_modal" class="modal hide fade" role="dialog" aria-hidden="true">
+    <div class="modal-body">
+        <p class="error"> </p>
+        <input type="text" id="new_name" value="" placeholder="enter unique name for StoryMap" style="width: 95%;" />
+       
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn" data-dismiss="modal">Cancel</a>
+        <a href="#" class="btn btn-primary">Create</a>
+    </div>
+</div>
+
+<!-- END MODALS -->
+
+<script type="text/javascript">
+
+function handle_storymap_new() {
+    $('#new_modal .btn-primary').bind('click.confirm', function(event) {    
+        var name = $('#new_name').val().trim();
+        
+        if(!name.length) {
+            $('#new_modal .error').html('You must enter a name');
+            return;
+        }
+        
+        // TODO: check uniqueness
+        
+        $(this).unbind('click.confirm');
+        $('#new_modal').modal('hide');
+        
+        show_progress('Faking creating a new, empty StoryMap...');
+       
+        setTimeout(function() {
+            hide_progress();        
+            document.location.href = 'edit.html?id=/compiled/examples/empty.json';
+        }, 2000);
+    });
+    
+    $('#new_modal').modal('show');
+}
+
+$(function() {
+    $('#storymap_new').click(handle_storymap_new);
+});
+
+</script>
+
+{% endblock %}
