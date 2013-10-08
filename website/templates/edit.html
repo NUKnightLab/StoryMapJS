@@ -41,17 +41,27 @@
     <input id="map_search_input" type="text" placeholder="Search">
 </div>
 
+<!--
+<div class="row data-row">
+    <div class="span12">
+        <p>This is the overview slide, which blah blah blah.</p>
+    </div>
+</div>
+-->
 <div class="row data-row">
     <div class="span12">
         <div class="row">   
-             
             <div class="span6">
                 <label>Media URL</label>
+                <!-- ref VCO.MediaType.js -->
+                
                 <label class='example'>YouTube, Vine, Flickr, Soundcloud, Twitter, etc.</label>
                 <input id="url" type="text" />
-                 <label>Credit</label>
+                <label id="media_type" class='example'></label>
+                
+                <label>Credit</label>
                 <input id="credit" type="text" />
-                 <label>Caption</label>
+                <label>Caption</label>
                 <input id="caption" type="text" />
             </div>
         
@@ -228,6 +238,16 @@ function location_mark(data) {
     } 
 }
 
+function media_check_type() {
+    var url = $('#url').val().trim();
+    if(url.length) {
+        var media = VCO.MediaType({'url': $('#url').val().trim()});   
+        $('#media_type').html('detected type: '+(media.type || '[none]')); 
+    } else {
+        $('#media_type').html('&nbsp;'); 
+    }
+}
+
 function slide_append_element() {
     var i = $('.slide').length;
   
@@ -311,6 +331,8 @@ function slide_select(event) {
     $('#url').val(data.media.url);
     $('#credit').val(data.media.credit);
     $('#caption').val(data.media.caption);
+    
+    media_check_type();
     
     $('#headline').val(data.text.headline || '');
     
@@ -424,7 +446,7 @@ function storymap_load(id) {
                 slide_add();
             }   
 
-            console.log('storymap_load', _dirty);
+            //console.log('storymap_load', _dirty);
 
             //hide_progress();
         }
@@ -532,8 +554,14 @@ window.onbeforeunload = function confirmExit() {
 
 $(function() {        
     $('.overview-container .slide').click(slide_select);
-        
-    $('#url, #credit, #caption').change(function(event) { 
+     
+    $('#url').change(function(event) {  
+        _storymap.slides[_current_slide_index].media['url'] = $(this).val().trim();
+        storymap_dirty(1);        
+        media_check_type();     
+    });
+       
+    $('#credit, #caption').change(function(event) { 
         var id = $(this).attr('id');
         _storymap.slides[_current_slide_index].media[id] = $(this).val().trim();
         storymap_dirty(1);
@@ -576,8 +604,7 @@ $(function() {
     $('#storymap_save').click(storymap_save);
     $('#storymap_preview').click(storymap_preview); 
     $('#storymap_publish').click(storymap_publish);   
-    
-    
+       
     var sortable_i = 0;
     var sortable_j = 0;
     
