@@ -38,7 +38,7 @@
             {
                 "src": "source",
                 "dst": "build",
-                "regex": "(css/.*|img/.*|.*\\.(ico|html))$"
+                "regex": "(css/.*|img/.*|.*\\.(ico|html)|gfx/.*\\.(png|jpg|gif))$"
             }
         ],
         // compile less files
@@ -105,7 +105,7 @@
     //  
     "stage": [{
         "src": "build",
-        "regex": "(css/storymap\\.css|js/storymap.*\\.js)$"
+        "regex": "(css/storymap\\.css|js/storymap.*\\.js|gfx/.*)$"
     }],
     //
     // deploy
