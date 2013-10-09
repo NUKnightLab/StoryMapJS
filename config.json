@@ -94,9 +94,10 @@
         // banner
         // input: list of file paths
         "banner": [
-            "build/js/storymap.js",
-            "build/js/storymap.min.js",
-            "build/css/storymap.css"        
+            {
+                "src": "build",
+                "regex": "(js|css)/storymap.*\\.(js|css)$"
+            }
         ]
     },
     //
