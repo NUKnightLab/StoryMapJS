@@ -7,7 +7,7 @@ VCO.Media.YouTube = VCO.Media.extend({
 	
 	/*	Load the media
 	================================================== */
-	loadMedia: function() {
+	_loadMedia: function() {
 		var self = this,
 			url_vars;
 		

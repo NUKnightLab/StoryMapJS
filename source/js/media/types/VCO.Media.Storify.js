@@ -7,7 +7,7 @@ VCO.Media.Storify = VCO.Media.extend({
 	
 	/*	Load the media
 	================================================== */
-	loadMedia: function() {
+	_loadMedia: function() {
 		var content;
 		
 		// Loading Messege

@@ -13,15 +13,15 @@
       "outputAbbreviatedPath" : "\/website\/static\/bootstrap-wysihtml5\/lib\/js\/prettify-min.js",
       "fileType" : 64
     },
-    "\/source\/js\/CORE_OLD\/Embed\/Embed.CDN.js" : {
-      "ignoreWasSetByUser" : 1,
+    "\/source\/js\/media\/types\/VCO.Media.Vimeo.js" : {
+      "ignoreWasSetByUser" : 0,
       "ignore" : 1,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Embed\/Embed.CDN.js",
+      "inputAbbreviatedPath" : "\/source\/js\/media\/types\/VCO.Media.Vimeo.js",
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Embed\/Embed.CDN-min.js",
+      "outputAbbreviatedPath" : "\/source\/js\/media\/types\/VCO.Media.Vimeo-min.js",
       "fileType" : 64
     },
     "\/source\/less\/VCO.StoryMap.less" : {
@@ -108,6 +108,15 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
+    "\/website\/static\/bootstrap-wysihtml5\/lib\/css\/bootstrap-responsive.min.css" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 0,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/website\/static\/bootstrap-wysihtml5\/lib\/css\/bootstrap-responsive.min.css",
+      "outputAbbreviatedPath" : "No Output Path",
+      "fileType" : 16
+    },
     "\/source\/js\/CORE_OLD\/Media\/VCO.TextElement.js" : {
       "ignoreWasSetByUser" : 1,
       "ignore" : 1,
@@ -118,15 +127,6 @@
       "syntaxCheckerStyle" : 0,
       "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Media\/VCO.TextElement-min.js",
       "fileType" : 64
-    },
-    "\/website\/static\/bootstrap-wysihtml5\/lib\/css\/bootstrap-responsive.min.css" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 0,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/website\/static\/bootstrap-wysihtml5\/lib\/css\/bootstrap-responsive.min.css",
-      "outputAbbreviatedPath" : "No Output Path",
-      "fileType" : 16
     },
     "\/source\/js\/slider\/VCO.StorySlider.js" : {
       "ignoreWasSetByUser" : 1,
@@ -635,15 +635,6 @@
       "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/VCO.StoryJS.License-min.js",
       "fileType" : 64
     },
-    "\/compiled\/examples\/ironmaiden.html" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 0,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/compiled\/examples\/ironmaiden.html",
-      "outputAbbreviatedPath" : "No Output Path",
-      "fileType" : 2048
-    },
     "\/source\/less\/map\/leaflet\/VCO.Map.Leaflet.less" : {
       "ieCompatibility" : 1,
       "inputAbbreviatedPath" : "\/source\/less\/map\/leaflet\/VCO.Map.Leaflet.less",
@@ -661,17 +652,6 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
-    "\/source\/js\/map\/leaflet\/VCO.Leaflet.js" : {
-      "ignoreWasSetByUser" : 1,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/VCO.Leaflet.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/VCO.Leaflet-min.js",
-      "fileType" : 64
-    },
     "\/source\/js\/CORE_OLD\/Library\/LazyLoad.js" : {
       "ignoreWasSetByUser" : 0,
       "ignore" : 1,
@@ -681,6 +661,17 @@
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 0,
       "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Library\/LazyLoad-min.js",
+      "fileType" : 64
+    },
+    "\/source\/js\/map\/leaflet\/VCO.Leaflet.js" : {
+      "ignoreWasSetByUser" : 1,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/VCO.Leaflet.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/VCO.Leaflet-min.js",
       "fileType" : 64
     },
     "\/compiled\/gfx\/marker-shadow.png" : {
@@ -693,6 +684,15 @@
       "outputAbbreviatedPath" : "\/compiled\/gfx\/marker-shadow.png",
       "initialSize" : 797,
       "fileType" : 8192
+    },
+    "\/compiled\/examples\/ironmaiden.html" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 0,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/compiled\/examples\/ironmaiden.html",
+      "outputAbbreviatedPath" : "No Output Path",
+      "fileType" : 2048
     },
     "\/source\/less\/CORE_OLD\/VCO.Core.less" : {
       "ieCompatibility" : 1,
@@ -1055,16 +1055,14 @@
       "outputAbbreviatedPath" : "No Output Path",
       "fileType" : 2048
     },
-    "\/source\/js\/VCO.StoryMap.js" : {
-      "ignoreWasSetByUser" : 1,
-      "ignore" : 0,
+    "\/website\/templates\/_help.html" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 1,
       "hidden" : 0,
-      "outputPathIsSetByUser" : 1,
-      "inputAbbreviatedPath" : "\/source\/js\/VCO.StoryMap.js",
-      "outputStyle" : 0,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/compiled\/js\/storymap.js",
-      "fileType" : 64
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/website\/templates\/_help.html",
+      "outputAbbreviatedPath" : "No Output Path",
+      "fileType" : 2048
     },
     "\/source\/less\/slider\/VCO.StorySlider.less" : {
       "ieCompatibility" : 1,
@@ -1083,14 +1081,16 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
-    "\/website\/templates\/_help.html" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 1,
+    "\/source\/js\/VCO.StoryMap.js" : {
+      "ignoreWasSetByUser" : 1,
+      "ignore" : 0,
       "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/website\/templates\/_help.html",
-      "outputAbbreviatedPath" : "No Output Path",
-      "fileType" : 2048
+      "outputPathIsSetByUser" : 1,
+      "inputAbbreviatedPath" : "\/source\/js\/VCO.StoryMap.js",
+      "outputStyle" : 0,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/compiled\/js\/storymap.js",
+      "fileType" : 64
     },
     "\/compiled\/js\/storymap.js" : {
       "ignoreWasSetByUser" : 0,
@@ -1125,23 +1125,6 @@
       "outputAbbreviatedPath" : "\/source\/js\/core\/VCO.Events-min.js",
       "fileType" : 64
     },
-    "\/source\/less\/Variables.less" : {
-      "ieCompatibility" : 1,
-      "inputAbbreviatedPath" : "\/source\/less\/Variables.less",
-      "outputAbbreviatedPath" : "\/source\/css\/Variables.css",
-      "outputPathIsSetByUser" : 0,
-      "strictUnits" : 0,
-      "relativeURLS" : 0,
-      "ignore" : 1,
-      "strictImports" : 0,
-      "ignoreWasSetByUser" : 0,
-      "shouldRunBless" : 0,
-      "hidden" : 0,
-      "strictMath" : 0,
-      "outputStyle" : 1,
-      "fileType" : 1,
-      "debugStyle" : 0
-    },
     "\/source\/less\/core\/Mixins.less" : {
       "ieCompatibility" : 1,
       "inputAbbreviatedPath" : "\/source\/less\/core\/Mixins.less",
@@ -1167,6 +1150,23 @@
       "inputAbbreviatedPath" : "\/website\/templates\/select.html",
       "outputAbbreviatedPath" : "No Output Path",
       "fileType" : 2048
+    },
+    "\/source\/less\/Variables.less" : {
+      "ieCompatibility" : 1,
+      "inputAbbreviatedPath" : "\/source\/less\/Variables.less",
+      "outputAbbreviatedPath" : "\/source\/css\/Variables.css",
+      "outputPathIsSetByUser" : 0,
+      "strictUnits" : 0,
+      "relativeURLS" : 0,
+      "ignore" : 1,
+      "strictImports" : 0,
+      "ignoreWasSetByUser" : 0,
+      "shouldRunBless" : 0,
+      "hidden" : 0,
+      "strictMath" : 0,
+      "outputStyle" : 1,
+      "fileType" : 1,
+      "debugStyle" : 0
     },
     "\/website\/static\/bootstrap-wysihtml5\/lib\/js\/bootstrap.js" : {
       "ignoreWasSetByUser" : 1,
@@ -1429,17 +1429,6 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
-    "\/source\/js\/dom\/VCO.DomEvent.js" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/dom\/VCO.DomEvent.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/dom\/VCO.DomEvent-min.js",
-      "fileType" : 64
-    },
     "\/source\/js\/CORE_OLD\/Core\/VCO.Library.js" : {
       "ignoreWasSetByUser" : 1,
       "ignore" : 1,
@@ -1449,6 +1438,17 @@
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 0,
       "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Core\/VCO.Library-min.js",
+      "fileType" : 64
+    },
+    "\/source\/js\/dom\/VCO.DomEvent.js" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/js\/dom\/VCO.DomEvent.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/source\/js\/dom\/VCO.DomEvent-min.js",
       "fileType" : 64
     },
     "\/source\/js\/media\/types\/VCO.Media.Storify.js" : {
@@ -1725,15 +1725,15 @@
       "outputAbbreviatedPath" : "\/source\/js\/map\/VCO.Map-min.js",
       "fileType" : 64
     },
-    "\/source\/js\/media\/VCO.Media.js" : {
+    "\/compiled\/js\/storymap-min.js" : {
       "ignoreWasSetByUser" : 0,
       "ignore" : 1,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/media\/VCO.Media.js",
+      "inputAbbreviatedPath" : "\/compiled\/js\/storymap-min.js",
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/media\/VCO.Media-min.js",
+      "outputAbbreviatedPath" : "\/compiled\/js\/storymap-min-min.js",
       "fileType" : 64
     },
     "\/source\/js\/CORE_OLD\/Library\/AES.js" : {
@@ -1758,15 +1758,15 @@
       "outputAbbreviatedPath" : "\/source\/js\/media\/types\/VCO.Media.Vine-min.js",
       "fileType" : 64
     },
-    "\/compiled\/js\/storymap-min.js" : {
+    "\/source\/js\/media\/VCO.Media.js" : {
       "ignoreWasSetByUser" : 0,
       "ignore" : 1,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/compiled\/js\/storymap-min.js",
+      "inputAbbreviatedPath" : "\/source\/js\/media\/VCO.Media.js",
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/compiled\/js\/storymap-min-min.js",
+      "outputAbbreviatedPath" : "\/source\/js\/media\/VCO.Media-min.js",
       "fileType" : 64
     },
     "\/source\/js\/CORE_OLD\/Library\/jquery.fancybox.js" : {
@@ -1997,15 +1997,15 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
-    "\/source\/js\/media\/types\/VCO.Media.Vimeo.js" : {
-      "ignoreWasSetByUser" : 0,
+    "\/source\/js\/CORE_OLD\/Embed\/Embed.CDN.js" : {
+      "ignoreWasSetByUser" : 1,
       "ignore" : 1,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/media\/types\/VCO.Media.Vimeo.js",
+      "inputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Embed\/Embed.CDN.js",
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/media\/types\/VCO.Media.Vimeo-min.js",
+      "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Embed\/Embed.CDN-min.js",
       "fileType" : 64
     },
     "\/compiled\/css\/storymap.png" : {

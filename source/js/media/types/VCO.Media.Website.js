@@ -7,7 +7,7 @@ VCO.Media.Website = VCO.Media.extend({
 	
 	/*	Load the media
 	================================================== */
-	loadMedia: function() {
+	_loadMedia: function() {
 		var api_url,
 			self = this;
 		

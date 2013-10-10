@@ -4441,9 +4441,18 @@ VCO.Media = VCO.Class.extend({
 		
 	},
 	
+	loadMedia: function() {
+		try {
+			this._loadMedia();
+		} catch (e) {
+			trace("Error loading media for ", this._media);
+			trace(e);
+		}
+	},
+	
 	/*	Media Specific
 	================================================== */
-		loadMedia: function() {
+		_loadMedia: function() {
 		
 		},
 		
@@ -4575,7 +4584,7 @@ VCO.Media.Blockquote = VCO.Media.extend({
 	
 	/*	Load the media
 	================================================== */
-	loadMedia: function() {
+	_loadMedia: function() {
 		
 		// Loading Messege
 		this.messege.updateMessege(VCO.Language.messeges.loading + " SoundCloud");
@@ -4616,7 +4625,7 @@ VCO.Media.Flickr = VCO.Media.extend({
 	
 	/*	Load the media
 	================================================== */
-	loadMedia: function() {
+	_loadMedia: function() {
 		var api_url,
 			self = this;
 		
@@ -4701,7 +4710,7 @@ VCO.Media.GoogleDoc = VCO.Media.extend({
 	
 	/*	Load the media
 	================================================== */
-	loadMedia: function() {
+	_loadMedia: function() {
 		var api_url,
 			self = this;
 		
@@ -4750,7 +4759,7 @@ VCO.Media.GooglePlus = VCO.Media.extend({
 	
 	/*	Load the media
 	================================================== */
-	loadMedia: function() {
+	_loadMedia: function() {
 		var api_url,
 			self = this;
 		
@@ -4795,7 +4804,7 @@ VCO.Media.IFrame = VCO.Media.extend({
 	
 	/*	Load the media
 	================================================== */
-	loadMedia: function() {
+	_loadMedia: function() {
 		var api_url,
 			self = this;
 		
@@ -4842,7 +4851,7 @@ VCO.Media.Image = VCO.Media.extend({
 	
 	/*	Load the media
 	================================================== */
-	loadMedia: function() {
+	_loadMedia: function() {
 		
 		this._el.content_item				= VCO.Dom.create("img", "vco-media-item vco-media-image", this._el.content);
 		this._el.content_item.src			= this.data.url;
@@ -4865,7 +4874,7 @@ VCO.Media.SoundCloud = VCO.Media.extend({
 	
 	/*	Load the media
 	================================================== */
-	loadMedia: function() {
+	_loadMedia: function() {
 		var api_url,
 			self = this;
 		
@@ -4911,7 +4920,7 @@ VCO.Media.Storify = VCO.Media.extend({
 	
 	/*	Load the media
 	================================================== */
-	loadMedia: function() {
+	_loadMedia: function() {
 		var content;
 		
 		// Loading Messege
@@ -5066,7 +5075,7 @@ VCO.Media.Twitter = VCO.Media.extend({
 	
 	/*	Load the media
 	================================================== */
-	loadMedia: function() {
+	_loadMedia: function() {
 		var api_url,
 			self = this;
 			
@@ -5138,7 +5147,7 @@ VCO.Media.Vimeo = VCO.Media.extend({
 	
 	/*	Load the media
 	================================================== */
-	loadMedia: function() {
+	_loadMedia: function() {
 		var api_url,
 			self = this;
 		
@@ -5182,7 +5191,7 @@ VCO.Media.DailyMotion = VCO.Media.extend({
 	
 	/*	Load the media
 	================================================== */
-	loadMedia: function() {
+	_loadMedia: function() {
 		var api_url,
 			self = this;
 		
@@ -5227,7 +5236,7 @@ VCO.Media.Vine = VCO.Media.extend({
 	
 	/*	Load the media
 	================================================== */
-	loadMedia: function() {
+	_loadMedia: function() {
 		var api_url,
 			self = this;
 		
@@ -5274,7 +5283,7 @@ VCO.Media.Website = VCO.Media.extend({
 	
 	/*	Load the media
 	================================================== */
-	loadMedia: function() {
+	_loadMedia: function() {
 		var api_url,
 			self = this;
 		
@@ -5343,7 +5352,7 @@ VCO.Media.Wikipedia = VCO.Media.extend({
 	
 	/*	Load the media
 	================================================== */
-	loadMedia: function() {
+	_loadMedia: function() {
 		var api_url,
 			api_language,
 			self = this;
@@ -5434,7 +5443,7 @@ VCO.Media.YouTube = VCO.Media.extend({
 	
 	/*	Load the media
 	================================================== */
-	loadMedia: function() {
+	_loadMedia: function() {
 		var self = this,
 			url_vars;
 		
@@ -5583,7 +5592,7 @@ VCO.Media.Slider = VCO.Media.extend({
 	
 	/*	Load the media
 	================================================== */
-	loadMedia: function() {
+	_loadMedia: function() {
 		
 		this._el.content_item				= VCO.Dom.create("img", "vco-media-item vco-media-image", this._el.content);
 		this._el.content_item.src			= this.data.url;
@@ -5757,12 +5766,7 @@ VCO.Slide = VCO.Class.extend({
 			
 			// add the object to the dom
 			this._media.addTo(this._el.content);
-			try {
-    			this._media.loadMedia();
-			} catch (e) {
-			    trace("Error loading media for ", this._media);
-			    trace(e);
-			}
+			this._media.loadMedia();
 		}
 		
 		// Text
