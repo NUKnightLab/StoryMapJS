@@ -21,7 +21,7 @@ VCO.StorySlider = VCO.Class.extend({
 	
 	/*	Private Methods
 	================================================== */
-	initialize: function (elem, data, options) {
+	initialize: function (elem, data, options, init) {
 		
 		// DOM ELEMENTS
 		this._el = {
@@ -444,6 +444,12 @@ VCO.StorySlider = VCO.Class.extend({
 		VCO.Util.mergeData(this.options, options);
 		VCO.Util.mergeData(this.data, data);
 		
+		if (init) {
+			this.init();
+		}
+	},
+	
+	init: function() {
 		this._initLayout();
 		this._initEvents();
 		this._initData();
@@ -452,6 +458,7 @@ VCO.StorySlider = VCO.Class.extend({
 		// Go to initial slide
 		this.goTo(this.options.start_at_slide);
 		
+		this._onLoaded();
 	},
 	
 	/*	Public

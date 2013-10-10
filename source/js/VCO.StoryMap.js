@@ -108,6 +108,9 @@ VCO.StoryMap = VCO.Class.extend({
 		// SizeBar
 		this._sizebar = {};
 		
+		// Loaded State
+		this._loaded = {storyslider:false, map:false};
+		
 		// Data Object
 		// Test Data compiled from http://www.pbs.org/marktwain/learnmore/chronology.html
 		this.data = {
@@ -484,7 +487,7 @@ VCO.StoryMap = VCO.Class.extend({
 			width: 					this._el.container.offsetWidth,
 			map_size_sticky: 		3, // Set as division 1/3 etc
 			map_center_offset: 		60, 
-			start_at_slide: 		0,
+			start_at_slide: 		3,
 			// animation
 			duration: 				1000,
 			ease: 					VCO.Ease.easeInOutQuint,
@@ -584,12 +587,15 @@ VCO.StoryMap = VCO.Class.extend({
 		
 		// Create Map using preferred Map API
 		this._map = new VCO.Map.Leaflet(this._el.map, this.data, this.options);
+		this._map.on('loaded', this._onMapLoaded, this);
 		
 		// Create SizeBar
 		this._sizebar = new VCO.SizeBar(this._el.sizebar, this._el.container, this.options);
 		
 		// Create StorySlider
 		this._storyslider = new VCO.StorySlider(this._el.storyslider, this.data, this.options);
+		this._storyslider.on('loaded', this._onStorySliderLoaded, this);
+		this._storyslider.init();
 		
 		// Set Default Component Sizes
 		this.options.map_height = (this.options.height / this.options.map_size_sticky);
@@ -751,8 +757,23 @@ VCO.StoryMap = VCO.Class.extend({
 		});
 	},
 	
+	_onMapLoaded: function() {
+		trace("MAP READY")
+		this._loaded.map = true;
+		this._onLoaded();
+	},
+	
+	_onStorySliderLoaded: function() {
+		trace("STORYSLIDER READY")
+		this._loaded.storyslider = true;
+		this._onLoaded();
+	},
+	
 	_onLoaded: function() {
-		this.fire("loaded", this.data);
+		if (this._loaded.storyslider && this._loaded.map) {
+			trace("STORYMAP IS READY");
+			this.fire("loaded", this.data);
+		}
 	}
 	
 	

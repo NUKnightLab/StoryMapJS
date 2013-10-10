@@ -5942,7 +5942,7 @@ VCO.StorySlider = VCO.Class.extend({
 	
 	/*	Private Methods
 	================================================== */
-	initialize: function (elem, data, options) {
+	initialize: function (elem, data, options, init) {
 		
 		// DOM ELEMENTS
 		this._el = {
@@ -6365,6 +6365,12 @@ VCO.StorySlider = VCO.Class.extend({
 		VCO.Util.mergeData(this.options, options);
 		VCO.Util.mergeData(this.data, data);
 		
+		if (init) {
+			this.init();
+		}
+	},
+	
+	init: function() {
 		this._initLayout();
 		this._initEvents();
 		this._initData();
@@ -6373,6 +6379,7 @@ VCO.StorySlider = VCO.Class.extend({
 		// Go to initial slide
 		this.goTo(this.options.start_at_slide);
 		
+		this._onLoaded();
 	},
 	
 	/*	Public
@@ -15937,6 +15944,7 @@ VCO.Map = VCO.Class.extend({
 		this.options = {
 			map_type: 			"toner",
 			path_gfx: 			"gfx",
+			start_at_slide: 	0,
 			map_popup: 			false, 
 			zoom_distance: 		100,
 			calculate_zoom: 	true, // Allow map to determine best zoom level between markers (recommended)
@@ -16223,10 +16231,14 @@ VCO.Map = VCO.Class.extend({
 		trace("MAP LOADED");
 		this._loaded.map = true;
 		this._initialMapLocation();
+		this.fire("loaded", this.data);
 	},
 	
 	_initialMapLocation: function() {
+		trace("_initialMapLocation 1")
 		if (this._loaded.data && this._loaded.map) {
+			trace("_initialMapLocation")
+			trace(this.options.start_at_slide)
 			this.goTo(this.options.start_at_slide, true);
 		}
 	},
@@ -16236,52 +16248,6 @@ VCO.Map = VCO.Class.extend({
 	
 	_calculateZoomChange: function(origin, destination) {
 		return this._getBoundsZoom(origin, destination, true);
-		
-		/*
-		var _m1 	= this._getMapLocation(m1),
-			_m2 	= this._getMapLocation(m2),
-			zoom 	= {
-				in: 	false,
-				out: 	false,
-				amount: 1,
-				current: this._getMapZoom(),
-				max: 	16,
-				min: 	4
-			};
-			
-		// Calculate Zoom in or zoom out
-		if (Math.abs(_m1.x - _m2.x) >= (this._el.container.offsetWidth / 2)) {
-			zoom.out 	= true;
-			zoom.in 	= false;
-		} else if (Math.abs(_m1.x - _m2.x) <= this.options.zoom_distance) {
-			zoom.in 	= true;
-		}
-		
-		if (Math.abs(_m1.y - _m2.y) >= (this._el.container.offsetHeight)) {
-			zoom.out	= true;
-			zoom.in		= false;
-			zoom.amount = Math.round(Math.abs(_m1.y - _m2.y) / (this._el.container.offsetHeight));
-
-		} else if ((Math.abs(_m1.y - _m2.y) <= this.options.zoom_distance)) {
-		
-		} else {
-			zoom.in = false;
-		}
-		
-		// Return New Zoom Number
-		if (zoom.in) {
-			if (zoom.current < zoom.max) {
-				return zoom.current + zoom.amount;
-			}
-		} else if (zoom.out) {
-			if (zoom.current > zoom.min) {
-				return zoom.current - zoom.amount;
-			}
-		} else {
-			return zoom.current;
-		}
-		*/
-		
 	},
 	
 	_updateDisplay: function(w, h, animate, d, offset) {
@@ -16417,9 +16383,9 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		L.Icon.Default.imagePath = this.options.path_gfx;
 		
 		//this._map = new L.map(this._el.map, {scrollWheelZoom:false});
-		this._map = new L.map(this._el.map, {scrollWheelZoom:false}).setView([51.505, -0.09], 13);
-		
+		this._map = new L.map(this._el.map, {scrollWheelZoom:false});
 		this._map.on("load", this._onMapLoaded, this);
+		//this._map.setView([51.505, -0.09], 13);
 		
 		var layer = new L.StamenTileLayer(this.options.map_type);
 
@@ -16433,6 +16399,8 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		this._line_active = this._createLine(this._line_active);
 		this._line_active.setStyle({opacity:1});
 		this._addLineToMap(this._line_active);
+		
+		
 	},
 	
 	/*	Marker
@@ -16761,6 +16729,9 @@ VCO.StoryMap = VCO.Class.extend({
 		
 		// SizeBar
 		this._sizebar = {};
+		
+		// Loaded State
+		this._loaded = {storyslider:false, map:false};
 		
 		// Data Object
 		// Test Data compiled from http://www.pbs.org/marktwain/learnmore/chronology.html
@@ -17138,7 +17109,7 @@ VCO.StoryMap = VCO.Class.extend({
 			width: 					this._el.container.offsetWidth,
 			map_size_sticky: 		3, // Set as division 1/3 etc
 			map_center_offset: 		60, 
-			start_at_slide: 		0,
+			start_at_slide: 		3,
 			// animation
 			duration: 				1000,
 			ease: 					VCO.Ease.easeInOutQuint,
@@ -17238,12 +17209,15 @@ VCO.StoryMap = VCO.Class.extend({
 		
 		// Create Map using preferred Map API
 		this._map = new VCO.Map.Leaflet(this._el.map, this.data, this.options);
+		this._map.on('loaded', this._onMapLoaded, this);
 		
 		// Create SizeBar
 		this._sizebar = new VCO.SizeBar(this._el.sizebar, this._el.container, this.options);
 		
 		// Create StorySlider
 		this._storyslider = new VCO.StorySlider(this._el.storyslider, this.data, this.options);
+		this._storyslider.on('loaded', this._onStorySliderLoaded, this);
+		this._storyslider.init();
 		
 		// Set Default Component Sizes
 		this.options.map_height = (this.options.height / this.options.map_size_sticky);
@@ -17405,8 +17379,23 @@ VCO.StoryMap = VCO.Class.extend({
 		});
 	},
 	
+	_onMapLoaded: function() {
+		trace("MAP READY")
+		this._loaded.map = true;
+		this._onLoaded();
+	},
+	
+	_onStorySliderLoaded: function() {
+		trace("STORYSLIDER READY")
+		this._loaded.storyslider = true;
+		this._onLoaded();
+	},
+	
 	_onLoaded: function() {
-		this.fire("loaded", this.data);
+		if (this._loaded.storyslider && this._loaded.map) {
+			trace("STORYMAP IS READY");
+			this.fire("loaded", this.data);
+		}
 	}
 	
 	
