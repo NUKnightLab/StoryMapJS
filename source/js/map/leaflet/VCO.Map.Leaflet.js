@@ -56,7 +56,9 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		var bounds_array = [];
 		
 		for (var i = 0; i < this._markers.length; i++) {
-			bounds_array.push( [this._markers[i].data.location.lat, this._markers[i].data.location.lon]);
+			if (this._markers[i].data.real_marker) {
+				bounds_array.push( [this._markers[i].data.location.lat, this._markers[i].data.location.lon]);
+			}
 		};
 		
 		this._map.fitBounds(bounds_array, {padding:[15,15]});

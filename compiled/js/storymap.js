@@ -5757,7 +5757,12 @@ VCO.Slide = VCO.Class.extend({
 			
 			// add the object to the dom
 			this._media.addTo(this._el.content);
-			this._media.loadMedia();
+			try {
+    			this._media.loadMedia();
+			} catch (e) {
+			    trace("Error loading media for ", this._media);
+			    trace(e);
+			}
 		}
 		
 		// Text
@@ -15758,31 +15763,7 @@ VCO.MapMarker = VCO.Class.extend({
 		this.marker_number = 0;
 	
 		// Data
-		this.data = {
-			uniqueid: 				"",
-			background: {			// OPTIONAL
-				url: 				null,
-				color: 				null,
-				opacity: 			50
-			},
-			date: 					null,
-			location: {
-				lat: 				-9.143962,
-				lon: 				38.731094,
-				zoom: 				13,
-				icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-			},
-			text: {
-				headline: 			"Le portrait mystérieux",
-				text: 				"Lorem ipsum dolor sit amet, consectetuer adipiscing elit."
-			},
-			media: {
-				url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-				credit:				"Georges Méliès",
-				caption:			"Le portrait mystérieux"
-			}
-		
-		};
+		this.data = {};
 	
 		// Options
 		this.options = {
@@ -16030,7 +16011,7 @@ VCO.Map = VCO.Class.extend({
 					this._viewTo(marker.data.location, {calculate_zoom: this.options.calculate_zoom, zoom:zoom});
 					
 					// Show Line
-					if (this.options.show_history_line) {
+					if (this.options.show_history_line && marker.data.real_marker && this._markers[previous_marker].data.real_marker) {
 						this._replaceLines(this._line_active, [
 							{
 								lat:marker.data.location.lat,
@@ -16116,7 +16097,7 @@ VCO.Map = VCO.Class.extend({
 	_createMarkers: function(array) {
 		for (var i = 0; i < array.length; i++) {
 			this._createMarker(array[i]);
-			if (array[i].location.line) {
+			if (array[i].location && array[i].location.line) {
 				this._addToLine(this._line, array[i]);
 			}
 		};
@@ -16358,30 +16339,34 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 	_createMarker: function(d, o) {
 		var icon = {}; //new L.Icon.Default();
 		
-		if (o.use_custom_markers && d.location.icon && d.location.icon != "") {
-			icon = L.icon({iconUrl: d.location.icon, iconSize: [41]});
-			//icon = L.icon({iconUrl: d.media.url, iconSize: [41]});
+		if (d.location && d.location.lat && d.location.lon) {
+			this.data.real_marker = true;
+			if (o.use_custom_markers && d.location.icon && d.location.icon != "") {
+				icon = L.icon({iconUrl: d.location.icon, iconSize: [41]});
+				//icon = L.icon({iconUrl: d.media.url, iconSize: [41]});
 			
-		};
+			};
 		
-		//icon = L.icon({iconUrl: "gfx/map-pin.png", iconSize: [28, 43], iconAnchor: [14, 33]});
-		icon = L.divIcon({className: 'vco-mapmarker-leaflet'});
+			//icon = L.icon({iconUrl: "gfx/map-pin.png", iconSize: [28, 43], iconAnchor: [14, 33]});
+			icon = L.divIcon({className: 'vco-mapmarker-leaflet'});
 		
-		this._marker = L.marker([d.location.lat, d.location.lon], {
-			title: 		d.text.headline,
-			icon: 		icon
-		});
+			this._marker = L.marker([d.location.lat, d.location.lon], {
+				title: 		d.text.headline,
+				icon: 		icon
+			});
 		
-		this._marker.on("click", this._onMarkerClick, this); 
+			this._marker.on("click", this._onMarkerClick, this); 
 		
-		if (o.map_popup) {
-			this._createPopup(d, o);
+			if (o.map_popup) {
+				this._createPopup(d, o);
+			}
 		}
-		
 	},
 	
 	_addTo: function(m) {
-		this._marker.addTo(m);
+		if (this.data.real_marker) {
+			this._marker.addTo(m);
+		}
 	},
 	
 	_createPopup: function(d, o) {
@@ -16392,15 +16377,21 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 	},
 	
 	_active: function(a) {
-		if (a) {
-			this._marker.setOpacity(1);
-		} else {
-			this._marker.setOpacity(.25);
+		if (this.data.real_marker) {
+			if (a) {
+				this._marker.setOpacity(1);
+			} else {
+				this._marker.setOpacity(.25);
+			}
 		}
 	},
 	
 	_location: function() {
-		return this._marker.getLatLng();
+		if (this.data.real_marker) {
+			return this._marker.getLatLng();
+		} else {
+			return {};
+		}
 	}
 	
 });
@@ -16468,7 +16459,9 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		var bounds_array = [];
 		
 		for (var i = 0; i < this._markers.length; i++) {
-			bounds_array.push( [this._markers[i].data.location.lat, this._markers[i].data.location.lon]);
+			if (this._markers[i].data.real_marker) {
+				bounds_array.push( [this._markers[i].data.location.lat, this._markers[i].data.location.lon]);
+			}
 		};
 		
 		this._map.fitBounds(bounds_array, {padding:[15,15]});
@@ -16783,14 +16776,6 @@ VCO.StoryMap = VCO.Class.extend({
 						opacity: 			50
 					},
 					date: 					"1835",
-					location: {
-						lat: 				39.491711,
-						lon: 				-91.793260,
-						name: 				"Florida, Missouri",
-						zoom: 				12,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
-						line: 				true
-					},
 					text: {
 						headline: 			"Mark Twain",
 						text: 				"Samuel Langhorne Clemens (November 30, 1835 – April 21, 1910), better known by his pen name Mark Twain, was an American author and humorist. He wrote The Adventures of Tom Sawyer (1876) and its sequel, Adventures of Huckleberry Finn (1885), the latter often called \"the Great American Novel.\""
@@ -17191,9 +17176,8 @@ VCO.StoryMap = VCO.Class.extend({
 		
 		// Merge Options
 		VCO.Util.mergeData(this.options, options);
-		
 		this._initData(data);
-		
+		return this;
 	},
 
 	/*	Navigation
@@ -17229,7 +17213,7 @@ VCO.StoryMap = VCO.Class.extend({
 			});
 		} else if (typeof data === 'object') {
 			// Merge Data
-			VCO.Util.mergeData(this.data, data);
+			this.data = data;
 			self._onDataLoaded();
 		} else {
 			self._onDataLoaded();

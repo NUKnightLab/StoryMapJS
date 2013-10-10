@@ -131,7 +131,7 @@ VCO.Map = VCO.Class.extend({
 					this._viewTo(marker.data.location, {calculate_zoom: this.options.calculate_zoom, zoom:zoom});
 					
 					// Show Line
-					if (this.options.show_history_line) {
+					if (this.options.show_history_line && marker.data.real_marker && this._markers[previous_marker].data.real_marker) {
 						this._replaceLines(this._line_active, [
 							{
 								lat:marker.data.location.lat,
@@ -217,7 +217,7 @@ VCO.Map = VCO.Class.extend({
 	_createMarkers: function(array) {
 		for (var i = 0; i < array.length; i++) {
 			this._createMarker(array[i]);
-			if (array[i].location.line) {
+			if (array[i].location && array[i].location.line) {
 				this._addToLine(this._line, array[i]);
 			}
 		};

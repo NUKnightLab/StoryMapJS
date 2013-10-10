@@ -122,14 +122,6 @@ VCO.StoryMap = VCO.Class.extend({
 						opacity: 			50
 					},
 					date: 					"1835",
-					location: {
-						lat: 				39.491711,
-						lon: 				-91.793260,
-						name: 				"Florida, Missouri",
-						zoom: 				12,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
-						line: 				true
-					},
 					text: {
 						headline: 			"Mark Twain",
 						text: 				"Samuel Langhorne Clemens (November 30, 1835 – April 21, 1910), better known by his pen name Mark Twain, was an American author and humorist. He wrote The Adventures of Tom Sawyer (1876) and its sequel, Adventures of Huckleberry Finn (1885), the latter often called \"the Great American Novel.\""
