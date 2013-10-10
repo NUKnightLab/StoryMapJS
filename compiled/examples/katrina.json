@@ -1,0 +1,169 @@
+{
+    "storymap": {
+        "slides": [{
+            "type": "overview",
+            "background": {         
+                    "url":              "http://www.uscg.mil/history/katrina/img/katrinaphoto1sm.jpg",
+                    "color":                "#cdbfe3",
+                    "opacity":          25
+                },
+            "date": "2013",
+            "text": {
+                "headline": "Hurricane Katrina",
+                "text": "Path of the hurricane"
+            },
+            "location": {
+                "name": "Bahamas",
+                "lon": "-75.5",
+                "zoom": 10,
+                "lat": "23.2",
+                "line": true,
+                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+            },
+            "media": {
+                    "url":              "http://donsnotes.com/hist/images/katrina_path.gif",
+                    "credit":               "memphis.edu",
+                    "caption":          "Complete path of Hurricane Katrina"
+                }
+        }, {
+            "background": {         
+                    "url":              "http://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Tropical_Storm_Katrina_8-24-05_1315_UTC.jpg/400px-Tropical_Storm_Katrina_8-24-05_1315_UTC.jpg",
+                    "opacity":          25
+                },
+            "date": "Aug 23",
+            "text": {
+                "headline": "Aug 23",
+                "text": "Tropical Depression Twelve formed a category 1 hurricane<br></br><b><i>Embed a YouTube video with a URL.</i></b>"
+            },
+            "location": {
+                "name": "Bahamas",
+                "lon": "-75.5",
+                "zoom": 10,
+                "lat": "23.2",
+                "line": true,
+                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+            },
+            "media": {
+                    "url":              "https://twitter.com/seymourdfair/status/370893881640247296",
+                    "credit":               "Twitter",
+                    "caption":          "Twitter status update"
+                }
+        },{
+            "date": "Aug 26",
+            "text": {
+                "headline": "Aug 26",
+                "text": "70MPH<i></b>"
+            },
+            "location": {
+                "name": "location",
+                "lon": "-81.1",
+                "zoom": 10,
+                "lat": "25.4",
+                "line": true,
+                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+            },
+            "media": {
+                    "url":              "http://upload.wikimedia.org/wikipedia/commons/1/10/Hurricane_Katrina_8-26-05_1415_UTC.jpg",
+                    "credit":               "wikipedia",
+                    "caption":          "Katrina over Florida"
+                }
+        }, {
+            "date": "Aug 27",
+            "text": {
+                "headline": "Aug 27",
+                "text": "110MPH</i></b>"
+            },
+            "location": {
+                "name": "location",
+                "lon": "-84.0",
+                "zoom": 10,
+                "lat": "24.4",
+                "line": true,
+                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+            },
+            "media": {
+                    "url":              "http://cdn.crooksandliars.com/files/vfs/2010/08/Hurricane-Katrina-Image8-27.jpg",
+                    "credit":               "unknown",
+                    "caption":          "Aug 27 Katrina"
+                }
+        }, {
+            "date": "Aug 28",
+            "text": {
+                "headline": "Aug 28",
+                "text": "145MPH"
+            },
+            "location": {
+                "name": "location",
+                "lon": "-86.8",
+                "zoom": 10,
+                "lat": "25.1",
+                "line": true,
+                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+            },
+            "media": {
+                    "url":              "http://serc.carleton.edu/images/earthlabs/hurricanes/katrina_08-28-2005_650.jpg",
+                    "credit":               "carleton.edu",
+                    "caption":          "Katrina aug 28"
+                }
+        }, {
+            "date": "Aug 29",
+            "text": {
+                "headline": "Aug 29",
+                "text": "160MPH<br></br><b><i>Embed a Vine like this one of the crowd in Austin.</i></b>"
+            },
+            "location": {
+                "name": "location",
+                "lon": "-89.6",
+                "zoom": 10,
+                "lat": "28.2",
+                "line": true,
+                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+            },
+            "media": {
+                    "url":              "http://www.gdi-solutions.com/news/katrina082905_12am.jpg",
+                    "credit":               "gdi",
+                    "caption":          "aug 29 katrina"
+                }
+        }, {
+            "date": "Aug 30",
+            "text": {
+                "headline": "Aug 30",
+                "text": " Aftermath 35MPH<br></br><b><i>Insert a photo that is hosted on the web.</i></b>"
+            },
+            "location": {
+                "name": "location",
+                "lon": "-87.5",
+                "zoom": 10,
+                "lat": "36.3",
+                "line": true,
+                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+            },
+            "media": {
+                    "url":              "http://2.bp.blogspot.com/_-TWUNgIWR-w/THxDXpGl6wI/AAAAAAAAB_E/wMUV1BRkMds/s1600/456px-KatrinaNewOrleansFlooded_edit2.jpg",
+                    "credit":               "unknown",
+                    "caption":          "aftermath"
+                }
+        }, {
+            "type": "overview",
+                 "date": "Aug 31",
+            "text": {
+                "headline": "Aug 31",
+                "text": "Hurricane Katrina is downgraded to a tropical depression.<br></br><b><i>Embed a Vimeo using the URL.</i></b>"
+            },
+            "location": {
+                "name": "location",
+                "lon": "-87.5",
+                "zoom": 10,
+                "lat": "36.3",
+                "line": true,
+                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+            },
+            "media": {
+                    "url":              "http://api.ning.com/files/DgJl8IbalZiVjphWi2SfqoBhonpNNZNLZeTconOtqptv38c11mWYn38O5L6ZHErcbhygVcAoWr3lhYlYbPl1Pv24cAiBzLoq/wxwhyHurricaneKatrinaAugust23302005385X287X96.jpg",
+                    "credit":               "weatherbug.com",
+                    "caption":          "Overview of Katrina"
+                }
+        
+        }]
+    }
+}
