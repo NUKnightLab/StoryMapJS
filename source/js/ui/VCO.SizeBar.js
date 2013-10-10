@@ -148,8 +148,8 @@ VCO.SizeBar = VCO.Class.extend({
 		this._el.arrow = VCO.Dom.create("div", "vco-arrow-up", this._el.container);
 		this._el.container.style.top = this.options.sizebar_default_y + "px";
 		
-		this._el.line = VCO.Dom.create("div", "vco-map-line", this._el.container);
-		this._el.coverbar = VCO.Dom.create("div", "vco-coverbar", this._el.container);
+		//this._el.line = VCO.Dom.create("div", "vco-map-line", this._el.container);
+		//this._el.coverbar = VCO.Dom.create("div", "vco-coverbar", this._el.container);
 		
 		//this._el.line.style.top = this.options.sizebar_default_y + "px";
 		
@@ -188,6 +188,7 @@ VCO.SizeBar = VCO.Class.extend({
 		this._el.container.style.width = this.options.width + "px";
 		this._el.arrow.style.left = ((this.options.width/2) - 17) + "px";
 		
+		/*
 		this._el.line.style.left = ((this.options.width/2) ) + "px";
 		this._el.line.style.top = -((line_height/2) - 14) + "px";
 		this._el.line.style.height = ((line_height/2) - 20) + "px";
@@ -195,6 +196,7 @@ VCO.SizeBar = VCO.Class.extend({
 		this._el.coverbar.style.height = ((line_height/2) - 6) + "px";
 		this._el.coverbar.style.top = -((line_height/2) - 14) + "px";
 		this._el.coverbar.style.left = ((this.options.width/2) +1) + "px";
+		*/
 		trace(line_height);
 	}
 	

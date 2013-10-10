@@ -4073,8 +4073,8 @@ VCO.SizeBar = VCO.Class.extend({
 		this._el.arrow = VCO.Dom.create("div", "vco-arrow-up", this._el.container);
 		this._el.container.style.top = this.options.sizebar_default_y + "px";
 		
-		this._el.line = VCO.Dom.create("div", "vco-map-line", this._el.container);
-		this._el.coverbar = VCO.Dom.create("div", "vco-coverbar", this._el.container);
+		//this._el.line = VCO.Dom.create("div", "vco-map-line", this._el.container);
+		//this._el.coverbar = VCO.Dom.create("div", "vco-coverbar", this._el.container);
 		
 		//this._el.line.style.top = this.options.sizebar_default_y + "px";
 		
@@ -4113,6 +4113,7 @@ VCO.SizeBar = VCO.Class.extend({
 		this._el.container.style.width = this.options.width + "px";
 		this._el.arrow.style.left = ((this.options.width/2) - 17) + "px";
 		
+		/*
 		this._el.line.style.left = ((this.options.width/2) ) + "px";
 		this._el.line.style.top = -((line_height/2) - 14) + "px";
 		this._el.line.style.height = ((line_height/2) - 20) + "px";
@@ -4120,6 +4121,7 @@ VCO.SizeBar = VCO.Class.extend({
 		this._el.coverbar.style.height = ((line_height/2) - 6) + "px";
 		this._el.coverbar.style.top = -((line_height/2) - 14) + "px";
 		this._el.coverbar.style.left = ((this.options.width/2) +1) + "px";
+		*/
 		trace(line_height);
 	}
 	
@@ -15770,6 +15772,9 @@ VCO.MapMarker = VCO.Class.extend({
 		// Components
 		this._marker 				= {};
 		
+		// Icon
+		this._icon = {};
+		
 		// Marker Number
 		this.marker_number = 0;
 	
@@ -16312,17 +16317,17 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 		if (d.location && d.location.lat && d.location.lon) {
 			this.data.real_marker = true;
 			if (o.use_custom_markers && d.location.icon && d.location.icon != "") {
-				icon = L.icon({iconUrl: d.location.icon, iconSize: [41]});
+				this._icon = L.icon({iconUrl: d.location.icon, iconSize: [41]});
 				//icon = L.icon({iconUrl: d.media.url, iconSize: [41]});
 			
 			};
 		
 			//icon = L.icon({iconUrl: "gfx/map-pin.png", iconSize: [28, 43], iconAnchor: [14, 33]});
-			icon = L.divIcon({className: 'vco-mapmarker-leaflet'});
+			this._icon = L.divIcon({className: 'vco-mapmarker'});
 		
 			this._marker = L.marker([d.location.lat, d.location.lon], {
 				title: 		d.text.headline,
-				icon: 		icon
+				icon: 		this._icon
 			});
 		
 			this._marker.on("click", this._onMarkerClick, this); 
@@ -16350,10 +16355,21 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 		if (this.data.real_marker) {
 			if (a) {
 				this._marker.setOpacity(1);
+				this._marker.setZIndexOffset(100);
+				this._icon = L.divIcon({className: 'vco-mapmarker-active'});
+				this._setIcon();
 			} else {
-				this._marker.setOpacity(.25);
+				//this._marker.setOpacity(.25);
+				this._marker.setOpacity(1);
+				this._marker.setZIndexOffset(0);
+				this._icon = L.divIcon({className: 'vco-mapmarker'});
+				this._setIcon();
 			}
 		}
+	},
+	
+	_setIcon: function() {
+		this._marker.setIcon(this._icon);
 	},
 	
 	_location: function() {
