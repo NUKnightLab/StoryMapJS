@@ -357,7 +357,7 @@ VCO.StoryMap = VCO.Class.extend({
 						text: 				"Lectures across the United States. Meets and falls in love with Livy in Elmira, New York."
 					},
 					media: {
-						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						url: 				"https://twitter.com/MarkTwainQuote/status/384850339297755136",
 						credit:				"ETC",
 						caption:			"something"
 					}

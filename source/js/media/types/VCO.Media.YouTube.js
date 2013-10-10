@@ -49,7 +49,7 @@ VCO.Media.YouTube = VCO.Media.extend({
 	// Update Media Display
 	_updateMediaDisplay: function() {
 		//this._el.content_item.style.height = this.options.height + "px";
-		this._el.content_item.style.width = "100%";
+		//this._el.content_item.style.width = "100%";
 		this._el.content_item.style.height = VCO.Util.ratio.r16_9({w:this._el.content_item.offsetWidth}) + "px";
 		//this._el.content_item.style.height = size.h + "px";
 		//this._el.content_item.style.width = size.w + "px";
