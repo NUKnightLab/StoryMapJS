@@ -14,9 +14,9 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		L.Icon.Default.imagePath = this.options.path_gfx;
 		
 		//this._map = new L.map(this._el.map, {scrollWheelZoom:false});
-		this._map = new L.map(this._el.map, {scrollWheelZoom:false}).setView([51.505, -0.09], 13);
-		
+		this._map = new L.map(this._el.map, {scrollWheelZoom:false});
 		this._map.on("load", this._onMapLoaded, this);
+		//this._map.setView([51.505, -0.09], 13);
 		
 		var layer = new L.StamenTileLayer(this.options.map_type);
 
@@ -30,6 +30,8 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		this._line_active = this._createLine(this._line_active);
 		this._line_active.setStyle({opacity:1});
 		this._addLineToMap(this._line_active);
+		
+		
 	},
 	
 	/*	Marker
@@ -56,7 +58,9 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		var bounds_array = [];
 		
 		for (var i = 0; i < this._markers.length; i++) {
-			bounds_array.push( [this._markers[i].data.location.lat, this._markers[i].data.location.lon]);
+			if (this._markers[i].data.real_marker) {
+				bounds_array.push( [this._markers[i].data.location.lat, this._markers[i].data.location.lon]);
+			}
 		};
 		
 		this._map.fitBounds(bounds_array, {padding:[15,15]});

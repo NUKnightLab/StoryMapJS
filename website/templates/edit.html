@@ -379,14 +379,6 @@ function slide_add() {
             headline: "",
             text: ""
         },
-        location: {
-            name: "Chicago, IL",
-            lat: "41.850033",
-            lon: "-87.6500523",
-            zoom: 10,
-            line: true,
-            icon: "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-        },
         media: {
             url: "",
             credit: "",
@@ -394,10 +386,19 @@ function slide_add() {
         }
     };
 
-    var n = _storymap.slides.length;    
+    var n = _storymap.slides.length; 
+    
+    // Add location data if not adding overview slide   
     if(n > 0) {
-        $.extend(data.location, _storymap.slides[n - 1].location);
-    } 
+        data.location =  $.extend({}, _storymap.slides[n - 1].location || {
+            name: "Chicago, IL",
+            lat: "41.850033",
+            lon: "-87.6500523",
+            zoom: 10,
+            line: true,
+            icon: "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+        });
+    }     
     _storymap.slides.push(data);
     
     // Append slide element if not adding overview slide

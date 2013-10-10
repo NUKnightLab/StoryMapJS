@@ -57,6 +57,7 @@ VCO.Map = VCO.Class.extend({
 		this.options = {
 			map_type: 			"toner",
 			path_gfx: 			"gfx",
+			start_at_slide: 	0,
 			map_popup: 			false, 
 			zoom_distance: 		100,
 			calculate_zoom: 	true, // Allow map to determine best zoom level between markers (recommended)
@@ -131,7 +132,7 @@ VCO.Map = VCO.Class.extend({
 					this._viewTo(marker.data.location, {calculate_zoom: this.options.calculate_zoom, zoom:zoom});
 					
 					// Show Line
-					if (this.options.show_history_line) {
+					if (this.options.show_history_line && marker.data.real_marker && this._markers[previous_marker].data.real_marker) {
 						this._replaceLines(this._line_active, [
 							{
 								lat:marker.data.location.lat,
@@ -217,7 +218,7 @@ VCO.Map = VCO.Class.extend({
 	_createMarkers: function(array) {
 		for (var i = 0; i < array.length; i++) {
 			this._createMarker(array[i]);
-			if (array[i].location.line) {
+			if (array[i].location && array[i].location.line) {
 				this._addToLine(this._line, array[i]);
 			}
 		};
@@ -343,10 +344,14 @@ VCO.Map = VCO.Class.extend({
 		trace("MAP LOADED");
 		this._loaded.map = true;
 		this._initialMapLocation();
+		this.fire("loaded", this.data);
 	},
 	
 	_initialMapLocation: function() {
+		trace("_initialMapLocation 1")
 		if (this._loaded.data && this._loaded.map) {
+			trace("_initialMapLocation")
+			trace(this.options.start_at_slide)
 			this.goTo(this.options.start_at_slide, true);
 		}
 	},
@@ -356,52 +361,6 @@ VCO.Map = VCO.Class.extend({
 	
 	_calculateZoomChange: function(origin, destination) {
 		return this._getBoundsZoom(origin, destination, true);
-		
-		/*
-		var _m1 	= this._getMapLocation(m1),
-			_m2 	= this._getMapLocation(m2),
-			zoom 	= {
-				in: 	false,
-				out: 	false,
-				amount: 1,
-				current: this._getMapZoom(),
-				max: 	16,
-				min: 	4
-			};
-			
-		// Calculate Zoom in or zoom out
-		if (Math.abs(_m1.x - _m2.x) >= (this._el.container.offsetWidth / 2)) {
-			zoom.out 	= true;
-			zoom.in 	= false;
-		} else if (Math.abs(_m1.x - _m2.x) <= this.options.zoom_distance) {
-			zoom.in 	= true;
-		}
-		
-		if (Math.abs(_m1.y - _m2.y) >= (this._el.container.offsetHeight)) {
-			zoom.out	= true;
-			zoom.in		= false;
-			zoom.amount = Math.round(Math.abs(_m1.y - _m2.y) / (this._el.container.offsetHeight));
-
-		} else if ((Math.abs(_m1.y - _m2.y) <= this.options.zoom_distance)) {
-		
-		} else {
-			zoom.in = false;
-		}
-		
-		// Return New Zoom Number
-		if (zoom.in) {
-			if (zoom.current < zoom.max) {
-				return zoom.current + zoom.amount;
-			}
-		} else if (zoom.out) {
-			if (zoom.current > zoom.min) {
-				return zoom.current - zoom.amount;
-			}
-		} else {
-			return zoom.current;
-		}
-		*/
-		
 	},
 	
 	_updateDisplay: function(w, h, animate, d, offset) {
