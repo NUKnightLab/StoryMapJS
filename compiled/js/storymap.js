@@ -17109,7 +17109,7 @@ VCO.StoryMap = VCO.Class.extend({
 			width: 					this._el.container.offsetWidth,
 			map_size_sticky: 		3, // Set as division 1/3 etc
 			map_center_offset: 		60, 
-			start_at_slide: 		3,
+			start_at_slide: 		0,
 			// animation
 			duration: 				1000,
 			ease: 					VCO.Ease.easeInOutQuint,
