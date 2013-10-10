@@ -16,7 +16,7 @@ VCO.Media.Flickr = VCO.Media.extend({
 		this.messege.updateMessege(VCO.Language.messeges.loading + " Flickr");
 		
 		// Create Dom element
-		this._el.content_item	= VCO.Dom.create("img", "vco-media-item vco-media-image vco-media-flickr", this._el.content);
+		this._el.content_item	= VCO.Dom.create("img", "vco-media-item vco-media-image vco-media-flickr vco-media-shadow", this._el.content);
 		
 		// Get Media ID
 		this.media_id = this.data.url.split("photos\/")[1].split("/")[1];

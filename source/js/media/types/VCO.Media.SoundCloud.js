@@ -15,7 +15,7 @@ VCO.Media.SoundCloud = VCO.Media.extend({
 		this.messege.updateMessege(VCO.Language.messeges.loading + " SoundCloud");
 		
 		// Create Dom element
-		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe vco-media-soundcloud", this._el.content);
+		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe vco-media-soundcloud vco-media-shadow", this._el.content);
 		
 		// Get Media ID
 		this.media_id = this.data.url;

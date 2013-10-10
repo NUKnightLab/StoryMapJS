@@ -15,7 +15,7 @@ VCO.Media.YouTube = VCO.Media.extend({
 		this.messege.updateMessege(VCO.Language.messeges.loading + " YouTube");
 		
 		// Create Dom element
-		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-youtube", this._el.content);
+		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-youtube vco-media-shadow", this._el.content);
 		this._el.content_item.id = VCO.Util.unique_ID(7)
 		
 		// URL Vars
