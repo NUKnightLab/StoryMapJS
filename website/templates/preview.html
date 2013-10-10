@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>StoryMap Preview</title>
+<meta charset="utf-8">
+<meta name="description" content="TimelineJS Embed">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-touch-fullscreen" content="yes">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<!-- CSS-->
+<link rel="stylesheet" href="/compiled/css/storymap.css?v1">
+<!-- Style-->
+<style>
+html, body {
+    height: 100%;
+    width: 100%;
+    padding: 0px;
+    margin: 0px;
+}
+</style>
+<!-- HTML5 shim, for IE6-8 support of HTML elements-->
+<!--[if lt IE 9]>
+<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+</head>
+<body>
+<div id="storymap"></div>
+
+<script src="/compiled/js/storymap.js"></script>
+<script>
+
+var options = {
+    //start_at_slide: 0 <-- this doesn't work
+    // add more options here
+};
+
+function parseQuerystring() {
+    var nvpair = {};
+    var qs = window.location.search.replace('?', '');
+    var pairs = qs.split('&');
+    
+    for(var i = 0; i < pairs.length; i++) {
+        var p = pairs[i].split('=');
+        nvpair[p[0]] = p[1];
+    }
+    return nvpair;
+}
+
+var params = parseQuerystring();
+var url = params['url'];
+
+for(var key in options) {
+    if(params.hasOwnProperty(key)) {
+        options[key] = params[key];
+    }
+}
+
+var storymap = new VCO.StoryMap('storymap', url, options);
+
+window.onresize = function(event) {
+    storymap.updateDisplay();
+}
+
+//storymap.goTo(2);
+
+</script>
+</body>
+</html>

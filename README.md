@@ -32,7 +32,7 @@ Install [Node.js](http://nodejs.org)
 
 Files located in the `source` directory are assets for storymapjs itself.
 
-Files located in the `site` directory are for the storymapjs website.
+Files located in the `website` directory are for the storymapjs website.
 
 Edit config.json as needed to modify the staging and deployment process.
           

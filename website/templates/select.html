@@ -59,18 +59,48 @@
         <p><i class="icon-spinner icon-spin"></i><span id="progress_msg"></span>...</p>
     </div>
 </div>
+
+<div id="new_modal" class="modal hide fade" role="dialog" aria-hidden="true">
+    <div class="modal-body">
+        <p class="error"> </p>
+        <input type="text" id="new_name" value="" placeholder="enter unique name for StoryMap" style="width: 95%;" />
+       
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn" data-dismiss="modal">Cancel</a>
+        <a href="#" class="btn btn-primary">Create</a>
+    </div>
+</div>
+
 <!-- END MODALS -->
 
 <script type="text/javascript">
 
 function handle_storymap_new() {
-    //show_error('This is a test of the emergency broadcast system');
-    show_progress('Faking creating a new, empty StoryMap...');
+    $('#new_modal .btn-primary').bind('click.confirm', function(event) {    
+        var name = $('#new_name').val().trim();
+        
+        if(!name.length) {
+            $('#new_modal .error').html('You must enter a name');
+            return;
+        }
+        
+        // TODO: check uniqueness
+        
+        $(this).unbind('click.confirm');
+        $('#new_modal').modal('hide');
+        
+        show_progress('Faking creating a new, empty StoryMap...');
+       
+        setTimeout(function() {
+            hide_progress();        
+            document.location.href = 'edit.html?id=/compiled/examples/empty.json';
+        }, 2000);
+    });
     
-    setTimeout(function() {
-        hide_progress();        
-        document.location.href = 'edit.html?id=/compiled/examples/empty.json';
-    }, 2000);
+    $('#new_modal').modal('show').on('shown', function() { 
+        $('#new_name').focus();
+    });
 }
 
 $(function() {

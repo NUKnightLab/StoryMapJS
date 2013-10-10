@@ -13,11 +13,11 @@
 
 
 <section id="demo">
-  <div id="storymap">
+  <div id="homepage-storymap">
   </div>
 </section>
 <script>
-  var storymap = new VCO.StoryMap('storymap', '{{ static_url }}/demo/demo.json');
+  var storymap = new VCO.StoryMap('homepage-storymap', '{{ static_url }}/demo/demo.json');
   window.onresize = function(event) {
    storymap.updateDisplay();
   }

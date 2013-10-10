@@ -530,9 +530,8 @@ VCO.StoryMap = VCO.Class.extend({
 		
 		// Merge Options
 		VCO.Util.mergeData(this.options, options);
-		
 		this._initData(data);
-		
+		return this;
 	},
 
 	/*	Navigation
@@ -568,7 +567,7 @@ VCO.StoryMap = VCO.Class.extend({
 			});
 		} else if (typeof data === 'object') {
 			// Merge Data
-			VCO.Util.mergeData(this.data, data);
+			this.data = data;
 			self._onDataLoaded();
 		} else {
 			self._onDataLoaded();
