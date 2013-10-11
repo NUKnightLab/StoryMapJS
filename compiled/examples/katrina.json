@@ -2,11 +2,6 @@
     "storymap": {
         "slides": [{
             "type": "overview",
-            "background": {         
-                    "url":              "http://www.materialworldblog.com/occasional/assets/img/hurricane/FigureI.jpg",
-                    "color":                "#cdbfe3",
-                    "opacity":          25
-                },
             "date": "2013",
             "text": {
                 "headline": "The Path of Hurricane Katrina",
@@ -25,7 +20,7 @@
             "date": "Aug 23",
             "text": {
                 "headline": "Aug 23",
-                "text": "<ul><li>Tropical Depression Twelve formed a category 1 hurricane over the Bahamas at 5:00 p.m. EDT on August 23, 2005, partially from the remains of Tropical Depression Ten, which had dissipated due to the effects of a nearby upper tropospheric trough. </li><li>While the normal standards for numbering tropical depressions in the Atlantic indicate that the old name/number is retained when a depression dissipates and regenerates, satellite data indicated that a second tropical wave combined with Tropical Depression Ten north of Puerto Rico to form a new, much more advanced system, which was then designated as Tropical Depression Twelve.</li><li> Simultaneously, the trough in the upper troposphere weakened, causing the wind shear in the area to relax, thereby allowing the new tropical depression to develop.</li></ul>"
+                "text": "<ul><li>Tropical Depression Twelve formed a category 1 hurricane over the Bahamas at 5:00 p.m. EDT on August 23, 2005.</li></ul>"
             },
             "location": {
                 "name": "Bahamas",
@@ -113,7 +108,7 @@
             "date": "Aug 29",
             "text": {
                 "headline": "Aug 29",
-                "text": "<ul><li>At 5:10 AM CDT, Hurricane Katrina made its second landfall as a strong Category 3 hurricane near Buras-Triumph, Louisiana, with sustained winds of more than 125 mph (205 km/h), although Category 4 winds may have briefly affected the area.</li><li> Katrina also made landfall in St. Bernard parish and St. Tammany parish as a Category 3 hurricane for a total of three landfalls in Louisiana. </li><li>By 9:00 AM CDT, there was 6–8 feet of water in the Lower Ninth Ward. </li><li>By 11:00 AM CDT, there was approximately 10 feet of water in St. Bernard Parish. Many rooftops could not be seen here as they were submerged. </li><li>At 2:00 PM CDT, New Orleans officials confirmed a breach of the 17th Street Canal levee. There was also confirmation of breaches at two other canals. Governor Blanco ordered 68 school buses into New Orleans from surrounding parishes to begin evacuating any survivors that remained in the city.</li></ul> "
+                "text": "<ul><li>At 5:10 AM CDT, Hurricane Katrina made its second landfall as a strong Category 3 hurricane near Buras-Triumph, Louisiana, with sustained winds of more than 125 mph (205 km/h), although Category 4 winds may have briefly affected the area.</li><li>By 9:00 AM CDT, there was 6–8 feet of water in the Lower Ninth Ward. </li><li>By 11:00 AM CDT, there was approximately 10 feet of water in St. Bernard Parish. Many rooftops could not be seen here as they were submerged. </li><li>At 2:00 PM CDT, New Orleans officials confirmed a breach of the 17th Street Canal levee. There was also confirmation of breaches at two other canals. Governor Blanco ordered 68 school buses into New Orleans from surrounding parishes to begin evacuating any survivors that remained in the city.</li></ul> "
             },
             "location": {
                 "name": "location",
