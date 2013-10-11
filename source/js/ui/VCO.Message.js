@@ -2,7 +2,7 @@
 	Draggable component to control size
 ================================================== */
  
-VCO.Messege = VCO.Class.extend({
+VCO.Message = VCO.Class.extend({
 	
 	includes: [VCO.Events, VCO.DomMixins],
 	
@@ -15,9 +15,9 @@ VCO.Messege = VCO.Class.extend({
 		this._el = {
 			parent: {},
 			container: {},
-			messege_container: {},
+			message_container: {},
 			loading_icon: {},
-			messege: {}
+			message: {}
 		};
 	
 		//Options
@@ -26,7 +26,7 @@ VCO.Messege = VCO.Class.extend({
 			height: 				600
 		};
 		
-		this._el.container = VCO.Dom.create("div", "vco-messege");
+		this._el.container = VCO.Dom.create("div", "vco-message");
 		
 		if (add_to_container) {
 			add_to_container.appendChild(this._el.container);
@@ -47,8 +47,8 @@ VCO.Messege = VCO.Class.extend({
 	
 	/*	Public
 	================================================== */
-	updateMessege: function(t) {
-		this._updateMessege(t);
+	updateMessage: function(t) {
+		this._updateMessage(t);
 	},
 	
 	
@@ -58,15 +58,15 @@ VCO.Messege = VCO.Class.extend({
 		this._updateDisplay(w, h);
 	},
 	
-	_updateMessege: function(t) {
+	_updateMessage: function(t) {
 		if (!t) {
 			if (VCO.Language) {
-				this._el.messege.innerHTML = VCO.Language.messeges.loading;
+				this._el.message.innerHTML = VCO.Language.messages.loading;
 			} else {
-				this._el.messege.innerHTML = "Loading";
+				this._el.message.innerHTML = "Loading";
 			}
 		} else {
-			this._el.messege.innerHTML = t;
+			this._el.message.innerHTML = t;
 		}
 	},
 	
@@ -85,11 +85,11 @@ VCO.Messege = VCO.Class.extend({
 	_initLayout: function () {
 		
 		// Create Layout
-		this._el.messege_container = VCO.Dom.create("div", "vco-messege-container", this._el.container);
-		this._el.loading_icon = VCO.Dom.create("div", "vco-loading-icon", this._el.messege_container);
-		this._el.messege = VCO.Dom.create("div", "vco-messege-content", this._el.messege_container);
+		this._el.message_container = VCO.Dom.create("div", "vco-message-container", this._el.container);
+		this._el.loading_icon = VCO.Dom.create("div", "vco-loading-icon", this._el.message_container);
+		this._el.message = VCO.Dom.create("div", "vco-message-content", this._el.message_container);
 		
-		this._updateMessege();
+		this._updateMessage();
 		
 	},
 	

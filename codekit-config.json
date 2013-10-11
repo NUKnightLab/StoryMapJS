@@ -446,10 +446,10 @@
       "initialSize" : 2120,
       "fileType" : 8192
     },
-    "\/source\/less\/ui\/VCO.Messege.less" : {
+    "\/source\/less\/ui\/VCO.Message.less" : {
       "ieCompatibility" : 1,
-      "inputAbbreviatedPath" : "\/source\/less\/ui\/VCO.Messege.less",
-      "outputAbbreviatedPath" : "\/source\/less\/css\/VCO.Messege.css",
+      "inputAbbreviatedPath" : "\/source\/less\/ui\/VCO.Message.less",
+      "outputAbbreviatedPath" : "\/source\/less\/css\/VCO.Message.css",
       "outputPathIsSetByUser" : 0,
       "strictUnits" : 0,
       "relativeURLS" : 0,
@@ -1277,15 +1277,15 @@
       "outputAbbreviatedPath" : "\/source\/js\/data\/VCO.Data-min.js",
       "fileType" : 64
     },
-    "\/source\/js\/ui\/VCO.Messege.js" : {
+    "\/source\/js\/ui\/VCO.Message.js" : {
       "ignoreWasSetByUser" : 0,
       "ignore" : 1,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/ui\/VCO.Messege.js",
+      "inputAbbreviatedPath" : "\/source\/js\/ui\/VCO.Message.js",
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/ui\/VCO.Messege-min.js",
+      "outputAbbreviatedPath" : "\/source\/js\/ui\/VCO.Message-min.js",
       "fileType" : 64
     },
     "\/source\/less\/media\/VCO.Media.less" : {
