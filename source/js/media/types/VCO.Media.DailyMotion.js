@@ -11,8 +11,8 @@ VCO.Media.DailyMotion = VCO.Media.extend({
 		var api_url,
 			self = this;
 		
-		// Loading Messege
-		this.messege.updateMessege(VCO.Language.messeges.loading + " DailyMotion");
+		// Loading Message
+		this.message.updateMessage(VCO.Language.messages.loading + " DailyMotion");
 		
 		// Create Dom element
 		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe vco-media-dailymotion", this._el.content);

@@ -12,8 +12,8 @@ VCO.Media.Flickr = VCO.Media.extend({
 		var api_url,
 			self = this;
 		
-		// Loading Messege
-		this.messege.updateMessege(VCO.Language.messeges.loading + " Flickr");
+		// Loading Message
+		this.message.updateMessage(VCO.Language.messages.loading + " Flickr");
 		
 		// Create Dom element
 		this._el.content_item	= VCO.Dom.create("img", "vco-media-item vco-media-image vco-media-flickr vco-media-shadow", this._el.content);

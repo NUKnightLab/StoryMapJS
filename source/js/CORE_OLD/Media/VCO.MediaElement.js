@@ -101,8 +101,8 @@ if(typeof VMM != 'undefined' && typeof VMM.MediaElement == 'undefined') {
 		
 		create: function(data, uid) {
 			var _valid = false,
-				//loading_messege			=	"<span class='messege'><p>" + VMM.master_config.language.messages.loading + "</p></span>";
-				loading_messege			=	VMM.MediaElement.loadingmessage(VMM.master_config.language.messages.loading + "...");
+				//loading_message			=	"<span class='message'><p>" + VMM.master_config.language.messages.loading + "</p></span>";
+				loading_message			=	VMM.MediaElement.loadingmessage(VMM.master_config.language.messages.loading + "...");
 			
 			if (data.media != null && data.media != "") {
 				var mediaElem = "", captionElem = "", creditElem = "", _id = "", isTextMedia = false, m;
@@ -127,7 +127,7 @@ if(typeof VMM != 'undefined' && typeof VMM.MediaElement == 'undefined') {
 					mediaElem			=	"<div class='media-image media-shadow'><img src='" + m.id + "' class='media-image'></div>";
 			// FLICKR
 				} else if (m.type		==	"flickr") {
-					//mediaElem			=	"<div class='media-image media-shadow' id='" + uid + "'>" + loading_messege + "</div>";
+					//mediaElem			=	"<div class='media-image media-shadow' id='" + uid + "'>" + loading_message + "</div>";
 					mediaElem			=	"<div class='media-image media-shadow'><a href='" + m.link + "' target='_blank'><img id='" + uid + "'></a></div>";
 					VMM.ExternalAPI.flickr.get(m);
 			// INSTAGRAM
@@ -136,26 +136,26 @@ if(typeof VMM != 'undefined' && typeof VMM.MediaElement == 'undefined') {
 					//VMM.ExternalAPI.instagram.get(m.id, uid);
 			// GOOGLE DOCS
 				} else if (m.type		==	"googledoc") {
-					mediaElem			=	"<div class='media-frame media-shadow doc' id='" + m.uid + "'>" + loading_messege + "</div>";
+					mediaElem			=	"<div class='media-frame media-shadow doc' id='" + m.uid + "'>" + loading_message + "</div>";
 					VMM.ExternalAPI.googledocs.get(m);
 			// YOUTUBE
 				} else if (m.type		==	"youtube") {
-					mediaElem			=	"<div class='media-shadow'><div class='media-frame video youtube' id='" + m.uid + "'>" + loading_messege + "</div></div>";
+					mediaElem			=	"<div class='media-shadow'><div class='media-frame video youtube' id='" + m.uid + "'>" + loading_message + "</div></div>";
 					VMM.ExternalAPI.youtube.get(m);
 			// VIMEO
 				} else if (m.type		==	"vimeo") {
-					mediaElem			=	"<div class='media-shadow media-frame video vimeo' id='" + m.uid + "'>" + loading_messege + "</div>";
+					mediaElem			=	"<div class='media-shadow media-frame video vimeo' id='" + m.uid + "'>" + loading_message + "</div>";
 					VMM.ExternalAPI.vimeo.get(m);
 			// DAILYMOTION
 				} else if (m.type		==	"dailymotion") {
 					mediaElem			=	"<div class='media-shadow'><iframe class='media-frame video dailymotion' autostart='false' frameborder='0' width='100%' height='100%' src='http://www.dailymotion.com/embed/video/" + m.id + "'></iframe></div>";
 			// VINE
 				} else if (m.type		==	"vine") {
-					mediaElem			=	"<div class='media-shadow media-frame video vine' id='" + m.uid + "'>" + loading_messege + "</div>";
+					mediaElem			=	"<div class='media-shadow media-frame video vine' id='" + m.uid + "'>" + loading_message + "</div>";
 					VMM.ExternalAPI.vine.get(m);
 			// TWITTER
 				} else if (m.type		==	"twitter"){
-					mediaElem			=	"<div class='twitter' id='" + m.uid + "'>" + loading_messege + "</div>";
+					mediaElem			=	"<div class='twitter' id='" + m.uid + "'>" + loading_message + "</div>";
 					isTextMedia			=	true;
 					VMM.ExternalAPI.twitter.get(m);
 			// TWITTER
@@ -164,21 +164,21 @@ if(typeof VMM != 'undefined' && typeof VMM.MediaElement == 'undefined') {
 					mediaElem			=	m.id;
 			// SOUNDCLOUD
 				} else if (m.type		==	"soundcloud") {
-					mediaElem			=	"<div class='media-frame media-shadow soundcloud' id='" + m.uid + "'>" + loading_messege + "</div>";
+					mediaElem			=	"<div class='media-frame media-shadow soundcloud' id='" + m.uid + "'>" + loading_message + "</div>";
 					VMM.ExternalAPI.soundcloud.get(m);
 			// GOOGLE MAPS
 				} else if (m.type		==	"google-map") {
-					mediaElem			=	"<div class='media-frame media-shadow map' id='" + m.uid + "'>" + loading_messege + "</div>";
+					mediaElem			=	"<div class='media-frame media-shadow map' id='" + m.uid + "'>" + loading_message + "</div>";
 					VMM.ExternalAPI.googlemaps.get(m);
 			// GOOGLE PLUS
 				} else if (m.type		==	"googleplus") {
 					_id					=	"googleplus_" + m.id;
-					mediaElem			=	"<div class='googleplus' id='" + _id + "'>" + loading_messege + "</div>";
+					mediaElem			=	"<div class='googleplus' id='" + _id + "'>" + loading_message + "</div>";
 					isTextMedia			=	true;
 					VMM.ExternalAPI.googleplus.get(m);
 			// WIKIPEDIA
 				} else if (m.type		==	"wikipedia") {
-					mediaElem			=	"<div class='wikipedia' id='" + m.uid + "'>" + loading_messege + "</div>";
+					mediaElem			=	"<div class='wikipedia' id='" + m.uid + "'>" + loading_message + "</div>";
 					isTextMedia			=	true;
 					VMM.ExternalAPI.wikipedia.get(m);
 			// STORIFY
@@ -201,7 +201,7 @@ if(typeof VMM != 'undefined' && typeof VMM.MediaElement == 'undefined') {
 			// WEBSITE
 				} else if (m.type		==	"website") { 
 					
-					mediaElem			=	"<div class='media-shadow website' id='" + m.uid + "'>" + loading_messege + "</div>";
+					mediaElem			=	"<div class='media-shadow website' id='" + m.uid + "'>" + loading_message + "</div>";
 					VMM.ExternalAPI.webthumb.get(m);
 					//mediaElem			=	"<div class='media-shadow website'><a href='" + m.id + "' target='_blank'>" + "<img src='http://api1.thumbalizr.com/?url=" + m.id.replace(/[\./]$/g, "") + "&width=300' class='media-image'></a></div>";
 					
