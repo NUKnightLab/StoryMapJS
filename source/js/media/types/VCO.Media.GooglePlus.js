@@ -11,8 +11,8 @@ VCO.Media.GooglePlus = VCO.Media.extend({
 		var api_url,
 			self = this;
 		
-		// Loading Messege
-		this.messege.updateMessege(VCO.Language.messeges.loading + " GooglePlus");
+		// Loading Message
+		this.message.updateMessage(VCO.Language.messages.loading + " GooglePlus");
 		
 		// Create Dom element
 		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-googleplus", this._el.content);
