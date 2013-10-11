@@ -286,20 +286,25 @@ function slide_select(event) {
             var latlngbounds = new google.maps.LatLngBounds();      
             var path = [];
         
-            for(var i = 1; i < _storymap.slides.length;i++) {
-                var loc_data = _storymap.slides[i].location;
-                var latlng = new google.maps.LatLng(loc_data.lat, loc_data.lon);
+            for(var i = 0; i < _storymap.slides.length;i++) {                
+                if(_storymap.slides[i].hasOwnProperty('location')) {                    
+                    var loc_data = _storymap.slides[i].location;
+                    
+                    if(loc_data.lat && loc_data.lon) {
+                        var latlng = new google.maps.LatLng(loc_data.lat, loc_data.lon);
             
-                _map_markers.push(new google.maps.Marker({
-                    map: _map,
-                    draggable: false,
-                    title: loc_data.name,
-                    position: latlng
-                }));
+                        _map_markers.push(new google.maps.Marker({
+                            map: _map,
+                            draggable: false,
+                            title: loc_data.name,
+                            position: latlng
+                        }));
                 
-                latlngbounds.extend(latlng);           
-                path.push(latlng);
-             }
+                        latlngbounds.extend(latlng);           
+                        path.push(latlng);
+                     }
+                }
+            }
              
             _map.fitBounds(latlngbounds);
         
@@ -324,7 +329,7 @@ function slide_select(event) {
         _map.setZoom(data.location.zoom);   
         _map_zoom_listener = google.maps.event.addListener(_map, 'zoom_changed', location_zoom);
  
-         location_mark(data.location);       
+        location_mark(data.location);       
     }
       
     $('#url').val(data.media.url);
