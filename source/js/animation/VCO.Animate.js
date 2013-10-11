@@ -62,7 +62,7 @@ VCO.Animate = function(el, options) {
 	}();
 
 	// does this browser support the opacity property?
-	var opasity = function () {
+	var opacity = function () {
 		return typeof doc.createElement('a').style.opacity !== 'undefined'
 	}();
 
@@ -409,7 +409,7 @@ VCO.Animate = function(el, options) {
           v = getTweenVal(pos, units, begin, end, k, i)
           k == 'transform' ?
             els[i].style[transform] = formatTransform(v) :
-            k == 'opacity' && !opasity ?
+            k == 'opacity' && !opacity ?
               (els[i].style.filter = 'alpha(opacity=' + (v * 100) + ')') :
               (els[i].style[camelize(k)] = v)
         }
