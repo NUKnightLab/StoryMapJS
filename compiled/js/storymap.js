@@ -15739,6 +15739,9 @@ VCO.MapMarker = VCO.Class.extend({
 		
 		// Marker Number
 		this.marker_number = 0;
+		
+		// Timer
+		this.timer = {};
 	
 		// Data
 		this.data = {};
@@ -16293,7 +16296,7 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 			});
 		
 			this._marker.on("click", this._onMarkerClick, this); 
-		
+			this._createPopup(d, o);
 			if (o.map_popup) {
 				this._createPopup(d, o);
 			}
@@ -16308,26 +16311,34 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 	
 	_createPopup: function(d, o) {
 		var html = "";
-		html += "<h3>" + this.data.text.headline + "</h3>";
-		html += "<p>" + this.data.text.text + "</p>";
-		this._marker.bindPopup(html);
+		html += "<h4>" + this.data.text.headline + "</h4>";
+		//html += "<p>" + this.data.text.text + "</p>";
+		this._marker.bindPopup(html, {closeButton:false, offset:[0, 43]});
 	},
 	
 	_active: function(a) {
+		var self = this;
 		if (this.data.real_marker) {
 			if (a) {
-				this._marker.setOpacity(1);
+				//this._marker.setOpacity(1);
 				this._marker.setZIndexOffset(100);
 				this._icon = L.divIcon({className: 'vco-mapmarker-active'});
+				this.timer = setTimeout(function() {self._openPopup();}, this.options.duration + 200);
 				this._setIcon();
 			} else {
 				//this._marker.setOpacity(.25);
-				this._marker.setOpacity(1);
+				this._marker.closePopup();
+				clearTimeout(this.timer);
+				//this._marker.setOpacity(1);
 				this._marker.setZIndexOffset(0);
 				this._icon = L.divIcon({className: 'vco-mapmarker'});
 				this._setIcon();
 			}
 		}
+	},
+	
+	_openPopup: function() {
+		this._marker.openPopup();
 	},
 	
 	_setIcon: function() {

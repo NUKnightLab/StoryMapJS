@@ -174,6 +174,8 @@
 .vco-map{}.vco-map .leaflet-zoom-anim .leaflet-zoom-animated{-webkit-transition:-webkit-transform 1s cubic-bezier(.75, .1, .2, 1);-moz-transition:-moz-transform 1s cubic-bezier(.75, .1, .2, 1);-o-transition:-o-transform 1s cubic-bezier(.75, .1, .2, 1);transition:transform 1s cubic-bezier(.75, .1, .2, 1);-webkit-transform:translateZ(0);-webkit-perspective:1000;-webkit-backface-visibility:hidden}
 .vco-map .leaflet-bottom{top:0}
 .vco-map .leaflet-container .leaflet-control-attribution{background-color:transparent;box-shadow:none;margin:0;border:none}
+.vco-map .leaflet-popup-content-wrapper{-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;border:1px solid #b3b3b3;-webkit-box-shadow:1px 1px 7px rgba(0,0,0,0.3);-moz-box-shadow:1px 1px 7px rgba(0,0,0,0.3);box-shadow:1px 1px 7px rgba(0,0,0,0.3);-webkit-box-shadow:1px 1px 2px rgba(0,0,0,0.3);-moz-box-shadow:1px 1px 2px rgba(0,0,0,0.3);box-shadow:1px 1px 2px rgba(0,0,0,0.3)}.vco-map .leaflet-popup-content-wrapper .leaflet-popup-content{margin:7px}.vco-map .leaflet-popup-content-wrapper .leaflet-popup-content h4{margin:0;font-weight:normal}
+.vco-map .leaflet-popup-tip-container{margin:0 auto;width:40px;height:20px;position:relative;overflow:hidden;display:none}
 @media only screen and (max-width:500px),only screen and (max-device-width:500px){}.vco-map .vco-mapmarker,.vco-map .vco-mapmarker-active{background-image:url(storymap.png?v1.1);background-repeat:no-repeat;background-position:0 0;width:30px !important;height:41px !important;overflow:hidden;top:-34px;left:-10px;}
 .vco-map .vco-mapmarker{background-position:-30px 0}
 .vco-map .vco-mapmarker-active{background-position:0 0}

@@ -43,6 +43,30 @@
 		margin:0;
 		border:none;
 	}
+	.leaflet-popup-content-wrapper {
+		.border-radius(5px);
+		border: 1px solid darken(@ui-background-color, 15);
+		.box-shadow();
+		.box-shadow(1px 1px 2px rgba(0,0,0,.30));
+		//background: @color-foreground;
+		//.translucent-background(@color-foreground, 0.75);
+		.leaflet-popup-content {
+			margin:7px;
+			h4 {
+				margin:0;
+				font-weight:normal;
+				//color:@color-background;
+			}
+		}
+	}
+	.leaflet-popup-tip-container {
+		margin: 0 auto;
+		width: 40px;
+		height: 20px;
+		position: relative;
+		overflow: hidden;
+		display:none;
+	}
 	
 }
 

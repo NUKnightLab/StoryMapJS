@@ -26,6 +26,9 @@ VCO.MapMarker = VCO.Class.extend({
 		
 		// Marker Number
 		this.marker_number = 0;
+		
+		// Timer
+		this.timer = {};
 	
 		// Data
 		this.data = {};
