@@ -14,11 +14,10 @@
             },
             "location": {
                 "name": "Raleigh, North Carolina",
-                "lon": "-78.574619",
+                "lat": 35.74902,
+                "lon": -78.574619,
                 "zoom": 10,
-                "lat": "35.74902",
-                "line": true,
-                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                "line": true
             },
             "media": {
                     "url":              "http://en.wikipedia.org/wiki/Iron_Maiden",
@@ -33,11 +32,10 @@
             },
             "location": {
                 "name": "Raleigh, North Carolina",
-                "lon": "-78.574619",
+                "lat": 35.74902,
+                "lon": -78.574619,
                 "zoom": 10,
-                "lat": "35.74902",
-                "line": true,
-                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                "line": true
             },
             "media": {
                     "url":              "https://www.youtube.com/watch?v=CYk56B9l4dU",
@@ -52,11 +50,10 @@
             },
             "location": {
                 "name": "Nashville, Tennesee",
-                "lon": "-86.778542",
+                "lat": 36.159862,
+                "lon": -86.778542,
                 "zoom": 10,
-                "lat": "36.159862",
-                "line": true,
-                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                "line": true
             },
             "media": {
                     "url":              "https://twitter.com/IronMaiden/status/375889845094080512",
@@ -71,11 +68,10 @@
             },
             "location": {
                 "name": "Kansas City, Missouri",
-                "lon": "-94.58053",
+                "lat": 39.097911,
+                "lon": -94.58053,
                 "zoom": 10,
-                "lat": "39.097911",
-                "line": true,
-                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                "line": true
             },
             "media": {
                     "url":              "https://soundcloud.com/slymnoncul/iron-maiden-fear-of-the-dark",
@@ -90,11 +86,10 @@
             },
             "location": {
                 "name": "St Louis, Missouri",
-                "lon": "-84.3063",
+                "lat": 34.054259,
+                "lon": -84.3063,
                 "zoom": 10,
-                "lat": "34.054259",
-                "line": true,
-                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                "line": true
             },
             "media": {
                     "url":              "http://storify.com/GtRiffOfTheDay/the-trooper-iron-maiden",
@@ -109,11 +104,10 @@
             },
             "location": {
                 "name": "Austin, TX",
-                "lon": "-97.740047",
+                "lat": 30.26674,
+                "lon": -97.740047,
                 "zoom": 10,
-                "lat": "30.26674",
-                "line": true,
-                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                "line": true
             },
             "media": {
                     "url":              "https://vine.co/v/h1dPDlW2ZMa",
@@ -128,11 +122,10 @@
             },
             "location": {
                 "name": "Las Vegas, Nevada",
-                "lon": "-115.17673",
+                "lat": 36.095857,
+                "lon": -115.17673,
                 "zoom": 10,
-                "lat": "36.095857",
-                "line": true,
-                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                "line": true
             },
             "media": {
                     "url":              "http://www.revolvermag.com/wp-content/gallery/iron-maiden_1/06_ironmaiden.jpg",
@@ -147,11 +140,10 @@
             },
             "location": {
                 "name": "San Bernardino, California",
-                "lon": "-117.401991",
+                "lat": 34.203284,
+                "lon": -117.401991,
                 "zoom": 10,
-                "lat": "34.203284",
-                "line": true,
-                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                "line": true
             },
             "media": {
                     "url":              "https://vimeo.com/74553894",
@@ -167,11 +159,10 @@
             },
             "location": {
                 "name": "San Bernardino",
-                "lon": "-117.401991",
+                "lat": 34.203284,
+                "lon": -117.401991,
                 "zoom": 10,
-                "lat": "34.203284",
-                "line": true,
-                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                "line": true
             },
             "media": {
                     "url":              "http://www.flickr.com/photos/39746512@N05/8921983686/in/photolist-eApuUW-faUEup-fb9Vsd-fb9VAE-fb9VR5-fEvX7Y-fEvWA9-fqZdrk-freuPd-fEemy2-fEvVSb-fretQ1-fqZctP-fEema2-fretMs-fqZcme-fEvWCU-fEekJT-fEemDc-freu4L-fEvVKw-fEvVNU-freu7j-fqZcX8-fEvWgW-fqZcvX-fqZcEk-fEemt4-fqZcyx-fEvX4Y-freuhu-fEvWFE-fqZcQx-fEeky6-freuoj-fEvWbb-fEvW4S-fEemnt-fEvWnE-freu9U-fEekQt-fEekDR-fEem6F-fEvWPC-fEvVYj-fEvWqo-fEvWZb-fEvWUL-fb9z5b-fEemk2-fqZd7T",

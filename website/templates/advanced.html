@@ -58,11 +58,17 @@
         </li>
         <li><code>text</code> - optional. If omitted, the content of the 'media' (described below) will be centered on the slide; a javascript object with the following properties.
           <ul>
-            <li><code>url</code> - a URL for the media to be featured. Can be </li>
-            <li><code>credit</code></li>
-            <li><code>caption</code></li>
-          </ul></li>
-        <li><code>media</code> - optional. If omitted, the content of the 'text' (described above) will be centered on the slide; a javascript object with the following properties.</li>
+            <li><code>headline</code> - self-explanatory</li>
+            <li><code>text</code> - text to explain this part of your story; this can contain HTML</li>
+          </ul>
+        </li>
+        <li><code>media</code> - optional. If omitted, the content of the 'text' (described above) will be centered on the slide; a javascript object with the following properties.
+          <ul>
+            <li><code>url</code> - a URL for the media to be featured. Can be any of several services, including YouTube, Flickr, Vimeo, Twitter, and more. You can get an overview of supported media types by looking at the <a href="https://github.com/NUKnightLab/StoryMapJS/blob/master/source/js/media/VCO.MediaType.js">StoryMapJS source code</a></li>
+            <li><code>caption</code> - optional; a brief explanation of the media content.</li>
+            <li><code>credit</code> - optional; the name of the person or organization who created the media content.</li>
+          </ul>
+        </li>
       </ul>
     </div>
 </div>
