@@ -24,11 +24,10 @@
             },
             "location": {
                 "name": "Bahamas",
-                "lon": "-75.5",
+                "lat": 23.2,
+                "lon": -75.5,
                 "zoom": 10,
-                "lat": "23.2",
-                "line": true,
-                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                "line": true
             },
             "media": {
                     "url":              "https://twitter.com/seymourdfair/status/370893881640247296",
@@ -47,11 +46,10 @@
             },
             "location": {
                 "name": "location",
-                "lon": "-81.1",
+                "lat": 25.4,
+                "lon": -81.1,
                 "zoom": 10,
-                "lat": "25.4",
-                "line": true,
-                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                "line": true
             },
             "media": {
                     "url":              "http://www.youtube.com/watch?v=Uu2cAFb7Odg",
@@ -70,11 +68,10 @@
             },
             "location": {
                 "name": "location",
-                "lon": "-84.0",
+                "lat": 24.4,
+                "lon": -84.0,
                 "zoom": 10,
-                "lat": "24.4",
-                "line": true,
-                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                "line": true
             },
             "media": {
                     "url":              "http://www.recmod.com/hurricane/hurricane2005/katrina/neworleans/sept1-refugee-evacuationsofcitya.jpg",
@@ -93,11 +90,10 @@
             },
             "location": {
                 "name": "location",
-                "lon": "-86.8",
+                "lat": 25.1,
+                "lon": -86.8,
                 "zoom": 10,
-                "lat": "25.1",
-                "line": true,
-                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                "line": true
             },
             "media": {
                     "url":              "http://www.youtube.com/watch?v=-Kou0HBpX4A",
@@ -112,11 +108,10 @@
             },
             "location": {
                 "name": "location",
-                "lon": "-89.6",
+                "lat": 28.2,
+                "lon": -89.6,
                 "zoom": 10,
-                "lat": "28.2",
-                "line": true,
-                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                "line": true
             },
             "media": {
                     "url":              "http://upload.wikimedia.org/wikipedia/commons/9/97/Hurricane_Katrina_LA_landfall_radar.gif",
@@ -131,11 +126,10 @@
             },
             "location": {
                 "name": "location",
-                "lon": "-87.5",
+                "lat": 36.3,
+                "lon": -87.5,
                 "zoom": 10,
-                "lat": "36.3",
-                "line": true,
-                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                "line": true
             },
             "media": {
                     "url":              "https://vimeo.com/21821970",
@@ -151,11 +145,10 @@
             },
             "location": {
                 "name": "location",
-                "lon": "-87.5",
+                "lat": 36.3,
+                "lon": -87.5,
                 "zoom": 10,
-                "lat": "36.3",
-                "line": true,
-                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                "line": true
             },
             "media": {
                     "url":              "http://api.ning.com/files/DgJl8IbalZiVjphWi2SfqoBhonpNNZNLZeTconOtqptv38c11mWYn38O5L6ZHErcbhygVcAoWr3lhYlYbPl1Pv24cAiBzLoq/wxwhyHurricaneKatrinaAugust23302005385X287X96.jpg",
