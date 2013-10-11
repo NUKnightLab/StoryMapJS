@@ -271,14 +271,13 @@ function slide_select(event) {
     _current_slide_index = $('.slide').index(this);
     var data = _storymap.slides[_current_slide_index];
 
-
     if(_map_zoom_listener) {
         google.maps.event.removeListener(_map_zoom_listener);
         _map_zoom_listener = null;
     }     
     map_clear_overlays();
     
-    if(_current_slide_index == 0) {
+    if(data.type == "overview") {
         $('#map_search_input').hide();
         _map.setOptions({panControl: false, zoomControl: false});
                  
@@ -388,7 +387,7 @@ function slide_add() {
 
     var n = _storymap.slides.length; 
     
-    // Add location data if not adding overview slide   
+    // Add location data if not overview slide, else add type 
     if(n > 0) {
         data.location =  $.extend({}, _storymap.slides[n - 1].location || {
             name: "Chicago, IL",
@@ -398,7 +397,9 @@ function slide_add() {
             line: true,
             icon: "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
         });
-    }     
+    } else {
+        data.type = "overview";
+    }    
     _storymap.slides.push(data);
     
     // Append slide element if not adding overview slide
