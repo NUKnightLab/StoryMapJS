@@ -313,7 +313,7 @@ if(typeof VMM != 'undefined' && typeof VMM.Slider == 'undefined') {
 		};
 		
 		function onExplainerClick(e) {
-			detachMessage();
+			detachMessege();
 		}
 		
 		/* UPDATE
@@ -709,17 +709,17 @@ if(typeof VMM != 'undefined' && typeof VMM.Slider == 'undefined') {
 		
 		/* MESSEGES 
 		================================================== */
-		function showMessage(e, msg, other) {
-			trace("showMessage " + msg);
+		function showMessege(e, msg, other) {
+			trace("showMessege " + msg);
 			//VMM.attachElement($timeline, $feedback);
 			VMM.attachElement($explainer, "<div class='vco-explainer'><div class='vco-explainer-container'><div class='vco-bezel'><div class='vco-gesture-icon'></div>" + "<div class='vco-message'><p>" + msg + "</p></div></div></div></div>");
 		};
 		
-		function hideMessage() {
-			VMM.Lib.animate($explainer, config.duration, config.ease, {"opacity": 0}, detachMessage);
+		function hideMessege() {
+			VMM.Lib.animate($explainer, config.duration, config.ease, {"opacity": 0}, detachMessege);
 		};
 		
-		function detachMessage() {
+		function detachMessege() {
 			VMM.Lib.detach($explainer);
 		}
 		
@@ -781,7 +781,7 @@ if(typeof VMM != 'undefined' && typeof VMM.Slider == 'undefined') {
 				
 				// EXPLAINER
 				$explainer = VMM.appendAndGetElement($slider_mask, "<div>", "vco-feedback", "");
-				showMessage(null, "Swipe to Navigate");
+				showMessege(null, "Swipe to Navigate");
 				VMM.Lib.height($explainer, config.slider.height);
 				VMM.bindEvent($explainer, onExplainerClick);
 				VMM.bindEvent($explainer, onExplainerClick, 'touchend');

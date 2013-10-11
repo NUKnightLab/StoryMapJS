@@ -31,8 +31,8 @@ VCO.Media = VCO.Class.extend({
 		// Timer (If Needed)
 		this.timer = null;
 		
-		// Message
-		this.message = null;
+		// Messege
+		this.messege = null;
 		
 		// Media ID
 		this.media_id = null;
@@ -121,8 +121,8 @@ VCO.Media = VCO.Class.extend({
 	================================================== */
 	onLoaded: function() {
 		this.fire("loaded", this.data);
-		if (this.message) {
-			this.message.hide();
+		if (this.messege) {
+			this.messege.hide();
 		}
 	},
 	
@@ -138,9 +138,9 @@ VCO.Media = VCO.Class.extend({
 	================================================== */
 	_initLayout: function () {
 		
-		// Message
-		this.message = new VCO.Message({}, this.options);
-		this.message.addTo(this._el.container);
+		// Messege
+		this.messege = new VCO.Messege({}, this.options);
+		this.messege.addTo(this._el.container);
 		
 		// Create Layout
 		this._el.content_container = VCO.Dom.create("div", "vco-media-content-container", this._el.container);

@@ -8,7 +8,7 @@
 ================================================== */
 /* 
 	TODO
-	Message for Data Loading
+	Messege for Data Loading
 */ 
 
 /*	Required Files
@@ -36,7 +36,7 @@
 
 // @codekit-prepend "ui/VCO.Draggable.js";
 // @codekit-prepend "ui/VCO.SizeBar.js";
-// @codekit-prepend "ui/VCO.Message.js";
+// @codekit-prepend "ui/VCO.Messege.js";
 
 // @codekit-prepend "media/VCO.MediaType.js";
 // @codekit-prepend "media/VCO.Media.js";

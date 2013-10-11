@@ -11,8 +11,8 @@ VCO.Media.YouTube = VCO.Media.extend({
 		var self = this,
 			url_vars;
 		
-		// Loading Message
-		this.message.updateMessage(VCO.Language.messages.loading + " YouTube");
+		// Loading Messege
+		this.messege.updateMessege(VCO.Language.messeges.loading + " YouTube");
 		
 		// Create Dom element
 		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-youtube vco-media-shadow", this._el.content);
