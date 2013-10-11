@@ -36,7 +36,7 @@
 		text-shadow: 1px 1px 1px #FFF;
 		color: #333;
 		
-		.opacity(25);
+		.opacity(15);
 		a {
 			
 		}
@@ -46,7 +46,7 @@
 	}
 	.vco-slidenav-title {
 		font-size: @base-font-size;
-		font-weight: bold;
+		//font-weight: bold;
 	}
 	.vco-slidenav-description {
 		font-size: @base-font-size-small;
@@ -73,9 +73,12 @@
 	margin-left:10px;
 	.vco-slidenav-icon {
 		background-position: -160px 0; width: 24px; height: 24px;
+		margin-left: 0px;
 		//background-position: -208px 0; width: 24px; height: 24px;
 	}
 }
+
+
 /* NAVIGATION HOVER
 ================================================== */
 .vco-slidenav-previous:hover, .vco-slidenav-next:hover {
@@ -83,4 +86,13 @@
 		.opacity(100);
 	}
 }
-
+.vco-slidenav-next:hover {
+	.vco-slidenav-icon {
+		margin-left: 200 - 20px;
+	}
+}
+.vco-slidenav-previous:hover {
+	.vco-slidenav-icon {
+		margin-left: -4px;
+	}
+}

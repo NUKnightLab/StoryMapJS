@@ -72,9 +72,18 @@ VCO.Media = VCO.Class.extend({
 		
 	},
 	
+	loadMedia: function() {
+		try {
+			this._loadMedia();
+		} catch (e) {
+			trace("Error loading media for ", this._media);
+			trace(e);
+		}
+	},
+	
 	/*	Media Specific
 	================================================== */
-		loadMedia: function() {
+		_loadMedia: function() {
 		
 		},
 		

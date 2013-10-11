@@ -7,7 +7,7 @@ VCO.Media.Blockquote = VCO.Media.extend({
 	
 	/*	Load the media
 	================================================== */
-	loadMedia: function() {
+	_loadMedia: function() {
 		
 		// Loading Messege
 		this.messege.updateMessege(VCO.Language.messeges.loading + " SoundCloud");

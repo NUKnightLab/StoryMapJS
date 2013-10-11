@@ -21,6 +21,9 @@ VCO.MapMarker = VCO.Class.extend({
 		// Components
 		this._marker 				= {};
 		
+		// Icon
+		this._icon = {};
+		
 		// Marker Number
 		this.marker_number = 0;
 	

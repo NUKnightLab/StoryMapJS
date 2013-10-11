@@ -13,17 +13,17 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 		if (d.location && d.location.lat && d.location.lon) {
 			this.data.real_marker = true;
 			if (o.use_custom_markers && d.location.icon && d.location.icon != "") {
-				icon = L.icon({iconUrl: d.location.icon, iconSize: [41]});
+				this._icon = L.icon({iconUrl: d.location.icon, iconSize: [41]});
 				//icon = L.icon({iconUrl: d.media.url, iconSize: [41]});
 			
 			};
 		
 			//icon = L.icon({iconUrl: "gfx/map-pin.png", iconSize: [28, 43], iconAnchor: [14, 33]});
-			icon = L.divIcon({className: 'vco-mapmarker-leaflet'});
+			this._icon = L.divIcon({className: 'vco-mapmarker'});
 		
 			this._marker = L.marker([d.location.lat, d.location.lon], {
 				title: 		d.text.headline,
-				icon: 		icon
+				icon: 		this._icon
 			});
 		
 			this._marker.on("click", this._onMarkerClick, this); 
@@ -51,10 +51,21 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 		if (this.data.real_marker) {
 			if (a) {
 				this._marker.setOpacity(1);
+				this._marker.setZIndexOffset(100);
+				this._icon = L.divIcon({className: 'vco-mapmarker-active'});
+				this._setIcon();
 			} else {
-				this._marker.setOpacity(.25);
+				//this._marker.setOpacity(.25);
+				this._marker.setOpacity(1);
+				this._marker.setZIndexOffset(0);
+				this._icon = L.divIcon({className: 'vco-mapmarker'});
+				this._setIcon();
 			}
 		}
+	},
+	
+	_setIcon: function() {
+		this._marker.setIcon(this._icon);
 	},
 	
 	_location: function() {
