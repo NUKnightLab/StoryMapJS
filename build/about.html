@@ -1,0 +1,54 @@
+<!-- 
+This page contains usemin-style build blocks.  Examples are shown below.
+The content of the opening tag takes the format:
+    
+    build:type url
+        
+where:
+
+    type = css | js
+    url = url of the optimized file
+       
+During the build phase, the contents of each build block will be replaced by a
+single reference to the optimized file.  The url will be used exactly as it
+appears within the opening tag. 
+
+The css build blocks below contain a reference to less.js, which is a JavaScript
+implementation of LESS run by your web browser that will process LESS code.  By
+including less.js, you can include a link directly to your LESS code instead of
+a CSS file.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Sample About Page</title>
+
+<!--  These are examples of css build blocks. -->
+
+    <!-- build:css css/site.css -->
+    <link rel="stylesheet/less" type="text/css" href="less/site.less">
+    <script src="js/less.js"></script>
+    <!-- endbuild -->
+
+    <!-- build:css //cdn.knightlab.com/libs/storymap/latest/css/storymap.min.css -->
+    <link rel="stylesheet/less" type="text/css" href="../source/less/storymap.less">
+    <script src="js/less.js"></script>
+    <!-- endbuild -->
+</head>
+<body>
+    <h3>About</h3>
+    
+    <p><a href="index.html">goto home page</a></p>
+    
+<!-- These are examples of js build blocks. -->
+ 
+    <!-- build:js //ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js -->
+    <script src="js/jquery.js"></script>
+    <!-- endbuild -->
+
+    <!-- build:js //cdn.knightlab.com/libs/storymap/latest/js/storymap.min.js -->
+    <script src="../source/js/storymap_a.js"></script>
+    <script src="../source/js/storymap_b.js"></script>
+    <!-- endbuild -->
+</body>
+</html>
