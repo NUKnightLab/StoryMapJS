@@ -724,7 +724,7 @@ VCO.StoryMap = VCO.Class.extend({
 	},
 	
 	_onSizeBarMove: function(e) {
-		this._updateDisplay(e.y);
+		this._updateDisplay(e.y); 
 	},
 	
 	_onSizeBarSwipe: function(e) {
