@@ -52,8 +52,8 @@
             <li><code>name</code> A name or description of the place. Shown in the next/previous navigation. </li>
             <li><code>lat</code> - the latitude of the point for the map. Use decimal notation, with negative numbers for western latitudes</li>
             <li><code>lon</code> - the latitude of the point for the map. Use decimal notation, with negative numbers for southern longitudes</li>
-            <li><code>zoom</code> - the map zoom level desired for the slide </li>
-            <li><code>line</code> - lipsum </li>
+            <li><code>zoom</code> - the map zoom level desired for the slide. An integer, where lower values are "further" and higher values are "closer" to the ground. Technically, the maximum value is a property of the specific tile set you are using; zoom levels above 19 are rarely supported.</li>
+            <li><code>line</code> - a boolean value. If true, this point will be included on a line connected to all other points with "true" values for line. Separately from this value, as a user navigates through a story, StoryMapJS will draw a darker "active" line connecting the current location to the previous location in the story. (Is this the behavior you expect? You can give us feedback) </li>
             <li><code>icon</code> - lipsum </li>
           </ul>
         </li>
