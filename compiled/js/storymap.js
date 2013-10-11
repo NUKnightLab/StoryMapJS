@@ -17092,6 +17092,7 @@ VCO.StoryMap = VCO.Class.extend({
 			map_size_sticky: 		3, // Set as division 1/3 etc
 			map_center_offset: 		60, 
 			start_at_slide: 		0,
+			sizebar_height: 		0,
 			// animation
 			duration: 				1000,
 			ease: 					VCO.Ease.easeInOutQuint,
@@ -17233,8 +17234,7 @@ VCO.StoryMap = VCO.Class.extend({
 	_updateDisplay: function(map_height, animate, d) {
 		
 		var duration 	= this.options.duration,
-			self		= this,
-			sizebar_height = this._el.sizebar.offsetHeight;
+			self		= this;
 		
 		if (d) {
 			duration = d;
@@ -17252,7 +17252,7 @@ VCO.StoryMap = VCO.Class.extend({
 		}
 		
 		// StorySlider Height
-		this.options.storyslider_height = (this.options.height - sizebar_height - this.options.map_height- 1);
+		this.options.storyslider_height = (this.options.height - this.options.sizebar_height - this.options.map_height- 1);
 		
 		if (animate) {
 			
@@ -17266,7 +17266,7 @@ VCO.StoryMap = VCO.Class.extend({
 				duration: 	duration,
 				easing: 	VCO.Ease.easeOutStrong,
 				complete: function () {
-					self._map.updateDisplay(self.options.width, self.options.map_height, animate, d, sizebar_height);
+					self._map.updateDisplay(self.options.width, self.options.map_height, animate, d, self.options.sizebar_height);
 				}
 			});
 			
@@ -17276,7 +17276,7 @@ VCO.StoryMap = VCO.Class.extend({
 			}
 			this.animator_storyslider = VCO.Animate(this._el.storyslider, {
 				height: 	this.options.storyslider_height + "px",
-				top: 		sizebar_height + "px",
+				top: 		this.options.sizebar_height + "px",
 				duration: 	duration,
 				easing: 	VCO.Ease.easeOutStrong
 			});
@@ -17287,7 +17287,7 @@ VCO.StoryMap = VCO.Class.extend({
 			
 			// StorySlider
 			this._el.storyslider.style.height = this.options.storyslider_height + "px";
-			this._el.storyslider.style.top = sizebar_height + "px";
+			this._el.storyslider.style.top = this.options.sizebar_height + "px";
 		}
 		
 		// Update Component Displays

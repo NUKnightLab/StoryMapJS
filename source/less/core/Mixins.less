@@ -74,6 +74,9 @@
 		clear: both;
 	}
 }
+.translucent-background(@color: @white, @alpha: 1) {
+	background-color: hsla(hue(@color), saturation(@color), lightness(@color), @alpha);
+}
 // Add an alphatransparency value to any background or border color (via Elyse Holladay)
 #translucent {
   .background(@color: @white, @alpha: 1) {
