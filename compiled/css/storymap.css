@@ -179,5 +179,3 @@
 .vco-map .vco-mapmarker-active{background-position:0 0}
 @media only screen and (max-width:500px),only screen and (max-device-width:500px){}.vco-map{height:100%;display:relative;overflow:hidden;top:0}.vco-map .vco-map-mask{width:100%;height:100%;overflow:hidden}.vco-map .vco-map-mask .vco-map-display{width:100%;height:100%}
 @media only screen and (max-width:500px),only screen and (max-device-width:500px){}.vco-storymap{width:100%;height:100%;overflow:hidden;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;-o-user-select:none;user-select:none}
-.vco-storymap{font-family:'Pontano Sans',sans-serif !important}
-.vco-storymap h1,.vco-storymap h2,.vco-storymap h3,.vco-storymap h4,.vco-storymap h5,.vco-storymap h6{font-family:'Bevan',serif !important;font-weight:normal}
