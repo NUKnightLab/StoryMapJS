@@ -1,0 +1,70 @@
+{% extends "_base.html" %}
+{% block title %}Technical Details - {% endblock %}
+{% block content %}
+<div class="container">
+<div class="row-fluid">
+    <div class="span12">
+      <h2>StoryMapJS for Technical Users</h2>
+      <p>Once it's ready, most users will probably use the StoryMap authoring tool to create their StoryMaps. But if you're ready to get started now, or if you want maximum control over StoryMap, read on.
+      </p>
+      <h3>Managing StoryMapJS data</h3>
+      <p>
+        StoryMapJS uses JSON data as its native data format. You can load the data from a file on the web, or you can create a javascript object by any other means you like. Of course, if you are loading the data from a URL, it must either be on the same server as the page where you are displaying the Story Map or from a server with correctly configured CORS headers. (The details of cross-domain origin restrictions are out of scope for this document.)
+      </p>
+      <p>
+        Complete details on the JSON syntax for storymaps is <a href="#json-syntax">below</a>.
+      </p>
+      
+      <h3>Setting up your page</h3>
+      <p>
+        You'll need to include code something like the following.
+        <pre class="prettyprint">
+          &lt;!-- The StoryMap container can go anywhere on the page --&gt;
+          &lt;div id="my-storymap-will-go-here"&gt;&lt;/div&gt; 
+          &lt;!-- Your script tags should be at the bottom of the page just before the closing body tag --&gt;
+          &lt;script src="http://cdn.knightlab.com/libs/storymapjs/latest/js/storymap.min.js"&gt;&lt;/script&gt;
+          &lt;script&gt;
+            var storymap_data = 'http://storymap.knightlab.com/static/demo/demo.json'; // This can also be a javascript object.
+            var storymap = new VCO.StoryMap('my-storymap-will-go-here', storymap_data);
+            window.onresize = function(event) {
+             storymap.updateDisplay();
+            }
+          &lt;/script&gt;
+        </pre>
+      </p>
+
+      <h3 id="json-syntax">JSON syntax</h3>
+      <p>
+        Given its alpha nature, please be advised that the JSON syntax for StoryMapJS is subject to change. Here are the details for now.
+      </p>
+      <p>
+        A StoryMapJS javascript object has (for now) a single property, <code>storymap</code>, which has for a value another object with a single property, <code>slide</code>. The value of <code>slide</code> is an array of objects with many possible properties, described below. This may seem verbose but we expect that StoryMapJS will need some more information as development continues. To illustrate:
+      </p>
+      <pre class="prettyprint lang-js">{ storymap: { slides: [ {...}, {...}, {...} ] } }</pre>
+      <h4>'slide' properties</h4>
+      <p>
+        Technically, all of these properties are optional. StoryMapJS will try to adapt appropriately.
+      </p>
+      <ul>
+        <li><code>type</code> - most slides will not have a type: you can either leave it out or make it blank. There is one valid non-blank value: <code>overview</code>. If a slide is of type 'overview', then the map will be shown so that all locations in the configuration are visible at once. This is recommended for your first and/or last slide.</li>
+        <li><code>location</code> - required for all slides, except for 'overview' slides; a javascript object with the following properties. 
+          <ul>
+            <li><code>name</code> A name or description of the place. Shown in the next/previous navigation. </li>
+            <li><code>lat</code> - the latitude of the point for the map. Use decimal notation, with negative numbers for western latitudes</li>
+            <li><code>lon</code> - the latitude of the point for the map. Use decimal notation, with negative numbers for southern longitudes</li>
+            <li><code>zoom</code> - the map zoom level desired for the slide </li>
+            <li><code>line</code> - lipsum </li>
+            <li><code>icon</code> - lipsum </li>
+          </ul>
+        </li>
+        <li><code>text</code></li>
+        <li><code>media</code></li>
+      </ul>
+    </div>
+</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
+{% endblock %}

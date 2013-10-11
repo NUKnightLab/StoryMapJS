@@ -1,7 +1,6 @@
 *.pyc
 
 # Ignore the build directory
-/build
 
 # Ignore the old source code as it is ported
 /source/CORE_OLD

@@ -1,0 +1,72 @@
+{% extends "_base.html" %}
+
+{% block content %}
+<!-- Overview-->
+<header id="overview" class="hero-unit compact">
+  <div class="row-fluid">
+    <hgroup class="span12">
+      <h1 class="logo-mark xl">StoryMap<span><em>JS</em></span></h1>
+      <h2 class="intro">Maps that tell stories.</h2>
+    </hgroup>
+  </div>
+</header>
+
+
+<section id="demo">
+  <div id="homepage-storymap">
+  </div>
+</section>
+<script>
+  var storymap = new VCO.StoryMap('homepage-storymap', '{{ static_url }}/demo/demo.json');
+  window.onresize = function(event) {
+   storymap.updateDisplay();
+  }
+</script>
+
+
+<section id="description" class="container">
+  <h2>Introducing StoryMap</h2>
+  <div class="row">
+    <div class="span6">
+      <p>StoryMap is a free tool to help you tell stories on the web that highlight the locations of a series of events. StoryMap is currently in an <em>alpha</em> release, which means that we're looking for early adopters to try it out and give us some feedback. We're working on a user-friendly authoring tool, but for now, you will have to be comfortable looking up the <em>geocodes</em> for your locations yourself and creating a JSON data file.
+      </p>
+      <p>
+        If you're ready to get started, read our <a href="advanced.html">advanced documentation</a> and give it a try. You can use our <a href="https://knightlab.zendesk.com/forums/22615078-StoryMapJS">support forum</a> to post questions, or email <a href="mailto:support@knightlab.zendesk.com">support@knightlab.zendesk.com</a>.
+      </p>
+    </div>
+    <div class="span6">
+      <div class="well">
+      <h4>Sign up for updates</h4>
+      <p>Get updates, tips and news by email. No Spam.</p>
+      <!-- MailChimp Signup Form-->
+      <div id="mc_embed_signup">
+        <form id="mc-embedded-subscribe-form" action="http://northwestern.us2.list-manage.com/subscribe/post?u=ccc3ef81b4c3c762eb7a7d2b4&amp;id=ff5b6c54e5" method="post" name="mc-embedded-subscribe-form" target="_blank" class="validate form-inline"><span class="mc-field-group">
+            <input id="mce-EMAIL" type="email" value="" name="EMAIL" placeholder="Email" class="input-large required email"></span><span class="mc-field-group">
+          <button id="mc-embedded-subscribe" type="submit" value="Subscribe" name="subscribe" class="btn">Subscribe</button>
+          <div id="mce-responses" class="clear">
+            <div id="mce-error-response" style="display: none;" class="response alert alert-error"></div>
+            <div id="mce-success-response" style="display: none;" class="response alert alert-success"></div>
+          </div>
+          <div class="clear"></div>
+        </form>
+      </div>
+
+      <h4>Stay connected with us on twitter</h4>
+      <p>
+        <iframe allowtransparency="true" frameborder="0" scrolling="no" src="//platform.twitter.com/widgets/follow_button.html?screen_name=knightlab&amp;show_count=true" style="width:220px; height:20px;"></iframe>
+      </p>
+    </div>
+    </div>
+  </div>  </div>
+</section>
+
+
+<section id="examples" class="container">
+  <h2>Examples</h2>
+  <p>Have you made a StoryMap? <a href="https://knightlab.zendesk.com/forums/22615078-StoryMapJS">Let us know</a> and maybe we'll feature it here.</p>
+</section>
+
+{% include "_help.html" %}
+
+
+{% endblock %}
