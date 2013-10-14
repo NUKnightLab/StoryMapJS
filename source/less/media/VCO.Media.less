@@ -12,6 +12,8 @@
 	//margin-right:auto;
 	.vco-media-content-container {
 		.vco-media-content{
+			position: relative;
+			.clearfix();
 			img, embed, object, video, iframe {
 				max-width: 100%;
 				max-height:100%;
@@ -27,8 +29,10 @@
 	position: relative;
 	z-index: 1;
 	//background:@color-background;
+	.box-shadow(1px 1px 7px rgba(0,0,0,.50));
 	
 }
+/*
 .vco-media-shadow:before, .vco-media-shadow:after {
 	z-index: -1;
 	position: absolute;
@@ -46,6 +50,49 @@
 	.transform(rotate(2deg));
 	right: 10px;
 	left: auto;
+}
+*/
+/* VCard
+================================================== */
+.vcard {
+	float:right;
+	margin-bottom:@base-spacing;
+	a {
+		color: lighten(@color-dark, 20%);
+		text-decoration:none;
+	}
+	a:hover {
+		text-decoration: none;
+		.fn {
+			text-decoration: underline;
+		}
+	}
+	.fn, .nickname {
+			
+		padding-left: 42px;
+	}
+	.fn {
+		display:block;
+		font-weight: bold;
+
+	}
+	.nickname {
+		margin-top:1px;
+		display:block;
+		color: lighten(@color-dark, 40%);
+	}
+		
+	.avatar {
+		float:left;
+		display: block;
+		width: 32px;
+		height: 32px;
+		img {
+			-moz-border-radius: 5px;
+			-webkit-border-radius: 5px;
+			border-radius: 5px;
+		}
+	}
 }
 
 /* Credit

@@ -21,7 +21,7 @@ VCO.Language = {
 		full_long: "mmm d',' yyyy 'at' h:MM TT",
 		full_long_small_date: "h:MM TT'<br/><small>mmm d',' yyyy'</small>'"
 	},
-	messeges: {
+	messages: {
 		loading_timeline: "Loading Timeline... ",
 		return_to_title: "Return to Title",
 		expand_timeline: "Expand Timeline",

@@ -1,0 +1,161 @@
+{
+    "storymap": {
+        "slides": [{
+            "type": "overview",
+            "date": "2013",
+            "text": {
+                "headline": "The Path of Hurricane Katrina",
+                "text": "In just a few short days nature left a serious mark on the Southeastern United States."
+            },
+            "media": {
+                    "url":              "http://en.wikipedia.org/wiki/Hurricane_Katrina",
+                    "credit":               "wikipedia",
+                    "caption":          "Hurricane Katrina"
+                }
+        }, {
+            "background": {         
+                    "url":              "http://www.uscg.mil/history/katrina/img/katrinaphoto1sm.jpg",
+                    "opacity":          25
+                },
+            "date": "Aug 23",
+            "text": {
+                "headline": "Aug 23",
+                "text": "<ul><li>Tropical Depression Twelve formed a category 1 hurricane over the Bahamas at 5:00 p.m. EDT on August 23, 2005.</li></ul>"
+            },
+            "location": {
+                "name": "Bahamas",
+                "lat": 23.2,
+                "lon": -75.5,
+                "zoom": 10,
+                "line": true
+            },
+            "media": {
+                    "url":              "https://twitter.com/seymourdfair/status/370893881640247296",
+                    "credit":               "Twitter",
+                    "caption":          "Twitter status update"
+                }
+        },{
+            "background": {         
+                    "url":              "http://upload.wikimedia.org/wikipedia/commons/1/10/Hurricane_Katrina_8-26-05_1415_UTC.jpg",
+                    "opacity":          25
+                },
+            "date": "Aug 26",
+            "text": {
+                "headline": "Aug 26",
+                "text": "<ul><li>At 1:00 AM EDT, maximum sustained winds had decreased to 70 mph (110 km/h) and Katrina was again downgraded to a tropical storm.</li><li> At 5:00 AM EDT, the eye of Hurricane Katrina was located just offshore of southwestern Florida over the Gulf of Mexico about 50 miles north-northeast of Key West, Florida.</li><li> Maximum sustained winds had again increased to 75 mph (121 km/h) and Katrina was upgraded again to a Category 1 hurricane. </li><li>In the early afternoon, the National Hurricane Center officially shifts the possible track of Katrina from the Florida Panhandle to the Mississippi/Louisiana coast.</li></ul>"
+            },
+            "location": {
+                "name": "location",
+                "lat": 25.4,
+                "lon": -81.1,
+                "zoom": 10,
+                "line": true
+            },
+            "media": {
+                    "url":              "http://www.youtube.com/watch?v=Uu2cAFb7Odg",
+                    "credit":               "cdcollura",
+                    "caption":          "Hurricane Katrina First Landfall In S FL (Aug 25, 2005) "
+                }
+        }, {
+            "background": {         
+                    "url":              "http://www.mississippiriverdelta.org/files/2011/10/katrina_goes12_big1.jpg",
+                    "opacity":          25
+                },
+            "date": "Aug 27",
+            "text": {
+                "headline": "Aug 27",
+                "text": "<ul><li>By 5:00 AM EDT, Hurricane Katrina reached Category 3 intensity.</li><li>Tolls were suspended on the Lake Pontchartrain Causeway as well as the Crescent City Connection, to speed up the evacuation process.</li><li> At 5:00 PM EDT, New Orleans Mayor Ray Nagin announced a state of emergency and a called for a voluntary evacuation. Nagin said the city would open the Superdome as a shelter of last resort for evacuees with special needs. </li><li>The Louisiana National Guard had delivered three truckloads of water and seven truckloads of MRE's to the Superdome, enough to supply 15,000 people for three days.</li></ul>"
+            },
+            "location": {
+                "name": "location",
+                "lat": 24.4,
+                "lon": -84.0,
+                "zoom": 10,
+                "line": true
+            },
+            "media": {
+                    "url":              "http://www.recmod.com/hurricane/hurricane2005/katrina/neworleans/sept1-refugee-evacuationsofcitya.jpg",
+                    "credit":               "recmod.com",
+                    "caption":          "Hurricane Evacuation"
+                }
+        }, {
+           "background": {         
+                    "url":              "http://blog.chron.com/sciguy/files/2012/08/Hurricane_Katrina_August_28_2005_NASA.jpg",
+                    "opacity":          25
+                },
+            "date": "Aug 28",
+            "text": {
+                "headline": "Aug 28",
+                "text": "<ul><li>Just after midnight, at 12:40 AM CDT, Hurricane Katrina reached Category 4 intensity with 145 mph (233 km/h) winds. </li><li>By 7:00 AM CDT, it was a Category 5 storm, with maximum sustained winds of 175 mph (282 km/h), gusts up to 190 mph (310 km/h) and a central pressure of 902 mbar. </li><li>At 12:00 PM CDT, the Louisiana Superdome was opened for those residents that were unable to obtain safe transport out of the city. 20,000 people entered the Dome. </li><li>4444 Army National Guard and 932 Air National Guard are deployed (5,376 total). </li><ul>"
+            },
+            "location": {
+                "name": "location",
+                "lat": 25.1,
+                "lon": -86.8,
+                "zoom": 10,
+                "line": true
+            },
+            "media": {
+                    "url":              "http://www.youtube.com/watch?v=-Kou0HBpX4A",
+                    "credit":               "Mike Theiss",
+                    "caption":          "Hurricane Katrina Historic Storm Surge Video - Gulfport, Mississippi "
+                }
+        }, {
+            "date": "Aug 29",
+            "text": {
+                "headline": "Aug 29",
+                "text": "<ul><li>At 5:10 AM CDT, Hurricane Katrina made its second landfall as a strong Category 3 hurricane near Buras-Triumph, Louisiana, with sustained winds of more than 125 mph (205 km/h), although Category 4 winds may have briefly affected the area.</li><li>By 9:00 AM CDT, there was 6–8 feet of water in the Lower Ninth Ward. </li><li>By 11:00 AM CDT, there was approximately 10 feet of water in St. Bernard Parish. Many rooftops could not be seen here as they were submerged. </li><li>At 2:00 PM CDT, New Orleans officials confirmed a breach of the 17th Street Canal levee. There was also confirmation of breaches at two other canals. Governor Blanco ordered 68 school buses into New Orleans from surrounding parishes to begin evacuating any survivors that remained in the city.</li></ul> "
+            },
+            "location": {
+                "name": "location",
+                "lat": 28.2,
+                "lon": -89.6,
+                "zoom": 10,
+                "line": true
+            },
+            "media": {
+                    "url":              "http://upload.wikimedia.org/wikipedia/commons/9/97/Hurricane_Katrina_LA_landfall_radar.gif",
+                    "credit":               "NOAA",
+                    "caption":          "Hurricane Katrina making its second landfall in Louisiana, as seen by NWS New Orleans radar."
+                }
+        }, {
+            "date": "Aug 30",
+            "text": {
+                "headline": "Aug 30",
+                "text": "<ul><li>At 12:00 PM CDT, Homeland Security Secretary Michael Chertoff became aware that the New Orleans levee breaches could not be plugged.</li><li> Governor Blanco ordered that all of New Orleans, including the Superdome, be evacuated due to the flooding of the city. She commandeered hundreds of buses from across Louisiana using her executive powers, and those buses eventually evacuated more than 15,000 people that were stranded in the city to the Superdome by Thursday, September 1. </li><li>USCG helicopters rescue 350 people off roof tops.</li></ul>"
+            },
+            "location": {
+                "name": "location",
+                "lat": 36.3,
+                "lon": -87.5,
+                "zoom": 10,
+                "line": true
+            },
+            "media": {
+                    "url":              "https://vimeo.com/21821970",
+                    "credit":               "Vimeo",
+                    "caption":          "Hurricane Katrina aftermath"
+                }
+        }, {
+            "type": "overview",
+                 "date": "Aug 31",
+            "text": {
+                "headline": "Aug 31",
+                "text": "<ul><li>Hurricane Katrina is downgraded to a tropical depression. </li><li>At 10:00 PM CDT, Mayor Ray Nagin announced that the planned sandbagging of the 17th Street Canal levee breach had failed.</li> <li> President Bush returned early to Washington from vacationing at his ranch in Crawford, Texas. Though he does not stop in Louisiana, Air Force One flies low over the Gulf Coast so that he can view the devastation in Air Force One. He later declared a Public Health Emergency for the Gulf Coast.</li> <li>Mayor Nagin ordered almost the entire New Orleans' police force to abandon search and rescue missions and turn their attention toward controlling the widespread looting and a curfew is placed in effect. USCG helicopters rescued 1,259 more people off roof tops to total of 1,609.</li></ul>"
+            },
+            "location": {
+                "name": "location",
+                "lat": 36.3,
+                "lon": -87.5,
+                "zoom": 10,
+                "line": true
+            },
+            "media": {
+                    "url":              "http://api.ning.com/files/DgJl8IbalZiVjphWi2SfqoBhonpNNZNLZeTconOtqptv38c11mWYn38O5L6ZHErcbhygVcAoWr3lhYlYbPl1Pv24cAiBzLoq/wxwhyHurricaneKatrinaAugust23302005385X287X96.jpg",
+                    "credit":               "weatherbug.com",
+                    "caption":          "Overview of Katrina"
+                }
+        
+        }]
+    }
+}

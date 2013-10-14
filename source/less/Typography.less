@@ -2,19 +2,43 @@
 	font-family: @font-main;
 	
 	h1, h2, h3 {
-		font-size: @base-font-size-large;
+		font-size: @base-font-size-xlarge;
+		line-height:floor(@base-font-size-xlarge * 1.1);
 	}
 	p {
 		font-size: @base-font-size;
-		font-family: @font-secondary;
+		//font-family: @font-secondary;
+		color: lighten(@color-dark, 40%);
 	}
 	.vco-caption, .vco-credit, .vco-slidenav-next, .vco-slidenav-previous {
-		font-family: @font-sanserif;
+		//font-family: @font-sanserif;
 	}
 	
 	blockquote, blockquote p {
 		font-family: @font-serif;
+		color: lighten(@color-dark, 40%);
 	}
 	
+	
+}
+
+// Skinnier
+@media only screen and (max-width: 800px), only screen and (max-device-width: 800px) {
+	.vco-storymap {
+		h1, h2, h3 {
+			font-size: 		@base-font-size-large;
+			line-height:	floor(@base-font-size-large * 1.1);
+		}
+	}
+	
+}
+// Mobile, iPhone and skinny
+@media only screen and (max-width: 500px), only screen and (max-device-width: 500px) {
+	.vco-storymap {
+		h1, h2, h3 {
+			font-size: 		@base-font-size;
+			line-height:	floor(@base-font-size * @base-line-height);
+		}
+	}
 	
 }

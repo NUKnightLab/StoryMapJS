@@ -9,11 +9,10 @@
             },
             "location": {
                 "name": "Kent County, Maryland",
-                "lon": "-76.18667",
+                "lat": 39.27500,
+                "lon": -76.18667,
                 "zoom": 10,
-                "lat": "39.27500",
-                "line": true,
-                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                "line": true
             },
             "media": {
                     "url":              "http://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/US_Mean_Center_of_Population_1790-2010.PNG/800px-US_Mean_Center_of_Population_1790-2010.PNG",
@@ -28,11 +27,10 @@
             },
             "location": {
                 "name": "Kent County, Maryland",
-                "lon": "-76.18667",
+                "lat": 39.27500,
+                "lon": -76.18667,
                 "zoom": 10,
-                "lat": "39.27500",
-                "line": true,
-                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                "line": true
             },
             "media": {
                     "url":              "http://i1133.photobucket.com/albums/m593/tuitu2u/History%20Pics%203/1790_Census_Map_zpsb0747a02.gif",
@@ -47,11 +45,10 @@
             },
             "location": {
                 "name": "Howard County, Maryland",
-                "lon": "-76.94167",
+                "lat": 39.26833,
+                "lon": -76.94167,
                 "zoom": 10,
-                "lat": "39.26833",
-                "line": true,
-                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                "line": true
             },
             "media": {
                     "url":              "https://twitter.com/ThomasJefferson/status/265523460720168960",
@@ -66,11 +63,10 @@
             },
             "location": {
                 "name": "Loudoun County, Virginia",
-                "lon": "-77.62000",
+                "lat": 39.19167,
+                "lon": -77.62000,
                 "zoom": 10,
-                "lat": "39.19167",
-                "line": true,
-                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                "line": true
             },
             "media": {
                     "url":              "http://www.worldmapsonline.com/images/Cram/History/unitedstates1810.jpg",
@@ -85,11 +81,10 @@
             },
             "location": {
                 "name": "Hardy County, Virginia (now W. Virginia)",
-                "lon": "-78.55000",
+                "lat": 39.09500,
+                "lon": -78.55000,
                 "zoom": 10,
-                "lat": "39.09500",
-                "line": true,
-                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                "line": true
             },
             "media": {
                     "url":              "http://www.flickr.com/photos/graysonfamily/349095341/",
@@ -104,11 +99,10 @@
             },
             "location": {
                 "name": "Grant County, Virginia (now W. Virginia)",
-                "lon": "-79.28167",
+                "lat": 38.96500,
+                "lon": -79.28167,
                 "zoom": 10,
-                "lat": "38.96500",
-                "line": true,
-                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                "line": true
             },
             "media": {
                     "url":              "http://www.library.yale.edu/MapColl/oldsite/map/va1830.gif",
@@ -123,11 +117,10 @@
             },
             "location": {
                 "name": "Upshur County, Virginia (now W. Virginia)",
-                "lon": "-80.30000",
+                "lat": 39.03333,
+                "lon": -80.30000,
                 "zoom": 10,
-                "lat": "39.03333",
-                "line": true,
-                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                "line": true
             },
             "media": {
                     "url":              "http://www.youtube.com/watch?v=tkdF8pOFUfI",
@@ -142,11 +135,10 @@
             },
             "location": {
                 "name": "Wirt County, Virginia (now W. Virginia)",
-                "lon": "-81.31667",
+                "lat": 38.98333,
+                "lon": -81.31667,
                 "zoom": 10,
-                "lat": "38.98333",
-                "line": true,
-                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                "line": true
             },
             "media": {
                     "url":              "https://vine.co/v/hijiWteL0aP",
@@ -161,11 +153,10 @@
             },
             "location": {
                 "name": "Pike County, Ohio",
-                "lon": "-82.81333",
+                "lat": 39.00667,
+                "lon": -82.81333,
                 "zoom": 10,
-                "lat": "39.00667",
-                "line": true,
-                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                "line": true
             },
             "media": {
                     "url":              "http://en.wikipedia.org/wiki/Abraham_Lincoln",
@@ -180,11 +171,10 @@
             },
             "location": {
                 "name": "Highland County, Ohio",
-                "lon": "-83.59500",
+                "lat": 39.20000,
+                "lon": -83.59500,
                 "zoom": 10,
-                "lat": "39.20000",
-                "line": true,
-                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                "line": true
             },
             "media": {
                     "url":              "http://www.examiner.com/images/blog/EXID8873/images/reconstruction_congress.jpg",
@@ -199,11 +189,10 @@
             },
             "location": {
                 "name": "Boone County, Kentucky",
-                "lon": "-84.66111",
+                "lat": 39.06889,
+                "lon": -84.66111,
                 "zoom": 10,
-                "lat": "39.06889",
-                "line": true,
-                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                "line": true
             },
             "media": {
                     "url":              "https://www.youtube.com/watch?v=C-nTpGMMVjY",
@@ -218,11 +207,10 @@
             },
             "location": {
                 "name": "Decatur County, Indiana",
-                "lon": "-85.54806",
+                "lat": 39.19889,
+                "lon": -85.54806,
                 "zoom": 10,
-                "lat": "39.19889",
-                "line": true,
-                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                "line": true
             },
             "media": {
                     "url":              "http://storify.com/EJSham/minute-by-minute-coverage-of-the-columbus-indiana",
@@ -237,11 +225,10 @@
             },
             "location": {
                 "name": "Bartholomew County, Indiana",
-                "lon": "-85.81500",
+                "lat": 39.16000,
+                "lon": -85.81500,
                 "zoom": 10,
-                "lat": "39.16000",
-                "line": true,
-                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                "line": true
             },
             "media": {
                     "url":              "https://soundcloud.com/mister-click/harry-macdonough-in-the-sweet",
@@ -256,11 +243,10 @@
             },
             "location": {
                 "name": "Monroe County, Indiana",
-                "lon": "-86.53889",
+                "lat": 39.17000,
+                "lon": -86.53889,
                 "zoom": 10,
-                "lat": "39.17000",
-                "line": true,
-                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                "line": true
             },
             "media": {
                     "url":              "http://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/US-center-pop.jpg/471px-US-center-pop.jpg",
@@ -275,11 +261,10 @@
             },
             "location": {
                 "name": "Owen County, Indiana",
-                "lon": "-86.72083",
+                "lat": 39.17250,
+                "lon": -86.72083,
                 "zoom": 10,
-                "lat": "39.17250",
-                "line": true,
-                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                "line": true
             },
             "media": {
                     "url":              "https://vimeo.com/63929704",
@@ -294,11 +279,10 @@
             },
             "location": {
                 "name": "Greene County, Indiana",
-                "lon": "-87.13500",
+                "lat": 39.06250,
+                "lon": -87.13500,
                 "zoom": 10,
-                "lat": "39.06250",
-                "line": true,
-                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                "line": true
             },
             "media": {
                     "url":              "http://www.dailymotion.com/embed/video/xwrxkb",
@@ -313,11 +297,10 @@
             },
             "location": {
                 "name": "Sullivan County, Indiana",
-                "lon": "-87.37639",
+                "lat": 38.94833,
+                "lon": -87.37639,
                 "zoom": 10,
-                "lat": "38.94833",
-                "line": true,
-                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                "line": true
             },
             "media": {
                     "url":              "http://illinoisstatesoceity.typepad.com/photos/19411950_illinois_state_s/pearl5.jpg",
@@ -332,11 +315,10 @@
             },
             "location": {
                 "name": "Richland County, Illinois",
-                "lon": "-88.15917",
+                "lat": 38.83917,
+                "lon": -88.15917,
                 "zoom": 10,
-                "lat": "38.83917",
-                "line": true,
-                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                "line": true
             },
             "media": {
                     "url":              "https://www.youtube.com/watch?v=ElyERLwsV0c",
@@ -351,11 +333,10 @@
             },
             "location": {
                 "name": "Clinton County, Illinois",
-                "lon": "-89.20972",
+                "lat": 38.59944,
+                "lon": -89.20972,
                 "zoom": 10,
-                "lat": "38.59944",
-                "line": true,
-                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                "line": true
             },
             "media": {
                     "url":              "https://soundcloud.com/carolebphotographe/4-muddy-waters-louisiana-blues",
@@ -370,11 +351,10 @@
             },
             "location": {
                 "name": "St. Clair County, Illinois",
-                "lon": "-89.70611",
+                "lat": 38.46306,
+                "lon": -89.70611,
                 "zoom": 10,
-                "lat": "38.46306",
-                "line": true,
-                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                "line": true
             },
             "media": {
                     "url":              "https://vimeo.com/62707231",
@@ -389,11 +369,10 @@
             },
             "location": {
                 "name": "Jefferson County, Missouri",
-                "lon": "-90.57389",
+                "lat": 38.13694,
+                "lon": -90.57389,
                 "zoom": 10,
-                "lat": "38.13694",
-                "line": true,
-                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                "line": true
             },
             "media": {
                     "url":              "http://upload.wikimedia.org/wikipedia/commons/thumb/9/94/U.S._Territorial_Acquisitions.png/1280px-U.S._Territorial_Acquisitions.png",
@@ -408,11 +387,10 @@
             },
             "location": {
                 "name": "Crawford County, Missouri",
-                "lon": "-91.21528",
+                "lat": 37.87222,
+                "lon": -91.21528,
                 "zoom": 10,
-                "lat": "37.87222",
-                "line": true,
-                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                "line": true
             },
             "media": {
                     "url":              "https://www.youtube.com/watch?v=z_ISPDTpJrk",
@@ -427,11 +405,10 @@
             },
             "location": {
                 "name": "Phelps County, Missouri",
-                "lon": "-91.809567",
+                "lat": 37.696987,
+                "lon": -91.809567,
                 "zoom": 10,
-                "lat": "37.696987",
-                "line": true,
-                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                "line": true
             },
             "media": {
                     "url":              "https://www.youtube.com/watch?v=X_KoNZkf-2k",
@@ -446,11 +423,10 @@
             },
             "location": {
                 "name": "Texas County, Missouri",
-                "lon": "-92.173096",
+                "lat": 37.517534,
+                "lon": -92.173096,
                 "zoom": 10,
-                "lat": "37.517534",
-                "line": true,
-                "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                "line": true
             },
             "media": {
                     "url":              "https://twitter.com/StephenAtHome/status/16360461594",

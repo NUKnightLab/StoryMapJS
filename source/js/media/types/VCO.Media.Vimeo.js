@@ -7,15 +7,15 @@ VCO.Media.Vimeo = VCO.Media.extend({
 	
 	/*	Load the media
 	================================================== */
-	loadMedia: function() {
+	_loadMedia: function() {
 		var api_url,
 			self = this;
 		
-		// Loading Messege
-		this.messege.updateMessege(VCO.Language.messeges.loading + " Vimeo");
+		// Loading Message
+		this.message.updateMessage(VCO.Language.messages.loading + " Vimeo");
 		
 		// Create Dom element
-		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe vco-media-vimeo", this._el.content);
+		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe vco-media-vimeo vco-media-shadow", this._el.content);
 		
 		// Get Media ID
 		this.media_id = this.data.url.split(/video\/|\/\/vimeo\.com\//)[1].split(/[?&]/)[0];

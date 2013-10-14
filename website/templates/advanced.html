@@ -1,0 +1,81 @@
+{% extends "_base.html" %}
+{% block title %}Technical Details - {% endblock %}
+{% block content %}
+<div class="container">
+<div class="row-fluid">
+    <div class="span12">
+      <h2>StoryMapJS for Technical Users</h2>
+      <p>Once it's ready, most users will probably use the StoryMapJS authoring tool to create their StoryMaps. But if you're ready to get started now, or if you want maximum control over StoryMapJS, read on.
+      </p>
+      <h3>Managing StoryMapJS data</h3>
+      <p>
+        StoryMapJS uses JSON data as its native data format. You can load the data from a file on the web, or you can create a javascript object by any other means you like. Of course, if you are loading the data from a URL, it must either be on the same server as the page where you are displaying the StoryMap or from a server with correctly configured CORS headers. (The details of cross-domain origin restrictions are out of scope for this document.)
+      </p>
+      <p>
+        Complete details on the JSON syntax for StoryMapJS is <a href="#json-syntax">below</a>.
+      </p>
+      
+      <h3>Setting up your page</h3>
+      <p>
+        You'll need to include code something like the following.
+        <pre class="prettyprint">
+          &lt;!-- The StoryMap container can go anywhere on the page --&gt;
+          &lt;div id="my-storymap-will-go-here"&gt;&lt;/div&gt; 
+          &lt;!-- Your script tags should be at the bottom of the page just before the closing body tag --&gt;
+          &lt;script src="http://cdn.knightlab.com/libs/storymapjs/latest/js/storymap.min.js"&gt;&lt;/script&gt;
+          &lt;script&gt;
+            var storymap_data = 'http://storymap.knightlab.com/static/demo/demo.json'; // This can also be a javascript object.
+            var storymap = new VCO.StoryMap('my-storymap-will-go-here', storymap_data);
+            window.onresize = function(event) {
+             storymap.updateDisplay();
+            }
+          &lt;/script&gt;
+        </pre>
+      </p>
+
+      <h3 id="json-syntax">JSON syntax</h3>
+      <p>
+        Given its alpha nature, please be advised that the JSON syntax for StoryMapJS is subject to change. Here are the details for now.
+      </p>
+      <p>
+        A StoryMapJS javascript object has (for now) a single property, <code>storymap</code>, which has for a value another object with a single property, <code>slide</code>. The value of <code>slide</code> is an array of objects with many possible properties, described below. This may seem verbose but we expect that StoryMapJS will need some more information as development continues. To illustrate:
+      </p>
+      <pre class="prettyprint lang-js">{ storymap: { slides: [ {...}, {...}, {...} ] } }</pre>
+      <h4>'slide' properties</h4>
+      <p>
+        Technically, all of these properties are optional. StoryMapJS will try to adapt appropriately.
+      </p>
+      <ul>
+        <li><code>type</code> - most slides will not have a type: you can either leave it out or make it blank. There is one valid non-blank value: <code>overview</code>. If a slide is of type 'overview', then the map will be shown so that all locations in the configuration are visible at once. This is recommended for your first and/or last slide.</li>
+        <li><code>location</code> - required for all slides, except for 'overview' slides; a javascript object with the following properties. 
+          <ul>
+            <li><code>name</code> A name or description of the place. Shown in the next/previous navigation. </li>
+            <li><code>lat</code> - the latitude of the point for the map. Use decimal notation, with negative numbers for western latitudes</li>
+            <li><code>lon</code> - the latitude of the point for the map. Use decimal notation, with negative numbers for southern longitudes</li>
+            <li><code>zoom</code> - the map zoom level desired for the slide. An integer, where lower values are "further" and higher values are "closer" to the ground. Technically, the maximum value is a property of the specific tile set you are using; zoom levels above 19 are rarely supported.</li>
+            <li><code>line</code> - a boolean value. If true, this point will be included on a line connected to all other points with "true" values for line. Separately from this value, as a user navigates through a story, StoryMapJS will draw a darker "active" line connecting the current location to the previous location in the story. (Is this the behavior you expect? You can give us feedback) </li>
+          </ul>
+        </li>
+        <li><code>text</code> - optional. If omitted, the content of the 'media' (described below) will be centered on the slide; a javascript object with the following properties.
+          <ul>
+            <li><code>headline</code> - self-explanatory</li>
+            <li><code>text</code> - text to explain this part of your story; this can contain HTML</li>
+          </ul>
+        </li>
+        <li><code>media</code> - optional. If omitted, the content of the 'text' (described above) will be centered on the slide; a javascript object with the following properties.
+          <ul>
+            <li><code>url</code> - a URL for the media to be featured. Can be any of several services, including YouTube, Flickr, Vimeo, Twitter, and more. You can get an overview of supported media types by looking at the <a href="https://github.com/NUKnightLab/StoryMapJS/blob/master/source/js/media/VCO.MediaType.js">StoryMapJS source code</a></li>
+            <li><code>caption</code> - optional; a brief explanation of the media content.</li>
+            <li><code>credit</code> - optional; the name of the person or organization who created the media content.</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
+{% endblock %}
+

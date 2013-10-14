@@ -8,12 +8,12 @@ VCO.Media.Twitter = VCO.Media.extend({
 	
 	/*	Load the media
 	================================================== */
-	loadMedia: function() {
+	_loadMedia: function() {
 		var api_url,
 			self = this;
 			
-		// Loading Messege
-		this.messege.updateMessege(VCO.Language.messeges.loading + " Tweet");
+		// Loading Message
+		this.message.updateMessage(VCO.Language.messages.loading + " Tweet");
 		
 		// Create Dom element
 		this._el.content_item = VCO.Dom.create("div", "vco-media-twitter", this._el.content);

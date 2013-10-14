@@ -158,12 +158,7 @@ VCO.Slide = VCO.Class.extend({
 			
 			// add the object to the dom
 			this._media.addTo(this._el.content);
-			try {
-    			this._media.loadMedia();
-			} catch (e) {
-			    trace("Error loading media for ", this._media);
-			    trace(e);
-			}
+			this._media.loadMedia();
 		}
 		
 		// Text

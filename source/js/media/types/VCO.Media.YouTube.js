@@ -7,15 +7,15 @@ VCO.Media.YouTube = VCO.Media.extend({
 	
 	/*	Load the media
 	================================================== */
-	loadMedia: function() {
+	_loadMedia: function() {
 		var self = this,
 			url_vars;
 		
-		// Loading Messege
-		this.messege.updateMessege(VCO.Language.messeges.loading + " YouTube");
+		// Loading Message
+		this.message.updateMessage(VCO.Language.messages.loading + " YouTube");
 		
 		// Create Dom element
-		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-youtube", this._el.content);
+		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-youtube vco-media-shadow", this._el.content);
 		this._el.content_item.id = VCO.Util.unique_ID(7)
 		
 		// URL Vars
@@ -49,7 +49,7 @@ VCO.Media.YouTube = VCO.Media.extend({
 	// Update Media Display
 	_updateMediaDisplay: function() {
 		//this._el.content_item.style.height = this.options.height + "px";
-		this._el.content_item.style.width = "100%";
+		//this._el.content_item.style.width = "100%";
 		this._el.content_item.style.height = VCO.Util.ratio.r16_9({w:this._el.content_item.offsetWidth}) + "px";
 		//this._el.content_item.style.height = size.h + "px";
 		//this._el.content_item.style.width = size.w + "px";
