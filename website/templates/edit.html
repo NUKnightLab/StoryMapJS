@@ -674,7 +674,7 @@ $(function() {
                 $('.slide').slice(i, j+1).each(function() { $(this).find('span').html(k++); });                
 
                  // Adjust current slide index
-                _current_slide_index = $('.slide.selected').index();
+                _current_slide_index = $('.slide').index($('.slide.selected'));                
                 
                 storymap_dirty(1);
             }             
