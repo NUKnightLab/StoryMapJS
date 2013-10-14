@@ -2,7 +2,9 @@
 
 {% block head %}
 <script type="text/javascript" src="{{ STATIC_URL }}/js/tool.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}/js/googleDrive.js"></script>
 <link rel="stylesheet" type="text/css" href="{{ static_url }}/css/tool.css">
+<script type="text/javascript" src="https://apis.google.com/js/client.js?onload=handleSelectorClientLoad"></script>
 {% endblock %}
 
 {% block content %}
@@ -11,31 +13,17 @@
 
 <div class="row">
     <div class="span12">
-
-        <p>TODO: Page to choose an existing storymap or make a new one. 
-        For now, just hard-coded sample data and passing the url around.
-        </p>
     </div>
 </div>
  
 <div class="row">
     <div class="span12"">
-        <table class="table table-striped table-bordered">
+        <table id="storymap-index" class="table table-striped table-bordered">
         <thead>
             <tr>
                 <th>Name</th>
             </tr>
         </thead>
-        <tr>
-            <td>
-            <a href="edit.html?id=/compiled/examples/ironmaiden.json">/compiled/examples/ironmaiden</a>
-            </td>
-        </tr>
-        <tr>
-            <td>
-            <a href="edit.html?id=/compiled/examples/population.json">/compiled/examples/population</a>
-            </td>
-        </tr>        
         </table>
     </div>
 </div>
@@ -90,12 +78,16 @@ function handle_storymap_new() {
         $(this).unbind('click.confirm');
         $('#new_modal').modal('hide');
         
-        show_progress('Faking creating a new, empty StoryMap...');
+        show_progress('Creating a new, empty StoryMap...');
        
-        setTimeout(function() {
-            hide_progress();        
-            document.location.href = 'edit.html?id=/compiled/examples/empty.json';
-        }, 2000);
+        createStoryMap(name, function(err, id) {
+            if (err) {
+                alert('Could not create StoryMap: ' + err);
+            } else {
+                hide_progress();        
+                document.location.href = 'edit.html?id=' + id;
+            }
+        });
     });
     
     $('#new_modal').modal('show').on('shown', function() { 
@@ -106,6 +98,18 @@ function handle_storymap_new() {
 $(function() {
     $('#storymap_new').click(handle_storymap_new);
 });
+
+    $('#storymap-index').on('click', '.delete-button', function(e) {
+        var id = e.target.id.slice(7);
+        console.log('Deleting StoryMap: ' + id);
+        deleteStoryMap(id, function(err) {
+            if (err) {
+                alert('Could not delete StoryMap');
+            }
+        });
+        $(e.target).closest('tr').remove();
+        e.preventDefault();
+    });
 
 </script>
 
