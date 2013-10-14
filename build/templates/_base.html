@@ -17,9 +17,10 @@
   <link rel="stylesheet" href="/build/css/storymap.css?v1">
   <!-- endbuild -->
 	<!-- build:js http://cdn.knightlab.com/libs/storymapjs/latest/js/storymap.min.js -->
-	<script type="text/javascript" src="/build/js/storymap.js"></script>
+	<script type="text/javascript" src="{{ static_url }}/js/storymap.js"></script>
   <!-- endbuild -->
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+   <script src="http://cdn.knightlab.com/libs/blueline/latest/js/blueline.min.js"></script>
     {% block head %}
     {% endblock %}
 </head>
@@ -110,7 +111,6 @@
   <!-- END FOOTER -->
 
 	{% block scripts %}
-   <script src="http://cdn.knightlab.com/libs/blueline/latest/js/blueline.min.js"></script>
 	{% endblock %}
 </body>
 </html>
