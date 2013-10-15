@@ -9,6 +9,8 @@
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/bootstrap-wysihtml5/bootstrap-wysihtml5-0.0.2.css"></link>
 <script type="text/javascript" src="{{ STATIC_URL }}/bootstrap-wysihtml5/lib/js/wysihtml5-0.3.0.min.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}/bootstrap-wysihtml5/bootstrap-wysihtml5-0.0.2.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}/js/googleDrive.js"></script>
+<script type="text/javascript" src="https://apis.google.com/js/client.js?onload=handleEditorClientLoad"></script>
 <!-- end bootstrap-wysihtml5 -->
 <link rel="stylesheet" type="text/css" href="{{ static_url }}/css/tool.css">
 {% endblock %}
@@ -338,8 +340,10 @@ function slide_select(event) {
     
     media_check_type();
     
+    console.log('setting headline: ' + data.text.headline);
     $('#headline').val(data.text.headline || '');
     
+    console.log('setting text: ' + data.text.text);
     $('#text').val(data.text.text || '');    
     $('iframe').contents().find('body').html(data.text.text || '');
 }
@@ -425,15 +429,43 @@ function slide_add() {
     storymap_dirty(1);
 }
 
+var showSlides = function() {
+            $('#slides').html();            
+            for(var i = 1; i < _storymap.slides.length; i++) {
+                slide_append_element();
+            }
+            
+            var width = 0;
+            $('#slides .slide').each(function() {
+                width += $(this).outerWidth(true);
+            })   
+            $('#slides').css('width', width + "px");
+                  
+            if(_storymap.slides.length > 0) {
+                $('.slide:first').click();  
+            } else {
+                slide_add();
+            }   
+
+};
+
 function storymap_load(id) {    
     //show_progress('Loading StoryMap');
     
-    do_ajax(id, {},
+    //do_ajax(id,
+    console.log('Loading StoryMap: ' + id);
+    loadStoryMap(id,
+        /*
         function(error) {   
             //hide_progress();
             show_error('Error loading StoryMap ('+error+')');
         },
-        function(data) {
+        */
+        function(err, data) {
+          console.log('Received StoryMap response');
+          if (err) {
+            show_error('Error loading StoryMap ('+error+')');
+          } else {
             _storymap = data.storymap;
                        
             $('#slides').html();            
@@ -456,6 +488,7 @@ function storymap_load(id) {
             //console.log('storymap_load', _dirty);
 
             //hide_progress();
+          }
         }
     );   
 }
@@ -475,15 +508,20 @@ function storymap_dirty(is_dirty) {
 }
 
 function storymap_save() {
-    storymap_dirty(0);
-    return;
+    //storymap_dirty(0);
+    //return;
     
-    show_progress('Pretending to save StoryMap')
+    show_progress('Saving StoryMap')
     
-    setTimeout(function() {
-        storymap_dirty(0);
+    data = { storymap: _storymap };
+    saveStoryMapDraft(_id, data, function(err) {
+        if (err) {
+            console.log('Could not save storymap');
+        } else {
+            storymap_dirty(0);
+        }
         hide_progress();
-    }, 4000);
+    });
 }
 
 function storymap_preview() {
@@ -542,7 +580,7 @@ function initialize() {
     });
     
     // Load storymap
-    storymap_load(_id);
+    //storymap_load(_id);
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);
@@ -620,11 +658,11 @@ $(function() {
         cursor: 'move',
         items: '.slide',
         start: function(event, ui) {
-            sortable_i = ui.item.index();
+            sortable_i = $('.slide').index(ui.item);
         },
         stop: function(event, ui) {
-            sortable_j = ui.item.index();
-                      
+            sortable_j = $('.slide').index(ui.item);
+                                  
             if(sortable_i != sortable_j) {
                 // Move slide data from i to j
                 _storymap.slides.move(sortable_i, sortable_j);
@@ -632,11 +670,11 @@ $(function() {
                 // Renumber slides
                 var i = Math.min(sortable_i, sortable_j);
                 var j = Math.max(sortable_i, sortable_j);                
-                var k = i + 1;               
+                var k = i;               
                 $('.slide').slice(i, j+1).each(function() { $(this).find('span').html(k++); });                
 
                  // Adjust current slide index
-                _current_slide_index = $('.slide.selected').index();
+                _current_slide_index = $('.slide').index($('.slide.selected'));                
                 
                 storymap_dirty(1);
             }             
