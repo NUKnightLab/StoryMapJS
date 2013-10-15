@@ -42,7 +42,7 @@ function parseQuerystring() {
 }
 
 var params = parseQuerystring();
-var url = params['url'];
+var url = decodeURIComponent(params['url']);
 
 var options = {
     start_at_slide: 0
