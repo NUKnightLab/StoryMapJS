@@ -27,6 +27,9 @@ VCO.MapMarker = VCO.Class.extend({
 		// Marker Number
 		this.marker_number = 0;
 		
+		// Media Icon
+		this.media_icon_class = "";
+		
 		// Timer
 		this.timer = {};
 	
@@ -53,6 +56,7 @@ VCO.MapMarker = VCO.Class.extend({
 		VCO.Util.mergeData(this.data, data);
 		
 		this._initLayout();
+		
 		
 	},
 	
