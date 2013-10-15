@@ -542,7 +542,7 @@ function storymap_save() {
 }
 
 function storymap_preview() {
-    var preview_url = 'preview.html?url=' + encodeURIComponent(_id)
+    var preview_url = 'preview.html?url=' + encodeURIComponent(draftURL(_id))
         + '&start_at_slide='+_current_slide_index; // not working       
     window.open(preview_url, 'StoryMap Preview');
 }
