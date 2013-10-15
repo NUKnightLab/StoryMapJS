@@ -222,7 +222,6 @@ var forFile = function(query, func) {
 };
 
 var setPublicFolder = function(create, callback) {
-    console.log('Setting public folder');
     var query = "title='" + STORYMAP_FOLDER + "' and trashed=false";
     var f = gapi.client.drive.files.list({
         q: query
@@ -247,14 +246,12 @@ var setPublicFolder = function(create, callback) {
          return false;
       }
       var storyMapFolder = resp.items[0];
-      console.log('Storymap folder id: ' + storyMapFolder.id);
       var query = "title='" + PUBLIC_SUBFOLDER + "' and trashed=false"
        + " and '" + storyMapFolder.id + "' in parents";
       var f = gapi.client.drive.files.list({
           q: query
       });
       f.execute(function(folders) {
-          console.log(folders);
           if (!folders.items) {
              console.log('Public folder not found. This should not happen '
                 + 'since the public folder is created at the same time as '
@@ -268,8 +265,6 @@ var setPublicFolder = function(create, callback) {
                  return false;
              }
              publicFolder = folders.items[0];
-             console.log('Public folder:');
-             console.log(publicFolder);
              callback();
           }
       });
@@ -291,8 +286,6 @@ var getOrCreateFolder = function(name, parents, callback) {
     });
     f.execute(function(resp) {
       if (!resp.items) {
-        console.log('Get or create found no items. Response:');
-        console.log(resp);
         createFolder(name, parents, function(file) {
             _id = file;
             callback(file);
@@ -437,14 +430,10 @@ function getFile(id, callback) {
 }
 
 var loadStoryMapInfo = function(id, callback) {
-    console.log('Loading storymap info');
     if (STORYMAP_INFO[id]) {
-        console.log('Storymap info already loaded');
         callback(STORYMAP_INFO[id]);
     } else {
-        console.log('Starting load of storymap info.');
         getFile(id, function(file) {
-            console.log('got file');
             console.log(file);
             STORYMAP_INFO[id] = file;
             callback(file);
