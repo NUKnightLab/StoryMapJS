@@ -15,11 +15,6 @@ var publicFolder = null;
 /* init the application */
 var initSelector = function() {
   gapi.client.load('drive', 'v2', function() {
-    //testConsistency();
-    //return false;
-    //mkdirs(PUBLIC_FOLDER, null, function(folder) {
-        //makePublic(folder);
-        //publicFolder = folder;
     setPublicFolder(true, function() {
         var storyMapIndex = $('#storymap-index');
         listStoryMaps( function(storyMapList){
@@ -40,17 +35,13 @@ var initSelector = function() {
             hide_progress();
         });
      });
-    //});
  });
 };
 
 var initEditor = function() {
  gapi.client.load('drive', 'v2', function() {
   setPublicFolder(false, function() {
-    var params = parseQuerystring();
-    //mkdirs(PUBLIC_FOLDER, null, function(folder) {
-        //makePublic(folder);
-        //publicFolder = folder;
+     var params = parseQuerystring();
         loadStoryMapInfo(params.id, function(file) {
             loadStoryMap(params.id, function(err, data) {
                 if (err) {
@@ -63,8 +54,7 @@ var initEditor = function() {
                 }
             });
         });
-    //});
-   });
+     });
   });
 };
 
@@ -516,8 +506,3 @@ var publishStoryMap = function(id, callback) {
     });
 };
 
-var testConsistency = function() {
-    mkdirs('foo/bar', null, function(){
-        mkdirs('foo/bar', null, function() {});
-    });
-}
