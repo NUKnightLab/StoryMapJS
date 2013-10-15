@@ -658,11 +658,11 @@ $(function() {
         cursor: 'move',
         items: '.slide',
         start: function(event, ui) {
-            sortable_i = ui.item.index();
+            sortable_i = $('.slide').index(ui.item);
         },
         stop: function(event, ui) {
-            sortable_j = ui.item.index();
-                      
+            sortable_j = $('.slide').index(ui.item);
+                                  
             if(sortable_i != sortable_j) {
                 // Move slide data from i to j
                 _storymap.slides.move(sortable_i, sortable_j);
@@ -670,11 +670,11 @@ $(function() {
                 // Renumber slides
                 var i = Math.min(sortable_i, sortable_j);
                 var j = Math.max(sortable_i, sortable_j);                
-                var k = i + 1;               
+                var k = i;               
                 $('.slide').slice(i, j+1).each(function() { $(this).find('span').html(k++); });                
 
                  // Adjust current slide index
-                _current_slide_index = $('.slide.selected').index();
+                _current_slide_index = $('.slide').index($('.slide.selected'));                
                 
                 storymap_dirty(1);
             }             
