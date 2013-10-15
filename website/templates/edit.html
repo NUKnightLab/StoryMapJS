@@ -362,7 +362,7 @@ function slide_select(event) {
     
     console.log('setting text: ' + data.text.text);
     $('#text').val(data.text.text || '');    
-    $('iframe').contents().find('body').html(data.text.text || '');
+    $('iframe.wysihtml5-sandbox').contents().find('body').html(data.text.text || '');
 }
 
 function slide_delete(event) {
