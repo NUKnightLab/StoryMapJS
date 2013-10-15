@@ -1,5 +1,6 @@
 const STORYMAP_FOLDER = 'KnightLabStoryMap';
-const PUBLIC_FOLDER = STORYMAP_FOLDER + '/public';
+const PUBLIC_SUBFOLDER = 'public';
+const PUBLIC_FOLDER = STORYMAP_FOLDER + '/' + PUBLIC_SUBFOLDER;
 const CLIENT_ID = '1087881665848.apps.googleusercontent.com';
 const SCOPES = 'https://www.googleapis.com/auth/drive';
 const boundary = '-------314159265358979323846';
@@ -13,9 +14,13 @@ var publicFolder = null;
 
 /* init the application */
 var initSelector = function() {
-    mkdirs(PUBLIC_FOLDER, null, function(folder) {
-        makePublic(folder);
-        publicFolder = folder;
+  gapi.client.load('drive', 'v2', function() {
+    //testConsistency();
+    //return false;
+    //mkdirs(PUBLIC_FOLDER, null, function(folder) {
+        //makePublic(folder);
+        //publicFolder = folder;
+    setPublicFolder(true, function() {
         var storyMapIndex = $('#storymap-index');
         listStoryMaps( function(storyMapList){
             if (!storyMapList) {
@@ -34,17 +39,22 @@ var initSelector = function() {
             });
             hide_progress();
         });
-    });
+     });
+    //});
+ });
 };
 
 var initEditor = function() {
+ gapi.client.load('drive', 'v2', function() {
+  setPublicFolder(false, function() {
     var params = parseQuerystring();
-    mkdirs(PUBLIC_FOLDER, null, function(folder) {
-        makePublic(folder);
-        publicFolder = folder;
+    //mkdirs(PUBLIC_FOLDER, null, function(folder) {
+        //makePublic(folder);
+        //publicFolder = folder;
         loadStoryMapInfo(params.id, function(file) {
             loadStoryMap(params.id, function(err, data) {
                 if (err) {
+                    console.log(err);
                     alert('Could not load StoryMap data');
                 } else {
                     hide_progress();
@@ -53,7 +63,9 @@ var initEditor = function() {
                 }
             });
         });
-    });
+    //});
+   });
+  });
 };
 
 var handleAuthResultAndInitSelector = function(authResult) {
@@ -219,11 +231,66 @@ var forFile = function(query, func) {
     });
 };
 
+var setPublicFolder = function(create, callback) {
+    console.log('Setting public folder');
+    var query = "title='" + STORYMAP_FOLDER + "' and trashed=false";
+    var f = gapi.client.drive.files.list({
+        q: query
+    });
+    f.execute(function(resp) {
+      if (!resp.items) {
+        if (create) {
+            mkdirs(PUBLIC_FOLDER, null, function(folder) {
+                makePublic(folder);
+                setPublicFolder(true, callback);
+            });
+        } else {
+            alert('A configuration error has occurred. Please report '
+                + 'this error.');
+        }
+        return false;
+      }
+      if (resp.items.length > 1) { // this should not happen!
+         alert(
+             'Warning: multiple ' + STORYMAP_FOLDER + ' folders found. '
+             + 'Please report this error.');
+         return false;
+      }
+      var storyMapFolder = resp.items[0];
+      console.log('Storymap folder id: ' + storyMapFolder.id);
+      var query = "title='" + PUBLIC_SUBFOLDER + "' and trashed=false"
+       + " and '" + storyMapFolder.id + "' in parents";
+      var f = gapi.client.drive.files.list({
+          q: query
+      });
+      f.execute(function(folders) {
+          console.log(folders);
+          if (!folders.items) {
+             console.log('Public folder not found. This should not happen '
+                + 'since the public folder is created at the same time as '
+                + 'the storymap folder.'); 
+             alert('Folder ' + PUBLIC_FOLDER + ' not found');
+          } else {
+             if (folders.items.length > 1) {
+                 // this should not happen
+                 alert('Warning: multiple public folders found. '
+                    + 'Please report this error.');
+                 return false;
+             }
+             publicFolder = folders.items[0];
+             console.log('Public folder:');
+             console.log(publicFolder);
+             callback();
+          }
+      });
+    });
+};
+
 var getOrCreateFolder = function(name, parents, callback) {
   if (!callback) {
     callback = function(folder) { console.log(folder); };
   }
-  gapi.client.load('drive', 'v2', function() {
+  //gapi.client.load('drive', 'v2', function() {
     var _id = null;
     var query = "title='" + name + "' and trashed=false";
     $.each(parents, function(i, parent) {
@@ -250,7 +317,7 @@ var getOrCreateFolder = function(name, parents, callback) {
          callback(_id);
       }
     });
-  });
+  //});
 };
 
 var makePublic = function(file) {
@@ -380,10 +447,15 @@ function getFile(id, callback) {
 }
 
 var loadStoryMapInfo = function(id, callback) {
+    console.log('Loading storymap info');
     if (STORYMAP_INFO[id]) {
+        console.log('Storymap info already loaded');
         callback(STORYMAP_INFO[id]);
     } else {
+        console.log('Starting load of storymap info.');
         getFile(id, function(file) {
+            console.log('got file');
+            console.log(file);
             STORYMAP_INFO[id] = file;
             callback(file);
         });
@@ -392,6 +464,7 @@ var loadStoryMapInfo = function(id, callback) {
 
 var loadStoryMap = function(id, callback) {
     var url = draftURL(id);
+    console.log('url: ' + url);
     var data = null;
     $.getJSON(url).done(function(data) {
         callback(null, data);
@@ -442,3 +515,9 @@ var publishStoryMap = function(id, callback) {
       });
     });
 };
+
+var testConsistency = function() {
+    mkdirs('foo/bar', null, function(){
+        mkdirs('foo/bar', null, function() {});
+    });
+}
