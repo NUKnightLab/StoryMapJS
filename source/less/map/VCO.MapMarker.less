@@ -5,27 +5,183 @@
 		background-image: url(storymap.png?v1.1);
 		background-repeat:no-repeat;
 		background-position: 0 0;
-		width: 30px !important;
-		height: 41px !important;
+		width: 33px !important;
+		height: 53px !important;
 		overflow:hidden;
-		top:-34px;
+		top:-38px;
 		left: -10px;
 		
-		/*
-		width:22px !important;
-		height:22px !important;
-		background-color: @map-marker-color;
-		.box-shadow();
-		*/
 	}
 	.vco-mapmarker {
-		background-position: -30px 0;
+		background-position: -33px 0;
+		/*
+		width: 		16px !important;
+		height: 	16px !important;
+		top:		0px;
+		left: 		0px;
+		background:	@color-background;
+		border: 	1px solid @color-foreground;
+		.box-shadow();
+		.border-radius(8px);
+		*/
 	}
 	.vco-mapmarker-active {
+		background-image: url(storymap.png?v1.1);
+		background-repeat:no-repeat;
 		background-position: 0 0;
+		width: 33px !important;
+		height: 53px !important;
+		overflow:hidden;
+		//top:-34px;
+		//left: -10px;
 	}
+	
 }
 
+/* Marker Media Icons
+================================================== */
+.vco-map {
+	/* Active
+	================================================== */
+	.vco-mapmarker-active.vco-mapmarker-icon:after {
+		.base-sprite();
+		background-repeat:no-repeat;
+		width: 24px;
+		height: 24px;
+		overflow:hidden;
+		content:'';
+		display:block;
+		position:absolute;
+		top:8px;
+		left:5px;
+	}
+	.vco-mapmarker-active.vco-mapmarker-icon-website:after {
+		background-position: -232px -24px; 
+	}
+	.vco-mapmarker-active.vco-mapmarker-icon-googledoc:after {
+		background-position: -256px -48px;
+	}
+	.vco-mapmarker-active.vco-mapmarker-icon-quote:after {
+		background-position: -232px -48px;
+	}
+	.vco-mapmarker-active.vco-mapmarker-icon-plaintext:after {
+		background-position: -280px -48px;
+	}
+	.vco-mapmarker-active.vco-mapmarker-icon-twitter:after {
+		background-position: -256px -24px;
+	}
+	.vco-mapmarker-active.vco-mapmarker-icon-video:after {
+		background-position: -328px -24px;
+	}
+	.vco-mapmarker-active.vco-mapmarker-icon-soundcloud:after {
+		background-position: -304px -24px;
+	}
+	.vco-mapmarker-active.vco-mapmarker-icon-image:after {
+		background-position: -280px -24px; 
+	}
+	.vco-mapmarker-active.vco-mapmarker-icon-link:after {
+		background-position: -184px -72px; 
+	}
+	.vco-mapmarker-active.vco-mapmarker-icon-storify:after {
+		background-position: -328px -96px; 
+	}
+	.vco-mapmarker-active.vco-mapmarker-icon-wikipedia:after {
+		background-position: -184px -48px; 
+	}
+	.vco-mapmarker-active.vco-mapmarker-icon-instagram:after {
+		background-position: -208px -96px; 
+	}
+	.vco-mapmarker-active.vco-mapmarker-icon-vine:after {
+		background-position: -232px -72px; 
+	}
+	.vco-mapmarker-active.vco-mapmarker-icon-googleplus:after {
+		background-position: -208px -72px;
+	}
+	.vco-mapmarker-active.vco-mapmarker-icon-vimeo:after {
+		background-position: -328px -48px;
+	}
+	.vco-mapmarker-active.vco-mapmarker-icon-youtube:after {
+		background-position: -328px -72px; 
+	}
+	
+	/* Inactive
+	================================================== */
+	.vco-mapmarker-icon:after {
+		/*
+		.base-sprite();
+		background-repeat:no-repeat;
+		width: 14px;
+		height: 10px;
+		overflow:hidden;
+		content:'';
+		display:block;
+		position:absolute;
+		top:2px;
+		left:2px;
+		*/
+		/*
+		.base-sprite();
+		background-repeat:no-repeat;
+		width: 14px;
+		height: 14px;
+		overflow:hidden;
+		content:'';
+		display:block;
+		position:absolute;
+		top:5px;
+		left:4px;
+		*/
+	}
+	.vco-mapmarker-icon-website:after {
+		background-position: -232px -24px; 
+	}
+	.vco-mapmarker-icon-googledoc:after {
+		background-position: -256px -48px;
+	}
+	.vco-mapmarker-icon-quote:after {
+		background-position: -232px -48px;
+	}
+	.vco-mapmarker-icon-plaintext:after {
+		background-position: -280px -48px;
+	}
+	.vco-mapmarker-icon-twitter:after {
+		background-position: -256px -24px;
+	}
+	.vco-mapmarker-icon-video:after {
+		background-position: -328px -24px;
+	}
+	.vco-mapmarker-icon-soundcloud:after {
+		background-position: -304px -24px;
+	}
+	.vco-mapmarker-icon-image:after {
+		background-position: -280px -120px;
+		//background-position: -280px -24px;
+	}
+	.vco-mapmarker-icon-link:after {
+		background-position: -184px -72px; 
+	}
+	.vco-mapmarker-icon-storify:after {
+		background-position: -328px -96px; 
+	}
+	.vco-mapmarker-icon-wikipedia:after {
+		background-position: -184px -48px; 
+	}
+	.vco-mapmarker-icon-instagram:after {
+		background-position: -208px -96px; 
+	}
+	.vco-mapmarker-icon-vine:after {
+		background-position: -232px -72px; 
+	}
+	.vco-mapmarker-icon-googleplus:after {
+		background-position: -208px -72px;
+	}
+	.vco-mapmarker-icon-vimeo:after {
+		background-position: -328px -48px;
+	}
+	.vco-mapmarker-icon-youtube:after {
+		background-position: -328px -72px; 
+	}
+}
 
 
 /* Mobile, iPhone and skinny

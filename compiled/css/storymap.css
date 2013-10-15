@@ -174,10 +174,44 @@
 .vco-map{}.vco-map .leaflet-zoom-anim .leaflet-zoom-animated{-webkit-transition:-webkit-transform 1s cubic-bezier(.75, .1, .2, 1);-moz-transition:-moz-transform 1s cubic-bezier(.75, .1, .2, 1);-o-transition:-o-transform 1s cubic-bezier(.75, .1, .2, 1);transition:transform 1s cubic-bezier(.75, .1, .2, 1);-webkit-transform:translateZ(0);-webkit-perspective:1000;-webkit-backface-visibility:hidden}
 .vco-map .leaflet-bottom{top:0}
 .vco-map .leaflet-container .leaflet-control-attribution{background-color:transparent;box-shadow:none;margin:0;border:none}
-.vco-map .leaflet-popup-content-wrapper{-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;border:1px solid #b3b3b3;-webkit-box-shadow:1px 1px 7px rgba(0,0,0,0.3);-moz-box-shadow:1px 1px 7px rgba(0,0,0,0.3);box-shadow:1px 1px 7px rgba(0,0,0,0.3);-webkit-box-shadow:1px 1px 2px rgba(0,0,0,0.3);-moz-box-shadow:1px 1px 2px rgba(0,0,0,0.3);box-shadow:1px 1px 2px rgba(0,0,0,0.3)}.vco-map .leaflet-popup-content-wrapper .leaflet-popup-content{margin:7px}.vco-map .leaflet-popup-content-wrapper .leaflet-popup-content h4{margin:0;font-weight:normal}
+.vco-map .leaflet-popup-content-wrapper{display:none;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;border:1px solid #b3b3b3;-webkit-box-shadow:1px 1px 7px rgba(0,0,0,0.3);-moz-box-shadow:1px 1px 7px rgba(0,0,0,0.3);box-shadow:1px 1px 7px rgba(0,0,0,0.3);-webkit-box-shadow:1px 1px 2px rgba(0,0,0,0.3);-moz-box-shadow:1px 1px 2px rgba(0,0,0,0.3);box-shadow:1px 1px 2px rgba(0,0,0,0.3)}.vco-map .leaflet-popup-content-wrapper .leaflet-popup-content{margin:7px}.vco-map .leaflet-popup-content-wrapper .leaflet-popup-content h4{margin:0;font-weight:normal}
 .vco-map .leaflet-popup-tip-container{margin:0 auto;width:40px;height:20px;position:relative;overflow:hidden;display:none}
-@media only screen and (max-width:500px),only screen and (max-device-width:500px){}.vco-map .vco-mapmarker,.vco-map .vco-mapmarker-active{background-image:url(storymap.png?v1.1);background-repeat:no-repeat;background-position:0 0;width:30px !important;height:41px !important;overflow:hidden;top:-34px;left:-10px;}
-.vco-map .vco-mapmarker{background-position:-30px 0}
-.vco-map .vco-mapmarker-active{background-position:0 0}
+@media only screen and (max-width:500px),only screen and (max-device-width:500px){}.vco-map .vco-mapmarker,.vco-map .vco-mapmarker-active{background-image:url(storymap.png?v1.1);background-repeat:no-repeat;background-position:0 0;width:33px !important;height:53px !important;overflow:hidden;top:-38px;left:-10px}
+.vco-map .vco-mapmarker{background-position:-33px 0;}
+.vco-map .vco-mapmarker-active{background-image:url(storymap.png?v1.1);background-repeat:no-repeat;background-position:0 0;width:33px !important;height:53px !important;overflow:hidden}
+.vco-map{}.vco-map .vco-mapmarker-active.vco-mapmarker-icon:after{background-image:url(storymap.png?v1.0);background-repeat:no-repeat;width:24px;height:24px;overflow:hidden;content:'';display:block;position:absolute;top:8px;left:5px}
+.vco-map .vco-mapmarker-active.vco-mapmarker-icon-website:after{background-position:-232px -24px}
+.vco-map .vco-mapmarker-active.vco-mapmarker-icon-googledoc:after{background-position:-256px -48px}
+.vco-map .vco-mapmarker-active.vco-mapmarker-icon-quote:after{background-position:-232px -48px}
+.vco-map .vco-mapmarker-active.vco-mapmarker-icon-plaintext:after{background-position:-280px -48px}
+.vco-map .vco-mapmarker-active.vco-mapmarker-icon-twitter:after{background-position:-256px -24px}
+.vco-map .vco-mapmarker-active.vco-mapmarker-icon-video:after{background-position:-328px -24px}
+.vco-map .vco-mapmarker-active.vco-mapmarker-icon-soundcloud:after{background-position:-304px -24px}
+.vco-map .vco-mapmarker-active.vco-mapmarker-icon-image:after{background-position:-280px -24px}
+.vco-map .vco-mapmarker-active.vco-mapmarker-icon-link:after{background-position:-184px -72px}
+.vco-map .vco-mapmarker-active.vco-mapmarker-icon-storify:after{background-position:-328px -96px}
+.vco-map .vco-mapmarker-active.vco-mapmarker-icon-wikipedia:after{background-position:-184px -48px}
+.vco-map .vco-mapmarker-active.vco-mapmarker-icon-instagram:after{background-position:-208px -96px}
+.vco-map .vco-mapmarker-active.vco-mapmarker-icon-vine:after{background-position:-232px -72px}
+.vco-map .vco-mapmarker-active.vco-mapmarker-icon-googleplus:after{background-position:-208px -72px}
+.vco-map .vco-mapmarker-active.vco-mapmarker-icon-vimeo:after{background-position:-328px -48px}
+.vco-map .vco-mapmarker-active.vco-mapmarker-icon-youtube:after{background-position:-328px -72px}
+.vco-map .vco-mapmarker-icon:after{}
+.vco-map .vco-mapmarker-icon-website:after{background-position:-232px -24px}
+.vco-map .vco-mapmarker-icon-googledoc:after{background-position:-256px -48px}
+.vco-map .vco-mapmarker-icon-quote:after{background-position:-232px -48px}
+.vco-map .vco-mapmarker-icon-plaintext:after{background-position:-280px -48px}
+.vco-map .vco-mapmarker-icon-twitter:after{background-position:-256px -24px}
+.vco-map .vco-mapmarker-icon-video:after{background-position:-328px -24px}
+.vco-map .vco-mapmarker-icon-soundcloud:after{background-position:-304px -24px}
+.vco-map .vco-mapmarker-icon-image:after{background-position:-280px -120px}
+.vco-map .vco-mapmarker-icon-link:after{background-position:-184px -72px}
+.vco-map .vco-mapmarker-icon-storify:after{background-position:-328px -96px}
+.vco-map .vco-mapmarker-icon-wikipedia:after{background-position:-184px -48px}
+.vco-map .vco-mapmarker-icon-instagram:after{background-position:-208px -96px}
+.vco-map .vco-mapmarker-icon-vine:after{background-position:-232px -72px}
+.vco-map .vco-mapmarker-icon-googleplus:after{background-position:-208px -72px}
+.vco-map .vco-mapmarker-icon-vimeo:after{background-position:-328px -48px}
+.vco-map .vco-mapmarker-icon-youtube:after{background-position:-328px -72px}
 @media only screen and (max-width:500px),only screen and (max-device-width:500px){}.vco-map{height:100%;display:relative;overflow:hidden;top:0}.vco-map .vco-map-mask{width:100%;height:100%;overflow:hidden}.vco-map .vco-map-mask .vco-map-display{width:100%;height:100%}
 @media only screen and (max-width:500px),only screen and (max-device-width:500px){}.vco-storymap{width:100%;height:100%;overflow:hidden;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;-o-user-select:none;user-select:none}

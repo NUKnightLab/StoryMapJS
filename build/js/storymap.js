@@ -1,4 +1,4 @@
-/* storymapjs - v0.0.2 - 2013-10-11
+/* storymapjs - v0.0.4 - 2013-10-15
  * Copyright (c) 2013 Northwestern University Knight Lab 
  */
 
@@ -2662,7 +2662,7 @@ VCO.Animate = function(el, options) {
 	}();
 
 	// does this browser support the opacity property?
-	var opasity = function () {
+	var opacity = function () {
 		return typeof doc.createElement('a').style.opacity !== 'undefined'
 	}();
 
@@ -3009,7 +3009,7 @@ VCO.Animate = function(el, options) {
           v = getTweenVal(pos, units, begin, end, k, i)
           k == 'transform' ?
             els[i].style[transform] = formatTransform(v) :
-            k == 'opacity' && !opasity ?
+            k == 'opacity' && !opacity ?
               (els[i].style.filter = 'alpha(opacity=' + (v * 100) + ')') :
               (els[i].style[camelize(k)] = v)
         }
@@ -15747,6 +15747,12 @@ VCO.MapMarker = VCO.Class.extend({
 		
 		// Marker Number
 		this.marker_number = 0;
+		
+		// Media Icon
+		this.media_icon_class = "";
+		
+		// Timer
+		this.timer = {};
 	
 		// Data
 		this.data = {};
@@ -15771,6 +15777,7 @@ VCO.MapMarker = VCO.Class.extend({
 		VCO.Util.mergeData(this.data, data);
 		
 		this._initLayout();
+		
 		
 	},
 	
@@ -16282,6 +16289,7 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 	/*	Create Marker
 	================================================== */
 	_createMarker: function(d, o) {
+		trace(this.data)
 		var icon = {}; //new L.Icon.Default();
 		
 		if (d.location && d.location.lat && d.location.lon) {
@@ -16291,9 +16299,9 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 				//icon = L.icon({iconUrl: d.media.url, iconSize: [41]});
 			
 			};
-		
+			
 			//icon = L.icon({iconUrl: "gfx/map-pin.png", iconSize: [28, 43], iconAnchor: [14, 33]});
-			this._icon = L.divIcon({className: 'vco-mapmarker'});
+			this._icon = L.divIcon({className: 'vco-mapmarker ' + this.media_icon_class});
 		
 			this._marker = L.marker([d.location.lat, d.location.lon], {
 				title: 		d.text.headline,
@@ -16301,7 +16309,7 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 			});
 		
 			this._marker.on("click", this._onMarkerClick, this); 
-		
+			this._createPopup(d, o);
 			if (o.map_popup) {
 				this._createPopup(d, o);
 			}
@@ -16316,26 +16324,39 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 	
 	_createPopup: function(d, o) {
 		var html = "";
-		html += "<h3>" + this.data.text.headline + "</h3>";
-		html += "<p>" + this.data.text.text + "</p>";
-		this._marker.bindPopup(html);
+		html += "<h4>" + this.data.text.headline + "</h4>";
+		//html += "<p>" + this.data.text.text + "</p>";
+		this._marker.bindPopup(html, {closeButton:false, offset:[0, 43]});
 	},
 	
 	_active: function(a) {
+		var self = this;
+		
+		if (this.data.media && this.data.media.mediatype) {
+			this.media_icon_class = "vco-mapmarker-icon vco-mapmarker-icon-" + this.data.media.mediatype.type;
+		}
+		
 		if (this.data.real_marker) {
 			if (a) {
-				this._marker.setOpacity(1);
+				//this._marker.setOpacity(1);
 				this._marker.setZIndexOffset(100);
-				this._icon = L.divIcon({className: 'vco-mapmarker-active'});
+				this._icon = L.divIcon({className: 'vco-mapmarker-active ' + this.media_icon_class});
+				this.timer = setTimeout(function() {self._openPopup();}, this.options.duration + 200);
 				this._setIcon();
 			} else {
 				//this._marker.setOpacity(.25);
-				this._marker.setOpacity(1);
+				this._marker.closePopup();
+				clearTimeout(this.timer);
+				//this._marker.setOpacity(1);
 				this._marker.setZIndexOffset(0);
-				this._icon = L.divIcon({className: 'vco-mapmarker'});
+				this._icon = L.divIcon({className: 'vco-mapmarker ' + this.media_icon_class});
 				this._setIcon();
 			}
 		}
+	},
+	
+	_openPopup: function() {
+		this._marker.openPopup();
 	},
 	
 	_setIcon: function() {
@@ -17100,6 +17121,7 @@ VCO.StoryMap = VCO.Class.extend({
 			map_size_sticky: 		3, // Set as division 1/3 etc
 			map_center_offset: 		60, 
 			start_at_slide: 		0,
+			sizebar_height: 		0,
 			// animation
 			duration: 				1000,
 			ease: 					VCO.Ease.easeInOutQuint,
@@ -17241,8 +17263,7 @@ VCO.StoryMap = VCO.Class.extend({
 	_updateDisplay: function(map_height, animate, d) {
 		
 		var duration 	= this.options.duration,
-			self		= this,
-			sizebar_height = this._el.sizebar.offsetHeight;
+			self		= this;
 		
 		if (d) {
 			duration = d;
@@ -17260,7 +17281,7 @@ VCO.StoryMap = VCO.Class.extend({
 		}
 		
 		// StorySlider Height
-		this.options.storyslider_height = (this.options.height - sizebar_height - this.options.map_height- 1);
+		this.options.storyslider_height = (this.options.height - this.options.sizebar_height - this.options.map_height- 1);
 		
 		if (animate) {
 			
@@ -17274,7 +17295,7 @@ VCO.StoryMap = VCO.Class.extend({
 				duration: 	duration,
 				easing: 	VCO.Ease.easeOutStrong,
 				complete: function () {
-					self._map.updateDisplay(self.options.width, self.options.map_height, animate, d, sizebar_height);
+					self._map.updateDisplay(self.options.width, self.options.map_height, animate, d, self.options.sizebar_height);
 				}
 			});
 			
@@ -17284,7 +17305,7 @@ VCO.StoryMap = VCO.Class.extend({
 			}
 			this.animator_storyslider = VCO.Animate(this._el.storyslider, {
 				height: 	this.options.storyslider_height + "px",
-				top: 		sizebar_height + "px",
+				top: 		this.options.sizebar_height + "px",
 				duration: 	duration,
 				easing: 	VCO.Ease.easeOutStrong
 			});
@@ -17295,7 +17316,7 @@ VCO.StoryMap = VCO.Class.extend({
 			
 			// StorySlider
 			this._el.storyslider.style.height = this.options.storyslider_height + "px";
-			this._el.storyslider.style.top = sizebar_height + "px";
+			this._el.storyslider.style.top = this.options.sizebar_height + "px";
 		}
 		
 		// Update Component Displays
@@ -17336,7 +17357,7 @@ VCO.StoryMap = VCO.Class.extend({
 	},
 	
 	_onSizeBarMove: function(e) {
-		this._updateDisplay(e.y);
+		this._updateDisplay(e.y); 
 	},
 	
 	_onSizeBarSwipe: function(e) {
