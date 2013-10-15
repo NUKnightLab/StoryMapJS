@@ -15748,9 +15748,6 @@ VCO.MapMarker = VCO.Class.extend({
 		// Marker Number
 		this.marker_number = 0;
 		
-		// Media Icon
-		this.media_icon_class = "";
-		
 		// Timer
 		this.timer = {};
 	
@@ -15777,7 +15774,6 @@ VCO.MapMarker = VCO.Class.extend({
 		VCO.Util.mergeData(this.data, data);
 		
 		this._initLayout();
-		
 		
 	},
 	
@@ -16289,7 +16285,6 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 	/*	Create Marker
 	================================================== */
 	_createMarker: function(d, o) {
-		trace(this.data)
 		var icon = {}; //new L.Icon.Default();
 		
 		if (d.location && d.location.lat && d.location.lon) {
@@ -16299,9 +16294,9 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 				//icon = L.icon({iconUrl: d.media.url, iconSize: [41]});
 			
 			};
-			
+		
 			//icon = L.icon({iconUrl: "gfx/map-pin.png", iconSize: [28, 43], iconAnchor: [14, 33]});
-			this._icon = L.divIcon({className: 'vco-mapmarker ' + this.media_icon_class});
+			this._icon = L.divIcon({className: 'vco-mapmarker'});
 		
 			this._marker = L.marker([d.location.lat, d.location.lon], {
 				title: 		d.text.headline,
@@ -16331,16 +16326,11 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 	
 	_active: function(a) {
 		var self = this;
-		
-		if (this.data.media && this.data.media.mediatype) {
-			this.media_icon_class = "vco-mapmarker-icon vco-mapmarker-icon-" + this.data.media.mediatype.type;
-		}
-		
 		if (this.data.real_marker) {
 			if (a) {
 				//this._marker.setOpacity(1);
 				this._marker.setZIndexOffset(100);
-				this._icon = L.divIcon({className: 'vco-mapmarker-active ' + this.media_icon_class});
+				this._icon = L.divIcon({className: 'vco-mapmarker-active'});
 				this.timer = setTimeout(function() {self._openPopup();}, this.options.duration + 200);
 				this._setIcon();
 			} else {
@@ -16349,7 +16339,7 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 				clearTimeout(this.timer);
 				//this._marker.setOpacity(1);
 				this._marker.setZIndexOffset(0);
-				this._icon = L.divIcon({className: 'vco-mapmarker ' + this.media_icon_class});
+				this._icon = L.divIcon({className: 'vco-mapmarker'});
 				this._setIcon();
 			}
 		}
