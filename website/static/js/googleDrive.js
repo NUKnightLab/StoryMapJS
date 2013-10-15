@@ -476,22 +476,25 @@ var deleteStoryMap = function(id, callback) {
 };
 
 var publishStoryMap = function(id, callback) {
-    var title = STORYMAP_INFO[id].title;
+    var info = STORYMAP_INFO[id];
+    var query = "title='published.json' and trashed=false "
+        + " and '" + id + "' in parents";
+    var f = function(file) {
+        if (file.code) {
+            callback(file.message);
+        } else {
+            callback(null, publishedURL(id));
+        }
+    };
     loadStoryMap(id, function(err, data) {
-      mkdirs(title, publicFolder, function(folder) {
-        var f = function(file) {
-            if (file.code) {
-                callback(file.message);
-            } else {
-                callback(null, publishedURL(id));
-            }
-        };
-        var query = "title='published.json' and trashed=false "
-            + " and '" + id + "' in parents";
         forFile(query, function(file) {
-            updateFile(file.id, JSON.stringify(data), f);
+            var content = JSON.stringify(data);
+            if (file) {
+                updateFile(file.id, content, f);
+            } else {
+                createFile(info.title, content, [info], f);
+            }
         });
-      });
     });
 };
 

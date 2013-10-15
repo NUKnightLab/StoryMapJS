@@ -110,6 +110,15 @@
         <button class="btn btn-primary">Delete</button>
     </div>
 </div>
+
+<div id="message_modal" class="modal hide fade" role="dialog" aria-hidden="true">
+    <div class="modal-body">
+        <p id="message_msg"></p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">OK</button>
+    </div>
+</div>
 <!-- END MODALS -->
   
 <!-- START MAP INFOBOX -->
@@ -539,8 +548,29 @@ function storymap_preview() {
 }
 
 function storymap_publish() {
-    alert('TODO');
-    storymap_dirty(0);
+    if(_dirty) {
+        show_progress('Saving StoryMap');
+        var data = { storymap: _storymap };
+        saveStoryMapDraft(_id, data, function(err) {
+            if (err) {
+                console.log('Could not save storymap');
+            } else {
+                storymap_dirty(0);
+            }
+            storymap_publish();
+        });
+    } else {
+        show_progress('Publishing StoryMap');
+        publishStoryMap(_id, function(err, url) {
+            if (err) {
+                alert('Could not publish StoryMap: ' + err);
+            } else {
+                show_message('StoryMap published at: <a href="'
+                + url + '" target="_blank">published.json</a>');
+            }
+            hide_progress();
+        });
+    }
 }
 
 function initialize() {
