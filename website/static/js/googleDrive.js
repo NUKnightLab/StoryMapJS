@@ -18,10 +18,12 @@ var initSelector = function() {
     setPublicFolder(true, function() {
         var storyMapIndex = $('#storymap-index');
         listStoryMaps( function(storyMapList){
+            console.log('listing storymaps');
             if (!storyMapList) {
                 storyMapList = [];
             }
             $.each(storyMapList, function(i, mapItem) {
+                console.log(mapItem);
                 STORYMAP_INFO[mapItem.id] = mapItem;
                 if (storyMapIndex.length) {
                     storyMapIndex.append('<tr><td><a href="/edit.html?id='
@@ -199,6 +201,9 @@ var forFileList = function(query, func) {
         q: query
     });
     f.execute(function(fileList) {
+        console.log('Executed query: ' + query);
+        console.log(fileList);
+        console.log(fileList.items);
         func(fileList.items);
     });
 }
@@ -403,6 +408,7 @@ var saveStoryMapDraft = function(storyMapId, data, callback) {
 
 /* Requires publicFolder to be initialized */
 var listStoryMaps = function(callback) {
+    console.log('public folder: ' + publicFolder.id); 
     var q = "'" + publicFolder.id + "' in parents and trashed=false";
     forFileList(q, callback);
 }
@@ -492,7 +498,7 @@ var publishStoryMap = function(id, callback) {
             if (file) {
                 updateFile(file.id, content, f);
             } else {
-                createFile(info.title, content, [info], f);
+                createFile('published.json', content, [info], f);
             }
         });
     });
