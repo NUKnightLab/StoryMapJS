@@ -106,7 +106,7 @@
     //  
     "stage": [{
         "src": "build",
-        "regex": "(css/storymap\\.css|js/storymap.*\\.js|gfx/.*)$"
+        "regex": "(css/.*|js/.*|gfx/.*)$"
     }],
     //
     // deploy
