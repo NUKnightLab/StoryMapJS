@@ -7,9 +7,12 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-touch-fullscreen" content="yes">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<!-- CSS-->
-<link rel="stylesheet" href="/compiled/css/storymap.css?v1">
-<!-- Style-->
+<!-- build:css http://cdn.knightlab.com/libs/storymapjs/latest/css/storymap.css -->
+<link rel="stylesheet" href="/build/css/storymap.css?v1">
+<!-- endbuild -->
+<!-- build:js http://cdn.knightlab.com/libs/storymapjs/latest/js/storymap.min.js -->
+<script type="text/javascript" src="/build/js/storymap.js"></script>
+<!-- endbuild -->
 <style>
 html, body {
     height: 100%;
@@ -26,7 +29,6 @@ html, body {
 <body>
 <div id="storymap"></div>
 
-<script src="/compiled/js/storymap.js"></script>
 <script>
 
 function parseQuerystring() {
@@ -42,7 +44,7 @@ function parseQuerystring() {
 }
 
 var params = parseQuerystring();
-var url = params['url'];
+var url = decodeURIComponent(params['url']);
 
 var options = {
     start_at_slide: 0

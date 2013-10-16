@@ -3,8 +3,10 @@
 {% block head %}
 <script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}/js/tool.js"></script>
+<!-- start google maps -->
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places"></script>
 <script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/infobox/src/infobox.js"></script>
+<!-- end google maps -->
 <!-- start bootstrap-wysihtml5 -->
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/bootstrap-wysihtml5/bootstrap-wysihtml5-0.0.2.css"></link>
 <script type="text/javascript" src="{{ STATIC_URL }}/bootstrap-wysihtml5/lib/js/wysihtml5-0.3.0.min.js"></script>
@@ -110,6 +112,15 @@
         <button class="btn btn-primary">Delete</button>
     </div>
 </div>
+
+<div id="message_modal" class="modal hide fade" role="dialog" aria-hidden="true">
+    <div class="modal-body">
+        <p id="message_msg"></p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">OK</button>
+    </div>
+</div>
 <!-- END MODALS -->
   
 <!-- START MAP INFOBOX -->
@@ -171,7 +182,6 @@ var _storymap;
 var _current_slide_index = -1;
 
 var _dirty = 0;
-   
 
 function map_clear_overlays() {
     if(_map_line) {
@@ -212,8 +222,9 @@ function location_mark(data) {
     map_clear_overlays();
 
     if(data) {
-        // Pan to location
         var latlng = new google.maps.LatLng(data.lat, data.lon);
+
+        // Pan to location
         _map.panTo(latlng);
     
         // Add marker at location
@@ -235,7 +246,16 @@ function location_mark(data) {
             content: $('.infobox-wrapper').html(),
             closeBoxURL: "",
             pixelOffset: new google.maps.Size(-(width/2), 0)
-        });   
+        });  
+        
+        google.maps.event.addListener(_map_infobox, 'domready', function() {
+            $('.infoBox .location_name').keypress(function() {
+                if(event.which == 13) {
+                    event.preventDefault();
+                }
+            });
+        });
+        
         _map_infobox.open(_map, _map_markers[0]);
     } 
 }
@@ -334,18 +354,15 @@ function slide_select(event) {
         location_mark(data.location);       
     }
       
-    $('#url').val(data.media.url);
-    $('#credit').val(data.media.credit);
-    $('#caption').val(data.media.caption);
+    $('#url').val(data.media ? (data.media.url || '') : '');
+    $('#credit').val(data.media ? (data.media.credit || '') : '');
+    $('#caption').val(data.media ? (data.media.caption || '') : '');
     
     media_check_type();
     
-    console.log('setting headline: ' + data.text.headline);
-    $('#headline').val(data.text.headline || '');
-    
-    console.log('setting text: ' + data.text.text);
-    $('#text').val(data.text.text || '');    
-    $('iframe').contents().find('body').html(data.text.text || '');
+    $('#headline').val(data.text ? (data.text.headline || '') : '');
+    $('#text').val(data.text ? (data.text.text || '') : '');    
+    $('iframe.wysihtml5-sandbox').contents().find('body').html(data.text ? (data.text.text || '') : '');
 }
 
 function slide_delete(event) {
@@ -430,22 +447,22 @@ function slide_add() {
 }
 
 var showSlides = function() {
-            $('#slides').html();            
-            for(var i = 1; i < _storymap.slides.length; i++) {
-                slide_append_element();
-            }
-            
-            var width = 0;
-            $('#slides .slide').each(function() {
-                width += $(this).outerWidth(true);
-            })   
-            $('#slides').css('width', width + "px");
-                  
-            if(_storymap.slides.length > 0) {
-                $('.slide:first').click();  
-            } else {
-                slide_add();
-            }   
+    $('#slides').html();            
+    for(var i = 1; i < _storymap.slides.length; i++) {
+        slide_append_element();
+    }
+    
+    var width = 0;
+    $('#slides .slide').each(function() {
+        width += $(this).outerWidth(true);
+    })   
+    $('#slides').css('width', width + "px");
+          
+    if(_storymap.slides.length > 0) {
+        $('.slide:first').click();  
+    } else {
+        slide_add();
+    }   
 
 };
 
@@ -508,15 +525,12 @@ function storymap_dirty(is_dirty) {
 }
 
 function storymap_save() {
-    //storymap_dirty(0);
-    //return;
-    
     show_progress('Saving StoryMap')
     
     data = { storymap: _storymap };
     saveStoryMapDraft(_id, data, function(err) {
         if (err) {
-            console.log('Could not save storymap');
+            show_error('Could not save storymap');
         } else {
             storymap_dirty(0);
         }
@@ -525,14 +539,35 @@ function storymap_save() {
 }
 
 function storymap_preview() {
-    var preview_url = 'preview.html?url=' + encodeURIComponent(_id)
+    var preview_url = 'preview.html?url=' + encodeURIComponent(draftURL(_id))
         + '&start_at_slide='+_current_slide_index; // not working       
     window.open(preview_url, 'StoryMap Preview');
 }
 
 function storymap_publish() {
-    alert('TODO');
-    storymap_dirty(0);
+    if(_dirty) {
+        show_progress('Saving StoryMap');
+        var data = { storymap: _storymap };
+        saveStoryMapDraft(_id, data, function(err) {
+            if (err) {
+                show_error('Could not save storymap');
+            } else {
+                storymap_dirty(0);
+            }
+            storymap_publish();
+        });
+    } else {
+        show_progress('Publishing StoryMap');
+        publishStoryMap(_id, function(err, url) {
+            if (err) {
+                show_error('Could not publish StoryMap: ' + err);
+            } else {
+                show_message('StoryMap published at: <a href="'
+                + url + '" target="_blank">published.json</a>');
+            }
+            hide_progress();
+        });
+    }
 }
 
 function initialize() {
@@ -540,7 +575,7 @@ function initialize() {
     var params = parseQuerystring();
     
     if(!params.id) {
-        alert('you would need to pass an id as a query parameter');
+        alert('No StoryMap id detected');
         return;
     }
     _id = params.id;
@@ -549,6 +584,7 @@ function initialize() {
     var mapOptions = {
         mapTypeControl: false,
         panControl: true,
+        scrollwheel: false,
         streetViewControl: false,
         zoomControl: true,
         zoomControlOptions: {
@@ -561,7 +597,7 @@ function initialize() {
     // Make search box
     map_search_box = new google.maps.places.SearchBox(
         document.getElementById('map_search_input'));
-        
+
     google.maps.event.addListener(map_search_box, 'places_changed', function() {
         var places = map_search_box.getPlaces();
         
@@ -619,6 +655,7 @@ $(function() {
     });
 
     $('#text').wysihtml5({
+        "stylesheets": ["{{ STATIC_URL }}/bootstrap-wysihtml5/lib/css/wysiwyg-color.css"],
         "font-styles": false,   // Font styling, e.g. h1, h2, etc. Default true
         "emphasis": true,       // Italics, bold, etc. Default true
         "lists": false,         // (Un)ordered lists, e.g. Bullets, Numbers. Default true

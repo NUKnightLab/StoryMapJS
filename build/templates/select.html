@@ -9,7 +9,17 @@
 
 {% block content %}
 
-<section id="selector" class="container shrinktext">
+<section id="login-section" class="container hide">
+  <div class="row">
+    <br/>
+    <div class="span12">
+      <button id="login-button" class="btn">Login</button>
+    </div>
+  </div>
+  <br/>
+</section>
+
+<section id="selector" class="container shrinktext hide">
 
 <div class="row">
     <div class="span12">
@@ -18,13 +28,15 @@
  
 <div class="row">
     <div class="span12"">
-        <table id="storymap-index" class="table table-striped table-bordered">
+      <table id="storymap-index" class="table table-striped table-bordered">
         <thead>
             <tr>
                 <th>Name</th>
             </tr>
         </thead>
-        </table>
+        <tbody>
+        </tbody>
+      </table>
     </div>
 </div>
 
@@ -59,21 +71,42 @@
         <a href="#" class="btn btn-primary">Create</a>
     </div>
 </div>
+<div id="confirm_modal" class="modal hide fade" role="dialog" aria-hidden="true">
+    <div class="modal-body">
+        <p id="confirm_msg"></p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+        <button class="btn btn-primary">Delete</button>
+    </div>
+</div>
 
 <!-- END MODALS -->
 
 <script type="text/javascript">
 
+function storyMapNames() {
+    var names = [];
+    $('#storymap-index tbody tr').each(function(i, row) {
+        var td = $(row).find('td').first();
+        names.push(td.text().toLowerCase()); 
+    });
+    return names;
+}
+
 function handle_storymap_new() {
+    var names = storyMapNames();
     $('#new_modal .btn-primary').bind('click.confirm', function(event) {    
         var name = $('#new_name').val().trim();
+        if (names.indexOf(name.toLowerCase()) >= 0) {
+            $('#new_modal .error').html('Please enter a unique name.');
+            return false;
+        }
         
         if(!name.length) {
             $('#new_modal .error').html('You must enter a name');
             return;
         }
-        
-        // TODO: check uniqueness
         
         $(this).unbind('click.confirm');
         $('#new_modal').modal('hide');
@@ -100,16 +133,25 @@ $(function() {
 });
 
     $('#storymap-index').on('click', '.delete-button', function(e) {
+        var title = $(e.target).closest('tr').find('td a').first().html();
         var id = e.target.id.slice(7);
-        console.log('Deleting StoryMap: ' + id);
-        deleteStoryMap(id, function(err) {
-            if (err) {
-                alert('Could not delete StoryMap');
-            }
+        show_confirm('Delete <strong>' + title + '</strong>?', function() {
+            console.log('Deleting StoryMap: ' + id);
+            deleteStoryMap(id, function(err) {
+                if (err) {
+                    alert('Could not delete StoryMap');
+                }
+            });
+            $(e.target).closest('tr').remove();
         });
-        $(e.target).closest('tr').remove();
         e.preventDefault();
     });
+
+$(function() {
+    $('#login-button').click(function() {
+        login();
+    });
+});
 
 </script>
 
