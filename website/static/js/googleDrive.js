@@ -12,7 +12,6 @@ var publicFolder = null;
 
 /** Authentication and Initialization **/
 
-/* init the application */
 var initSelector = function() {
   gapi.client.load('drive', 'v2', function() {
     setPublicFolder(true, function() {
@@ -60,13 +59,37 @@ var initEditor = function() {
   });
 };
 
+var showSelector = function() {
+    $('#selector').show();
+};
+
+var showLoginSection = function() {
+    $('#login-section').show();
+};
+
+var hideLoginSection = function() {
+    $('#login-section').hide();
+};
+
+var login = function() {
+    checkAuthAndInitSelector(false);
+};
+
 var handleAuthResultAndInitSelector = function(authResult) {
+  /*
   if (authResult === null) {
     checkAuthAndInitSelector(false);
     return false;
   }
+  */
+  if (authResult === null) {
+    showLoginSection();
+    return false;
+  }
   var authButton = document.getElementById('authorizeButton');
   if (authResult && !authResult.error) {
+    hideLoginSection();
+    showSelector();
     initSelector();
   } else {
     authButton.style.display = 'block';
@@ -115,8 +138,9 @@ var checkAuthAndInitEditor = function(immediate) {
 };
 
 var handleSelectorClientLoad = function() {
-  show_progress('Loading StoryMap list');
-  window.setTimeout(checkAuthAndInitSelector, 1);
+  //show_progress('Loading StoryMap list');
+  //window.setTimeout(checkAuthAndInitSelector, 1);
+  checkAuthAndInitSelector(true);
 };
 
 var handleEditorClientLoad = function() {
