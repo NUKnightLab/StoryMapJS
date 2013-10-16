@@ -655,6 +655,7 @@ $(function() {
     });
 
     $('#text').wysihtml5({
+        "stylesheets": ["{{ STATIC_URL }}/bootstrap-wysihtml5/lib/css/wysiwyg-color.css"],
         "font-styles": false,   // Font styling, e.g. h1, h2, etc. Default true
         "emphasis": true,       // Italics, bold, etc. Default true
         "lists": false,         // (Un)ordered lists, e.g. Bullets, Numbers. Default true
