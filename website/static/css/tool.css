@@ -73,8 +73,11 @@ edit page
     height: 260px;
 }
 #map {position: absolute;left: 0;top: 0;right: 0;bottom: 0;}
+#map * {font-family: Roboto,Arial,sans-serif;}
 #map img{max-width:none}
-#map_search_input {position: absolute; top: 6px;right: 6px;display: none;}
+#map_search_input {position: absolute; top: 6px;right: 6px;display: none;font: 13px Roboto, Arial, Sans-serif;}
+/* SearchBox drop-down items */
+.pac-item {font-family: Roboto, Arial, Sans-serif;}
 
 .infobox-wrapper {display:none;}
 .infobox {background: white;border: 1px solid darkgray;margin-top: 8px;padding: 8px;}

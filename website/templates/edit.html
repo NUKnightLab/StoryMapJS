@@ -3,8 +3,10 @@
 {% block head %}
 <script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}/js/tool.js"></script>
+<!-- start google maps -->
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places"></script>
 <script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/infobox/src/infobox.js"></script>
+<!-- end google maps -->
 <!-- start bootstrap-wysihtml5 -->
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/bootstrap-wysihtml5/bootstrap-wysihtml5-0.0.2.css"></link>
 <script type="text/javascript" src="{{ STATIC_URL }}/bootstrap-wysihtml5/lib/js/wysihtml5-0.3.0.min.js"></script>
@@ -220,8 +222,9 @@ function location_mark(data) {
     map_clear_overlays();
 
     if(data) {
-        // Pan to location
         var latlng = new google.maps.LatLng(data.lat, data.lon);
+
+        // Pan to location
         _map.panTo(latlng);
     
         // Add marker at location
@@ -351,18 +354,15 @@ function slide_select(event) {
         location_mark(data.location);       
     }
       
-    $('#url').val(data.media.url);
-    $('#credit').val(data.media.credit);
-    $('#caption').val(data.media.caption);
+    $('#url').val(data.media ? (data.media.url || '') : '');
+    $('#credit').val(data.media ? (data.media.credit || '') : '');
+    $('#caption').val(data.media ? (data.media.caption || '') : '');
     
     media_check_type();
     
-    console.log('setting headline: ' + data.text.headline);
-    $('#headline').val(data.text.headline || '');
-    
-    console.log('setting text: ' + data.text.text);
-    $('#text').val(data.text.text || '');    
-    $('iframe.wysihtml5-sandbox').contents().find('body').html(data.text.text || '');
+    $('#headline').val(data.text ? (data.text.headline || '') : '');
+    $('#text').val(data.text ? (data.text.text || '') : '');    
+    $('iframe.wysihtml5-sandbox').contents().find('body').html(data.text ? (data.text.text || '') : '');
 }
 
 function slide_delete(event) {
@@ -525,15 +525,12 @@ function storymap_dirty(is_dirty) {
 }
 
 function storymap_save() {
-    //storymap_dirty(0);
-    //return;
-    
     show_progress('Saving StoryMap')
     
     data = { storymap: _storymap };
     saveStoryMapDraft(_id, data, function(err) {
         if (err) {
-            console.log('Could not save storymap');
+            show_error('Could not save storymap');
         } else {
             storymap_dirty(0);
         }
@@ -553,7 +550,7 @@ function storymap_publish() {
         var data = { storymap: _storymap };
         saveStoryMapDraft(_id, data, function(err) {
             if (err) {
-                console.log('Could not save storymap');
+                show_error('Could not save storymap');
             } else {
                 storymap_dirty(0);
             }
@@ -563,7 +560,7 @@ function storymap_publish() {
         show_progress('Publishing StoryMap');
         publishStoryMap(_id, function(err, url) {
             if (err) {
-                alert('Could not publish StoryMap: ' + err);
+                show_error('Could not publish StoryMap: ' + err);
             } else {
                 show_message('StoryMap published at: <a href="'
                 + url + '" target="_blank">published.json</a>');
@@ -578,7 +575,7 @@ function initialize() {
     var params = parseQuerystring();
     
     if(!params.id) {
-        alert('you would need to pass an id as a query parameter');
+        alert('No StoryMap id detected');
         return;
     }
     _id = params.id;
@@ -587,6 +584,7 @@ function initialize() {
     var mapOptions = {
         mapTypeControl: false,
         panControl: true,
+        scrollwheel: false,
         streetViewControl: false,
         zoomControl: true,
         zoomControlOptions: {
@@ -599,7 +597,7 @@ function initialize() {
     // Make search box
     map_search_box = new google.maps.places.SearchBox(
         document.getElementById('map_search_input'));
-        
+
     google.maps.event.addListener(map_search_box, 'places_changed', function() {
         var places = map_search_box.getPlaces();
         
