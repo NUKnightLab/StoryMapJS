@@ -597,7 +597,7 @@ function initialize() {
     // Make search box
     map_search_box = new google.maps.places.SearchBox(
         document.getElementById('map_search_input'));
-        
+
     google.maps.event.addListener(map_search_box, 'places_changed', function() {
         var places = map_search_box.getPlaces();
         
