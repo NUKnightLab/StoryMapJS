@@ -54,6 +54,7 @@
 		position:absolute;
 		top:8px;
 		left:5px;
+		.opacity(100);
 	}
 	.vco-mapmarker-active.vco-mapmarker-icon-website:after {
 		background-position: -232px -24px; 
@@ -77,6 +78,9 @@
 		background-position: -304px -24px;
 	}
 	.vco-mapmarker-active.vco-mapmarker-icon-image:after {
+		background-position: -280px -24px; 
+	}
+	.vco-mapmarker-active.vco-mapmarker-icon-flickr:after {
 		background-position: -280px -24px; 
 	}
 	.vco-mapmarker-active.vco-mapmarker-icon-link:after {
@@ -131,7 +135,71 @@
 		top:5px;
 		left:4px;
 		*/
+		.base-sprite();
+		background-repeat:no-repeat;
+		width: 24px;
+		height: 24px;
+		overflow:hidden;
+		content:'';
+		display:block;
+		position:absolute;
+		top:8px;
+		left:5px;
+		.opacity(75);
 	}
+	.vco-mapmarker-icon-website:after {
+		background-position: -232px -24px; 
+	}
+	.vco-mapmarker-icon-googledoc:after {
+		background-position: -256px -48px;
+	}
+	.vco-mapmarker-icon-quote:after {
+		background-position: -232px -48px;
+	}
+	.vco-mapmarker-icon-plaintext:after {
+		background-position: -280px -48px;
+	}
+	.vco-mapmarker-icon-twitter:after {
+		background-position: -256px -24px;
+	}
+	.vco-mapmarker-icon-video:after {
+		background-position: -328px -24px;
+	}
+	.vco-mapmarker-icon-soundcloud:after {
+		background-position: -304px -24px;
+	}
+	.vco-mapmarker-icon-image:after {
+		background-position: -280px -24px; 
+	}
+	.vco-mapmarker-icon-flickr:after {
+		background-position: -280px -24px; 
+	}
+	.vco-mapmarker-icon-link:after {
+		background-position: -184px -72px; 
+	}
+	.vco-mapmarker-icon-storify:after {
+		background-position: -328px -96px; 
+	}
+	.vco-mapmarker-icon-wikipedia:after {
+		background-position: -184px -48px; 
+	}
+	.vco-mapmarker-icon-instagram:after {
+		background-position: -208px -96px; 
+	}
+	.vco-mapmarker-icon-vine:after {
+		background-position: -232px -72px; 
+	}
+	.vco-mapmarker-icon-googleplus:after {
+		background-position: -208px -72px;
+	}
+	.vco-mapmarker-icon-vimeo:after {
+		background-position: -328px -48px;
+	}
+	.vco-mapmarker-icon-youtube:after {
+		background-position: -328px -72px; 
+	}
+	
+	/*
 	.vco-mapmarker-icon-website:after {
 		background-position: -232px -24px; 
 	}
@@ -181,6 +249,7 @@
 	.vco-mapmarker-icon-youtube:after {
 		background-position: -328px -72px; 
 	}
+	*/
 }
 
 

@@ -1,23 +1,35 @@
 /* SIZEBAR 
 ================================================== */
+.vco-sizebar:before {
+	content:'';
+	height:25px;
+	margin-top:-25px;
+	.translucent-background(@color-background, .5);
+	display:block;
+	border-top: 2px solid #FFF;
+	.box-shadow(0px -3px 7px rgba(0,0,0,.20));
+	.gradient-vertical (rgba(255,255,255,0.25), rgba(255,255,255,0.99));
+}
 .vco-sizebar {
 	width:100%;
-	height:	30px;
+	height:	5px;
 	//background-color:@ui-background-color;
 	//border-top: 1px solid darken(@ui-background-color, 15);
-	border-top: 2px solid #FFF;
+	border-bottom: 1px solid #FFF;
 	//.gradient-vertical(@ui-background-color, @color-background);
 	//background-color: @color-background;
 	//background-color: darken(@color-background, 2);
 	//.gradient-vertical (darken(@color-background, 2), @color-background);
 	//border-bottom: 1px solid darken(@color-background, 10);
-	.translucent-background(@color-background, .5);
+	//.translucent-background(@color-background, .5);
+	//.gradient-vertical (rgba(0,0,0,0.65), rgba(0,0,0,0.65));
+	.gradient-vertical (rgba(255,255,255,0.99), rgba(255,255,255,0.25));
 	//border-bottom: 1px solid #FFF;
 	//position:absolute;
 	//top:0px;
 	//.opacity(75);
 	cursor: row-resize;
-	.box-shadow(0px -3px 7px rgba(0,0,0,.20));
+	//.box-shadow(0px -3px 7px rgba(0,0,0,.20));
 	z-index:11;
 	.vco-map-line {
 		border: 1px solid darken(@ui-background-color, 15);
