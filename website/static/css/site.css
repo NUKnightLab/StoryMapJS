@@ -1,5 +1,11 @@
+#demo {
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+  padding: 10px 0;
+  margin-bottom: 20px;
+}
 #homepage-storymap {
-  height: 600px;
+  height: 620px;
 }
 
 #mc-embedded-subscribe-form .input-large {
