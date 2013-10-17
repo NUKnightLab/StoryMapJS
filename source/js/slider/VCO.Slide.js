@@ -149,7 +149,7 @@ VCO.Slide = VCO.Class.extend({
 		} 
 		
 		// Media
-		if (this.data.media) {
+		if (this.data.media && this.data.media.url && this.data.media.url != "") {
 			// Determine the media type
 			this.data.media.mediatype = VCO.MediaType(this.data.media);
 			

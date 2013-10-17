@@ -374,11 +374,25 @@ VCO.StoryMap = VCO.Class.extend({
 					text: {
 						headline: 			"Married",
 						text: 				"Marries Livy in Elmira. Her father buys them a house in Buffalo, New York. Son Langdon is born."
+					}
+				},
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
+						url: 				null,
+						color: 				"#cdbfe3",
+						opacity: 			50
 					},
-					media: {
-						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						credit:				"ETC",
-						caption:			"something"
+					date: 					"1870",
+					location: {
+						lat: 				42.886447,
+						lon: 				-78.878369,
+						zoom: 				11,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: {
+						headline: 			"Married",
+						text: 				"Marries Livy in Elmira. Her father buys them a house in Buffalo, New York. Son Langdon is born."
 					}
 				},
 				{
@@ -401,7 +415,7 @@ VCO.StoryMap = VCO.Class.extend({
 						text: 				"Moves with Livy to Hartford. Publishes Roughing It. Daughter is born. Son Langdon dies."
 					},
 					media: {
-						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						url: 				"",
 						credit:				"ETC",
 						caption:			"something"
 					}
