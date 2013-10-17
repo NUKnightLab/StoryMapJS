@@ -269,8 +269,7 @@ VCO.StoryMap = VCO.Class.extend({
 						lat: 				37.774929,
 						lon: 				-122.419416,
 						zoom: 				11,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
-						line: 				true
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
 					},
 					text: {
 						headline: 			"San Francisco",
@@ -294,8 +293,7 @@ VCO.StoryMap = VCO.Class.extend({
 						lat: 				19.896766,
 						lon: 				-155.582782,
 						zoom: 				11,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
-						line: 				true
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
 					},
 					text: {
 						headline: 			"Hawaii",
@@ -522,6 +520,7 @@ VCO.StoryMap = VCO.Class.extend({
 			line_weight: 			3,
 			line_opacity: 			0.20,
 			line_dash: 				"5,5",
+			show_lines: 			true,
 			show_history_line: 		true,
 			api_key_flickr: 		"f2cc870b4d233dd0a5bfe73fd0d64ef0",
 			language: {

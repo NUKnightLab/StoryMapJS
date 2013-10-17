@@ -65,6 +65,7 @@ VCO.Map = VCO.Class.extend({
 			line_weight: 		5,
 			line_opacity: 		0.20,
 			line_dash: 			"5,5",
+			show_lines: 		true,
 			show_history_line: 	true,
 			map_center_offset:  10
 		};
@@ -218,7 +219,7 @@ VCO.Map = VCO.Class.extend({
 	_createMarkers: function(array) {
 		for (var i = 0; i < array.length; i++) {
 			this._createMarker(array[i]);
-			if (array[i].location && array[i].location.line) {
+			if (array[i].location && this.options.show_lines) {
 				this._addToLine(this._line, array[i]);
 			}
 		};
