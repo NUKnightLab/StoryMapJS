@@ -187,6 +187,7 @@
 .vco-map .vco-mapmarker-active.vco-mapmarker-icon-plaintext:after{background-position:-280px -48px}
 .vco-map .vco-mapmarker-active.vco-mapmarker-icon-twitter:after{background-position:-256px -24px}
 .vco-map .vco-mapmarker-active.vco-mapmarker-icon-video:after{background-position:-328px -24px}
+.vco-map .vco-mapmarker-active.vco-mapmarker-icon-dailymotion:after{background-position:-328px -24px}
 .vco-map .vco-mapmarker-active.vco-mapmarker-icon-soundcloud:after{background-position:-304px -24px}
 .vco-map .vco-mapmarker-active.vco-mapmarker-icon-image:after{background-position:-280px -24px}
 .vco-map .vco-mapmarker-active.vco-mapmarker-icon-flickr:after{background-position:-280px -24px}
@@ -205,6 +206,7 @@
 .vco-map .vco-mapmarker-icon-plaintext:after{background-position:-280px -48px}
 .vco-map .vco-mapmarker-icon-twitter:after{background-position:-256px -24px}
 .vco-map .vco-mapmarker-icon-video:after{background-position:-328px -24px}
+.vco-map .vco-mapmarker-icon-dailymotion:after{background-position:-328px -24px}
 .vco-map .vco-mapmarker-icon-soundcloud:after{background-position:-304px -24px}
 .vco-map .vco-mapmarker-icon-image:after{background-position:-280px -24px}
 .vco-map .vco-mapmarker-icon-flickr:after{background-position:-280px -24px}
