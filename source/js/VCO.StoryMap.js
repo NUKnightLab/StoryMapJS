@@ -277,7 +277,7 @@ VCO.StoryMap = VCO.Class.extend({
 						text: 				"Forced to leave Nevada for breaking dueling laws. Prospects in Calaveras County, settles in San Francisco. Writes for magazines and newspapers."
 					},
 					media: {
-						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						url: 				"http://www.youtube.com/watch?v=xp9kONt2X54",
 						credit:				"ETC",
 						caption:			"something"
 					}

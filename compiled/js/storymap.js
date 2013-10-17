@@ -5411,7 +5411,7 @@ VCO.Media.YouTube = VCO.Media.extend({
 		var self = this,
 			url_vars;
 		
-		// Loading Message
+		// Loading Message 
 		this.message.updateMessage(VCO.Language.messages.loading + " YouTube");
 		
 		// Create Dom element
@@ -5448,11 +5448,8 @@ VCO.Media.YouTube = VCO.Media.extend({
 	
 	// Update Media Display
 	_updateMediaDisplay: function() {
-		//this._el.content_item.style.height = this.options.height + "px";
-		//this._el.content_item.style.width = "100%";
 		this._el.content_item.style.height = VCO.Util.ratio.r16_9({w:this._el.content_item.offsetWidth}) + "px";
-		//this._el.content_item.style.height = size.h + "px";
-		//this._el.content_item.style.width = size.w + "px";
+		this._el.content_item.height = VCO.Util.ratio.r16_9({w:this._el.content_item.offsetWidth}) + "px";
 	},
 	
 	
@@ -16902,7 +16899,7 @@ VCO.StoryMap = VCO.Class.extend({
 						text: 				"Forced to leave Nevada for breaking dueling laws. Prospects in Calaveras County, settles in San Francisco. Writes for magazines and newspapers."
 					},
 					media: {
-						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						url: 				"http://www.youtube.com/watch?v=xp9kONt2X54",
 						credit:				"ETC",
 						caption:			"something"
 					}

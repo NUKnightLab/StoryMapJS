@@ -13,17 +13,6 @@
       "outputAbbreviatedPath" : "\/website\/static\/bootstrap-wysihtml5\/lib\/js\/prettify-min.js",
       "fileType" : 64
     },
-    "\/build\/js\/storymap.min.js" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 0,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/build\/js\/storymap.min.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/build\/js\/storymap.min-min.js",
-      "fileType" : 64
-    },
     "\/compiled\/css\/storymap.png" : {
       "ignoreWasSetByUser" : 0,
       "ignore" : 0,
@@ -45,6 +34,23 @@
       "syntaxCheckerStyle" : 0,
       "outputAbbreviatedPath" : "\/source\/js\/media\/types\/VCO.Media.Vimeo-min.js",
       "fileType" : 64
+    },
+    "\/source\/less\/CORE_OLD\/Reset.less" : {
+      "ieCompatibility" : 1,
+      "inputAbbreviatedPath" : "\/source\/less\/CORE_OLD\/Reset.less",
+      "outputAbbreviatedPath" : "\/source\/less\/css\/Reset.css",
+      "outputPathIsSetByUser" : 0,
+      "strictUnits" : 0,
+      "relativeURLS" : 0,
+      "ignore" : 1,
+      "strictImports" : 0,
+      "ignoreWasSetByUser" : 0,
+      "shouldRunBless" : 0,
+      "hidden" : 0,
+      "strictMath" : 0,
+      "outputStyle" : 1,
+      "fileType" : 1,
+      "debugStyle" : 0
     },
     "\/source\/less\/VCO.StoryMap.less" : {
       "ieCompatibility" : 1,
@@ -74,6 +80,17 @@
       "initialSize" : 4352,
       "fileType" : 8192
     },
+    "\/build\/gfx\/timeline.png" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 0,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/build\/gfx\/timeline.png",
+      "processed" : 0,
+      "outputAbbreviatedPath" : "\/build\/gfx\/timeline.png",
+      "initialSize" : 19872,
+      "fileType" : 8192
+    },
     "\/website\/templates\/advanced.html" : {
       "ignoreWasSetByUser" : 0,
       "ignore" : 0,
@@ -94,10 +111,38 @@
       "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Library\/jQuery\/easing-min.js",
       "fileType" : 64
     },
+    "\/source\/gfx\/layers.png" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 0,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/gfx\/layers.png",
+      "processed" : 0,
+      "outputAbbreviatedPath" : "\/source\/gfx\/layers.png",
+      "initialSize" : 1502,
+      "fileType" : 8192
+    },
     "\/source\/less\/media\/types\/VCO.Media.Twitter.less" : {
       "ieCompatibility" : 1,
       "inputAbbreviatedPath" : "\/source\/less\/media\/types\/VCO.Media.Twitter.less",
       "outputAbbreviatedPath" : "\/source\/less\/media\/css\/VCO.Media.Twitter.css",
+      "outputPathIsSetByUser" : 0,
+      "strictUnits" : 0,
+      "relativeURLS" : 0,
+      "ignore" : 1,
+      "strictImports" : 0,
+      "ignoreWasSetByUser" : 0,
+      "shouldRunBless" : 0,
+      "hidden" : 0,
+      "strictMath" : 0,
+      "outputStyle" : 1,
+      "fileType" : 1,
+      "debugStyle" : 0
+    },
+    "\/source\/less\/CORE_OLD\/Variables.less" : {
+      "ieCompatibility" : 1,
+      "inputAbbreviatedPath" : "\/source\/less\/CORE_OLD\/Variables.less",
+      "outputAbbreviatedPath" : "\/source\/less\/css\/Variables.css",
       "outputPathIsSetByUser" : 0,
       "strictUnits" : 0,
       "relativeURLS" : 0,
@@ -122,32 +167,6 @@
       "outputAbbreviatedPath" : "\/source\/js\/map\/VCO.MapMarker-min.js",
       "fileType" : 64
     },
-    "\/source\/less\/CORE_OLD\/Variables.less" : {
-      "ieCompatibility" : 1,
-      "inputAbbreviatedPath" : "\/source\/less\/CORE_OLD\/Variables.less",
-      "outputAbbreviatedPath" : "\/source\/less\/css\/Variables.css",
-      "outputPathIsSetByUser" : 0,
-      "strictUnits" : 0,
-      "relativeURLS" : 0,
-      "ignore" : 1,
-      "strictImports" : 0,
-      "ignoreWasSetByUser" : 0,
-      "shouldRunBless" : 0,
-      "hidden" : 0,
-      "strictMath" : 0,
-      "outputStyle" : 1,
-      "fileType" : 1,
-      "debugStyle" : 0
-    },
-    "\/website\/static\/bootstrap-wysihtml5\/lib\/css\/bootstrap-responsive.min.css" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 0,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/website\/static\/bootstrap-wysihtml5\/lib\/css\/bootstrap-responsive.min.css",
-      "outputAbbreviatedPath" : "No Output Path",
-      "fileType" : 16
-    },
     "\/source\/js\/CORE_OLD\/Media\/VCO.TextElement.js" : {
       "ignoreWasSetByUser" : 1,
       "ignore" : 1,
@@ -158,6 +177,26 @@
       "syntaxCheckerStyle" : 0,
       "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Media\/VCO.TextElement-min.js",
       "fileType" : 64
+    },
+    "\/website\/static\/bootstrap-wysihtml5\/lib\/css\/bootstrap-responsive.min.css" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 0,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/website\/static\/bootstrap-wysihtml5\/lib\/css\/bootstrap-responsive.min.css",
+      "outputAbbreviatedPath" : "No Output Path",
+      "fileType" : 16
+    },
+    "\/source\/gfx\/timeline@2x.png" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 0,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/gfx\/timeline@2x.png",
+      "processed" : 0,
+      "outputAbbreviatedPath" : "\/source\/gfx\/timeline@2x.png",
+      "initialSize" : 49364,
+      "fileType" : 8192
     },
     "\/source\/js\/slider\/VCO.StorySlider.js" : {
       "ignoreWasSetByUser" : 1,
@@ -180,6 +219,17 @@
       "syntaxCheckerStyle" : 0,
       "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Media\/VCO.MediaType-min.js",
       "fileType" : 64
+    },
+    "\/source\/gfx\/map-pin.png" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 0,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/gfx\/map-pin.png",
+      "processed" : 0,
+      "outputAbbreviatedPath" : "\/source\/gfx\/map-pin.png",
+      "initialSize" : 2120,
+      "fileType" : 8192
     },
     "\/source\/gfx\/fancybox_sprite.png" : {
       "ignoreWasSetByUser" : 0,
@@ -221,25 +271,14 @@
       "debugStyle" : 0
     },
     "\/website\/static\/js\/googleDrive.js" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 0,
+      "ignoreWasSetByUser" : 1,
+      "ignore" : 1,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
       "inputAbbreviatedPath" : "\/website\/static\/js\/googleDrive.js",
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 0,
       "outputAbbreviatedPath" : "\/website\/static\/js\/googleDrive-min.js",
-      "fileType" : 64
-    },
-    "\/source\/js\/slider\/VCO.Slide.js" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/slider\/VCO.Slide.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/slider\/VCO.Slide-min.js",
       "fileType" : 64
     },
     "\/website\/static\/bootstrap-wysihtml5\/bootstrap-wysihtml5-0.0.2.js" : {
@@ -251,6 +290,17 @@
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 0,
       "outputAbbreviatedPath" : "\/website\/static\/bootstrap-wysihtml5\/bootstrap-wysihtml5-0.0.2-min.js",
+      "fileType" : 64
+    },
+    "\/source\/js\/slider\/VCO.Slide.js" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/js\/slider\/VCO.Slide.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/source\/js\/slider\/VCO.Slide-min.js",
       "fileType" : 64
     },
     "\/website\/static\/css\/site.css" : {
@@ -273,14 +323,16 @@
       "outputAbbreviatedPath" : "\/source\/js\/dom\/VCO.Dom-min.js",
       "fileType" : 64
     },
-    "\/build\/css\/storymap.css" : {
+    "\/build\/gfx\/timeline@2x.png" : {
       "ignoreWasSetByUser" : 0,
       "ignore" : 0,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/build\/css\/storymap.css",
-      "outputAbbreviatedPath" : "No Output Path",
-      "fileType" : 16
+      "inputAbbreviatedPath" : "\/build\/gfx\/timeline@2x.png",
+      "processed" : 0,
+      "outputAbbreviatedPath" : "\/build\/gfx\/timeline@2x.png",
+      "initialSize" : 49364,
+      "fileType" : 8192
     },
     "\/website\/static\/js\/storymap.js" : {
       "ignoreWasSetByUser" : 0,
@@ -323,6 +375,15 @@
       "outputAbbreviatedPath" : "\/compiled\/gfx\/layers.png",
       "initialSize" : 1502,
       "fileType" : 8192
+    },
+    "\/build\/css\/storymap.css" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 0,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/build\/css\/storymap.css",
+      "outputAbbreviatedPath" : "No Output Path",
+      "fileType" : 16
     },
     "\/build\/templates\/_help.html" : {
       "ignoreWasSetByUser" : 0,
@@ -445,16 +506,27 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
-    "\/source\/js\/media\/types\/VCO.Media.Flickr.js" : {
+    "\/source\/js\/dom\/VCO.DomUtil.js" : {
       "ignoreWasSetByUser" : 0,
       "ignore" : 1,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/media\/types\/VCO.Media.Flickr.js",
+      "inputAbbreviatedPath" : "\/source\/js\/dom\/VCO.DomUtil.js",
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/media\/types\/VCO.Media.Flickr-min.js",
+      "outputAbbreviatedPath" : "\/source\/js\/dom\/VCO.DomUtil-min.js",
       "fileType" : 64
+    },
+    "\/source\/gfx\/layers-2x.png" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 0,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/gfx\/layers-2x.png",
+      "processed" : 0,
+      "outputAbbreviatedPath" : "\/source\/gfx\/layers-2x.png",
+      "initialSize" : 2898,
+      "fileType" : 8192
     },
     "\/source\/js\/CORE_OLD\/Slider\/VCO.Slider.js" : {
       "ignoreWasSetByUser" : 1,
@@ -467,15 +539,15 @@
       "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Slider\/VCO.Slider-min.js",
       "fileType" : 64
     },
-    "\/source\/js\/dom\/VCO.DomUtil.js" : {
+    "\/source\/js\/media\/types\/VCO.Media.Flickr.js" : {
       "ignoreWasSetByUser" : 0,
       "ignore" : 1,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/dom\/VCO.DomUtil.js",
+      "inputAbbreviatedPath" : "\/source\/js\/media\/types\/VCO.Media.Flickr.js",
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/dom\/VCO.DomUtil-min.js",
+      "outputAbbreviatedPath" : "\/source\/js\/media\/types\/VCO.Media.Flickr-min.js",
       "fileType" : 64
     },
     "\/build\/gfx\/overlay.png" : {
@@ -628,17 +700,6 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
-    "\/source\/js\/language\/VCO.Language.js" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/language\/VCO.Language.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/language\/VCO.Language-min.js",
-      "fileType" : 64
-    },
     "\/source\/less\/media\/VCO.Media.Text.less" : {
       "ieCompatibility" : 1,
       "inputAbbreviatedPath" : "\/source\/less\/media\/VCO.Media.Text.less",
@@ -656,6 +717,17 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
+    "\/build\/gfx\/layers.png" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 0,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/build\/gfx\/layers.png",
+      "processed" : 0,
+      "outputAbbreviatedPath" : "\/build\/gfx\/layers.png",
+      "initialSize" : 1502,
+      "fileType" : 8192
+    },
     "\/source\/js\/CORE_OLD\/Core\/VCO.Date.js" : {
       "ignoreWasSetByUser" : 1,
       "ignore" : 1,
@@ -665,26 +737,6 @@
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 0,
       "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Core\/VCO.Date-min.js",
-      "fileType" : 64
-    },
-    "\/compiled\/examples\/ironmaiden.html" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 0,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/compiled\/examples\/ironmaiden.html",
-      "outputAbbreviatedPath" : "No Output Path",
-      "fileType" : 2048
-    },
-    "\/source\/js\/CORE_OLD\/Library\/LazyLoad.js" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Library\/LazyLoad.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Library\/LazyLoad-min.js",
       "fileType" : 64
     },
     "\/website\/static\/bootstrap-wysihtml5\/lib\/js\/wysihtml5-0.3.0.js" : {
@@ -698,38 +750,36 @@
       "outputAbbreviatedPath" : "\/website\/static\/bootstrap-wysihtml5\/lib\/js\/wysihtml5-0.3.0-min.js",
       "fileType" : 64
     },
-    "\/source\/js\/CORE_OLD\/VCO.StoryJS.License.js" : {
-      "ignoreWasSetByUser" : 1,
+    "\/source\/js\/core\/VCO.Load.js" : {
+      "ignoreWasSetByUser" : 0,
       "ignore" : 1,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/VCO.StoryJS.License.js",
+      "inputAbbreviatedPath" : "\/source\/js\/core\/VCO.Load.js",
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/VCO.StoryJS.License-min.js",
+      "outputAbbreviatedPath" : "\/source\/js\/core\/VCO.Load-min.js",
       "fileType" : 64
     },
-    "\/compiled\/gfx\/marker-shadow.png" : {
+    "\/compiled\/examples\/ironmaiden.html" : {
       "ignoreWasSetByUser" : 0,
       "ignore" : 0,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/compiled\/gfx\/marker-shadow.png",
-      "processed" : 0,
-      "outputAbbreviatedPath" : "\/compiled\/gfx\/marker-shadow.png",
-      "initialSize" : 797,
-      "fileType" : 8192
+      "inputAbbreviatedPath" : "\/compiled\/examples\/ironmaiden.html",
+      "outputAbbreviatedPath" : "No Output Path",
+      "fileType" : 2048
     },
-    "\/source\/js\/map\/leaflet\/VCO.Leaflet.js" : {
-      "ignoreWasSetByUser" : 1,
-      "ignore" : 1,
+    "\/build\/gfx\/marker-icon.png" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 0,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/VCO.Leaflet.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/VCO.Leaflet-min.js",
-      "fileType" : 64
+      "inputAbbreviatedPath" : "\/build\/gfx\/marker-icon.png",
+      "processed" : 0,
+      "outputAbbreviatedPath" : "\/build\/gfx\/marker-icon.png",
+      "initialSize" : 1747,
+      "fileType" : 8192
     },
     "\/source\/less\/map\/leaflet\/VCO.Map.Leaflet.less" : {
       "ieCompatibility" : 1,
@@ -748,16 +798,38 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
-    "\/source\/js\/core\/VCO.Load.js" : {
+    "\/source\/js\/map\/leaflet\/VCO.Leaflet.js" : {
+      "ignoreWasSetByUser" : 1,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/VCO.Leaflet.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/VCO.Leaflet-min.js",
+      "fileType" : 64
+    },
+    "\/source\/js\/CORE_OLD\/Library\/LazyLoad.js" : {
       "ignoreWasSetByUser" : 0,
       "ignore" : 1,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/core\/VCO.Load.js",
+      "inputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Library\/LazyLoad.js",
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/core\/VCO.Load-min.js",
+      "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Library\/LazyLoad-min.js",
       "fileType" : 64
+    },
+    "\/compiled\/gfx\/marker-shadow.png" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 0,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/compiled\/gfx\/marker-shadow.png",
+      "processed" : 0,
+      "outputAbbreviatedPath" : "\/compiled\/gfx\/marker-shadow.png",
+      "initialSize" : 797,
+      "fileType" : 8192
     },
     "\/source\/less\/CORE_OLD\/VCO.Core.less" : {
       "ieCompatibility" : 1,
@@ -775,6 +847,17 @@
       "outputStyle" : 1,
       "fileType" : 1,
       "debugStyle" : 0
+    },
+    "\/source\/js\/CORE_OLD\/VCO.StoryJS.License.js" : {
+      "ignoreWasSetByUser" : 1,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/VCO.StoryJS.License.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/VCO.StoryJS.License-min.js",
+      "fileType" : 64
     },
     "\/compiled\/gfx\/timeline@2x.png" : {
       "ignoreWasSetByUser" : 0,
@@ -797,6 +880,28 @@
       "syntaxCheckerStyle" : 0,
       "outputAbbreviatedPath" : "\/source\/js\/core\/VCO.Util-min.js",
       "fileType" : 64
+    },
+    "\/source\/js\/language\/VCO.Language.js" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/js\/language\/VCO.Language.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/source\/js\/language\/VCO.Language-min.js",
+      "fileType" : 64
+    },
+    "\/source\/gfx\/timeline.png" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 0,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/gfx\/timeline.png",
+      "processed" : 0,
+      "outputAbbreviatedPath" : "\/source\/gfx\/timeline.png",
+      "initialSize" : 19872,
+      "fileType" : 8192
     },
     "\/build\/gfx\/fancybox_sprite.png" : {
       "ignoreWasSetByUser" : 0,
@@ -836,6 +941,17 @@
       "outputStyle" : 1,
       "fileType" : 1,
       "debugStyle" : 0
+    },
+    "\/build\/gfx\/map-pin.png" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 0,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/build\/gfx\/map-pin.png",
+      "processed" : 0,
+      "outputAbbreviatedPath" : "\/build\/gfx\/map-pin.png",
+      "initialSize" : 2120,
+      "fileType" : 8192
     },
     "\/website\/templates\/edit.html" : {
       "ignoreWasSetByUser" : 0,
@@ -922,14 +1038,16 @@
       "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/VCO.StoryJS-min.js",
       "fileType" : 64
     },
-    "\/build\/css\/site.css" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 0,
+    "\/source\/js\/CORE_OLD\/Core\/VCO.Core.js" : {
+      "ignoreWasSetByUser" : 1,
+      "ignore" : 1,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/build\/css\/site.css",
-      "outputAbbreviatedPath" : "No Output Path",
-      "fileType" : 16
+      "inputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Core\/VCO.Core.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Core\/VCO.Core-min.js",
+      "fileType" : 64
     },
     "\/compiled\/gfx\/timeline.png" : {
       "ignoreWasSetByUser" : 0,
@@ -942,16 +1060,14 @@
       "initialSize" : 19872,
       "fileType" : 8192
     },
-    "\/source\/js\/CORE_OLD\/Core\/VCO.Core.js" : {
-      "ignoreWasSetByUser" : 1,
-      "ignore" : 1,
+    "\/build\/css\/site.css" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 0,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Core\/VCO.Core.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Core\/VCO.Core-min.js",
-      "fileType" : 64
+      "inputAbbreviatedPath" : "\/build\/css\/site.css",
+      "outputAbbreviatedPath" : "No Output Path",
+      "fileType" : 16
     },
     "\/source\/js\/CORE_OLD\/Embed\/Embed.js" : {
       "ignoreWasSetByUser" : 0,
@@ -1014,14 +1130,16 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
-    "\/compiled\/examples\/katrina.html" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 0,
+    "\/website\/static\/bootstrap-wysihtml5\/bootstrap-wysihtml5-0.0.2.min.js" : {
+      "ignoreWasSetByUser" : 1,
+      "ignore" : 1,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/compiled\/examples\/katrina.html",
-      "outputAbbreviatedPath" : "No Output Path",
-      "fileType" : 2048
+      "inputAbbreviatedPath" : "\/website\/static\/bootstrap-wysihtml5\/bootstrap-wysihtml5-0.0.2.min.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/website\/static\/bootstrap-wysihtml5\/bootstrap-wysihtml5-0.0.2.min-min.js",
+      "fileType" : 64
     },
     "\/source\/gfx\/overlay.png" : {
       "ignoreWasSetByUser" : 0,
@@ -1045,16 +1163,14 @@
       "outputAbbreviatedPath" : "\/source\/js\/media\/types\/VCO.Media.Image-min.js",
       "fileType" : 64
     },
-    "\/website\/static\/bootstrap-wysihtml5\/bootstrap-wysihtml5-0.0.2.min.js" : {
-      "ignoreWasSetByUser" : 1,
-      "ignore" : 1,
+    "\/compiled\/examples\/katrina.html" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 0,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/website\/static\/bootstrap-wysihtml5\/bootstrap-wysihtml5-0.0.2.min.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/website\/static\/bootstrap-wysihtml5\/bootstrap-wysihtml5-0.0.2.min-min.js",
-      "fileType" : 64
+      "inputAbbreviatedPath" : "\/compiled\/examples\/katrina.html",
+      "outputAbbreviatedPath" : "No Output Path",
+      "fileType" : 2048
     },
     "\/website\/static\/bootstrap-wysihtml5\/lib\/css\/prettify.css" : {
       "ignoreWasSetByUser" : 0,
@@ -1211,15 +1327,6 @@
       "outputAbbreviatedPath" : "\/compiled\/js\/storymap.js",
       "fileType" : 64
     },
-    "\/website\/templates\/_help.html" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/website\/templates\/_help.html",
-      "outputAbbreviatedPath" : "No Output Path",
-      "fileType" : 2048
-    },
     "\/source\/less\/slider\/VCO.StorySlider.less" : {
       "ieCompatibility" : 1,
       "inputAbbreviatedPath" : "\/source\/less\/slider\/VCO.StorySlider.less",
@@ -1237,9 +1344,18 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
-    "\/compiled\/js\/storymap.js" : {
+    "\/website\/templates\/_help.html" : {
       "ignoreWasSetByUser" : 0,
-      "ignore" : 0,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/website\/templates\/_help.html",
+      "outputAbbreviatedPath" : "No Output Path",
+      "fileType" : 2048
+    },
+    "\/compiled\/js\/storymap.js" : {
+      "ignoreWasSetByUser" : 1,
+      "ignore" : 1,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
       "inputAbbreviatedPath" : "\/compiled\/js\/storymap.js",
@@ -1391,6 +1507,17 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
+    "\/build\/gfx\/marker-icon-2x.png" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 0,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/build\/gfx\/marker-icon-2x.png",
+      "processed" : 0,
+      "outputAbbreviatedPath" : "\/build\/gfx\/marker-icon-2x.png",
+      "initialSize" : 4033,
+      "fileType" : 8192
+    },
     "\/source\/js\/CORE_OLD\/Library\/Leaflet.js" : {
       "ignoreWasSetByUser" : 1,
       "ignore" : 1,
@@ -1463,17 +1590,6 @@
       "outputAbbreviatedPath" : "\/website\/static\/js\/less-min.js",
       "fileType" : 64
     },
-    "\/source\/js\/map\/leaflet\/VCO.MapMarker.Leaflet.js" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/VCO.MapMarker.Leaflet.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/VCO.MapMarker.Leaflet-min.js",
-      "fileType" : 64
-    },
     "\/source\/js\/CORE_OLD\/Media\/VCO.Media.js" : {
       "ignoreWasSetByUser" : 1,
       "ignore" : 1,
@@ -1502,6 +1618,17 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
+    "\/source\/js\/map\/leaflet\/VCO.MapMarker.Leaflet.js" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/VCO.MapMarker.Leaflet.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/VCO.MapMarker.Leaflet-min.js",
+      "fileType" : 64
+    },
     "\/source\/js\/slider\/VCO.SlideNav.js" : {
       "ignoreWasSetByUser" : 0,
       "ignore" : 1,
@@ -1524,15 +1651,15 @@
       "outputAbbreviatedPath" : "\/source\/js\/media\/types\/VCO.Media.DailyMotion-min.js",
       "fileType" : 64
     },
-    "\/source\/js\/media\/types\/VCO.Media.GooglePlus.js" : {
+    "\/source\/js\/core\/VCO.Class.js" : {
       "ignoreWasSetByUser" : 0,
       "ignore" : 1,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/media\/types\/VCO.Media.GooglePlus.js",
+      "inputAbbreviatedPath" : "\/source\/js\/core\/VCO.Class.js",
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/media\/types\/VCO.Media.GooglePlus-min.js",
+      "outputAbbreviatedPath" : "\/source\/js\/core\/VCO.Class-min.js",
       "fileType" : 64
     },
     "\/source\/less\/Typography.less" : {
@@ -1552,15 +1679,15 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
-    "\/source\/js\/core\/VCO.Class.js" : {
+    "\/source\/js\/media\/types\/VCO.Media.GooglePlus.js" : {
       "ignoreWasSetByUser" : 0,
       "ignore" : 1,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/core\/VCO.Class.js",
+      "inputAbbreviatedPath" : "\/source\/js\/media\/types\/VCO.Media.GooglePlus.js",
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/core\/VCO.Class-min.js",
+      "outputAbbreviatedPath" : "\/source\/js\/media\/types\/VCO.Media.GooglePlus-min.js",
       "fileType" : 64
     },
     "\/source\/js\/media\/types\/VCO.Media.GoogleDoc.js" : {
@@ -1573,6 +1700,17 @@
       "syntaxCheckerStyle" : 0,
       "outputAbbreviatedPath" : "\/source\/js\/media\/types\/VCO.Media.GoogleDoc-min.js",
       "fileType" : 64
+    },
+    "\/build\/gfx\/marker-shadow.png" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 0,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/build\/gfx\/marker-shadow.png",
+      "processed" : 0,
+      "outputAbbreviatedPath" : "\/build\/gfx\/marker-shadow.png",
+      "initialSize" : 797,
+      "fileType" : 8192
     },
     "\/source\/less\/CORE_OLD\/GFX.less" : {
       "ieCompatibility" : 1,
@@ -1600,16 +1738,16 @@
       "outputAbbreviatedPath" : "No Output Path",
       "fileType" : 2048
     },
-    "\/source\/js\/CORE_OLD\/Core\/VCO.Library.js" : {
-      "ignoreWasSetByUser" : 1,
-      "ignore" : 1,
+    "\/source\/gfx\/marker-shadow.png" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 0,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Core\/VCO.Library.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Core\/VCO.Library-min.js",
-      "fileType" : 64
+      "inputAbbreviatedPath" : "\/source\/gfx\/marker-shadow.png",
+      "processed" : 0,
+      "outputAbbreviatedPath" : "\/source\/gfx\/marker-shadow.png",
+      "initialSize" : 797,
+      "fileType" : 8192
     },
     "\/source\/js\/dom\/VCO.DomEvent.js" : {
       "ignoreWasSetByUser" : 0,
@@ -1622,6 +1760,28 @@
       "outputAbbreviatedPath" : "\/source\/js\/dom\/VCO.DomEvent-min.js",
       "fileType" : 64
     },
+    "\/source\/js\/CORE_OLD\/Core\/VCO.Library.js" : {
+      "ignoreWasSetByUser" : 1,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Core\/VCO.Library.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Core\/VCO.Library-min.js",
+      "fileType" : 64
+    },
+    "\/source\/gfx\/marker-icon-2x.png" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 0,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/gfx\/marker-icon-2x.png",
+      "processed" : 0,
+      "outputAbbreviatedPath" : "\/source\/gfx\/marker-icon-2x.png",
+      "initialSize" : 4033,
+      "fileType" : 8192
+    },
     "\/source\/js\/media\/types\/VCO.Media.Storify.js" : {
       "ignoreWasSetByUser" : 0,
       "ignore" : 1,
@@ -1633,6 +1793,17 @@
       "outputAbbreviatedPath" : "\/source\/js\/media\/types\/VCO.Media.Storify-min.js",
       "fileType" : 64
     },
+    "\/build\/gfx\/layers-2x.png" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 0,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/build\/gfx\/layers-2x.png",
+      "processed" : 0,
+      "outputAbbreviatedPath" : "\/build\/gfx\/layers-2x.png",
+      "initialSize" : 2898,
+      "fileType" : 8192
+    },
     "\/source\/jade\/storymap.jade" : {
       "ignoreWasSetByUser" : 0,
       "ignore" : 0,
@@ -1643,6 +1814,15 @@
       "compileDebug" : 1,
       "outputAbbreviatedPath" : "\/compiled\/storymap.html",
       "fileType" : 512
+    },
+    "\/website\/static\/bootstrap-wysihtml5\/bootstrap-wysihtml5-0.0.2.css" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 0,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/website\/static\/bootstrap-wysihtml5\/bootstrap-wysihtml5-0.0.2.css",
+      "outputAbbreviatedPath" : "No Output Path",
+      "fileType" : 16
     },
     "\/source\/less\/media\/types\/VCO.Media.IFrame.less" : {
       "ieCompatibility" : 1,
@@ -1660,15 +1840,6 @@
       "outputStyle" : 1,
       "fileType" : 1,
       "debugStyle" : 0
-    },
-    "\/website\/static\/bootstrap-wysihtml5\/bootstrap-wysihtml5-0.0.2.css" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 0,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/website\/static\/bootstrap-wysihtml5\/bootstrap-wysihtml5-0.0.2.css",
-      "outputAbbreviatedPath" : "No Output Path",
-      "fileType" : 16
     },
     "\/source\/js\/media\/types\/VCO.Media.SoundCloud.js" : {
       "ignoreWasSetByUser" : 0,
@@ -1798,17 +1969,6 @@
       "outputAbbreviatedPath" : "\/website\/static\/bootstrap-wysihtml5\/lib\/js\/jquery-1.7.2.min-min.js",
       "fileType" : 64
     },
-    "\/website\/static\/bootstrap-wysihtml5\/lib\/img\/glyphicons-halflings.png" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 0,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/website\/static\/bootstrap-wysihtml5\/lib\/img\/glyphicons-halflings.png",
-      "processed" : 0,
-      "outputAbbreviatedPath" : "\/website\/static\/bootstrap-wysihtml5\/lib\/img\/glyphicons-halflings.png",
-      "initialSize" : 4352,
-      "fileType" : 8192
-    },
     "\/compiled\/gfx\/marker-icon.png" : {
       "ignoreWasSetByUser" : 0,
       "ignore" : 0,
@@ -1818,6 +1978,17 @@
       "processed" : 0,
       "outputAbbreviatedPath" : "\/compiled\/gfx\/marker-icon.png",
       "initialSize" : 1747,
+      "fileType" : 8192
+    },
+    "\/website\/static\/bootstrap-wysihtml5\/lib\/img\/glyphicons-halflings.png" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 0,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/website\/static\/bootstrap-wysihtml5\/lib\/img\/glyphicons-halflings.png",
+      "processed" : 0,
+      "outputAbbreviatedPath" : "\/website\/static\/bootstrap-wysihtml5\/lib\/img\/glyphicons-halflings.png",
+      "initialSize" : 4352,
       "fileType" : 8192
     },
     "\/compiled\/gfx\/overlay.png" : {
@@ -1962,17 +2133,6 @@
       "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Library\/AES-min.js",
       "fileType" : 64
     },
-    "\/source\/js\/media\/types\/VCO.Media.Vine.js" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/media\/types\/VCO.Media.Vine.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/media\/types\/VCO.Media.Vine-min.js",
-      "fileType" : 64
-    },
     "\/source\/js\/media\/VCO.Media.js" : {
       "ignoreWasSetByUser" : 0,
       "ignore" : 1,
@@ -1982,6 +2142,17 @@
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 0,
       "outputAbbreviatedPath" : "\/source\/js\/media\/VCO.Media-min.js",
+      "fileType" : 64
+    },
+    "\/source\/js\/media\/types\/VCO.Media.Vine.js" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/js\/media\/types\/VCO.Media.Vine.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/source\/js\/media\/types\/VCO.Media.Vine-min.js",
       "fileType" : 64
     },
     "\/source\/js\/CORE_OLD\/Library\/jquery.fancybox.js" : {
@@ -1994,6 +2165,17 @@
       "syntaxCheckerStyle" : 0,
       "outputAbbreviatedPath" : "\/source\/js\/CORE_OLD\/Library\/jquery.fancybox-min.js",
       "fileType" : 64
+    },
+    "\/source\/gfx\/marker-icon.png" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 0,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/gfx\/marker-icon.png",
+      "processed" : 0,
+      "outputAbbreviatedPath" : "\/source\/gfx\/marker-icon.png",
+      "initialSize" : 1747,
+      "fileType" : 8192
     },
     "\/source\/js\/CORE_OLD\/Embed\/Embed.CDN.Generator.js" : {
       "ignoreWasSetByUser" : 1,
@@ -2233,8 +2415,8 @@
       "fileType" : 64
     },
     "\/build\/js\/storymap.js" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 0,
+      "ignoreWasSetByUser" : 1,
+      "ignore" : 1,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
       "inputAbbreviatedPath" : "\/build\/js\/storymap.js",
@@ -2243,22 +2425,16 @@
       "outputAbbreviatedPath" : "\/build\/js\/storymap-min.js",
       "fileType" : 64
     },
-    "\/source\/less\/CORE_OLD\/Reset.less" : {
-      "ieCompatibility" : 1,
-      "inputAbbreviatedPath" : "\/source\/less\/CORE_OLD\/Reset.less",
-      "outputAbbreviatedPath" : "\/source\/less\/css\/Reset.css",
-      "outputPathIsSetByUser" : 0,
-      "strictUnits" : 0,
-      "relativeURLS" : 0,
+    "\/build\/js\/storymap.min.js" : {
+      "ignoreWasSetByUser" : 1,
       "ignore" : 1,
-      "strictImports" : 0,
-      "ignoreWasSetByUser" : 0,
-      "shouldRunBless" : 0,
       "hidden" : 0,
-      "strictMath" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/build\/js\/storymap.min.js",
       "outputStyle" : 1,
-      "fileType" : 1,
-      "debugStyle" : 0
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/build\/js\/storymap.min-min.js",
+      "fileType" : 64
     }
   },
   "manualImportLinks" : [
@@ -2337,8 +2513,8 @@
       "evil" : 0,
       "strict" : 0,
       "multistr" : 0,
-      "couch" : 0,
       "wsh" : 0,
+      "couch" : 0,
       "laxbreak" : 0,
       "rhino" : 0,
       "globalstrict" : 0,
