@@ -4,13 +4,13 @@
             "type": "overview",
             "date": "2013",
             "text": {
-                "headline": "US Manifest Destiny - Mean center of United States population",
-                "text": "The mean center of U.S. population is determined by the United States Census Bureau from the results of each census. Defined as the point at which an imaginary, flat, weightless, and rigid map of the United States would balance perfectly if weights of identical value were placed on it so that each weight represented the location of one person on the date of the census. <br></br><b> <i>This is an overview or title slide to show all the points in your story routed on your map.</i></b>"
+                "headline": "A month in the life of President Obama",
+                "text": "September 2013: events taken from the WhiteHouse.gov site."
             },
             "media": {
-                    "url":              "http://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/US_Mean_Center_of_Population_1790-2010.PNG/800px-US_Mean_Center_of_Population_1790-2010.PNG",
+                    "url":              "http://en.wikipedia.org/wiki/Barack_Obama",
                     "credit":               "wikipedia",
-                    "caption":          "Mean US_Mean_Center_of_Population_1790-2010"
+                    "caption":          "President Barack Obama wikipedia"
                 }
         }, {
             "date": "2013",
@@ -27,15 +27,20 @@
                 "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
             },
             "media": {
-                    "url":              "http://i1133.photobucket.com/albums/m593/tuitu2u/History%20Pics%203/1790_Census_Map_zpsb0747a02.gif",
-                    "credit":               "photobucket",
-                    "caption":          "1790 Map of the US Census"
+                    "url":              "http://upload.wikimedia.org/wikipedia/commons/2/2e/US_Navy_050521-N-0295M-026_Air_Force_One_takes_off_from_Andrews_Air_Force_Base,_Md.,_during_the_2005_Joint_Service_Open_House.jpg",
+                    "credit":               "wikipedia",
+                    "caption":          "Air Force One"
                 }
         },{
+            "background": {         
+                    "url":              "http://upload.wikimedia.org/wikipedia/en/4/4c/Flag_of_Sweden.svg",
+                    "color":                "#cdbfe3",
+                    "opacity":          25
+                },
             "date": "2013",
             "text": {
                 "headline": "Sept 4",
-                "text": "IThe President arrives in Stockholm, Sweden. The President holds a bilateral meeting with Prime Minister Reinfeldt of Sweden. The President and Prime Minister Reinfeldt hold a press conference. The President tours an Energy Expo event. The President attends an official dinner with Nordic Leaders."
+                "text": "The President arrives in Stockholm, Sweden. The President holds a bilateral meeting with Prime Minister Reinfeldt of Sweden. The President and Prime Minister Reinfeldt hold a press conference. The President tours an Energy Expo event. The President attends an official dinner with Nordic Leaders."
             },
             "location": {
                 "name": "Stockholm, Sweden",
@@ -46,15 +51,15 @@
                 "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
             },
             "media": {
-                    "url":              "https://twitter.com/ThomasJefferson/status/265523460720168960",
-                    "credit":               "Twitter",
-                    "caption":          "Thomas Jefferson Twitter account"
+                    "url":              "http://www.youtube.com/watch?v=Sa5pVSNoBXk",
+                    "credit":               "The White House YouTube",
+                    "caption":          "President Obama and Prime Minister Reinfeldt of Sweden hold a joint press conference. September 4, 2013."
                 }
         }, {
             "date": "2013",
             "text": {
-                "headline": "Sept 5",
-                "text": "The President meets with the King and Queen of Sweden "
+                "headline": "Sept 5: Part 1",
+                "text": "The President meets with the King and Queen of Sweden."
             },
             "location": {
                 "name": "Stockholm, Sweden",
@@ -65,14 +70,14 @@
                 "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
             },
             "media": {
-                    "url":              "http://www.worldmapsonline.com/images/Cram/History/unitedstates1810.jpg",
-                    "credit":               "worldmapsonline",
-                    "caption":          "1810 Map of the US"
+                    "url":              "http://www.thetimes.co.uk/tto/multimedia/archive/00448/136109075__448536c.jpg",
+                    "credit":               "The Times UK",
+                    "caption":          "President Obama meets the King and Queen of Sweden"
                 }
         }, {
             "date": "2013",
             "text": {
-                "headline": "Sept 5",
+                "headline": "Sept 5: Part 2",
                 "text": "The President arrives Saint Petersburg, Russia. The President holds a bilateral meeting with Prime Minister Abe of Japan. The President participates in an Official G-20 Arrival and Leaders Welcome. The President participates in G-20 Working Session One."
             },
             "location": {
@@ -84,11 +89,16 @@
                 "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
             },
             "media": {
-                    "url":              "http://www.flickr.com/photos/graysonfamily/349095341/",
-                    "credit":               "graysonfamily",
-                    "caption":          "1820 Census Record"
+                    "url":              "http://www.youtube.com/watch?v=EkNzAuxhZA8",
+                    "credit":               "sealight films",
+                    "caption":          "President Obama arrives at G-20 dinner"
                 }
         }, {
+            "background": {         
+                    "url":              "http://gorod94.com/images/st-petersburg-sightseeing-08.jpg",
+                    "color":                "#cdbfe3",
+                    "opacity":          25
+                },
             "date": "2013",
             "text": {
                 "headline": "Sept 6",
@@ -103,9 +113,9 @@
                 "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
             },
             "media": {
-                    "url":              "http://www.library.yale.edu/MapColl/oldsite/map/va1830.gif",
-                    "credit":               "Yale Library",
-                    "caption":          "Map of Virginia"
+                    "url":              "http://www.youtube.com/watch?v=nWPBJY8KDa8",
+                    "credit":               "The White House YouTube",
+                    "caption":          "President Obama holds a press conference at the G20 Summit in St. Petersburg, Russia. September 6, 2013."
                 }
         }, {
             "date": "2013",
@@ -122,9 +132,9 @@
                 "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
             },
             "media": {
-                    "url":              "http://www.youtube.com/watch?v=tkdF8pOFUfI",
-                    "credit":               "crashcourse",
-                    "caption":          "Crash Course on the Mexican American War"
+                    "url":              "http://farm4.static.flickr.com/3612/3684028152_69c7133162_b.jpg",
+                    "credit":               "Flickr",
+                    "caption":          "President Obama in Oval Office"
                 }
         }, {
             "date": "2013",
@@ -141,9 +151,9 @@
                 "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
             },
             "media": {
-                    "url":              "https://vine.co/v/hijiWteL0aP",
-                    "credit":               "Ethan Embry",
-                    "caption":          "Black History Month"
+                    "url":              "http://www.youtube.com/watch?v=WbIrm42zYTU",
+                    "credit":               "martysoffice",
+                    "caption":          "President addresses the nation on Syria"
                 }
         }, {
             "date": "2013",
@@ -160,9 +170,9 @@
                 "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
             },
             "media": {
-                    "url":              "http://en.wikipedia.org/wiki/Abraham_Lincoln",
-                    "credit":               "wikipedia",
-                    "caption":          "1860 Abraham Lincoln elected President"
+                    "url":              "http://a.abcnews.com/images/Politics/GTY_obama_michelle_biden_pentagon_tk_130911_16x9_992.jpg",
+                    "credit":               "John Parkinson",
+                    "caption":          "Moment of silence at the White House"
                 }
         }, {
             "date": "2013",
@@ -179,9 +189,9 @@
                 "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
             },
             "media": {
-                    "url":              "http://www.examiner.com/images/blog/EXID8873/images/reconstruction_congress.jpg",
-                    "credit":               "examiner",
-                    "caption":          "41st & 42nd Congress newly elected"
+                    "url":              "http://a5.img.talkingpointsmemo.com/image/upload/c_fill,fl_keep_iptc,g_faces,h_365,w_652/wfa0yzjmz8yursllh1da.jpg",
+                    "credit":               "talkingpointsmemo.com",
+                    "caption":          "Cabinet meeting"
                 }
         }, {
             "date": "2013",
@@ -198,9 +208,9 @@
                 "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
             },
             "media": {
-                    "url":              "https://www.youtube.com/watch?v=C-nTpGMMVjY",
-                    "credit":               "Huntley Film Archives",
-                    "caption":          "Frames Louis Le Prince's record of Leeds Bridge"
+                    "url":              "http://www.youtube.com/watch?v=MVSfAWUwAzc",
+                    "credit":               "The White House YouTube",
+                    "caption":          "President Obama and the Amir of Kuwait "
                 }
         }, {
             "date": "2013",
@@ -217,9 +227,9 @@
                 "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
             },
             "media": {
-                    "url":              "http://storify.com/EJSham/minute-by-minute-coverage-of-the-columbus-indiana",
-                    "credit":               "Ebony Shamberger",
-                    "caption":          "Minute-by-minute coverage of the Columbus, Indiana, plane crash"
+                    "url":              "http://www.youtube.com/watch?v=sP_DdESn7AQ",
+                    "credit":               "The White House YouTube",
+                    "caption":          "President Obama marks the anniversary of the financial crisis"
                 }
         }, {
             "date": "2013",
@@ -236,9 +246,9 @@
                 "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
             },
             "media": {
-                    "url":              "https://soundcloud.com/mister-click/harry-macdonough-in-the-sweet",
-                    "credit":               "Soundcloud",
-                    "caption":          "In the sweet bye and bye"
+                    "url":              "http://www.whitehouse.gov/sites/default/files/imagecache/gallery_img_embed_blog/image/image_file/7592298730_d82d6e750d_b.jpg?itok=Tqwv8OaX",
+                    "credit":               "The White House",
+                    "caption":          "President and Vice President having lunch"
                 }
         }, {
             "date": "2013",
@@ -255,9 +265,9 @@
                 "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
             },
             "media": {
-                    "url":              "http://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/US-center-pop.jpg/471px-US-center-pop.jpg",
-                    "credit":               "wikipedia",
-                    "caption":          "1910 Center of the US Population"
+                    "url":              "http://www.youtube.com/watch?v=rkM32oQfHlk",
+                    "credit":               "The White House YouTube",
+                    "caption":          "President Obama Speaks to the Business Roundtable "
                 }
         }, {
             "date": "2013",
@@ -274,11 +284,16 @@
                 "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
             },
             "media": {
-                    "url":              "https://vimeo.com/63929704",
-                    "credit":               "Ned Thanhouser",
-                    "caption":          "An American in the Making"
+                    "url":              "http://www.vanityfair.com/politics/features/2010/09/oval-office-redesigns-201009/_jcr_content/par/cn_contentwell/par-main/cn_slideshow/item0.size.0.0.oval-office-01.jpg",
+                    "credit":               "Vanity Fair",
+                    "caption":          "The Oval Office"
                 }
         }, {
+            "background": {         
+                    "url":              "http://s.wsj.net/public/resources/images/OB-YZ561_Obama2_E_20130920154351.jpg",
+                    "color":                "#cdbfe3",
+                    "opacity":          25
+                },
             "date": "2013",
             "text": {
                 "headline": "Sept 20",
@@ -293,9 +308,9 @@
                 "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
             },
             "media": {
-                    "url":              "http://www.dailymotion.com/embed/video/xwrxkb",
-                    "credit":               "Daily Motion",
-                    "caption":          "Judy Garland 1930"
+                    "url":              "https://twitter.com/WhiteHouse/status/381114492215513088",
+                    "credit":               "Twitter",
+                    "caption":          "White House Twitter"
                 }
         }, {
             "date": "2013",
