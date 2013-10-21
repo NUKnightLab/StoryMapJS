@@ -227,7 +227,7 @@ VCO.StoryMap = VCO.Class.extend({
 						text: 				"Visits St. Louis, New York, and Philadelphia as an itinerant printer."
 					},
 					media: {
-						url: 				"https://vine.co/v/bjHh0zHdgZT",
+						url: 				"https://twitter.com/MarkTwainQuote/status/384850339297755136",
 						credit:				null,
 						caption:			null
 					}
