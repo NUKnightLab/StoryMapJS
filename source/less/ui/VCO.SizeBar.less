@@ -24,13 +24,27 @@
 	//.translucent-background(@color-background, .5);
 	//.gradient-vertical (rgba(0,0,0,0.65), rgba(0,0,0,0.65));
 	.gradient-vertical (rgba(255,255,255,1), rgba(255,255,255,0.25));
+	background-color:#FFF;
 	//border-bottom: 1px solid #FFF;
 	//position:absolute;
 	//top:0px;
 	//.opacity(75);
-	cursor: row-resize;
+	//cursor: row-resize;
 	//.box-shadow(0px -3px 7px rgba(0,0,0,.20));
 	z-index:11;
+	text-align:right;
+	.vco-sizebar-button {
+		border-left: 1px solid darken(@color-background, 15);
+		font-size: 14px;
+		padding: 4px 12px 4px 12px;
+		position:relative;
+		top:-25px;
+		cursor:pointer;
+		font-weight: bold;
+	}
+	.vco-sizebar-button:hover {
+		background: @color-background;
+	}
 	.vco-map-line {
 		border: 1px solid darken(@ui-background-color, 15);
 		background-color: @color-background;

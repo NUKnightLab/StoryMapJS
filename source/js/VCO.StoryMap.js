@@ -631,6 +631,8 @@ VCO.StoryMap = VCO.Class.extend({
 		this._sizebar.on('move', this._onSizeBarMove, this);
 		this._sizebar.on('swipe', this._onSizeBarSwipe, this);
 		this._sizebar.on('momentum', this._onSizeBarSwipe, this);
+		this._sizebar.on('back_to_start', this._onBackToStart, this);
+		this._sizebar.on('overview', this._onOverview, this);
 		
 		// StorySlider Events
 		this._storyslider.on('change', this._onSlideChange, this);
@@ -734,6 +736,17 @@ VCO.StoryMap = VCO.Class.extend({
 	
 	_onSizeBar: function(e) {
 		trace("ON SIZEBAR");
+	},
+	
+	_onOverview: function(e) {
+		this._map.markerOverview();
+	},
+	
+	_onBackToStart: function(e) {
+		this.current_slide = 0;
+		this._map.goTo(this.current_slide);
+		this._storyslider.goTo(this.current_slide);
+		this.fire("change", {current_slide: this.current_slide}, this);
 	},
 	
 	_onSizeBarMove: function(e) {

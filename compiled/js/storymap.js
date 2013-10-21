@@ -3708,8 +3708,9 @@ VCO.Draggable = VCO.Class.extend({
 	},
 	
 	enable: function(e) {
-		VCO.DomEvent.addListener(this._el.drag, this.dragevent.down, this._onDragStart, this);
-		VCO.DomEvent.addListener(this._el.drag, this.dragevent.up, this._onDragEnd, this);
+		// Temporarily disableing this until I have time to fix some issues.
+		//VCO.DomEvent.addListener(this._el.drag, this.dragevent.down, this._onDragStart, this);
+		//VCO.DomEvent.addListener(this._el.drag, this.dragevent.up, this._onDragEnd, this);
 		
 		this.data.pos.start = VCO.Dom.getPosition(this._el.move);
 		this._el.move.style.left = this.data.pos.start.x + "px";
@@ -3733,6 +3734,9 @@ VCO.Draggable = VCO.Class.extend({
 	
 	updateConstraint: function(c) {
 		this.options.constraint = c;
+		
+		// Temporary until issues are fixed
+		
 	},
 	
 	/*	Private Methods
@@ -3940,11 +3944,16 @@ VCO.SizeBar = VCO.Class.extend({
 		this._el = {
 			parent: {},
 			container: {},
+			button_overview: {},
+			button_backtostart: {},
+			button_collapse_toggle: {},
 			arrow: {},
 			line: {},
 			coverbar: {},
 			grip: {}
 		};
+		
+		this.collapsed = false;
 		
 		if (typeof elem === 'object') {
 			this._el.container = elem;
@@ -4065,13 +4074,52 @@ VCO.SizeBar = VCO.Class.extend({
 		
 	},
 	
+	_onButtonOverview: function(e) {
+		this.fire("overview", e);
+	},
+	
+	_onButtonBackToStart: function(e) {
+		this.fire("back_to_start", e);
+	},
+	
+	_onButtonCollapseMap: function(e) {
+		if (this.collapsed) {
+			this.collapsed = false;
+			this.show();
+			this._el.button_overview.style.display = "inline";
+			this.fire("swipe", {y:this.options.sizebar_default_y});
+			this._el.button_collapse_toggle.innerHTML	= "Hide Map";
+		} else {
+			this.collapsed = true;
+			this.hide(VCO.Dom.getPosition(this._el.parent).y + 25);
+			this._el.button_overview.style.display = "none";
+			this.fire("swipe", {y:1});
+			this._el.button_collapse_toggle.innerHTML	= "Show Map";
+		}
+	},
+	
 	/*	Private Methods
 	================================================== */
 	_initLayout: function () {
 		
 		// Create Layout
-		this._el.arrow = VCO.Dom.create("div", "vco-arrow-up", this._el.container);
-		this._el.container.style.top = this.options.sizebar_default_y + "px";
+		this._el.arrow						= VCO.Dom.create("div", "vco-arrow-up", this._el.container);
+		this._el.container.style.top		= this.options.sizebar_default_y + "px";
+		
+		// Buttons
+		this._el.button_overview 					= VCO.Dom.create('span', 'vco-sizebar-button', this._el.container);
+		this._el.button_overview.innerHTML			= "Map Overview";
+		VCO.DomEvent.addListener(this._el.button_overview, 'click', this._onButtonOverview, this);
+		
+		this._el.button_backtostart 				= VCO.Dom.create('span', 'vco-sizebar-button', this._el.container);
+		this._el.button_backtostart.innerHTML		= "Back to Beginning";
+		VCO.DomEvent.addListener(this._el.button_backtostart, 'click', this._onButtonBackToStart, this);
+		
+		this._el.button_collapse_toggle 			= VCO.Dom.create('span', 'vco-sizebar-button', this._el.container);
+		this._el.button_collapse_toggle.innerHTML	= "Hide Map";
+		VCO.DomEvent.addListener(this._el.button_collapse_toggle, 'click', this._onButtonCollapseMap, this);
+		
+		
 		
 		//this._el.line = VCO.Dom.create("div", "vco-map-line", this._el.container);
 		//this._el.coverbar = VCO.Dom.create("div", "vco-coverbar", this._el.container);
@@ -4079,6 +4127,7 @@ VCO.SizeBar = VCO.Class.extend({
 		//this._el.line.style.top = this.options.sizebar_default_y + "px";
 		
 		//Make draggable
+		
 		this._draggable = new VCO.Draggable(this._el.container, {enable:{x:false, y:true}, constraint:{bottom:this.options.height}});
 		
 		this._draggable.on('dragstart', this._onDragStart, this);
@@ -4089,6 +4138,7 @@ VCO.SizeBar = VCO.Class.extend({
 		this._draggable.on('momentum', this._onMomentum, this);
 
 		this._draggable.enable();
+		
 		
 		
 	},
@@ -17254,6 +17304,8 @@ VCO.StoryMap = VCO.Class.extend({
 		this._sizebar.on('move', this._onSizeBarMove, this);
 		this._sizebar.on('swipe', this._onSizeBarSwipe, this);
 		this._sizebar.on('momentum', this._onSizeBarSwipe, this);
+		this._sizebar.on('back_to_start', this._onBackToStart, this);
+		this._sizebar.on('overview', this._onOverview, this);
 		
 		// StorySlider Events
 		this._storyslider.on('change', this._onSlideChange, this);
@@ -17357,6 +17409,17 @@ VCO.StoryMap = VCO.Class.extend({
 	
 	_onSizeBar: function(e) {
 		trace("ON SIZEBAR");
+	},
+	
+	_onOverview: function(e) {
+		this._map.markerOverview();
+	},
+	
+	_onBackToStart: function(e) {
+		this.current_slide = 0;
+		this._map.goTo(this.current_slide);
+		this._storyslider.goTo(this.current_slide);
+		this.fire("change", {current_slide: this.current_slide}, this);
 	},
 	
 	_onSizeBarMove: function(e) {

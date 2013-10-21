@@ -108,8 +108,9 @@ VCO.Draggable = VCO.Class.extend({
 	},
 	
 	enable: function(e) {
-		VCO.DomEvent.addListener(this._el.drag, this.dragevent.down, this._onDragStart, this);
-		VCO.DomEvent.addListener(this._el.drag, this.dragevent.up, this._onDragEnd, this);
+		// Temporarily disableing this until I have time to fix some issues.
+		//VCO.DomEvent.addListener(this._el.drag, this.dragevent.down, this._onDragStart, this);
+		//VCO.DomEvent.addListener(this._el.drag, this.dragevent.up, this._onDragEnd, this);
 		
 		this.data.pos.start = VCO.Dom.getPosition(this._el.move);
 		this._el.move.style.left = this.data.pos.start.x + "px";
@@ -133,6 +134,9 @@ VCO.Draggable = VCO.Class.extend({
 	
 	updateConstraint: function(c) {
 		this.options.constraint = c;
+		
+		// Temporary until issues are fixed
+		
 	},
 	
 	/*	Private Methods
