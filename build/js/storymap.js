@@ -1,11 +1,3 @@
-/* storymapjs - v0.0.5 - 2013-10-16
- * Copyright (c) 2013 Northwestern University Knight Lab 
- */
-
-/* **********************************************
-     Begin VCO.js
-********************************************** */
-
 /*!
 	VCO
 */
@@ -3716,8 +3708,9 @@ VCO.Draggable = VCO.Class.extend({
 	},
 	
 	enable: function(e) {
-		VCO.DomEvent.addListener(this._el.drag, this.dragevent.down, this._onDragStart, this);
-		VCO.DomEvent.addListener(this._el.drag, this.dragevent.up, this._onDragEnd, this);
+		// Temporarily disableing this until I have time to fix some issues.
+		//VCO.DomEvent.addListener(this._el.drag, this.dragevent.down, this._onDragStart, this);
+		//VCO.DomEvent.addListener(this._el.drag, this.dragevent.up, this._onDragEnd, this);
 		
 		this.data.pos.start = VCO.Dom.getPosition(this._el.move);
 		this._el.move.style.left = this.data.pos.start.x + "px";
@@ -3741,6 +3734,9 @@ VCO.Draggable = VCO.Class.extend({
 	
 	updateConstraint: function(c) {
 		this.options.constraint = c;
+		
+		// Temporary until issues are fixed
+		
 	},
 	
 	/*	Private Methods
@@ -3948,11 +3944,16 @@ VCO.SizeBar = VCO.Class.extend({
 		this._el = {
 			parent: {},
 			container: {},
+			button_overview: {},
+			button_backtostart: {},
+			button_collapse_toggle: {},
 			arrow: {},
 			line: {},
 			coverbar: {},
 			grip: {}
 		};
+		
+		this.collapsed = false;
 		
 		if (typeof elem === 'object') {
 			this._el.container = elem;
@@ -4073,13 +4074,52 @@ VCO.SizeBar = VCO.Class.extend({
 		
 	},
 	
+	_onButtonOverview: function(e) {
+		this.fire("overview", e);
+	},
+	
+	_onButtonBackToStart: function(e) {
+		this.fire("back_to_start", e);
+	},
+	
+	_onButtonCollapseMap: function(e) {
+		if (this.collapsed) {
+			this.collapsed = false;
+			this.show();
+			this._el.button_overview.style.display = "inline";
+			this.fire("swipe", {y:this.options.sizebar_default_y});
+			this._el.button_collapse_toggle.innerHTML	= "Hide Map";
+		} else {
+			this.collapsed = true;
+			this.hide(VCO.Dom.getPosition(this._el.parent).y + 25);
+			this._el.button_overview.style.display = "none";
+			this.fire("swipe", {y:1});
+			this._el.button_collapse_toggle.innerHTML	= "Show Map";
+		}
+	},
+	
 	/*	Private Methods
 	================================================== */
 	_initLayout: function () {
 		
 		// Create Layout
-		this._el.arrow = VCO.Dom.create("div", "vco-arrow-up", this._el.container);
-		this._el.container.style.top = this.options.sizebar_default_y + "px";
+		this._el.arrow						= VCO.Dom.create("div", "vco-arrow-up", this._el.container);
+		this._el.container.style.top		= this.options.sizebar_default_y + "px";
+		
+		// Buttons
+		this._el.button_overview 					= VCO.Dom.create('span', 'vco-sizebar-button', this._el.container);
+		this._el.button_overview.innerHTML			= "Map Overview";
+		VCO.DomEvent.addListener(this._el.button_overview, 'click', this._onButtonOverview, this);
+		
+		this._el.button_backtostart 				= VCO.Dom.create('span', 'vco-sizebar-button', this._el.container);
+		this._el.button_backtostart.innerHTML		= "Back to Beginning";
+		VCO.DomEvent.addListener(this._el.button_backtostart, 'click', this._onButtonBackToStart, this);
+		
+		this._el.button_collapse_toggle 			= VCO.Dom.create('span', 'vco-sizebar-button', this._el.container);
+		this._el.button_collapse_toggle.innerHTML	= "Hide Map";
+		VCO.DomEvent.addListener(this._el.button_collapse_toggle, 'click', this._onButtonCollapseMap, this);
+		
+		
 		
 		//this._el.line = VCO.Dom.create("div", "vco-map-line", this._el.container);
 		//this._el.coverbar = VCO.Dom.create("div", "vco-coverbar", this._el.container);
@@ -4087,6 +4127,7 @@ VCO.SizeBar = VCO.Class.extend({
 		//this._el.line.style.top = this.options.sizebar_default_y + "px";
 		
 		//Make draggable
+		
 		this._draggable = new VCO.Draggable(this._el.container, {enable:{x:false, y:true}, constraint:{bottom:this.options.height}});
 		
 		this._draggable.on('dragstart', this._onDragStart, this);
@@ -4097,6 +4138,7 @@ VCO.SizeBar = VCO.Class.extend({
 		this._draggable.on('momentum', this._onMomentum, this);
 
 		this._draggable.enable();
+		
 		
 		
 	},
@@ -5419,7 +5461,7 @@ VCO.Media.YouTube = VCO.Media.extend({
 		var self = this,
 			url_vars;
 		
-		// Loading Message
+		// Loading Message 
 		this.message.updateMessage(VCO.Language.messages.loading + " YouTube");
 		
 		// Create Dom element
@@ -5456,11 +5498,8 @@ VCO.Media.YouTube = VCO.Media.extend({
 	
 	// Update Media Display
 	_updateMediaDisplay: function() {
-		//this._el.content_item.style.height = this.options.height + "px";
-		//this._el.content_item.style.width = "100%";
 		this._el.content_item.style.height = VCO.Util.ratio.r16_9({w:this._el.content_item.offsetWidth}) + "px";
-		//this._el.content_item.style.height = size.h + "px";
-		//this._el.content_item.style.width = size.w + "px";
+		this._el.content_item.height = VCO.Util.ratio.r16_9({w:this._el.content_item.offsetWidth}) + "px";
 	},
 	
 	
@@ -5729,7 +5768,7 @@ VCO.Slide = VCO.Class.extend({
 		} 
 		
 		// Media
-		if (this.data.media) {
+		if (this.data.media && this.data.media.url && this.data.media.url != "") {
 			// Determine the media type
 			this.data.media.mediatype = VCO.MediaType(this.data.media);
 			
@@ -15938,6 +15977,7 @@ VCO.Map = VCO.Class.extend({
 			line_weight: 		5,
 			line_opacity: 		0.20,
 			line_dash: 			"5,5",
+			show_lines: 		true,
 			show_history_line: 	true,
 			map_center_offset:  10
 		};
@@ -16091,7 +16131,7 @@ VCO.Map = VCO.Class.extend({
 	_createMarkers: function(array) {
 		for (var i = 0; i < array.length; i++) {
 			this._createMarker(array[i]);
-			if (array[i].location && array[i].location.line) {
+			if (array[i].location && this.options.show_lines) {
 				this._addToLine(this._line, array[i]);
 			}
 		};
@@ -16860,7 +16900,7 @@ VCO.StoryMap = VCO.Class.extend({
 						text: 				"Visits St. Louis, New York, and Philadelphia as an itinerant printer."
 					},
 					media: {
-						url: 				"https://vine.co/v/bjHh0zHdgZT",
+						url: 				"https://twitter.com/MarkTwainQuote/status/384850339297755136",
 						credit:				null,
 						caption:			null
 					}
@@ -16902,15 +16942,14 @@ VCO.StoryMap = VCO.Class.extend({
 						lat: 				37.774929,
 						lon: 				-122.419416,
 						zoom: 				11,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
-						line: 				true
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
 					},
 					text: {
 						headline: 			"San Francisco",
 						text: 				"Forced to leave Nevada for breaking dueling laws. Prospects in Calaveras County, settles in San Francisco. Writes for magazines and newspapers."
 					},
 					media: {
-						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						url: 				"http://www.youtube.com/watch?v=xp9kONt2X54",
 						credit:				"ETC",
 						caption:			"something"
 					}
@@ -16927,8 +16966,7 @@ VCO.StoryMap = VCO.Class.extend({
 						lat: 				19.896766,
 						lon: 				-155.582782,
 						zoom: 				11,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
-						line: 				true
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
 					},
 					text: {
 						headline: 			"Hawaii",
@@ -17007,11 +17045,25 @@ VCO.StoryMap = VCO.Class.extend({
 					text: {
 						headline: 			"Married",
 						text: 				"Marries Livy in Elmira. Her father buys them a house in Buffalo, New York. Son Langdon is born."
+					}
+				},
+				{
+					uniqueid: 				"",
+					background: {			// OPTIONAL
+						url: 				null,
+						color: 				"#cdbfe3",
+						opacity: 			50
 					},
-					media: {
-						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						credit:				"ETC",
-						caption:			"something"
+					date: 					"1870",
+					location: {
+						lat: 				42.886447,
+						lon: 				-78.878369,
+						zoom: 				11,
+						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+					},
+					text: {
+						headline: 			"Married",
+						text: 				"Marries Livy in Elmira. Her father buys them a house in Buffalo, New York. Son Langdon is born."
 					}
 				},
 				{
@@ -17034,7 +17086,7 @@ VCO.StoryMap = VCO.Class.extend({
 						text: 				"Moves with Livy to Hartford. Publishes Roughing It. Daughter is born. Son Langdon dies."
 					},
 					media: {
-						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+						url: 				"",
 						credit:				"ETC",
 						caption:			"something"
 					}
@@ -17141,6 +17193,7 @@ VCO.StoryMap = VCO.Class.extend({
 			line_weight: 			3,
 			line_opacity: 			0.20,
 			line_dash: 				"5,5",
+			show_lines: 			true,
 			show_history_line: 		true,
 			api_key_flickr: 		"f2cc870b4d233dd0a5bfe73fd0d64ef0",
 			language: {
@@ -17251,6 +17304,8 @@ VCO.StoryMap = VCO.Class.extend({
 		this._sizebar.on('move', this._onSizeBarMove, this);
 		this._sizebar.on('swipe', this._onSizeBarSwipe, this);
 		this._sizebar.on('momentum', this._onSizeBarSwipe, this);
+		this._sizebar.on('back_to_start', this._onBackToStart, this);
+		this._sizebar.on('overview', this._onOverview, this);
 		
 		// StorySlider Events
 		this._storyslider.on('change', this._onSlideChange, this);
@@ -17356,6 +17411,17 @@ VCO.StoryMap = VCO.Class.extend({
 		trace("ON SIZEBAR");
 	},
 	
+	_onOverview: function(e) {
+		this._map.markerOverview();
+	},
+	
+	_onBackToStart: function(e) {
+		this.current_slide = 0;
+		this._map.goTo(this.current_slide);
+		this._storyslider.goTo(this.current_slide);
+		this.fire("change", {current_slide: this.current_slide}, this);
+	},
+	
 	_onSizeBarMove: function(e) {
 		this._updateDisplay(e.y); 
 	},
@@ -17411,6 +17477,5 @@ VCO.StoryMap = VCO.Class.extend({
 	
 	
 });
-
 
 
