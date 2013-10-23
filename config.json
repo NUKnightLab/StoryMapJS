@@ -86,7 +86,7 @@
         "minify": [
             {
                 "src": "build/js/storymap.js",
-                "dst": "build/js/storymap.min.js",
+                "dst": "build/js/storymap-min.js",
                 "opt": "--no-seqs"            
             }
         ],
