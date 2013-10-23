@@ -1,3 +1,11 @@
+/* storymapjs - v0.0.6 - 2013-10-23
+ * Copyright (c) 2013 Northwestern University Knight Lab 
+ */
+
+/* **********************************************
+     Begin VCO.js
+********************************************** */
+
 /*!
 	VCO
 */
@@ -17477,5 +17485,6 @@ VCO.StoryMap = VCO.Class.extend({
 	
 	
 });
+
 
 
