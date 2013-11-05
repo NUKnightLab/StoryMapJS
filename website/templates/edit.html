@@ -24,7 +24,7 @@
 <div class="row">
     <div class="span12">
         <p>
-        <a href="select.html">&lt;&lt; back</a>
+        <a href="select.html">&lt;&lt; My Projects</a>
         </p>
     </div>
 </div>
@@ -45,16 +45,16 @@
     <input id="map_search_input" type="text" placeholder="Search">
 </div>
 
-<!--
-<div class="row data-row">
-    <div class="span12">
-        <p>This is the overview slide, which blah blah blah.</p>
-    </div>
-</div>
--->
 <div class="row data-row">
     <div class="span12">
         <div class="row">   
+            <div class="span6">                     
+                <label>Headline</label>
+                <input id="headline" type="text" />
+
+                <label>Text</label>
+                <textarea id="text" rows="6"></textarea>  
+            </div>
             <div class="span6">
                 <label>Media URL</label>
                 <!-- ref VCO.MediaType.js -->
@@ -68,15 +68,6 @@
                 <label>Caption</label>
                 <input id="caption" type="text" />
             </div>
-        
-            <div class="span6">                     
-                <label>Headline</label>
-                <textarea id="headline" rows="3"></textarea>
-
-                <label>Text</label>
-                <textarea id="text" rows="6"></textarea>  
-            </div>
-            
         </div>
     </div>
 </div>
@@ -123,19 +114,7 @@
 </div>
 <!-- END MODALS -->
   
-<!-- START MAP INFOBOX -->
-<div class="infobox-wrapper">
-    <div class="infobox">
-        <form class="form-horizontal">
-        <label>Displayed Location Name</label>
-        <input type="text" class="location_name" value="" >
-        </form>
-    </div>
-</div>
-<!-- END MAP INFOBOX -->
-
 <!-- START BOOTSTRAP-WYSIHTML5 BUTTON TEMPLATES -->
-
 <ul id="wysihtml5_emphasis" style="display: none;">
     <li>
     <div class="btn-group">
@@ -165,7 +144,6 @@
     </div>
 </li>
 </ul>
-
 <!-- END BOOTSTRAP-WYSIHTML5 BUTTON TEMPLATES -->
 
 <script type="text/javascript">
@@ -176,7 +154,6 @@ var _map;
 var _map_zoom_listener;
 var _map_markers = [];
 var _map_line;
-var _map_infobox;
 
 var _storymap;
 var _current_slide_index = -1;
@@ -189,11 +166,6 @@ function map_clear_overlays() {
         _map_line = null;
     }
 
-    if(_map_infobox) {
-        _map_infobox.close();
-        _map_infobox = null;
-    }
-    
     for(var i = _map_markers.length - 1; i >= 0; i--) {
         _map_markers[i].setMap(null);
     }    
@@ -203,10 +175,6 @@ function map_clear_overlays() {
 function location_set(slide_index, data) {    
     $.extend(_storymap.slides[slide_index].location, data);      
     storymap_dirty(1);
-}
-
-function location_change(slide_index, name) {
-    location_set(slide_index, {name: $.trim(name)});
 }
 
 function location_drag() {
@@ -235,28 +203,6 @@ function location_mark(data) {
             position: latlng
         });
         google.maps.event.addListener(_map_markers[0], 'dragend', location_drag);
-        
-        // Add InfoBox to marker
-        $('.location_name')
-            .attr('value', data.name)
-            .attr('onchange', 'location_change('+_current_slide_index+', this.value)');
-
-        var width = $('.infobox-wrapper').outerWidth(true);
-        _map_infobox = new InfoBox({
-            content: $('.infobox-wrapper').html(),
-            closeBoxURL: "",
-            pixelOffset: new google.maps.Size(-(width/2), 0)
-        });  
-        
-        google.maps.event.addListener(_map_infobox, 'domready', function() {
-            $('.infoBox .location_name').keypress(function() {
-                if(event.which == 13) {
-                    event.preventDefault();
-                }
-            });
-        });
-        
-        _map_infobox.open(_map, _map_markers[0]);
     } 
 }
 
@@ -416,7 +362,6 @@ function slide_add() {
     // Add location data if not overview slide, else add type 
     if(n > 0) {
         data.location =  $.extend({}, _storymap.slides[n - 1].location || {
-            name: "Chicago, IL",
             lat: "41.850033",
             lon: "-87.6500523",
             zoom: 10,
@@ -527,14 +472,13 @@ function storymap_dirty(is_dirty) {
 function storymap_save() {
     show_progress('Saving StoryMap')
     
-    data = { storymap: _storymap };
-    saveStoryMapDraft(_id, data, function(err) {
+    saveStoryMapDraft(_id, {storymap: _storymap}, function(err) {
+        hide_progress();
         if (err) {
-            show_error('Could not save storymap');
+            show_error('Error saving storymap');
         } else {
             storymap_dirty(0);
         }
-        hide_progress();
     });
 }
 
@@ -547,8 +491,8 @@ function storymap_preview() {
 function storymap_publish() {
     if(_dirty) {
         show_progress('Saving StoryMap');
-        var data = { storymap: _storymap };
-        saveStoryMapDraft(_id, data, function(err) {
+        
+        saveStoryMapDraft(_id, {storymap: _storymap}, function(err) {
             if (err) {
                 show_error('Could not save storymap');
             } else {
@@ -558,14 +502,15 @@ function storymap_publish() {
         });
     } else {
         show_progress('Publishing StoryMap');
+        
         publishStoryMap(_id, function(err, url) {
+            hide_progress();
             if (err) {
-                show_error('Could not publish StoryMap: ' + err);
+                show_error('Error publishing StoryMap: ' + err);
             } else {
                 show_message('StoryMap published at: <a href="'
                 + url + '" target="_blank">published.json</a>');
             }
-            hide_progress();
         });
     }
 }
