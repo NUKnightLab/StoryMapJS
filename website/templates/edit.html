@@ -33,6 +33,10 @@
     <div class="overview-container">
         <div class="slide overview">&nbsp;</div>
     </div>
+
+    <div class="add-container">
+        <a id="slide_add" href="javascript:"><i class="icon-plus icon-large"></i><br />Add Slide</a>
+    </div>
     
     <div class="slides-container">
         <ul id="slides">            
@@ -42,6 +46,7 @@
 
 <div class="row map-row">
     <div id="map"></div>
+    <div id="map_info">This is your title slide.  The title slide shows all points from your other slides.</div>
     <input id="map_search_input" type="text" placeholder="Search">
 </div>
 
@@ -65,8 +70,10 @@
                 
                 <label>Credit</label>
                 <input id="credit" type="text" />
+                
                 <label>Caption</label>
-                <input id="caption" type="text" />
+                <textarea id="caption" rows="3"></textarea>
+            
             </div>
         </div>
     </div>
@@ -76,7 +83,6 @@
     <button id="storymap_publish" class="btn">Publish</button>
     <button id="storymap_preview" class="btn">Preview</button>
     <button id="storymap_save" class="btn disabled">Save</button>
-    <button id="slide_add" class="btn">Add Slide</button>
 </div>
 </section>
 
@@ -246,6 +252,7 @@ function slide_select(event) {
     map_clear_overlays();
     
     if(data.type == "overview") {
+        $('#map_info').show();
         $('#map_search_input').hide();
         _map.setOptions({panControl: false, zoomControl: false});
                  
@@ -291,6 +298,7 @@ function slide_select(event) {
             _map.fitBounds(latlngbounds);
         }
      } else {
+        $('#map_info').hide();
         $('#map_search_input').show();   
         _map.setOptions({panControl: true, zoomControl: true});
 

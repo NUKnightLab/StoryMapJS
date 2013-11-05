@@ -47,7 +47,22 @@ edit page
     border-right-color: darkgray;
 }
 .overview-container .slide {font-size: 0.6em;}
-.slides-container {position: absolute;top: 0px;bottom:0;left: 68px;right: 0;overflow: scroll;}
+
+.add-container {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 70px;
+    border-style:solid;
+    border-width: 0 0 0 4px ;
+    border-left-color: darkgray;
+    font-size: 11px;
+    text-align: center;
+    padding-top: 6px;
+}    
+.slides-container {position: absolute;top: 0px;bottom:0;left: 68px;right: 73px;overflow: scroll;}
+
 #slides {position: relative;display: block;list-style: none;height: 100%;font-size: 0.7em;margin: 0;padding: 0;}
 .slide {
     float: left;
@@ -75,14 +90,21 @@ edit page
 #map {position: absolute;left: 0;top: 0;right: 0;bottom: 0;}
 #map * {font-family: Roboto,Arial,sans-serif;}
 #map img{max-width:none}
+
+#map_info {
+    position: absolute;
+    top: 0;left: 0;
+    font: 13px Roboto, Arial, Sans-serif;
+    background: white;
+    color: black;
+    padding: 4px;
+    border-right: 1px solid darkgray;
+    border-bottom: 1px solid darkgray;
+}
 #map_search_input {position: absolute; top: 6px;right: 6px;display: none;font: 13px Roboto, Arial, Sans-serif;}
 /* SearchBox drop-down items */
 .pac-item {font-family: Roboto, Arial, Sans-serif;}
 
-.infobox-wrapper {display:none;}
-.infobox {background: white;border: 1px solid darkgray;margin-top: 8px;padding: 8px;}
-.infobox form {margin: 0;padding: 0;white-space: nowrap;}
-.infobox * { font-size: 14px; }
 
 /*
 #infobox input[type="text"] {margin: 0 8px 0 0;}
