@@ -59,7 +59,9 @@ edit page
     font-size: 11px;
     text-align: center;
     padding-top: 12px;
-}    
+}  
+.add-container a {cursor: pointer;}
+  
 .slides-container {position: absolute;top: 0px;bottom:0;left: 80px;right: 80px;overflow: scroll;}
 
 #slides {position: relative;display: block;list-style: none;height: 100%;font-size: 0.7em;margin: 0;padding: 0;}

@@ -228,12 +228,14 @@ function media_check_type() {
 function slide_append_element(data) {
     var i = $('.slide').length;
   
+    var title = (data.text) ? (data.text.headline || "(untitled)") : "(untitled)";
+    
     var elem = $('<li class="slide"></li>')
         .appendTo('#slides')
         .click(slide_select)
         .html(''
             + '<div class="slide-icon">&nbsp;</div>'
-            + '<div class="slide-title">'+data.text.headline+'</div>');
+            + '<div class="slide-title">'+title+'</div>');
             
     $('<a class="close" href="#">&times;</a>')
         .appendTo(elem)
@@ -389,7 +391,7 @@ function slide_add() {
     
     // Append slide element if not adding overview slide
     if(n > 0) {
-        var slide = slide_append_element();
+        var slide = slide_append_element(data);
             
         // Adjust slide container width
         var width = $('#slides').width() + slide.outerWidth(true);
@@ -446,7 +448,7 @@ function storymap_load(id) {
                        
             $('#slides').html();            
             for(var i = 1; i < _storymap.slides.length; i++) {
-                slide_append_element();
+                slide_append_element(_storymap.slides[i]);
             }
             
             var width = 0;
