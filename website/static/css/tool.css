@@ -76,12 +76,65 @@ edit page
     text-align: left;
     cursor: pointer;
 }
-.slide-icon {background: white;margin-top: 2px;height: 44px;}
+
+
+/* 
+slide classes by media type
+*/
+
+.slide-icon {
+    background: #666;
+    position: relative;
+    margin-top: 2px;
+    height: 44px;    
+}
+
+.slide-icon:after {
+    background: url(../img/storymap.png);
+    background-repeat: no-repeat;
+    background-position: 0 100px;
+    width:24px;
+    height:24px;
+    overflow:hidden;
+    content:'';  
+    display: block;
+    position: absolute;
+    top:12px;left:20px;    
+}
+
+.slide-icon-website:after{background-position:-232px -24px}
+.slide-icon-googledoc:after{background-position:-256px -48px}
+.slide-icon-quote:after{background-position:-232px -48px}
+.slide-icon-plaintext:after{background-position:-280px -48px}
+.slide-icon-twitter:after{background-position:-256px -24px}
+.slide-icon-video:after{background-position:-328px -24px}
+.slide-icon-dailymotion:after{background-position:-328px -24px}
+.slide-icon-soundcloud:after{background-position:-304px -24px}
+.slide-icon-image:after{background-position:-280px -24px}
+.slide-icon-flickr:after{background-position:-280px -24px}
+.slide-icon-link:after{background-position:-184px -72px}
+.slide-icon-storify:after{background-position:-328px -96px}
+.slide-icon-wikipedia:after{background-position:-184px -48px}
+.slide-icon-instagram:after{background-position:-208px -96px}
+.slide-icon-vine:after{background-position:-232px -72px}
+.slide-icon-googleplus:after{background-position:-208px -72px}
+.slide-icon-vimeo:after{background-position:-328px -48px}
+.slide-icon-youtube:after{background-position:-328px -72px}
+
+/*
+*/
+
 .slide a.close {
     position: absolute;
-    top: 0;right: 0;z-index: 99;
+    top: 4px;right: 4px;z-index: 99;
     color: #000000;
     opacity: 1;
+    width: 32px;
+    height: 32px;
+    background: url(../img/fancybox_sprite.png);
+    zoom: 0.5;
+    -moz-transform:scale(0.5);
+
 }
 .slide-title {
     text-align: left;
@@ -90,6 +143,7 @@ edit page
     font-family: Roboto,Arial,sans-serif;
     overflow: hidden;
     text-overflow: ellipsis;
+    padding-left: 2px;
 }
 
 .selected {background: #e35a25;} /*#1dacd6;}*/

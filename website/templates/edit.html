@@ -215,6 +215,16 @@ function location_mark(data) {
     } 
 }
 
+function media_get_type(url) {
+    if(url && url.length) {
+        var media = VCO.MediaType({'url': url});     
+        if(media.type) {
+            return media.type;
+        }
+    } 
+    return '';
+}
+
 function media_check_type() {
     var url = $('#url').val().trim();
     if(url.length) {
@@ -225,23 +235,40 @@ function media_check_type() {
     }
 }
 
+/*
+
+$('div').attr('class',
+           function(i, c){
+              return c.replace(/\bcolor-\S+/g, '');
+           });
+           
+*/
+
 function slide_append_element(data) {
     var i = $('.slide').length;
   
     var title = (data.text) ? (data.text.headline || "(untitled)") : "(untitled)";
     
-    var elem = $('<li class="slide"></li>')
+    var slide_elem = $('<li class="slide"></li>')
         .appendTo('#slides')
-        .click(slide_select)
-        .html(''
-            + '<div class="slide-icon">&nbsp;</div>'
-            + '<div class="slide-title">'+title+'</div>');
-            
-    $('<a class="close" href="#">&times;</a>')
-        .appendTo(elem)
+        .click(slide_select);
+        
+    var slide_icon = $('<div class="slide-icon">&nbsp;</div>')
+        .appendTo(slide_elem);
+    
+    var type = media_get_type(data.media ? (data.media.url || '') : '');
+    if(type.length) {
+        slide_icon.addClass('slide-icon-'+type);
+    }
+
+    
+    slide_elem.append('<div class="slide-title">'+title+'</div>');
+                
+    $('<a class="close" href="#">&nbsp;</a>')
+        .appendTo(slide_elem)
         .click(slide_delete); 
         
-    return elem;
+    return slide_elem;
 }
 
 function slide_select(event) {  
