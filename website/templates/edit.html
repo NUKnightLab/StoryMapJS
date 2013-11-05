@@ -31,7 +31,11 @@
 
 <div class="row slides-row">
     <div class="overview-container">
-        <div class="slide overview">&nbsp;</div>
+        <div class="slide">
+            <div class="slide-icon">&nbsp;</div>
+            <div class="slide-title">Title</div>
+        </div>
+        <
     </div>
 
     <div class="add-container">
@@ -171,7 +175,6 @@ function map_clear_overlays() {
         _map_line.setMap(null);
         _map_line = null;
     }
-
     for(var i = _map_markers.length - 1; i >= 0; i--) {
         _map_markers[i].setMap(null);
     }    
@@ -222,17 +225,20 @@ function media_check_type() {
     }
 }
 
-function slide_append_element() {
+function slide_append_element(data) {
     var i = $('.slide').length;
   
-    var elem = $('<li class="slide"><span>'+i+'</span></li>')
+    var elem = $('<li class="slide"></li>')
         .appendTo('#slides')
-        .click(slide_select);
+        .click(slide_select)
+        .html(''
+            + '<div class="slide-icon">&nbsp;</div>'
+            + '<div class="slide-title">'+data.text.headline+'</div>');
             
     $('<a class="close" href="#">&times;</a>')
         .appendTo(elem)
         .click(slide_delete); 
-
+        
     return elem;
 }
 
@@ -327,8 +333,8 @@ function slide_delete(event) {
         var width = $('#slides').width() - slide_elem.outerWidth(true);
         
         // Renumber slides after slide to delete
-        var i = slide_index;
-        slide_elem.nextAll().each(function() { $(this).find('span').html(i++); });
+        //var i = slide_index;
+        //slide_elem.nextAll().each(function() { $(this).find('span').html(i++); });
   
         // Delete the slide and DOM element
         _storymap.slides.splice(slide_index, 1); 
@@ -402,7 +408,7 @@ function slide_add() {
 var showSlides = function() {
     $('#slides').html();            
     for(var i = 1; i < _storymap.slides.length; i++) {
-        slide_append_element();
+        slide_append_element(_storymap.slides[i]);
     }
     
     var width = 0;
@@ -602,8 +608,9 @@ $(function() {
     });
 
     $('#headline').change(function() {
-        var id = $(this).attr('id');
-        _storymap.slides[_current_slide_index].text[id] = $(this).val().trim();
+        var value = $(this).val().trim();
+        _storymap.slides[_current_slide_index].text['headline'] = value;
+        $('.slide-title').eq(_current_slide_index).html(value);
         storymap_dirty(1);
     });
 
@@ -658,10 +665,10 @@ $(function() {
                 _storymap.slides.move(sortable_i, sortable_j);
 
                 // Renumber slides
-                var i = Math.min(sortable_i, sortable_j);
-                var j = Math.max(sortable_i, sortable_j);                
-                var k = i;               
-                $('.slide').slice(i, j+1).each(function() { $(this).find('span').html(k++); });                
+                //var i = Math.min(sortable_i, sortable_j);
+                //var j = Math.max(sortable_i, sortable_j);                
+                //var k = i;               
+                //$('.slide').slice(i, j+1).each(function() { $(this).find('span').html(k++); });                
 
                  // Adjust current slide index
                 _current_slide_index = $('.slide').index($('.slide.selected'));                

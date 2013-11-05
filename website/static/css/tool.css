@@ -32,7 +32,7 @@ edit page
     padding: 0;
     margin: 0;
     background: #ccc;
-    height: 56px;
+    height: 76px;
     border: 1px solid darkgray;
 }
 
@@ -41,43 +41,56 @@ edit page
     top: 0px;
     bottom:0;
     left: 0;
-    width: 65px;
+    width: 76px;
     border-style:solid;
     border-width: 0 4px 0 0;
     border-right-color: darkgray;
 }
-.overview-container .slide {font-size: 0.6em;}
 
 .add-container {
     position: absolute;
     top: 0;
     bottom: 0;
     right: 0;
-    width: 70px;
+    width: 76px;
     border-style:solid;
     border-width: 0 0 0 4px ;
     border-left-color: darkgray;
     font-size: 11px;
     text-align: center;
-    padding-top: 6px;
+    padding-top: 12px;
 }    
-.slides-container {position: absolute;top: 0px;bottom:0;left: 68px;right: 73px;overflow: scroll;}
+.slides-container {position: absolute;top: 0px;bottom:0;left: 80px;right: 80px;overflow: scroll;}
 
 #slides {position: relative;display: block;list-style: none;height: 100%;font-size: 0.7em;margin: 0;padding: 0;}
+
 .slide {
     float: left;
     position: relative;
-    background: #fff;
-    height: 40px;
-    width: 50px;
-    margin: 8px;
-    padding: 0;
-    text-align: center;
-    line-height: 40px;
+    height: 64px;
+    width: 60px;
+    margin: 0px;
+    padding: 8px;
+    text-align: left;
     cursor: pointer;
 }
-.slide a.close {position: absolute;top: -4px;right: 0;z-index: 99;color: #FF0000;}
-.selected {background: #1dacd6;}
+.slide-icon {background: white;margin-top: 2px;height: 44px;}
+.slide a.close {
+    position: absolute;
+    top: 0;right: 0;z-index: 99;
+    color: #000000;
+    opacity: 1;
+}
+.slide-title {
+    text-align: left;
+    font-size: 11px;
+    white-space: nowrap;
+    font-family: Roboto,Arial,sans-serif;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.selected {background: #e35a25;} /*#1dacd6;}*/
 
 .map-row {
     position: relative;
