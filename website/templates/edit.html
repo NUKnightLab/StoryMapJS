@@ -158,6 +158,8 @@
 
 <script type="text/javascript">
 
+var _re_slide_cls = /^slide-icon-\w+$/;
+
 var _id;
 
 var _map;
@@ -227,46 +229,50 @@ function media_get_type(url) {
 
 function media_check_type() {
     var url = $('#url').val().trim();
-    if(url.length) {
-        var media = VCO.MediaType({'url': $('#url').val().trim()});   
-        $('#media_type').html('detected type: '+(media.type || '[none]')); 
+    if(url) {
+        $('#media_type').html('detected type: '+(media_get_type(url) || '[none]')); 
     } else {
         $('#media_type').html('&nbsp;'); 
     }
 }
 
-/*
-
-$('div').attr('class',
-           function(i, c){
-              return c.replace(/\bcolor-\S+/g, '');
-           });
-           
-*/
+function slide_set_class(slide_index) {    
+    // Get slide icon
+    var elem = $('.slide-icon').eq(slide_index);
+    
+    // Remove old slide-icon-* class
+    elem.removeClass(function(i, cls) {
+        return cls.split(' ')
+            .filter(function(val) { return _re_slide_cls.test(val); })
+            .join(' ');
+    });
+    
+    // Add new class
+    var data = _storymap.slides[slide_index];
+    var type = media_get_type((data.media) ? (data.media.url || '') : '');
+    if(type) {
+        elem.addClass('slide-icon-'+type);
+    }
+}
 
 function slide_append_element(data) {
-    var i = $('.slide').length;
-  
-    var title = (data.text) ? (data.text.headline || "(untitled)") : "(untitled)";
-    
-    var slide_elem = $('<li class="slide"></li>')
+    var slide_index = $('.slide').length;
+              
+    var slide_elem = $(''
+            + '<li class="slide">'
+            + '<div class="slide-icon">&nbsp;</div>'
+            + '<div class="slide-title">'
+            + ((data.text) ? (data.text.headline || "(untitled)") : "(untitled)")
+            + '</div>'
+            + '</li>')
         .appendTo('#slides')
         .click(slide_select);
-        
-    var slide_icon = $('<div class="slide-icon">&nbsp;</div>')
-        .appendTo(slide_elem);
-    
-    var type = media_get_type(data.media ? (data.media.url || '') : '');
-    if(type.length) {
-        slide_icon.addClass('slide-icon-'+type);
-    }
 
-    
-    slide_elem.append('<div class="slide-title">'+title+'</div>');
-                
     $('<a class="close" href="#">&nbsp;</a>')
         .appendTo(slide_elem)
         .click(slide_delete); 
+ 
+    slide_set_class(slide_index);
         
     return slide_elem;
 }
@@ -360,12 +366,8 @@ function slide_delete(event) {
     
     show_confirm('Delete slide '+slide_index+'?', function() {
         var width = $('#slides').width() - slide_elem.outerWidth(true);
-        
-        // Renumber slides after slide to delete
-        //var i = slide_index;
-        //slide_elem.nextAll().each(function() { $(this).find('span').html(i++); });
-  
-        // Delete the slide and DOM element
+          
+        // Delete the slide data and DOM element
         _storymap.slides.splice(slide_index, 1); 
         slide_elem.remove();
         
@@ -377,7 +379,7 @@ function slide_delete(event) {
             _current_slide_index--;
         } else if(slide_index == _current_slide_index) {
             var n = Math.min(_current_slide_index, _storymap.slides.length - 1);            
-            $('.slide:eq('+n+')').click();
+            $('.slide').eq(n).click();
         } 
         
         storymap_dirty(1);        
@@ -389,15 +391,8 @@ function slide_delete(event) {
 function slide_add() {
     var data = {
         date: "",
-        text: {
-            headline: "",
-            text: ""
-        },
-        media: {
-            url: "",
-            credit: "",
-            caption: ""
-        }
+        text: {headline: "", text: ""},
+        media: {url: "", credit: "", caption: ""}
     };
 
     var n = _storymap.slides.length; 
@@ -527,7 +522,7 @@ function storymap_save() {
 
 function storymap_preview() {
     var preview_url = 'preview.html?url=' + encodeURIComponent(draftURL(_id))
-        + '&start_at_slide='+_current_slide_index; // not working       
+        + '&start_at_slide='+_current_slide_index;     
     window.open(preview_url, 'StoryMap Preview');
 }
 
@@ -626,8 +621,11 @@ $(function() {
      
     $('#url').change(function(event) {  
         _storymap.slides[_current_slide_index].media['url'] = $(this).val().trim();
-        storymap_dirty(1);        
-        media_check_type();     
+        storymap_dirty(1);
+        console.log('ok!');
+        media_check_type();   
+        console.log('doit');  
+        slide_set_class(_current_slide_index)
     });
        
     $('#credit, #caption').change(function(event) { 
@@ -693,12 +691,6 @@ $(function() {
                 // Move slide data from i to j
                 _storymap.slides.move(sortable_i, sortable_j);
 
-                // Renumber slides
-                //var i = Math.min(sortable_i, sortable_j);
-                //var j = Math.max(sortable_i, sortable_j);                
-                //var k = i;               
-                //$('.slide').slice(i, j+1).each(function() { $(this).find('span').html(k++); });                
-
                  // Adjust current slide index
                 _current_slide_index = $('.slide').index($('.slide.selected'));                
                 
@@ -709,6 +701,5 @@ $(function() {
 });
 
 </script>
-
 
 {% endblock %}
