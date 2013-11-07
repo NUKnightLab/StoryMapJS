@@ -58,30 +58,27 @@
 </div>
 
 <div class="row edit-row data-row">
-    <div class="span12">
-        <div class="row">   
-            <div class="span6">                     
-                <label>Headline</label>
-                <input id="headline" type="text" />
+    <div class="span6" style="">                     
+        <div class="data-frame" style="border-color: white;">
+            <label>Headline</label>
+            <input id="headline" type="text" />
 
-                <label>Text</label>
-                <div class="text-container">
-                <textarea id="text" rows="6"></textarea>  
-                </div>
+            <label>Text</label>
+            <div class="text-container">
+            <textarea id="text" rows="5"></textarea>  
             </div>
-            <div class="span6">
-                <label>Media URL</label>
-                <!-- ref VCO.MediaType.js -->
-                <input id="url" type="text" placeholder="URL to media (YouTube, Flickr, etc.)" />
-                <label id="media_type" class='example'></label>
-                
-                <label>Credit</label>
-                <input id="credit" type="text" />
-                
-                <label>Caption</label>
-                <textarea id="caption" rows="3"></textarea>
-            
-            </div>
+        </div>
+    </div>
+    <div class="span6" style="">
+        <div class="data-frame">
+            <label>Media</label>
+            <input id="url" type="text" placeholder="URL to media (YouTube, Flickr, etc.)" />
+
+            <label>Credit</label>
+            <input id="credit" type="text" />
+        
+            <label>Caption</label>
+            <textarea id="caption" rows="3"></textarea>
         </div>
     </div>
 </div>
@@ -232,15 +229,6 @@ function media_get_type(url) {
     return '';
 }
 
-function media_check_type() {
-    var url = $('#url').val().trim();
-    if(url) {
-        $('#media_type').html('detected type: '+(media_get_type(url) || '[none]')); 
-    } else {
-        $('#media_type').html('&nbsp;'); 
-    }
-}
-
 function slide_set_class(slide_index) {    
     // Get slide icon
     var elem = $('.slide-icon').eq(slide_index);
@@ -357,9 +345,7 @@ function slide_select(event) {
     $('#url').val(data.media ? (data.media.url || '') : '');
     $('#credit').val(data.media ? (data.media.credit || '') : '');
     $('#caption').val(data.media ? (data.media.caption || '') : '');
-    
-    media_check_type();
-    
+        
     $('#headline').val(data.text ? (data.text.headline || '') : '');
     $('#text').val(data.text ? (data.text.text || '') : '');    
     $('iframe.wysihtml5-sandbox').contents().find('body').html(data.text ? (data.text.text || '') : '');
@@ -631,7 +617,6 @@ $(function() {
     $('#url').change(function(event) {  
         _storymap_data.slides[_current_slide_index].media['url'] = $(this).val().trim();
         storymap_dirty(1);
-        media_check_type();   
         slide_set_class(_current_slide_index)
     });
        
