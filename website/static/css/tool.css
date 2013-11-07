@@ -12,39 +12,47 @@ common
 .control-row * {float: right;margin: 8px 0 8px 8px;}
 
 /*
-select page
+SELECT PAGE
 */
 
-#selector {margin: 10px auto;}
+#selector {margin-top: 20px;margin-bottom: 10px;}
 
+#storymap_table {width: 100%;}
+#storymap_table .storymap-edit,.storymap-delete {
+    margin-left: 10px;
+}
+
+.login-info {text-align: right;font-size: 0.9em;margin-top: 20px;margin-bottom: 20px;}
 #new_modal .error {color: #cc0000;font-size: 0.9em;font-style: italic;}
 
 /*
-edit page
+EDIT PAGE
 */
 
 #editor {margin: 10px auto;}
 
 #editor label.example {font-size: .8em;font-style: italic;color: #999;}
 
-.slides-row {
+.edit-row {
     position: relative;
     padding: 0;
     margin: 0;
-    background: #ccc;
-    height: 76px;
-    border: 1px solid darkgray;
+    border-left: 1px solid darkgray;
+    border-right: 1px solid darkgray;
+    border-bottom: 1px solid darkgray;
 }
+   
+.title-row {border-top: 1px solid darkgray;text-align: center;}
+
+.slides-row {background: #ccc;height: 76px;}
 
 .overview-container {
     position: absolute;
-    top: 0px;
+    top: 0;
     bottom:0;
     left: 0;
     width: 76px;
-    border-style:solid;
-    border-width: 0 4px 0 0;
-    border-right-color: darkgray;
+    border-right: 4px solid darkgray;
 }
 
 .add-container {
@@ -53,9 +61,7 @@ edit page
     bottom: 0;
     right: 0;
     width: 76px;
-    border-style:solid;
-    border-width: 0 0 0 4px ;
-    border-left-color: darkgray;
+    border-left: 4px solid darkgray;
     font-size: 11px;
     text-align: center;
     padding-top: 12px;
@@ -77,17 +83,7 @@ edit page
     cursor: pointer;
 }
 
-
-/* 
-slide classes by media type
-*/
-
-.slide-icon {
-    background: #666;
-    position: relative;
-    margin-top: 2px;
-    height: 44px;    
-}
+.slide-icon {position: relative;background: #666;margin-top: 2px;height: 44px;}
 
 .slide-icon:after {
     background: url(../img/storymap.png);
@@ -121,12 +117,12 @@ slide classes by media type
 .slide-icon-vimeo:after{background-position:-328px -48px}
 .slide-icon-youtube:after{background-position:-328px -72px}
 
-/*
-*/
 
 .slide a.close {
     position: absolute;
-    top: 4px;right: 4px;z-index: 99;
+    top: 4px;
+    right: 4px;
+    z-index: 99;
     color: #000000;
     opacity: 1;
     width: 32px;
@@ -136,26 +132,21 @@ slide classes by media type
     -moz-transform:scale(0.5);
 
 }
+
 .slide-title {
-    text-align: left;
-    font-size: 11px;
-    white-space: nowrap;
-    font-family: Roboto,Arial,sans-serif;
+    font: 11px Roboto,Arial,sans-serif;
     overflow: hidden;
+    white-space: nowrap;
+    text-align: left;
     text-overflow: ellipsis;
     padding-left: 2px;
 }
 
 .selected {background: #e35a25;} /*#1dacd6;}*/
 
-.map-row {
-    position: relative;
-    padding: 0;
-    margin: 0;
-    border-left: 1px solid darkgrey;
-    border-right: 1px solid darkgrey;
-    height: 260px;
-}
+/* map row */
+.map-row {height: 260px;}
+
 #map {position: absolute;left: 0;top: 0;right: 0;bottom: 0;}
 #map * {font-family: Roboto,Arial,sans-serif;}
 #map img{max-width:none}
@@ -163,39 +154,30 @@ slide classes by media type
 #map_info {
     position: absolute;
     top: 0;left: 0;
-    font: 13px Roboto, Arial, Sans-serif;
     background: white;
     color: black;
     padding: 4px;
     border-right: 1px solid darkgray;
     border-bottom: 1px solid darkgray;
+    font: 13px Roboto, Arial, Sans-serif;
 }
-#map_search_input {position: absolute; top: 6px;right: 6px;display: none;font: 13px Roboto, Arial, Sans-serif;}
+
+#map_search_input {
+    position: absolute; 
+    top: 6px;right: 6px;
+    display: none;
+    font: 13px Roboto, Arial, Sans-serif;
+}
+
 /* SearchBox drop-down items */
 .pac-item {font-family: Roboto, Arial, Sans-serif;}
 
 
-/*
-#infobox input[type="text"] {margin: 0 8px 0 0;}
-*/
-
-.data-row {
-    padding: 8px 8px 8px 0;
-    margin: 0;
-    border: 1px solid darkgrey;
-}
-.data-row input[type="text"],textarea {width: 85%;}
+.data-row {padding: 8px 8px 8px 0;}
+.data-row input[type="text"],textarea,.text-container {width: 85%;}
 
 
-
-/* 
-    wysihtml5 
-*/
-
-.text-container {
-    width: 85%;
-}
-
+/* wysihtml5 */
 ul.wysihtml5-toolbar {
     background: #ddd;
     width: 100%;

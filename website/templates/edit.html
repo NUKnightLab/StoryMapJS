@@ -3,6 +3,7 @@
 {% block head %}
 <script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}/js/tool.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}/js/gdrive.js"></script>
 <!-- start google maps -->
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places"></script>
 <script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/infobox/src/infobox.js"></script>
@@ -11,8 +12,6 @@
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/bootstrap-wysihtml5/bootstrap-wysihtml5-0.0.2.css"></link>
 <script type="text/javascript" src="{{ STATIC_URL }}/bootstrap-wysihtml5/lib/js/wysihtml5-0.3.0.min.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}/bootstrap-wysihtml5/bootstrap-wysihtml5-0.0.2.min.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}/js/googleDrive.js"></script>
-<script type="text/javascript" src="https://apis.google.com/js/client.js?onload=handleEditorClientLoad"></script>
 <!-- end bootstrap-wysihtml5 -->
 <link rel="stylesheet" type="text/css" href="{{ static_url }}/css/tool.css">
 {% endblock %}
@@ -29,7 +28,11 @@
     </div>
 </div>
 
-<div class="row slides-row">
+<div class="row edit-row title-row">
+    <h5 id="title"> </h5>
+</div>
+
+<div class="row edit-row slides-row">
     <div class="overview-container">
         <div class="slide">
             <div class="slide-icon">&nbsp;</div>
@@ -48,13 +51,13 @@
     </div>
 </div>
 
-<div class="row map-row">
+<div class="row edit-row map-row">
     <div id="map"></div>
     <div id="map_info">This is your title slide.  The title slide shows all points from your other slides.</div>
     <input id="map_search_input" type="text" placeholder="Search">
 </div>
 
-<div class="row data-row">
+<div class="row edit-row data-row">
     <div class="span12">
         <div class="row">   
             <div class="span6">                     
@@ -160,17 +163,19 @@
 
 var _re_slide_cls = /^slide-icon-\w+$/;
 
-var _id;
 
 var _map;
 var _map_zoom_listener;
 var _map_markers = [];
 var _map_line;
 
-var _storymap;
+var _storymap_info;
+var _storymap_data;
 var _current_slide_index = -1;
 
 var _dirty = 0;
+
+var _slides_loaded = false;
 
 function map_clear_overlays() {
     if(_map_line) {
@@ -184,7 +189,7 @@ function map_clear_overlays() {
 }
 
 function location_set(slide_index, data) {    
-    $.extend(_storymap.slides[slide_index].location, data);      
+    $.extend(_storymap_data.slides[slide_index].location, data);      
     storymap_dirty(1);
 }
 
@@ -248,7 +253,7 @@ function slide_set_class(slide_index) {
     });
     
     // Add new class
-    var data = _storymap.slides[slide_index];
+    var data = _storymap_data.slides[slide_index];
     var type = media_get_type((data.media) ? (data.media.url || '') : '');
     if(type) {
         elem.addClass('slide-icon-'+type);
@@ -284,7 +289,7 @@ function slide_select(event) {
     $(this).addClass('selected');
         
     _current_slide_index = $('.slide').index(this);
-    var data = _storymap.slides[_current_slide_index];
+    var data = _storymap_data.slides[_current_slide_index];
 
     if(_map_zoom_listener) {
         google.maps.event.removeListener(_map_zoom_listener);
@@ -298,13 +303,13 @@ function slide_select(event) {
         _map.setOptions({panControl: false, zoomControl: false});
                  
         // Show overview view
-        if(_storymap.slides.length > 1) {
+        if(_storymap_data.slides.length > 1) {
             var latlngbounds = new google.maps.LatLngBounds();      
             var path = [];
         
-            for(var i = 0; i < _storymap.slides.length;i++) {                
-                if(_storymap.slides[i].hasOwnProperty('location')) {                    
-                    var loc_data = _storymap.slides[i].location;
+            for(var i = 0; i < _storymap_data.slides.length;i++) {                
+                if(_storymap_data.slides[i].hasOwnProperty('location')) {                    
+                    var loc_data = _storymap_data.slides[i].location;
                     
                     if(loc_data.lat && loc_data.lon) {
                         var latlng = new google.maps.LatLng(loc_data.lat, loc_data.lon);
@@ -367,8 +372,11 @@ function slide_delete(event) {
     show_confirm('Delete slide '+slide_index+'?', function() {
         var width = $('#slides').width() - slide_elem.outerWidth(true);
           
-        // Delete the slide data and DOM element
-        _storymap.slides.splice(slide_index, 1); 
+        // Delete the slide data
+        _storymap_data.slides.splice(slide_index, 1); 
+        storymap_dirty(1);    
+            
+        // Remove DOM element
         slide_elem.remove();
         
         // Adjust slide container width
@@ -378,11 +386,9 @@ function slide_delete(event) {
         if(slide_index < _current_slide_index) {
             _current_slide_index--;
         } else if(slide_index == _current_slide_index) {
-            var n = Math.min(_current_slide_index, _storymap.slides.length - 1);            
+            var n = Math.min(_current_slide_index, _storymap_data.slides.length - 1);            
             $('.slide').eq(n).click();
-        } 
-        
-        storymap_dirty(1);        
+        }        
     });
     
     return false;
@@ -395,11 +401,11 @@ function slide_add() {
         media: {url: "", credit: "", caption: ""}
     };
 
-    var n = _storymap.slides.length; 
+    var n = _storymap_data.slides.length; 
     
     // Add location data if not overview slide, else add type 
     if(n > 0) {
-        data.location =  $.extend({}, _storymap.slides[n - 1].location || {
+        data.location =  $.extend({}, _storymap_data.slides[n - 1].location || {
             lat: "41.850033",
             lon: "-87.6500523",
             zoom: 10,
@@ -408,10 +414,13 @@ function slide_add() {
         });
     } else {
         data.type = "overview";
-    }    
-    _storymap.slides.push(data);
+    }   
     
-    // Append slide element if not adding overview slide
+    // Add slide 
+    _storymap_data.slides.push(data);
+    storymap_dirty(1);
+
+    // Add slide element if not adding overview slide
     if(n > 0) {
         var slide = slide_append_element(data);
             
@@ -425,14 +434,20 @@ function slide_add() {
     
     // Select new slide
     $('.slide:last').click();
-    
-    storymap_dirty(1);
-}
+}   
 
-var showSlides = function() {
-    $('#slides').html();            
-    for(var i = 1; i < _storymap.slides.length; i++) {
-        slide_append_element(_storymap.slides[i]);
+
+function slides_load() {
+    if(_slides_loaded || !_map || !_storymap_data) {
+        return;
+    }
+
+    _slides_loaded = true;
+    
+    $('#slides').html();  
+              
+    for(var i = 1; i < _storymap_data.slides.length; i++) {
+        slide_append_element(_storymap_data.slides[i]);
     }
     
     var width = 0;
@@ -441,57 +456,15 @@ var showSlides = function() {
     })   
     $('#slides').css('width', width + "px");
           
-    if(_storymap.slides.length > 0) {
+    if(_storymap_data.slides.length > 0) {
         $('.slide:first').click();  
     } else {
         slide_add();
     }   
-
-};
-
-function storymap_load(id) {    
-    //show_progress('Loading StoryMap');
     
-    //do_ajax(id,
-    console.log('Loading StoryMap: ' + id);
-    loadStoryMap(id,
-        /*
-        function(error) {   
-            //hide_progress();
-            show_error('Error loading StoryMap ('+error+')');
-        },
-        */
-        function(err, data) {
-          console.log('Received StoryMap response');
-          if (err) {
-            show_error('Error loading StoryMap ('+error+')');
-          } else {
-            _storymap = data.storymap;
-                       
-            $('#slides').html();            
-            for(var i = 1; i < _storymap.slides.length; i++) {
-                slide_append_element(_storymap.slides[i]);
-            }
-            
-            var width = 0;
-            $('#slides .slide').each(function() {
-                width += $(this).outerWidth(true);
-            })   
-            $('#slides').css('width', width + "px");
-                  
-            if(_storymap.slides.length > 0) {
-                $('.slide:first').click();  
-            } else {
-                slide_add();
-            }   
-
-            //console.log('storymap_load', _dirty);
-
-            //hide_progress();
-          }
-        }
-    );   
+    hide_progress();
 }
+
 
 function storymap_dirty(is_dirty) {
     _dirty = is_dirty;
@@ -507,64 +480,65 @@ function storymap_dirty(is_dirty) {
     }
 }
 
-function storymap_save() {
-    show_progress('Saving StoryMap')
-    
-    saveStoryMapDraft(_id, {storymap: _storymap}, function(err) {
-        hide_progress();
-        if (err) {
-            show_error('Error saving storymap');
-        } else {
-            storymap_dirty(0);
-        }
-    });
-}
-
 function storymap_preview() {
-    var preview_url = 'preview.html?url=' + encodeURIComponent(draftURL(_id))
+    var preview_url = 'preview.html?url='
+        + gdrive_storymap_draft_url(_storymap_info)
         + '&start_at_slide='+_current_slide_index;     
     window.open(preview_url, 'StoryMap Preview');
+}
+
+function storymap_save() {
+    show_progress('Saving StoryMap');
+    
+    gdrive_storymap_save_draft(_storymap_info, {storymap: _storymap_data}, function(error, file) {
+        if(error) {
+            show_error('Error saving storymap: '+error);
+        } else {
+            storymap_dirty(0);
+            hide_progress();
+       }
+    });
 }
 
 function storymap_publish() {
     if(_dirty) {
         show_progress('Saving StoryMap');
         
-        saveStoryMapDraft(_id, {storymap: _storymap}, function(err) {
-            if (err) {
-                show_error('Could not save storymap');
+        gdrive_storymap_save_draft(_storymap_info, {storymap: _storymap_data}, function(error, file) {
+            if(error) {
+                show_error('Error saving storymap: '+error);                
             } else {
                 storymap_dirty(0);
+                storymap_publish();
             }
-            storymap_publish();
         });
     } else {
         show_progress('Publishing StoryMap');
         
-        publishStoryMap(_id, function(err, url) {
-            hide_progress();
-            if (err) {
-                show_error('Error publishing StoryMap: ' + err);
+        gdrive_storymap_publish(_storymap_info, function(error, file) {
+            if(error) {
+                show_error('Error publishing StoryMap: '+ error);
             } else {
-                show_message('StoryMap published at: <a href="'
-                + url + '" target="_blank">published.json</a>');
+                hide_progress();
             }
         });
     }
 }
 
-function initialize() {
-    // check for id parameter
-    var params = parseQuerystring();
-    
-    if(!params.id) {
-        alert('No StoryMap id detected');
-        return;
+/*
+TEMPORARILY COMMENTED OUT FOR DEVELOPMENT
+
+window.onbeforeunload = function confirmExit() {
+    if(_dirty) {
+        return "You have attempted to leave this page."
+            + "  You have unsaved changes, and your changes will be lost."
+            + "  Are you sure you want to exit this page?";
     }
-    _id = params.id;
-    
-    // Make map
-    var mapOptions = {
+}
+*/
+
+function map_init() {
+    var map = new google.maps.Map(document.getElementById('map'), {
         disableDoubleClickZoom: true,
         mapTypeControl: false,
         panControl: true,
@@ -575,8 +549,7 @@ function initialize() {
             style: google.maps.ZoomControlStyle.SMALL
         },
         mapTypeId: google.maps.MapTypeId.ROADMAP
-    };   
-    _map = new google.maps.Map(document.getElementById('map'), mapOptions);
+    });
     
     // Make search box
     map_search_box = new google.maps.places.SearchBox(
@@ -599,47 +572,80 @@ function initialize() {
          } 
     });
     
-    // Load storymap
-    //storymap_load(_id);
+    _map = map;
+    
+    // LOAD SLIDES
+    slides_load();
 }
 
-google.maps.event.addDomListener(window, 'load', initialize);
+function storymap_init() {
+    show_progress('Loading StoryMap');
+    
+    var params = parseQueryString();
+    if(!params.id) {
+        show_error('No StoryMap id detected!');
+    } else {
+        // Load storymap folder
+        gdrive_storymap_load(params.id, function(error, storymapFolder) {
+            if(error) {
+                show_error('Error loading StoryMap: '+error);
+            } else {
+                _storymap_info = storymapFolder;
+                
+                $('#title').html(_storymap_info.title);
 
-/*
-TEMPORARILY COMMENTED OUT FOR DEVELOPMENT
-
-window.onbeforeunload = function confirmExit() {
-    if(_dirty) {
-        return "You have attempted to leave this page."
-            + "  You have unsaved changes, and your changes will be lost."
-            + "  Are you sure you want to exit this page?";
+                // Load draft
+                gdrive_storymap_load_draft(storymapFolder, function(error, data) {
+                    if(error) {
+                        show_error('Error loading StoryMap data: '+error);
+                    } else {
+                        _storymap_data = data.storymap;
+                    
+                        // LOAD SLIDES
+                        slides_load();
+                    }
+                });
+            }
+        });
     }
+    
+    // LOAD SLIDES
+    slides_load();
 }
-*/
+
+function handle_onload() {  
+    show_progress('Checking authorization');
+
+    gdrive_check_auth(function(authorized) {
+        if(authorized) {
+            gapi.client.load('drive', 'v2', storymap_init);
+        } else {
+            show_error('You have not authorized StoryMap!');
+        }
+    });
+}
 
 $(function() {        
     $('.overview-container .slide').click(slide_select);
      
     $('#url').change(function(event) {  
-        _storymap.slides[_current_slide_index].media['url'] = $(this).val().trim();
+        _storymap_data.slides[_current_slide_index].media['url'] = $(this).val().trim();
         storymap_dirty(1);
-        console.log('ok!');
         media_check_type();   
-        console.log('doit');  
         slide_set_class(_current_slide_index)
     });
        
     $('#credit, #caption').change(function(event) { 
         var id = $(this).attr('id');
-        _storymap.slides[_current_slide_index].media[id] = $(this).val().trim();
+        _storymap_data.slides[_current_slide_index].media[id] = $(this).val().trim();
         storymap_dirty(1);
     });
 
     $('#headline').change(function() {
         var value = $(this).val().trim();
-        _storymap.slides[_current_slide_index].text['headline'] = value;
-        $('.slide-title').eq(_current_slide_index).html(value);
+        _storymap_data.slides[_current_slide_index].text['headline'] = value;
         storymap_dirty(1);
+        $('.slide-title').eq(_current_slide_index).html(value);
     });
 
     $('#text').wysihtml5({
@@ -664,7 +670,7 @@ $(function() {
         },
         'events': {
             'change': function() { 
-                _storymap.slides[_current_slide_index].text['text'] = $('#text').val().trim();
+                _storymap_data.slides[_current_slide_index].text['text'] = $('#text').val().trim();
                 storymap_dirty(1);
              }
         }
@@ -690,7 +696,7 @@ $(function() {
                                   
             if(sortable_i != sortable_j) {
                 // Move slide data from i to j
-                _storymap.slides.move(sortable_i, sortable_j);
+                _storymap_data.slides.move(sortable_i, sortable_j);
 
                  // Adjust current slide index
                 _current_slide_index = $('.slide').index($('.slide.selected'));                
@@ -701,6 +707,9 @@ $(function() {
     });
 });
 
+google.maps.event.addDomListener(window, 'load', map_init);
+
 </script>
+<script type="text/javascript" src="https://apis.google.com/js/client.js?onload=handle_onload"></script>
 
 {% endblock %}

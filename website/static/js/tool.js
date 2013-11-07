@@ -3,7 +3,7 @@ Array.prototype.move = function(from, to) {
     this.splice(to, 0, this.splice(from, 1)[0]);
 };
 
-function parseQuerystring() {
+function parseQueryString() {
     var nvpair = {};
     var qs = window.location.search.replace('?', '');
     var pairs = qs.split('&');
@@ -35,6 +35,7 @@ function do_ajax(url, data, on_error, on_success) {
 }
 
 function show_error(msg) {
+    hide_progress();
     $('#error_msg').html(msg);
     $('#error_modal').modal('show');
 }
