@@ -26,9 +26,7 @@
 
 <div class="row">
     <div class="span12">
-        <p>
-        <a href="select.html">&lt;&lt; My Projects</a>
-        </p>
+        <p><a href="select.html">&lt;&lt; My Projects</a></p>
     </div>
 </div>
 
@@ -44,11 +42,9 @@
         </div>
         <
     </div>
-
     <div class="add-container">
         <a id="slide_add" href="javascript:"><i class="icon-plus icon-large"></i><br />Add Slide</a>
     </div>
-    
     <div class="slides-container">
         <ul id="slides">            
         </ul>
@@ -225,10 +221,8 @@ function location_mark(data) {
     if(data) {
         var latlng = new google.maps.LatLng(data.lat, data.lon);
 
-        // Pan to location
         _map.panTo(latlng);
     
-        // Add marker at location
         _map_markers[0] = new google.maps.Marker({
             map: _map,
             draggable: true,
@@ -237,16 +231,6 @@ function location_mark(data) {
         });
         google.maps.event.addListener(_map_markers[0], 'dragend', location_drag);
     } 
-}
-
-function media_get_type(url) {
-    if(url && url.length) {
-        var media = VCO.MediaType({'url': url});     
-        if(media.type) {
-            return media.type;
-        }
-    } 
-    return '';
 }
 
 function slide_set_class(slide_index) {    
@@ -262,10 +246,13 @@ function slide_set_class(slide_index) {
     
     // Add new class
     var data = _storymap_data.slides[slide_index];
-    var type = media_get_type((data.media) ? (data.media.url || '') : '');
-    if(type) {
-        elem.addClass('slide-icon-'+type);
-    }
+    var url = (data.media) ? (data.media.url || '') : '';
+    if(url) {
+        var media = VCO.MediaType({'url': url});     
+        if(media.type) {
+            elem.addClass('slide-icon-'+media.type);
+        }
+    } 
 }
 
 function slide_append_element(data) {
@@ -292,6 +279,8 @@ function slide_append_element(data) {
 
 function slide_select(event) {  
     $(':focus').blur(); // force change event!
+ 
+    storymap_auto_save();
     
     $('.slide.selected').removeClass('selected');    
     $(this).addClass('selected');
@@ -336,14 +325,14 @@ function slide_select(event) {
             }
              
             _map.fitBounds(latlngbounds);
-        
+       
             _map_line = new google.maps.Polyline({
                 path: path,
                 strokeColor: "#cc0000",
                 strokeOpacity: 1.0,
                 strokeWeight: 1,
                 map: _map
-            });      
+            });    
         } else {
             var latlngbounds = new google.maps.LatLngBounds(
                 new google.maps.LatLng(24.0, -124.47),
@@ -394,6 +383,7 @@ function slide_delete(event) {
         // Reset current slide
         if(slide_index < _current_slide_index) {
             _current_slide_index--;
+            storymap_auto_save();
         } else if(slide_index == _current_slide_index) {
             var n = Math.min(_current_slide_index, _storymap_data.slides.length - 1);            
             $('.slide').eq(n).click();
@@ -452,6 +442,10 @@ function slides_load() {
 
     _slides_loaded = true;
     
+    // Overview slide
+    slide_set_class(0);
+    
+    // Slides 1,...,n
     $('#slides').html();  
               
     for(var i = 1; i < _storymap_data.slides.length; i++) {
@@ -488,30 +482,44 @@ function storymap_dirty(is_dirty) {
     }
 }
 
-function storymap_preview() {
-    var preview_url = 'preview.html?url='
-        + gdrive_storymap_draft_url(_storymap_info)
-        + '&start_at_slide='+_current_slide_index;     
-    window.open(preview_url, 'StoryMap Preview');
-}
-
 function storymap_saved_msg() {
+    $('#saving').hide();
+    
     $('#saved span').html('Saved on '+format_dt(_storymap_info.draft_on));
     $('#saved').show();
 }
 
 function storymap_save() {
-    show_progress('Saving StoryMap');
+    //show_progress('Saving StoryMap');
+    $('#storymap_save').addClass('disabled').removeClass('btn-primary');    
+    $('#saved').hide();
+    $('#saving').show();
     
     gdrive_storymap_save_draft(_storymap_info, {storymap: _storymap_data}, function(error, file) {
         if(error) {
+            $('#storymap_save').removeClass('disabled').addClass('btn-primary');
             show_error('Error saving storymap: '+error);
-        } else {
+       } else {
             storymap_saved_msg();
             storymap_dirty(0);
             hide_progress();
        }
+       
+       storymap_saved_msg();
     });
+}
+
+function storymap_auto_save() {
+    if(_dirty) {
+        storymap_save();
+    }
+}
+
+function storymap_preview() {
+    var preview_url = 'preview.html?url='
+        + gdrive_storymap_draft_url(_storymap_info)
+        + '&start_at_slide='+_current_slide_index;     
+    window.open(preview_url, 'StoryMap Preview');
 }
 
 function storymap_publish() {
@@ -721,6 +729,7 @@ $(function() {
                 _current_slide_index = $('.slide').index($('.slide.selected'));                
                 
                 storymap_dirty(1);
+                storymap_auto_save();
             }             
         }
     });
