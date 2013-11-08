@@ -364,7 +364,10 @@ function slide_delete(event) {
     var slide_elem = $(this).closest('.slide');
     var slide_index = $('.slide').index(slide_elem);
     
-    show_confirm('Delete slide '+slide_index+'?', function() {
+    var data = _storymap_data.slides[slide_index];
+    var slide_title = ((data.text) ? (data.text.headline || "(untitled)") : "(untitled)");
+    
+    show_confirm('Delete "'+slide_title+'" slide?', function() {
         var width = $('#slides').width() - slide_elem.outerWidth(true);
           
         // Delete the slide data
