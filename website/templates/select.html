@@ -59,7 +59,7 @@
 <!-- END LOGIN PANEL -->
  
 <!-- START STORYMAP PANEL --> 
-    <div id="storymap_panel" class="span7 hide">
+    <div id="storymap_panel" class="span7">
         <div class="row">
             <div class="span7">
                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed 
@@ -73,7 +73,20 @@
             <table id="storymap_table" class="table table-striped table-bordered">
             <thead>
                 <tr>
-                    <th>StoryMaps</th>
+                    <th colspan="3" >
+                    <span style="line-height: 34px;">
+                   StoryMaps
+                   </span>
+                    <span style="float: right;">
+                        <div class="btn-group" data-toggle="buttons-radio">
+                            <button type="button" class="btn btn-small active" onclick="storymap_display_list('title')">
+                                Title <i class="icon-angle-up"></i></button>
+                            <button type="button" class="btn btn-small" onclick="storymap_display_list('date')">
+                                Date <i class="icon-angle-down"></i></button>
+                        </div>                 
+                    </span>
+                    </th>
+                    
                 </tr>
             </thead>
                         
@@ -134,9 +147,9 @@
 
 var _storymap_folder = null;    // public folder
 
-var _storymap_list = [];
 var _storymap_names = [];       // lowercase names
 var _storymap_map = {};         // id => object
+var _storymap_list = [];        // [object]
 
 
 function storymap_new(event) {
@@ -184,6 +197,50 @@ function storymap_delete(event) {
     });
 }
 
+function sortby_date(a, b) {
+    adt = (a.draft_on > a.published_on) ? a.draft_on : a.published_on;
+    bdt = (b.draft_on > b.published_on) ? b.draft_on : b.published_on;                
+    return (adt > bdt) ? -1 : 1;
+}
+
+function sortby_title(a, b) {
+    return (a.title.toUpperCase() < b.title.toUpperCase()) ? -1 : 1;
+}
+
+function storymap_display_list(sortby) {
+    if(sortby == 'date') {        
+        _storymap_list = _storymap_list.sort(sortby_date);
+    } else {
+        _storymap_list = _storymap_list.sort(sortby_title);
+    }
+    
+    var elem = $('#storymap_table > tbody').html('');
+
+    for(var i = 0; i < _storymap_list.length; i++) {
+        var item = _storymap_list[i];                
+        var href = '/edit.html?id='+item.id;
+           
+        // Keep track of names for anti-duplication     
+        _storymap_names.push(item.title.toLowerCase());
+             
+        var html = '<tr id="'+item.id+'">'   
+            + '<td><a class="title" href="'+href+'">'+item.title+'</a>';
+
+        if(item.published_on) {
+            html += '<p class="modded">Published on '+format_dt(item.published_on)+'</p>';
+        }   
+        if(item.draft_on > item.published_on) {
+            html += '<p class="modded">Edited on '+format_dt(item.draft_on)+'</p>';
+        } 
+    
+        html += '<td><a class="storymap-edit" href="'+href+'"><i class="icon-edit icon-large"></i></td>'
+            + '<td><a class="storymap-delete" href="javascript:"><i class="icon-trash icon-large"></i></td>'
+            + '</tr>';
+        
+        elem.append(html);
+    }
+}
+
 function storymap_list(file_list) {
     var elem = $('#storymap_table > tbody').html('');
 
@@ -194,29 +251,11 @@ function storymap_list(file_list) {
             _storymap_map = storymap_map;
             
             for(var id in _storymap_map) {
-                var item = _storymap_map[id];                
-                var href = '/edit.html?id='+item.id;
-                       
-                // Keep track of names for anti-duplication     
-                _storymap_names.push(item.title.toLowerCase());
-                         
-                var html = '<tr id="'+item.id+'">'   
-                    + '<td><a class="title" href="'+href+'">'+item.title+'</a>';
-
-                if(item.published_on) {
-                    html += '<p class="modded">Published on '+format_dt(item.published_on)+'</p>';
-                }   
-                if(item.draft_on > item.published_on) {
-                    html += '<p class="modded">Edited on '+format_dt(item.draft_on)+'</p>';
-                } 
-                
-                html += '<td><a class="storymap-edit" href="'+href+'"><i class="icon-edit icon-large"></i></td>'
-                    + '<td><a class="storymap-delete" href="javascript:"><i class="icon-trash icon-large"></i></td>'
-                    + '</tr>';
-                    
-                elem.append(html);
+                _storymap_list.push(_storymap_map[id]);
             }
-    
+            
+            storymap_display_list('title');
+            
             elem.find('.storymap-delete').click(storymap_delete);          
             hide_progress();
         }
@@ -273,5 +312,4 @@ $(function() {
 
 </script>
 <script type="text/javascript" src="https://apis.google.com/js/client.js?onload=handle_onload"></script>
-
 {% endblock %}
