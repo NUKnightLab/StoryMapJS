@@ -549,9 +549,31 @@ VCO.StorySlider = VCO.Class.extend({
 				this._nav.previous.hide();
 			}
 			
+			// Preload Slides
+			this.preloadSlides();
+			
 			
 		}
 	},
+	
+	preloadSlides: function() {
+		
+		this._slides[this.current_slide].loadMedia();
+		
+		if (this._slides[this.current_slide + 1]) {
+			this._slides[this.current_slide + 1].loadMedia();
+		}
+		if (this._slides[this.current_slide + 2]) {
+			this._slides[this.current_slide + 2].loadMedia();
+		}
+		if (this._slides[this.current_slide - 1]) {
+			this._slides[this.current_slide - 1].loadMedia();
+		}
+		if (this._slides[this.current_slide - 2]) {
+			this._slides[this.current_slide - 2].loadMedia();
+		}
+	},
+	
 	
 	getNavInfo: function(slide) {
 		var n = {

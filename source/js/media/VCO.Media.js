@@ -30,12 +30,18 @@ VCO.Media = VCO.Class.extend({
 		
 		// Timer (If Needed)
 		this.timer = null;
+		this.load_timer = null;
 		
 		// Message
 		this.message = null;
 		
 		// Media ID
 		this.media_id = null;
+		
+		// State
+		this._state = {
+			loaded: false
+		};
 	
 		// Data
 		this.data = {
@@ -73,11 +79,27 @@ VCO.Media = VCO.Class.extend({
 	},
 	
 	loadMedia: function() {
-		try {
-			this._loadMedia();
-		} catch (e) {
-			trace("Error loading media for ", this._media);
-			trace(e);
+		var self = this;
+		
+		if (!this._state.loaded) {
+			try {
+				this.load_timer = setTimeout(function() {
+					self._loadMedia();
+					self._state.loaded = true;
+				}, 1000);
+			} catch (e) {
+				trace("Error loading media for ", this._media);
+				trace(e);
+			}
+			
+			//this._state.loaded = true;
+		}
+		
+	},
+	
+	updateMediaDisplay: function() {
+		if (this._state.loaded) {
+			this._updateMediaDisplay();
 		}
 	},
 	
@@ -89,7 +111,6 @@ VCO.Media = VCO.Class.extend({
 		
 		_updateMediaDisplay: function() {
 			this._el.content_item.style.maxHeight = (this.options.height - this.options.credit_height - this.options.caption_height - 16) + "px";
-			
 		},
 	
 	/*	Public
@@ -196,7 +217,7 @@ VCO.Media = VCO.Class.extend({
 			this.options.caption_height 	= this._el.caption.offsetHeight;
 		}
 		
-		this._updateMediaDisplay();
+		this.updateMediaDisplay();
 		
 	}
 	
