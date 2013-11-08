@@ -1,3 +1,31 @@
+/*
+format of Google Drive file/folder resource object
+--------------------------------------------------
+alternateLink: "https://docs.google.com/folderview?id=0B71wddT5Cwf-cXBDa0FHNk9qRE0&usp=drivesdk"
+appDataContents: false
+copyable: false
+createdDate: "2013-11-06T15:22:03.813Z"
+editable: true
+etag: ""SQFIsIrlQ4j3H07nwR6GyVXbP4s/MTM4Mzc1MTMyMzgxMw""
+iconLink: "https://ssl.gstatic.com/docs/doclist/images/icon_11_shared_collection_list.png"
+id: "0B71wddT5Cwf-cXBDa0FHNk9qRE0"
+kind: "drive#file"
+labels: Object
+lastModifyingUser: Object
+lastModifyingUserName: "J Wilson"
+lastViewedByMeDate: "2013-11-06T15:22:05.463Z"
+mimeType: "application/vnd.google-apps.folder"
+modifiedDate: "2013-11-06T15:22:03.813Z"
+ownerNames: Array[1]
+owners: Array[1]
+parents: Array[1]
+quotaBytesUsed: "0"
+shared: true
+title: "Population"
+userPermission: Object
+webViewLink: "https://www.googledrive.com/host/0B71wddT5Cwf-cXBDa0FHNk9qRE0/"
+writersCanShare: true
+*/
 
 // Auth
 const CLIENT_ID = '1087881665848.apps.googleusercontent.com';
