@@ -1,15 +1,20 @@
 /* styles for storymap editor tool */
 
 /*
-common
+COMMON
 */
 #error_modal {background-color: #f2dede;color: #b94a48;border-color: #eed3d7;}
-
 #progress_msg {margin-left: 10px;}
+#new_modal .error {color: #cc0000;font-size: 0.9em;font-style: italic;}
 
 .shrinktext label,select,input[type="text"],textarea {font-size: 0.9em;}
 
 .control-row * {float: right;margin: 8px 0 8px 8px;}
+
+[class*="span"] {float: left;min-height: 1px;margin-left: auto;}
+
+.row {margin-left: auto;}
+
 
 /*
 SELECT PAGE
@@ -17,23 +22,14 @@ SELECT PAGE
 
 #selector {margin-top: 20px;margin-bottom: 10px;}
 
+.intro-panel {padding-right: 20px;}
+.title {display: block;margin-bottom: 6px;}
+.modded {font-size: .8em;margin: 0 0 0px;line-height: 1.6em;}
+
 #storymap_table {width: 100%;}
-#storymap_table .storymap-edit,.storymap-delete {
-    margin-left: 10px;
-}
-
-.login-info {text-align: right;font-size: 0.9em;margin-top: 20px;margin-bottom: 20px;}
-#new_modal .error {color: #cc0000;font-size: 0.9em;font-style: italic;}
+#storymap_table .storymap-edit,.storymap-delete {margin-left: 10px;}
 
 
-[class*="span"] {
-    float: left;
-    min-height: 1px;
-    margin-left: auto;
-}
-.row {
-    margin-left: auto;
-}
 
 /*
 EDIT PAGE

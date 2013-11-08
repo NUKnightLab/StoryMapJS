@@ -1,6 +1,11 @@
 {% extends "_base.html" %}
 
 {% block head %}
+<!--
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
+-->
+<!-- http://www.datejs.com/ -->
+<script type="text/javascript" src="{{ STATIC_URL }}/js/date.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}/js/tool.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}/js/gdrive.js"></script>
 <link rel="stylesheet" type="text/css" href="{{ static_url }}/css/tool.css">
@@ -12,14 +17,14 @@
 <div class="row">
 
 <!-- START YADDA YADDA SECTION -->   
-    <div class="span6">
+    <div class="span5 intro-panel">
         <div class="row">
-            <div class="span6">
+            <div class="span5">
                 <p>SCREENSHOT GOES HERE</p>
             </div>
         </div>
         <div class="row">
-            <div class="span6">
+            <div class="span5">
                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed 
                do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut 
                enim ad minim veniam, quis nostrud exercitation ullamco laboris 
@@ -34,9 +39,9 @@
 <!-- END YADDA YADDA SECTION -->
 
 <!-- START LOGIN PANEL -->
-    <div id="login_panel" class="span6 hide">
+    <div id="login_panel" class="span7 hide">
         <div class="row">
-            <div class="span6">
+            <div class="span7">
                 <p>Login/Authorization verbiage goes here.</p>
                 
                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed 
@@ -46,7 +51,7 @@
             </div>
         </div> 
         <div class="row">
-            <div class="span6" style="text-align: center;">
+            <div class="span7" style="text-align: center;">
                 <button id="storymap_login" class="btn">Authorize</button>
             </div>         
         </div>               
@@ -54,9 +59,9 @@
 <!-- END LOGIN PANEL -->
  
 <!-- START STORYMAP PANEL --> 
-    <div id="storymap_panel" class="span6 hide">
+    <div id="storymap_panel" class="span7 hide">
         <div class="row">
-            <div class="span6">
+            <div class="span7">
                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed 
                    do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut 
                    enim ad minim veniam, quis nostrud exercitation ullamco laboris 
@@ -64,11 +69,11 @@
             </div>
         </div>
         <div class="row">
-            <div class="span6">
+            <div class="span7">
             <table id="storymap_table" class="table table-striped table-bordered">
             <thead>
                 <tr>
-                    <th>Project</th>
+                    <th>StoryMaps</th>
                 </tr>
             </thead>
                         
@@ -79,7 +84,7 @@
             </div>
         </div>
         <div class="row control-row">
-            <div class="span6">
+            <div class="span7">
                 <button id="storymap_new" class="btn">New</button>
             </div>        
         </div>
@@ -128,6 +133,9 @@
 <script type="text/javascript">
 
 /*
+format of Google Drive file/folder resource object
+--------------------------------------------------
+
 alternateLink: "https://docs.google.com/folderview?id=0B71wddT5Cwf-cXBDa0FHNk9qRE0&usp=drivesdk"
 appDataContents: false
 copyable: false
@@ -152,6 +160,11 @@ title: "Population"
 userPermission: Object
 webViewLink: "https://www.googledrive.com/host/0B71wddT5Cwf-cXBDa0FHNk9qRE0/"
 writersCanShare: true
+*/
+
+/*
+var tz = jstz.determine();
+console.log(tz);
 */
 
 var _storymap_folder = null;    // public folder
@@ -209,23 +222,36 @@ function storymap_delete(event) {
 function storymap_list(file_list) {
     var elem = $('#storymap_table > tbody').html('');
 
-    gdrive_storymap_list(_storymap_folder, function(error, file_list) {
+    gdrive_storymap_list(_storymap_folder, function(error, storymap_map) {
         if(error) {
             show_error('Error listing StoryMaps: '+error);
         } else {
-             for(var i = 0; i < file_list.length; i++) {        
-                var item = file_list[i];
+            _storymap_map = storymap_map;
+            
+            for(var id in _storymap_map) {
+                var item = _storymap_map[id];                
                 var href = '/edit.html?id='+item.id;
-                
-                _storymap_map[item.id] = item;
+                       
+                // Keep track of names for anti-duplication     
                 _storymap_names.push(item.title.toLowerCase());
-                             
-                elem.append(''
-                    + '<tr id="'+item.id+'">'
-                    + '<td><a href="'+href+'">'+item.title+'</a></td>'
-                    + '<td><a class="storymap-edit" href="'+href+'"><i class="icon-edit icon-large"></i></td>'
+                         
+                var html = '<tr id="'+item.id+'">'   
+                    + '<td><a class="title" href="'+href+'">'+item.title+'</a>';
+
+                if(item.published_on) {
+                    var dt = Date.parse(item.published_on.split('.')[0]);
+                    html += '<p class="modded">Published on '+dt.toString('ddd, MMM dd, yyyy h:mm:ss tt')+' GMT</p>';
+                }   
+                if(item.draft_on > item.published_on) {
+                    var dt = Date.parse(item.draft_on.split('.')[0]);
+                    html += '<p class="modded">Edited on '+dt.toString('ddd, MMM dd, yyyy h:mm:ss tt')+' GMT</p>';
+                } 
+                
+                html += '<td><a class="storymap-edit" href="'+href+'"><i class="icon-edit icon-large"></i></td>'
                     + '<td><a class="storymap-delete" href="javascript:"><i class="icon-trash icon-large"></i></td>'
-                    + '</tr>');
+                    + '</tr>';
+                    
+                elem.append(html);
             }
     
             elem.find('.storymap-delete').click(storymap_delete);          
@@ -265,7 +291,9 @@ function handle_onload() {
     gdrive_check_auth(handle_authorized);
 }
 
-$(function() {
+$(function() {    
+    // console.log(jstz.determine().name());
+    
     $('#new_modal .btn-primary').bind('click', storymap_new);
   
     $('#storymap_new').click(function(event) {
@@ -277,11 +305,9 @@ $(function() {
         });
     });
 
-    
     $('#storymap_login').click(function() {
         gdrive_login(handle_authorized);
-    });
-    
+    }); 
 });
 
 </script>

@@ -122,9 +122,8 @@ function gdrive_file_get(id, callback) {
 }
 
 function gdrive_file_update(id, content, callback) {
-console.log('gdrive_file_update', id); 
     var request = gapiPUTRequest(id, 'application/json', btoa(content));
-    gdrive_exec(request, callback, true);
+    gdrive_exec(request, callback);
 }
 
 function gdrive_file_delete(id, callback) {
@@ -276,12 +275,52 @@ function gdrive_storymap_init(create, callback) {
 
 //
 // List storymaps in parentFolder
-// callback(error, [<file resource>])
-// TODO:  MORE INFO ABOUT DRAFT/PUBLISHED
+// callback(error, { storymap info by id })
 //
 function gdrive_storymap_list(parentFolder, callback) {
-    var q = "'"+parentFolder.id+"' in parents and trashed=false";
-    gdrive_list(q, callback);
+    var folder_map = {};
+
+    var _process_folders = function(folder_list) {
+        if(folder_list.length) {
+            folder = folder_list.shift();
+            folder['draft_on'] = '';
+            folder['published_on'] = '';
+                   
+            var file_q = "trashed=false and '"+folder.id+"' in parents";
+        
+            gdrive_list(file_q, function(error, file_list) {
+                if(error) {
+                    callback(error);
+                } else {
+                    for(var i = 0; i < file_list.length; i++) {
+                        var file = file_list[i];
+                
+                        if(file.title == 'draft.json') {
+                            folder['draft_on'] = file.modifiedDate;
+                        } else if(file.title == 'published.json') {
+                            folder['published_on'] = file.modifiedDate;             
+                        }
+                    }
+ 
+                    // Stash folder
+                    folder_map[folder.id] = folder;          
+                    _process_folders(folder_list);
+                }
+            });
+        } else {
+            callback(null, folder_map);
+        }
+    };
+        
+    var folder_q = "'"+parentFolder.id+"' in parents and trashed=false";
+    
+    gdrive_list(folder_q, function(error, folder_list) {
+        if(error) {
+            callback(error);
+        } else {
+            _process_folders(folder_list);
+        }
+    });
 }
 
 //
@@ -307,9 +346,7 @@ function gdrive_storymap_create(title, rootFolder, callback) {
 // callback(error, <folder resource>)
 //
 function gdrive_storymap_load(storymap_id, callback) {
-console.log('gdrive_storymap_load', storymap_id);
     gdrive_file_get(storymap_id, callback); 
-
 }
 
 //
@@ -338,7 +375,6 @@ function gdrive_storymap_save_draft(storymapFolder, data, callback) {
         + " and '"+storymapFolder.id+"' in parents";
         
     gdrive_file_find(query, function(error, file) {
-console.log('gdrive_storymap_save_draft', error, file);
         if(error) {
             callback(error);
         } else if(file) {
@@ -354,7 +390,6 @@ console.log('gdrive_storymap_save_draft', error, file);
 // callback(error, <file resource>)
 //
 function gdrive_storymap_publish(storymapFolder, callback) {
-console.log('gdrive_storymap_publish'); 
     var query = "title='published.json' and trashed=false"
         + " and '"+storymapFolder.id+"' in parents";
 
@@ -382,7 +417,7 @@ function gdrive_storymap_draft_url(storymapFolder) {
     return storymapFolder.webViewLink + 'draft.json';
 }
 
-function gdrive_storymap_published_url(id) {
+function gdrive_storymap_published_url(storymapFolder) {
     return storymapFolder.webViewLink + 'published.json';
 }
 
