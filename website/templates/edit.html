@@ -648,7 +648,10 @@ function handle_onload() {
         if(authorized) {
             gapi.client.load('drive', 'v2', storymap_init);
         } else {
-            show_error('You have not authorized StoryMap!');
+            hide_progress();
+            show_message('Could not load StoryMap.  You must (re)authorize this application.', function() {
+                document.location.href = 'select.html';           
+            });
         }
     });
 }

@@ -74,7 +74,7 @@ function show_confirm(msg, callback) {
 
 function show_message(msg, callback) {
     $('#message_msg').html(msg);
-    $('#message_modal .btn-primary').bind('click.confirm', function(event) {
+    $('#message_modal .btn').bind('click.confirm', function(event) {
         $(this).unbind('click.confirm');
         $('#message_modal').modal('hide');
         if(callback) {
