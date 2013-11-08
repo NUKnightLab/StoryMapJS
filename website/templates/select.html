@@ -1,10 +1,7 @@
 {% extends "_base.html" %}
 
 {% block head %}
-<!--
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
--->
-<!-- http://www.datejs.com/ -->
+<!-- //www.datejs.com -->
 <script type="text/javascript" src="{{ STATIC_URL }}/js/date.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}/js/tool.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}/js/gdrive.js"></script>
@@ -239,12 +236,10 @@ function storymap_list(file_list) {
                     + '<td><a class="title" href="'+href+'">'+item.title+'</a>';
 
                 if(item.published_on) {
-                    var dt = Date.parse(item.published_on.split('.')[0]);
-                    html += '<p class="modded">Published on '+dt.toString('ddd, MMM dd, yyyy h:mm:ss tt')+' GMT</p>';
+                    html += '<p class="modded">Published on '+format_dt(item.published_on)+'</p>';
                 }   
                 if(item.draft_on > item.published_on) {
-                    var dt = Date.parse(item.draft_on.split('.')[0]);
-                    html += '<p class="modded">Edited on '+dt.toString('ddd, MMM dd, yyyy h:mm:ss tt')+' GMT</p>';
+                    html += '<p class="modded">Edited on '+format_dt(item.draft_on)+'</p>';
                 } 
                 
                 html += '<td><a class="storymap-edit" href="'+href+'"><i class="icon-edit icon-large"></i></td>'

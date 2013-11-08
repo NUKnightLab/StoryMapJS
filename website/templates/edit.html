@@ -2,8 +2,6 @@
 
 {% block head %}
 <script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}/js/tool.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}/js/gdrive.js"></script>
 <!-- start google maps -->
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places"></script>
 <!-- end google maps -->
@@ -12,6 +10,10 @@
 <script type="text/javascript" src="{{ STATIC_URL }}/bootstrap-wysihtml5/lib/js/wysihtml5-0.3.0.min.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}/bootstrap-wysihtml5/bootstrap-wysihtml5-0.0.2.min.js"></script>
 <!-- end bootstrap-wysihtml5 -->
+<!-- //www.datejs.com -->
+<script type="text/javascript" src="{{ STATIC_URL }}/js/date.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}/js/tool.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}/js/gdrive.js"></script>
 <link rel="stylesheet" type="text/css" href="{{ static_url }}/css/tool.css">
 {% endblock %}
 
@@ -86,6 +88,12 @@
     <button id="storymap_publish" class="btn">Publish</button>
     <button id="storymap_preview" class="btn">Preview</button>
     <button id="storymap_save" class="btn disabled">Save</button>
+    <div id='saved' class="hide">
+        <span class="smaller"> </span>
+    </div>
+    <div id='saving' class="hide">
+        <span class="smaller">Saving...</span><i class="icon-spinner icon-spin" style="margin-top: 9px;"></i>
+    </div>
 </div>
 </section>
 
@@ -434,7 +442,6 @@ function slide_add() {
     $('.slide:last').click();
 }   
 
-
 function slides_load() {
     if(_slides_loaded || !_map || !_storymap_data) {
         return;
@@ -485,6 +492,11 @@ function storymap_preview() {
     window.open(preview_url, 'StoryMap Preview');
 }
 
+function storymap_saved_msg() {
+    $('#saved span').html('Saved on '+format_dt(_storymap_info.draft_on));
+    $('#saved').show();
+}
+
 function storymap_save() {
     show_progress('Saving StoryMap');
     
@@ -492,6 +504,7 @@ function storymap_save() {
         if(error) {
             show_error('Error saving storymap: '+error);
         } else {
+            storymap_saved_msg();
             storymap_dirty(0);
             hide_progress();
        }
@@ -594,7 +607,8 @@ function storymap_init() {
                 show_error('Error loading StoryMap: '+error);
             } else {
                 _storymap_info = storymapFolder;
-                
+                storymap_saved_msg();
+                               
                 $('#title').html(_storymap_info.title);
 
                 // Load draft
@@ -714,5 +728,6 @@ google.maps.event.addDomListener(window, 'load', map_init);
 </script>
 
 <script type="text/javascript" src="https://apis.google.com/js/client.js?onload=handle_onload"></script>
+
 
 {% endblock %}

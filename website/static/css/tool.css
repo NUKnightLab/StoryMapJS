@@ -9,7 +9,10 @@ COMMON
 
 .shrinktext label,select,input[type="text"],textarea {font-size: 0.9em;}
 
+.smaller {font-size: 0.8em;}
+
 .control-row * {float: right;margin: 8px 0 8px 8px;}
+.control-row div {margin-right: 20px;}
 
 [class*="span"] {float: left;min-height: 1px;margin-left: auto;}
 
@@ -28,7 +31,6 @@ SELECT PAGE
 
 #storymap_table {width: 100%;}
 #storymap_table .storymap-edit,.storymap-delete {margin-left: 10px;}
-
 
 
 /*
@@ -136,7 +138,6 @@ EDIT PAGE
     background: url(../img/fancybox_sprite.png);
     zoom: 0.5;
     -moz-transform:scale(0.5);
-
 }
 
 .slide-title {
@@ -174,6 +175,7 @@ EDIT PAGE
     display: none;
     font: 13px Roboto, Arial, Sans-serif;
 }
+
 
 /* SearchBox drop-down items */
 .pac-item {font-family: Roboto, Arial, Sans-serif;}

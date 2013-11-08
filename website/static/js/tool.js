@@ -1,3 +1,4 @@
+// Requires date.js from www.datejs.com
 
 Array.prototype.move = function(from, to) {
     this.splice(to, 0, this.splice(from, 1)[0]);
@@ -13,6 +14,11 @@ function parseQueryString() {
         nvpair[p[0]] = p[1];
     }
     return nvpair;
+}
+
+function format_dt(dt_string) {
+    var dt = Date.parse(dt_string.split('.')[0]);
+    return dt.toLocaleString();
 }
 
 function do_ajax(url, data, on_error, on_success) {
