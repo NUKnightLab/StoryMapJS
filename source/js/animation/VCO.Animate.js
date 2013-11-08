@@ -39,6 +39,7 @@ VCO.Animate = function(el, options) {
 		perfNow = perf && (perf.now || perf.webkitNow || perf.msNow || perf.mozNow),
 		now = perfNow ? function () { return perfNow.call(perf) } : function () { return +new Date() },
 		html = doc.documentElement,
+		fixTs = false, // feature detected below
 		thousand = 1000,
 		rgbOhex = /^rgb\(|#/,
 		relVal = /^([+\-])=([\d\.]+)/,
@@ -119,7 +120,13 @@ VCO.Animate = function(el, options) {
   }()
 
   var children = []
-
+  
+	frame(function(timestamp) {
+	  	// feature-detect if rAF and now() are of the same scale (epoch or high-res),
+		// if not, we have to do a timestamp fix on each frame
+		fixTs = timestamp > 1e12 != now() > 1e12
+	})
+	
   function has(array, elem, i) {
     if (Array.prototype.indexOf) return array.indexOf(elem)
     for (i = 0; i < array.length; ++i) {
@@ -132,6 +139,7 @@ VCO.Animate = function(el, options) {
     // if we're using a high res timer, make sure timestamp is not the old epoch-based value.
     // http://updates.html5rocks.com/2012/05/requestAnimationFrame-API-now-with-sub-millisecond-precision
     if (perfNow && timestamp > 1e12) timestamp = now()
+	if (fixTs) timestamp = now()
     for (i = count; i--;) {
       children[i](timestamp)
     }
