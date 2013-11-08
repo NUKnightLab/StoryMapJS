@@ -57,7 +57,9 @@ VCO.Slide = VCO.Class.extend({
 		this._text			= {};
 	
 		// State
-		this._loaded 		= false;
+		this._state = {
+			loaded: 		false
+		};
 	
 		// Data
 		this.data = {
@@ -122,6 +124,13 @@ VCO.Slide = VCO.Class.extend({
 		this._updateDisplay(w, h, a);
 	},
 	
+	loadMedia: function() {
+		if (this._media && !this._state.loaded) {
+			this._media.loadMedia();
+			this._state.loaded = true;
+		}
+	},
+	
 	
 	/*	Events
 	================================================== */
@@ -158,7 +167,7 @@ VCO.Slide = VCO.Class.extend({
 			
 			// add the object to the dom
 			this._media.addTo(this._el.content);
-			this._media.loadMedia();
+			//this._media.loadMedia();
 		}
 		
 		// Text
