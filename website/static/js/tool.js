@@ -17,8 +17,8 @@ function parseQueryString() {
 }
 
 function format_dt(dt_string) {
-    var dt = Date.parse(dt_string.split('.')[0]);
-    return dt.toLocaleString();
+    var m = moment(dt_string);
+    return m.format('ll')+' at '+m.format('LT');
 }
 
 function do_ajax(url, data, on_error, on_success) {
