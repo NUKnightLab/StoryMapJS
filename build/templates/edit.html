@@ -2,18 +2,21 @@
 
 {% block head %}
 <script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}/js/tool.js"></script>
 <!-- start google maps -->
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places"></script>
-<script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/infobox/src/infobox.js"></script>
 <!-- end google maps -->
 <!-- start bootstrap-wysihtml5 -->
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/bootstrap-wysihtml5/bootstrap-wysihtml5-0.0.2.css"></link>
 <script type="text/javascript" src="{{ STATIC_URL }}/bootstrap-wysihtml5/lib/js/wysihtml5-0.3.0.min.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}/bootstrap-wysihtml5/bootstrap-wysihtml5-0.0.2.min.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}/js/googleDrive.js"></script>
-<script type="text/javascript" src="https://apis.google.com/js/client.js?onload=handleEditorClientLoad"></script>
 <!-- end bootstrap-wysihtml5 -->
+<!-- START Moment.js -->
+<script src="{{ STATIC_URL }}/js/moment.min.js"></script>
+<script src="{{ STATIC_URL }}/js/moment-timezone.min.js"></script>
+<script src="{{ STATIC_URL }}/js/moment-timezone-data.js"></script>
+<!-- END Moment.js -->
+<script type="text/javascript" src="{{ STATIC_URL }}/js/tool.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}/js/gdrive.js"></script>
 <link rel="stylesheet" type="text/css" href="{{ static_url }}/css/tool.css">
 {% endblock %}
 
@@ -23,60 +26,59 @@
 
 <div class="row">
     <div class="span12">
-        <p>
-        <a href="select.html">&lt;&lt; back</a>
-        </p>
+        <p><a href="select.html">&lt;&lt; My Projects</a></p>
     </div>
 </div>
 
-<div class="row slides-row">
+<div class="row edit-row title-row">
+    <h5 id="title"> </h5>
+</div>
+
+<div class="row edit-row slides-row">
     <div class="overview-container">
-        <div class="slide overview">&nbsp;</div>
+        <div class="slide">
+            <div class="slide-icon">&nbsp;</div>
+            <div class="slide-title">Title</div>
+        </div>
+        <
     </div>
-    
+    <div class="add-container">
+        <a id="slide_add" href="javascript:"><i class="icon-plus icon-large"></i><br />Add Slide</a>
+    </div>
     <div class="slides-container">
         <ul id="slides">            
         </ul>
     </div>
 </div>
 
-<div class="row map-row">
+<div class="row edit-row map-row">
     <div id="map"></div>
+    <div id="map_info">This is your title slide.  The title slide shows all points from your other slides.</div>
     <input id="map_search_input" type="text" placeholder="Search">
 </div>
 
-<!--
-<div class="row data-row">
-    <div class="span12">
-        <p>This is the overview slide, which blah blah blah.</p>
-    </div>
-</div>
--->
-<div class="row data-row">
-    <div class="span12">
-        <div class="row">   
-            <div class="span6">
-                <label>Media URL</label>
-                <!-- ref VCO.MediaType.js -->
-                
-                <label class='example'>YouTube, Vine, Flickr, Soundcloud, Twitter, etc.</label>
-                <input id="url" type="text" />
-                <label id="media_type" class='example'></label>
-                
-                <label>Credit</label>
-                <input id="credit" type="text" />
-                <label>Caption</label>
-                <input id="caption" type="text" />
-            </div>
-        
-            <div class="span6">                     
-                <label>Headline</label>
-                <textarea id="headline" rows="3"></textarea>
+<div class="row edit-row data-row">
+    <div class="span6" style="">                     
+        <div class="data-frame" style="border-color: white;">
+            <label>Headline</label>
+            <input id="headline" type="text" />
 
-                <label>Text</label>
-                <textarea id="text" rows="6"></textarea>  
+            <label>Text</label>
+            <div class="text-container">
+            <textarea id="text" rows="5"></textarea>  
             </div>
-            
+        </div>
+    </div>
+    <div class="span6" style="">
+        <div class="data-frame">
+            <label>Media</label>
+            <input id="url" type="text" placeholder="URL to media (YouTube, Flickr, etc.)" />
+
+            <label>Credit</label>
+            <input id="credit" type="text" />
+        
+            <label>Caption</label>
+            <textarea id="caption" rows="3"></textarea>
         </div>
     </div>
 </div>
@@ -85,7 +87,12 @@
     <button id="storymap_publish" class="btn">Publish</button>
     <button id="storymap_preview" class="btn">Preview</button>
     <button id="storymap_save" class="btn disabled">Save</button>
-    <button id="slide_add" class="btn">Add Slide</button>
+    <div id='saved' class="hide">
+        <span class="smaller"> </span>
+    </div>
+    <div id='saving' class="hide">
+        <span class="smaller">Saving...</span><i class="icon-spinner icon-spin" style="margin-top: 9px;"></i>
+    </div>
 </div>
 </section>
 
@@ -121,21 +128,20 @@
         <button class="btn" data-dismiss="modal" aria-hidden="true">OK</button>
     </div>
 </div>
-<!-- END MODALS -->
-  
-<!-- START MAP INFOBOX -->
-<div class="infobox-wrapper">
-    <div class="infobox">
-        <form class="form-horizontal">
-        <label>Displayed Location Name</label>
-        <input type="text" class="location_name" value="" >
-        </form>
+
+<div id="embed_modal" class="modal hide fade" role="dialog" aria-hidden="true">
+    <div class="modal-body">
+        <p>Copy this code and paste it on your site where you want your StoryMap to appear.</p>
+        <textarea rows="10"></textarea>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">OK</button>
     </div>
 </div>
-<!-- END MAP INFOBOX -->
 
+<!-- END MODALS -->
+  
 <!-- START BOOTSTRAP-WYSIHTML5 BUTTON TEMPLATES -->
-
 <ul id="wysihtml5_emphasis" style="display: none;">
     <li>
     <div class="btn-group">
@@ -165,35 +171,30 @@
     </div>
 </li>
 </ul>
-
 <!-- END BOOTSTRAP-WYSIHTML5 BUTTON TEMPLATES -->
 
 <script type="text/javascript">
 
-var _id;
+var _re_slide_cls = /^slide-icon-\w+$/;
 
 var _map;
 var _map_zoom_listener;
 var _map_markers = [];
 var _map_line;
-var _map_infobox;
 
-var _storymap;
+var _storymap_info;
+var _storymap_data;
 var _current_slide_index = -1;
 
 var _dirty = 0;
+
+var _slides_loaded = false;
 
 function map_clear_overlays() {
     if(_map_line) {
         _map_line.setMap(null);
         _map_line = null;
     }
-
-    if(_map_infobox) {
-        _map_infobox.close();
-        _map_infobox = null;
-    }
-    
     for(var i = _map_markers.length - 1; i >= 0; i--) {
         _map_markers[i].setMap(null);
     }    
@@ -201,12 +202,8 @@ function map_clear_overlays() {
 }
 
 function location_set(slide_index, data) {    
-    $.extend(_storymap.slides[slide_index].location, data);      
+    $.extend(_storymap_data.slides[slide_index].location, data);      
     storymap_dirty(1);
-}
-
-function location_change(slide_index, name) {
-    location_set(slide_index, {name: $.trim(name)});
 }
 
 function location_drag() {
@@ -224,10 +221,8 @@ function location_mark(data) {
     if(data) {
         var latlng = new google.maps.LatLng(data.lat, data.lon);
 
-        // Pan to location
         _map.panTo(latlng);
     
-        // Add marker at location
         _map_markers[0] = new google.maps.Marker({
             map: _map,
             draggable: true,
@@ -235,63 +230,63 @@ function location_mark(data) {
             position: latlng
         });
         google.maps.event.addListener(_map_markers[0], 'dragend', location_drag);
-        
-        // Add InfoBox to marker
-        $('.location_name')
-            .attr('value', data.name)
-            .attr('onchange', 'location_change('+_current_slide_index+', this.value)');
-
-        var width = $('.infobox-wrapper').outerWidth(true);
-        _map_infobox = new InfoBox({
-            content: $('.infobox-wrapper').html(),
-            closeBoxURL: "",
-            pixelOffset: new google.maps.Size(-(width/2), 0)
-        });  
-        
-        google.maps.event.addListener(_map_infobox, 'domready', function() {
-            $('.infoBox .location_name').keypress(function() {
-                if(event.which == 13) {
-                    event.preventDefault();
-                }
-            });
-        });
-        
-        _map_infobox.open(_map, _map_markers[0]);
     } 
 }
 
-function media_check_type() {
-    var url = $('#url').val().trim();
-    if(url.length) {
-        var media = VCO.MediaType({'url': $('#url').val().trim()});   
-        $('#media_type').html('detected type: '+(media.type || '[none]')); 
-    } else {
-        $('#media_type').html('&nbsp;'); 
-    }
+function slide_set_class(slide_index) {    
+    // Get slide icon
+    var elem = $('.slide-icon').eq(slide_index);
+    
+    // Remove old slide-icon-* class
+    elem.removeClass(function(i, cls) {
+        return cls.split(' ')
+            .filter(function(val) { return _re_slide_cls.test(val); })
+            .join(' ');
+    });
+    
+    // Add new class
+    var data = _storymap_data.slides[slide_index];
+    var url = (data.media) ? (data.media.url || '') : '';
+    if(url) {
+        var media = VCO.MediaType({'url': url});     
+        if(media.type) {
+            elem.addClass('slide-icon-'+media.type);
+        }
+    } 
 }
 
-function slide_append_element() {
-    var i = $('.slide').length;
-  
-    var elem = $('<li class="slide"><span>'+i+'</span></li>')
+function slide_append_element(data) {
+    var slide_index = $('.slide').length;
+              
+    var slide_elem = $(''
+            + '<li class="slide">'
+            + '<div class="slide-icon">&nbsp;</div>'
+            + '<div class="slide-title">'
+            + ((data.text) ? (data.text.headline || "(untitled)") : "(untitled)")
+            + '</div>'
+            + '</li>')
         .appendTo('#slides')
         .click(slide_select);
-            
-    $('<a class="close" href="#">&times;</a>')
-        .appendTo(elem)
-        .click(slide_delete); 
 
-    return elem;
+    $('<a class="close" href="#">&nbsp;</a>')
+        .appendTo(slide_elem)
+        .click(slide_delete); 
+ 
+    slide_set_class(slide_index);
+        
+    return slide_elem;
 }
 
 function slide_select(event) {  
     $(':focus').blur(); // force change event!
+ 
+    storymap_auto_save();
     
     $('.slide.selected').removeClass('selected');    
     $(this).addClass('selected');
         
     _current_slide_index = $('.slide').index(this);
-    var data = _storymap.slides[_current_slide_index];
+    var data = _storymap_data.slides[_current_slide_index];
 
     if(_map_zoom_listener) {
         google.maps.event.removeListener(_map_zoom_listener);
@@ -300,17 +295,18 @@ function slide_select(event) {
     map_clear_overlays();
     
     if(data.type == "overview") {
+        $('#map_info').show();
         $('#map_search_input').hide();
         _map.setOptions({panControl: false, zoomControl: false});
                  
         // Show overview view
-        if(_storymap.slides.length > 1) {
+        if(_storymap_data.slides.length > 1) {
             var latlngbounds = new google.maps.LatLngBounds();      
             var path = [];
         
-            for(var i = 0; i < _storymap.slides.length;i++) {                
-                if(_storymap.slides[i].hasOwnProperty('location')) {                    
-                    var loc_data = _storymap.slides[i].location;
+            for(var i = 0; i < _storymap_data.slides.length;i++) {                
+                if(_storymap_data.slides[i].hasOwnProperty('location')) {                    
+                    var loc_data = _storymap_data.slides[i].location;
                     
                     if(loc_data.lat && loc_data.lon) {
                         var latlng = new google.maps.LatLng(loc_data.lat, loc_data.lon);
@@ -329,14 +325,14 @@ function slide_select(event) {
             }
              
             _map.fitBounds(latlngbounds);
-        
+       
             _map_line = new google.maps.Polyline({
                 path: path,
                 strokeColor: "#cc0000",
                 strokeOpacity: 1.0,
                 strokeWeight: 1,
                 map: _map
-            });      
+            });    
         } else {
             var latlngbounds = new google.maps.LatLngBounds(
                 new google.maps.LatLng(24.0, -124.47),
@@ -345,6 +341,7 @@ function slide_select(event) {
             _map.fitBounds(latlngbounds);
         }
      } else {
+        $('#map_info').hide();
         $('#map_search_input').show();   
         _map.setOptions({panControl: true, zoomControl: true});
 
@@ -357,9 +354,7 @@ function slide_select(event) {
     $('#url').val(data.media ? (data.media.url || '') : '');
     $('#credit').val(data.media ? (data.media.credit || '') : '');
     $('#caption').val(data.media ? (data.media.caption || '') : '');
-    
-    media_check_type();
-    
+        
     $('#headline').val(data.text ? (data.text.headline || '') : '');
     $('#text').val(data.text ? (data.text.text || '') : '');    
     $('iframe.wysihtml5-sandbox').contents().find('body').html(data.text ? (data.text.text || '') : '');
@@ -369,15 +364,17 @@ function slide_delete(event) {
     var slide_elem = $(this).closest('.slide');
     var slide_index = $('.slide').index(slide_elem);
     
-    show_confirm('Delete slide '+slide_index+'?', function() {
+    var data = _storymap_data.slides[slide_index];
+    var slide_title = ((data.text) ? (data.text.headline || "(untitled)") : "(untitled)");
+    
+    show_confirm('Delete "'+slide_title+'" slide?', function() {
         var width = $('#slides').width() - slide_elem.outerWidth(true);
-        
-        // Renumber slides after slide to delete
-        var i = slide_index;
-        slide_elem.nextAll().each(function() { $(this).find('span').html(i++); });
-  
-        // Delete the slide and DOM element
-        _storymap.slides.splice(slide_index, 1); 
+          
+        // Delete the slide data
+        _storymap_data.slides.splice(slide_index, 1); 
+        storymap_dirty(1);    
+            
+        // Remove DOM element
         slide_elem.remove();
         
         // Adjust slide container width
@@ -386,12 +383,11 @@ function slide_delete(event) {
         // Reset current slide
         if(slide_index < _current_slide_index) {
             _current_slide_index--;
+            storymap_auto_save();
         } else if(slide_index == _current_slide_index) {
-            var n = Math.min(_current_slide_index, _storymap.slides.length - 1);            
-            $('.slide:eq('+n+')').click();
-        } 
-        
-        storymap_dirty(1);        
+            var n = Math.min(_current_slide_index, _storymap_data.slides.length - 1);            
+            $('.slide').eq(n).click();
+        }        
     });
     
     return false;
@@ -400,23 +396,15 @@ function slide_delete(event) {
 function slide_add() {
     var data = {
         date: "",
-        text: {
-            headline: "",
-            text: ""
-        },
-        media: {
-            url: "",
-            credit: "",
-            caption: ""
-        }
+        text: {headline: "", text: ""},
+        media: {url: "", credit: "", caption: ""}
     };
 
-    var n = _storymap.slides.length; 
+    var n = _storymap_data.slides.length; 
     
     // Add location data if not overview slide, else add type 
     if(n > 0) {
-        data.location =  $.extend({}, _storymap.slides[n - 1].location || {
-            name: "Chicago, IL",
+        data.location =  $.extend({}, _storymap_data.slides[n - 1].location || {
             lat: "41.850033",
             lon: "-87.6500523",
             zoom: 10,
@@ -425,12 +413,15 @@ function slide_add() {
         });
     } else {
         data.type = "overview";
-    }    
-    _storymap.slides.push(data);
+    }   
     
-    // Append slide element if not adding overview slide
+    // Add slide 
+    _storymap_data.slides.push(data);
+    storymap_dirty(1);
+
+    // Add slide element if not adding overview slide
     if(n > 0) {
-        var slide = slide_append_element();
+        var slide = slide_append_element(data);
             
         // Adjust slide container width
         var width = $('#slides').width() + slide.outerWidth(true);
@@ -442,14 +433,23 @@ function slide_add() {
     
     // Select new slide
     $('.slide:last').click();
-    
-    storymap_dirty(1);
-}
+}   
 
-var showSlides = function() {
-    $('#slides').html();            
-    for(var i = 1; i < _storymap.slides.length; i++) {
-        slide_append_element();
+function slides_load() {
+    if(_slides_loaded || !_map || !_storymap_data) {
+        return;
+    }
+
+    _slides_loaded = true;
+    
+    // Overview slide
+    slide_set_class(0);
+    
+    // Slides 1,...,n
+    $('#slides').html();  
+              
+    for(var i = 1; i < _storymap_data.slides.length; i++) {
+        slide_append_element(_storymap_data.slides[i]);
     }
     
     var width = 0;
@@ -458,57 +458,15 @@ var showSlides = function() {
     })   
     $('#slides').css('width', width + "px");
           
-    if(_storymap.slides.length > 0) {
+    if(_storymap_data.slides.length > 0) {
         $('.slide:first').click();  
     } else {
         slide_add();
     }   
-
-};
-
-function storymap_load(id) {    
-    //show_progress('Loading StoryMap');
     
-    //do_ajax(id,
-    console.log('Loading StoryMap: ' + id);
-    loadStoryMap(id,
-        /*
-        function(error) {   
-            //hide_progress();
-            show_error('Error loading StoryMap ('+error+')');
-        },
-        */
-        function(err, data) {
-          console.log('Received StoryMap response');
-          if (err) {
-            show_error('Error loading StoryMap ('+error+')');
-          } else {
-            _storymap = data.storymap;
-                       
-            $('#slides').html();            
-            for(var i = 1; i < _storymap.slides.length; i++) {
-                slide_append_element();
-            }
-            
-            var width = 0;
-            $('#slides .slide').each(function() {
-                width += $(this).outerWidth(true);
-            })   
-            $('#slides').css('width', width + "px");
-                  
-            if(_storymap.slides.length > 0) {
-                $('.slide:first').click();  
-            } else {
-                slide_add();
-            }   
-
-            //console.log('storymap_load', _dirty);
-
-            //hide_progress();
-          }
-        }
-    );   
+    hide_progress();
 }
+
 
 function storymap_dirty(is_dirty) {
     _dirty = is_dirty;
@@ -524,64 +482,91 @@ function storymap_dirty(is_dirty) {
     }
 }
 
-function storymap_save() {
-    show_progress('Saving StoryMap')
+function storymap_saved_msg() {
+    $('#saving').hide();
     
-    data = { storymap: _storymap };
-    saveStoryMapDraft(_id, data, function(err) {
-        if (err) {
-            show_error('Could not save storymap');
-        } else {
+    $('#saved span').html('Saved on '+format_dt(_storymap_info.draft_on));
+    $('#saved').show();
+}
+
+function storymap_save() {
+    //show_progress('Saving StoryMap');
+    $('#storymap_save').addClass('disabled').removeClass('btn-primary');    
+    $('#saved').hide();
+    $('#saving').show();
+    
+    gdrive_storymap_save_draft(_storymap_info, {storymap: _storymap_data}, function(error, file) {
+        if(error) {
+            $('#storymap_save').removeClass('disabled').addClass('btn-primary');
+            show_error('Error saving storymap: '+error);
+       } else {
+            storymap_saved_msg();
             storymap_dirty(0);
-        }
-        hide_progress();
+            hide_progress();
+       }
+       
+       storymap_saved_msg();
     });
 }
 
+function storymap_auto_save() {
+    if(_dirty) {
+        storymap_save();
+    }
+}
+
 function storymap_preview() {
-    var preview_url = 'preview.html?url=' + encodeURIComponent(draftURL(_id))
-        + '&start_at_slide='+_current_slide_index; // not working       
+    var preview_url = 'preview.html?url='
+        + gdrive_storymap_draft_url(_storymap_info)
+        + '&start_at_slide='+_current_slide_index;     
     window.open(preview_url, 'StoryMap Preview');
 }
 
 function storymap_publish() {
     if(_dirty) {
         show_progress('Saving StoryMap');
-        var data = { storymap: _storymap };
-        saveStoryMapDraft(_id, data, function(err) {
-            if (err) {
-                show_error('Could not save storymap');
+        
+        gdrive_storymap_save_draft(_storymap_info, {storymap: _storymap_data}, function(error, file) {
+            if(error) {
+                show_error('Error saving storymap: '+error);                
             } else {
                 storymap_dirty(0);
+                storymap_publish();
             }
-            storymap_publish();
         });
     } else {
         show_progress('Publishing StoryMap');
-        publishStoryMap(_id, function(err, url) {
-            if (err) {
-                show_error('Could not publish StoryMap: ' + err);
+        
+        gdrive_storymap_publish(_storymap_info, function(error, file) {
+            if(error) {
+                show_error('Error publishing StoryMap: '+ error);
             } else {
-                show_message('StoryMap published at: <a href="'
-                + url + '" target="_blank">published.json</a>');
+                hide_progress();
+                
+                var url = gdrive_storymap_published_url(_storymap_info);
+                
+                $('#embed_modal textarea').html('TODO:  show embed code with '+url);
+                $('#embed_modal').modal('show');
             }
-            hide_progress();
         });
     }
 }
 
-function initialize() {
-    // check for id parameter
-    var params = parseQuerystring();
-    
-    if(!params.id) {
-        alert('No StoryMap id detected');
-        return;
+/*
+TEMPORARILY COMMENTED OUT FOR DEVELOPMENT
+
+window.onbeforeunload = function confirmExit() {
+    if(_dirty) {
+        return "You have attempted to leave this page."
+            + "  You have unsaved changes, and your changes will be lost."
+            + "  Are you sure you want to exit this page?";
     }
-    _id = params.id;
-    
-    // Make map
-    var mapOptions = {
+}
+*/
+
+function map_init() {
+    var map = new google.maps.Map(document.getElementById('map'), {
+        disableDoubleClickZoom: true,
         mapTypeControl: false,
         panControl: true,
         scrollwheel: false,
@@ -591,8 +576,7 @@ function initialize() {
             style: google.maps.ZoomControlStyle.SMALL
         },
         mapTypeId: google.maps.MapTypeId.ROADMAP
-    };   
-    _map = new google.maps.Map(document.getElementById('map'), mapOptions);
+    });
     
     // Make search box
     map_search_box = new google.maps.places.SearchBox(
@@ -615,43 +599,83 @@ function initialize() {
          } 
     });
     
-    // Load storymap
-    //storymap_load(_id);
+    _map = map;
+    
+    // LOAD SLIDES
+    slides_load();
 }
 
-google.maps.event.addDomListener(window, 'load', initialize);
+function storymap_init() {
+    show_progress('Loading StoryMap');
+    
+    var params = parseQueryString();
+    if(!params.id) {
+        show_error('No StoryMap id detected!');
+    } else {
+        // Load storymap folder
+        gdrive_storymap_load(params.id, function(error, storymapFolder) {
+            if(error) {
+                show_error('Error loading StoryMap: '+error);
+            } else {
+                _storymap_info = storymapFolder;
+                storymap_saved_msg();
+                               
+                $('#title').html(_storymap_info.title);
 
-/*
-TEMPORARILY COMMENTED OUT FOR DEVELOPMENT
-
-window.onbeforeunload = function confirmExit() {
-    if(_dirty) {
-        return "You have attempted to leave this page."
-            + "  You have unsaved changes, and your changes will be lost."
-            + "  Are you sure you want to exit this page?";
+                // Load draft
+                gdrive_storymap_load_draft(storymapFolder, function(error, data) {
+                    if(error) {
+                        show_error('Error loading StoryMap data: '+error);
+                    } else {
+                        _storymap_data = data.storymap;
+                    
+                        // LOAD SLIDES
+                        slides_load();
+                    }
+                });
+            }
+        });
     }
+    
+    // LOAD SLIDES
+    slides_load();
 }
-*/
+
+function handle_onload() {  
+    show_progress('Checking authorization');
+
+    gdrive_check_auth(function(authorized) {
+        if(authorized) {
+            gapi.client.load('drive', 'v2', storymap_init);
+        } else {
+            hide_progress();
+            show_message('Could not load StoryMap.  You must (re)authorize this application.', function() {
+                document.location.href = 'select.html';           
+            });
+        }
+    });
+}
 
 $(function() {        
     $('.overview-container .slide').click(slide_select);
      
     $('#url').change(function(event) {  
-        _storymap.slides[_current_slide_index].media['url'] = $(this).val().trim();
-        storymap_dirty(1);        
-        media_check_type();     
+        _storymap_data.slides[_current_slide_index].media['url'] = $(this).val().trim();
+        storymap_dirty(1);
+        slide_set_class(_current_slide_index)
     });
        
     $('#credit, #caption').change(function(event) { 
         var id = $(this).attr('id');
-        _storymap.slides[_current_slide_index].media[id] = $(this).val().trim();
+        _storymap_data.slides[_current_slide_index].media[id] = $(this).val().trim();
         storymap_dirty(1);
     });
 
     $('#headline').change(function() {
-        var id = $(this).attr('id');
-        _storymap.slides[_current_slide_index].text[id] = $(this).val().trim();
+        var value = $(this).val().trim();
+        _storymap_data.slides[_current_slide_index].text['headline'] = value;
         storymap_dirty(1);
+        $('.slide-title').eq(_current_slide_index).html(value);
     });
 
     $('#text').wysihtml5({
@@ -676,7 +700,7 @@ $(function() {
         },
         'events': {
             'change': function() { 
-                _storymap.slides[_current_slide_index].text['text'] = $('#text').val().trim();
+                _storymap_data.slides[_current_slide_index].text['text'] = $('#text').val().trim();
                 storymap_dirty(1);
              }
         }
@@ -702,24 +726,23 @@ $(function() {
                                   
             if(sortable_i != sortable_j) {
                 // Move slide data from i to j
-                _storymap.slides.move(sortable_i, sortable_j);
-
-                // Renumber slides
-                var i = Math.min(sortable_i, sortable_j);
-                var j = Math.max(sortable_i, sortable_j);                
-                var k = i;               
-                $('.slide').slice(i, j+1).each(function() { $(this).find('span').html(k++); });                
+                _storymap_data.slides.move(sortable_i, sortable_j);
 
                  // Adjust current slide index
                 _current_slide_index = $('.slide').index($('.slide.selected'));                
                 
                 storymap_dirty(1);
+                storymap_auto_save();
             }             
         }
     });
 });
 
+google.maps.event.addDomListener(window, 'load', map_init);
+
 </script>
+
+<script type="text/javascript" src="https://apis.google.com/js/client.js?onload=handle_onload"></script>
 
 
 {% endblock %}
