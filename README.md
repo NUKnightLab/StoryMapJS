@@ -1,5 +1,6 @@
 ## Setting up a development environment
 
+
 Install [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/)
 
 Install [Node.js](http://nodejs.org)
