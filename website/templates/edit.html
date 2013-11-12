@@ -53,6 +53,10 @@
 
 <div class="row edit-row map-row">
     <div id="map"></div>
+    <!-- polyline overlay -->
+    <svg id="map_overlay" xmlns="http://www.w3.org/2000/svg" version="1.1">
+        <polyline points="" />
+    </svg>
     <div id="map_info">This is your title slide.  The title slide shows all points from your other slides.</div>
     <input id="map_search_input" type="text" placeholder="Search">
 </div>
@@ -179,8 +183,8 @@ var _re_slide_cls = /^slide-icon-\w+$/;
 
 var _map;
 var _map_zoom_listener;
+var _map_overlay;
 var _map_markers = [];
-var _map_line;
 
 var _storymap_info;
 var _storymap_data;
@@ -190,10 +194,52 @@ var _dirty = 0;
 
 var _slides_loaded = false;
 
+//
+// Custom overlay for path
+//
+function get_map_overlay(map, path) {
+    var ov = new google.maps.OverlayView();   
+    var div = null;
+    
+    ov.onAdd = function() {
+        div = document.createElement('div');
+        div.style.position = 'absolute';
+ 
+        var panes = this.getPanes();
+        panes.overlayImage.appendChild(div);    
+    };
+
+    ov.draw = function() {
+        div.style.left = '0px';
+        div.style.top = '0px';
+        div.style.width = $(map.getDiv()).width()+'px';
+        div.style.height = $(map.getDiv()).height()+'px';
+  
+        var overlayProjection = this.getProjection();
+ 
+        var points = [];   
+        for(var i = 0; i < path.length; i++) {
+            var pixel = overlayProjection.fromLatLngToContainerPixel(path[i]);
+            points.push(pixel.x+','+pixel.y);
+        }       
+        $('#map_overlay polyline').attr('points', points.join(' '));
+    };
+
+    ov.onRemove = function() {
+        div.parentNode.removeChild(div);
+        div = null;
+        $('#map_overlay polyline').attr('points', '');
+    };
+    
+    ov.setMap(map);
+    
+    return ov;
+}
+
 function map_clear_overlays() {
-    if(_map_line) {
-        _map_line.setMap(null);
-        _map_line = null;
+    if(_map_overlay) {
+        _map_overlay.setMap(null);
+        _map_overlay = null;
     }
     for(var i = _map_markers.length - 1; i >= 0; i--) {
         _map_markers[i].setMap(null);
@@ -298,12 +344,12 @@ function slide_select(event) {
         $('#map_info').show();
         $('#map_search_input').hide();
         _map.setOptions({panControl: false, zoomControl: false});
-                 
+                
         // Show overview view
         if(_storymap_data.slides.length > 1) {
             var latlngbounds = new google.maps.LatLngBounds();      
             var path = [];
-        
+          
             for(var i = 0; i < _storymap_data.slides.length;i++) {                
                 if(_storymap_data.slides[i].hasOwnProperty('location')) {                    
                     var loc_data = _storymap_data.slides[i].location;
@@ -311,28 +357,22 @@ function slide_select(event) {
                     if(loc_data.lat && loc_data.lon) {
                         var latlng = new google.maps.LatLng(loc_data.lat, loc_data.lon);
             
-                        _map_markers.push(new google.maps.Marker({
+                        var marker = new google.maps.Marker({
                             map: _map,
-                            draggable: false,
+                            draggable: true, //false,
                             title: loc_data.name,
                             position: latlng
-                        }));
-                
+                        });
+                        _map_markers.push(marker);
+                                        
                         latlngbounds.extend(latlng);           
                         path.push(latlng);
                      }
                 }
             }
-             
             _map.fitBounds(latlngbounds);
-       
-            _map_line = new google.maps.Polyline({
-                path: path,
-                strokeColor: "#cc0000",
-                strokeOpacity: 1.0,
-                strokeWeight: 1,
-                map: _map
-            });    
+                    
+            _map_overlay = get_map_overlay(_map, path);
         } else {
             var latlngbounds = new google.maps.LatLngBounds(
                 new google.maps.LatLng(24.0, -124.47),
@@ -577,7 +617,10 @@ function map_init() {
         },
         mapTypeId: google.maps.MapTypeId.ROADMAP
     });
-    
+    google.maps.event.addListener(map, 'resize', function() {
+        console.log('map resized');
+    });
+       
     // Make search box
     map_search_box = new google.maps.places.SearchBox(
         document.getElementById('map_search_input'));
@@ -598,6 +641,7 @@ function map_init() {
             location_set(_current_slide_index, loc_data);
          } 
     });
+    
     
     _map = map;
     

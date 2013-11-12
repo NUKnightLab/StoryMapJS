@@ -157,9 +157,13 @@ EDIT PAGE
 #map * {font-family: Roboto,Arial,sans-serif;}
 #map img{max-width:none}
 
+#map_overlay {position: absolute;left: 0;top: 0;width: 100%;height: 100%;}
+#map_overlay polyline {fill: none;stroke: #cc0000;stroke-width: 2;}
+    
 #map_info {
     position: absolute;
-    top: 0;left: 0;
+    top: 0;
+    left: 0;
     background: white;
     color: black;
     padding: 4px;
