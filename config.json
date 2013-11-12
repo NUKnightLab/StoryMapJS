@@ -91,6 +91,13 @@
             }
         ],
         //
+        // process usermin style build blocks on html files
+        // input: list of files/directorys to process in-place
+        //
+        "usemin": [
+            "build/embed"      
+        ],
+        //
         // banner
         // input: list of file paths
         "banner": [
