@@ -25,15 +25,24 @@
 <section id="editor" class="container shrinktext"> 
 
 <div class="row">
+<!--
     <div class="span12">
         <p><a href="select.html">&lt;&lt; My Projects</a></p>
     </div>
+-->
+    <div class="span12">
+        <ul class="breadcrumb">
+        <li><a href="select.html">My Projects</a> <span class="divider">/</span></li>
+        <li id="title" class="active"></li>
+        </ul>
+    </div>
 </div>
 
+<!--
 <div class="row edit-row title-row">
     <h5 id="title"> </h5>
 </div>
-
+-->
 <div class="row edit-row slides-row">
     <div class="overview-container">
         <div class="slide">
@@ -665,7 +674,7 @@ function storymap_init() {
                 storymap_saved_msg();
                                
                 $('#title').html(_storymap_info.title);
-
+                
                 // Load draft
                 gdrive_storymap_load_draft(storymapFolder, function(error, data) {
                     if(error) {

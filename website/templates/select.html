@@ -62,7 +62,7 @@
     <div id="storymap_panel" class="span7">
          <div class="row">
             <div class="login-info span7">
-                <span></span>
+                <span class="pull-right"></span>
             </div>
         </div>
         <div class="row">
@@ -233,7 +233,9 @@ function storymap_display_list(sortby) {
 
         if(item.published_on) {
             html += '<p class="modded">Published on '+format_dt(item.published_on)+'</p>';
-        }   
+        }  else {
+            html += '<span class="title-message">never published</span>';
+        }
         if(item.draft_on > item.published_on) {
             html += '<p class="modded">Edited on '+format_dt(item.draft_on)+'</p>';
         } 
