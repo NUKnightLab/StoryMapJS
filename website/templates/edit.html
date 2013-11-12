@@ -601,17 +601,12 @@ function storymap_publish() {
     }
 }
 
-/*
-TEMPORARILY COMMENTED OUT FOR DEVELOPMENT
-
 window.onbeforeunload = function confirmExit() {
     if(_dirty) {
-        return "You have attempted to leave this page."
-            + "  You have unsaved changes, and your changes will be lost."
+        return "You have unsaved changes, and your changes will be lost."
             + "  Are you sure you want to exit this page?";
     }
 }
-*/
 
 function map_init() {
     var map = new google.maps.Map(document.getElementById('map'), {

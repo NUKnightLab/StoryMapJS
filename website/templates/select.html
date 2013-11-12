@@ -234,10 +234,10 @@ function storymap_display_list(sortby) {
         if(item.published_on) {
             html += '<p class="modded">Published on '+format_dt(item.published_on)+'</p>';
         }  else {
-            html += '<span class="title-message">never published</span>';
+            //html += '<span class="title-message">never published</span>';
         }
         if(item.draft_on > item.published_on) {
-            html += '<p class="modded">Edited on '+format_dt(item.draft_on)+'</p>';
+            html += '<p class="modded"><i class="icon-warning-sign"></i> Edited on '+format_dt(item.draft_on)+'</p>';
         } 
     
         html += '<td><a class="storymap-edit" href="'+href+'"><i class="icon-edit icon-large"></i></td>'
