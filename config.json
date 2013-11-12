@@ -33,7 +33,7 @@
             {
                 "src": "website",
                 "dst": "build",
-                "regex": "(css/.*|img/.*|js/.*|.*\\.(ico|html))$"
+                "regex": "(css/.*|img/.*|js/.*|.*\\.(ico))$"
             },
             {
                 "src": "source",
