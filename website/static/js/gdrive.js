@@ -478,6 +478,17 @@ function gdrive_storymap_published_url(storymapFolder) {
 // callback(<boolean success value>)
 ////////////////////////////////////////////////////////////
 
+function gdrive_about(callback) {
+    var request = gapi.client.drive.about.get();
+    gdrive_exec(request, function(error, response) {
+        if(error) {
+            callback(error);
+        } else {
+            callback(null, response);
+        }        
+    });
+}
+
 function gdrive_login(callback) {
     gapi.auth.authorize(
         {'client_id': CLIENT_ID, 'scope': SCOPES, 'immediate': false}, 
@@ -495,3 +506,4 @@ function gdrive_check_auth(callback) {
         }
     );
 }
+

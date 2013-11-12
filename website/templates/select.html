@@ -60,6 +60,11 @@
  
 <!-- START STORYMAP PANEL --> 
     <div id="storymap_panel" class="span7">
+         <div class="row">
+            <div class="login-info span7">
+                <span></span>
+            </div>
+        </div>
         <div class="row">
             <div class="span7">
                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed 
@@ -265,14 +270,22 @@ function storymap_list(file_list) {
 function storymap_init() {
     show_progress('Getting StoryMap list');
 
-    gdrive_storymap_init(true, function(error, publicFolder) {
+    gdrive_about(function(error, info) {
         if(error) {
             show_error(error);
         } else {
-            _storymap_folder = publicFolder;     
-            storymap_list();
-         }         
-    });    
+            $('.login-info span').html('Logged in as '+info.name);
+            
+            gdrive_storymap_init(true, function(error, publicFolder) {
+                if(error) {
+                    show_error(error);
+                } else {
+                    _storymap_folder = publicFolder;     
+                    storymap_list();
+                 }         
+            });    
+        }  
+    });
 }
 
 function handle_authorized(authorized) {
