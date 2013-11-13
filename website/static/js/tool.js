@@ -1,4 +1,12 @@
-// Requires date.js from www.datejs.com
+// Requires http://momentjs.com
+
+Array.prototype.remove = function(item) {
+    for(var i = this.length; i--;) {
+        if(this[i] === item) {
+            this.splice(i, 1);
+        }
+    }
+};
 
 Array.prototype.move = function(from, to) {
     this.splice(to, 0, this.splice(from, 1)[0]);
