@@ -13,6 +13,8 @@
 
 {% block content %}
 
+{% include '_modals.html' %}
+
 <section id="selector" class="container shrinktext">
 <div class="row">
 
@@ -112,42 +114,6 @@
 </div>
 </section>
  
- <!-- START MODALS -->
-<div id="error_modal" class="modal hide fade" role="dialog" aria-hidden="true">
-    <div class="modal-body">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <p><span id="error_msg">Boo</span></p>
-   </div>
-</div>
-
-<div id="progress_modal" class="modal hide fade" role="dialog" aria-hidden="true">
-    <div class="modal-body">
-        <p><i class="icon-spinner icon-spin"></i><span id="progress_msg"></span>...</p>
-    </div>
-</div>
-
-<div id="new_modal" class="modal hide fade" role="dialog" aria-hidden="true">
-    <div class="modal-body">
-        <p class="error"> </p>
-        <input type="text" id="new_name" value="" placeholder="Enter a unique name for your StoryMap" style="width: 95%;" />       
-    </div>
-    <div class="modal-footer">
-        <a href="#" class="btn" data-dismiss="modal">Cancel</a>
-        <a href="#" class="btn btn-primary">Create</a>
-    </div>
-</div>
-
-<div id="confirm_modal" class="modal hide fade" role="dialog" aria-hidden="true">
-    <div class="modal-body">
-        <p id="confirm_msg"></p>
-    </div>
-    <div class="modal-footer">
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-        <button class="btn btn-primary">Delete</button>
-    </div>
-</div>
-<!-- END MODALS -->
-
 <script type="text/javascript">
 
 var _storymap_folder = null;    // public folder
@@ -244,8 +210,8 @@ function storymap_display_list(sortby) {
             html += '<p class="modded"><i class="icon-warning-sign"></i> Edited on '+format_dt(item.draft_on)+'</p>';
         } 
     
-        html += '<td><a class="storymap-edit" href="'+href+'"><i class="icon-edit icon-large"></i></td>'
-            + '<td><a class="storymap-delete" href="javascript:"><i class="icon-trash icon-large"></i></td>'
+        html += '<td><a class="storymap-edit" href="'+href+'" title="Edit"><i class="icon-edit icon-large"></i></td>'
+            + '<td><a class="storymap-delete" href="javascript:" title="Delete"><i class="icon-trash icon-large"></i></td>'
             + '</tr>';
         
         elem.append(html);
