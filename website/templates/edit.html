@@ -21,7 +21,6 @@
 {% endblock %}
 
 {% block content %}
-
 <section id="editor" class="container shrinktext"> 
 
 <div class="row">
@@ -187,6 +186,8 @@
 <!-- END BOOTSTRAP-WYSIHTML5 BUTTON TEMPLATES -->
 
 <script type="text/javascript">
+
+var _embed_url = 'http://cdn.knightlab.com/libs/storymapjs/latest/embed/';
 
 var _re_slide_cls = /^slide-icon-\w+$/;
 
@@ -565,8 +566,9 @@ function storymap_auto_save() {
 }
 
 function storymap_preview() {
-    var preview_url = 'preview.html?url='
-        + gdrive_storymap_draft_url(_storymap_info)
+//    var preview_url = 'preview.html?url='
+    var preview_url = _embed_url
+        + '?url='+gdrive_storymap_draft_url(_storymap_info)
         + '&start_at_slide='+_current_slide_index;     
     window.open(preview_url, 'StoryMap Preview');
 }
@@ -593,8 +595,9 @@ function storymap_publish() {
                 hide_progress();
                 
                 var url = gdrive_storymap_published_url(_storymap_info);
+                var html = '<iframe src="'+_embed_url+'?url='+url+'" frameborder="0"></iframe>';
                 
-                $('#embed_modal textarea').html('TODO:  show embed code with '+url);
+                $('#embed_modal textarea').html(html);
                 $('#embed_modal').modal('show');
             }
         });

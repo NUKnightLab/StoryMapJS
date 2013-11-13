@@ -15,7 +15,6 @@ COMMON
 .control-row div {margin-right: 20px;}
 
 [class*="span"] {float: left;min-height: 1px;margin-left: auto;}
-
 .row {margin-left: auto;}
 
 /*
@@ -37,10 +36,11 @@ SELECT PAGE
 /*
 EDIT PAGE
 */
+/* unused --->
+.title-row {border-top: 1px solid darkgray;text-align: center;}
+*/
 
 #editor {margin: 10px auto;}
-
-#editor label.example {font-size: .8em;font-style: italic;color: #999;}
 
 .edit-row {
     position: relative;
@@ -51,9 +51,7 @@ EDIT PAGE
     border-bottom: 1px solid darkgray;
 }
    
-.title-row {border-top: 1px solid darkgray;text-align: center;}
-
-.slides-row {background: #ccc;height: 76px;}
+.slides-row {background: #ccc;height: 76px;border-top: 1px solid darkgray;}
 
 .overview-container {
     position: absolute;
@@ -126,7 +124,6 @@ EDIT PAGE
 .slide-icon-vimeo:after{background-position:-328px -48px}
 .slide-icon-youtube:after{background-position:-328px -72px}
 
-
 .slide a.close {
     position: absolute;
     top: 4px;
@@ -150,7 +147,7 @@ EDIT PAGE
     padding-left: 2px;
 }
 
-.selected {background: #e35a25;} /*#1dacd6;}*/
+.selected {background: #e35a25;}
 
 /* map row */
 .map-row {height: 260px;}
@@ -181,11 +178,10 @@ EDIT PAGE
     font: 13px Roboto, Arial, Sans-serif;
 }
 
-
 /* SearchBox drop-down items */
 .pac-item {font-family: Roboto, Arial, Sans-serif;}
 
-
+/* slide data row */
 .data-row {padding: 12px 6px 8px 6px;}
 .data-row input[type="text"],textarea,.text-container {width: 96%;}
 
