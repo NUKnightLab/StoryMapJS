@@ -183,6 +183,14 @@ function storymap_new(event) {
     });
 }
 
+function remove(arr, item) {
+    for(var i = arr.length; i--;) {
+        if(arr[i] === item) {
+            arr.splice(i, 1);
+        }
+    }
+}
+  
 function storymap_delete(event) {
     var elem = $(this).closest('tr');
     var id = elem.attr('id');
@@ -196,6 +204,10 @@ function storymap_delete(event) {
             if(error) {
                 show_error('Error deleting StoryMap: '+error);
             } else {
+                remove(_storymap_names, item.title.toLowerCase());
+                remove(_storymap_list, item);
+                delete _storymap_map[id];
+                                
                 elem.remove();
             }       
         });
