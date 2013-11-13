@@ -479,7 +479,9 @@ function slide_add() {
     
         // Scroll new slide into view
         $('.slides-container').scrollLeft(Math.max(0, width - $('#slides').parent().width()));
-    } 
+    } else {
+        slide_set_class(0);
+    }
     
     // Select new slide
     $('.slide:last').click();
@@ -491,9 +493,6 @@ function slides_load() {
     }
 
     _slides_loaded = true;
-    
-    // Overview slide
-    slide_set_class(0);
     
     // Slides 1,...,n
     $('#slides').html();  
@@ -509,6 +508,7 @@ function slides_load() {
     $('#slides').css('width', width + "px");
           
     if(_storymap_data.slides.length > 0) {
+        slide_set_class(0);
         $('.slide:first').click();  
     } else {
         slide_add();
