@@ -1,4 +1,4 @@
-/* storymapjs - v0.0.8 - 2013-11-12
+/* storymapjs - v0.0.9 - 2013-11-14
  * Copyright (c) 2013 Northwestern University Knight Lab 
  */
 
@@ -17316,8 +17316,11 @@ VCO.StoryMap = VCO.Class.extend({
 				self._onDataLoaded();
 			});
 		} else if (typeof data === 'object') {
-			// Merge Data
-			this.data = data;
+			if (data.storymap) {
+				self.data = data.storymap;
+			} else {
+				trace("data must have a storymap property")
+			}
 			self._onDataLoaded();
 		} else {
 			self._onDataLoaded();
