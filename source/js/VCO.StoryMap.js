@@ -575,8 +575,11 @@ VCO.StoryMap = VCO.Class.extend({
 				self._onDataLoaded();
 			});
 		} else if (typeof data === 'object') {
-			// Merge Data
-			this.data = data;
+			if (data.storymap) {
+				self.data = data.storymap;
+			} else {
+				trace("data must have a storymap property")
+			}
 			self._onDataLoaded();
 		} else {
 			self._onDataLoaded();
