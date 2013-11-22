@@ -194,6 +194,8 @@ function storymap_display_list(sortby) {
     var html = "<tr><td span='2'>Click the blue “New” button to create your first storymap.</td></tr>";
 
     if (_storymap_list.length > 0) {
+        html = '';
+        
         for(var i = 0; i < _storymap_list.length; i++) {
             var item = _storymap_list[i];                
             var href = '/edit.html?id='+item.id;
@@ -201,7 +203,7 @@ function storymap_display_list(sortby) {
             // Keep track of names for anti-duplication     
             _storymap_names.push(item.title.toLowerCase());
                  
-            var html = '<tr id="'+item.id+'">'   
+            html += '<tr id="'+item.id+'">'   
                 + '<td><a class="title" href="'+href+'">'+item.title+'</a>';
 
             if(item.published_on) {
@@ -215,10 +217,10 @@ function storymap_display_list(sortby) {
         
             html += '<td><a class="storymap-edit" href="'+href+'" title="Edit"><i class="icon-edit icon-large"></i></td>'
                 + '<td><a class="storymap-delete" href="javascript:" title="Delete"><i class="icon-trash icon-large"></i></td>'
-                + '</tr>';
-            
-        }    
+                + '</tr>';           
+        }  
     }
+    
     elem.append(html);
 
 }

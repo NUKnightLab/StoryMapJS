@@ -100,7 +100,7 @@ function gdrive_exec(request, callback, debug) {
             console.log('gdrive_exec', response.error);
 // DEBUG END           
             // If authorization error, try to reauthorize and re-exec
-            if(error.code == 401 || error.code == 403) {
+            if(response.error.code == 401 || response.error.code == 403) {
                 gdrive_login(function(authorized) {
                     if(authorized) {
                         gdrive_exec(request, callback, debug);
