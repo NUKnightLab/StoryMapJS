@@ -28,7 +28,7 @@ SELECT PAGE
 .title-message {display: inline;margin-left: 10px;font: 12px Roboto,Arial,sans-serif;}
 .modded {font-size: .8em;margin: 0 0 0px;line-height: 1.6em;}
 
-.login-info {margin-bottom: 12px;font-size: 0.9em;font-weight: bold;}
+.login-info {margin-bottom: 12px;font-size: 0.9em;font-weight: bold;text-align: right;}
 
 #storymap_table {width: 100%;}
 #storymap_table .storymap-edit,.storymap-delete {margin-left: 10px;}
