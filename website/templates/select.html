@@ -191,32 +191,36 @@ function storymap_display_list(sortby) {
     }
     
     var elem = $('#storymap_table > tbody').html('');
+    var html = "<tr><td span='2'>Click the blue “New” button to create your first storymap.</td></tr>";
 
-    for(var i = 0; i < _storymap_list.length; i++) {
-        var item = _storymap_list[i];                
-        var href = '/edit.html?id='+item.id;
-           
-        // Keep track of names for anti-duplication     
-        _storymap_names.push(item.title.toLowerCase());
-             
-        var html = '<tr id="'+item.id+'">'   
-            + '<td><a class="title" href="'+href+'">'+item.title+'</a>';
+    if (_storymap_list.length > 0) {
+        for(var i = 0; i < _storymap_list.length; i++) {
+            var item = _storymap_list[i];                
+            var href = '/edit.html?id='+item.id;
+               
+            // Keep track of names for anti-duplication     
+            _storymap_names.push(item.title.toLowerCase());
+                 
+            var html = '<tr id="'+item.id+'">'   
+                + '<td><a class="title" href="'+href+'">'+item.title+'</a>';
 
-        if(item.published_on) {
-            html += '<p class="modded">Published on '+format_dt(item.published_on)+'</p>';
-        }  else {
-            //html += '<span class="title-message">never published</span>';
-        }
-        if(item.draft_on > item.published_on) {
-            html += '<p class="modded"><i class="icon-warning-sign"></i> Edited on '+format_dt(item.draft_on)+'</p>';
-        } 
-    
-        html += '<td><a class="storymap-edit" href="'+href+'" title="Edit"><i class="icon-edit icon-large"></i></td>'
-            + '<td><a class="storymap-delete" href="javascript:" title="Delete"><i class="icon-trash icon-large"></i></td>'
-            + '</tr>';
+            if(item.published_on) {
+                html += '<p class="modded">Published on '+format_dt(item.published_on)+'</p>';
+            }  else {
+                //html += '<span class="title-message">never published</span>';
+            }
+            if(item.draft_on > item.published_on) {
+                html += '<p class="modded"><i class="icon-warning-sign"></i> Edited on '+format_dt(item.draft_on)+'</p>';
+            } 
         
-        elem.append(html);
+            html += '<td><a class="storymap-edit" href="'+href+'" title="Edit"><i class="icon-edit icon-large"></i></td>'
+                + '<td><a class="storymap-delete" href="javascript:" title="Delete"><i class="icon-trash icon-large"></i></td>'
+                + '</tr>';
+            
+        }    
     }
+    elem.append(html);
+
 }
 
 function storymap_list(file_list) {
