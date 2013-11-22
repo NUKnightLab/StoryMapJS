@@ -97,11 +97,11 @@ function gdrive_exec(request, callback, debug) {
     request.execute(function(response) {
         if(response.error) {
 // DEBUG START
-            console.log('gdrive_exec', response.error);
+//console.log('gdrive_exec', response.error, response.error.code);
 // DEBUG END           
             // If authorization error, try to reauthorize and re-exec
             if(response.error.code == 401 || response.error.code == 403) {
-                gdrive_login(function(authorized) {
+                gdrive_check_auth(function(authorized) {         
                     if(authorized) {
                         gdrive_exec(request, callback, debug);
                     } else {
