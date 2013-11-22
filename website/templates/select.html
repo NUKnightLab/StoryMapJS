@@ -142,7 +142,7 @@ function storymap_new(event) {
 
     gdrive_storymap_create(name, _storymap_folder, function(error, folder) {
         if(error) {
-            show_error('Error creating StoryMap: '+error);
+            show_error('Error creating StoryMap: '+(error.message || error));
         } else {
             hide_progress();
             document.location.href = 'edit.html?id='+folder.id;
@@ -161,7 +161,7 @@ function storymap_delete(event) {
         gdrive_file_delete(item.id, function(error, response) {
             hide_progress();
             if(error) {
-                show_error('Error deleting StoryMap: '+error);
+                show_error('Error deleting StoryMap: '+(error.message || error));
             } else {
                 _storymap_names.remove(item.title.toLowerCase());
                 _storymap_list.remove(item);
@@ -224,7 +224,7 @@ function storymap_list(file_list) {
 
     gdrive_storymap_list(_storymap_folder, function(error, storymap_map) {
         if(error) {
-            show_error('Error listing StoryMaps: '+error);
+            show_error('Error listing StoryMaps: '+(error.message || error));
         } else {
             _storymap_map = storymap_map;
             
@@ -245,13 +245,13 @@ function storymap_init() {
 
     gdrive_about(function(error, info) {
         if(error) {
-            show_error(error);
+            show_error('Error getting user info: '+(error.message || error));
         } else {
             $('.login-info span').html('Logged in as '+info.name);
             
             gdrive_storymap_init(true, function(error, publicFolder) {
                 if(error) {
-                    show_error(error);
+                    show_error('Error initializing StoryMap: '+(error.message || error));
                 } else {
                     _storymap_folder = publicFolder;     
                     storymap_list();

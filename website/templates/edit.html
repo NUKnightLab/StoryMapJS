@@ -50,7 +50,6 @@
             <div class="slide-icon">&nbsp;</div>
             <div class="slide-title">Title</div>
         </div>
-        <
     </div>
     <div class="add-container">
         <a id="slide_add" href="javascript:"><i class="icon-plus icon-large"></i><br />Add Slide</a>
@@ -490,14 +489,12 @@ function storymap_dirty(is_dirty) {
 }
 
 function storymap_saved_msg() {
-    $('#saving').hide();
-    
+    $('#saving').hide();    
     $('#saved span').html('Saved on '+format_dt(_storymap_info.draft_on));
     $('#saved').show();
 }
 
 function storymap_save() {
-    //show_progress('Saving StoryMap');
     $('#storymap_save').addClass('disabled').removeClass('btn-primary');    
     $('#saved').hide();
     $('#saving').show();
@@ -505,11 +502,9 @@ function storymap_save() {
     gdrive_storymap_save_draft(_storymap_info, {storymap: _storymap_data}, function(error, file) {
         if(error) {
             $('#storymap_save').removeClass('disabled').addClass('btn-primary');
-            show_error('Error saving storymap: '+error);
+            show_error('Error saving storymap: '+(error.message || error));
        } else {
-            storymap_saved_msg();
             storymap_dirty(0);
-            hide_progress();
        }
        
        storymap_saved_msg();
@@ -523,7 +518,6 @@ function storymap_auto_save() {
 }
 
 function storymap_preview() {
-//    var preview_url = 'preview.html?url='
     var preview_url = _embed_url
         + '?url='+gdrive_storymap_draft_url(_storymap_info)
         + '&start_at_slide='+_current_slide_index;     
@@ -536,7 +530,7 @@ function storymap_publish() {
         
         gdrive_storymap_save_draft(_storymap_info, {storymap: _storymap_data}, function(error, file) {
             if(error) {
-                show_error('Error saving storymap: '+error);                
+                show_error('Error saving storymap: '+(error.message || error));                
             } else {
                 storymap_dirty(0);
                 storymap_publish();
@@ -547,7 +541,7 @@ function storymap_publish() {
         
         gdrive_storymap_publish(_storymap_info, function(error, file) {
             if(error) {
-                show_error('Error publishing StoryMap: '+ error);
+                show_error('Error publishing StoryMap: '+ (error.message || error));
             } else {
                 hide_progress();
                 
@@ -580,9 +574,6 @@ function map_init() {
             style: google.maps.ZoomControlStyle.SMALL
         },
         mapTypeId: google.maps.MapTypeId.ROADMAP
-    });
-    google.maps.event.addListener(map, 'resize', function() {
-        console.log('map resized');
     });
        
     // Make search box
@@ -623,7 +614,7 @@ function storymap_init() {
         // Load storymap folder
         gdrive_storymap_load(params.id, function(error, storymapFolder) {
             if(error) {
-                show_error('Error loading StoryMap: '+error);
+                show_error('Error loading StoryMap: '+(error.message || error));
             } else {
                 _storymap_info = storymapFolder;
                 storymap_saved_msg();
@@ -633,7 +624,7 @@ function storymap_init() {
                 // Load draft
                 gdrive_storymap_load_draft(storymapFolder, function(error, data) {
                     if(error) {
-                        show_error('Error loading StoryMap data: '+error);
+                        show_error('Error loading StoryMap data: '+(error.message || error));
                     } else {
                         _storymap_data = data.storymap;
                     

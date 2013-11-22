@@ -92,13 +92,25 @@ function gapiPUTRequest(fileId, contentType, base64Data) {
 }
 
 // callback(error, response)
+// error = string || {code: <int>, message: <string> }
 function gdrive_exec(request, callback, debug) {
     request.execute(function(response) {
-        if(debug) {
-            console.log('gdrive_exec', response);
-        }
         if(response.error) {
-            callback(response.error.message, null);
+// DEBUG START
+            console.log('gdrive_exec', response.error);
+// DEBUG END           
+            // If authorization error, try to reauthorize and re-exec
+            if(error.code == 401 || error.code == 403) {
+                gdrive_login(function(authorized) {
+                    if(authorized) {
+                        gdrive_exec(request, callback, debug);
+                    } else {
+                        callback(response.error, null);
+                    }
+                });
+            } else {
+                callback(response.error, null);
+            }
         } else {
             callback(null, response);
         }   
@@ -134,7 +146,7 @@ function gdrive_file_find(query, callback) {
             if(error) {
                 callback(error);
             } else if(!response.items || response.items.length < 1) {
-                callback(null, null);
+                callback(null);
             } else if(response.items.length > 1) {
                 callback('Multiple files found');
             } else {
@@ -179,13 +191,8 @@ function gdrive_perm_public(id, callback) {
 // callback(error, [<file resource>])
 function gdrive_list(query, callback) {
     var request = gapi.client.drive.files.list({q: query});
-
     gdrive_exec(request, function(error, response) {
-        if(error) {
-            callback(error, null);
-        } else {
-            callback(null, response.items);
-        }
+        callback(error, response.items);
     });
 }
 
@@ -217,7 +224,7 @@ function gdrive_folder_getcreate(name, parents, callback) {
     $.each(parents, function(i, parent) {
         query += " and '"+parent.id+"' in parents";
     });
-    
+
     gdrive_list(query, function(error, items) {
         if(error) {
             callback(error);
@@ -271,7 +278,7 @@ function gdrive_storymap_init(create, callback) {
         } else if(!rootFolder) {
             if(!create) {
                 callback('Error getting StoryMap folder');
-            } else {               
+            } else {         
                 gdrive_folder_create(STORYMAP_ROOT_FOLDER, null, function(error, rootFolder) {
                     if(error) {
                         callback(error);
@@ -291,7 +298,7 @@ function gdrive_storymap_init(create, callback) {
                     if(!create) {
                         callback('Error getting public folder');
                     } else {
-                        gdrive_folder_create(PUBLIC_SUBFOLDER, [rootFolder.id], callback);
+                        gdrive_folder_create(PUBLIC_SUBFOLDER, [rootFolder], callback);
                     }
                 } else {
                     callback(error, publicFolder);
@@ -334,7 +341,7 @@ function gdrive_storymap_list(parentFolder, callback) {
     var folder_map = {};
 
     var _process_folders = function(folder_list) {
-        if(folder_list.length) {
+        if(folder_list && folder_list.length) {
             folder = folder_list.shift();
             
             _gdrive_storymap_process(folder, function(error) {
@@ -480,13 +487,7 @@ function gdrive_storymap_published_url(storymapFolder) {
 
 function gdrive_about(callback) {
     var request = gapi.client.drive.about.get();
-    gdrive_exec(request, function(error, response) {
-        if(error) {
-            callback(error);
-        } else {
-            callback(null, response);
-        }        
-    });
+    gdrive_exec(request, callback);        
 }
 
 function gdrive_login(callback) {
