@@ -334,7 +334,7 @@ function gdrive_storymap_list(parentFolder, callback) {
     var folder_map = {};
 
     var _process_folders = function(folder_list) {
-        if(folder_list.length) {
+        if(folder_list && folder_list.length) {
             folder = folder_list.shift();
             
             _gdrive_storymap_process(folder, function(error) {
