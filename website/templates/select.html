@@ -22,18 +22,19 @@
     <div class="span5 intro-panel">
         <div class="row">
             <div class="span5">
-                <p>SCREENSHOT GOES HERE</p>
-            </div>
-        </div>
-        <div class="row">
-            <div class="span5">
-               <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed 
-               do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut 
-               enim ad minim veniam, quis nostrud exercitation ullamco laboris 
-               nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in 
-               reprehenderit in voluptate velit esse cillum dolore eu fugiat 
-               nulla pariatur. Excepteur sint occaecat cupidatat non proident, 
-               sunt in culpa qui officia deserunt mollit anim id est laborum.
+               <p><img src="{{ STATIC_URL }}/img/editor_screenshot.png"></p>
+               <p>Making a StoryMap is <b>easy</b>.</p> 
+               <p>First, you log in with your Google account. This is so we have place to put the StoryMaps you create—they live on your Google Drive.
+               <p>Once you've connected StoryMap to Google, click the blue "new" button at the 
+               bottom right side of the page. You'll be asked to name your StoryMap a name—anything will do, as long as you don't have any other StoryMaps 
+               that already use that name. This name is just for you—no one else will see it. After naming your StoryMap, you'll see the editor tool—it looks like the image above.</p>
+               <p>The first slide is your "overview" or title slide. Give your StoryMap a title, and if you
+               like, add some more text setting the stage for the story you want to tell. You can also embed images, videos and other resources.
+               The map on the first screen of your StoryMap is automatically created for you, showing a view of all the other places in your story.
+               </p>
+               <p>
+                   Now, click on "add slide" in the top right corner, and add a slide. You can fill in the headline and explanatory text,
+                   and you can include media from other sources on the web, like Flickr, YouTube, Vimeo, and more. Add more slides to tell your story.
                </p>
             </div>
         </div>
@@ -44,17 +45,27 @@
     <div id="login_panel" class="span7 hide">
         <div class="row">
             <div class="span7">
-                <p>Login/Authorization verbiage goes here.</p>
+                <h3>Connect StoryMap to Google</h3>
                 
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed 
-                   do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut 
-                   enim ad minim veniam, quis nostrud exercitation ullamco laboris 
-                   nisi ut aliquip ex ea commodo consequat.</p>           
+                <p>The StoryMap editor uses your Google Drive account to store and serve the stories you create. 
+                To get started, click on "Authorize" below. (If you're not already logged in to Google, you'll be
+                prompted to log in.) You'll see a screen asking you to give StoryMap permission to use your Google Drive.
+                You must click the 'accept' button to use this tool.
+                </p>           
             </div>
         </div> 
         <div class="row">
-            <div class="span7" style="text-align: center;">
+            <div class="span7" style="text-align: center; margin: 20px 0">
                 <button id="storymap_login" class="btn">Authorize</button>
+            </div>         
+        </div>               
+        <div class="row">
+            <div class="span7">
+                <p>
+                    Once you create your first StoryMap, you'll find a folder in your Google Drive named "KnightLabStoryMap". You can
+                    actually go in there and fool around with the files StoryMap creates—but you shouldn't, unless you really know what
+                    you're doing.
+                </p>
             </div>         
         </div>               
     </div>
