@@ -192,7 +192,7 @@ function gdrive_perm_public(id, callback) {
 function gdrive_list(query, callback) {
     var request = gapi.client.drive.files.list({q: query});
     gdrive_exec(request, function(error, response) {
-        callback(error, response.items);
+        callback(error, (response) ? response.items : null);
     });
 }
 
