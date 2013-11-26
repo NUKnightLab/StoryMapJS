@@ -42,6 +42,7 @@ app = Flask(__name__)
 
 compiled_dir = os.path.join(settings.PROJECT_ROOT, 'compiled')
 build_dir = os.path.join(settings.PROJECT_ROOT, 'build')
+source_dir = os.path.join(settings.PROJECT_ROOT, 'source')
 
 @app.context_processor
 def inject_static_url():
@@ -68,6 +69,13 @@ def catch_build(path):
     Serve /build/... urls from the build directory
     """
     return send_from_directory(build_dir, path)    
+
+@app.route('/source/<path:path>')
+def catch_source(path):
+    """
+    Serve /source/... urls from the source directory
+    """
+    return send_from_directory(source_dir, path)    
 
 @app.route('/')
 @app.route('/<path:path>')
