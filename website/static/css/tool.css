@@ -7,9 +7,16 @@ COMMON
 #progress_msg {margin-left: 10px;}
 #new_modal .error {color: #cc0000;font-size: 0.9em;font-style: italic;}
 
-.shrinktext label,select,input[type="text"],textarea {font-size: 0.9em;}
+/*
+.shrinktext label,select,textarea{font-size: 0.9em;}
+.shrinktext input[type="text"] {font-size: 0.9em;}
+*/
 
 .smaller {font-size: 0.8em;}
+
+label, select, textarea, input[type="text"] {font-size: 14px;}
+
+.add-on {font-size: 14px !important;}
 
 .control-row * {float: right;margin: 8px 0 8px 8px;}
 .control-row div {margin-right: 20px;}
@@ -67,22 +74,24 @@ EDIT PAGE
     top: 0;
     bottom: 0;
     right: 0;
-    width: 76px;
+    width: 116px;
     border-left: 4px solid darkgray;
     font-size: 11px;
-    text-align: center;
+    text-align: left;
+    padding-left: 8px;
     padding-top: 12px;
 }  
 .add-container a {cursor: pointer;}
+.add-container p {margin: 0;}
   
-.slides-container {position: absolute;top: 0px;bottom:0;left: 80px;right: 80px;overflow: scroll;}
+.slides-container {position: absolute;top: 0px;bottom:0;left: 80px;right: 120px;overflow: scroll;}
 
 #slides {position: relative;display: block;list-style: none;height: 100%;font-size: 0.7em;margin: 0;padding: 0;}
 
 .slide {
     float: left;
     position: relative;
-    height: 64px;
+    height: 60px;
     width: 60px;
     margin: 0px;
     padding: 8px;
@@ -148,6 +157,12 @@ EDIT PAGE
 }
 
 .selected {background: #e35a25;}
+
+/* OPTION ROW */
+.option-row {padding: 16px 6px 0px 6px;}
+.option-row form {margin-bottom: 0};
+.option-row .dropdown-menu>li {padding: 0;font-size: 0.9em;}
+.option-row .dropdown-menu>li>a {padding: 4px 6px;}
 
 /* map row */
 .map-row {height: 260px;}

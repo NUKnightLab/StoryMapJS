@@ -42,19 +42,25 @@ function parseQuerystring() {
 }
 
 var params = parseQuerystring();
+
 var url = decodeURIComponent(params['url']);
 
 var options = {
     start_at_slide: 0
 };
-/*
-optional:  add option parsing here, e.g.
 
 if(params.hasOwnProperty('start_at_slide')) {
     options.start_at_slide = parseInt(params.start_at_slide);
 }
-*/
-var storymap = new VCO.StoryMap('storymap-embed', url, options);
+
+VCO.getJSON(url, function(d) {
+    if (d && d.storymap) {
+        if(d.storymap.map_type) {
+            options.map_type = d.storymap.map_type;
+        }
+        var storymap = new VCO.StoryMap('storymap-embed', d, options);
+    }
+});
 
 window.onresize = function(event) {
     storymap.updateDisplay();
