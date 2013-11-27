@@ -28,8 +28,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		    
 		    case 'http':
 		    case 'https':
-		        console.log("CUSTOM TILE LAYER", this.options.map_type);
-		        layer = new L.TileLayer(this.options.map_type);
+		        layer = new L.TileLayer(this.options.map_type, {subdomains: this.options.map_subdomains});
 		        break;
 		        
 		    default:
