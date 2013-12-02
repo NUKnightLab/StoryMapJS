@@ -286,7 +286,8 @@ function map_clear_overlays() {
 }
 
 function map_set_type() {    
-    var map_type = _storymap_data.storymap.map_type;
+    var map_type = _storymap_data.storymap.map_type.toLowerCase();
+    var map_subdomains = (_storymap_data.storymap.map_subdomains || 'a').split('');
 
     switch(map_type) {
         case "stamen:toner":
@@ -301,8 +302,9 @@ function map_set_type() {
             if(map_type && map_type.match("http://")) {
                  _map.mapTypes.set("custom", new google.maps.ImageMapType({
                     getTileUrl: function(coord, zoom) {
+                        var index = (coord.x + coord.y) % map_subdomains.length;                        
                         return map_type
-                            .replace('{s}', 'a') // TODO
+                            .replace('{s}', map_subdomains[index])
                             .replace('{z}', zoom)
                             .replace('{x}', coord.x)
                             .replace('{y}', coord.y);
@@ -852,6 +854,7 @@ $(function() {
     $('#map_subdomains').change(function(event) {
         _storymap_data.storymap.map_subdomains = $('#map_subdomains').val().trim();
         storymap_dirty(1);
+        map_set_type();        
     });
     
     $('#language').change(function(event) {
