@@ -41,8 +41,9 @@ function parseQuerystring() {
     return nvpair;
 }
 
-var params = parseQuerystring();
+var storymap = null;
 
+var params = parseQuerystring();
 var url = decodeURIComponent(params['url']);
 
 var options = {
@@ -61,12 +62,14 @@ VCO.getJSON(url, function(d) {
         if(d.storymap.map_subdomains) {
             options.map_subdomains = d.storymap.map_subdomains;
         }
-        var storymap = new VCO.StoryMap('storymap-embed', d, options);
+        storymap = new VCO.StoryMap('storymap-embed', d, options);
     }
 });
 
 window.onresize = function(event) {
-    storymap.updateDisplay();
+    if(storymap) {
+        storymap.updateDisplay();
+    }
 }
 </script>
 </body>
