@@ -89,7 +89,7 @@
                                 <li><a href="javascript:" storymap-data="stamen:toner-labels">Stamen Maps: Toner Labels</a></li>
                                 <li><a href="javascript:" storymap-data="stamen:watercolor">Stamen Maps: Watercolor</a></li>
                                 <li><a href="javascript:" storymap-data="stamen:terrain">Stamen Maps: Terrain</a></li>
-                                <li><a href="javascript:" storymap-data="">custom url...</a></li>
+                                <li><a href="javascript:" storymap-data="">custom URL...</a></li>
                             </ul>
                         </div>
                         <input id="map_type" type="text" class="span5" placeholder="http://{s}.domain.org/{z}/{x}/{y}.png" disabled>
@@ -98,6 +98,17 @@
                         <span class="add-on">Subdomains</span>
                         <input id="map_subdomains" type="text" class="input-small" placeholder="abc">                    
                     </div>
+                    <a class="help" href="javascript:"
+                        data-html="true"
+                        data-placement="left"
+                        data-content='
+                        <p>Select a predefined map tile type, or select "custom URL" to enter the URL for a tile server.</p>
+                        <p>If the tile server supports multiple subdomains, enter them as a single string in the 
+                        Subdomain field (e.g. subdomains "a", "b", and "c" should be entered as "abc").</p>
+                        ' 
+                    >
+                    <i class="icon-question-sign icon-large"></i>
+                    </a>
                 </div>
             </div>
             
@@ -108,6 +119,10 @@
                         <option value="en">English</option>
                         <option value="es">Spanish</option>
                     </select>
+                    <a class="help" href="javascript:"
+                        data-placement="left"
+                        data-content="ENTER HELP TEXT HERE"                    
+                    ><i class="icon-question-sign icon-large"></i></a>
                 </div>
             </div>
            
@@ -131,7 +146,10 @@
             <label>Headline</label>
             <input id="headline" type="text" />
 
-            <label>Text</label>
+            <label>Text <a class="help" href="javascript:"
+                data-placement="right"
+                data-content="Enter the text for your slide.  Switch between WYSIWYG and HTML modes by using the &lt;/&gt; button."
+            ><i class="icon-question-sign icon-large"></i></a></label>
             <div class="text-container">
             <textarea id="text" rows="5"></textarea>  
             </div>
@@ -139,7 +157,10 @@
     </div>
     <div class="span6" style="">
         <div class="data-frame">
-            <label>Media</label>
+            <label>Media <a class="help" href="javascript:"
+                data-placement="left"
+                data-content="Enter the URL for your media.  It can come from Flickr, YouTube, Vimeo, Twitter, and more."
+            ><i class="icon-question-sign icon-large"></i></a></label> 
             <input id="url" type="text" placeholder="URL to media (YouTube, Flickr, etc.)" />
 
             <label>Credit</label>
@@ -168,8 +189,8 @@
 <ul id="wysihtml5_emphasis" style="display: none;">
     <li>
     <div class="btn-group">
-    <a class="btn btn-small" data-wysihtml5-command="bold" title="CTRL+B" tabindex="-1" href="javascript:;" unselectable="on"><i class="icon-bold"></i></a>
-    <a class="btn btn-small" data-wysihtml5-command="italic" title="CTRL+I" tabindex="-1" href="javascript:;" unselectable="on"><i class="icon-italic"></i></a>
+    <a class="btn btn-small" data-wysihtml5-command="bold" title="Bold" tabindex="-1" href="javascript:;" unselectable="on"><i class="icon-bold"></i></a>
+    <a class="btn btn-small" data-wysihtml5-command="italic" title="Italic" tabindex="-1" href="javascript:;" unselectable="on"><i class="icon-italic"></i></a>
     </div>
     </li>
 </ul>
@@ -820,6 +841,8 @@ function handle_onload() {
 
 
 $(function() {        
+    $('a.help').popover();
+    
     $('.overview-container .slide').click(slide_select);
     
     // top-level options
@@ -944,6 +967,7 @@ $(function() {
 google.maps.event.addDomListener(window, 'load', map_init);
 
 </script>
+
 <script type="text/javascript" src="https://apis.google.com/js/client.js?onload=handle_onload"></script>
 
 {% endblock %}

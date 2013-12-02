@@ -8,6 +8,12 @@ COMMON
 #new_modal .error {color: #cc0000;font-size: 0.9em;font-style: italic;}
 
 /*
+.icon-question:before {content: "\f128";}
+*/
+a.help {color: #333;margin-left: 6px;}
+a.help:hover {text-decoration: none;}
+
+/*
 .shrinktext label,select,textarea{font-size: 0.9em;}
 .shrinktext input[type="text"] {font-size: 0.9em;}
 */
