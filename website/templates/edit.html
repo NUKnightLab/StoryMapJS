@@ -286,7 +286,7 @@ function map_clear_overlays() {
 }
 
 function map_set_type() {    
-    var map_type = _storymap_data.storymap.map_type.toLowerCase();
+    var map_type = (_storymap_data.storymap.map_type || '').toLowerCase();
     var map_subdomains = (_storymap_data.storymap.map_subdomains || 'a').split('');
 
     switch(map_type) {
