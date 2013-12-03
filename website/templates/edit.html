@@ -842,8 +842,20 @@ function handle_onload() {
 
 
 $(function() {        
-    $('a.help').popover();
-    
+    $('a.help').popover({
+        trigger: 'manual'
+    }).click(function(event) {
+        if(!$(this).next().hasClass('popover')) {
+            $('a.help').not(this).popover('hide');
+        }     
+        $(this).popover('toggle');
+        event.stopPropagation();
+    });
+
+    $(document).click(function(e) {
+        $('a.help').popover('hide');
+    });
+
     $('.overview-container .slide').click(slide_select);
     
     // top-level options

@@ -13,6 +13,9 @@ COMMON
 a.help {color: #333;margin-left: 6px;}
 a.help:hover {text-decoration: none;}
 
+.popover-title {font-size: 12px;}
+.popover-content {font-size: 12px;}
+
 /*
 .shrinktext label,select,textarea{font-size: 0.9em;}
 .shrinktext input[type="text"] {font-size: 0.9em;}
@@ -149,9 +152,9 @@ EDIT PAGE
     width: 32px;
     height: 32px;
     background: url(../img/fancybox_sprite.png);
+   -moz-transform:scale(0.5);
     zoom: 0.5;
-    -moz-transform:scale(0.5);
-}
+ }
 
 .slide-title {
     font: 11px Roboto,Arial,sans-serif;
