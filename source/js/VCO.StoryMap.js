@@ -599,8 +599,13 @@ VCO.StoryMap = VCO.Class.extend({
 		// Initial Default Layout
 		this.options.width = this._el.container.offsetWidth;
 		this.options.height = this._el.container.offsetHeight;
-		this._el.map.style.height = "1px";
-		this._el.storyslider.style.top = "1px";
+
+		if(this.options.layout == 'sxs') {
+            this._el.map.style.width = "0px";
+        } else {
+            this._el.map.style.height = "1px";
+            this._el.storyslider.style.top = "1px";
+        }
 		
 		// Create Map using preferred Map API
 		this._map = new VCO.Map.Leaflet(this._el.map, this.data, this.options);
@@ -615,9 +620,14 @@ VCO.StoryMap = VCO.Class.extend({
 		this._storyslider.init();
 		
 		// Set Default Component Sizes
-		this.options.map_height = (this.options.height / this.options.map_size_sticky);
-		this.options.storyslider_height = (this.options.height - this._el.sizebar.offsetHeight - this.options.map_height - 1);
-		this._sizebar.setSticky(this.options.map_height);
+		if(this.options.layout == 'sxs') {
+		    this.options.sizebar_height = 27;		
+		    this._sizebar.setSticky(0);		
+		} else {
+		    this.options.map_height = (this.options.height / this.options.map_size_sticky);
+		    this.options.storyslider_height = (this.options.height - this._el.sizebar.offsetHeight - this.options.map_height - 1);
+		    this._sizebar.setSticky(this.options.map_height);
+		}
 		
 		// Update Display
 		this._updateDisplay(this.options.map_height, true, 2000);
@@ -655,60 +665,117 @@ VCO.StoryMap = VCO.Class.extend({
 		}
 		
 		this.options.width = this._el.container.offsetWidth;
-		this.options.height = this._el.container.offsetHeight;
+		this.options.height = this._el.container.offsetHeight;		
 		
-		// Set Sticky state of SizeBar
-		this._sizebar.setSticky(Math.floor(this._el.container.offsetHeight/this.options.map_size_sticky));
+		if(this.options.layout == 'sxs') {
+            if(map_height === 0) {          // uncollpase map
+                map_width = Math.ceil(this.options.width / 2);
+            } else if(map_height === 1) {   // collpase map
+		        map_width = 0;
+		    } else {
+		        map_width = Math.ceil(this.options.width / 2);
+		    }
+		    map_height = this.options.height;
+		    storyslider_width = this.options.width - map_width;
+		    
+            if (animate) {			
+                // Animate Map
+                if (this.animator_map) {
+                    this.animator_map.stop();
+                }
+            
+                this.animator_map = VCO.Animate(this._el.map, {
+                    width: 	(map_width) + "px",
+                    duration: 	duration,
+                    easing: 	VCO.Ease.easeOutStrong,
+                    complete: function () {
+                        self._map.updateDisplay(map_width, map_height, animate, d, self.options.sizebar_height);
+                    }
+                });
+            
+                // Animate StorySlider
+                if (this.animator_storyslider) {
+                    this.animator_storyslider.stop();
+                }
+               
+                this.animator_storyslider = VCO.Animate(this._el.storyslider, {
+                    width: storyslider_width + "px",
+                    duration: 	duration,
+                    easing: 	VCO.Ease.easeOutStrong,
+                    complete: function() {
+                        self._storyslider.updateDisplay(storyslider_width);
+                    }
+                });
+
+            } else {
+                // Map
+                this._el.map.style.width = Math.ceil(map_width) + "px";
+            
+                // StorySlider
+                //this._el.storyslider.style.height = this.options.storyslider_height + "px";
+                //this._el.storyslider.style.top = (this.options.layout == 'horizontal') ? 0 : this.options.sizebar_height + "px";
+            }
+        
+            // Update Component Displays
+            //this._map.updateDisplay(this.options.width, this.options.map_height, animate, d, sizebar_height);
+            this._storyslider.updateDisplay(this.options.width / 2, this.options.height, animate);
+            this._sizebar.updateDisplay(this.options.width, this.options.height, animate, this.options.map_height);		
 		
-		// Map Height
-		if (map_height) {
-			this.options.map_height = map_height;
-		}
-		
-		// StorySlider Height
-		this.options.storyslider_height = (this.options.height - this.options.sizebar_height - this.options.map_height- 1);
-		
-		if (animate) {
-			
-			// Animate Map
-			if (this.animator_map) {
-				this.animator_map.stop();
-			}
-			
-			this.animator_map = VCO.Animate(this._el.map, {
-				height: 	(map_height) + "px",
-				duration: 	duration,
-				easing: 	VCO.Ease.easeOutStrong,
-				complete: function () {
-					self._map.updateDisplay(self.options.width, self.options.map_height, animate, d, self.options.sizebar_height);
-				}
-			});
-			
-			// Animate StorySlider
-			if (this.animator_storyslider) {
-				this.animator_storyslider.stop();
-			}
-			this.animator_storyslider = VCO.Animate(this._el.storyslider, {
-				height: 	this.options.storyslider_height + "px",
-				top: 		this.options.sizebar_height + "px",
-				duration: 	duration,
-				easing: 	VCO.Ease.easeOutStrong
-			});
-			
 		} else {
-			// Map
-			this._el.map.style.height = Math.ceil(map_height) + "px";
-			
-			// StorySlider
-			this._el.storyslider.style.height = this.options.storyslider_height + "px";
-			this._el.storyslider.style.top = this.options.sizebar_height + "px";
+		    // Set Sticky state of SizeBar
+    		this._sizebar.setSticky(Math.floor(this._el.container.offsetHeight/this.options.map_size_sticky));
+
+            // Map Height
+            if (map_height) {
+                this.options.map_height = map_height;
+            } 
+
+            // StorySlider Height
+		    this.options.storyslider_height = (this.options.height - this.options.sizebar_height - this.options.map_height- 1);
+
+ 		
+            if (animate) {			
+                // Animate Map
+                if (this.animator_map) {
+                    this.animator_map.stop();
+                }
+            
+                this.animator_map = VCO.Animate(this._el.map, {
+                    height: 	(map_height) + "px",
+                    duration: 	duration,
+                    easing: 	VCO.Ease.easeOutStrong,
+                    complete: function () {
+                        self._map.updateDisplay(self.options.width, self.options.map_height, animate, d, self.options.sizebar_height);
+                    }
+                });
+            
+                // Animate StorySlider
+                if (this.animator_storyslider) {
+                    this.animator_storyslider.stop();
+                }
+
+                this.animator_storyslider = VCO.Animate(this._el.storyslider, {
+                    height: 	this.options.storyslider_height + "px",
+                    top: 		(this.options.layout == 'sxs') ? 0 : this.options.sizebar_height + "px",
+                    duration: 	duration,
+                    easing: 	VCO.Ease.easeOutStrong
+                });
+            
+            } else {
+                // Map
+                this._el.map.style.height = Math.ceil(map_height) + "px";
+            
+                // StorySlider
+                this._el.storyslider.style.height = this.options.storyslider_height + "px";
+                this._el.storyslider.style.top = (this.options.layout == 'sxs') ? 0 : this.options.sizebar_height + "px";
+            }
+        
+            // Update Component Displays
+            //this._map.updateDisplay(this.options.width, this.options.map_height, animate, d, sizebar_height);
+            this._storyslider.updateDisplay(this.options.width, this.options.storyslider_height, animate);
+            this._sizebar.updateDisplay(this.options.width, this.options.height, animate, this.options.map_height);		
+
 		}
-		
-		// Update Component Displays
-		//this._map.updateDisplay(this.options.width, this.options.map_height, animate, d, sizebar_height);
-		this._storyslider.updateDisplay(this.options.width, this.options.storyslider_height, animate);
-		this._sizebar.updateDisplay(this.options.width, this.options.height, animate, this.options.map_height);
-		
 	},
 	
 	/*	Events

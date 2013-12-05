@@ -25,7 +25,9 @@ html, body {
 <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 </head>
 <body>
+
 <div id="storymap-embed"></div>
+
 
 <script type="text/javascript">
 
@@ -54,6 +56,14 @@ if(params.hasOwnProperty('start_at_slide')) {
     options.start_at_slide = parseInt(params.start_at_slide);
 }
 
+// temporary, for viewing sside-by-side layout
+if(params.hasOwnProperty('layout')) {
+    options.layout = params.layout;
+  
+    var d = document.getElementById("storymap-embed");
+    d.className = d.className + " vco-sxs";  
+}
+
 VCO.getJSON(url, function(d) {
     if (d && d.storymap) {
         if(d.storymap.map_type) {
@@ -62,6 +72,7 @@ VCO.getJSON(url, function(d) {
         if(d.storymap.map_subdomains) {
             options.map_subdomains = d.storymap.map_subdomains;
         }
+        
         storymap = new VCO.StoryMap('storymap-embed', d, options);
     }
 });
