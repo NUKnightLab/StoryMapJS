@@ -678,6 +678,8 @@ VCO.StoryMap = VCO.Class.extend({
 		    map_height = this.options.height;
 		    storyslider_width = this.options.width - map_width;
 		    
+		    console.log('****** DEBUG', map_width, map_height);
+		    
             if (animate) {			
                 // Animate Map
                 if (this.animator_map) {
@@ -686,6 +688,7 @@ VCO.StoryMap = VCO.Class.extend({
             
                 this.animator_map = VCO.Animate(this._el.map, {
                     width: 	(map_width) + "px",
+                    height: (map_height) + "px",
                     duration: 	duration,
                     easing: 	VCO.Ease.easeOutStrong,
                     complete: function () {
@@ -700,6 +703,7 @@ VCO.StoryMap = VCO.Class.extend({
                
                 this.animator_storyslider = VCO.Animate(this._el.storyslider, {
                     width: storyslider_width + "px",
+                    height: map_height + "px",
                     duration: 	duration,
                     easing: 	VCO.Ease.easeOutStrong,
                     complete: function() {
@@ -709,17 +713,18 @@ VCO.StoryMap = VCO.Class.extend({
 
             } else {
                 // Map
-                this._el.map.style.width = Math.ceil(map_width) + "px";
+                this._el.map.style.width = map_width + "px";
+                this._el.map.style.height = map_height + "px";
             
                 // StorySlider
-                //this._el.storyslider.style.height = this.options.storyslider_height + "px";
-                //this._el.storyslider.style.top = (this.options.layout == 'horizontal') ? 0 : this.options.sizebar_height + "px";
+                this._el.storyslider.style.width = storyslider_width + "px";
+                this._el.storyslider.style.height = map_height + "px";
             }
         
             // Update Component Displays
-            //this._map.updateDisplay(this.options.width, this.options.map_height, animate, d, sizebar_height);
-            this._storyslider.updateDisplay(this.options.width / 2, this.options.height, animate);
-            this._sizebar.updateDisplay(this.options.width, this.options.height, animate, this.options.map_height);		
+            this._map.updateDisplay(map_width, map_height); //, animate, d, sizebar_height);
+            this._storyslider.updateDisplay(storyslider_width, this.options.height, animate);
+            this._sizebar.updateDisplay(this.options.width); //, this.options.height, animate, this.options.map_height);		
 		
 		} else {
 		    // Set Sticky state of SizeBar
