@@ -21,7 +21,9 @@ html, body {
 <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 </head>
 <body>
+
 <div id="storymap-embed"></div>
+
 
 <script type="text/javascript">
 
@@ -37,23 +39,44 @@ function parseQuerystring() {
     return nvpair;
 }
 
+var storymap = null;
+
 var params = parseQuerystring();
 var url = decodeURIComponent(params['url']);
 
 var options = {
     start_at_slide: 0
 };
-/*
-optional:  add option parsing here, e.g.
 
 if(params.hasOwnProperty('start_at_slide')) {
     options.start_at_slide = parseInt(params.start_at_slide);
 }
-*/
-var storymap = new VCO.StoryMap('storymap-embed', url, options);
+
+// temporary, for viewing sside-by-side layout
+if(params.hasOwnProperty('layout')) {
+    options.layout = params.layout;
+  
+    var d = document.getElementById("storymap-embed");
+    d.className = d.className + " vco-sxs";  
+}
+
+VCO.getJSON(url, function(d) {
+    if (d && d.storymap) {
+        if(d.storymap.map_type) {
+            options.map_type = d.storymap.map_type;
+        }
+        if(d.storymap.map_subdomains) {
+            options.map_subdomains = d.storymap.map_subdomains;
+        }
+        
+        storymap = new VCO.StoryMap('storymap-embed', d, options);
+    }
+});
 
 window.onresize = function(event) {
-    storymap.updateDisplay();
+    if(storymap) {
+        storymap.updateDisplay();
+    }
 }
 </script>
 </body>
