@@ -677,9 +677,7 @@ VCO.StoryMap = VCO.Class.extend({
 		    }
 		    map_height = this.options.height;
 		    storyslider_width = this.options.width - map_width;
-		    
-		    console.log('****** DEBUG', map_width, map_height);
-		    
+		    		    
             if (animate) {			
                 // Animate Map
                 if (this.animator_map) {
