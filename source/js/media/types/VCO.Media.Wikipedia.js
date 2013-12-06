@@ -13,7 +13,7 @@ VCO.Media.Wikipedia = VCO.Media.extend({
 			self = this;
 		
 		// Loading Message
-		this.message.updateMessage(VCO.Language.messages.loading + " Wikipedia");
+		this.message.updateMessage(VCO.Language.messages.loading_wikipedia);
 		
 		// Create Dom element
 		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-wikipedia", this._el.content);

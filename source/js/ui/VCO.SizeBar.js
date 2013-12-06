@@ -160,38 +160,35 @@ VCO.SizeBar = VCO.Class.extend({
 			this.show();
 			this._el.button_overview.style.display = "inline";
 			this.fire("swipe", {y:this.options.sizebar_default_y});
-			this._el.button_collapse_toggle.innerHTML	= "Hide Map";
+			this._el.button_collapse_toggle.innerHTML	= VCO.Language.buttons.collapse_toggle;
 		} else {
 			this.collapsed = true;
 			this.hide(VCO.Dom.getPosition(this._el.parent).y + 25);
 			this._el.button_overview.style.display = "none";
 			this.fire("swipe", {y:1});
-			this._el.button_collapse_toggle.innerHTML	= "Show Map";
+			this._el.button_collapse_toggle.innerHTML = VCO.Language.buttons.uncollapse_toggle;
 		}
 	},
 	
 	/*	Private Methods
 	================================================== */
 	_initLayout: function () {
-		
 		// Create Layout
 		this._el.arrow						= VCO.Dom.create("div", "vco-arrow-up", this._el.container);
 		this._el.container.style.top		= this.options.sizebar_default_y + "px";
 		
 		// Buttons
 		this._el.button_overview 					= VCO.Dom.create('span', 'vco-sizebar-button', this._el.container);
-		this._el.button_overview.innerHTML			= "Map Overview";
+		this._el.button_overview.innerHTML			= VCO.Language.buttons.map_overview;
 		VCO.DomEvent.addListener(this._el.button_overview, 'click', this._onButtonOverview, this);
 		
 		this._el.button_backtostart 				= VCO.Dom.create('span', 'vco-sizebar-button', this._el.container);
-		this._el.button_backtostart.innerHTML		= "Back to Beginning";
+		this._el.button_backtostart.innerHTML		= VCO.Language.buttons.backtostart;
 		VCO.DomEvent.addListener(this._el.button_backtostart, 'click', this._onButtonBackToStart, this);
 		
 		this._el.button_collapse_toggle 			= VCO.Dom.create('span', 'vco-sizebar-button', this._el.container);
-		this._el.button_collapse_toggle.innerHTML	= "Hide Map";
+		this._el.button_collapse_toggle.innerHTML	= VCO.Language.buttons.collapse_toggle;
 		VCO.DomEvent.addListener(this._el.button_collapse_toggle, 'click', this._onButtonCollapseMap, this);
-		
-		
 		
 		//this._el.line = VCO.Dom.create("div", "vco-map-line", this._el.container);
 		//this._el.coverbar = VCO.Dom.create("div", "vco-coverbar", this._el.container);
@@ -210,9 +207,6 @@ VCO.SizeBar = VCO.Class.extend({
 		this._draggable.on('momentum', this._onMomentum, this);
 
 		this._draggable.enable();
-		
-		
-		
 	},
 	
 	_initEvents: function () {

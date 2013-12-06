@@ -88,6 +88,11 @@
                 "src": "build/js/storymap.js",
                 "dst": "build/js/storymap-min.js",
                 "opt": "--no-seqs"            
+            },
+            {
+                "src": "source/js/language/locale",
+                "dst": "build/js/locale",
+                "opt": "--no-seqs"
             }
         ],
         //

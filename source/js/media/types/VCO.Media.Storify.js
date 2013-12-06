@@ -11,7 +11,7 @@ VCO.Media.Storify = VCO.Media.extend({
 		var content;
 		
 		// Loading Message
-		this.message.updateMessage(VCO.Language.messages.loading + " Storify");
+		this.message.updateMessage(VCO.Language.messages.loading_storify);
 		
 		// Create Dom element
 		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe vco-media-storify", this._el.content);

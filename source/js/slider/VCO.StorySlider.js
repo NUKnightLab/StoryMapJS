@@ -668,17 +668,13 @@ VCO.StorySlider = VCO.Class.extend({
 		// add the navigation to the dom
 		this._nav.next.addTo(this._el.container);
 		this._nav.previous.addTo(this._el.container);
-		
-		
-		this._el.slider_container.style.left="0px";
-		
+				
+		this._el.slider_container.style.left="0px";		
 	},
 	
 	_initEvents: function () {
-		
 		this._nav.next.on('clicked', this._onNavigation, this);
 		this._nav.previous.on('clicked', this._onNavigation, this);
-
 	},
 	
 	_initData: function() {

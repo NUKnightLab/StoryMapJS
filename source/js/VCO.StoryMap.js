@@ -80,6 +80,7 @@ VCO.StoryMap = VCO.Class.extend({
 	/*	Private Methods
 	================================================== */
 	initialize: function (elem, data, options) {
+		var self = this;
 		
 		// Ready
 		this.ready = false;
@@ -495,6 +496,7 @@ VCO.StoryMap = VCO.Class.extend({
 		};
 	
 		this.options = {
+		    script_path:            '',
 			height: 				this._el.container.offsetHeight,
 			width: 					this._el.container.offsetWidth,
 			map_size_sticky: 		3, // Set as division 1/3 etc
@@ -523,11 +525,7 @@ VCO.StoryMap = VCO.Class.extend({
 			show_lines: 			true,
 			show_history_line: 		true,
 			api_key_flickr: 		"f2cc870b4d233dd0a5bfe73fd0d64ef0",
-			language: {
-				name: "English",
-				
-			}
-			
+			language:               "en"		
 		};
 		
 		// Current Slide
@@ -539,7 +537,16 @@ VCO.StoryMap = VCO.Class.extend({
 		
 		// Merge Options
 		VCO.Util.mergeData(this.options, options);
-		this._initData(data);
+		
+		// Load language
+		if(this.options.language == 'en') {
+		    this.options.language = VCO.Language;
+		    this._initData(data);
+		} else {
+            VCO.Load.js(this.options.script_path +'/locale/'+this.options.language+'.js', function() {
+                self._initData(data);
+            });
+        }
 		return this;
 	},
 
@@ -588,6 +595,7 @@ VCO.StoryMap = VCO.Class.extend({
 	
 	// Initialize the layout
 	_initLayout: function () {
+		var self = this;
 		
 		this._el.container.className += ' vco-storymap';
 		
@@ -867,7 +875,7 @@ VCO.StoryMap = VCO.Class.extend({
 		this._loaded.storyslider = true;
 		this._onLoaded();
 	},
-	
+		
 	_onLoaded: function() {
 		if (this._loaded.storyslider && this._loaded.map) {
 			trace("STORYMAP IS READY");
