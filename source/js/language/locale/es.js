@@ -1,4 +1,3 @@
-/* Sample locale file for Spanish, copied from TimelineJS */
 VCO.Language = {
     name: "Spanish",
     lang: "es",
