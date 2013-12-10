@@ -24,7 +24,6 @@ html, body {
 
 <div id="storymap-embed"></div>
 
-
 <script type="text/javascript">
 
 function parseQuerystring() {
@@ -39,12 +38,24 @@ function parseQuerystring() {
     return nvpair;
 }
 
-var storymap = null;
+function getScriptPath(scriptname) {
+    var scriptTags = document.getElementsByTagName('script');
+    
+	for(var i = 0; i < scriptTags.length; i++) {
+        if(scriptTags[i].src.match(scriptname)) {
+            script_path = scriptTags[i].src;            
+            return script_path.split('?')[0].split('/').slice(0, -1).join('/');
+        }
+	}
+	return '';
+}
 
+var storymap = null;
 var params = parseQuerystring();
 var url = decodeURIComponent(params['url']);
 
 var options = {
+    script_path: getScriptPath('storymap-min.js'),
     start_at_slide: 0
 };
 
@@ -67,6 +78,9 @@ VCO.getJSON(url, function(d) {
         }
         if(d.storymap.map_subdomains) {
             options.map_subdomains = d.storymap.map_subdomains;
+        }
+        if(d.storymap.language) {
+            options.language = d.storymap.language;
         }
         
         storymap = new VCO.StoryMap('storymap-embed', d, options);

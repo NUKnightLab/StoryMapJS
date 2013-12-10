@@ -1,4 +1,4 @@
-/* storymapjs - v0.0.10 - 2013-12-05
+/* storymapjs - v0.0.11 - 2013-12-10
  * Copyright (c) 2013 Northwestern University Knight Lab 
  */
 
@@ -2317,34 +2317,27 @@ VCO.LoadIt = (function (doc) {
 VCO.Language = {
 	name: "English",
 	lang: "en",
-	api: {
-		wikipedia: "en"
-	},
-	date: {
-		month: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-		month_abbr: ["Jan.", "Feb.", "March", "April", "May", "June", "July", "Aug.", "Sept.", "Oct.", "Nov.", "Dec."],
-		day: ["Sunday","Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-		day_abbr: ["Sun.","Mon.", "Tues.", "Wed.", "Thurs.", "Fri.", "Sat."]
-	}, 
-	dateformats: {
-		year: "yyyy",
-		month_short: "mmm",
-		month: "mmmm yyyy",
-		full_short: "mmm d",
-		full: "mmmm d',' yyyy",
-		time_no_seconds_short: "h:MM TT",
-		time_no_seconds_small_date: "h:MM TT'<br/><small>'mmmm d',' yyyy'</small>'",
-		full_long: "mmm d',' yyyy 'at' h:MM TT",
-		full_long_small_date: "h:MM TT'<br/><small>mmm d',' yyyy'</small>'"
-	},
 	messages: {
-		loading_timeline: "Loading Timeline... ",
-		return_to_title: "Return to Title",
-		expand_timeline: "Expand Timeline",
-		contract_timeline: "Contract Timeline",
-		wikipedia: "From Wikipedia, the free encyclopedia",
-		loading_content: "Loading Content",
-		loading: "Loading"
+		loading: "Loading",
+		loading_blockquote: "Loading blockquote",
+		loading_dailymotion: "Loading DailyMotion",
+		loading_flickr: "Loading Flickr",
+		loading_googledoc: "Loading Google Doc",
+		loading_googleplus: "Loading GooglePlus",
+		loading_iframe: "Loading iFrame",
+		loading_soundcloud: "Loading SoundCloud",
+		loading_storify: "Loading Storify",
+		loading_tweet: "Loading Tweet",
+		loading_vimeo: "Loading Vimeo",
+		loading_vine: "Loading Vine",
+		loading_wikipedia: "Loading Wikipedia",
+		loading_youtube: "Loading YouTube"
+	},
+	buttons: {
+	    map_overview: "Map Overview",
+	    backtostart: "Back To Beginning",
+	    collapse_toggle: "Hide Map",
+	    uncollapse_toggle: "Show Map"
 	}
 }
 
@@ -4105,38 +4098,35 @@ VCO.SizeBar = VCO.Class.extend({
 			this.show();
 			this._el.button_overview.style.display = "inline";
 			this.fire("swipe", {y:this.options.sizebar_default_y});
-			this._el.button_collapse_toggle.innerHTML	= "Hide Map";
+			this._el.button_collapse_toggle.innerHTML	= VCO.Language.buttons.collapse_toggle;
 		} else {
 			this.collapsed = true;
 			this.hide(VCO.Dom.getPosition(this._el.parent).y + 25);
 			this._el.button_overview.style.display = "none";
 			this.fire("swipe", {y:1});
-			this._el.button_collapse_toggle.innerHTML	= "Show Map";
+			this._el.button_collapse_toggle.innerHTML = VCO.Language.buttons.uncollapse_toggle;
 		}
 	},
 	
 	/*	Private Methods
 	================================================== */
 	_initLayout: function () {
-		
 		// Create Layout
 		this._el.arrow						= VCO.Dom.create("div", "vco-arrow-up", this._el.container);
 		this._el.container.style.top		= this.options.sizebar_default_y + "px";
 		
 		// Buttons
 		this._el.button_overview 					= VCO.Dom.create('span', 'vco-sizebar-button', this._el.container);
-		this._el.button_overview.innerHTML			= "Map Overview";
+		this._el.button_overview.innerHTML			= VCO.Language.buttons.map_overview;
 		VCO.DomEvent.addListener(this._el.button_overview, 'click', this._onButtonOverview, this);
 		
 		this._el.button_backtostart 				= VCO.Dom.create('span', 'vco-sizebar-button', this._el.container);
-		this._el.button_backtostart.innerHTML		= "Back to Beginning";
+		this._el.button_backtostart.innerHTML		= VCO.Language.buttons.backtostart;
 		VCO.DomEvent.addListener(this._el.button_backtostart, 'click', this._onButtonBackToStart, this);
 		
 		this._el.button_collapse_toggle 			= VCO.Dom.create('span', 'vco-sizebar-button', this._el.container);
-		this._el.button_collapse_toggle.innerHTML	= "Hide Map";
+		this._el.button_collapse_toggle.innerHTML	= VCO.Language.buttons.collapse_toggle;
 		VCO.DomEvent.addListener(this._el.button_collapse_toggle, 'click', this._onButtonCollapseMap, this);
-		
-		
 		
 		//this._el.line = VCO.Dom.create("div", "vco-map-line", this._el.container);
 		//this._el.coverbar = VCO.Dom.create("div", "vco-coverbar", this._el.container);
@@ -4155,9 +4145,6 @@ VCO.SizeBar = VCO.Class.extend({
 		this._draggable.on('momentum', this._onMomentum, this);
 
 		this._draggable.enable();
-		
-		
-		
 	},
 	
 	_initEvents: function () {
@@ -4681,7 +4668,7 @@ VCO.Media.Blockquote = VCO.Media.extend({
 	_loadMedia: function() {
 		
 		// Loading Message
-		this.message.updateMessage(VCO.Language.messages.loading + " SoundCloud");
+		this.message.updateMessage(VCO.Language.messages.loading_blockquote);
 		
 		// Create Dom element
 		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-blockquote", this._el.content);
@@ -4724,7 +4711,7 @@ VCO.Media.Flickr = VCO.Media.extend({
 			self = this;
 		
 		// Loading Message
-		this.message.updateMessage(VCO.Language.messages.loading + " Flickr");
+		this.message.updateMessage(VCO.Language.messages.loading_flickr);
 		
 		// Create Dom element
 		this._el.content_item	= VCO.Dom.create("img", "vco-media-item vco-media-image vco-media-flickr vco-media-shadow", this._el.content);
@@ -4809,7 +4796,7 @@ VCO.Media.GoogleDoc = VCO.Media.extend({
 			self = this;
 		
 		// Loading Message
-		this.message.updateMessage(VCO.Language.messages.loading + " Google Doc");
+		this.message.updateMessage(VCO.Language.messages.loading_googledoc);
 		
 		// Create Dom element
 		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe", this._el.content);
@@ -4858,7 +4845,7 @@ VCO.Media.GooglePlus = VCO.Media.extend({
 			self = this;
 		
 		// Loading Message
-		this.message.updateMessage(VCO.Language.messages.loading + " GooglePlus");
+		this.message.updateMessage(VCO.Language.messages.loading_googleplus);
 		
 		// Create Dom element
 		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-googleplus", this._el.content);
@@ -4903,7 +4890,7 @@ VCO.Media.IFrame = VCO.Media.extend({
 			self = this;
 		
 		// Loading Message
-		this.message.updateMessage(VCO.Language.messages.loading + " iFrame");
+		this.message.updateMessage(VCO.Language.messages.loading_iframe);
 		
 		// Create Dom element
 		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe", this._el.content);
@@ -4973,7 +4960,7 @@ VCO.Media.SoundCloud = VCO.Media.extend({
 			self = this;
 		
 		// Loading Message
-		this.message.updateMessage(VCO.Language.messages.loading + " SoundCloud");
+		this.message.updateMessage(VCO.Language.messages.loading_soundcloud);
 		
 		// Create Dom element
 		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe vco-media-soundcloud vco-media-shadow", this._el.content);
@@ -5018,7 +5005,7 @@ VCO.Media.Storify = VCO.Media.extend({
 		var content;
 		
 		// Loading Message
-		this.message.updateMessage(VCO.Language.messages.loading + " Storify");
+		this.message.updateMessage(VCO.Language.messages.loading_storify);
 		
 		// Create Dom element
 		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe vco-media-storify", this._el.content);
@@ -5174,7 +5161,7 @@ VCO.Media.Twitter = VCO.Media.extend({
 			self = this;
 			
 		// Loading Message
-		this.message.updateMessage(VCO.Language.messages.loading + " Tweet");
+		this.message.updateMessage(VCO.Language.messages.loading_tweet);
 		
 		// Create Dom element
 		this._el.content_item = VCO.Dom.create("div", "vco-media-twitter", this._el.content);
@@ -5246,7 +5233,7 @@ VCO.Media.Vimeo = VCO.Media.extend({
 			self = this;
 		
 		// Loading Message
-		this.message.updateMessage(VCO.Language.messages.loading + " Vimeo");
+		this.message.updateMessage(VCO.Language.messages.loading_vimeo);
 		
 		// Create Dom element
 		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe vco-media-vimeo vco-media-shadow", this._el.content);
@@ -5290,7 +5277,7 @@ VCO.Media.DailyMotion = VCO.Media.extend({
 			self = this;
 		
 		// Loading Message
-		this.message.updateMessage(VCO.Language.messages.loading + " DailyMotion");
+		this.message.updateMessage(VCO.Language.messages.loading_dailymotion);
 		
 		// Create Dom element
 		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe vco-media-dailymotion", this._el.content);
@@ -5335,7 +5322,7 @@ VCO.Media.Vine = VCO.Media.extend({
 			self = this;
 		
 		// Loading Message
-		this.message.updateMessage(VCO.Language.messages.loading + " SoundCloud");
+		this.message.updateMessage(VCO.Language.messages.loading_vine);
 		
 		// Create Dom element
 		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe vco-media-vine vco-media-shadow", this._el.content);
@@ -5414,7 +5401,7 @@ VCO.Media.Wikipedia = VCO.Media.extend({
 			self = this;
 		
 		// Loading Message
-		this.message.updateMessage(VCO.Language.messages.loading + " Wikipedia");
+		this.message.updateMessage(VCO.Language.messages.loading_wikipedia);
 		
 		// Create Dom element
 		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-wikipedia", this._el.content);
@@ -5504,7 +5491,7 @@ VCO.Media.YouTube = VCO.Media.extend({
 			url_vars;
 		
 		// Loading Message 
-		this.message.updateMessage(VCO.Language.messages.loading + " YouTube");
+		this.message.updateMessage(VCO.Language.messages.loading_youtube);
 		
 		// Create Dom element
 		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-youtube vco-media-shadow", this._el.content);
@@ -6671,17 +6658,13 @@ VCO.StorySlider = VCO.Class.extend({
 		// add the navigation to the dom
 		this._nav.next.addTo(this._el.container);
 		this._nav.previous.addTo(this._el.container);
-		
-		
-		this._el.slider_container.style.left="0px";
-		
+				
+		this._el.slider_container.style.left="0px";		
 	},
 	
 	_initEvents: function () {
-		
 		this._nav.next.on('clicked', this._onNavigation, this);
 		this._nav.previous.on('clicked', this._onNavigation, this);
-
 	},
 	
 	_initData: function() {
@@ -16860,6 +16843,7 @@ VCO.StoryMap = VCO.Class.extend({
 	/*	Private Methods
 	================================================== */
 	initialize: function (elem, data, options) {
+		var self = this;
 		
 		// Ready
 		this.ready = false;
@@ -17275,6 +17259,7 @@ VCO.StoryMap = VCO.Class.extend({
 		};
 	
 		this.options = {
+		    script_path:            '',
 			height: 				this._el.container.offsetHeight,
 			width: 					this._el.container.offsetWidth,
 			map_size_sticky: 		3, // Set as division 1/3 etc
@@ -17303,11 +17288,7 @@ VCO.StoryMap = VCO.Class.extend({
 			show_lines: 			true,
 			show_history_line: 		true,
 			api_key_flickr: 		"f2cc870b4d233dd0a5bfe73fd0d64ef0",
-			language: {
-				name: "English",
-				
-			}
-			
+			language:               "en"		
 		};
 		
 		// Current Slide
@@ -17319,7 +17300,16 @@ VCO.StoryMap = VCO.Class.extend({
 		
 		// Merge Options
 		VCO.Util.mergeData(this.options, options);
-		this._initData(data);
+		
+		// Load language
+		if(this.options.language == 'en') {
+		    this.options.language = VCO.Language;
+		    this._initData(data);
+		} else {
+            VCO.Load.js(this.options.script_path +'/locale/'+this.options.language+'.js', function() {
+                self._initData(data);
+            });
+        }
 		return this;
 	},
 
@@ -17368,6 +17358,7 @@ VCO.StoryMap = VCO.Class.extend({
 	
 	// Initialize the layout
 	_initLayout: function () {
+		var self = this;
 		
 		this._el.container.className += ' vco-storymap';
 		
@@ -17647,7 +17638,7 @@ VCO.StoryMap = VCO.Class.extend({
 		this._loaded.storyslider = true;
 		this._onLoaded();
 	},
-	
+		
 	_onLoaded: function() {
 		if (this._loaded.storyslider && this._loaded.map) {
 			trace("STORYMAP IS READY");
