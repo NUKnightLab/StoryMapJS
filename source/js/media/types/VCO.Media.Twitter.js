@@ -13,7 +13,7 @@ VCO.Media.Twitter = VCO.Media.extend({
 			self = this;
 			
 		// Loading Message
-		this.message.updateMessage(VCO.Language.messages.loading + " Tweet");
+		this.message.updateMessage(VCO.Language.messages.loading_tweet);
 		
 		// Create Dom element
 		this._el.content_item = VCO.Dom.create("div", "vco-media-twitter", this._el.content);

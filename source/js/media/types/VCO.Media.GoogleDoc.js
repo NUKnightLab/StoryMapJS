@@ -13,7 +13,7 @@ VCO.Media.GoogleDoc = VCO.Media.extend({
 			self = this;
 		
 		// Loading Message
-		this.message.updateMessage(VCO.Language.messages.loading + " Google Doc");
+		this.message.updateMessage(VCO.Language.messages.loading_googledoc);
 		
 		// Create Dom element
 		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe", this._el.content);

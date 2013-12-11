@@ -55,7 +55,7 @@ VCO.Map = VCO.Class.extend({
 	
 		//Options
 		this.options = {
-			map_type: 			"toner",
+			map_type: 			"stamen:toner",
 			path_gfx: 			"gfx",
 			start_at_slide: 	0,
 			map_popup: 			false, 

@@ -12,7 +12,7 @@ VCO.Media.Vimeo = VCO.Media.extend({
 			self = this;
 		
 		// Loading Message
-		this.message.updateMessage(VCO.Language.messages.loading + " Vimeo");
+		this.message.updateMessage(VCO.Language.messages.loading_vimeo);
 		
 		// Create Dom element
 		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe vco-media-vimeo vco-media-shadow", this._el.content);

@@ -5,6 +5,9 @@
 <!-- start google maps -->
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places"></script>
 <!-- end google maps -->
+<!-- start maps.stamen.com -->
+<script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.2.4"></script>
+<!-- end maps.stamen.com -->
 <!-- start bootstrap-wysihtml5 -->
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/bootstrap-wysihtml5/bootstrap-wysihtml5-0.0.2.css"></link>
 <script type="text/javascript" src="{{ STATIC_URL }}/bootstrap-wysihtml5/lib/js/wysihtml5-0.3.0.min.js"></script>
@@ -24,13 +27,8 @@
 
 {% include '_modals.html' %}
 
-<section id="editor" class="container shrinktext"> 
+<section id="editor" class="container"> 
 <div class="row">
-<!--
-    <div class="span12">
-        <p><a href="select.html">&lt;&lt; My Projects</a></p>
-    </div>
--->
     <div class="span12">
         <ul class="breadcrumb">
         <li><a href="select.html">My Projects</a> <span class="divider">/</span></li>
@@ -39,11 +37,6 @@
     </div>
 </div>
 
-<!--
-<div class="row edit-row title-row">
-    <h5 id="title"> </h5>
-</div>
--->
 <div class="row edit-row slides-row">
     <div class="overview-container">
         <div class="slide">
@@ -52,11 +45,87 @@
         </div>
     </div>
     <div class="add-container">
-        <a id="slide_add" href="javascript:"><i class="icon-plus icon-large"></i><br />Add Slide</a>
+        <p>
+        <a id="slide_add" href="javascript:"><i class="icon-plus icon-large"></i> Add Slide</a>
+        </p>
+        <p>
+        <a id="storymap_option_link" href="javascript:" onclick="storymap_options()"><i class="icon-cog icon-large"></i> <span>Show Options</span></a>
+        </p>
     </div>
     <div class="slides-container">
         <ul id="slides">            
         </ul>
+    </div>
+</div>
+
+<div class="row edit-row option-row hide">
+    <div class="span12">
+        <form class="form-horizontal"> 
+            <div class="control-group">
+                <label class="control-label">Size</label>
+                <div class="controls">
+                    <div class="input-prepend">
+                        <span class="add-on">Width</span>
+                        <input type="text" id="width" value="" class="input-mini"> 
+                    </div>
+                     <div class="input-prepend">
+                        <span class="add-on">Height</span>
+                        <input type="text" id="height" value="" class="input-mini"> 
+                    </div>
+                </div>
+            </div>
+
+             <div class="control-group">
+                <label class="control-label">Map Type</label>
+                <div class="controls">
+                    <div class="input-prepend">
+                        <div class="btn-group">
+                            <button class="btn dropdown-toggle" data-toggle="dropdown" tabindex="-1">
+                                <span class="caret"></span>
+                            </button>
+                            <ul id="map_type_menu" class="dropdown-menu" role="menu">
+                                <li><a href="javascript:" storymap-data="stamen:toner">Stamen Maps: Toner</a></li>
+                                <li><a href="javascript:" storymap-data="stamen:toner-liner">Stamen Maps: Toner Lines</a></li>
+                                <li><a href="javascript:" storymap-data="stamen:toner-labels">Stamen Maps: Toner Labels</a></li>
+                                <li><a href="javascript:" storymap-data="stamen:watercolor">Stamen Maps: Watercolor</a></li>
+                                <li><a href="javascript:" storymap-data="stamen:terrain">Stamen Maps: Terrain</a></li>
+                                <li><a href="javascript:" storymap-data="">custom URL...</a></li>
+                            </ul>
+                        </div>
+                        <input id="map_type" type="text" class="span5" placeholder="http://{s}.domain.org/{z}/{x}/{y}.png" disabled>
+                    </div>
+                    <div class="input-prepend">
+                        <span class="add-on">Subdomains</span>
+                        <input id="map_subdomains" type="text" class="input-small" placeholder="abc">                    
+                    </div>
+                    <a class="help" href="javascript:"
+                        data-html="true"
+                        data-placement="left"
+                        data-content='
+                        <p>Select a predefined map tile type, or select "custom URL" to enter the URL for a tile server.</p>
+                        <p>If the tile server supports multiple subdomains, enter them as a single string in the 
+                        Subdomain field (e.g. subdomains "a", "b", and "c" should be entered as "abc").</p>
+                        ' 
+                    >
+                    <i class="icon-question-sign icon-large"></i>
+                    </a>
+                </div>
+            </div>
+            
+             <div class="control-group">
+                <label class="control-label">Language</label>
+                <div class="controls">
+                    <select id="language">
+                        <option value="en">English</option>
+                        <option value="es">Spanish</option>
+                    </select>
+                    <a class="help" href="javascript:"
+                        data-placement="left"
+                        data-content="Select the language to use in controls and messages when displaying your StoryMap."                    
+                    ><i class="icon-question-sign icon-large"></i></a>
+                </div>
+            </div>      
+        </form>     
     </div>
 </div>
 
@@ -76,7 +145,10 @@
             <label>Headline</label>
             <input id="headline" type="text" />
 
-            <label>Text</label>
+            <label>Text <a class="help" href="javascript:"
+                data-placement="right"
+                data-content="Enter the text for your slide.  Switch between WYSIWYG and HTML modes by using the &lt;/&gt; button."
+            ><i class="icon-question-sign icon-large"></i></a></label>
             <div class="text-container">
             <textarea id="text" rows="5"></textarea>  
             </div>
@@ -84,7 +156,10 @@
     </div>
     <div class="span6" style="">
         <div class="data-frame">
-            <label>Media</label>
+            <label>Media <a class="help" href="javascript:"
+                data-placement="left"
+                data-content="Enter the URL for your media.  It can come from Flickr, YouTube, Vimeo, Twitter, and more."
+            ><i class="icon-question-sign icon-large"></i></a></label> 
             <input id="url" type="text" placeholder="URL to media (YouTube, Flickr, etc.)" />
 
             <label>Credit</label>
@@ -113,8 +188,8 @@
 <ul id="wysihtml5_emphasis" style="display: none;">
     <li>
     <div class="btn-group">
-    <a class="btn btn-small" data-wysihtml5-command="bold" title="CTRL+B" tabindex="-1" href="javascript:;" unselectable="on"><i class="icon-bold"></i></a>
-    <a class="btn btn-small" data-wysihtml5-command="italic" title="CTRL+I" tabindex="-1" href="javascript:;" unselectable="on"><i class="icon-italic"></i></a>
+    <a class="btn btn-small" data-wysihtml5-command="bold" title="Bold" tabindex="-1" href="javascript:;" unselectable="on"><i class="icon-bold"></i></a>
+    <a class="btn btn-small" data-wysihtml5-command="italic" title="Italic" tabindex="-1" href="javascript:;" unselectable="on"><i class="icon-italic"></i></a>
     </div>
     </li>
 </ul>
@@ -145,6 +220,20 @@
 
 var _embed_url = 'http://cdn.knightlab.com/libs/storymapjs/latest/embed/';
 
+// If under local development, use source page
+switch(document.location.hostname) {
+    case '127.0.0.1':
+    case '0.0.0.0':
+    case 'localhost':
+        _embed_url = '/source/embed/index.html';
+        break;
+}  
+
+var _default_width = '100%';
+var _default_height = '800';
+var _default_map_type = 'stamen:toner';
+var _default_language = 'en';
+
 var _re_slide_cls = /^slide-icon-\w+$/;
 
 var _map;
@@ -152,13 +241,13 @@ var _map_zoom_listener;
 var _map_overlay;
 var _map_markers = [];
 
-var _storymap_info;
-var _storymap_data;
+var _storymap_info; // folder 
+var _storymap_data; // { width: n, height: n, storymap: { } }
+var _slides = null; // _storymap_data.storymap.slides
+
 var _current_slide_index = -1;
 
 var _dirty = 0;
-
-var _slides_loaded = false;
 
 //
 // Custom overlay for path
@@ -173,6 +262,8 @@ function get_map_overlay(map, path) {
  
         var panes = this.getPanes();
         panes.overlayImage.appendChild(div);    
+        
+        $('#map_overlay').show();
     };
 
     ov.draw = function() {
@@ -195,6 +286,7 @@ function get_map_overlay(map, path) {
         div.parentNode.removeChild(div);
         div = null;
         $('#map_overlay polyline').attr('points', '');
+        $('#map_overlay').hide();
     };
     
     ov.setMap(map);
@@ -213,8 +305,45 @@ function map_clear_overlays() {
     _map_markers = [];
 }
 
+function map_set_type() {    
+    var map_type = (_storymap_data.storymap.map_type || '').toLowerCase();
+    var map_subdomains = (_storymap_data.storymap.map_subdomains || 'a').split('');
+
+    switch(map_type) {
+        case "stamen:toner":
+        case "stamen:toner-lines":
+        case "stamen:toner-labels":
+        case "stamen:watercolor":
+        case "stamen:terrain":
+            _map.setOptions({mapTypeId: map_type});
+            break;
+            
+        default:
+            if(map_type && map_type.match("http://")) {
+                 _map.mapTypes.set("custom", new google.maps.ImageMapType({
+                    getTileUrl: function(coord, zoom) {
+                        var index = (coord.x + coord.y) % map_subdomains.length;                        
+                        return map_type
+                            .replace('{s}', map_subdomains[index])
+                            .replace('{z}', zoom)
+                            .replace('{x}', coord.x)
+                            .replace('{y}', coord.y);
+                    },
+                    tileSize: new google.maps.Size(256, 256),
+                    name: "Custom",
+                    maxZoom: 18
+                }));
+
+                _map.setOptions({mapTypeId: 'custom'});             
+            } else {
+                _map.setOptions({mapTypeId: _default_map_type});
+            }            
+            break;            
+    }
+}
+
 function location_set(slide_index, data) {    
-    $.extend(_storymap_data.slides[slide_index].location, data);      
+    $.extend(_slides[slide_index].location, data);      
     storymap_dirty(1);
 }
 
@@ -257,7 +386,7 @@ function slide_set_class(slide_index) {
     });
     
     // Add new class
-    var data = _storymap_data.slides[slide_index];
+    var data = _slides[slide_index];
     var url = (data.media) ? (data.media.url || '') : '';
     if(url) {
         var media = VCO.MediaType({'url': url});     
@@ -280,7 +409,7 @@ function slide_append_element(data) {
         .appendTo('#slides')
         .click(slide_select);
 
-    $('<a class="close" href="#">&nbsp;</a>')
+    $('<a class="close" href="javascript:">&nbsp;</a>')
         .appendTo(slide_elem)
         .click(slide_delete); 
  
@@ -298,7 +427,7 @@ function slide_select(event) {
     $(this).addClass('selected');
         
     _current_slide_index = $('.slide').index(this);
-    var data = _storymap_data.slides[_current_slide_index];
+    var data = _slides[_current_slide_index];
 
     if(_map_zoom_listener) {
         google.maps.event.removeListener(_map_zoom_listener);
@@ -312,13 +441,13 @@ function slide_select(event) {
         _map.setOptions({panControl: false, zoomControl: false});
                 
         // Show overview view
-        if(_storymap_data.slides.length > 1) {
+        if(_slides.length > 1) {
             var latlngbounds = new google.maps.LatLngBounds();      
             var path = [];
           
-            for(var i = 0; i < _storymap_data.slides.length;i++) {                
-                if(_storymap_data.slides[i].hasOwnProperty('location')) {                    
-                    var loc_data = _storymap_data.slides[i].location;
+            for(var i = 0; i < _slides.length;i++) {                
+                if(_slides[i].hasOwnProperty('location')) {                    
+                    var loc_data = _slides[i].location;
                     
                     if(loc_data.lat && loc_data.lon) {
                         var latlng = new google.maps.LatLng(loc_data.lat, loc_data.lon);
@@ -337,7 +466,7 @@ function slide_select(event) {
                 }
             }
             _map.fitBounds(latlngbounds);
-                    
+                
             _map_overlay = get_map_overlay(_map, path);
         } else {
             var latlngbounds = new google.maps.LatLngBounds(
@@ -370,14 +499,14 @@ function slide_delete(event) {
     var slide_elem = $(this).closest('.slide');
     var slide_index = $('.slide').index(slide_elem);
     
-    var data = _storymap_data.slides[slide_index];
+    var data = _slides[slide_index];
     var slide_title = ((data.text) ? (data.text.headline || "(untitled)") : "(untitled)");
     
     show_confirm('Delete "'+slide_title+'" slide?', function() {
         var width = $('#slides').width() - slide_elem.outerWidth(true);
           
         // Delete the slide data
-        _storymap_data.slides.splice(slide_index, 1); 
+        _slides.splice(slide_index, 1); 
         storymap_dirty(1);    
             
         // Remove DOM element
@@ -391,7 +520,7 @@ function slide_delete(event) {
             _current_slide_index--;
             storymap_auto_save();
         } else if(slide_index == _current_slide_index) {
-            var n = Math.min(_current_slide_index, _storymap_data.slides.length - 1);            
+            var n = Math.min(_current_slide_index, _slides.length - 1);            
             $('.slide').eq(n).click();
         }        
     });
@@ -406,11 +535,11 @@ function slide_add() {
         media: {url: "", credit: "", caption: ""}
     };
 
-    var n = _storymap_data.slides.length; 
+    var n = _slides.length; 
     
     // Add location data if not overview slide, else add type 
     if(n > 0) {
-        data.location =  $.extend({}, _storymap_data.slides[n - 1].location || {
+        data.location =  $.extend({}, _slides[n - 1].location || {
             lat: "41.850033",
             lon: "-87.6500523",
             zoom: 10,
@@ -422,7 +551,7 @@ function slide_add() {
     }   
     
     // Add slide 
-    _storymap_data.slides.push(data);
+    _slides.push(data);
     storymap_dirty(1);
 
     // Add slide element if not adding overview slide
@@ -444,17 +573,38 @@ function slide_add() {
 }   
 
 function slides_load() {
-    if(_slides_loaded || !_map || !_storymap_data) {
+    if(!_map || !_slides) {
         return;
     }
 
-    _slides_loaded = true;
+    $('#width').val(_storymap_data.width || _default_width);
+    $('#height').val(_storymap_data.height || _default_height);
+   
+    var map_type = _storymap_data.storymap.map_type || _default_map_type;
+    switch(map_type) {
+        case "stamen:toner":
+        case "stamen:toner-lines":
+        case "stamen:toner-labels":
+        case "stamen:watercolor":
+        case "stamen:terrain":
+            $('#map_type').val(map_type).attr('disabled', true);
+            $('#map_subdomains').val('').attr('disabled', true).parent().hide();
+            break;
+        
+        default:
+            $('#map_type').val(map_type).removeAttr('disabled');
+            $('#map_subdomains').val(_storymap_data.storymap.map_subdomains || '').removeAttr('disabled').parent().show();
+            break;    
+    }
+    map_set_type();
+               
+    $('#language').val(_storymap_data.storymap.language || _default_language);
     
     // Slides 1,...,n
     $('#slides').html();  
               
-    for(var i = 1; i < _storymap_data.slides.length; i++) {
-        slide_append_element(_storymap_data.slides[i]);
+    for(var i = 1; i < _slides.length; i++) {
+        slide_append_element(_slides[i]);
     }
     
     var width = 0;
@@ -463,7 +613,7 @@ function slides_load() {
     })   
     $('#slides').css('width', width + "px");
           
-    if(_storymap_data.slides.length > 0) {
+    if(_slides.length > 0) {
         slide_set_class(0);
         $('.slide:first').click();  
     } else {
@@ -473,6 +623,15 @@ function slides_load() {
     hide_progress();
 }
 
+function storymap_options() {
+    if($('.option-row').is(':visible')) {
+        $('.option-row').hide();
+        $('#storymap_option_link span').html('Show Options');
+    } else {
+        $('.option-row').show();
+        $('#storymap_option_link span').html('Hide Options');
+    }
+}
 
 function storymap_dirty(is_dirty) {
     _dirty = is_dirty;
@@ -499,7 +658,7 @@ function storymap_save() {
     $('#saved').hide();
     $('#saving').show();
     
-    gdrive_storymap_save_draft(_storymap_info, {storymap: _storymap_data}, function(error, file) {
+    gdrive_storymap_save_draft(_storymap_info, _storymap_data, function(error, file) {
         if(error) {
             $('#storymap_save').removeClass('disabled').addClass('btn-primary');
             show_error('Error saving storymap: '+(error.message || error));
@@ -528,7 +687,7 @@ function storymap_publish() {
     if(_dirty) {
         show_progress('Saving StoryMap');
         
-        gdrive_storymap_save_draft(_storymap_info, {storymap: _storymap_data}, function(error, file) {
+        gdrive_storymap_save_draft(_storymap_info, _storymap_data, function(error, file) {
             if(error) {
                 show_error('Error saving storymap: '+(error.message || error));                
             } else {
@@ -546,7 +705,10 @@ function storymap_publish() {
                 hide_progress();
                 
                 var url = gdrive_storymap_published_url(_storymap_info);
-                var html = '<iframe src="'+_embed_url+'?url='+url+'" frameborder="0"></iframe>';
+                var html = '<iframe src="'+_embed_url+'?url='+url+'" frameborder="0"'
+                    + ' width="'+(_storymap_data.width || _default_width)+'"'
+                    + ' height="'+(_storymap_data.height || _default_height)+'"'
+                    + '></iframe>';
                 
                 $('#embed_modal textarea').html(html);
                 $('#embed_modal').modal('show');
@@ -562,6 +724,7 @@ window.onbeforeunload = function confirmExit() {
     }
 }
 
+
 function map_init() {
     var map = new google.maps.Map(document.getElementById('map'), {
         disableDoubleClickZoom: true,
@@ -573,9 +736,27 @@ function map_init() {
         zoomControlOptions: {
             style: google.maps.ZoomControlStyle.SMALL
         },
-        mapTypeId: google.maps.MapTypeId.ROADMAP
+        mapTypeId: _default_map_type
     });
-       
+             
+    google.maps.event.addListener(map, 'dblclick', function(event) {
+        var loc_data = {
+            lat: event.latLng.lat(),
+            lon: event.latLng.lng()
+        };
+        
+        location_mark(loc_data);
+        location_set(_current_slide_index, loc_data);
+    });
+    
+    
+    // preset stamen map types
+    map.mapTypes.set("stamen:toner", new google.maps.StamenMapType("toner"))
+    map.mapTypes.set("stamen:toner-lines", new google.maps.StamenMapType("toner-lines"))
+    map.mapTypes.set("stamen:toner-labels", new google.maps.StamenMapType("toner-labels"))
+    map.mapTypes.set("stamen:terrain", new google.maps.StamenMapType("terrain"))
+    map.mapTypes.set("stamen:watercolor", new google.maps.StamenMapType("watercolor"))
+
     // Make search box
     map_search_box = new google.maps.places.SearchBox(
         document.getElementById('map_search_input'));
@@ -609,7 +790,11 @@ function storymap_init() {
     
     var params = parseQueryString();
     if(!params.id) {
-        show_error('No StoryMap id detected!');
+        hide_progress();
+
+        show_message('Could not load StoryMap.  Expected "id" parameter.', function() {
+            document.location.href = 'select.html';           
+        });
     } else {
         // Load storymap folder
         gdrive_storymap_load(params.id, function(error, storymapFolder) {
@@ -620,13 +805,14 @@ function storymap_init() {
                 storymap_saved_msg();
                                
                 $('#title').html(_storymap_info.title);
-                
+                                
                 // Load draft
                 gdrive_storymap_load_draft(storymapFolder, function(error, data) {
                     if(error) {
                         show_error('Error loading StoryMap data: '+(error.message || error));
                     } else {
-                        _storymap_data = data.storymap;
+                        _storymap_data = data;
+                        _slides = _storymap_data.storymap.slides;
                     
                         // LOAD SLIDES
                         slides_load();
@@ -635,9 +821,6 @@ function storymap_init() {
             }
         });
     }
-    
-    // LOAD SLIDES
-    slides_load();
 }
 
 function handle_onload() {  
@@ -655,24 +838,79 @@ function handle_onload() {
     });
 }
 
+
 $(function() {        
-    $('.overview-container .slide').click(slide_select);
-     
-    $('#url').change(function(event) {  
-        _storymap_data.slides[_current_slide_index].media['url'] = $(this).val().trim();
-        storymap_dirty(1);
-        slide_set_class(_current_slide_index)
+    $('a.help').popover({
+        trigger: 'manual'
+    }).click(function(event) {
+        if(!$(this).next().hasClass('popover')) {
+            $('a.help').not(this).popover('hide');
+        }     
+        $(this).popover('toggle');
+        event.stopPropagation();
     });
-       
-    $('#credit, #caption').change(function(event) { 
-        var id = $(this).attr('id');
-        _storymap_data.slides[_current_slide_index].media[id] = $(this).val().trim();
+
+    $(document).click(function(e) {
+        $('a.help').popover('hide');
+    });
+
+    $('.overview-container .slide').click(slide_select);
+    
+    // top-level options
+    $('#width, #height').change(function(event) {
+        _storymap_data[$(this).attr('id')] = $(this).val().trim();
         storymap_dirty(1);
     });
 
+    // storymap-level options
+    $('#map_type_menu a').click(function(event) {
+        var map_type = $(this).attr('storymap-data');
+        
+        if(map_type) {
+            $('#map_type').val(map_type).attr('disabled', true);
+            $('#map_subdomains').val('').attr('disabled', true).parent().hide();
+            _storymap_data.storymap.map_type = map_type;
+            _storymap_data.storymap.map_subdomains = '';
+            storymap_dirty(1);
+            map_set_type();
+       } else {
+            $('#map_type').val('').removeAttr('disabled').focus(); 
+            $('#map_subdomains').val('').removeAttr('disabled').parent().show();
+        }        
+    });
+    
+    $('#map_type').change(function(event) {
+        _storymap_data.storymap.map_type = $('#map_type').val().trim();
+        storymap_dirty(1);
+        map_set_type();        
+    });
+    
+    $('#map_subdomains').change(function(event) {
+        _storymap_data.storymap.map_subdomains = $('#map_subdomains').val().trim();
+        storymap_dirty(1);
+        map_set_type();        
+    });
+    
+    $('#language').change(function(event) {
+        _storymap_data.storymap['language'] = $(this).val();
+        storymap_dirty(1);
+     });
+         
+    // slide-level media options
+    $('#url, #credit, #caption').change(function(event) { 
+        var id = $(this).attr('id');
+        _slides[_current_slide_index].media[id] = $(this).val().trim();
+        storymap_dirty(1);
+        
+        if(id == 'url') {
+            slide_set_class(_current_slide_index);
+        }
+    });
+
+    // slide-level text options
     $('#headline').change(function() {
         var value = $(this).val().trim();
-        _storymap_data.slides[_current_slide_index].text['headline'] = value;
+        _slides[_current_slide_index].text['headline'] = value;
         storymap_dirty(1);
         $('.slide-title').eq(_current_slide_index).html(value);
     });
@@ -699,7 +937,7 @@ $(function() {
         },
         'events': {
             'change': function() { 
-                _storymap_data.slides[_current_slide_index].text['text'] = $('#text').val().trim();
+                _slides[_current_slide_index].text['text'] = $('#text').val().trim();
                 storymap_dirty(1);
              }
         }
@@ -725,7 +963,7 @@ $(function() {
                                   
             if(sortable_i != sortable_j) {
                 // Move slide data from i to j
-                _storymap_data.slides.move(sortable_i, sortable_j);
+                _slides.move(sortable_i, sortable_j);
 
                  // Adjust current slide index
                 _current_slide_index = $('.slide').index($('.slide.selected'));                
@@ -742,6 +980,5 @@ google.maps.event.addDomListener(window, 'load', map_init);
 </script>
 
 <script type="text/javascript" src="https://apis.google.com/js/client.js?onload=handle_onload"></script>
-
 
 {% endblock %}
