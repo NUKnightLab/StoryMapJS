@@ -7,19 +7,11 @@ COMMON
 #progress_msg {margin-left: 10px;}
 #new_modal .error {color: #cc0000;font-size: 0.9em;font-style: italic;}
 
-/*
-.icon-question:before {content: "\f128";}
-*/
 a.help {color: #333;margin-left: 6px;}
 a.help:hover {text-decoration: none;}
 
 .popover-title {font-size: 12px;}
 .popover-content {font-size: 12px;}
-
-/*
-.shrinktext label,select,textarea{font-size: 0.9em;}
-.shrinktext input[type="text"] {font-size: 0.9em;}
-*/
 
 .smaller {font-size: 0.8em;}
 
@@ -33,7 +25,7 @@ label, select, textarea, input[type="text"] {font-size: 14px;}
 [class*="span"] {float: left;min-height: 1px;margin-left: auto;}
 .row {margin-left: auto;}
 
-/*
+/* 
 SELECT PAGE
 */
 
@@ -51,9 +43,6 @@ SELECT PAGE
 
 /*
 EDIT PAGE
-*/
-/* unused --->
-.title-row {border-top: 1px solid darkgray;text-align: center;}
 */
 
 #editor {margin: 10px auto;}
@@ -142,19 +131,18 @@ EDIT PAGE
 .slide-icon-vimeo:after{background-position:-328px -48px}
 .slide-icon-youtube:after{background-position:-328px -72px}
 
+
 .slide a.close {
     position: absolute;
-    top: 4px;
-    right: 4px;
+    top: 2px;
+    right: 0px;
     z-index: 99;
     color: #000000;
     opacity: 1;
-    width: 32px;
-    height: 32px;
-    background: url(../img/fancybox_sprite.png);
-   -moz-transform:scale(0.5);
-    zoom: 0.5;
- }
+    width: 16px;
+    height: 16px;
+    background: url(../img/icon_delete.png);
+}
 
 .slide-title {
     font: 11px Roboto,Arial,sans-serif;
@@ -173,7 +161,7 @@ EDIT PAGE
 .option-row .dropdown-menu>li {padding: 0;font-size: 0.9em;}
 .option-row .dropdown-menu>li>a {padding: 4px 6px;}
 
-/* map row */
+/* MAP ROW */
 .map-row {height: 260px;}
 
 #map {position: absolute;left: 0;top: 0;right: 0;bottom: 0;}
