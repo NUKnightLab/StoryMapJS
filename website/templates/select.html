@@ -135,7 +135,8 @@ function storymap_new(event) {
         return false;
     }
     if(_storymap_names.indexOf(name.toLowerCase()) >= 0) {
-        $('#new_modal .error').html('You must enter a unique name.');
+        var idx = _storymap_names.indexOf(name.toLowerCase());
+        $('#new_modal .error').html('You already have a StoryMap named "' + _storymap_names[idx] + '".');
         return false;
     }
          
@@ -215,7 +216,11 @@ function storymap_display_list(sortby) {
                 //html += '<span class="title-message">never published</span>';
             }
             if(item.draft_on > item.published_on) {
-                html += '<p class="modded"><i class="icon-warning-sign"></i> Edited on '+format_dt(item.draft_on)+'</p>';
+                html += '<p class="modded">';
+                if (item.published_on) {
+                    html += '<i class="icon-warning-sign" title="This draft is newer than the most recently published version."></i>'
+                }
+                html += 'Edited on '+format_dt(item.draft_on)+'</p>';
             } 
         
             html += '<td><a class="storymap-edit" href="'+href+'" title="Edit"><i class="icon-edit icon-large"></i></td>'
