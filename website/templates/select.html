@@ -24,13 +24,16 @@
             <div class="span5">
                <p><img src="{{ STATIC_URL }}/img/editor_screenshot.png"></p>
                <p>Making a StoryMap is <b>easy</b>.</p> 
-               <p>First, you log in with your Google account. This is so we have place to put the StoryMaps you create—they live on your Google Drive. Once that's done:
-               <ul>
-                   <li>click the blue "new StoryMap"</li>
-                   <li>name your new StoryMap</li>
-                   <li>set up your title slide with a headline and any introductory information.</li>
-                   <li>click "+add slide" for each place that's part of your story</li>
-               </ul>
+               <ol>
+               <li>Log in with your Google account. The StoryMaps you create will live on your Google Drive.</li>
+               <li>Click the blue "new StoryMap" button at the bottom right side of the page. You'll be asked to name your StoryMap. This name is just for you—no one else will see it.
+               <li>After naming your StoryMap, you'll see the editor tool—it looks like the image above.</li>
+               <li>The first slide is your "overview" or title slide. Give your StoryMap a title, and if you
+               like, add some more text setting the stage for the story you want to tell. You can also embed images, videos and other resources.
+               The map on the first screen of your StoryMap is automatically created for you, showing a view of all the places in your story.</li>
+               <li>Click on "add slide" in the top right corner, and add a slide. You can fill in the headline and explanatory text,
+                   and you can include media from other sources on the web, like Flickr, YouTube, Vimeo, and more. Add more slides to tell your story.</li>
+               </ol>   
             </div>
         </div>
     </div>
@@ -214,7 +217,7 @@ function storymap_display_list(sortby) {
                 html += '<p class="modded">';
                 if (item.published_on) {
                     html += '<i class="icon-warning-sign" title="This draft is newer than the most recently published version."></i>'
-                }
+            } 
                 html += 'Edited on '+format_dt(item.draft_on)+'</p>';
             } 
         
