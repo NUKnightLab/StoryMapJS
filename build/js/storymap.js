@@ -1,4 +1,4 @@
-/* storymapjs - v0.0.11 - 2013-12-10
+/* storymapjs - v2013-12-16-19-32-51 - 2013-12-16
  * Copyright (c) 2013 Northwestern University Knight Lab 
  */
 
@@ -16516,9 +16516,14 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		//var layer = new L.StamenTileLayer(this.options.map_type);		
 		var layer = null;
 		var map_type_arr = this.options.map_type.split(':');		
+
 		switch(map_type_arr[0]) {
 		    case 'stamen':
 		        layer = new L.StamenTileLayer(map_type_arr[1] || 'toner')
+		        break;
+
+		    case 'osm':
+		        layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {subdomains: 'ab'});
 		        break;
 		    
 		    case 'http':

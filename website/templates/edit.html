@@ -85,10 +85,11 @@
                             </button>
                             <ul id="map_type_menu" class="dropdown-menu" role="menu">
                                 <li><a href="javascript:" storymap-data="stamen:toner">Stamen Maps: Toner</a></li>
-                                <li><a href="javascript:" storymap-data="stamen:toner-liner">Stamen Maps: Toner Lines</a></li>
+                                <li><a href="javascript:" storymap-data="stamen:toner-lines">Stamen Maps: Toner Lines</a></li>
                                 <li><a href="javascript:" storymap-data="stamen:toner-labels">Stamen Maps: Toner Labels</a></li>
                                 <li><a href="javascript:" storymap-data="stamen:watercolor">Stamen Maps: Watercolor</a></li>
                                 <li><a href="javascript:" storymap-data="stamen:terrain">Stamen Maps: Terrain</a></li>
+                                <li><a href="javascript:" storymap-data="osm:standard">Open Street Maps: Standard</a></li>
                                 <li><a href="javascript:" storymap-data="">custom URL...</a></li>
                             </ul>
                         </div>
@@ -318,6 +319,7 @@ function map_set_type() {
         case "stamen:toner-labels":
         case "stamen:watercolor":
         case "stamen:terrain":
+        case "osm:standard":
             _map.setOptions({mapTypeId: map_type});
             break;
             
@@ -759,6 +761,7 @@ function map_init() {
     map.mapTypes.set("stamen:toner-labels", new google.maps.StamenMapType("toner-labels"))
     map.mapTypes.set("stamen:terrain", new google.maps.StamenMapType("terrain"))
     map.mapTypes.set("stamen:watercolor", new google.maps.StamenMapType("watercolor"))
+    map.mapTypes.set("osm:standard",new google.maps.OSMMapType());
 
     // Make search box
     map_search_box = new google.maps.places.SearchBox(
