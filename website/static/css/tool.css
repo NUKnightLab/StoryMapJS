@@ -180,6 +180,14 @@ EDIT PAGE
     padding: 4px;
     border-right: 1px solid darkgray;
     border-bottom: 1px solid darkgray;
+}
+
+#option-settings-note {
+    margin-top: -15px;
+    margin-bottom: 20px;
+}
+
+.ui-note {
     font: 13px Roboto, Arial, Sans-serif;
 }
 

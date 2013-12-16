@@ -59,7 +59,8 @@
 </div>
 
 <div class="row edit-row option-row hide">
-    <div class="span8">
+    <div class="span12">
+        <p class="ui-note" id="option-settings-note">Option settings affect your whole StoryMap.</p>
         <form class="form-horizontal"> 
             <div class="control-group">
                 <label class="control-label">Size</label>
@@ -107,8 +108,7 @@
                         <p>If the tile server supports multiple subdomains, enter them as a single string in the 
                         Subdomain field (e.g. subdomains "a", "b", and "c" should be entered as "abc").</p>
                         ' 
-                    >
-                    <i class="icon-question-sign icon-large"></i>
+                    >&nbsp;<i class="icon-question-sign icon-large"></i>
                     </a>
                 </div>
             </div>
@@ -123,14 +123,11 @@
                     <a class="help" href="javascript:"
                         data-placement="left"
                         data-content="Select the language to use in controls and messages when displaying your StoryMap."                    
-                    ><i class="icon-question-sign icon-large"></i></a>
+                    >&nbsp;<i class="icon-question-sign icon-large"></i></a>
                 </div>
             </div>      
         </form>
     </div>
-    <small class="span4">
-         Option settings affect your whole StoryMap.
-    </small>
 </div>
 
 <div class="row edit-row map-row">
@@ -139,7 +136,7 @@
     <svg id="map_overlay" xmlns="http://www.w3.org/2000/svg" version="1.1">
         <polyline points="" />
     </svg>
-    <div id="map_info">This is your title slide.  The title slide shows all points from your other slides.</div>
+    <div id="map_info" class="ui-note">This is your title slide.  The title slide shows all points from your other slides.</div>
     <input id="map_search_input" type="text" placeholder="Search">
 </div>
 
@@ -152,7 +149,7 @@
             <label>Text <a class="help" href="javascript:"
                 data-placement="right"
                 data-content="Enter the text for your slide.  Switch between WYSIWYG and HTML modes by using the &lt;/&gt; button."
-            ><i class="icon-question-sign icon-large"></i></a></label>
+            >&nbsp;<i class="icon-question-sign icon-large"></i></a></label>
             <div class="text-container">
             <textarea id="text" rows="5"></textarea>  
             </div>
@@ -163,7 +160,7 @@
             <label>Media <a class="help" href="javascript:"
                 data-placement="left"
                 data-content="Enter the URL for your media.  It can come from Flickr, YouTube, Vimeo, Twitter, and more."
-            ><i class="icon-question-sign icon-large"></i></a></label> 
+            >&nbsp;<i class="icon-question-sign icon-large"></i></a></label> 
             <input id="url" type="text" placeholder="URL to media (YouTube, Flickr, etc.)" />
 
             <label>Credit</label>
