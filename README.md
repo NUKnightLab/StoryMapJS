@@ -1,23 +1,18 @@
+#StoryMapJS: Maps that tell stories.
+
+[StoryMapJS](http://storymap.knightlab.com) is a simple tool to help you tell stories with maps. If you're not a programmer, you don't need to spend much time on this site—instead, go [StoryMapJS](http://storymap.knightlab.com)
+
+If you want information on creating JSON with your own code and embedding it, see the ["Advanced"](http://storymap.knightlab.com/advanced.html) documentation on the StoryMap website.
+
+The rest of this document explains how to set up to make changes to the StoryMap Javascript yourself
+
 ## Setting up a development environment
 
+In order to stay consistent with other kinds of deployment tools, we use python and Fabric to build and deploy StoryMapJS. However, if you are comfortable using [CodeKit](http://incident57.com/codekit/), you can use it also: the rules for assembling the various files into a single final timeline.js are specified using CodeKit's syntax.
 
-Install [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/)
+If you don't use CodeKit, you must have Python installed. We use python 2.7.
 
-Install [Node.js](http://nodejs.org)
-
-    # Install LESS and UglifyJS globally (you may need to use 'sudo npm' instead)
-    npm install -g less
-    npm install -g uglify-js@1
-    
-    # Change into the parent directory containing your repositories
-    cd path_to_your_repos_root
-    
-    # Clone repositories
-    git clone https://github.com/NUKnightLab/fablib.git
-    git clone https://github.com/NUKnightLab/storymapjs.git
-    
-    # Change into the project repository
-    cd storymapjs
+Install [virtualenv](https://pypi.python.org/pypi/virtualenv) and [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/)
 
     # Create a virtual environment
     mkvirtualenv storymapjs
@@ -37,20 +32,4 @@ Files located in the `website` directory are for the storymapjs website.
 
 Edit config.json as needed to modify the staging and deployment process.
           
-          
-## Deploying updates the the CDN
-
-Changes made to javascript and CSS must be deployed to `cdn.knightlab.com` to be used. If you haven't yet, check out that Git repository to the same directory that contains your storymapjs respository.
-    
-To stage your changes without forcing `latest` users ahead, type `fab stage` This runs a build, copies the files into a versioned directory in your local `cdn.knightlab.com` repository, and tags the last commit with a version number.
-
-To stage your changes to `latest`, type `fab stage_latest` This copies files from the versioned directory in your local `cdn.knightlab.com` respository into the corresponding `latest` directory. 
-
-You have to push and deploy all CDN changes separately.
-
-
-## Deploying to S3 (storymapjs.knightlab.com)
-
-You need the `secrets` repository to deploy to S3.  If you haven't yet, check out that Git repository to the same directory that contains your storymapjs respository.
-
-To update S3, type `fab deploy`.  This runs a build using the latest version tag and synchronizes the files in the build directory with S3.
+At this time, edits to the HTML for the website are automatically visible when reloading the local server. Edits to CSS and JavaScript must be manually compiled before you'll see them.  Run `fab build`. This is something we'd like to make more automatic eventually.
