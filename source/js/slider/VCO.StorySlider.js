@@ -609,6 +609,7 @@ VCO.StorySlider = VCO.Class.extend({
 	
 	// Update Display
 	_updateDisplay: function(width, height, animate) {
+		
 		var nav_pos;
 		
 		if (width) {
@@ -626,11 +627,7 @@ VCO.StorySlider = VCO.Class.extend({
 		//this._el.container.style.height = this.options.height;
 		
 		// position navigation
-		if(this.options.layout == 'sxs') {
-		    nav_pos = 20;
-		} else {
-		    nav_pos = (this.options.height/2);
-		}
+		nav_pos = (this.options.height/2);
 		this._nav.next.setPosition({top:nav_pos});
 		this._nav.previous.setPosition({top:nav_pos});
 		
