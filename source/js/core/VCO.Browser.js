@@ -1,55 +1,66 @@
+/*
+	Based on Leaflet Browser
+	VCO.Browser handles different browser and feature detections for internal  use.
+*/
 
-(function () {
+
+(function() {
+
 	var ua = navigator.userAgent.toLowerCase(),
-		ie = !!window.ActiveXObject,
-		webkit = ua.indexOf("webkit") !== -1,
-		mobile = typeof orientation !== 'undefined' ? true : false,
-		android = ua.indexOf("android") !== -1,
+		doc = document.documentElement,
+
+		ie = 'ActiveXObject' in window,
+
+		webkit = ua.indexOf('webkit') !== -1,
+		phantomjs = ua.indexOf('phantom') !== -1,
+		android23 = ua.search('android [23]') !== -1,
+
+		mobile = typeof orientation !== 'undefined',
+		msPointer = navigator.msPointerEnabled && navigator.msMaxTouchPoints && !window.PointerEvent,
+		pointer = (window.PointerEvent && navigator.pointerEnabled && navigator.maxTouchPoints) || msPointer,
+
+		ie3d = ie && ('transition' in doc.style),
+		webkit3d = ('WebKitCSSMatrix' in window) && ('m11' in new window.WebKitCSSMatrix()) && !android23,
+		gecko3d = 'MozPerspective' in doc.style,
+		opera3d = 'OTransition' in doc.style,
 		opera = window.opera;
+
+
+	var retina = 'devicePixelRatio' in window && window.devicePixelRatio > 1;
+
+	if (!retina && 'matchMedia' in window) {
+		var matches = window.matchMedia('(min-resolution:144dpi)');
+		retina = matches && matches.matches;
+	}
+
+	var touch = !window.L_NO_TOUCH && !phantomjs && (pointer || 'ontouchstart' in window || (window.DocumentTouch && document instanceof window.DocumentTouch));
 
 	VCO.Browser = {
 		ie: ie,
-		ie6: ie && !window.XMLHttpRequest,
-
+		ielt9: ie && !document.addEventListener,
 		webkit: webkit,
-		webkit3d: webkit && ('WebKitCSSMatrix' in window) && ('m11' in new window.WebKitCSSMatrix()),
+		//gecko: (ua.indexOf('gecko') !== -1) && !webkit && !window.opera && !ie,
+		firefox: (ua.indexOf('gecko') !== -1) && !webkit && !window.opera && !ie,
+		android: ua.indexOf('android') !== -1,
+		android23: android23,
+		chrome: ua.indexOf('chrome') !== -1,
 
-		gecko: ua.indexOf("gecko") !== -1,
-
-		opera: opera,
-
-		android: android,
-		mobileWebkit: mobile && webkit,
-		mobileOpera: mobile && opera,
+		ie3d: ie3d,
+		webkit3d: webkit3d,
+		gecko3d: gecko3d,
+		opera3d: opera3d,
+		any3d: !window.L_DISABLE_3D && (ie3d || webkit3d || gecko3d || opera3d) && !phantomjs,
 
 		mobile: mobile,
-		touch: (function () {
-			var touchSupported = false,
-				startName = 'ontouchstart';
+		mobileWebkit: mobile && webkit,
+		mobileWebkit3d: mobile && webkit3d,
+		mobileOpera: mobile && window.opera,
 
-			// WebKit, etc
-			if (startName in document.documentElement) {
-				return true;
-			}
+		touch: !! touch,
+		msPointer: !! msPointer,
+		pointer: !! pointer,
 
-			// Firefox/Gecko
-			var e = document.createElement('div');
-
-			// If no support for basic event stuff, unlikely to have touch support
-			if (!e.setAttribute || !e.removeAttribute) {
-				return false;
-			}
-
-			e.setAttribute(startName, 'return;');
-			if (typeof e[startName] === 'function') {
-				touchSupported = true;
-			}
-
-			e.removeAttribute(startName);
-			e = null;
-
-			return touchSupported;
-		}())
+		retina: !! retina
 	};
 
-}());
+}()); 

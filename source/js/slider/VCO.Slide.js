@@ -77,7 +77,8 @@ VCO.Slide = VCO.Class.extend({
 			duration: 			1000,
 			ease: 				VCO.Ease.easeInSpline,
 			width: 				600,
-			height: 			600
+			height: 			600,
+			media_name: 		""
 		};
 		
 		
@@ -161,13 +162,14 @@ VCO.Slide = VCO.Class.extend({
 		if (this.data.media && this.data.media.url && this.data.media.url != "") {
 			// Determine the media type
 			this.data.media.mediatype = VCO.MediaType(this.data.media);
-			
+			this.options.media_name = this.data.media.mediatype.name;
 			// Create a media object using the matched class name
 			this._media = new this.data.media.mediatype.cls(this.data.media, this.options);
 			
 			// add the object to the dom
 			this._media.addTo(this._el.content);
 			//this._media.loadMedia();
+			
 		}
 		
 		// Text

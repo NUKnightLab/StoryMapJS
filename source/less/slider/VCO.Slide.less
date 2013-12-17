@@ -7,10 +7,12 @@
 	padding:0px;
 	margin:0px;
 	display:table;
+	table-layout: fixed;
 	overflow-y:auto;
 	.vco-slide-content-container {
 		display:table-cell;
 		vertical-align:middle;
+		position:relative;
 		width:100%;
 		height:100%;
 		.vco-slide-content {
@@ -19,9 +21,12 @@
 			vertical-align:middle;
 			padding-left:100px;
 			padding-right:100px;
+			position:relative;
+			max-width:100%;
 			.vco-media {
 				//display:table-cell;
 				//vertical-align:middle;
+				position:relative;
 				width:100%;
 				min-width:50%;
 				//height:100%;
@@ -29,6 +34,9 @@
 				margin-top:auto;
 				margin-bottom:auto;
 				//margin-right:auto;
+				img, embed, object, video, iframe {
+					//width:100%;
+				}
 			}
 			.vco-text {
 				width:50%;

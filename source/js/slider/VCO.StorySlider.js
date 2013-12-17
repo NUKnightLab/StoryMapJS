@@ -481,6 +481,9 @@ VCO.StorySlider = VCO.Class.extend({
 	================================================== */
 	_createSlides: function(array) {
 		for (var i = 0; i < array.length; i++) {
+			if (array[i].uniqueid == "") {
+				array[i].uniqueid = VCO.Util.unique_ID(6, "vco-slide");
+			}
 			this._createSlide(array[i]);
 		};
 	},

@@ -496,9 +496,10 @@ VCO.StoryMap = VCO.Class.extend({
 		};
 	
 		this.options = {
-		    script_path:            '',
+			script_path:            "",
 			height: 				this._el.container.offsetHeight,
 			width: 					this._el.container.offsetWidth,
+			layout: 				"normal", // sidebyside to be added later
 			map_size_sticky: 		3, // Set as division 1/3 etc
 			map_center_offset: 		60, 
 			start_at_slide: 		0,
@@ -543,10 +544,10 @@ VCO.StoryMap = VCO.Class.extend({
 		    this.options.language = VCO.Language;
 		    this._initData(data);
 		} else {
-            VCO.Load.js(this.options.script_path +'/locale/'+this.options.language+'.js', function() {
-                self._initData(data);
-            });
-        }
+			VCO.Load.js(this.options.script_path + "/locale/" + this.options.language + ".js", function() {
+				self._initData(data);
+			});
+		}
 		return this;
 	},
 
