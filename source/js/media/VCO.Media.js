@@ -86,7 +86,8 @@ VCO.Media = VCO.Class.extend({
 				this.load_timer = setTimeout(function() {
 					self._loadMedia();
 					self._state.loaded = true;
-				}, 1000);
+					self._updateDisplay();
+				}, 1200);
 			} catch (e) {
 				trace("Error loading media for ", this._media);
 				trace(e);
