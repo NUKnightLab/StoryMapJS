@@ -166,32 +166,16 @@ VCO.Slide = VCO.Class.extend({
 			this._media = new this.data.media.mediatype.cls(this.data.media, this.options);
 			
 			// add the object to the dom
-			//this._media.addTo(this._el.content);
+			this._media.addTo(this._el.content);
 			//this._media.loadMedia();
 		}
 		
 		// Text
 		if (this.data.text) {
 			this._text = new VCO.Media.Text(this.data.text);
-			//this._text.addTo(this._el.content);
+			this._text.addTo(this._el.content);
 		}
-
-		if(this.options.layout == 'sxs') {
-			if(this._text) {
-			    this._text.addTo(this._el.content);
-			}      
-		    if(this._media) {
-			    this._media.addTo(this._el.content);
-			}
-		} else {
-		    if(this._media) {
-			    this._media.addTo(this._el.content);
-			}
-			if(this._text) {
-			    this._text.addTo(this._el.content);
-			}      
-        }
-        		
+		
 		// Fire event that the slide is loaded
 		this.onLoaded();
 		

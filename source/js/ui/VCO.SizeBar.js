@@ -60,7 +60,8 @@ VCO.SizeBar = VCO.Class.extend({
 	
 	/*	Public
 	================================================== */
-	show: function(d) {		
+	show: function(d) {
+		
 		var duration = this.options.duration;
 		if (d) {
 			duration = d;
@@ -74,13 +75,11 @@ VCO.SizeBar = VCO.Class.extend({
 	},
 	
 	hide: function(top) {
-        if(this.options.layout != 'sxs') {
-            this.animator = VCO.Animate(this._el.container, {
-                top: 		top,
-                duration: 	this.options.duration,
-                easing: 	VCO.Ease.easeOutStrong
-            });
-        }
+		this.animator = VCO.Animate(this._el.container, {
+			top: 		top,
+			duration: 	this.options.duration,
+			easing: 	VCO.Ease.easeOutStrong
+		});
 	},
 	
 	setSticky: function(y) {
@@ -215,7 +214,7 @@ VCO.SizeBar = VCO.Class.extend({
 	
 	// Update Display
 	_updateDisplay: function(width, height, animate, line_height) {
-	
+		
 		if (width) {
 			this.options.width = width;
 		}
@@ -226,13 +225,9 @@ VCO.SizeBar = VCO.Class.extend({
 		// Update draggable constraint
 		this._draggable.updateConstraint({bottom:this.options.height - this._el.container.offsetHeight });
 		
-        this._el.container.style.width = this.options.width + "px";
-		if(this.options.layout == 'sxs') {
-		    this._el.container.style.left = "0px";
-		} else {		
-		    this._el.arrow.style.left = ((this.options.width/2) - 17) + "px";
-		}
-
+		this._el.container.style.width = this.options.width + "px";
+		this._el.arrow.style.left = ((this.options.width/2) - 17) + "px";
+		
 		/*
 		this._el.line.style.left = ((this.options.width/2) ) + "px";
 		this._el.line.style.top = -((line_height/2) - 14) + "px";
