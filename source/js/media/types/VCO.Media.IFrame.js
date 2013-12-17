@@ -12,7 +12,7 @@ VCO.Media.IFrame = VCO.Media.extend({
 			self = this;
 		
 		// Loading Message
-		this.message.updateMessage(VCO.Language.messages.loading_iframe);
+		this.message.updateMessage(VCO.Language.messages.loading + " " + this.options.media_name);
 		
 		// Create Dom element
 		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe", this._el.content);

@@ -12,13 +12,17 @@ VCO.Media.DailyMotion = VCO.Media.extend({
 			self = this;
 		
 		// Loading Message
-		this.message.updateMessage(VCO.Language.messages.loading_dailymotion);
+		this.message.updateMessage(VCO.Language.messages.loading + " " + this.options.media_name);
 		
 		// Create Dom element
 		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe vco-media-dailymotion", this._el.content);
 		
 		// Get Media ID
-		this.media_id = this.data.url.split("embed\/")[1].split(/[?&]/)[0];
+		if (this.data.url.match("video")) {
+			this.media_id = this.data.url.split("video\/")[1].split(/[?&]/)[0];
+		} else {
+			this.media_id = this.data.url.split("embed\/")[1].split(/[?&]/)[0];
+		}
 		
 		// API URL
 		api_url = "http://www.dailymotion.com/embed/video/" + this.media_id;

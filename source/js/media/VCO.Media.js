@@ -86,7 +86,8 @@ VCO.Media = VCO.Class.extend({
 				this.load_timer = setTimeout(function() {
 					self._loadMedia();
 					self._state.loaded = true;
-				}, 1000);
+					self._updateDisplay();
+				}, 1200);
 			} catch (e) {
 				trace("Error loading media for ", this._media);
 				trace(e);
@@ -95,11 +96,18 @@ VCO.Media = VCO.Class.extend({
 			//this._state.loaded = true;
 		}
 		
+		
+		
 	},
 	
 	updateMediaDisplay: function() {
 		if (this._state.loaded) {
 			this._updateMediaDisplay();
+			// Fix for max-width issues in Firefox
+			if (VCO.Browser.firefox) {
+				trace("FIREFOX");
+				this._el.content_item.style.width = "100%";
+			}
 		}
 	},
 	
@@ -111,6 +119,13 @@ VCO.Media = VCO.Class.extend({
 		
 		_updateMediaDisplay: function() {
 			this._el.content_item.style.maxHeight = (this.options.height - this.options.credit_height - this.options.caption_height - 16) + "px";
+			
+			// Fix for max-width issues in Firefox
+			if (VCO.Browser.firefox) {
+				trace("FIREFOX");
+				this._el.content_item.style.width = "100%";
+				trace(this._el.content_item);
+			}
 		},
 	
 	/*	Public

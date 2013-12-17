@@ -1800,61 +1800,72 @@ VCO.Events.fire = VCO.Events.fireEvent;
      Begin VCO.Browser.js
 ********************************************** */
 
+/*
+	Based on Leaflet Browser
+	VCO.Browser handles different browser and feature detections for internal  use.
+*/
 
-(function () {
+
+(function() {
+
 	var ua = navigator.userAgent.toLowerCase(),
-		ie = !!window.ActiveXObject,
-		webkit = ua.indexOf("webkit") !== -1,
-		mobile = typeof orientation !== 'undefined' ? true : false,
-		android = ua.indexOf("android") !== -1,
+		doc = document.documentElement,
+
+		ie = 'ActiveXObject' in window,
+
+		webkit = ua.indexOf('webkit') !== -1,
+		phantomjs = ua.indexOf('phantom') !== -1,
+		android23 = ua.search('android [23]') !== -1,
+
+		mobile = typeof orientation !== 'undefined',
+		msPointer = navigator.msPointerEnabled && navigator.msMaxTouchPoints && !window.PointerEvent,
+		pointer = (window.PointerEvent && navigator.pointerEnabled && navigator.maxTouchPoints) || msPointer,
+
+		ie3d = ie && ('transition' in doc.style),
+		webkit3d = ('WebKitCSSMatrix' in window) && ('m11' in new window.WebKitCSSMatrix()) && !android23,
+		gecko3d = 'MozPerspective' in doc.style,
+		opera3d = 'OTransition' in doc.style,
 		opera = window.opera;
+
+
+	var retina = 'devicePixelRatio' in window && window.devicePixelRatio > 1;
+
+	if (!retina && 'matchMedia' in window) {
+		var matches = window.matchMedia('(min-resolution:144dpi)');
+		retina = matches && matches.matches;
+	}
+
+	var touch = !window.L_NO_TOUCH && !phantomjs && (pointer || 'ontouchstart' in window || (window.DocumentTouch && document instanceof window.DocumentTouch));
 
 	VCO.Browser = {
 		ie: ie,
-		ie6: ie && !window.XMLHttpRequest,
-
+		ielt9: ie && !document.addEventListener,
 		webkit: webkit,
-		webkit3d: webkit && ('WebKitCSSMatrix' in window) && ('m11' in new window.WebKitCSSMatrix()),
+		//gecko: (ua.indexOf('gecko') !== -1) && !webkit && !window.opera && !ie,
+		firefox: (ua.indexOf('gecko') !== -1) && !webkit && !window.opera && !ie,
+		android: ua.indexOf('android') !== -1,
+		android23: android23,
+		chrome: ua.indexOf('chrome') !== -1,
 
-		gecko: ua.indexOf("gecko") !== -1,
-
-		opera: opera,
-
-		android: android,
-		mobileWebkit: mobile && webkit,
-		mobileOpera: mobile && opera,
+		ie3d: ie3d,
+		webkit3d: webkit3d,
+		gecko3d: gecko3d,
+		opera3d: opera3d,
+		any3d: !window.L_DISABLE_3D && (ie3d || webkit3d || gecko3d || opera3d) && !phantomjs,
 
 		mobile: mobile,
-		touch: (function () {
-			var touchSupported = false,
-				startName = 'ontouchstart';
+		mobileWebkit: mobile && webkit,
+		mobileWebkit3d: mobile && webkit3d,
+		mobileOpera: mobile && window.opera,
 
-			// WebKit, etc
-			if (startName in document.documentElement) {
-				return true;
-			}
+		touch: !! touch,
+		msPointer: !! msPointer,
+		pointer: !! pointer,
 
-			// Firefox/Gecko
-			var e = document.createElement('div');
-
-			// If no support for basic event stuff, unlikely to have touch support
-			if (!e.setAttribute || !e.removeAttribute) {
-				return false;
-			}
-
-			e.setAttribute(startName, 'return;');
-			if (typeof e[startName] === 'function') {
-				touchSupported = true;
-			}
-
-			e.removeAttribute(startName);
-			e = null;
-
-			return touchSupported;
-		}())
+		retina: !! retina
 	};
 
-}());
+}()); 
 
 /* **********************************************
      Begin VCO.Load.js
@@ -2307,36 +2318,17 @@ VCO.LoadIt = (function (doc) {
 ********************************************** */
 
 VCO.Language = {
-	name: "English",
-	lang: "en",
-	api: {
-		wikipedia: "en"
-	},
-	date: {
-		month: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-		month_abbr: ["Jan.", "Feb.", "March", "April", "May", "June", "July", "Aug.", "Sept.", "Oct.", "Nov.", "Dec."],
-		day: ["Sunday","Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-		day_abbr: ["Sun.","Mon.", "Tues.", "Wed.", "Thurs.", "Fri.", "Sat."]
-	}, 
-	dateformats: {
-		year: "yyyy",
-		month_short: "mmm",
-		month: "mmmm yyyy",
-		full_short: "mmm d",
-		full: "mmmm d',' yyyy",
-		time_no_seconds_short: "h:MM TT",
-		time_no_seconds_small_date: "h:MM TT'<br/><small>'mmmm d',' yyyy'</small>'",
-		full_long: "mmm d',' yyyy 'at' h:MM TT",
-		full_long_small_date: "h:MM TT'<br/><small>mmm d',' yyyy'</small>'"
-	},
+	name: 					"English",
+	lang: 					"en",
 	messages: {
-		loading_timeline: "Loading Timeline... ",
-		return_to_title: "Return to Title",
-		expand_timeline: "Expand Timeline",
-		contract_timeline: "Contract Timeline",
-		wikipedia: "From Wikipedia, the free encyclopedia",
-		loading_content: "Loading Content",
-		loading: "Loading"
+		loading: 			"Loading",
+		wikipedia: 			"From Wikipedia, the free encyclopedia",
+	},
+	buttons: {
+	    map_overview: 		"Map Overview",
+	    backtostart: 		"Back To Beginning",
+	    collapse_toggle: 	"Hide Map",
+	    uncollapse_toggle: 	"Show Map"
 	}
 }
 
@@ -4096,38 +4088,35 @@ VCO.SizeBar = VCO.Class.extend({
 			this.show();
 			this._el.button_overview.style.display = "inline";
 			this.fire("swipe", {y:this.options.sizebar_default_y});
-			this._el.button_collapse_toggle.innerHTML	= "Hide Map";
+			this._el.button_collapse_toggle.innerHTML	= VCO.Language.buttons.collapse_toggle;
 		} else {
 			this.collapsed = true;
 			this.hide(VCO.Dom.getPosition(this._el.parent).y + 25);
 			this._el.button_overview.style.display = "none";
 			this.fire("swipe", {y:1});
-			this._el.button_collapse_toggle.innerHTML	= "Show Map";
+			this._el.button_collapse_toggle.innerHTML = VCO.Language.buttons.uncollapse_toggle;
 		}
 	},
 	
 	/*	Private Methods
 	================================================== */
 	_initLayout: function () {
-		
 		// Create Layout
 		this._el.arrow						= VCO.Dom.create("div", "vco-arrow-up", this._el.container);
 		this._el.container.style.top		= this.options.sizebar_default_y + "px";
 		
 		// Buttons
 		this._el.button_overview 					= VCO.Dom.create('span', 'vco-sizebar-button', this._el.container);
-		this._el.button_overview.innerHTML			= "Map Overview";
+		this._el.button_overview.innerHTML			= VCO.Language.buttons.map_overview;
 		VCO.DomEvent.addListener(this._el.button_overview, 'click', this._onButtonOverview, this);
 		
 		this._el.button_backtostart 				= VCO.Dom.create('span', 'vco-sizebar-button', this._el.container);
-		this._el.button_backtostart.innerHTML		= "Back to Beginning";
+		this._el.button_backtostart.innerHTML		= VCO.Language.buttons.backtostart;
 		VCO.DomEvent.addListener(this._el.button_backtostart, 'click', this._onButtonBackToStart, this);
 		
 		this._el.button_collapse_toggle 			= VCO.Dom.create('span', 'vco-sizebar-button', this._el.container);
-		this._el.button_collapse_toggle.innerHTML	= "Hide Map";
+		this._el.button_collapse_toggle.innerHTML	= VCO.Language.buttons.collapse_toggle;
 		VCO.DomEvent.addListener(this._el.button_collapse_toggle, 'click', this._onButtonCollapseMap, this);
-		
-		
 		
 		//this._el.line = VCO.Dom.create("div", "vco-map-line", this._el.container);
 		//this._el.coverbar = VCO.Dom.create("div", "vco-coverbar", this._el.container);
@@ -4146,9 +4135,6 @@ VCO.SizeBar = VCO.Class.extend({
 		this._draggable.on('momentum', this._onMomentum, this);
 
 		this._draggable.enable();
-		
-		
-		
 	},
 	
 	_initEvents: function () {
@@ -4314,91 +4300,109 @@ VCO.MediaType = function(m) {
 		media_types = 	[
 			{
 				type: 		"youtube",
+				name: 		"YouTube", 
 				match_str: 	"(www.)?youtube|youtu\.be",
 				cls: 		VCO.Media.YouTube
 			},
 			{
 				type: 		"vimeo",
+				name: 		"Vimeo", 
 				match_str: 	"(player.)?vimeo\.com",
 				cls: 		VCO.Media.Vimeo
 			},
 			{
 				type: 		"dailymotion",
+				name: 		"DailyMotion", 
 				match_str: 	"(www.)?dailymotion\.com",
 				cls: 		VCO.Media.DailyMotion
 			},
 			{
 				type: 		"vine",
+				name: 		"Vine", 
 				match_str: 	"(www.)?vine\.co",
 				cls: 		VCO.Media.Vine
 			},
 			{
 				type: 		"soundcloud",
+				name: 		"SoundCloud", 
 				match_str: 	"(player.)?soundcloud\.com",
 				cls: 		VCO.Media.SoundCloud
 			},
 			{
 				type: 		"twitter",
+				name: 		"Twitter", 
 				match_str: 	"(www.)?twitter\.com",
 				cls: 		VCO.Media.Twitter
 			},
 			{
 				type: 		"googlemaps",
+				name: 		"Google Map", 
 				match_str: 	"maps.google",
 				cls: 		VCO.Media.Map
 			},
 			{
 				type: 		"googleplus",
+				name: 		"Google+", 
 				match_str: 	"plus.google",
 				cls: 		VCO.Media.GooglePlus
 			},
 			{
 				type: 		"flickr",
+				name: 		"Flickr", 
 				match_str: 	"flickr.com/photos",
 				cls: 		VCO.Media.Flickr
 			},
 			{
 				type: 		"instagram",
+				name: 		"Instagram", 
 				match_str: 	"instagr.am/p/",
 				cls: 		VCO.Media
 			},
 			{
 				type: 		"image",
+				name: 		"Image",
 				match_str: 	/jpg|jpeg|png|gif/i,
 				cls: 		VCO.Media.Image
 			},
 			{
 				type: 		"googledocs",
+				name: 		"Google Doc",
 				match_str: 	/\b.(doc|docx|xls|xlsx|ppt|pptx|pdf|pages|ai|psd|tiff|dxf|svg|eps|ps|ttf|xps|zip|tif)\b/,
 				cls: 		VCO.Media.GoogleDoc
 			},
 			{
 				type: 		"wikipedia",
+				name: 		"Wikipedia",
 				match_str: 	"(www.)?wikipedia\.org",
 				cls: 		VCO.Media.Wikipedia
 			},
 			{
 				type: 		"iframe",
+				name: 		"iFrame",
 				match_str: 	"iframe",
 				cls: 		VCO.Media.IFrame
 			},
 			{
 				type: 		"storify",
+				name: 		"Storify",
 				match_str: 	"storify",
 				cls: 		VCO.Media.Storify
 			},
 			{
 				type: 		"blockquote",
+				name: 		"Quote",
 				match_str: 	"blockquote",
 				cls: 		VCO.Media.Blockquote
 			},
 			{
 				type: 		"website",
+				name: 		"Website",
 				match_str: 	"http://",
 				cls: 		VCO.Media.Website
 			},
 			{
 				type: 		"",
+				name: 		"",
 				match_str: 	"",
 				cls: 		VCO.Media
 			}
@@ -4515,7 +4519,8 @@ VCO.Media = VCO.Class.extend({
 				this.load_timer = setTimeout(function() {
 					self._loadMedia();
 					self._state.loaded = true;
-				}, 1000);
+					self._updateDisplay();
+				}, 1200);
 			} catch (e) {
 				trace("Error loading media for ", this._media);
 				trace(e);
@@ -4524,11 +4529,18 @@ VCO.Media = VCO.Class.extend({
 			//this._state.loaded = true;
 		}
 		
+		
+		
 	},
 	
 	updateMediaDisplay: function() {
 		if (this._state.loaded) {
 			this._updateMediaDisplay();
+			// Fix for max-width issues in Firefox
+			if (VCO.Browser.firefox) {
+				trace("FIREFOX");
+				this._el.content_item.style.width = "100%";
+			}
 		}
 	},
 	
@@ -4540,6 +4552,13 @@ VCO.Media = VCO.Class.extend({
 		
 		_updateMediaDisplay: function() {
 			this._el.content_item.style.maxHeight = (this.options.height - this.options.credit_height - this.options.caption_height - 16) + "px";
+			
+			// Fix for max-width issues in Firefox
+			if (VCO.Browser.firefox) {
+				trace("FIREFOX");
+				this._el.content_item.style.width = "100%";
+				trace(this._el.content_item);
+			}
 		},
 	
 	/*	Public
@@ -4668,7 +4687,7 @@ VCO.Media.Blockquote = VCO.Media.extend({
 	_loadMedia: function() {
 		
 		// Loading Message
-		this.message.updateMessage(VCO.Language.messages.loading + " SoundCloud");
+		this.message.updateMessage(VCO.Language.messages.loading + " " + this.options.media_name);
 		
 		// Create Dom element
 		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-blockquote", this._el.content);
@@ -4711,7 +4730,7 @@ VCO.Media.Flickr = VCO.Media.extend({
 			self = this;
 		
 		// Loading Message
-		this.message.updateMessage(VCO.Language.messages.loading + " Flickr");
+		this.message.updateMessage(VCO.Language.messages.loading + " " + this.options.media_name);
 		
 		// Create Dom element
 		this._el.content_item	= VCO.Dom.create("img", "vco-media-item vco-media-image vco-media-flickr vco-media-shadow", this._el.content);
@@ -4796,7 +4815,7 @@ VCO.Media.GoogleDoc = VCO.Media.extend({
 			self = this;
 		
 		// Loading Message
-		this.message.updateMessage(VCO.Language.messages.loading + " Google Doc");
+		this.message.updateMessage(VCO.Language.messages.loading + " " + this.options.media_name);
 		
 		// Create Dom element
 		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe", this._el.content);
@@ -4845,7 +4864,7 @@ VCO.Media.GooglePlus = VCO.Media.extend({
 			self = this;
 		
 		// Loading Message
-		this.message.updateMessage(VCO.Language.messages.loading + " GooglePlus");
+		this.message.updateMessage(VCO.Language.messages.loading + " " + this.options.media_name);
 		
 		// Create Dom element
 		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-googleplus", this._el.content);
@@ -4890,7 +4909,7 @@ VCO.Media.IFrame = VCO.Media.extend({
 			self = this;
 		
 		// Loading Message
-		this.message.updateMessage(VCO.Language.messages.loading + " iFrame");
+		this.message.updateMessage(VCO.Language.messages.loading + " " + this.options.media_name);
 		
 		// Create Dom element
 		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe", this._el.content);
@@ -4933,6 +4952,8 @@ VCO.Media.Image = VCO.Media.extend({
 	/*	Load the media
 	================================================== */
 	_loadMedia: function() {
+		// Loading Message
+		this.message.updateMessage(VCO.Language.messages.loading + " " + this.options.media_name);
 		//this._el.content.className += " vco-media-shadow ";
 		this._el.content_item				= VCO.Dom.create("img", "vco-media-item vco-media-image vco-media-shadow", this._el.content);
 		this._el.content_item.src			= this.data.url;
@@ -4960,7 +4981,7 @@ VCO.Media.SoundCloud = VCO.Media.extend({
 			self = this;
 		
 		// Loading Message
-		this.message.updateMessage(VCO.Language.messages.loading + " SoundCloud");
+		this.message.updateMessage(VCO.Language.messages.loading + " " + this.options.media_name);
 		
 		// Create Dom element
 		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe vco-media-soundcloud vco-media-shadow", this._el.content);
@@ -5005,7 +5026,7 @@ VCO.Media.Storify = VCO.Media.extend({
 		var content;
 		
 		// Loading Message
-		this.message.updateMessage(VCO.Language.messages.loading + " Storify");
+		this.message.updateMessage(VCO.Language.messages.loading + " " + this.options.media_name);
 		
 		// Create Dom element
 		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe vco-media-storify", this._el.content);
@@ -5161,7 +5182,7 @@ VCO.Media.Twitter = VCO.Media.extend({
 			self = this;
 			
 		// Loading Message
-		this.message.updateMessage(VCO.Language.messages.loading + " Tweet");
+		this.message.updateMessage(VCO.Language.messages.loading + " " + this.options.media_name);
 		
 		// Create Dom element
 		this._el.content_item = VCO.Dom.create("div", "vco-media-twitter", this._el.content);
@@ -5233,7 +5254,7 @@ VCO.Media.Vimeo = VCO.Media.extend({
 			self = this;
 		
 		// Loading Message
-		this.message.updateMessage(VCO.Language.messages.loading + " Vimeo");
+		this.message.updateMessage(VCO.Language.messages.loading + " " + this.options.media_name);
 		
 		// Create Dom element
 		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe vco-media-vimeo vco-media-shadow", this._el.content);
@@ -5277,13 +5298,17 @@ VCO.Media.DailyMotion = VCO.Media.extend({
 			self = this;
 		
 		// Loading Message
-		this.message.updateMessage(VCO.Language.messages.loading + " DailyMotion");
+		this.message.updateMessage(VCO.Language.messages.loading + " " + this.options.media_name);
 		
 		// Create Dom element
 		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe vco-media-dailymotion", this._el.content);
 		
 		// Get Media ID
-		this.media_id = this.data.url.split("embed\/")[1].split(/[?&]/)[0];
+		if (this.data.url.match("video")) {
+			this.media_id = this.data.url.split("video\/")[1].split(/[?&]/)[0];
+		} else {
+			this.media_id = this.data.url.split("embed\/")[1].split(/[?&]/)[0];
+		}
 		
 		// API URL
 		api_url = "http://www.dailymotion.com/embed/video/" + this.media_id;
@@ -5322,7 +5347,7 @@ VCO.Media.Vine = VCO.Media.extend({
 			self = this;
 		
 		// Loading Message
-		this.message.updateMessage(VCO.Language.messages.loading + " SoundCloud");
+		this.message.updateMessage(VCO.Language.messages.loading + " " + this.options.media_name);
 		
 		// Create Dom element
 		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe vco-media-vine vco-media-shadow", this._el.content);
@@ -5401,7 +5426,7 @@ VCO.Media.Wikipedia = VCO.Media.extend({
 			self = this;
 		
 		// Loading Message
-		this.message.updateMessage(VCO.Language.messages.loading + " Wikipedia");
+		this.message.updateMessage(VCO.Language.messages.loading + " " + this.options.media_name);
 		
 		// Create Dom element
 		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-wikipedia", this._el.content);
@@ -5491,7 +5516,7 @@ VCO.Media.YouTube = VCO.Media.extend({
 			url_vars;
 		
 		// Loading Message 
-		this.message.updateMessage(VCO.Language.messages.loading + " YouTube");
+		this.message.updateMessage(VCO.Language.messages.loading + " " + this.options.media_name);
 		
 		// Create Dom element
 		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-youtube vco-media-shadow", this._el.content);
@@ -5527,8 +5552,9 @@ VCO.Media.YouTube = VCO.Media.extend({
 	
 	// Update Media Display
 	_updateMediaDisplay: function() {
+		//this._el.content_item.style.height = VCO.Util.ratio.r16_9({w:this._el.content_item.offsetWidth}) + "px";
+		//this._el.content_item.height = VCO.Util.ratio.r16_9({w:this._el.content_item.offsetWidth}) + "px";
 		this._el.content_item.style.height = VCO.Util.ratio.r16_9({w:this._el.content_item.offsetWidth}) + "px";
-		this._el.content_item.height = VCO.Util.ratio.r16_9({w:this._el.content_item.offsetWidth}) + "px";
 	},
 	
 	
@@ -5725,7 +5751,8 @@ VCO.Slide = VCO.Class.extend({
 			duration: 			1000,
 			ease: 				VCO.Ease.easeInSpline,
 			width: 				600,
-			height: 			600
+			height: 			600,
+			media_name: 		""
 		};
 		
 		
@@ -5809,13 +5836,14 @@ VCO.Slide = VCO.Class.extend({
 		if (this.data.media && this.data.media.url && this.data.media.url != "") {
 			// Determine the media type
 			this.data.media.mediatype = VCO.MediaType(this.data.media);
-			
+			this.options.media_name = this.data.media.mediatype.name;
 			// Create a media object using the matched class name
 			this._media = new this.data.media.mediatype.cls(this.data.media, this.options);
 			
 			// add the object to the dom
 			this._media.addTo(this._el.content);
 			//this._media.loadMedia();
+			
 		}
 		
 		// Text
@@ -6455,6 +6483,9 @@ VCO.StorySlider = VCO.Class.extend({
 	================================================== */
 	_createSlides: function(array) {
 		for (var i = 0; i < array.length; i++) {
+			if (array[i].uniqueid == "") {
+				array[i].uniqueid = VCO.Util.unique_ID(6, "vco-slide");
+			}
 			this._createSlide(array[i]);
 		};
 	},
@@ -6639,17 +6670,13 @@ VCO.StorySlider = VCO.Class.extend({
 		// add the navigation to the dom
 		this._nav.next.addTo(this._el.container);
 		this._nav.previous.addTo(this._el.container);
-		
-		
-		this._el.slider_container.style.left="0px";
-		
+				
+		this._el.slider_container.style.left="0px";		
 	},
 	
 	_initEvents: function () {
-		
 		this._nav.next.on('clicked', this._onNavigation, this);
 		this._nav.previous.on('clicked', this._onNavigation, this);
-
 	},
 	
 	_initData: function() {
@@ -16027,7 +16054,7 @@ VCO.Map = VCO.Class.extend({
 	
 		//Options
 		this.options = {
-			map_type: 			"toner",
+			map_type: 			"stamen:toner",
 			path_gfx: 			"gfx",
 			start_at_slide: 	0,
 			map_popup: 			false, 
@@ -16498,8 +16525,28 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		this._map.on("load", this._onMapLoaded, this);
 		//this._map.setView([51.505, -0.09], 13);
 		
-		var layer = new L.StamenTileLayer(this.options.map_type);
+		//var layer = new L.StamenTileLayer(this.options.map_type);		
+		var layer = null;
+		var map_type_arr = this.options.map_type.split(':');		
 
+		switch(map_type_arr[0]) {
+		    case 'stamen':
+		        layer = new L.StamenTileLayer(map_type_arr[1] || 'toner')
+		        break;
+
+		    case 'osm':
+		        layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {subdomains: 'ab'});
+		        break;
+		    
+		    case 'http':
+		    case 'https':
+		        layer = new L.TileLayer(this.options.map_type, {subdomains: this.options.map_subdomains});
+		        break;
+		        
+		    default:
+		        layer = new L.StamenTileLayer('toner');
+		        break;		
+		}
 		this._map.addLayer(layer);
 		
 		// Create Overall Connection Line
@@ -16813,6 +16860,7 @@ VCO.StoryMap = VCO.Class.extend({
 	/*	Private Methods
 	================================================== */
 	initialize: function (elem, data, options) {
+		var self = this;
 		
 		// Ready
 		this.ready = false;
@@ -17228,8 +17276,10 @@ VCO.StoryMap = VCO.Class.extend({
 		};
 	
 		this.options = {
+			script_path:            "",
 			height: 				this._el.container.offsetHeight,
 			width: 					this._el.container.offsetWidth,
+			layout: 				"normal", // sidebyside to be added later
 			map_size_sticky: 		3, // Set as division 1/3 etc
 			map_center_offset: 		60, 
 			start_at_slide: 		0,
@@ -17256,11 +17306,7 @@ VCO.StoryMap = VCO.Class.extend({
 			show_lines: 			true,
 			show_history_line: 		true,
 			api_key_flickr: 		"f2cc870b4d233dd0a5bfe73fd0d64ef0",
-			language: {
-				name: "English",
-				
-			}
-			
+			language:               "en"		
 		};
 		
 		// Current Slide
@@ -17272,7 +17318,16 @@ VCO.StoryMap = VCO.Class.extend({
 		
 		// Merge Options
 		VCO.Util.mergeData(this.options, options);
-		this._initData(data);
+		
+		// Load language
+		if(this.options.language == 'en') {
+		    this.options.language = VCO.Language;
+		    this._initData(data);
+		} else {
+			VCO.Load.js(this.options.script_path + "/locale/" + this.options.language + ".js", function() {
+				self._initData(data);
+			});
+		}
 		return this;
 	},
 
@@ -17308,8 +17363,11 @@ VCO.StoryMap = VCO.Class.extend({
 				self._onDataLoaded();
 			});
 		} else if (typeof data === 'object') {
-			// Merge Data
-			this.data = data;
+			if (data.storymap) {
+				self.data = data.storymap;
+			} else {
+				trace("data must have a storymap property")
+			}
 			self._onDataLoaded();
 		} else {
 			self._onDataLoaded();
@@ -17318,6 +17376,7 @@ VCO.StoryMap = VCO.Class.extend({
 	
 	// Initialize the layout
 	_initLayout: function () {
+		var self = this;
 		
 		this._el.container.className += ' vco-storymap';
 		
@@ -17527,7 +17586,7 @@ VCO.StoryMap = VCO.Class.extend({
 		this._loaded.storyslider = true;
 		this._onLoaded();
 	},
-	
+		
 	_onLoaded: function() {
 		if (this._loaded.storyslider && this._loaded.map) {
 			trace("STORYMAP IS READY");

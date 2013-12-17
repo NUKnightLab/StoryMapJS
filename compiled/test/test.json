@@ -5,11 +5,7 @@
 		"slides": [
 			{
 				"type": 					"overview", 
-				"background": {			
-					"url": 				null,
-					"color": 				"#cdbfe3",
-					"opacity": 			50
-				},
+
 				"date": 					"1835",
 				"location": {
 					"lat": 				39.491711,
@@ -100,7 +96,7 @@
 					"text": 				"Begins work as a journeyman printer with the Hannibal Gazette. Publishes first sketches."
 				},
 				"media": {
-					"url": 				"https://soundcloud.com/beastieboys/make-some-noise",
+					"url": 				"http://www.youtube.com/watch?v=C-nTpGMMVjY",
 					"credit":				null,
 					"caption":			null
 				}
