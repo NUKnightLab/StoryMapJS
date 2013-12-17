@@ -4952,6 +4952,8 @@ VCO.Media.Image = VCO.Media.extend({
 	/*	Load the media
 	================================================== */
 	_loadMedia: function() {
+		// Loading Message
+		this.message.updateMessage(VCO.Language.messages.loading + " " + this.options.media_name);
 		//this._el.content.className += " vco-media-shadow ";
 		this._el.content_item				= VCO.Dom.create("img", "vco-media-item vco-media-image vco-media-shadow", this._el.content);
 		this._el.content_item.src			= this.data.url;
@@ -5302,7 +5304,11 @@ VCO.Media.DailyMotion = VCO.Media.extend({
 		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe vco-media-dailymotion", this._el.content);
 		
 		// Get Media ID
-		this.media_id = this.data.url.split("embed\/")[1].split(/[?&]/)[0];
+		if (this.data.url.match("video")) {
+			this.media_id = this.data.url.split("video\/")[1].split(/[?&]/)[0];
+		} else {
+			this.media_id = this.data.url.split("embed\/")[1].split(/[?&]/)[0];
+		}
 		
 		// API URL
 		api_url = "http://www.dailymotion.com/embed/video/" + this.media_id;
