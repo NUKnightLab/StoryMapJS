@@ -1,10 +1,10 @@
 #StoryMapJS: Maps that tell stories.
 
-[StoryMapJS](http://storymap.knightlab.com) is a simple tool to help you tell stories with maps. If you're not a programmer, you don't need to spend much time on this site—instead, go [StoryMapJS](http://storymap.knightlab.com)
+[StoryMapJS](http://storymap.knightlab.com) is a simple tool to help you tell stories with maps. If you're not a programmer, you don't need to spend much time on the GitHub page—instead, go [StoryMapJS](http://storymap.knightlab.com)
 
 If you want information on creating JSON with your own code and embedding it, see the ["Advanced"](http://storymap.knightlab.com/advanced.html) documentation on the StoryMap website.
 
-The rest of this document explains how to set up to make changes to the StoryMap Javascript yourself
+The rest of this document gets into a few technical details that some folks might want.
 
 ## Setting up a development environment
 
