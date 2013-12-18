@@ -19,17 +19,21 @@
       <p>
         You'll need to include code something like the following.
         <pre class="prettyprint">
-          &lt;!-- The StoryMap container can go anywhere on the page --&gt;
-          &lt;div id="my-storymap-will-go-here"&gt;&lt;/div&gt; 
-          &lt;!-- Your script tags should be at the bottom of the page just before the closing body tag --&gt;
-          &lt;script src="http://cdn.knightlab.com/libs/storymapjs/latest/js/storymap-min.js"&gt;&lt;/script&gt;
-          &lt;script&gt;
-            var storymap_data = 'http://storymap.knightlab.com/static/demo/demo.json'; // This can also be a javascript object.
-            var storymap = new VCO.StoryMap('my-storymap-will-go-here', storymap_data);
-            window.onresize = function(event) {
-             storymap.updateDisplay();
-            }
-          &lt;/script&gt;
+  &lt;!-- The StoryMap container can go anywhere on the page. Be sure to specify a width and height. 
+          Width can be absolute (in pixels) or relative (in percentage) but height must be an absolute value. 
+          Of course, you can specify width and height with CSS instead --&gt;
+  &lt;div id="mapdiv" style="width: 100%; height: 600px"&gt;&lt;/div&gt; 
+  &lt;!-- Your script tags should be at the bottom of the page just before the closing body tag --&gt;
+  &lt;link rel="stylesheet" href="http://cdn.knightlab.com/libs/storymapjs/latest/css/storymap.css"&gt;
+  &lt;script type="text/javascript" src="http://cdn.knightlab.com/libs/storymapjs/latest/js/storymap-min.js"&gt;&lt;/script&gt;
+  &lt;script&gt;
+  var storymap_data = 'http://storymap.knightlab.com/static/demo/demo.json'; // This can be a URL or a Javascript object
+  var storymap = new VCO.StoryMap('mapdiv', storymap_data);
+  window.onresize = function(event) {
+    storymap.updateDisplay(); // this isn't automatic
+  }          
+
+  &lt;/script&gt;
         </pre>
       </p>
 
@@ -55,7 +59,7 @@
             <li><code>osm:standard</code> - the maps used by OpenStreetMap<a href="http://www.openstreetmap.org/#map=16/42.0502/-87.6746" target="_blank" title="example"><i class="icon-external-link"></i></a></li>
           </ul>
           <p>
-            In addition to the above values, you can specify a custom URL tile template <a href="http://leafletjs.com/reference.html#tilelayer" target="_blank">as described in the Leaflet documentation</a>.
+            In addition to the above values, the value of <code>map_type</code> can be a custom URL tile template <a href="http://leafletjs.com/reference.html#tilelayer" target="_blank">as described in the Leaflet documentation</a>.
           </p> 
         </li>
         <li><code>map_subdomains</code> - only relevant if you specify a custom URL tile template as described above. Specified as a string where each character is a valid subdomain substitution, or array of strings.</li>
@@ -70,11 +74,8 @@
         <li><code>type</code> - most slides will not have a type: you can either leave it out or make it blank. There is one valid non-blank value: <code>overview</code>. If a slide is of type 'overview', then the map will be shown so that all locations in the configuration are visible at once. This is recommended for your first and/or last slide.</li>
         <li><code>location</code> - required for all slides, except for 'overview' slides; a javascript object with the following properties. 
           <ul>
-            <li><code>name</code> A name or description of the place. Shown in the next/previous navigation. </li>
             <li><code>lat</code> - the latitude of the point for the map. Use decimal notation, with negative numbers for western latitudes</li>
             <li><code>lon</code> - the latitude of the point for the map. Use decimal notation, with negative numbers for southern longitudes</li>
-            <li><code>zoom</code> - the map zoom level desired for the slide. An integer, where lower values are "further" and higher values are "closer" to the ground. Technically, the maximum value is a property of the specific tile set you are using; zoom levels above 19 are rarely supported.</li>
-            <li><code>line</code> - a boolean value. If true, this point will be included on a line connected to all other points with "true" values for line. Separately from this value, as a user navigates through a story, StoryMapJS will draw a darker "active" line connecting the current location to the previous location in the story. (Is this the behavior you expect? You can give us feedback) </li>
           </ul>
         </li>
         <li><code>text</code> - optional. If omitted, the content of the 'media' (described below) will be centered on the slide; a javascript object with the following properties.

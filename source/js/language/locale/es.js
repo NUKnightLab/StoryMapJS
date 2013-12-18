@@ -1,14 +1,14 @@
 VCO.Language = {
-    name: 					"Spanish",
-    lang: 					"es",
+    name: "Español",
+    lang: "es",
     messages: {
-        loading: 			"cargando",
-		wikipedia: 			"From Wikipedia, the free encyclopedia",
+        loading: "cargando",
+        wikipedia: "de Wikipedia, la enciclopedia libre",
     },
     buttons: {
-        map_overview: 		"vista general del mapa",
-        backtostart: 		"volver al comienzo",
-        collapse_toggle: 	"ocultar mapa",
-        uncollapse_toggle: 	"mostrar mapa"
+        map_overview:      "vista general del mapa",
+        backtostart:       "volver al comienzo",
+        collapse_toggle:   "ocultar mapa",
+        uncollapse_toggle: "mostrar mapa"
     }
 };
