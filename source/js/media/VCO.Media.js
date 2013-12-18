@@ -103,11 +103,16 @@ VCO.Media = VCO.Class.extend({
 	updateMediaDisplay: function() {
 		if (this._state.loaded) {
 			this._updateMediaDisplay();
+			this._el.content_item.style.maxHeight = (this.options.height - this.options.credit_height - this.options.caption_height - 16) + "px";
 			// Fix for max-width issues in Firefox
 			if (VCO.Browser.firefox) {
 				trace("FIREFOX");
-				this._el.content_item.style.width = "100%";
+				if (this._el.content_item.offsetWidth > this._el.content_item.offsetHeight) {
+					this._el.content_item.style.width = "100%";
+				}
 			}
+			
+			
 		}
 	},
 	
@@ -118,14 +123,7 @@ VCO.Media = VCO.Class.extend({
 		},
 		
 		_updateMediaDisplay: function() {
-			this._el.content_item.style.maxHeight = (this.options.height - this.options.credit_height - this.options.caption_height - 16) + "px";
-			
-			// Fix for max-width issues in Firefox
-			if (VCO.Browser.firefox) {
-				trace("FIREFOX");
-				this._el.content_item.style.width = "100%";
-				trace(this._el.content_item);
-			}
+			//this._el.content_item.style.maxHeight = (this.options.height - this.options.credit_height - this.options.caption_height - 16) + "px";
 		},
 	
 	/*	Public

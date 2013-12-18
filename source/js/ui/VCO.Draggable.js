@@ -112,7 +112,7 @@ VCO.Draggable = VCO.Class.extend({
 		//VCO.DomEvent.addListener(this._el.drag, this.dragevent.down, this._onDragStart, this);
 		//VCO.DomEvent.addListener(this._el.drag, this.dragevent.up, this._onDragEnd, this);
 		
-		this.data.pos.start = VCO.Dom.getPosition(this._el.move);
+		this.data.pos.start = 0; //VCO.Dom.getPosition(this._el.move);
 		this._el.move.style.left = this.data.pos.start.x + "px";
 		this._el.move.style.top = this.data.pos.start.y + "px";
 		this._el.move.style.position = "absolute";

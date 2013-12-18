@@ -500,6 +500,7 @@ VCO.StoryMap = VCO.Class.extend({
 			height: 				this._el.container.offsetHeight,
 			width: 					this._el.container.offsetWidth,
 			layout: 				"normal", // sidebyside to be added later
+			base_class: 			"",
 			map_size_sticky: 		3, // Set as division 1/3 etc
 			map_center_offset: 		60, 
 			start_at_slide: 		0,
@@ -513,7 +514,7 @@ VCO.StoryMap = VCO.Class.extend({
 			map_type: 				"toner-lite",
 			map_height: 			300,
 			storyslider_height: 	600,
-			sizebar_default_y: 		300,
+			sizebar_default_y: 		0,
 			path_gfx: 				"gfx",
 			map_popup: 				false,
 			zoom_distance: 			100,
@@ -599,6 +600,7 @@ VCO.StoryMap = VCO.Class.extend({
 		var self = this;
 		
 		this._el.container.className += ' vco-storymap';
+		this.options.base_class = this._el.container.className;
 		
 		// Create Layout
 		this._el.sizebar		= VCO.Dom.create('div', 'vco-sizebar', this._el.container);
@@ -626,7 +628,7 @@ VCO.StoryMap = VCO.Class.extend({
 		// Set Default Component Sizes
 		this.options.map_height = (this.options.height / this.options.map_size_sticky);
 		this.options.storyslider_height = (this.options.height - this._el.sizebar.offsetHeight - this.options.map_height - 1);
-		this._sizebar.setSticky(this.options.map_height);
+		this._sizebar.setSticky(0);
 		
 		// Update Display
 		this._updateDisplay(this.options.map_height, true, 2000);
@@ -665,6 +667,13 @@ VCO.StoryMap = VCO.Class.extend({
 		
 		this.options.width = this._el.container.offsetWidth;
 		this.options.height = this._el.container.offsetHeight;
+		
+		// Check if skinny
+		if (this.options.width <= 500) {
+			this._el.container.className = this.options.base_class + " vco-skinny";
+		} else {
+			this._el.container.className = this.options.base_class;
+		}
 		
 		// Set Sticky state of SizeBar
 		this._sizebar.setSticky(Math.floor(this._el.container.offsetHeight/this.options.map_size_sticky));

@@ -42,7 +42,7 @@ VCO.SizeBar = VCO.Class.extend({
 			height: 				600,
 			duration: 				1000,
 			ease: 					VCO.Ease.easeInOutQuint,
-			sizebar_default_y: 		600
+			sizebar_default_y: 		0
 		};
 		
 		// Draggable
@@ -68,7 +68,7 @@ VCO.SizeBar = VCO.Class.extend({
 		}
 		
 		this.animator = VCO.Animate(this._el.container, {
-			top: 		VCO.Dom.getPosition(this._el.parent).y + this.options.sizebar_default_y + "px",
+			top: 		this.options.sizebar_default_y + "px",
 			duration: 	duration,
 			easing: 	VCO.Ease.easeOutStrong
 		});
@@ -103,18 +103,18 @@ VCO.SizeBar = VCO.Class.extend({
 		
 	},
 	_onDragMove: function(e) {
-		var top_pos = e.new_pos.y - VCO.Dom.getPosition(this._el.parent).y;
+		var top_pos = e.new_pos.y;
 		this.fire("move", {y:top_pos});
 	},
 	_onMomentum: function(e) {
-		var top_pos = e.new_pos.y - VCO.Dom.getPosition(this._el.parent).y;
+		var top_pos = e.new_pos.y ;
 		if (top_pos < this.options.sizebar_default_y) {
 			this._draggable.stopMomentum();
 			if (e.direction == "down") {
 				this.show();
 				this.fire("momentum", {y:this.options.sizebar_default_y});
 			} else {
-				this.hide(VCO.Dom.getPosition(this._el.parent).y);
+				this.hide(25);
 				this.fire("momentum", {y:1});
 			}
 		} else {
@@ -125,23 +125,21 @@ VCO.SizeBar = VCO.Class.extend({
 		
 	},
 	_onSwipeUp: function(e) {
-		var top_pos = e.new_pos.y - VCO.Dom.getPosition(this._el.parent).y;
+		var top_pos = e.new_pos.y;
 		this._draggable.stopMomentum();
 		if (top_pos > this.options.sizebar_default_y) {
 			this.show();
 			this.fire("momentum", {y:this.options.sizebar_default_y});
 		} else {
-			this.hide(VCO.Dom.getPosition(this._el.parent).y);
+			this.hide(25);
 			this.fire("swipe", {y:1});
 		}
 	},
 	
 	_onSwipeDown: function(e) {
-		if (VCO.Dom.getPosition(this._el.container).y < this.options.sizebar_default_y) {
-			this._draggable.stopMomentum();
-			this.show();
-			this.fire("swipe", {y:this.options.sizebar_default_y});
-		}
+		this._draggable.stopMomentum();
+		this.show();
+		this.fire("swipe", {y:this.options.sizebar_default_y});
 		
 	},
 	
@@ -162,7 +160,7 @@ VCO.SizeBar = VCO.Class.extend({
 			this._el.button_collapse_toggle.innerHTML	= VCO.Language.buttons.collapse_toggle;
 		} else {
 			this.collapsed = true;
-			this.hide(VCO.Dom.getPosition(this._el.parent).y + 25);
+			this.hide(25);
 			this._el.button_overview.style.display = "none";
 			this.fire("swipe", {y:1});
 			this._el.button_collapse_toggle.innerHTML = VCO.Language.buttons.uncollapse_toggle;
@@ -174,7 +172,7 @@ VCO.SizeBar = VCO.Class.extend({
 	_initLayout: function () {
 		// Create Layout
 		this._el.arrow						= VCO.Dom.create("div", "vco-arrow-up", this._el.container);
-		this._el.container.style.top		= this.options.sizebar_default_y + "px";
+		this._el.container.style.top		= 0 + "px";
 		
 		// Buttons
 		this._el.button_overview 					= VCO.Dom.create('span', 'vco-sizebar-button', this._el.container);

@@ -3712,7 +3712,7 @@ VCO.Draggable = VCO.Class.extend({
 		//VCO.DomEvent.addListener(this._el.drag, this.dragevent.down, this._onDragStart, this);
 		//VCO.DomEvent.addListener(this._el.drag, this.dragevent.up, this._onDragEnd, this);
 		
-		this.data.pos.start = VCO.Dom.getPosition(this._el.move);
+		this.data.pos.start = 0; //VCO.Dom.getPosition(this._el.move);
 		this._el.move.style.left = this.data.pos.start.x + "px";
 		this._el.move.style.top = this.data.pos.start.y + "px";
 		this._el.move.style.position = "absolute";
@@ -3971,7 +3971,7 @@ VCO.SizeBar = VCO.Class.extend({
 			height: 				600,
 			duration: 				1000,
 			ease: 					VCO.Ease.easeInOutQuint,
-			sizebar_default_y: 		600
+			sizebar_default_y: 		0
 		};
 		
 		// Draggable
@@ -3997,7 +3997,7 @@ VCO.SizeBar = VCO.Class.extend({
 		}
 		
 		this.animator = VCO.Animate(this._el.container, {
-			top: 		VCO.Dom.getPosition(this._el.parent).y + this.options.sizebar_default_y + "px",
+			top: 		this.options.sizebar_default_y + "px",
 			duration: 	duration,
 			easing: 	VCO.Ease.easeOutStrong
 		});
@@ -4032,18 +4032,18 @@ VCO.SizeBar = VCO.Class.extend({
 		
 	},
 	_onDragMove: function(e) {
-		var top_pos = e.new_pos.y - VCO.Dom.getPosition(this._el.parent).y;
+		var top_pos = e.new_pos.y;
 		this.fire("move", {y:top_pos});
 	},
 	_onMomentum: function(e) {
-		var top_pos = e.new_pos.y - VCO.Dom.getPosition(this._el.parent).y;
+		var top_pos = e.new_pos.y ;
 		if (top_pos < this.options.sizebar_default_y) {
 			this._draggable.stopMomentum();
 			if (e.direction == "down") {
 				this.show();
 				this.fire("momentum", {y:this.options.sizebar_default_y});
 			} else {
-				this.hide(VCO.Dom.getPosition(this._el.parent).y);
+				this.hide(25);
 				this.fire("momentum", {y:1});
 			}
 		} else {
@@ -4054,23 +4054,21 @@ VCO.SizeBar = VCO.Class.extend({
 		
 	},
 	_onSwipeUp: function(e) {
-		var top_pos = e.new_pos.y - VCO.Dom.getPosition(this._el.parent).y;
+		var top_pos = e.new_pos.y;
 		this._draggable.stopMomentum();
 		if (top_pos > this.options.sizebar_default_y) {
 			this.show();
 			this.fire("momentum", {y:this.options.sizebar_default_y});
 		} else {
-			this.hide(VCO.Dom.getPosition(this._el.parent).y);
+			this.hide(25);
 			this.fire("swipe", {y:1});
 		}
 	},
 	
 	_onSwipeDown: function(e) {
-		if (VCO.Dom.getPosition(this._el.container).y < this.options.sizebar_default_y) {
-			this._draggable.stopMomentum();
-			this.show();
-			this.fire("swipe", {y:this.options.sizebar_default_y});
-		}
+		this._draggable.stopMomentum();
+		this.show();
+		this.fire("swipe", {y:this.options.sizebar_default_y});
 		
 	},
 	
@@ -4091,7 +4089,7 @@ VCO.SizeBar = VCO.Class.extend({
 			this._el.button_collapse_toggle.innerHTML	= VCO.Language.buttons.collapse_toggle;
 		} else {
 			this.collapsed = true;
-			this.hide(VCO.Dom.getPosition(this._el.parent).y + 25);
+			this.hide(25);
 			this._el.button_overview.style.display = "none";
 			this.fire("swipe", {y:1});
 			this._el.button_collapse_toggle.innerHTML = VCO.Language.buttons.uncollapse_toggle;
@@ -4103,7 +4101,7 @@ VCO.SizeBar = VCO.Class.extend({
 	_initLayout: function () {
 		// Create Layout
 		this._el.arrow						= VCO.Dom.create("div", "vco-arrow-up", this._el.container);
-		this._el.container.style.top		= this.options.sizebar_default_y + "px";
+		this._el.container.style.top		= 0 + "px";
 		
 		// Buttons
 		this._el.button_overview 					= VCO.Dom.create('span', 'vco-sizebar-button', this._el.container);
@@ -4536,11 +4534,16 @@ VCO.Media = VCO.Class.extend({
 	updateMediaDisplay: function() {
 		if (this._state.loaded) {
 			this._updateMediaDisplay();
+			this._el.content_item.style.maxHeight = (this.options.height - this.options.credit_height - this.options.caption_height - 16) + "px";
 			// Fix for max-width issues in Firefox
 			if (VCO.Browser.firefox) {
 				trace("FIREFOX");
-				this._el.content_item.style.width = "100%";
+				if (this._el.content_item.offsetWidth > this._el.content_item.offsetHeight) {
+					this._el.content_item.style.width = "100%";
+				}
 			}
+			
+			
 		}
 	},
 	
@@ -4551,14 +4554,7 @@ VCO.Media = VCO.Class.extend({
 		},
 		
 		_updateMediaDisplay: function() {
-			this._el.content_item.style.maxHeight = (this.options.height - this.options.credit_height - this.options.caption_height - 16) + "px";
-			
-			// Fix for max-width issues in Firefox
-			if (VCO.Browser.firefox) {
-				trace("FIREFOX");
-				this._el.content_item.style.width = "100%";
-				trace(this._el.content_item);
-			}
+			//this._el.content_item.style.maxHeight = (this.options.height - this.options.credit_height - this.options.caption_height - 16) + "px";
 		},
 	
 	/*	Public
@@ -5568,6 +5564,8 @@ VCO.Media.YouTube = VCO.Media.extend({
 		// Loading Message 
 		this.message.updateMessage(VCO.Language.messages.loading + " " + this.options.media_name);
 		
+		this.youtube_loaded = false;
+		
 		// Create Dom element
 		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-youtube vco-media-shadow", this._el.content);
 		this._el.content_item.id = VCO.Util.unique_ID(7)
@@ -5593,7 +5591,7 @@ VCO.Media.YouTube = VCO.Media.extend({
 		
 		
 		// API Call
-		VCO.Load.js('http://www.youtube.com/player_api', function() {
+		VCO.Load.js('https://www.youtube.com/player_api', function() {
 			trace("YouTube API Library Loaded");
 			self.createMedia();
 		});
@@ -5608,8 +5606,14 @@ VCO.Media.YouTube = VCO.Media.extend({
 	},
 	
 	_stopMedia: function() {
-		if (this.player) {
-			this.player.pauseVideo();
+		if (this.youtube_loaded) {
+			try {
+				this.player.pauseVideo();
+			}
+			catch(err) {
+				trace(err);
+			}
+			
 		}
 	},
 	
@@ -5686,6 +5690,8 @@ VCO.Media.YouTube = VCO.Media.extend({
 	================================================== */
 	onPlayerReady: function(e) {
 		trace("onPlayerReady");
+		this.youtube_loaded = true;
+		
 	},
 	
 	onStateChange: function(e) {
@@ -17347,6 +17353,7 @@ VCO.StoryMap = VCO.Class.extend({
 			height: 				this._el.container.offsetHeight,
 			width: 					this._el.container.offsetWidth,
 			layout: 				"normal", // sidebyside to be added later
+			base_class: 			"",
 			map_size_sticky: 		3, // Set as division 1/3 etc
 			map_center_offset: 		60, 
 			start_at_slide: 		0,
@@ -17360,7 +17367,7 @@ VCO.StoryMap = VCO.Class.extend({
 			map_type: 				"toner-lite",
 			map_height: 			300,
 			storyslider_height: 	600,
-			sizebar_default_y: 		300,
+			sizebar_default_y: 		0,
 			path_gfx: 				"gfx",
 			map_popup: 				false,
 			zoom_distance: 			100,
@@ -17446,6 +17453,7 @@ VCO.StoryMap = VCO.Class.extend({
 		var self = this;
 		
 		this._el.container.className += ' vco-storymap';
+		this.options.base_class = this._el.container.className;
 		
 		// Create Layout
 		this._el.sizebar		= VCO.Dom.create('div', 'vco-sizebar', this._el.container);
@@ -17473,7 +17481,7 @@ VCO.StoryMap = VCO.Class.extend({
 		// Set Default Component Sizes
 		this.options.map_height = (this.options.height / this.options.map_size_sticky);
 		this.options.storyslider_height = (this.options.height - this._el.sizebar.offsetHeight - this.options.map_height - 1);
-		this._sizebar.setSticky(this.options.map_height);
+		this._sizebar.setSticky(0);
 		
 		// Update Display
 		this._updateDisplay(this.options.map_height, true, 2000);
@@ -17512,6 +17520,13 @@ VCO.StoryMap = VCO.Class.extend({
 		
 		this.options.width = this._el.container.offsetWidth;
 		this.options.height = this._el.container.offsetHeight;
+		
+		// Check if skinny
+		if (this.options.width <= 500) {
+			this._el.container.className = this.options.base_class + " vco-skinny";
+		} else {
+			this._el.container.className = this.options.base_class;
+		}
 		
 		// Set Sticky state of SizeBar
 		this._sizebar.setSticky(Math.floor(this._el.container.offsetHeight/this.options.map_size_sticky));

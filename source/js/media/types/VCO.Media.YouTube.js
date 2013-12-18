@@ -14,6 +14,8 @@ VCO.Media.YouTube = VCO.Media.extend({
 		// Loading Message 
 		this.message.updateMessage(VCO.Language.messages.loading + " " + this.options.media_name);
 		
+		this.youtube_loaded = false;
+		
 		// Create Dom element
 		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-youtube vco-media-shadow", this._el.content);
 		this._el.content_item.id = VCO.Util.unique_ID(7)
@@ -39,7 +41,7 @@ VCO.Media.YouTube = VCO.Media.extend({
 		
 		
 		// API Call
-		VCO.Load.js('http://www.youtube.com/player_api', function() {
+		VCO.Load.js('https://www.youtube.com/player_api', function() {
 			trace("YouTube API Library Loaded");
 			self.createMedia();
 		});
@@ -54,8 +56,14 @@ VCO.Media.YouTube = VCO.Media.extend({
 	},
 	
 	_stopMedia: function() {
-		if (this.player) {
-			this.player.pauseVideo();
+		if (this.youtube_loaded) {
+			try {
+				this.player.pauseVideo();
+			}
+			catch(err) {
+				trace(err);
+			}
+			
 		}
 	},
 	
@@ -132,6 +140,8 @@ VCO.Media.YouTube = VCO.Media.extend({
 	================================================== */
 	onPlayerReady: function(e) {
 		trace("onPlayerReady");
+		this.youtube_loaded = true;
+		
 	},
 	
 	onStateChange: function(e) {
