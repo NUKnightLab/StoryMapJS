@@ -1,0 +1,121 @@
+{
+    "storymap": {
+        "map_subdomains": "",
+        "map_type": "stamen:terrain",
+        "slides": [
+            {
+                "date": "",
+                "media": {
+                    "caption": "To love beauty is to see light. Victor Hugo #tinycollective",
+                    "credit": "Koci",
+                    "url": "http://www.flickr.com/photos/koci/11436254373/"
+                },
+                "text": {
+                    "headline": "My Test Map Thing",
+                    "text": "Just a <b>test</b> of things"
+                },
+                "type": "overview"
+            },
+            {
+                "date": "",
+                "location": {
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+                    "lat": 42.04033653529146,
+                    "line": true,
+                    "lon": -87.78908481005857,
+                    "name": "1630 Lake Ave",
+                    "zoom": 11
+                },
+                "media": {
+                    "caption": "",
+                    "credit": "",
+                    "url": ""
+                },
+                "text": {
+                    "headline": "Random",
+                    "text": "Something random"
+                }
+            },
+            {
+                "date": "",
+                "location": {
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+                    "lat": 40.65,
+                    "line": true,
+                    "lon": -73.94999999999999,
+                    "name": "Brooklyn",
+                    "zoom": 6
+                },
+                "media": {
+                    "caption": "",
+                    "credit": "",
+                    "url": "https://vimeo.com/82095744"
+                },
+                "text": {
+                    "headline": "Vimeo",
+                    "text": ""
+                }
+            },
+            {
+                "date": "",
+                "location": {
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+                    "lat": 40.65,
+                    "line": true,
+                    "lon": -73.94999999999999,
+                    "name": "Brooklyn",
+                    "zoom": 6
+                },
+                "media": {
+                    "caption": "",
+                    "credit": "",
+                    "url": "https://vimeo.com/82095744"
+                },
+                "text": {
+                    "headline": "",
+                    "text": ""
+                }
+            },
+            {
+                "date": "",
+                "location": {
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+                    "lat": 42.079336,
+                    "line": true,
+                    "lon": -87.71801699999997,
+                    "name": "1630 Lake Ave",
+                    "zoom": 10
+                },
+                "media": {
+                    "caption": "",
+                    "credit": "Zach Wise",
+                    "url": "http://www.flickr.com/photos/zachwise/11260946254/"
+                },
+                "text": {
+                    "headline": "Testing address",
+                    "text": "This is an <b><i>address</i></b>"
+                }
+            },
+            {
+                "date": "",
+                "location": {
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+                    "lat": 42.05155452123932,
+                    "line": true,
+                    "lon": -87.67304171923826,
+                    "name": "1630 Lake Ave",
+                    "zoom": 14
+                },
+                "media": {
+                    "caption": "Saying goodbye to Jeremy Gilbert as he leaves Northwestern for National Geographic.",
+                    "credit": "Zach Wise",
+                    "url": "http://www.flickr.com/photos/zachwise/11360716606/"
+                },
+                "text": {
+                    "headline": "",
+                    "text": ""
+                }
+            }
+        ]
+    }
+}
