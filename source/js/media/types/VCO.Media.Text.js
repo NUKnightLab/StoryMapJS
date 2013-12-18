@@ -60,6 +60,10 @@ VCO.Media.Text = VCO.Class.extend({
 		container.removeChild(this._el.container);
 	},
 	
+	headlineHeight: function() {
+		return this._el.headline.offsetHeight + 40;
+	},
+	
 	/*	Events
 	================================================== */
 	onLoaded: function() {

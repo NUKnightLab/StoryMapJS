@@ -60,6 +60,7 @@ VCO.Media.Vimeo = VCO.Media.extend({
 	// Update Media Display
 	_updateMediaDisplay: function() {
 		this._el.content_item.style.height = VCO.Util.ratio.r16_9({w:this._el.content_item.offsetWidth}) + "px";
+		trace(VCO.Util.ratio.r16_9({w:this._el.content_item.offsetWidth}));
 	},
 	
 	_stopMedia: function() {
@@ -67,8 +68,12 @@ VCO.Media.Vimeo = VCO.Media.extend({
 		//trace(this.player);
 		//$f(this.player).api('pause');
 		
-		this.player.contentWindow.postMessage(JSON.stringify({method: "pause"}), "http://player.vimeo.com");
-		
+		try {
+			this.player.contentWindow.postMessage(JSON.stringify({method: "pause"}), "http://player.vimeo.com");
+		}
+		catch(err) {
+			trace(err);
+		}
 		/*
 		this._el.content_item.postMessage({
 			"method": "pause",

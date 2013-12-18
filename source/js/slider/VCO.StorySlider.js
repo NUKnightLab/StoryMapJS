@@ -415,6 +415,7 @@ VCO.StorySlider = VCO.Class.extend({
 			id: 					"",
 			width: 					600,
 			height: 				600,
+			slide_padding_lr: 		100, // padding on slide of slide
 			start_at_slide: 		1,
 			// animation
 			duration: 				1000,

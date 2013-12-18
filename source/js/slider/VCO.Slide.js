@@ -60,6 +60,12 @@ VCO.Slide = VCO.Class.extend({
 		this._state = {
 			loaded: 		false
 		};
+		
+		this.has = {
+			headline: 	false,
+			text: 		false,
+			media: 		false
+		}
 	
 		// Data
 		this.data = {
@@ -75,6 +81,7 @@ VCO.Slide = VCO.Class.extend({
 		this.options = {
 			// animation
 			duration: 			1000,
+			slide_padding_lr: 	100,
 			ease: 				VCO.Ease.easeInSpline,
 			width: 				600,
 			height: 			600,
@@ -164,23 +171,47 @@ VCO.Slide = VCO.Class.extend({
 			}
 		} 
 		
-		// Media
+		// Determine Assets for layout and loading
 		if (this.data.media && this.data.media.url && this.data.media.url != "") {
+			this.has.media = true;
+		}
+		if (this.data.text && this.data.text.text) {
+			this.has.text = true;
+		}
+		if (this.data.text && this.data.text.headline) {
+			this.has.headline = true;
+		}
+		
+		// Create Media
+		if (this.has.media) {
+			
 			// Determine the media type
 			this.data.media.mediatype = VCO.MediaType(this.data.media);
 			this.options.media_name = this.data.media.mediatype.name;
+			
 			// Create a media object using the matched class name
 			this._media = new this.data.media.mediatype.cls(this.data.media, this.options);
 			
-			// add the object to the dom
-			this._media.addTo(this._el.content);
-			//this._media.loadMedia();
-			
 		}
 		
-		// Text
-		if (this.data.text) {
+		// Create Text
+		if (this.has.text || this.has.headline) {
 			this._text = new VCO.Media.Text(this.data.text);
+		}
+		
+		// Add to DOM
+		if (!this.has.text && !this.has.headline && this.has.media) {
+			this._el.container.className += ' vco-slide-media-only';
+			this._media.addTo(this._el.content);
+		} else if (this.has.headline && this.has.media && !this.has.text) {
+			this._el.container.className += ' vco-slide-media-only';
+			this._text.addTo(this._el.content);
+			this._media.addTo(this._el.content);
+		} else if (this.has.text && this.has.media) {
+			this._media.addTo(this._el.content);
+			this._text.addTo(this._el.content);
+		} else if (this.has.text) {
+			this._el.container.className += ' vco-slide-text-only';
 			this._text.addTo(this._el.content);
 		}
 		
@@ -202,6 +233,9 @@ VCO.Slide = VCO.Class.extend({
 		} else {
 			this.options.width = this._el.container.offsetWidth;
 		}
+		this._el.content.style.paddingLeft = this.options.slide_padding_lr + "px";
+		this._el.content.style.paddingRight = this.options.slide_padding_lr + "px";
+		this._el.content.style.width = this.options.width - (this.options.slide_padding_lr * 2) + "px";
 		
 		if (height) {
 			this.options.height = height;
@@ -210,7 +244,15 @@ VCO.Slide = VCO.Class.extend({
 		}
 		
 		if (this._media) {
-			this._media.updateDisplay(this.options.width, this.options.height);
+			if (!this.has.text && this.has.headline) {
+				trace("headline height");
+				trace(this._text.headlineHeight());
+				trace(this.options.height)
+				trace(this.options.height - this._text.headlineHeight())
+				this._media.updateDisplay(this.options.width, (this.options.height - this._text.headlineHeight()));
+			} else {
+				this._media.updateDisplay(this.options.width, this.options.height);
+			}
 		}
 		//this._el.content_container.style.height = this.options.height + "px";
 	}

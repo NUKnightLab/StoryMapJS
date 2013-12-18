@@ -514,6 +514,7 @@ VCO.StoryMap = VCO.Class.extend({
 			map_type: 				"toner-lite",
 			map_height: 			300,
 			storyslider_height: 	600,
+			slide_padding_lr: 		100, // padding on slide of slide
 			sizebar_default_y: 		0,
 			path_gfx: 				"gfx",
 			map_popup: 				false,
@@ -659,7 +660,6 @@ VCO.StoryMap = VCO.Class.extend({
 	
 	// Update View
 	_updateDisplay: function(map_height, animate, d) {
-		
 		var duration 	= this.options.duration,
 			self		= this;
 		
@@ -735,10 +735,14 @@ VCO.StoryMap = VCO.Class.extend({
 	================================================== */
 	
 	_onDataLoaded: function(e) {
+		trace("dataloaded");
+		
 		this.fire("dataloaded");
 		this._initLayout();
 		this._initEvents();
 		this.ready = true;
+		trace(this.ready);
+		
 	},
 	
 	_onSlideChange: function(e) {

@@ -4532,6 +4532,7 @@ VCO.Media = VCO.Class.extend({
 	},
 	
 	updateMediaDisplay: function() {
+		
 		if (this._state.loaded) {
 			this._updateMediaDisplay();
 			this._el.content_item.style.maxHeight = (this.options.height - this.options.credit_height - this.options.caption_height - 16) + "px";
@@ -4554,7 +4555,7 @@ VCO.Media = VCO.Class.extend({
 		},
 		
 		_updateMediaDisplay: function() {
-			//this._el.content_item.style.maxHeight = (this.options.height - this.options.credit_height - this.options.caption_height - 16) + "px";
+			this._el.content_item.style.maxHeight = (this.options.height - this.options.credit_height - this.options.caption_height - 16) + "px";
 		},
 	
 	/*	Public
@@ -4589,6 +4590,7 @@ VCO.Media = VCO.Class.extend({
 	/*	Events
 	================================================== */
 	onLoaded: function() {
+		this._state.loaded = true;
 		this.fire("loaded", this.data);
 		if (this.message) {
 			this.message.hide();
@@ -5124,6 +5126,10 @@ VCO.Media.Text = VCO.Class.extend({
 		container.removeChild(this._el.container);
 	},
 	
+	headlineHeight: function() {
+		return this._el.headline.offsetHeight + 40;
+	},
+	
 	/*	Events
 	================================================== */
 	onLoaded: function() {
@@ -5306,6 +5312,7 @@ VCO.Media.Vimeo = VCO.Media.extend({
 	// Update Media Display
 	_updateMediaDisplay: function() {
 		this._el.content_item.style.height = VCO.Util.ratio.r16_9({w:this._el.content_item.offsetWidth}) + "px";
+		trace(VCO.Util.ratio.r16_9({w:this._el.content_item.offsetWidth}));
 	},
 	
 	_stopMedia: function() {
@@ -5313,8 +5320,12 @@ VCO.Media.Vimeo = VCO.Media.extend({
 		//trace(this.player);
 		//$f(this.player).api('pause');
 		
-		this.player.contentWindow.postMessage(JSON.stringify({method: "pause"}), "http://player.vimeo.com");
-		
+		try {
+			this.player.contentWindow.postMessage(JSON.stringify({method: "pause"}), "http://player.vimeo.com");
+		}
+		catch(err) {
+			trace(err);
+		}
 		/*
 		this._el.content_item.postMessage({
 			"method": "pause",
@@ -5795,6 +5806,12 @@ VCO.Slide = VCO.Class.extend({
 		this._state = {
 			loaded: 		false
 		};
+		
+		this.has = {
+			headline: 	false,
+			text: 		false,
+			media: 		false
+		}
 	
 		// Data
 		this.data = {
@@ -5810,6 +5827,7 @@ VCO.Slide = VCO.Class.extend({
 		this.options = {
 			// animation
 			duration: 			1000,
+			slide_padding_lr: 	100,
 			ease: 				VCO.Ease.easeInSpline,
 			width: 				600,
 			height: 			600,
@@ -5899,23 +5917,47 @@ VCO.Slide = VCO.Class.extend({
 			}
 		} 
 		
-		// Media
+		// Determine Assets for layout and loading
 		if (this.data.media && this.data.media.url && this.data.media.url != "") {
+			this.has.media = true;
+		}
+		if (this.data.text && this.data.text.text) {
+			this.has.text = true;
+		}
+		if (this.data.text && this.data.text.headline) {
+			this.has.headline = true;
+		}
+		
+		// Create Media
+		if (this.has.media) {
+			
 			// Determine the media type
 			this.data.media.mediatype = VCO.MediaType(this.data.media);
 			this.options.media_name = this.data.media.mediatype.name;
+			
 			// Create a media object using the matched class name
 			this._media = new this.data.media.mediatype.cls(this.data.media, this.options);
 			
-			// add the object to the dom
-			this._media.addTo(this._el.content);
-			//this._media.loadMedia();
-			
 		}
 		
-		// Text
-		if (this.data.text) {
+		// Create Text
+		if (this.has.text || this.has.headline) {
 			this._text = new VCO.Media.Text(this.data.text);
+		}
+		
+		// Add to DOM
+		if (!this.has.text && !this.has.headline && this.has.media) {
+			this._el.container.className += ' vco-slide-media-only';
+			this._media.addTo(this._el.content);
+		} else if (this.has.headline && this.has.media && !this.has.text) {
+			this._el.container.className += ' vco-slide-media-only';
+			this._text.addTo(this._el.content);
+			this._media.addTo(this._el.content);
+		} else if (this.has.text && this.has.media) {
+			this._media.addTo(this._el.content);
+			this._text.addTo(this._el.content);
+		} else if (this.has.text) {
+			this._el.container.className += ' vco-slide-text-only';
 			this._text.addTo(this._el.content);
 		}
 		
@@ -5937,6 +5979,9 @@ VCO.Slide = VCO.Class.extend({
 		} else {
 			this.options.width = this._el.container.offsetWidth;
 		}
+		this._el.content.style.paddingLeft = this.options.slide_padding_lr + "px";
+		this._el.content.style.paddingRight = this.options.slide_padding_lr + "px";
+		this._el.content.style.width = this.options.width - (this.options.slide_padding_lr * 2) + "px";
 		
 		if (height) {
 			this.options.height = height;
@@ -5945,7 +5990,15 @@ VCO.Slide = VCO.Class.extend({
 		}
 		
 		if (this._media) {
-			this._media.updateDisplay(this.options.width, this.options.height);
+			if (!this.has.text && this.has.headline) {
+				trace("headline height");
+				trace(this._text.headlineHeight());
+				trace(this.options.height)
+				trace(this.options.height - this._text.headlineHeight())
+				this._media.updateDisplay(this.options.width, (this.options.height - this._text.headlineHeight()));
+			} else {
+				this._media.updateDisplay(this.options.width, this.options.height);
+			}
 		}
 		//this._el.content_container.style.height = this.options.height + "px";
 	}
@@ -6484,6 +6537,7 @@ VCO.StorySlider = VCO.Class.extend({
 			id: 					"",
 			width: 					600,
 			height: 				600,
+			slide_padding_lr: 		100, // padding on slide of slide
 			start_at_slide: 		1,
 			// animation
 			duration: 				1000,
@@ -17427,6 +17481,7 @@ VCO.StoryMap = VCO.Class.extend({
 			map_type: 				"toner-lite",
 			map_height: 			300,
 			storyslider_height: 	600,
+			slide_padding_lr: 		100, // padding on slide of slide
 			sizebar_default_y: 		0,
 			path_gfx: 				"gfx",
 			map_popup: 				false,
@@ -17572,7 +17627,6 @@ VCO.StoryMap = VCO.Class.extend({
 	
 	// Update View
 	_updateDisplay: function(map_height, animate, d) {
-		
 		var duration 	= this.options.duration,
 			self		= this;
 		
@@ -17648,10 +17702,14 @@ VCO.StoryMap = VCO.Class.extend({
 	================================================== */
 	
 	_onDataLoaded: function(e) {
+		trace("dataloaded");
+		
 		this.fire("dataloaded");
 		this._initLayout();
 		this._initEvents();
 		this.ready = true;
+		trace(this.ready);
+		
 	},
 	
 	_onSlideChange: function(e) {

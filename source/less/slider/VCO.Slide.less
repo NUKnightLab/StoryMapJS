@@ -52,6 +52,63 @@
 	}
 }
 
+/* Only Media (no text)
+================================================== */
+.vco-slide-media-only {
+	.vco-slide-content-container {
+		.vco-slide-content {
+			//width:100%;
+			text-align:center;
+			.vco-media {
+				//display:table-cell;
+				//vertical-align:middle;
+				text-align:center;
+				position:relative;
+				width:100%;
+				min-width:50%;
+				max-width:100%;
+				//height:100%;
+				float: none;
+				margin-top:auto;
+				margin-bottom:auto;
+				//margin-right:auto;
+				img, embed, object, video, iframe {
+					//width:100%;
+				}
+			}
+			.vco-text {
+				width:				100%;
+				display:			block;
+				margin-left:		auto;
+				margin-right:		auto;
+				text-align: 		center;
+				h2 {
+					margin-top: 	20px;
+					margin-bottom: 	20px;
+				}
+				//float:left;
+			}
+		}
+	}
+}
+
+/* Only Text (no media)
+================================================== */
+.vco-slide-text-only {
+	.vco-slide-content-container {
+		.vco-slide-content {
+			//width:100%;
+			text-align:center;
+			.vco-text {
+				display:block;
+				margin-left:auto;
+				margin-right:auto;
+				//float:left;
+			}
+		}
+	}
+}
+
 /* Full Image Background 
 ================================================== */
 .vco-slide.vco-full-image-background {

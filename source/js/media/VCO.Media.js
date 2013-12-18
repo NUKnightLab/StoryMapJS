@@ -101,6 +101,7 @@ VCO.Media = VCO.Class.extend({
 	},
 	
 	updateMediaDisplay: function() {
+		
 		if (this._state.loaded) {
 			this._updateMediaDisplay();
 			this._el.content_item.style.maxHeight = (this.options.height - this.options.credit_height - this.options.caption_height - 16) + "px";
@@ -123,7 +124,7 @@ VCO.Media = VCO.Class.extend({
 		},
 		
 		_updateMediaDisplay: function() {
-			//this._el.content_item.style.maxHeight = (this.options.height - this.options.credit_height - this.options.caption_height - 16) + "px";
+			this._el.content_item.style.maxHeight = (this.options.height - this.options.credit_height - this.options.caption_height - 16) + "px";
 		},
 	
 	/*	Public
@@ -158,6 +159,7 @@ VCO.Media = VCO.Class.extend({
 	/*	Events
 	================================================== */
 	onLoaded: function() {
+		this._state.loaded = true;
 		this.fire("loaded", this.data);
 		if (this.message) {
 			this.message.hide();
