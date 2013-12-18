@@ -3,7 +3,7 @@ VCO.Language = {
     lang: 					"es",
     messages: {
         loading: 			"cargando",
-		wikipedia: 			"From Wikipedia, the free encyclopedia",
+		wikipedia: 			"de Wikipedia, la enciclopedia libre",
     },
     buttons: {
         map_overview: 		"vista general del mapa",
