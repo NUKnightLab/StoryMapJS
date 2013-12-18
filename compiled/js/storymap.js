@@ -16200,66 +16200,81 @@ VCO.Map = VCO.Class.extend({
 				
 				if (change) {
 					// Set Map View
-					this._viewTo(marker.data.location);
-					
-				} else {
-					// Calculate Zoom
-					zoom = this._calculateZoomChange(this._getMapCenter(true), marker.location());
-			
-					// Set Map View
-					this._viewTo(marker.data.location, {calculate_zoom: this.options.calculate_zoom, zoom:zoom});
-					
-					// Show Line
-					if (this.options.line_follows_path) {
-						if (this.options.show_history_line && marker.data.real_marker && this._markers[previous_marker].data.real_marker) {
-							var lines_array = [],
-								line_num = previous_marker;
-							
-							if (line_num < this.current_marker) {
-								while (line_num < this.current_marker) {
-									var point = {
-										lat:this._markers[line_num].data.location.lat,
-										lon:this._markers[line_num].data.location.lon
-									}
-									lines_array.push(point);
-									line_num++;
-								}
-							} else if (line_num > this.current_marker) {
-								while (line_num > this.current_marker) {
-									var point = {
-										lat:this._markers[line_num].data.location.lat,
-										lon:this._markers[line_num].data.location.lon
-									}
-									lines_array.push(point);
-									line_num--;
-								}
-							}
-						
-							lines_array.push({
-								lat:marker.data.location.lat,
-								lon:marker.data.location.lon
-							});
-						
-							this._replaceLines(this._line_active, lines_array);
-						}
+					if (marker.data.location) {
+						this._viewTo(marker.data.location);
 					} else {
-						// Show Line
-						if (this.options.show_history_line && marker.data.real_marker && this._markers[previous_marker].data.real_marker) {
-							this._replaceLines(this._line_active, [
-								{
-									lat:marker.data.location.lat,
-									lon:marker.data.location.lon
-								}, 
-								{
-									lat:this._markers[previous_marker].data.location.lat,
-									lon:this._markers[previous_marker].data.location.lon
-								}
-							])
-						}
 						
 					}
 					
 					
+				} else {
+					if (marker.data.location && marker.data.location.lat) {
+						
+						trace("HAS LOCATION");
+						
+						// Calculate Zoom
+						zoom = this._calculateZoomChange(this._getMapCenter(true), marker.location());
+			
+						// Set Map View
+						this._viewTo(marker.data.location, {calculate_zoom: this.options.calculate_zoom, zoom:zoom});
+					
+						// Show Line
+						if (this.options.line_follows_path) {
+							if (this.options.show_history_line && marker.data.real_marker && this._markers[previous_marker].data.real_marker) {
+								var lines_array = [],
+									line_num = previous_marker;
+							
+								if (line_num < this.current_marker) {
+									while (line_num < this.current_marker) {
+										var point = {
+											lat:this._markers[line_num].data.location.lat,
+											lon:this._markers[line_num].data.location.lon
+										}
+										lines_array.push(point);
+										line_num++;
+									}
+								} else if (line_num > this.current_marker) {
+									while (line_num > this.current_marker) {
+										var point = {
+											lat:this._markers[line_num].data.location.lat,
+											lon:this._markers[line_num].data.location.lon
+										}
+										lines_array.push(point);
+										line_num--;
+									}
+								}
+						
+								lines_array.push({
+									lat:marker.data.location.lat,
+									lon:marker.data.location.lon
+								});
+						
+								this._replaceLines(this._line_active, lines_array);
+							}
+						} else {
+							// Show Line
+							if (this.options.show_history_line && marker.data.real_marker && this._markers[previous_marker].data.real_marker) {
+								this._replaceLines(this._line_active, [
+									{
+										lat:marker.data.location.lat,
+										lon:marker.data.location.lon
+									}, 
+									{
+										lat:this._markers[previous_marker].data.location.lat,
+										lon:this._markers[previous_marker].data.location.lon
+									}
+								])
+							}
+						
+						}
+					} else {
+						this._markerOverview();
+						if (!change) {
+							this._onMarkerChange();
+						}
+						
+					}
+
 					// Fire Event
 					this._onMarkerChange();
 					
@@ -16333,7 +16348,7 @@ VCO.Map = VCO.Class.extend({
 	_createMarkers: function(array) {
 		for (var i = 0; i < array.length; i++) {
 			this._createMarker(array[i]);
-			if (array[i].location && this.options.show_lines) {
+			if (array[i].location && array[i].location.lat && this.options.show_lines) {
 				this._addToLine(this._line, array[i]);
 			}
 		};

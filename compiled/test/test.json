@@ -59,13 +59,7 @@
 					"opacity": 			50
 				},
 				"date": 					"1839",
-				"location": {
-					"lat": 				39.712304,
-					"lon": 				-91.358088,
-					"zoom": 				10,
-					"icon": 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
-					"line": 				true
-				},
+
 				"text": {
 					"headline": 			"Hannibal, Missouri",
 					"text": 				"Moves to Hannibal, Missouri, which later serves as the model town for Tom Sawyer and Huckleberry Finn."
