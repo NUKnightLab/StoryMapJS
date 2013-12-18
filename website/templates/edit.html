@@ -243,7 +243,7 @@ var _map_overlay;
 var _map_markers = [];
 
 var _storymap_info; // folder 
-var _storymap_data; // { width: n, height: n, storymap: { } }
+var _storymap_data; // { width: n, height: n, ..., storymap: { } }
 var _slides = null; // _storymap_data.storymap.slides
 
 var _current_slide_index = -1;
@@ -369,7 +369,6 @@ function location_mark(data) {
         _map_markers[0] = new google.maps.Marker({
             map: _map,
             draggable: true,
-            title: data.name,
             position: latlng
         });
         google.maps.event.addListener(_map_markers[0], 'dragend', location_drag);
@@ -456,8 +455,7 @@ function slide_select(event) {
             
                         var marker = new google.maps.Marker({
                             map: _map,
-                            draggable: true, //false,
-                            title: loc_data.name,
+                            draggable: true,
                             position: latlng
                         });
                         _map_markers.push(marker);
@@ -771,7 +769,6 @@ function map_init() {
             var place = places[0];
             
             var loc_data = {
-                name: place.name,
                 lat: place.geometry.location.lat(),
                 lon: place.geometry.location.lng()
             };
