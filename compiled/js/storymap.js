@@ -6663,11 +6663,14 @@ VCO.StorySlider = VCO.Class.extend({
 			if (slide.data.text.headline) {
 				n.title = slide.data.text.headline;
 			}
+			/*
+			// Disabling location in description for now.
 			if (slide.data.location) {
 				if (slide.data.location.name) {
 					n.description = slide.data.location.name;
 				}
 			}
+			*/
 		}
 		
 		return n;
@@ -16528,7 +16531,7 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 	/*	Create Marker
 	================================================== */
 	_createMarker: function(d, o) {
-		trace(this.data)
+		
 		var icon = {}; //new L.Icon.Default();
 		
 		if (d.location && d.location.lat && d.location.lon) {

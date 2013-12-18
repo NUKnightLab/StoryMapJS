@@ -8,7 +8,7 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 	/*	Create Marker
 	================================================== */
 	_createMarker: function(d, o) {
-		trace(this.data)
+		
 		var icon = {}; //new L.Icon.Default();
 		
 		if (d.location && d.location.lat && d.location.lon) {
