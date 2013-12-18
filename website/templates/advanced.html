@@ -5,7 +5,7 @@
 <div class="row-fluid">
     <div class="span12">
       <h2>StoryMapJS for Technical Users</h2>
-      <p>Once it's ready, most users will probably use the StoryMapJS authoring tool to create their StoryMaps. But if you're ready to get started now head to <a href="https://github.com/NUKnightLab/StoryMapJS">StoryMapJS GitHub</a>, or if you want maximum control over StoryMapJS, read on.
+      <p>Most users will probably use the <a href="/select.html">StoryMapJS authoring tool</a> to create their StoryMaps. But if you want maximum control over StoryMapJS, read on.
       </p>
       <h3>Managing StoryMapJS data</h3>
       <p>
@@ -35,12 +35,33 @@
 
       <h3 id="json-syntax">JSON syntax</h3>
       <p>
-        Given its alpha nature, please be advised that the JSON syntax for StoryMapJS is subject to change. Here are the details for now.
+        StoryMapJS is still in beta, so the JSON format is subject to change. Most changes should be additions which are backwards compatible. Here are the details for now.
       </p>
       <p>
-        A StoryMapJS javascript object has (for now) a single property, <code>storymap</code>, which has for a value another object with a single property, <code>slide</code>. The value of <code>slide</code> is an array of objects with many possible properties, described below. This may seem verbose but we expect that StoryMapJS will need some more information as development continues. To illustrate:
+        A StoryMapJS javascript object has (for now) a single property<sup>*</sup>, <code>storymap</code>, which has for a value another object. This object can have the following properties, described in more detail below. To illustrate:
+      <pre class="prettyprint lang-js">{ storymap: { language: 'en', map_type: 'stamen:terrain', slides: [ {...}, {...}, {...} ] } }</pre>
+
       </p>
-      <pre class="prettyprint lang-js">{ storymap: { slides: [ {...}, {...}, {...} ] } }</pre>
+      <ul>
+        <li><code>slides</code> - an array of objects with valid properties described below</li>
+        <li><code>language</code> - a two-letter ISO code for the language used for the interface and messages. Currently, StoryMap supports <code>en</code> (English) and <code>es</code> (Spanish).</li>
+        <li><code>map_type</code> - either a coded value for a supported map type, or a map tile URL. Supported map type codes are
+          <ul>
+            <li><code>stamen:toner</a></code> - the default<a href="http://maps.stamen.com/toner/#16/42.0502/-87.6746" target="_blank" title="example"><i class="icon-external-link"></i></a></li>
+            <li><code>stamen:toner-lines</code> - just the lines (mostly roads) from the Toner style<a href="http://maps.stamen.com/toner-lines/#16/42.0502/-87.6746" target="_blank" title="example"><i class="icon-external-link"></i></a></li>
+            <li><code>stamen:toner-labels</code> - just the labels (place names and roads) from the Toner style<a href="http://maps.stamen.com/toner-labels/#16/42.0502/-87.6746" target="_blank" title="example"><i class="icon-external-link"></i></a></li>
+            <li><code>stamen:terrain</code> - a map with roads as well as some natural features<a href="http://maps.stamen.com/terrain/#16/42.0502/-87.6746" target="_blank" title="example"><i class="icon-external-link"></i></a></li>
+            <li><code>stamen:watercolor</code> - an artistic representation<a href="http://maps.stamen.com/watercolor/#16/42.0502/-87.6746" target="_blank" title="example"><i class="icon-external-link"></i></a></li>
+            <li><code>osm:standard</code> - the maps used by OpenStreetMap<a href="http://www.openstreetmap.org/#map=16/42.0502/-87.6746" target="_blank" title="example"><i class="icon-external-link"></i></a></li>
+          </ul>
+          <p>
+            In addition to the above values, you can specify a custom URL tile template <a href="http://leafletjs.com/reference.html#tilelayer" target="_blank">as described in the Leaflet documentation</a>.
+          </p> 
+        </li>
+        <li><code>map_subdomains</code> - only relevant if you specify a custom URL tile template as described above. Specified as a string where each character is a valid subdomain substitution, or array of strings.</li>
+      </ul>
+      </p>
+      <small><sup>*</sup>If you look at the JSON created by the StoryMapJS authoring tool, you will also find 'width' and 'height' values alongside the <code>storymap</code> value. These are only used by the embed tool; normally when writing your own JSON you will also write the CSS or JavaScript to control the width and height of your map.</small>
       <h4>'slide' properties</h4>
       <p>
         Technically, all of these properties are optional. StoryMapJS will try to adapt appropriately.
