@@ -16134,6 +16134,7 @@ VCO.Map = VCO.Class.extend({
 			zoom_distance: 		100,
 			calculate_zoom: 	true, // Allow map to determine best zoom level between markers (recommended)
 			line_color: 		"#333",
+			line_color_inactive: "#000", 
 			line_weight: 		5,
 			line_opacity: 		0.20,
 			line_dash: 			"5,5",
@@ -16206,16 +16207,35 @@ VCO.Map = VCO.Class.extend({
 					
 					// Show Line
 					if (this.options.show_history_line && marker.data.real_marker && this._markers[previous_marker].data.real_marker) {
-						this._replaceLines(this._line_active, [
-							{
-								lat:marker.data.location.lat,
-								lon:marker.data.location.lon
-							}, 
-							{
-								lat:this._markers[previous_marker].data.location.lat,
-								lon:this._markers[previous_marker].data.location.lon
+						var lines_array = [],
+							line_num = previous_marker;
+							
+						if (line_num < this.current_marker) {
+							while (line_num < this.current_marker) {
+								var point = {
+									lat:this._markers[line_num].data.location.lat,
+									lon:this._markers[line_num].data.location.lon
+								}
+								lines_array.push(point);
+								line_num++;
 							}
-						])
+						} else if (line_num > this.current_marker) {
+							while (line_num > this.current_marker) {
+								var point = {
+									lat:this._markers[line_num].data.location.lat,
+									lon:this._markers[line_num].data.location.lon
+								}
+								lines_array.push(point);
+								line_num--;
+							}
+						}
+						
+						lines_array.push({
+							lat:marker.data.location.lat,
+							lon:marker.data.location.lon
+						});
+						
+						this._replaceLines(this._line_active, lines_array);
 					}
 					
 					// Fire Event
@@ -16597,33 +16617,36 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		this._map = new L.map(this._el.map, {scrollWheelZoom:false});
 		this._map.on("load", this._onMapLoaded, this);
 		//this._map.setView([51.505, -0.09], 13);
-		
-		//var layer = new L.StamenTileLayer(this.options.map_type);		
-		var layer = null;
-		var map_type_arr = this.options.map_type.split(':');		
+			
+		var layer,
+			map_type_arr = this.options.map_type.split(':');		
 
+		// Set Tiles
 		switch(map_type_arr[0]) {
-		    case 'stamen':
-		        layer = new L.StamenTileLayer(map_type_arr[1] || 'toner')
-		        break;
+			case 'stamen':
+				layer = new L.StamenTileLayer(map_type_arr[1] || 'toner')
+				break;
 
-		    case 'osm':
-		        layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {subdomains: 'ab'});
-		        break;
+			case 'osm':
+				layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {subdomains: 'ab'});
+				break;
 		    
-		    case 'http':
-		    case 'https':
-		        layer = new L.TileLayer(this.options.map_type, {subdomains: this.options.map_subdomains});
-		        break;
+			case 'http':
+			case 'https':
+				layer = new L.TileLayer(this.options.map_type, {subdomains: this.options.map_subdomains});
+				break;
 		        
-		    default:
-		        layer = new L.StamenTileLayer('toner');
-		        break;		
+			default:
+				layer = new L.StamenTileLayer('toner');
+				break;		
 		}
+		
+		// Add Tile Layer
 		this._map.addLayer(layer);
 		
 		// Create Overall Connection Line
 		this._line = this._createLine(this._line);
+		this._line.setStyle({color:this.options.line_color_inactive});
 		this._addLineToMap(this._line);
 		
 		// Create Active Line
@@ -17373,7 +17396,8 @@ VCO.StoryMap = VCO.Class.extend({
 			zoom_distance: 			100,
 			calculate_zoom: 		true, // Allow map to determine best zoom level between markers (recommended)
 			use_custom_markers: 	false, // Allow use of custom map marker icons
-			line_color: 			"#000",
+			line_color: 			"#DA0000",
+			line_color_inactive: 	"#000", 
 			line_weight: 			3,
 			line_opacity: 			0.20,
 			line_dash: 				"5,5",

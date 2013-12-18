@@ -62,6 +62,7 @@ VCO.Map = VCO.Class.extend({
 			zoom_distance: 		100,
 			calculate_zoom: 	true, // Allow map to determine best zoom level between markers (recommended)
 			line_color: 		"#333",
+			line_color_inactive: "#000", 
 			line_weight: 		5,
 			line_opacity: 		0.20,
 			line_dash: 			"5,5",
@@ -134,16 +135,35 @@ VCO.Map = VCO.Class.extend({
 					
 					// Show Line
 					if (this.options.show_history_line && marker.data.real_marker && this._markers[previous_marker].data.real_marker) {
-						this._replaceLines(this._line_active, [
-							{
-								lat:marker.data.location.lat,
-								lon:marker.data.location.lon
-							}, 
-							{
-								lat:this._markers[previous_marker].data.location.lat,
-								lon:this._markers[previous_marker].data.location.lon
+						var lines_array = [],
+							line_num = previous_marker;
+							
+						if (line_num < this.current_marker) {
+							while (line_num < this.current_marker) {
+								var point = {
+									lat:this._markers[line_num].data.location.lat,
+									lon:this._markers[line_num].data.location.lon
+								}
+								lines_array.push(point);
+								line_num++;
 							}
-						])
+						} else if (line_num > this.current_marker) {
+							while (line_num > this.current_marker) {
+								var point = {
+									lat:this._markers[line_num].data.location.lat,
+									lon:this._markers[line_num].data.location.lon
+								}
+								lines_array.push(point);
+								line_num--;
+							}
+						}
+						
+						lines_array.push({
+							lat:marker.data.location.lat,
+							lon:marker.data.location.lon
+						});
+						
+						this._replaceLines(this._line_active, lines_array);
 					}
 					
 					// Fire Event

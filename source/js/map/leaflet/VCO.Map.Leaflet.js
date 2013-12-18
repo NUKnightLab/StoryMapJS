@@ -17,33 +17,36 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		this._map = new L.map(this._el.map, {scrollWheelZoom:false});
 		this._map.on("load", this._onMapLoaded, this);
 		//this._map.setView([51.505, -0.09], 13);
-		
-		//var layer = new L.StamenTileLayer(this.options.map_type);		
-		var layer = null;
-		var map_type_arr = this.options.map_type.split(':');		
+			
+		var layer,
+			map_type_arr = this.options.map_type.split(':');		
 
+		// Set Tiles
 		switch(map_type_arr[0]) {
-		    case 'stamen':
-		        layer = new L.StamenTileLayer(map_type_arr[1] || 'toner')
-		        break;
+			case 'stamen':
+				layer = new L.StamenTileLayer(map_type_arr[1] || 'toner')
+				break;
 
-		    case 'osm':
-		        layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {subdomains: 'ab'});
-		        break;
+			case 'osm':
+				layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {subdomains: 'ab'});
+				break;
 		    
-		    case 'http':
-		    case 'https':
-		        layer = new L.TileLayer(this.options.map_type, {subdomains: this.options.map_subdomains});
-		        break;
+			case 'http':
+			case 'https':
+				layer = new L.TileLayer(this.options.map_type, {subdomains: this.options.map_subdomains});
+				break;
 		        
-		    default:
-		        layer = new L.StamenTileLayer('toner');
-		        break;		
+			default:
+				layer = new L.StamenTileLayer('toner');
+				break;		
 		}
+		
+		// Add Tile Layer
 		this._map.addLayer(layer);
 		
 		// Create Overall Connection Line
 		this._line = this._createLine(this._line);
+		this._line.setStyle({color:this.options.line_color_inactive});
 		this._addLineToMap(this._line);
 		
 		// Create Active Line

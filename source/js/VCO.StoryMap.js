@@ -520,7 +520,8 @@ VCO.StoryMap = VCO.Class.extend({
 			zoom_distance: 			100,
 			calculate_zoom: 		true, // Allow map to determine best zoom level between markers (recommended)
 			use_custom_markers: 	false, // Allow use of custom map marker icons
-			line_color: 			"#000",
+			line_color: 			"#DA0000",
+			line_color_inactive: 	"#000", 
 			line_weight: 			3,
 			line_opacity: 			0.20,
 			line_dash: 				"5,5",
