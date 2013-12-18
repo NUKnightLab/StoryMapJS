@@ -132,6 +132,12 @@ VCO.Slide = VCO.Class.extend({
 		}
 	},
 	
+	stopMedia: function() {
+		if (this._media && this._state.loaded) {
+			this._media.stopMedia();
+		}
+	},
+	
 	
 	/*	Events
 	================================================== */

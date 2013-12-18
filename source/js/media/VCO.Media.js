@@ -152,6 +152,10 @@ VCO.Media = VCO.Class.extend({
 	updateDisplay: function(w, h, animate) {
 		this._updateDisplay(w, h, animate);
 	},
+	
+	stopMedia: function() {
+		this._stopMedia();
+	},
 
 	/*	Events
 	================================================== */
@@ -233,6 +237,10 @@ VCO.Media = VCO.Class.extend({
 		}
 		
 		this.updateMediaDisplay();
+		
+	},
+	
+	_stopMedia: function() {
 		
 	}
 	

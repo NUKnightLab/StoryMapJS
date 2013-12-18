@@ -53,6 +53,11 @@ VCO.Media.YouTube = VCO.Media.extend({
 		this._el.content_item.style.height = VCO.Util.ratio.r16_9({w:this._el.content_item.offsetWidth}) + "px";
 	},
 	
+	_stopMedia: function() {
+		if (this.player) {
+			this.player.pauseVideo();
+		}
+	},
 	
 	createMedia: function() {
 		var self = this;

@@ -517,6 +517,12 @@ VCO.StorySlider = VCO.Class.extend({
 	================================================== */
 	
 	goTo: function(n, fast, displayupdate) {
+		
+		// Stop Playing Media
+		for (var i = 0; i < this._slides.length; i++) {
+			this._slides[i].stopMedia();
+		}
+		
 		if (n < this._slides.length && n >= 0) {
 			this.current_slide = n;
 			
