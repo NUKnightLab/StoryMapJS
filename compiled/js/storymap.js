@@ -16132,7 +16132,8 @@ VCO.Map = VCO.Class.extend({
 			start_at_slide: 	0,
 			map_popup: 			false, 
 			zoom_distance: 		100,
-			calculate_zoom: 	true, // Allow map to determine best zoom level between markers (recommended)
+			calculate_zoom: 	true,  // Allow map to determine best zoom level between markers (recommended)
+			line_follows_path: 	true,  // Map history path follows default line, if false it will connect previous and current only
 			line_color: 		"#333",
 			line_color_inactive: "#000", 
 			line_weight: 		5,
@@ -16206,37 +16207,55 @@ VCO.Map = VCO.Class.extend({
 					this._viewTo(marker.data.location, {calculate_zoom: this.options.calculate_zoom, zoom:zoom});
 					
 					// Show Line
-					if (this.options.show_history_line && marker.data.real_marker && this._markers[previous_marker].data.real_marker) {
-						var lines_array = [],
-							line_num = previous_marker;
+					if (this.options.line_follows_path) {
+						if (this.options.show_history_line && marker.data.real_marker && this._markers[previous_marker].data.real_marker) {
+							var lines_array = [],
+								line_num = previous_marker;
 							
-						if (line_num < this.current_marker) {
-							while (line_num < this.current_marker) {
-								var point = {
-									lat:this._markers[line_num].data.location.lat,
-									lon:this._markers[line_num].data.location.lon
+							if (line_num < this.current_marker) {
+								while (line_num < this.current_marker) {
+									var point = {
+										lat:this._markers[line_num].data.location.lat,
+										lon:this._markers[line_num].data.location.lon
+									}
+									lines_array.push(point);
+									line_num++;
 								}
-								lines_array.push(point);
-								line_num++;
-							}
-						} else if (line_num > this.current_marker) {
-							while (line_num > this.current_marker) {
-								var point = {
-									lat:this._markers[line_num].data.location.lat,
-									lon:this._markers[line_num].data.location.lon
+							} else if (line_num > this.current_marker) {
+								while (line_num > this.current_marker) {
+									var point = {
+										lat:this._markers[line_num].data.location.lat,
+										lon:this._markers[line_num].data.location.lon
+									}
+									lines_array.push(point);
+									line_num--;
 								}
-								lines_array.push(point);
-								line_num--;
 							}
+						
+							lines_array.push({
+								lat:marker.data.location.lat,
+								lon:marker.data.location.lon
+							});
+						
+							this._replaceLines(this._line_active, lines_array);
+						}
+					} else {
+						// Show Line
+						if (this.options.show_history_line && marker.data.real_marker && this._markers[previous_marker].data.real_marker) {
+							this._replaceLines(this._line_active, [
+								{
+									lat:marker.data.location.lat,
+									lon:marker.data.location.lon
+								}, 
+								{
+									lat:this._markers[previous_marker].data.location.lat,
+									lon:this._markers[previous_marker].data.location.lon
+								}
+							])
 						}
 						
-						lines_array.push({
-							lat:marker.data.location.lat,
-							lon:marker.data.location.lon
-						});
-						
-						this._replaceLines(this._line_active, lines_array);
 					}
+					
 					
 					// Fire Event
 					this._onMarkerChange();
@@ -17394,9 +17413,10 @@ VCO.StoryMap = VCO.Class.extend({
 			path_gfx: 				"gfx",
 			map_popup: 				false,
 			zoom_distance: 			100,
-			calculate_zoom: 		true, // Allow map to determine best zoom level between markers (recommended)
-			use_custom_markers: 	false, // Allow use of custom map marker icons
-			line_color: 			"#DA0000",
+			calculate_zoom: 		true,   // Allow map to determine best zoom level between markers (recommended)
+			use_custom_markers: 	false,  // Allow use of custom map marker icons
+			line_follows_path: 		true,   // Map history path follows default line, if false it will connect previous and current only
+			line_color: 			"#000", //"#DA0000",
 			line_color_inactive: 	"#000", 
 			line_weight: 			3,
 			line_opacity: 			0.20,
