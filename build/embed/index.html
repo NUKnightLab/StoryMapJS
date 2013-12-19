@@ -49,6 +49,32 @@ function getScriptPath(scriptname) {
 	return '';
 }
 
+function url_join(url, concat) { // see http://stackoverflow.com/questions/2676178/joining-relative-urls
+  var url1 = url.split('/');
+  var url2 = concat.split('/');
+  var url3 = [ ];
+  for (var i = 0, l = url1.length; i < l; i ++) {
+    if (url1[i] == '..') {
+      url3.pop();
+    } else if (url1[i] == '.') {
+      continue;
+    } else {
+      url3.push(url1[i]);
+    }
+  }
+  for (var i = 0, l = url2.length; i < l; i ++) {
+    if (url2[i] == '..') {
+      url3.pop();
+    } else if (url2[i] == '.') {
+      continue;
+    } else {
+      url3.push(url2[i]);
+    }
+  }
+  return url3.join('/');
+}
+
+
 var storymap = null;
 var params = parseQuerystring();
 var url = decodeURIComponent(params['url']);
@@ -73,6 +99,17 @@ VCO.getJSON(url, function(d) {
         if(d.storymap.language) {
             options.language = d.storymap.language;
         }
+
+        var font = "../css/fonts/font.default.css";
+        if(d.font_css) {
+            font = d.font;
+        }
+        if(!(font.startsWith('http') || font.startsWith('//'))) {
+            font = url_join(options.script_path, font);
+        }
+        VCO.Load.css(font,function(){ trace('font loaded: ' + font);});
+
+
         
         storymap = new VCO.StoryMap('storymap-embed', d, options);
     }
