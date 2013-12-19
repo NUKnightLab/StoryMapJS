@@ -1,19 +1,44 @@
 /* Requires Variables.less
 ================================================== */
+@leaflet-offset: 6px;
+@map-icon-size: 44px; //52
+@map-icon-width: 32px; //38
 .vco-map {
 	.vco-mapmarker, .vco-mapmarker-active {
+		/*
 		background-image: url(storymap.png?v1.1);
 		background-repeat:no-repeat;
 		background-position: 0 0;
-		width: 33px !important;
-		height: 53px !important;
+		*/
+		font-family: 'vco-icons';
+		speak: none;
+		font-style: normal;
+		font-weight: normal;
+		font-variant: normal;
+		text-transform: none;
+		line-height: 1;
+
+		/* Better Font Rendering =========== */
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+		
+		
+		width: @map-icon-width !important;
+		height: @map-icon-size !important;
 		overflow:hidden;
-		top:-38px;
-		left: -10px;
+		top:-(@map-icon-size - @leaflet-offset);
+		left: -((@map-icon-width/2) - @leaflet-offset);
 		
 	}
+	.vco-mapmarker:before, .vco-mapmarker-active:before {
+		content: "\e600";
+		font-size:@map-icon-size;
+		
+	}
+	
 	.vco-mapmarker {
-		background-position: -33px 0;
+		color:#a5a5a5;
+		//background-position: -33px 0;
 		/*
 		width: 		16px !important;
 		height: 	16px !important;
@@ -26,11 +51,12 @@
 		*/
 	}
 	.vco-mapmarker-active {
+		/*
 		background-image: url(storymap.png?v1.1);
 		background-repeat:no-repeat;
 		background-position: 0 0;
-		width: 33px !important;
-		height: 53px !important;
+		*/
+		color:@color-theme;
 		overflow:hidden;
 		//top:-34px;
 		//left: -10px;
@@ -43,219 +69,27 @@
 .vco-map {
 	/* Active
 	================================================== */
+	.vco-mapmarker-icon:after {
+			font-size:22px;
+			
+			color:#FFF; 
+			text-align:center;
+			width:@map-icon-width;
+			height: 24px;
+			overflow:hidden;
+			//content:'';
+			display:block;
+			position:absolute;
+			top:4px;
+			left:0px;
+			
+			.opacity(75);
+	}
+	
 	.vco-mapmarker-active.vco-mapmarker-icon:after {
-		.base-sprite();
-		background-repeat:no-repeat;
-		width: 24px;
-		height: 24px;
-		overflow:hidden;
-		content:'';
-		display:block;
-		position:absolute;
-		top:8px;
-		left:5px;
 		.opacity(100);
 	}
-	.vco-mapmarker-active.vco-mapmarker-icon-website:after {
-		background-position: -232px -24px; 
-	}
-	.vco-mapmarker-active.vco-mapmarker-icon-googledoc:after {
-		background-position: -256px -48px;
-	}
-	.vco-mapmarker-active.vco-mapmarker-icon-quote:after {
-		background-position: -232px -48px;
-	}
-	.vco-mapmarker-active.vco-mapmarker-icon-plaintext:after {
-		background-position: -280px -48px;
-	}
-	.vco-mapmarker-active.vco-mapmarker-icon-twitter:after {
-		background-position: -256px -24px;
-	}
-	.vco-mapmarker-active.vco-mapmarker-icon-video:after {
-		background-position: -328px -24px;
-	}
-	.vco-mapmarker-active.vco-mapmarker-icon-dailymotion:after {
-		background-position: -328px -24px;
-	}
-	.vco-mapmarker-active.vco-mapmarker-icon-soundcloud:after {
-		background-position: -304px -24px;
-	}
-	.vco-mapmarker-active.vco-mapmarker-icon-image:after {
-		background-position: -280px -24px; 
-	}
-	.vco-mapmarker-active.vco-mapmarker-icon-flickr:after {
-		background-position: -280px -24px; 
-	}
-	.vco-mapmarker-active.vco-mapmarker-icon-link:after {
-		background-position: -184px -72px; 
-	}
-	.vco-mapmarker-active.vco-mapmarker-icon-storify:after {
-		background-position: -328px -96px; 
-	}
-	.vco-mapmarker-active.vco-mapmarker-icon-wikipedia:after {
-		background-position: -184px -48px; 
-	}
-	.vco-mapmarker-active.vco-mapmarker-icon-instagram:after {
-		background-position: -208px -96px; 
-	}
-	.vco-mapmarker-active.vco-mapmarker-icon-vine:after {
-		background-position: -232px -72px; 
-	}
-	.vco-mapmarker-active.vco-mapmarker-icon-googleplus:after {
-		background-position: -208px -72px;
-	}
-	.vco-mapmarker-active.vco-mapmarker-icon-vimeo:after {
-		background-position: -328px -48px;
-	}
-	.vco-mapmarker-active.vco-mapmarker-icon-youtube:after {
-		background-position: -328px -72px; 
-	}
-	
-	/* Inactive
-	================================================== */
-	.vco-mapmarker-icon:after {
-		/*
-		.base-sprite();
-		background-repeat:no-repeat;
-		width: 14px;
-		height: 10px;
-		overflow:hidden;
-		content:'';
-		display:block;
-		position:absolute;
-		top:2px;
-		left:2px;
-		*/
-		/*
-		.base-sprite();
-		background-repeat:no-repeat;
-		width: 14px;
-		height: 14px;
-		overflow:hidden;
-		content:'';
-		display:block;
-		position:absolute;
-		top:5px;
-		left:4px;
-		*/
-		.base-sprite();
-		background-repeat:no-repeat;
-		width: 24px;
-		height: 24px;
-		overflow:hidden;
-		content:'';
-		display:block;
-		position:absolute;
-		top:8px;
-		left:5px;
-		.opacity(75);
-	}
-	.vco-mapmarker-icon-website:after {
-		background-position: -232px -24px; 
-	}
-	.vco-mapmarker-icon-googledoc:after {
-		background-position: -256px -48px;
-	}
-	.vco-mapmarker-icon-quote:after {
-		background-position: -232px -48px;
-	}
-	.vco-mapmarker-icon-plaintext:after {
-		background-position: -280px -48px;
-	}
-	.vco-mapmarker-icon-twitter:after {
-		background-position: -256px -24px;
-	}
-	.vco-mapmarker-icon-video:after {
-		background-position: -328px -24px;
-	}
-	.vco-mapmarker-icon-dailymotion:after {
-		background-position: -328px -24px;
-	}
-	.vco-mapmarker-icon-soundcloud:after {
-		background-position: -304px -24px;
-	}
-	.vco-mapmarker-icon-image:after {
-		background-position: -280px -24px; 
-	}
-	.vco-mapmarker-icon-flickr:after {
-		background-position: -280px -24px; 
-	}
-	.vco-mapmarker-icon-link:after {
-		background-position: -184px -72px; 
-	}
-	.vco-mapmarker-icon-storify:after {
-		background-position: -328px -96px; 
-	}
-	.vco-mapmarker-icon-wikipedia:after {
-		background-position: -184px -48px; 
-	}
-	.vco-mapmarker-icon-instagram:after {
-		background-position: -208px -96px; 
-	}
-	.vco-mapmarker-icon-vine:after {
-		background-position: -232px -72px; 
-	}
-	.vco-mapmarker-icon-googleplus:after {
-		background-position: -208px -72px;
-	}
-	.vco-mapmarker-icon-vimeo:after {
-		background-position: -328px -48px;
-	}
-	.vco-mapmarker-icon-youtube:after {
-		background-position: -328px -72px; 
-	}
-	
-	/*
-	.vco-mapmarker-icon-website:after {
-		background-position: -232px -24px; 
-	}
-	.vco-mapmarker-icon-googledoc:after {
-		background-position: -256px -48px;
-	}
-	.vco-mapmarker-icon-quote:after {
-		background-position: -232px -48px;
-	}
-	.vco-mapmarker-icon-plaintext:after {
-		background-position: -280px -48px;
-	}
-	.vco-mapmarker-icon-twitter:after {
-		background-position: -256px -24px;
-	}
-	.vco-mapmarker-icon-video:after {
-		background-position: -328px -24px;
-	}
-	.vco-mapmarker-icon-soundcloud:after {
-		background-position: -304px -24px;
-	}
-	.vco-mapmarker-icon-image:after {
-		background-position: -280px -120px;
-		//background-position: -280px -24px;
-	}
-	.vco-mapmarker-icon-link:after {
-		background-position: -184px -72px; 
-	}
-	.vco-mapmarker-icon-storify:after {
-		background-position: -328px -96px; 
-	}
-	.vco-mapmarker-icon-wikipedia:after {
-		background-position: -184px -48px; 
-	}
-	.vco-mapmarker-icon-instagram:after {
-		background-position: -208px -96px; 
-	}
-	.vco-mapmarker-icon-vine:after {
-		background-position: -232px -72px; 
-	}
-	.vco-mapmarker-icon-googleplus:after {
-		background-position: -208px -72px;
-	}
-	.vco-mapmarker-icon-vimeo:after {
-		background-position: -328px -48px;
-	}
-	.vco-mapmarker-icon-youtube:after {
-		background-position: -328px -72px; 
-	}
-	*/
+
 }
 
 

@@ -180,7 +180,7 @@ VCO.SizeBar = VCO.Class.extend({
 		VCO.DomEvent.addListener(this._el.button_overview, 'click', this._onButtonOverview, this);
 		
 		this._el.button_backtostart 				= VCO.Dom.create('span', 'vco-sizebar-button', this._el.container);
-		this._el.button_backtostart.innerHTML		= VCO.Language.buttons.backtostart;
+		this._el.button_backtostart.innerHTML		= VCO.Language.buttons.backtostart + " <span class='vco-icon-goback'></span>";
 		VCO.DomEvent.addListener(this._el.button_backtostart, 'click', this._onButtonBackToStart, this);
 		
 		this._el.button_collapse_toggle 			= VCO.Dom.create('span', 'vco-sizebar-button', this._el.container);
