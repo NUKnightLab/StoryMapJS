@@ -54,6 +54,11 @@
                 "dst": "build/css/storymap.css"
             },
             {
+                "src": "source/less/fonts",
+                "dst": "build/css/fonts",
+                "regex": ".*.less"
+            },
+            {
                 "src": "website/less/site.less",
                 "dst": "build/css/site.css"
             }
