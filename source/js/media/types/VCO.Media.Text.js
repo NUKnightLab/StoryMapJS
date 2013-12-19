@@ -19,16 +19,18 @@ VCO.Media.Text = VCO.Class.extend({
 	
 	// Options
 	options: {
-		something: 			""
+		title: 			false
 	},
 	
 	/*	Constructor
 	================================================== */
 	initialize: function(data, options, add_to_container) {
+		
 		VCO.Util.setData(this, data);
-		if (options) {
-			VCO.Util.setOptions(this, this.options);
-		};
+		
+		// Merge Options
+		VCO.Util.mergeData(this.options, options);
+		
 		//this._container = VCO.Dom.get(id);
 		this._el.container = VCO.Dom.create("div", "vco-text");
 		this._el.container.id = this.data.uniqueid;
@@ -88,7 +90,11 @@ VCO.Media.Text = VCO.Class.extend({
 		
 		// Headline
 		if (this.data.headline != "") {
-			this._el.headline				= VCO.Dom.create("h2", "vco-headline", this._el.content_container);
+			var headline_class = "vco-headline";
+			if (this.options.title) {
+				headline_class = "vco-headline vco-headline-title";
+			}
+			this._el.headline				= VCO.Dom.create("h2", headline_class, this._el.content_container);
 			this._el.headline.innerHTML		= this.data.headline;
 		}
 		

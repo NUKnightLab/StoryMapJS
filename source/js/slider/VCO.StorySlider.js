@@ -485,12 +485,17 @@ VCO.StorySlider = VCO.Class.extend({
 			if (array[i].uniqueid == "") {
 				array[i].uniqueid = VCO.Util.unique_ID(6, "vco-slide");
 			}
-			this._createSlide(array[i]);
+			if (i == 0) {
+				this._createSlide(array[i], true);
+			} else {
+				this._createSlide(array[i], false);
+			}
+			
 		};
 	},
 	
-	_createSlide: function(d) {
-		var slide = new VCO.Slide(d, this.options);
+	_createSlide: function(d, title_slide) {
+		var slide = new VCO.Slide(d, this.options, title_slide);
 		this._addSlide(slide);
 		this._slides.push(slide);
 	},

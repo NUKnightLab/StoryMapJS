@@ -5085,16 +5085,18 @@ VCO.Media.Text = VCO.Class.extend({
 	
 	// Options
 	options: {
-		something: 			""
+		title: 			false
 	},
 	
 	/*	Constructor
 	================================================== */
 	initialize: function(data, options, add_to_container) {
+		
 		VCO.Util.setData(this, data);
-		if (options) {
-			VCO.Util.setOptions(this, this.options);
-		};
+		
+		// Merge Options
+		VCO.Util.mergeData(this.options, options);
+		
 		//this._container = VCO.Dom.get(id);
 		this._el.container = VCO.Dom.create("div", "vco-text");
 		this._el.container.id = this.data.uniqueid;
@@ -5154,7 +5156,11 @@ VCO.Media.Text = VCO.Class.extend({
 		
 		// Headline
 		if (this.data.headline != "") {
-			this._el.headline				= VCO.Dom.create("h2", "vco-headline", this._el.content_container);
+			var headline_class = "vco-headline";
+			if (this.options.title) {
+				headline_class = "vco-headline vco-headline-title";
+			}
+			this._el.headline				= VCO.Dom.create("h2", headline_class, this._el.content_container);
 			this._el.headline.innerHTML		= this.data.headline;
 		}
 		
@@ -5788,7 +5794,7 @@ VCO.Slide = VCO.Class.extend({
 	
 	/*	Constructor
 	================================================== */
-	initialize: function(data, options) {
+	initialize: function(data, options, title_slide) {
 		
 		// DOM Elements
 		this._el = {
@@ -5810,9 +5816,12 @@ VCO.Slide = VCO.Class.extend({
 		this.has = {
 			headline: 	false,
 			text: 		false,
-			media: 		false
+			media: 		false,
+			title: 		false
 		}
-	
+		
+		this.has.title = title_slide;
+		
 		// Data
 		this.data = {
 			uniqueid: 				null,
@@ -5942,7 +5951,7 @@ VCO.Slide = VCO.Class.extend({
 		
 		// Create Text
 		if (this.has.text || this.has.headline) {
-			this._text = new VCO.Media.Text(this.data.text);
+			this._text = new VCO.Media.Text(this.data.text, {title:this.has.title});
 		}
 		
 		// Add to DOM
@@ -6607,12 +6616,17 @@ VCO.StorySlider = VCO.Class.extend({
 			if (array[i].uniqueid == "") {
 				array[i].uniqueid = VCO.Util.unique_ID(6, "vco-slide");
 			}
-			this._createSlide(array[i]);
+			if (i == 0) {
+				this._createSlide(array[i], true);
+			} else {
+				this._createSlide(array[i], false);
+			}
+			
 		};
 	},
 	
-	_createSlide: function(d) {
-		var slide = new VCO.Slide(d, this.options);
+	_createSlide: function(d, title_slide) {
+		var slide = new VCO.Slide(d, this.options, title_slide);
 		this._addSlide(slide);
 		this._slides.push(slide);
 	},
@@ -17489,7 +17503,7 @@ VCO.StoryMap = VCO.Class.extend({
 			calculate_zoom: 		true,   // Allow map to determine best zoom level between markers (recommended)
 			use_custom_markers: 	false,  // Allow use of custom map marker icons
 			line_follows_path: 		true,   // Map history path follows default line, if false it will connect previous and current only
-			line_color: 			"#000", //"#DA0000",
+			line_color: 			"#DA0000",
 			line_color_inactive: 	"#000", 
 			line_weight: 			3,
 			line_opacity: 			0.20,

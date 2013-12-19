@@ -42,7 +42,7 @@ VCO.Slide = VCO.Class.extend({
 	
 	/*	Constructor
 	================================================== */
-	initialize: function(data, options) {
+	initialize: function(data, options, title_slide) {
 		
 		// DOM Elements
 		this._el = {
@@ -64,9 +64,12 @@ VCO.Slide = VCO.Class.extend({
 		this.has = {
 			headline: 	false,
 			text: 		false,
-			media: 		false
+			media: 		false,
+			title: 		false
 		}
-	
+		
+		this.has.title = title_slide;
+		
 		// Data
 		this.data = {
 			uniqueid: 				null,
@@ -196,7 +199,7 @@ VCO.Slide = VCO.Class.extend({
 		
 		// Create Text
 		if (this.has.text || this.has.headline) {
-			this._text = new VCO.Media.Text(this.data.text);
+			this._text = new VCO.Media.Text(this.data.text, {title:this.has.title});
 		}
 		
 		// Add to DOM

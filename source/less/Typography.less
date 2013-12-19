@@ -3,15 +3,57 @@
 	
 	h1, h2, h3 {
 		font-size: @base-font-size-xlarge;
-		line-height:floor(@base-font-size-xlarge * 1.1);
+		line-height:@base-font-size-xlarge;
+		small {
+			font-size: @base-font-size-large;
+			line-height:@base-font-size-large;
+		}
 	}
+	h4, h5, h6 {
+		font-size: @base-font-size-large;
+		line-height:@base-font-size-large;
+		margin-bottom:0px;
+		small {
+			font-size: @base-font-size;
+			line-height:@base-font-size;
+		}
+	}
+	h2.vco-headline-title {
+		font-size: @base-font-size-xlarge + 4;
+		line-height: @base-font-size-xlarge + 4;
+		small {
+			display:block;
+			margin-top:5px;
+			font-size: @base-font-size-large;
+			line-height:@base-font-size-large;
+		}
+	}
+	
+	h2 {
+		margin-top:20px;
+		margin-bottom:5px;
+	}
+	
 	p {
+		margin-top:5px;
+		margin-bottom:10px;
 		font-size: @base-font-size;
 		//font-family: @font-secondary;
 		color: lighten(@color-dark, 40%);
+		b {
+			font-weight: bold;
+			line-height: @base-font-size;
+			color: lighten(@color-dark, 20%);
+		}
+		i, em {
+			font-style: italic;
+			line-height: @base-font-size;
+		}
 	}
 	.vco-caption, .vco-credit, .vco-slidenav-next, .vco-slidenav-previous {
 		//font-family: @font-sanserif;
+		font-size:@base-font-size-small;
+		line-height:@base-font-size-small;
 	}
 	
 	blockquote, blockquote p {
@@ -19,7 +61,26 @@
 		color: lighten(@color-dark, 40%);
 	}
 	
+	.vcard {
+		font-family: @font-main;
+		font-size: @base-font-size;
+		line-height:@base-font-size;
+	}
 	
+	.vco-note {
+		display:block;
+		font-family: @font-main;
+		font-style: italic;
+		background-color:lighten(@color-dark, 90%);
+		font-size:@base-font-size;
+		line-height:@base-font-size+2;
+		padding:10px;
+		.border-radius(7px); 
+		color: #8a6d3b;
+		background-color: #fcf8e3;
+		border: 1px solid #faebcc;
+		
+	}
 }
 
 // Skinnier
@@ -28,6 +89,10 @@
 		h1, h2, h3 {
 			font-size: 		@base-font-size-large;
 			line-height:	floor(@base-font-size-large * 1.1);
+		}
+		h2.vco-headline-title {
+			font-size: @base-font-size-xlarge;
+			line-height: @base-font-size-xlarge;
 		}
 	}
 	
@@ -38,6 +103,10 @@
 		h1, h2, h3 {
 			font-size: 		@base-font-size;
 			line-height:	floor(@base-font-size * @base-line-height);
+		}
+		h2.vco-headline-title {
+			font-size: @base-font-size-large;
+			line-height: @base-font-size-large;
 		}
 	}
 	
