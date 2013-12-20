@@ -108,7 +108,12 @@
 		}
 	}
 }
-
+.vco-slide.vco-full-image-background, .vco-slide.vco-full-color-background {
+	a, .vcard a {
+		.slide-text-shadow();
+		color: lighten(@color-theme, 90%);
+	}
+}
 /* Credit
 ================================================== */
 .vco-credit {
@@ -141,29 +146,10 @@
 		background: none;
 		.box-shadow(0 0px 0px #000);
 	}
-	.vco-media-twitter, .vco-media-blockquote {
-		blockquote {
-			color: #FFF !important;
-			p {
-				color: #FFF !important;
-			}
-		}
-	}
-	.vcard {
-		a, .nickname  {
-			color: #FFF !important;
-		}
-	}
+	
 }
 .vco-full-image-background {
-	.vco-media-twitter, .vco-media-blockquote {
-		blockquote {
-			text-shadow: 1px 1px 2px #000 !important;
-			p {
-				text-shadow: 1px 1px 2px #000 !important;
-			}
-		}
-	}
+
 }
 
 .vco-full-color-background {
