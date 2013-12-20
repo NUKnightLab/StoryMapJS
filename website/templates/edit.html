@@ -1,5 +1,5 @@
 {% extends "_base.html" %}
-
+{% block title %}TITLE (Editing) - {% endblock %}
 {% block head %}
 <script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 <!-- start google maps -->
@@ -805,7 +805,7 @@ function storymap_init() {
                 storymap_saved_msg();
                                
                 $('#title').html(_storymap_info.title);
-                                
+                document.title = document.title.replace("TITLE", _storymap_info.title);
                 // Load draft
                 gdrive_storymap_load_draft(storymapFolder, function(error, data) {
                     if(error) {
