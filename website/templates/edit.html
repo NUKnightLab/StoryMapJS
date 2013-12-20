@@ -880,7 +880,11 @@ $(function() {
     });
     
     $('#map_type').change(function(event) {
-        _storymap_data.storymap.map_type = $('#map_type').val().trim();
+        // normalize
+        var map_type = $('#map_type').val().trim();
+        map_type = map_type.replace('{Z}','{z}').replace('{X}','{x}').replace('{Y}','{y}').replace('{S}','{s}');
+        $('#map_type').val(map_type);
+        _storymap_data.storymap.map_type = map_type;
         storymap_dirty(1);
         map_set_type();        
     });
