@@ -77,6 +77,27 @@
             </div>
 
              <div class="control-group">
+                <label class="control-label">Fonts</label>
+                <div class="controls">
+                    <select id="font_css">
+                        <option value="">Default</option>
+                        <option value="stock:bitter-raleway">Raleway / Bitter</option>
+                        <option value="stock:dancing-ledger">Ledger / Dancing script</option>
+                        <option value="stock:fjalla-average">Average Sans / Fjalla One</option>
+                        <option value="stock:lustria-lato">Lato / Lustria</option>
+                        <option value="stock:oldstandard">Old Standard TT</option>
+                        <option value="stock:opensans-gentiumbook">Gentium Book Basic / Open Sans</option>
+                        <option value="stock:pt">PT Serif / PT Sans Narrow / PT Sans</option>
+                    </select>
+                    <a class="help" href="javascript:"
+                        data-placement="right"
+                        data-content="Select the fonts for your StoryMap. (Preview coming soon.)"                    
+                    >&nbsp;<i class="icon-question-sign icon-large"></i></a>
+                </div>
+            </div>      
+
+
+             <div class="control-group">
                 <label class="control-label">Map Type</label>
                 <div class="controls">
                     <div class="input-prepend">
@@ -102,7 +123,7 @@
                     </div>
                     <a class="help" href="javascript:"
                         data-html="true"
-                        data-placement="left"
+                        data-placement="right"
                         data-content='
                         <p>Select a predefined map tile type, or select "custom URL" to enter the URL for a tile server.</p>
                         <p>If the tile server supports multiple subdomains, enter them as a single string in the 
@@ -121,7 +142,7 @@
                         <option value="es">Spanish</option>
                     </select>
                     <a class="help" href="javascript:"
-                        data-placement="left"
+                        data-placement="right"
                         data-content="Select the language to use in controls and messages when displaying your StoryMap."                    
                     >&nbsp;<i class="icon-question-sign icon-large"></i></a>
                 </div>
@@ -599,7 +620,7 @@ function slides_load() {
     map_set_type();
                
     $('#language').val(_storymap_data.storymap.language || _default_language);
-    
+    $('#font_css').val(_storymap_data.font_css || '');
     // Slides 1,...,n
     $('#slides').html();  
               
@@ -885,6 +906,11 @@ $(function() {
         map_set_type();        
     });
     
+    $('#font_css').change(function(event) {
+        _storymap_data.font_css = $('#font_css').val().trim();
+        storymap_dirty(1);
+    });
+
     $('#map_subdomains').change(function(event) {
         _storymap_data.storymap.map_subdomains = $('#map_subdomains').val().trim();
         storymap_dirty(1);
