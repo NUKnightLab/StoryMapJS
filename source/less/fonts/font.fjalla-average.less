@@ -1,0 +1,100 @@
+/*	Font Fjalla & Average
+
+http://www.google.com/fonts/specimen/Fjalla+One
+http://www.google.com/fonts/specimen/Average+Sans
+----------------------------------------------------- */
+@import "../Variables.less"; 
+
+// Font Import
+@import url(http://fonts.googleapis.com/css?family=Average+Sans|Fjalla+One);
+
+
+
+@font-main:						'Average Sans', sans-serif;
+@font-secondary:				'Fjalla One', sans-serif;
+
+.vco-storymap {
+	font-family: @font-main;
+	font-weight:400;
+	font-size: 16px;
+	line-height: 24px;
+	
+	h1, h2, h3, h4, h5, h6 {
+		font-family: @font-secondary;
+		text-transform: none;
+		font-weight:400;
+	}
+	
+	h2.vco-headline-title {
+		font-size: 58px;
+		line-height: 58px;
+	}
+	
+	p {
+		font-family: @font-main;
+	}
+	
+	ul {
+		font-family: @font-main;
+	}
+	
+	.vco-caption, .vco-credit {
+		font-family: @font-main;
+	}
+	
+	.vcard {
+		font-family: @font-main;
+		font-weight:400;
+	}
+	
+	.vco-slidenav-next, .vco-slidenav-previous {
+		font-family: @font-secondary;
+		font-weight:400;
+		text-transform: none;
+		.vco-slidenav-title {
+			line-height:1.3em !important;
+		}
+	}
+	
+	.vco-sizebar {
+		font-family: @font-main;
+		.vco-sizebar-button {
+			
+		}
+	}
+	
+	blockquote, blockquote p {
+		font-family: @font-main;
+		font-style: normal;
+	}
+	
+	
+}
+
+// Skinnier
+@media only screen and (max-width: 800px), only screen and (max-device-width: 800px) {
+	.vco-storymap {
+		h1, h2, h3 {
+			font-size: 		@base-font-size-large;
+			line-height:	floor(@base-font-size-large * 1.1);
+		}
+		h2.vco-headline-title {
+			font-size: @base-font-size-xlarge;
+			line-height: @base-font-size-xlarge;
+		}
+	}
+	
+}
+// Mobile, iPhone and skinny
+@media only screen and (max-width: 500px), only screen and (max-device-width: 500px) {
+	.vco-storymap {
+		h1, h2, h3 {
+			font-size: 		@base-font-size;
+			line-height:	floor(@base-font-size * @base-line-height);
+		}
+		h2.vco-headline-title {
+			font-size: @base-font-size-large;
+			line-height: @base-font-size-large;
+		}
+	}
+}
