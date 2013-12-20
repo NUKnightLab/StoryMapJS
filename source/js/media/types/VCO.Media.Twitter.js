@@ -80,6 +80,10 @@ VCO.Media.Twitter = VCO.Media.extend({
 		// After Loaded
 		this.onLoaded();
 			
+	},
+	
+	_updateMediaDisplay: function() {
+		
 	}
 	
 	

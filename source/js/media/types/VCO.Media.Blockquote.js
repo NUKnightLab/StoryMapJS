@@ -23,6 +23,10 @@ VCO.Media.Blockquote = VCO.Media.extend({
 		
 		// After Loaded
 		this.onLoaded();
+	},
+	
+	_updateMediaDisplay: function() {
+		
 	}
 
 	
