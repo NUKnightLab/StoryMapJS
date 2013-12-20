@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="/build/css/storymap.css">
 <!-- endbuild -->
 <!-- build:js http://cdn.knightlab.com/libs/storymapjs/latest/js/storymap-min.js -->
-<script type="text/javascript" src="/build/js/storymap.js"></script>
+<script type="text/javascript" src="/build/js/storymap-min.js"></script>
 <!-- endbuild -->
 <style>
 html, body {
@@ -104,11 +104,15 @@ VCO.getJSON(url, function(d) {
             options.language = d.storymap.language;
         }
 
-        var font = "../css/fonts/font.default.css";
+        var font = "stock:default";
         if(d.font_css) {
             font = d.font_css;
         }
-        if(!(font.startsWith('http') || font.startsWith('//'))) {
+        if(font.startsWith("stock:")) {
+            var font_name = font.split(':')[1];
+            var base_url = url_join(options.script_path,"../css/fonts/");
+            font = url_join(base_url, "font." + font_name + ".css");
+        } else if(!(font.startsWith('http') || font.startsWith('//'))) {
             font = url_join(options.script_path, font);
         }
         VCO.Load.css(font,function(){ trace('font loaded: ' + font);});
