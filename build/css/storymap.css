@@ -1,4 +1,4 @@
-/* storymapjs - v0.1.4 - 2013-12-20
+/* storymapjs - v0.1.5 - 2013-12-20
  * Copyright (c) 2013 Northwestern University Knight Lab 
  */
 
@@ -32,7 +32,11 @@
 .vco-storymap p{margin-top:5px;margin-bottom:10px;font-size:15px;color:#666}.vco-storymap p b{font-weight:bold;line-height:15px;color:#333}
 .vco-storymap p i,.vco-storymap p em{font-style:italic;line-height:15px}
 .vco-storymap .vco-caption,.vco-storymap .vco-credit,.vco-storymap .vco-slidenav-next,.vco-storymap .vco-slidenav-previous{font-size:11px;line-height:11px}
-.vco-storymap blockquote,.vco-storymap blockquote p{font-family:"Georgia",Times New Roman,Times,serif;color:#666}
+.vco-storymap blockquote,.vco-storymap blockquote p{font-family:"Georgia",Times New Roman,Times,serif;color:#999;font-size:24px;line-height:24px;text-align:left;background:transparent;border:0;padding:0}.vco-storymap blockquote cite,.vco-storymap blockquote p cite{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:11px;color:#666;display:block;text-align:right;font-style:normal}
+.vco-storymap blockquote cite:before,.vco-storymap blockquote p cite:before{content:"\2014"}
+.vco-storymap blockquote p:before{content:open-quote;display:inline-block;font-size:36px;position:relative;top:8px;margin-right:5px}
+.vco-storymap blockquote p:after{content:close-quote;display:inline-block;font-size:36px;position:relative;top:8px;margin-left:3px}
+.vco-storymap blockquote{margin:10px}.vco-storymap blockquote p{margin:0}
 .vco-storymap .vcard{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:15px;line-height:15px}
 .vco-storymap .vco-text ul{padding:0;padding-left:30px;margin:0}.vco-storymap .vco-text ul li{margin-bottom:5px}
 .vco-storymap .vco-note{display:block;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-style:italic;background-color:#e6e6e6;font-size:15px;line-height:17px;padding:10px;-webkit-border-radius:7px;-moz-border-radius:7px;border-radius:7px;color:#8a6d3b;background-color:#fcf8e3;border:1px solid #faebcc}
@@ -86,7 +90,7 @@
 .vco-icon-arrow-up:after{content:"\e648"}
 .vco-icon-arrow-right:after{content:"\e649"}
 .vco-icon-share:after{content:"\e64a"}
-.vco-icon-quote:after{content:"\e64b"}
+.vco-icon-blockquote:after{content:"\e64b"}
 .vco-icon-evernote:after{content:"\e64c"}
 .vco-icon-mappin:after{content:"\e600"}
 .vco-icon-swipe-right:after{content:"\e601"}
@@ -141,14 +145,21 @@
 .vco-caption{text-align:left;margin-top:10px;color:#666;font-size:11px;line-height:14px;text-rendering:optimizeLegibility;word-wrap:break-word}
 .vco-full-image-background .vco-caption,.vco-full-image-background .vco-credit{color:#fff;text-shadow:1px 1px 2px #000}
 .vco-full-image-background .vco-media-shadow:before,.vco-full-image-background .vco-media-shadow:after{background:none;-webkit-box-shadow:0 0 0 #000;-moz-box-shadow:0 0 0 #000;box-shadow:0 0 0 #000}
-.vco-full-image-background .vco-media-twitter blockquote{color:#fff !important;text-shadow:1px 1px 2px #000 !important}.vco-full-image-background .vco-media-twitter blockquote p{color:#fff !important;text-shadow:1px 1px 2px #000 !important}
+.vco-full-image-background .vco-media-twitter blockquote,.vco-full-image-background .vco-media-blockquote blockquote{color:#fff !important;text-shadow:1px 1px 2px #000 !important}.vco-full-image-background .vco-media-twitter blockquote p,.vco-full-image-background .vco-media-blockquote blockquote p{color:#fff !important;text-shadow:1px 1px 2px #000 !important}
 .vco-full-image-background .vcard a,.vco-full-image-background .vcard .nickname{color:#fff !important}
 @media only screen and (max-width:500px),only screen and (max-device-width:500px){.vco-media{width:100%;height:auto;float:none;display:block}}.vco-text{width:50%;max-width:50%;min-width:120px;padding:0 20px 0 20px;display:table-cell;vertical-align:middle;text-align:left;text-shadow:none}
 .vco-full-image-background .vco-text,.vco-full-image-background .vco-text p{color:#fff;text-shadow:1px 1px 2px #000}
 @media only screen and (max-width:500px),only screen and (max-device-width:500px){.vco-text{width:100%;max-width:100%;min-width:auto;float:none}}
 @media only screen and (max-width:500px),only screen and (max-device-width:500px){}.vco-media .vco-media-twitter{text-align:left;clear:both}.vco-media .vco-media-twitter blockquote{margin:0;margin-right:15px;font-size:15px;line-height:21px;color:#333}.vco-media .vco-media-twitter blockquote p{font-size:36px;line-height:39px;color:#000}
+.vco-media .vco-media-twitter blockquote p:before{display:none}
+.vco-media .vco-media-twitter blockquote p:after{display:none}
 .vco-slide-media-only .vco-media .vco-media-twitter{width:80%;margin-left:auto;margin-right:auto}
-@media only screen and (max-width:800px),only screen and (max-device-width:800px){.vco-media .vco-media-twitter blockquote p{font-size:24px;line-height:26px}}@media only screen and (max-width:500px),only screen and (max-device-width:500px){.vco-media .vco-media-twitter blockquote p{font-size:15px;line-height:21px}}
+@media only screen and (max-width:800px),only screen and (max-device-width:800px){.vco-media .vco-media-twitter blockquote p{font-size:24px;line-height:26px}}@media only screen and (max-width:500px),only screen and (max-device-width:500px){.vco-media .vco-media-twitter blockquote p{font-size:15px;line-height:21px}}.vco-media .vco-media-blockquote{text-align:left;clear:both}.vco-media .vco-media-blockquote blockquote{margin:0;margin-right:15px;text-align:left}.vco-media .vco-media-blockquote blockquote p{font-size:36px;line-height:39px}
+.vco-media .vco-media-blockquote blockquote cite{font-size:15px;line-height:21px;color:#333;text-align:right}
+.vco-media .vco-media-blockquote blockquote p:before{content:open-quote;display:inline-block;margin-right:5px}
+.vco-media .vco-media-blockquote blockquote p:after{content:close-quote;display:inline-block;margin-left:3px}
+.vco-slide-media-only .vco-media .vco-media-blockquote{width:80%;margin-left:auto;margin-right:auto}
+@media only screen and (max-width:800px),only screen and (max-device-width:800px){.vco-media .vco-media-blockquote blockquote p{font-size:24px;line-height:26px}}@media only screen and (max-width:500px),only screen and (max-device-width:500px){.vco-media .vco-media-blockquote blockquote p{font-size:15px;line-height:21px}}
 @media only screen and (max-width:500px),only screen and (max-device-width:500px){}
 @media only screen and (max-width:500px),only screen and (max-device-width:500px){}.vco-media .vco-media-iframe{width:100%;height:100%}.vco-media .vco-media-iframe iframe{width:100%;height:100%}
 @media only screen and (max-width:500px),only screen and (max-device-width:500px){}.vco-media .vco-media-wikipedia{text-align:left;margin-left:auto;margin-right:auto;clear:both}.vco-media .vco-media-wikipedia .wiki-source{font-size:13px;line-height:19px;font-style:italic}

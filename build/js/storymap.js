@@ -1,4 +1,4 @@
-/* storymapjs - v0.1.4 - 2013-12-20
+/* storymapjs - v0.1.5 - 2013-12-20
  * Copyright (c) 2013 Northwestern University Knight Lab 
  */
 
@@ -4724,11 +4724,6 @@ VCO.Media.Blockquote = VCO.Media.extend({
 		
 		// After Loaded
 		this.onLoaded();
-	},
-	
-	// Update Media Display
-	_updateMediaDisplay: function() {
-		this._el.content_item.style.height = this.options.height + "px";
 	}
 
 	
@@ -5336,7 +5331,7 @@ VCO.Media.Vimeo = VCO.Media.extend({
 	// Update Media Display
 	_updateMediaDisplay: function() {
 		this._el.content_item.style.height = VCO.Util.ratio.r16_9({w:this._el.content_item.offsetWidth}) + "px";
-		trace(VCO.Util.ratio.r16_9({w:this._el.content_item.offsetWidth}));
+		
 	},
 	
 	_stopMedia: function() {
@@ -5449,9 +5444,9 @@ VCO.Media.Vine = VCO.Media.extend({
 	// Update Media Display
 	_updateMediaDisplay: function() {
 		//var size = VCO.Util.ratio.square({w:this._el.content_item.offsetWidth , h:this.options.height});
-		var size = VCO.Util.ratio.square({w:this.options.width , h:this.options.height});
+		var size = VCO.Util.ratio.square({w:this._el.content_item.offsetWidth , h:this.options.height});
 		this._el.content_item.style.height = size.h + "px";
-		this._el.content_item.style.width = size.w + "px";
+		//this._el.content_item.style.width = size.w + "px";
 	}
 	
 });
@@ -9785,6 +9780,9 @@ L.TileLayer = L.Class.extend({
 	},
 
 	_getSubdomain: function (tilePoint) {
+		if (!this.options.subdomains || this.options.subdomains.length == 0) {
+			return '';
+		}
 		var index = Math.abs(tilePoint.x + tilePoint.y) % this.options.subdomains.length;
 		return this.options.subdomains[index];
 	},
