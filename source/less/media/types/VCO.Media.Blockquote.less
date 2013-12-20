@@ -1,30 +1,43 @@
 .vco-media {
-	.vco-media-twitter {
+	.vco-media-blockquote {
 		text-align:left;
-		//margin-left: auto;
-		//margin-right: auto;
-		//margin-bottom:@base-space;
 		clear:both;
 		blockquote {
 			margin:0;
 			margin-right: 	@base-spacing;
-			font-size: 		@base-font-size;
-			line-height:	floor(@base-font-size * @base-line-height);
-			color:			@color-foreground;
+			text-align: 	left;
 			p {
 				font-size: 		@base-font-size-xlarge;
 				line-height: 	floor(@base-font-size-xlarge * 1.1);
-				color:			@color-dark;
+				//color:			@color-dark;
 			}
-			.quote-mark {
-				
+			cite {
+				font-size: 		@base-font-size;
+				line-height:	floor(@base-font-size * @base-line-height);
+				color:			@color-foreground;
+				text-align: 	right;
 			}
+			
 		}
+
 		blockquote p:before {
-			display:none;
+			content: open-quote;
+			display:inline-block;
+			//font-size: (@base-font-size-xlarge * 3);
+			//font-style: normal;
+			//position: relative;  
+			//top: (@base-font-size-xlarge);
+			margin-right:5px;
+		
 		}
 		blockquote p:after {
-			display:none;
+			content: close-quote;
+			display:inline-block;
+			//font-size: (@base-font-size-xlarge * 2);
+			//position: relative;  
+			//top: (@base-font-size-xlarge/2);
+			margin-left:3px;
+		
 		}
 
 	}
@@ -32,7 +45,7 @@
 }
 .vco-slide-media-only {
 	.vco-media {
-		.vco-media-twitter {
+		.vco-media-blockquote {
 			width:80%;
 			margin-left:auto;
 			margin-right:auto;
@@ -42,7 +55,7 @@
 // Skinnier
 @media only screen and (max-width: 800px), only screen and (max-device-width: 800px) {
 	.vco-media {
-		.vco-media-twitter {
+		.vco-media-blockquote {
 			blockquote {
 				p {
 					font-size: 		@base-font-size-large;
@@ -56,7 +69,7 @@
 // Mobile, iPhone and skinny
 @media only screen and (max-width: 500px), only screen and (max-device-width: 500px) {
 	.vco-media {
-		.vco-media-twitter {
+		.vco-media-blockquote {
 			blockquote {
 				p {
 					font-size: 		@base-font-size;

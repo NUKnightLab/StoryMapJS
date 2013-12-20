@@ -49,6 +49,7 @@
 			font-style: italic;
 			line-height: @base-font-size;
 		}
+		
 	}
 	.vco-caption, .vco-credit, .vco-slidenav-next, .vco-slidenav-previous {
 		//font-family: @font-sanserif;
@@ -58,7 +59,47 @@
 	
 	blockquote, blockquote p {
 		font-family: @font-serif;
-		color: lighten(@color-dark, 40%);
+		color: lighten(@color-dark, 60%);
+		font-size: @base-font-size-large;
+		line-height:@base-font-size-large;
+		text-align:left;
+		cite {
+			font-family: @font-sanserif;
+			font-size: @base-font-size-small;
+			color: lighten(@color-dark, 40%);
+			display:block;
+			text-align:right;
+			font-style: normal;
+			
+		}
+		cite:before {
+			content: "\2014";
+		}
+	}
+	blockquote p:before {
+		content: open-quote;
+		display:inline-block;
+		font-size: @base-font-size-xlarge;
+		position: relative;  
+		top: 8px;
+		margin-right:5px;
+		
+	}
+	blockquote p:after {
+		content: close-quote;
+		display:inline-block;
+		font-size: @base-font-size-xlarge;
+		position: relative;  
+		top: 8px;
+		margin-left:3px;
+		
+	}
+	blockquote {
+		margin:10px;
+		p {
+			margin:0;
+		}
+		//margin-left:18px;
 	}
 	
 	.vcard {

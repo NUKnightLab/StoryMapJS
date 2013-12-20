@@ -1,33 +1,30 @@
-/*	Font PT Sans & PT Serif & PT Sans Narrow
+/*	Font Clicker & Garamond
 
-http://www.google.com/webfonts/specimen/PT+Sans+Narrow
-http://www.google.com/webfonts/specimen/PT+Sans
-http://www.google.com/webfonts/specimen/PT+Serif
+http://www.google.com/fonts/specimen/Clicker+Script
+http://www.google.com/fonts/specimen/EB+Garamond
 ----------------------------------------------------- */
 @import "../Variables.less"; 
 
 // Font Import
-@import url(http://fonts.googleapis.com/css?family=PT+Sans|PT+Sans+Narrow:700|PT+Serif:400,400italic);
+@import url(http://fonts.googleapis.com/css?family=Clicker+Script|EB+Garamond);
 
 
 
-@font-main:						'PT Serif', serif;
-@font-secondary:				'PT Sans Narrow', sans-serif;
-@font-third: 					'PT Sans', sans-serif;
+@font-main:						'EB Garamond', serif;
+@font-secondary:				'Clicker Script', cursive;
 
 .vco-storymap {
 	font-family: @font-main;
 	font-weight:400;
-	font-size: 16px;
-	line-height: 24px;
+	font-size: 18px;
+	line-height: 26px;
 	
 	h1, h2, h3, h4, h5, h6 {
 		font-family: @font-secondary;
-		text-transform: uppercase;
-		font-weight:700;
-		font-size:46px;
-		line-height:46px;
-		margin-bottom:0;
+		text-transform: none;
+		font-weight:400;
+		font-size:58px;
+		line-height:58px;
 	}
 	
 	h2.vco-headline-title {
@@ -37,16 +34,18 @@ http://www.google.com/webfonts/specimen/PT+Serif
 	
 	p {
 		font-family: @font-main;
-		font-size: 16px;
-		line-height: 24px;
-		margin-top:0;
+		font-size: 18px;
+		line-height: 26px;
+	}
+	strong {
+		font-weight:700;
 	}
 	ul {
-		font-family: @font-third;
+		font-family: @font-main;
 	}
 	.vco-media .vco-media-wikipedia h4 a {
 		font-family: @font-main;
-		font-weight:normal;
+		font-weight:700;
 		font-size:28px;
 		line-height:28px;
 	}
@@ -55,25 +54,31 @@ http://www.google.com/webfonts/specimen/PT+Serif
 	}
 	
 	.vcard {
-		font-family: @font-third;
+		font-family: @font-main;
 		font-weight:400;
 	}
 	
-	.vco-sizebar, .vco-slidenav-next, .vco-slidenav-previous {
-		font-family: @font-third;
+	.vco-slidenav-next, .vco-slidenav-previous {
+		font-family: @font-main;
 		font-weight:400;
-		text-transform: uppercase;
+		text-transform: none;
+		.vco-slidenav-title {
+			line-height:1.3em !important;
+		}
 	}
 	
 	.vco-sizebar {
+		font-family: @font-main;
+		
 		.vco-sizebar-button {
-			font-weight:400;
+			font-weight:400 !important;
 		}
 	}
 	
 	blockquote, blockquote p {
 		font-family: @font-main;
-		font-style: italic;
+		font-style: normal;
+		font-weight:400;
 	}
 	
 	
