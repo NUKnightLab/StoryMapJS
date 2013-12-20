@@ -1,11 +1,12 @@
 @import url(http://fonts.googleapis.com/css?family=Lustria|Lato:400,400italic);
-.vco-storymap{font-family:'Lato',sans-serif;font-weight:400;font-size:16px;line-height:24px}.vco-storymap h1,.vco-storymap h2,.vco-storymap h3,.vco-storymap h4,.vco-storymap h5,.vco-storymap h6{font-family:'Lustria',serif;text-transform:none;font-weight:800}
-.vco-storymap h2.vco-headline-title{font-size:58px;line-height:58px}
-.vco-storymap p{font-family:'Lato',sans-serif}
+.vco-storymap{font-family:'Lato',sans-serif;font-weight:400;font-size:17px;line-height:25px}.vco-storymap h1,.vco-storymap h2,.vco-storymap h3,.vco-storymap h4,.vco-storymap h5,.vco-storymap h6{font-family:'Lustria',serif;text-transform:none;font-weight:400;font-size:46px;line-height:46px}
+.vco-storymap h2.vco-headline-title{font-size:58px;line-height:62px}
+.vco-storymap p{font-family:'Lato',sans-serif;font-size:17px;line-height:25px}
 .vco-storymap ul{font-family:'Lato',sans-serif}
+.vco-storymap .vco-media .vco-media-wikipedia h4 a{font-family:'Lato',sans-serif;font-weight:400;font-size:24px;line-height:24px}
 .vco-storymap .vco-caption,.vco-storymap .vco-credit{font-family:'Lato',sans-serif}
 .vco-storymap .vcard{font-family:'Lato',sans-serif;font-weight:400}
-.vco-storymap .vco-slidenav-next,.vco-storymap .vco-slidenav-previous{font-family:'Lustria',serif;font-weight:400;text-transform:none}.vco-storymap .vco-slidenav-next .vco-slidenav-title,.vco-storymap .vco-slidenav-previous .vco-slidenav-title{line-height:1.3em !important}
+.vco-storymap .vco-slidenav-next,.vco-storymap .vco-slidenav-previous{font-family:'Lato',sans-serif;font-weight:400;text-transform:none}.vco-storymap .vco-slidenav-next .vco-slidenav-title,.vco-storymap .vco-slidenav-previous .vco-slidenav-title{line-height:1.3em !important}
 .vco-storymap .vco-sizebar{font-family:'Lato',sans-serif}
 .vco-storymap blockquote,.vco-storymap blockquote p{font-family:'Lato',sans-serif;font-style:italic}
 @media only screen and (max-width:800px),only screen and (max-device-width:800px){.vco-storymap h1,.vco-storymap h2,.vco-storymap h3{font-size:24px;line-height:26px} .vco-storymap h2.vco-headline-title{font-size:36px;line-height:36px}}@media only screen and (max-width:500px),only screen and (max-device-width:500px){.vco-storymap h1,.vco-storymap h2,.vco-storymap h3{font-size:15px;line-height:21px} .vco-storymap h2.vco-headline-title{font-size:24px;line-height:24px}}
