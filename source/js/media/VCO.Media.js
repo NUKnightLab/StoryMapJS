@@ -164,6 +164,24 @@ VCO.Media = VCO.Class.extend({
 		if (this.message) {
 			this.message.hide();
 		}
+		this.showMeta();
+	},
+	
+	showMeta: function() {
+		
+		// Credit
+		if (this.data.credit && this.data.credit != "") {
+			this._el.credit					= VCO.Dom.create("div", "vco-credit", this._el.content_container);
+			this._el.credit.innerHTML		= this.data.credit;
+			this.options.credit_height 		= this._el.credit.offsetHeight;
+		}
+		
+		// Caption
+		if (this.data.caption && this.data.caption != "") {
+			this._el.caption				= VCO.Dom.create("div", "vco-caption", this._el.content_container);
+			this._el.caption.innerHTML		= this.data.caption;
+			this.options.caption_height 	= this._el.caption.offsetHeight;
+		}
 	},
 	
 	onAdd: function() {
@@ -200,20 +218,6 @@ VCO.Media = VCO.Class.extend({
 			
 		} else {
 			this._el.content = VCO.Dom.create("div", "vco-media-content", this._el.content_container);
-		}
-		
-		// Credit
-		if (this.data.credit && this.data.credit != "") {
-			this._el.credit					= VCO.Dom.create("div", "vco-credit", this._el.content_container);
-			this._el.credit.innerHTML		= this.data.credit;
-			this.options.credit_height 		= this._el.credit.offsetHeight;
-		}
-		
-		// Caption
-		if (this.data.caption && this.data.caption != "") {
-			this._el.caption				= VCO.Dom.create("div", "vco-caption", this._el.content_container);
-			this._el.caption.innerHTML		= this.data.caption;
-			this.options.caption_height 	= this._el.caption.offsetHeight;
 		}
 		
 		

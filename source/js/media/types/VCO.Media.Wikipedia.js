@@ -31,8 +31,6 @@ VCO.Media.Wikipedia = VCO.Media.extend({
 			self.createMedia(d);
 		});
 		
-		// After Loaded
-		this.onLoaded();
 	},
 	createMedia: function(d) {
 		var wiki = "";
