@@ -25,9 +25,8 @@ VCO.Media.Blockquote = VCO.Media.extend({
 		this.onLoaded();
 	},
 	
-	// Update Media Display
 	_updateMediaDisplay: function() {
-		this._el.content_item.style.height = this.options.height + "px";
+		
 	}
 
 	

@@ -1,0 +1,123 @@
+{
+    "storymap": {
+        "slides": [
+            {
+                "date": "", 
+                "text": {
+                    "headline": "Bob Boilen's Wristbands 2012", 
+                    "text": "Bob Boilen saw 462 shows in 2012&nbsp;and saved tickets, wristbands and media passes whenever he could. This is modeled off of the <a href=\"http://http://apps.npr.org/bob-boilens-wristbands-2012/\" target=\"_blank\" rel=\"nofollow\" title=\"Link: http://http://apps.npr.org/bob-boilens-wristbands-2012/\">interactive made by the NPR apps team</a>, with information from <a href=\"http://www.npr.org/blogs/bestmusic2012/2012/12/27/168153049/bob-boilens-243-favorite-concerts-of-2012\" target=\"_blank\" rel=\"nofollow\">Bob's blog post</a> about the year in shows.<div><span><br></span></div>"
+                }, 
+                "type": "overview", 
+                "media": {
+                    "url": "", 
+                    "credit": "", 
+                    "caption": ""
+                }
+            }, 
+            {
+                "date": "", 
+                "text": {
+                    "headline": "Regina Spektor", 
+                    "text": ""
+                }, 
+                "location": {
+                    "name": "Chicago", 
+                    "lon": 115.312498, 
+                    "zoom": 0, 
+                    "lat": -20.632784250388013, 
+                    "line": true, 
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                }, 
+                "media": {
+                    "url": "", 
+                    "credit": "", 
+                    "caption": ""
+                }
+            }, 
+            {
+                "date": "", 
+                "text": {
+                    "headline": "Bjork", 
+                    "text": ""
+                }, 
+                "location": {
+                    "name": "Elgin", 
+                    "lon": -127.968752, 
+                    "zoom": 1, 
+                    "lat": -81.41393328285108, 
+                    "line": true, 
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                }, 
+                "media": {
+                    "url": "", 
+                    "credit": "", 
+                    "caption": ""
+                }
+            }, 
+            {
+                "date": "", 
+                "text": {
+                    "headline": "Passion Pit", 
+                    "text": ""
+                }, 
+                "location": {
+                    "name": "Elgin", 
+                    "lon": -144.93768564062503, 
+                    "zoom": 0, 
+                    "lat": 56.57475925328157, 
+                    "line": true, 
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                }, 
+                "media": {
+                    "url": "", 
+                    "credit": "", 
+                    "caption": ""
+                }
+            }, 
+            {
+                "date": "", 
+                "text": {
+                    "headline": "Sigur Ros", 
+                    "text": ""
+                }, 
+                "location": {
+                    "name": "Elgin", 
+                    "lon": -83.06268764062503, 
+                    "zoom": 2, 
+                    "lat": 81.67643911611405, 
+                    "line": true, 
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                }, 
+                "media": {
+                    "url": "", 
+                    "credit": "", 
+                    "caption": ""
+                }
+            }, 
+            {
+                "date": "", 
+                "text": {
+                    "headline": "Grimes", 
+                    "text": ""
+                }, 
+                "location": {
+                    "name": "Elgin", 
+                    "lon": -63.020425200000034, 
+                    "zoom": 1, 
+                    "lat": 83.88290776053405, 
+                    "line": true, 
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+                }, 
+                "media": {
+                    "url": "", 
+                    "credit": "", 
+                    "caption": ""
+                }
+            }
+        ], 
+        "map_type": "http://apps.npr.org/bob-boilens-wristbands-2012/img/tiles/{z}/{x}/{y}.jpg", 
+        "map_subdomains": "", 
+        "language": "en"
+    }, 
+    "font_css": "stock:dancing-ledger"
+}

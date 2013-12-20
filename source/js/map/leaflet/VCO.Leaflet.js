@@ -2837,6 +2837,9 @@ L.TileLayer = L.Class.extend({
 	},
 
 	_getSubdomain: function (tilePoint) {
+		if (!this.options.subdomains || this.options.subdomains.length == 0) {
+			return '';
+		}
 		var index = Math.abs(tilePoint.x + tilePoint.y) % this.options.subdomains.length;
 		return this.options.subdomains[index];
 	},

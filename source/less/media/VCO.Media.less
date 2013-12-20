@@ -57,16 +57,28 @@
 /* VCard
 ================================================== */
 .vcard {
-	float:right;
+	//float:right;
+	
+	.clearfix();
 	margin-bottom:@base-spacing;
+	margin-top:10px;
+	.twitter-date {
+		text-align:left;
+		font-size:@base-font-size-small;
+	}
+	.author {
+		float:right;
+		//text-align:right;
+	}
 	a {
 		color: lighten(@color-dark, 20%);
 		text-decoration:none;
 	}
 	a:hover {
 		text-decoration: none;
-		.fn {
-			text-decoration: underline;
+		.fn, .nickname {
+			color:@color-theme;
+			//text-decoration: underline;
 		}
 	}
 	.fn, .nickname {
@@ -96,7 +108,12 @@
 		}
 	}
 }
-
+.vco-slide.vco-full-image-background, .vco-slide.vco-full-color-background {
+	a, .vcard a {
+		.slide-text-shadow();
+		color: lighten(@color-theme, 90%);
+	}
+}
 /* Credit
 ================================================== */
 .vco-credit {
@@ -123,31 +140,20 @@
 
 /* Full Image Background
 ================================================== */
-.vco-full-image-background {
-	.vco-caption, .vco-credit {
-		color: #FFF;
-		text-shadow: 1px 1px 2px #000;
-		//.background-opacity(50);
-	}
+.vco-full-image-background, .vco-full-color-background {
+	
 	.vco-media-shadow:before, .vco-media-shadow:after {
 		background: none;
 		.box-shadow(0 0px 0px #000);
 	}
-	.vco-media-twitter {
-		blockquote {
-			color: #FFF !important;
-			text-shadow: 1px 1px 2px #000 !important;
-			p {
-				color: #FFF !important;
-				text-shadow: 1px 1px 2px #000 !important;
-			}
-		}
-	}
-	.vcard {
-		a, .nickname  {
-			color: #FFF !important;
-		}
-	}
+	
+}
+.vco-full-image-background {
+
+}
+
+.vco-full-color-background {
+	
 }
 
 /* Mobile, iPhone and skinny
