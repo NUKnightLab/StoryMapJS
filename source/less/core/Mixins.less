@@ -15,9 +15,16 @@
 	background: rgb(0, 0, 0) transparent;
 	/* RGBa with 0.6 opacity */
 	background: rgba(0, 0, 0, @opacity / 100);
-
-
 }
+
+// Background Color Opacity
+.background-color-opacity(@cr:0, @cg:0, @cb:0, @opacity: 100) {
+	/* Fallback for web browsers that doesn't support RGBa */
+	background: rgb(@cr, @cg, @cb) transparent;
+	/* RGBa with 0.6 opacity */
+	background: rgba(@cr, @cg, @cb, @opacity / 100);
+}
+
 // Border Radius
 .border-radius(@radius: 5px) {
  	-webkit-border-radius: @radius;

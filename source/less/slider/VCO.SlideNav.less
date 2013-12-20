@@ -14,28 +14,14 @@
 	top: 45%;
 	z-index:10;
 	cursor:pointer;
-	//width: @feature-nav-width; 
-	//color: #DBDBDB;
-	//color:#FFF;
 	
 	.vco-slidenav-content-container {
 		height:200px;
 		width:200px;
 		position:absolute;
 	}
-	.vco-slidenav-icon {
-		.base-sprite();
-		background-repeat:no-repeat;
-		background-position: -160px 0;
-		width: 24px;
-		height: 24px;
-		overflow:hidden;
-		margin-bottom: 5px;
-	}
 	.vco-slidenav-title, .vco-slidenav-description {
 		width:100px;
-		text-shadow: 1px 1px 1px #FFF;
-		color: #333;
 		
 		.opacity(15);
 		a {
@@ -56,30 +42,67 @@
 	}
 	
 }
+
+/* NAVIGATION COLOR
+================================================== */
+.vco-slidenav-previous, .vco-slidenav-next {
+	.vco-slidenav-content-container {
+		.vco-slidenav-icon, .vco-slidenav-title, .vco-slidenav-description {
+			text-shadow: 1px 1px 1px #FFF;
+			color: #333;
+		}
+	}
+	.vco-slidenav-content-container.vco-slidenav-inverted {
+		.vco-slidenav-icon, .vco-slidenav-title, .vco-slidenav-description {
+			color:#FFF;
+			text-shadow: 1px 1px 1px #000;
+		}
+	}
+}
+
+/* ICONS
+================================================== */
+.vco-slidenav-next, .vco-slidenav-previous {
+	.vco-slidenav-icon {
+		font-family: 'vco-icons';
+		speak: none;
+		font-style: normal;
+		font-weight: normal;
+		font-variant: normal;
+		text-transform: none;
+		line-height: 1;
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+		font-size:32px;
+		margin-bottom: 5px;
+	}
+}
+
 .vco-slidenav-next {
-	//float: right;
 	text-align: right;
 	margin-right:10px;
 	right:200px;
 	.vco-slidenav-icon {
 		margin-left: 200 - 24px;
-		background-position: -184px 0; width: 24px; height: 24px;
-		//background-position: -232px 0; width: 24px; height: 24px;
+	}
+	.vco-slidenav-icon:before {
+		content: "\e64f";
 	}
 	.vco-slidenav-title, .vco-slidenav-description {
 		margin-left: 100px;
 	}
 }
 .vco-slidenav-previous {
-	//float: left;
 	text-align: left;
 	margin-left:10px;
 	.vco-slidenav-icon {
-		background-position: -160px 0; width: 24px; height: 24px;
 		margin-left: 0px;
-		//background-position: -208px 0; width: 24px; height: 24px;
+	}
+	.vco-slidenav-icon:before {
+		content: "\e650";
 	}
 }
+
 
 
 /* NAVIGATION HOVER

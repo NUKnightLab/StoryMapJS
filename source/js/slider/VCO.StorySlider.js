@@ -549,8 +549,23 @@ VCO.StorySlider = VCO.Class.extend({
 				});
 				
 			}
-
+			
+			
 			// Update Navigation
+			
+			// Color
+			var slide_background = this._slides[this.current_slide].getBackground();
+			this.fire("colorchange", slide_background);
+			
+			if (slide_background.color || slide_background.image) {
+				this._nav.next.setColor(true);
+				this._nav.previous.setColor(true);
+			} else {
+				this._nav.next.setColor(false);
+				this._nav.previous.setColor(false);
+			}
+			
+			//Info
 			if (this._slides[this.current_slide + 1]) {
 				this._nav.next.show();
 				this._nav.next.update(this.getNavInfo(this._slides[this.current_slide + 1]));

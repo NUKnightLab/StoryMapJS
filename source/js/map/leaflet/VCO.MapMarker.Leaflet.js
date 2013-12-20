@@ -20,7 +20,7 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 			};
 			
 			//icon = L.icon({iconUrl: "gfx/map-pin.png", iconSize: [28, 43], iconAnchor: [14, 33]});
-			this._icon = L.divIcon({className: 'vco-mapmarker ' + this.media_icon_class});
+			this._icon = L.divIcon({className: 'vco-mapmarker ' + this.media_icon_class, iconAnchor:[10, 10]});
 		
 			this._marker = L.marker([d.location.lat, d.location.lon], {
 				title: 		d.text.headline,
@@ -52,7 +52,9 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 		var self = this;
 		
 		if (this.data.media && this.data.media.mediatype) {
-			this.media_icon_class = "vco-mapmarker-icon vco-mapmarker-icon-" + this.data.media.mediatype.type;
+			this.media_icon_class = "vco-mapmarker-icon vco-icon-" + this.data.media.mediatype.type;
+		} else {
+			this.media_icon_class = "vco-mapmarker-icon vco-icon-plaintext";
 		}
 		
 		if (this.data.real_marker) {

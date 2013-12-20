@@ -86,6 +86,16 @@ VCO.SizeBar = VCO.Class.extend({
 		this.options.sizebar_default_y = y;
 	},
 	
+	/*	Color
+	================================================== */
+	setColor: function(inverted) {
+		if (inverted) {
+			this._el.container.className = 'vco-sizebar vco-sizebar-inverted';
+		} else {
+			this._el.container.className = 'vco-sizebar';
+		}
+	},
+	
 	/*	Update Display
 	================================================== */
 	updateDisplay: function(w, h, a, l) {
@@ -157,13 +167,13 @@ VCO.SizeBar = VCO.Class.extend({
 			this.show();
 			this._el.button_overview.style.display = "inline";
 			this.fire("swipe", {y:this.options.sizebar_default_y});
-			this._el.button_collapse_toggle.innerHTML	= VCO.Language.buttons.collapse_toggle;
+			this._el.button_collapse_toggle.innerHTML	= VCO.Language.buttons.collapse_toggle + "<span class='vco-icon-arrow-up'></span>";;
 		} else {
 			this.collapsed = true;
 			this.hide(25);
 			this._el.button_overview.style.display = "none";
 			this.fire("swipe", {y:1});
-			this._el.button_collapse_toggle.innerHTML = VCO.Language.buttons.uncollapse_toggle;
+			this._el.button_collapse_toggle.innerHTML = VCO.Language.buttons.uncollapse_toggle + "<span class='vco-icon-arrow-down'></span>";;
 		}
 	},
 	
@@ -180,11 +190,11 @@ VCO.SizeBar = VCO.Class.extend({
 		VCO.DomEvent.addListener(this._el.button_overview, 'click', this._onButtonOverview, this);
 		
 		this._el.button_backtostart 				= VCO.Dom.create('span', 'vco-sizebar-button', this._el.container);
-		this._el.button_backtostart.innerHTML		= VCO.Language.buttons.backtostart;
+		this._el.button_backtostart.innerHTML		= VCO.Language.buttons.backtostart + " <span class='vco-icon-goback'></span>";
 		VCO.DomEvent.addListener(this._el.button_backtostart, 'click', this._onButtonBackToStart, this);
 		
 		this._el.button_collapse_toggle 			= VCO.Dom.create('span', 'vco-sizebar-button', this._el.container);
-		this._el.button_collapse_toggle.innerHTML	= VCO.Language.buttons.collapse_toggle;
+		this._el.button_collapse_toggle.innerHTML	= VCO.Language.buttons.collapse_toggle + "<span class='vco-icon-arrow-up'></span>";
 		VCO.DomEvent.addListener(this._el.button_collapse_toggle, 'click', this._onButtonCollapseMap, this);
 		
 		//this._el.line = VCO.Dom.create("div", "vco-map-line", this._el.container);

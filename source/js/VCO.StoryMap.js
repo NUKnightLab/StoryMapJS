@@ -653,6 +653,7 @@ VCO.StoryMap = VCO.Class.extend({
 		
 		// StorySlider Events
 		this._storyslider.on('change', this._onSlideChange, this);
+		this._storyslider.on('colorchange', this._onColorChange, this);
 		
 		// Map Events
 		this._map.on('change', this._onMapChange, this);
@@ -743,6 +744,16 @@ VCO.StoryMap = VCO.Class.extend({
 		this.ready = true;
 		trace(this.ready);
 		
+	},
+	
+	_onColorChange: function(e) {
+		trace("COLOR CHANGE");
+		trace(e);
+		if (e.color || e.image) {
+			this._sizebar.setColor(true);
+		} else {
+			this._sizebar.setColor(false);
+		}
 	},
 	
 	_onSlideChange: function(e) {
