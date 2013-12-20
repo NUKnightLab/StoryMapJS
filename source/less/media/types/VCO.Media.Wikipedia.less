@@ -14,6 +14,7 @@
 			font-style: italic;
 		}
 		h4 {
+			margin-top:0px;
 			//border-bottom: 1px solid @color-line;
 			margin-bottom:0px;
 		}
@@ -33,7 +34,18 @@
 	}
 
 }
-
+.vco-slide.vco-full-image-background, .vco-slide.vco-full-color-background {
+	.vco-media {
+		.vco-media-wikipedia {
+			padding:20px;
+			.background-color-opacity(0,0,0, 60);
+			.border-radius(7px);
+			h4 a {
+				.slide-text-shadow();
+			}
+		}
+	}
+}
 // Mobile, iPhone and skinny
 @media only screen and (max-width: 500px), only screen and (max-device-width: 500px) {
 	.vco-media {
