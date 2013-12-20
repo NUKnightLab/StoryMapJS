@@ -57,16 +57,28 @@
 /* VCard
 ================================================== */
 .vcard {
-	float:right;
+	//float:right;
+	
+	.clearfix();
 	margin-bottom:@base-spacing;
+	margin-top:10px;
+	.twitter-date {
+		text-align:left;
+		font-size:@base-font-size-small;
+	}
+	.author {
+		float:right;
+		//text-align:right;
+	}
 	a {
 		color: lighten(@color-dark, 20%);
 		text-decoration:none;
 	}
 	a:hover {
 		text-decoration: none;
-		.fn {
-			text-decoration: underline;
+		.fn, .nickname {
+			color:@color-theme;
+			//text-decoration: underline;
 		}
 	}
 	.fn, .nickname {
