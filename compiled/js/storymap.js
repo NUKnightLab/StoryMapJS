@@ -4716,11 +4716,6 @@ VCO.Media.Blockquote = VCO.Media.extend({
 		
 		// After Loaded
 		this.onLoaded();
-	},
-	
-	// Update Media Display
-	_updateMediaDisplay: function() {
-		this._el.content_item.style.height = this.options.height + "px";
 	}
 
 	
@@ -5328,7 +5323,7 @@ VCO.Media.Vimeo = VCO.Media.extend({
 	// Update Media Display
 	_updateMediaDisplay: function() {
 		this._el.content_item.style.height = VCO.Util.ratio.r16_9({w:this._el.content_item.offsetWidth}) + "px";
-		trace(VCO.Util.ratio.r16_9({w:this._el.content_item.offsetWidth}));
+		
 	},
 	
 	_stopMedia: function() {
@@ -5441,9 +5436,9 @@ VCO.Media.Vine = VCO.Media.extend({
 	// Update Media Display
 	_updateMediaDisplay: function() {
 		//var size = VCO.Util.ratio.square({w:this._el.content_item.offsetWidth , h:this.options.height});
-		var size = VCO.Util.ratio.square({w:this.options.width , h:this.options.height});
+		var size = VCO.Util.ratio.square({w:this._el.content_item.offsetWidth , h:this.options.height});
 		this._el.content_item.style.height = size.h + "px";
-		this._el.content_item.style.width = size.w + "px";
+		//this._el.content_item.style.width = size.w + "px";
 	}
 	
 });

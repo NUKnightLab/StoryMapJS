@@ -1,19 +1,17 @@
-/*	Font PT Sans & PT Serif & PT Sans Narrow
+/*	Font Abril Fatface & Droid Sans
 
-http://www.google.com/webfonts/specimen/PT+Sans+Narrow
-http://www.google.com/webfonts/specimen/PT+Sans
-http://www.google.com/webfonts/specimen/PT+Serif
+http://www.google.com/fonts/specimen/Abril+Fatface
+http://www.google.com/fonts/specimen/Droid+Sans
 ----------------------------------------------------- */
 @import "../Variables.less"; 
 
 // Font Import
-@import url(http://fonts.googleapis.com/css?family=PT+Sans|PT+Sans+Narrow:700|PT+Serif:400,400italic);
+@import url(http://fonts.googleapis.com/css?family=Droid+Sans:400,700|Abril+Fatface);
 
 
 
-@font-main:						'PT Serif', serif;
-@font-secondary:				'PT Sans Narrow', sans-serif;
-@font-third: 					'PT Sans', sans-serif;
+@font-main:						'Droid Sans', sans-serif;
+@font-secondary:				'Abril Fatface', cursive;
 
 .vco-storymap {
 	font-family: @font-main;
@@ -23,30 +21,31 @@ http://www.google.com/webfonts/specimen/PT+Serif
 	
 	h1, h2, h3, h4, h5, h6 {
 		font-family: @font-secondary;
-		text-transform: uppercase;
+		text-transform: none;
 		font-weight:700;
 		font-size:46px;
 		line-height:46px;
-		margin-bottom:0;
 	}
 	
 	h2.vco-headline-title {
-		font-size: 64px;
-		line-height: 64px;
+		font-size: 58px;
+		line-height: 58px;
 	}
 	
 	p {
 		font-family: @font-main;
 		font-size: 16px;
 		line-height: 24px;
-		margin-top:0;
+	}
+	strong {
+		font-weight:700;
 	}
 	ul {
-		font-family: @font-third;
+		font-family: @font-main;
 	}
 	.vco-media .vco-media-wikipedia h4 a {
 		font-family: @font-main;
-		font-weight:normal;
+		font-weight:700;
 		font-size:28px;
 		line-height:28px;
 	}
@@ -55,25 +54,31 @@ http://www.google.com/webfonts/specimen/PT+Serif
 	}
 	
 	.vcard {
-		font-family: @font-third;
+		font-family: @font-main;
 		font-weight:400;
 	}
 	
-	.vco-sizebar, .vco-slidenav-next, .vco-slidenav-previous {
-		font-family: @font-third;
+	.vco-slidenav-next, .vco-slidenav-previous {
+		font-family: @font-main;
 		font-weight:400;
-		text-transform: uppercase;
+		text-transform: none;
+		.vco-slidenav-title {
+			line-height:1.3em !important;
+		}
 	}
 	
 	.vco-sizebar {
+		font-family: @font-main;
+		
 		.vco-sizebar-button {
-			font-weight:400;
+			font-weight:400 !important;
 		}
 	}
 	
 	blockquote, blockquote p {
 		font-family: @font-main;
-		font-style: italic;
+		font-style: normal;
+		font-weight:400;
 	}
 	
 	
