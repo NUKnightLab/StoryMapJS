@@ -65,7 +65,12 @@ VCO.Slide = VCO.Class.extend({
 			headline: 	false,
 			text: 		false,
 			media: 		false,
-			title: 		false
+			title: 		false,
+			background: {
+				image: false,
+				color: false,
+				color_value :false
+			}
 		}
 		
 		this.has.title = title_slide;
@@ -148,6 +153,9 @@ VCO.Slide = VCO.Class.extend({
 		}
 	},
 	
+	getBackground: function() {
+		return this.has.background;
+	},
 	
 	/*	Events
 	================================================== */
@@ -166,10 +174,13 @@ VCO.Slide = VCO.Class.extend({
 		// Style Slide Background
 		if (this.data.background) {
 			if (this.data.background.url) {
+				this.has.background.image = true;
 				this._el.container.className += ' vco-full-image-background';
 				this._el.container.style.backgroundImage="url('" + this.data.background.url + "')";
 			}
 			if (this.data.background.color) {
+				this.has.background.color = true;
+				this.has.background.color_value = this.data.background.color;
 				this._el.container.style.backgroundColor = this.data.background.color;
 			}
 		} 

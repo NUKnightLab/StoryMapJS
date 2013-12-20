@@ -4,46 +4,41 @@
 	content:'';
 	height:26px;
 	margin-top:-25px;
-	.translucent-background(@color-background, .5);
+	background-color:#FFF;
+	//.translucent-background(@color-background, .5);
 	display:block;
-	border-top: 2px solid #FFF;
-	.box-shadow(0px -3px 7px rgba(0,0,0,.20));
-	.gradient-vertical (rgba(255,255,255,0.25), rgba(255,255,255,1));
+	//border-top: 2px solid #FFF;
+	.box-shadow(0px -3px 6px rgba(0,0,0,.20));
+	//.gradient-vertical (rgba(255,255,255,0.25), rgba(255,255,255,1));
 }
+
 .vco-sizebar {
 	width:100%;
-	height:	5px;
-	//background-color:@ui-background-color;
-	//border-top: 1px solid darken(@ui-background-color, 15);
-	border-bottom: 1px solid #FFF;
-	//.gradient-vertical(@ui-background-color, @color-background);
-	//background-color: @color-background;
-	//background-color: darken(@color-background, 2);
-	//.gradient-vertical (darken(@color-background, 2), @color-background);
-	//border-bottom: 1px solid darken(@color-background, 10);
-	//.translucent-background(@color-background, .5);
-	//.gradient-vertical (rgba(0,0,0,0.65), rgba(0,0,0,0.65));
-	.gradient-vertical (rgba(255,255,255,1), rgba(255,255,255,0.25));
-	background-color:#FFF;
-	//border-bottom: 1px solid #FFF;
-	//position:absolute;
-	//top:0px;
-	//.opacity(75);
-	//cursor: row-resize;
-	//.box-shadow(0px -3px 7px rgba(0,0,0,.20));
+	height:	1px;
 	z-index:11;
 	text-align:right;
+	color:#333;
+			
 	.vco-sizebar-button {
-		border-left: 1px solid darken(@color-background, 15);
+		border-left: 1px solid darken(@color-background,10);
 		font-size: 14px;
 		padding: 4px 12px 4px 12px;
 		position:relative;
-		top:-25px;
+		top:-24px;
 		cursor:pointer;
 		font-weight: bold;
+		.vco-icon-arrow-up, .vco-icon-arrow-down {
+			display:inline-block;
+			height:14px;
+			overflow:hidden;
+			font-size: 20px;
+			position:relative;
+			top:-2px;
+		}
 	}
 	.vco-sizebar-button:hover {
-		background: @color-background;
+		background:@color-theme;
+		color:@color-background;
 	}
 	.vco-map-line {
 		border: 1px solid darken(@ui-background-color, 15);
@@ -78,48 +73,55 @@
 		left: -16px;
 		top: -25px;
 	}
-	/*
-	.vco-arrow-up {
-		//width: 0; 
-		//height: 0; 
-		//border-left: 30px solid transparent;
-		//border-right: 30px solid transparent;
-		//border-bottom: 30px solid @ui-background-color;
-		position: absolute;
-		top: -@arrow-size;
-		z-index:13;
-		
-		
+}
+
+/* Color
+================================================== */
+
+// Inverted
+/*
+.vco-sizebar.vco-sizebar-inverted {
+	border-bottom: 1px solid #FFF;
+	//background-color:#000;
+	color:#a5a5a5;
+	.vco-sizebar-button {
+		border-left: 1px solid darken(@color-background, 70);
+		//color:#a5a5a5;
 	}
-	.vco-arrow-up:after{
-	    content:'';
-		width: 0; 
-		height: 0; 
-		border-left: @arrow-size solid transparent;
-		border-right: @arrow-size solid transparent;
-		//border-bottom: @arrow-size solid @ui-background-color;
-		border-bottom: @arrow-size solid @color-background;
-	    position: absolute;
-	    //box-shadow: -1px 3px 2px -1px rgba(0,0,0,0.8);
-		left:0px;
-		top:0px;
-		
+	.vco-sizebar-button:hover {
+		//background:@color-theme;
+		color:@color-background;
 	}
-	.vco-arrow-up:before{
-	    content:'';
-		width: 0; 
-		height: 0; 
-		border-left: @arrow-size solid transparent;
-		border-right: @arrow-size solid transparent;
-		border-bottom: @arrow-size solid darken(@ui-background-color, 15);
-	    //box-shadow: 1px 3px 2px -1px rgba(0,0,0,0.8);
-		position: absolute;
-		//top: -2px;
-		left:0px;
-		top:-1px;
-		
+}
+.vco-sizebar.vco-sizebar-inverted:before {
+	background-color:#000;
+	//.gradient-vertical (rgba(0,0,0,0.25), rgba(0,0,0,1));
+	//.translucent-background(rgb(0,0,0), .5);
+	border-top: 2px solid #000;
+	animation: invertToBlack 1s;
+	-webkit-animation:invertToBlack 1s; 
+}
+*/
+
+@keyframes invertToBlack {
+	from {
+		background-color:#FFF;
 	}
-	*/
+	to {
+		background-color:#000;
+	}
+}
+@-webkit-keyframes invertToBlack {
+	from {background:#FFF;}
+	to {background:#000;}
+}
+@keyframes invertToWhite {
+	from {background-color:#000;}
+	to {background-color:#FFF;}
+}
+@-webkit-keyframes invertToWhite{
+	from {background:#000;}
+	to {background:#FFF;}
 }
 
 

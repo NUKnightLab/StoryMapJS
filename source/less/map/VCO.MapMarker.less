@@ -3,13 +3,10 @@
 @leaflet-offset: 6px;
 @map-icon-size: 44px; //52
 @map-icon-width: 32px; //38
+@map-icon-size: 52px;
+@map-icon-width: 38px;
 .vco-map {
 	.vco-mapmarker, .vco-mapmarker-active {
-		/*
-		background-image: url(storymap.png?v1.1);
-		background-repeat:no-repeat;
-		background-position: 0 0;
-		*/
 		font-family: 'vco-icons';
 		speak: none;
 		font-style: normal;
@@ -25,53 +22,31 @@
 		
 		width: @map-icon-width !important;
 		height: @map-icon-size !important;
-		overflow:hidden;
+		//overflow:hidden;
 		top:-(@map-icon-size - @leaflet-offset);
 		left: -((@map-icon-width/2) - @leaflet-offset);
 		
-	}
+	} 
+	// Map Pin
 	.vco-mapmarker:before, .vco-mapmarker-active:before {
 		content: "\e600";
 		font-size:@map-icon-size;
+		text-shadow: rgba(0,0,0, 0.66) 0px 2px 5px;
 		
 	}
 	
 	.vco-mapmarker {
 		color:#a5a5a5;
-		//background-position: -33px 0;
-		/*
-		width: 		16px !important;
-		height: 	16px !important;
-		top:		0px;
-		left: 		0px;
-		background:	@color-background;
-		border: 	1px solid @color-foreground;
-		.box-shadow();
-		.border-radius(8px);
-		*/
 	}
 	.vco-mapmarker-active {
-		/*
-		background-image: url(storymap.png?v1.1);
-		background-repeat:no-repeat;
-		background-position: 0 0;
-		*/
 		color:@color-theme;
-		overflow:hidden;
-		//top:-34px;
-		//left: -10px;
 	}
 	
-}
-
-/* Marker Media Icons
-================================================== */
-.vco-map {
-	/* Active
+	/* Marker Media Icons
 	================================================== */
 	.vco-mapmarker-icon:after {
-			font-size:22px;
-			
+			//font-size:20px;
+			font-size:24px;
 			color:#FFF; 
 			text-align:center;
 			width:@map-icon-width;
@@ -80,7 +55,8 @@
 			//content:'';
 			display:block;
 			position:absolute;
-			top:4px;
+			//top:4px;
+			top:8px;
 			left:0px;
 			
 			.opacity(75);
@@ -89,8 +65,29 @@
 	.vco-mapmarker-active.vco-mapmarker-icon:after {
 		.opacity(100);
 	}
+	.vco-mapmarker-icon.vco-icon-youtube:after {
+		//content: "\e63a";
+		//font-size:22px;
+	}
+	.vco-icon-wikipedia:after {
+		//font-size:14px;
+		font-size:16px;
+		//top:10px;
+		top:12px;
+	}
+	.vco-icon-image:after {
+		top:6px;
+	}
+	.vco-icon-vine:after, .vco-icon-vimeo:after, .vco-icon-twitter:after {
+		//top: 6px;
+		top: 8px;
+	}
+	
 
+	
 }
+
+
 
 
 /* Mobile, iPhone and skinny

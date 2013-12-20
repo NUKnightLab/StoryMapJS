@@ -59,10 +59,18 @@ VCO.SlideNav = VCO.Class.extend({
 		this._update(d);
 	},
 	
+	/*	Color
+	================================================== */
+	setColor: function(inverted) {
+		if (inverted) {
+			this._el.content_container.className = 'vco-slidenav-content-container vco-slidenav-inverted';
+		} else {
+			this._el.content_container.className = 'vco-slidenav-content-container';
+		}
+	},
+	
 	/*	Events
 	================================================== */
-	
-	
 	_onMouseClick: function() {
 		this.fire("clicked", this.options);
 	},

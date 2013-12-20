@@ -4015,6 +4015,16 @@ VCO.SizeBar = VCO.Class.extend({
 		this.options.sizebar_default_y = y;
 	},
 	
+	/*	Color
+	================================================== */
+	setColor: function(inverted) {
+		if (inverted) {
+			this._el.container.className = 'vco-sizebar vco-sizebar-inverted';
+		} else {
+			this._el.container.className = 'vco-sizebar';
+		}
+	},
+	
 	/*	Update Display
 	================================================== */
 	updateDisplay: function(w, h, a, l) {
@@ -4086,13 +4096,13 @@ VCO.SizeBar = VCO.Class.extend({
 			this.show();
 			this._el.button_overview.style.display = "inline";
 			this.fire("swipe", {y:this.options.sizebar_default_y});
-			this._el.button_collapse_toggle.innerHTML	= VCO.Language.buttons.collapse_toggle;
+			this._el.button_collapse_toggle.innerHTML	= VCO.Language.buttons.collapse_toggle + "<span class='vco-icon-arrow-up'></span>";;
 		} else {
 			this.collapsed = true;
 			this.hide(25);
 			this._el.button_overview.style.display = "none";
 			this.fire("swipe", {y:1});
-			this._el.button_collapse_toggle.innerHTML = VCO.Language.buttons.uncollapse_toggle;
+			this._el.button_collapse_toggle.innerHTML = VCO.Language.buttons.uncollapse_toggle + "<span class='vco-icon-arrow-down'></span>";;
 		}
 	},
 	
@@ -4113,7 +4123,7 @@ VCO.SizeBar = VCO.Class.extend({
 		VCO.DomEvent.addListener(this._el.button_backtostart, 'click', this._onButtonBackToStart, this);
 		
 		this._el.button_collapse_toggle 			= VCO.Dom.create('span', 'vco-sizebar-button', this._el.container);
-		this._el.button_collapse_toggle.innerHTML	= VCO.Language.buttons.collapse_toggle;
+		this._el.button_collapse_toggle.innerHTML	= VCO.Language.buttons.collapse_toggle + "<span class='vco-icon-arrow-up'></span>";
 		VCO.DomEvent.addListener(this._el.button_collapse_toggle, 'click', this._onButtonCollapseMap, this);
 		
 		//this._el.line = VCO.Dom.create("div", "vco-map-line", this._el.container);
@@ -5817,7 +5827,12 @@ VCO.Slide = VCO.Class.extend({
 			headline: 	false,
 			text: 		false,
 			media: 		false,
-			title: 		false
+			title: 		false,
+			background: {
+				image: false,
+				color: false,
+				color_value :false
+			}
 		}
 		
 		this.has.title = title_slide;
@@ -5900,6 +5915,9 @@ VCO.Slide = VCO.Class.extend({
 		}
 	},
 	
+	getBackground: function() {
+		return this.has.background;
+	},
 	
 	/*	Events
 	================================================== */
@@ -5918,10 +5936,13 @@ VCO.Slide = VCO.Class.extend({
 		// Style Slide Background
 		if (this.data.background) {
 			if (this.data.background.url) {
+				this.has.background.image = true;
 				this._el.container.className += ' vco-full-image-background';
 				this._el.container.style.backgroundImage="url('" + this.data.background.url + "')";
 			}
 			if (this.data.background.color) {
+				this.has.background.color = true;
+				this.has.background.color_value = this.data.background.color;
 				this._el.container.style.backgroundColor = this.data.background.color;
 			}
 		} 
@@ -6080,10 +6101,18 @@ VCO.SlideNav = VCO.Class.extend({
 		this._update(d);
 	},
 	
+	/*	Color
+	================================================== */
+	setColor: function(inverted) {
+		if (inverted) {
+			this._el.content_container.className = 'vco-slidenav-content-container vco-slidenav-inverted';
+		} else {
+			this._el.content_container.className = 'vco-slidenav-content-container';
+		}
+	},
+	
 	/*	Events
 	================================================== */
-	
-	
 	_onMouseClick: function() {
 		this.fire("clicked", this.options);
 	},
@@ -6680,8 +6709,23 @@ VCO.StorySlider = VCO.Class.extend({
 				});
 				
 			}
-
+			
+			
 			// Update Navigation
+			
+			// Color
+			var slide_background = this._slides[this.current_slide].getBackground();
+			this.fire("colorchange", slide_background);
+			
+			if (slide_background.color || slide_background.image) {
+				this._nav.next.setColor(true);
+				this._nav.previous.setColor(true);
+			} else {
+				this._nav.next.setColor(false);
+				this._nav.previous.setColor(false);
+			}
+			
+			//Info
 			if (this._slides[this.current_slide + 1]) {
 				this._nav.next.show();
 				this._nav.next.update(this.getNavInfo(this._slides[this.current_slide + 1]));
@@ -17636,6 +17680,7 @@ VCO.StoryMap = VCO.Class.extend({
 		
 		// StorySlider Events
 		this._storyslider.on('change', this._onSlideChange, this);
+		this._storyslider.on('colorchange', this._onColorChange, this);
 		
 		// Map Events
 		this._map.on('change', this._onMapChange, this);
@@ -17726,6 +17771,16 @@ VCO.StoryMap = VCO.Class.extend({
 		this.ready = true;
 		trace(this.ready);
 		
+	},
+	
+	_onColorChange: function(e) {
+		trace("COLOR CHANGE");
+		trace(e);
+		if (e.color || e.image) {
+			this._sizebar.setColor(true);
+		} else {
+			this._sizebar.setColor(false);
+		}
 	},
 	
 	_onSlideChange: function(e) {
