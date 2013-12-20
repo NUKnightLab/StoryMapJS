@@ -135,12 +135,8 @@
 
 /* Full Image Background
 ================================================== */
-.vco-full-image-background {
-	.vco-caption, .vco-credit {
-		color: #FFF;
-		text-shadow: 1px 1px 2px #000;
-		//.background-opacity(50);
-	}
+.vco-full-image-background, .vco-full-color-background {
+	
 	.vco-media-shadow:before, .vco-media-shadow:after {
 		background: none;
 		.box-shadow(0 0px 0px #000);
@@ -148,10 +144,8 @@
 	.vco-media-twitter, .vco-media-blockquote {
 		blockquote {
 			color: #FFF !important;
-			text-shadow: 1px 1px 2px #000 !important;
 			p {
 				color: #FFF !important;
-				text-shadow: 1px 1px 2px #000 !important;
 			}
 		}
 	}
@@ -160,6 +154,20 @@
 			color: #FFF !important;
 		}
 	}
+}
+.vco-full-image-background {
+	.vco-media-twitter, .vco-media-blockquote {
+		blockquote {
+			text-shadow: 1px 1px 2px #000 !important;
+			p {
+				text-shadow: 1px 1px 2px #000 !important;
+			}
+		}
+	}
+}
+
+.vco-full-color-background {
+	
 }
 
 /* Mobile, iPhone and skinny

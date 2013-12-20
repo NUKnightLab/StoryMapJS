@@ -5967,6 +5967,7 @@ VCO.Slide = VCO.Class.extend({
 			}
 			if (this.data.background.color) {
 				this.has.background.color = true;
+				this._el.container.className += ' vco-full-color-background';
 				this.has.background.color_value = this.data.background.color;
 				this._el.container.style.backgroundColor = this.data.background.color;
 			}

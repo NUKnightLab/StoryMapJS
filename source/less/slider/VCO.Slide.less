@@ -110,7 +110,37 @@
 		}
 	}
 }
+/* Background 
+================================================== */
 
+.slide-text-shadow(@shadow: 1px 1px 1px #000) {
+	color: #FFF !important;
+	text-shadow: @shadow !important;
+
+}
+.vco-slide.vco-full-image-background, .vco-slide.vco-full-color-background {
+	.slide-text-shadow();
+	p, h1, h2, h3, h4, h5, h6 {
+		.slide-text-shadow();
+	}
+	.vco-caption, .vco-credit {
+		.slide-text-shadow();
+	}
+	.vco-media-twitter, .vco-media-blockquote {
+		blockquote {
+			.slide-text-shadow();
+			p {
+				.slide-text-shadow();
+			}
+		}
+	}
+	.vcard {
+		a, .nickname  {
+			.slide-text-shadow();
+		}
+	}
+
+}
 /* Full Image Background 
 ================================================== */
 .vco-slide.vco-full-image-background {
@@ -119,16 +149,16 @@
 	   -moz-background-size: cover;
 	     -o-background-size: cover;
 		    background-size: cover;
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='.myBackground.jpg', sizingMethod='scale');
-	-ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='myBackground.jpg', sizingMethod='scale')";
+	//filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='.myBackground.jpg', sizingMethod='scale');
+	//-ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='myBackground.jpg', sizingMethod='scale')";
 	background-position:center 25%;
-	color: #FFF;
 	text-shadow: 1px 1px 2px #000;
-	p {
-		color: #FFF;
+	p, h1, h2, h3, h4, h5, h6 {
 		text-shadow: 1px 1px 2px #000;
 	}
-	
+	.vco-caption, .vco-credit {
+		text-shadow: 1px 1px 2px #000;
+	}
 	.vco-text {
 		.vco-text-content-container {
 			padding:20px;
@@ -139,7 +169,22 @@
 			}
 		}
 	}
+	.vco-media-twitter, .vco-media-blockquote {
+		blockquote {
+			text-shadow: 1px 1px 2px #000 !important;
+			p {
+				text-shadow: 1px 1px 2px #000 !important;
+			}
+		}
+	}
+	
 }
+/* Color Background 
+================================================== */
+.vco-slide.vco-full-color-background {
+
+}
+
 
 // Mobile, iPhone
 @media only screen and (max-width: 500px), only screen and (max-device-width: 500px) {
