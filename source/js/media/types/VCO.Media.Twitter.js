@@ -35,7 +35,7 @@ VCO.Media.Twitter = VCO.Media.extend({
 		VCO.getJSON(api_url, function(d) {
 			self.createMedia(d);
 		});
-		
+		 
 	},
 	
 	createMedia: function(d) {		
