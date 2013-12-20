@@ -84,7 +84,7 @@ var params = parseQuerystring();
 var url = decodeURIComponent(params['url']);
 
 var options = {
-    script_path: getScriptPath('storymap-min.js'),
+    script_path: getScriptPath(/storymap(-min)?\.js/),
     start_at_slide: 0
 };
 
@@ -106,7 +106,7 @@ VCO.getJSON(url, function(d) {
 
         var font = "../css/fonts/font.default.css";
         if(d.font_css) {
-            font = d.font;
+            font = d.font_css;
         }
         if(!(font.startsWith('http') || font.startsWith('//'))) {
             font = url_join(options.script_path, font);
