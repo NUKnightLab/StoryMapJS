@@ -129,6 +129,26 @@
                 "media": {
                     "caption": "",
                     "credit": "",
+                    "url": "https://vine.co/v/hvJQbhiTZDq"
+                },
+                "text": {
+                    "headline": "Vine",
+                    "text": "This has a vine"
+                }
+            },
+            {
+                "date": "",
+                "location": {
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+                    "lat": 42.079336,
+                    "line": true,
+                    "lon": -87.71801699999997,
+                    "name": "1630 Lake Ave",
+                    "zoom": 10
+                },
+                "media": {
+                    "caption": "",
+                    "credit": "",
                     "url": "https://twitter.com/StephenAtHome/status/16360461594"
                 },
                 "text": {

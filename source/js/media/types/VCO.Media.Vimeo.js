@@ -60,7 +60,7 @@ VCO.Media.Vimeo = VCO.Media.extend({
 	// Update Media Display
 	_updateMediaDisplay: function() {
 		this._el.content_item.style.height = VCO.Util.ratio.r16_9({w:this._el.content_item.offsetWidth}) + "px";
-		trace(VCO.Util.ratio.r16_9({w:this._el.content_item.offsetWidth}));
+		
 	},
 	
 	_stopMedia: function() {
