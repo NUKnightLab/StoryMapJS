@@ -1,4 +1,4 @@
-/* storymapjs - v0.1.5 - 2013-12-20
+/* storymapjs - v0.1.6 - 2013-12-20
  * Copyright (c) 2013 Northwestern University Knight Lab 
  */
 
@@ -4613,6 +4613,24 @@ VCO.Media = VCO.Class.extend({
 		if (this.message) {
 			this.message.hide();
 		}
+		this.showMeta();
+	},
+	
+	showMeta: function() {
+		
+		// Credit
+		if (this.data.credit && this.data.credit != "") {
+			this._el.credit					= VCO.Dom.create("div", "vco-credit", this._el.content_container);
+			this._el.credit.innerHTML		= this.data.credit;
+			this.options.credit_height 		= this._el.credit.offsetHeight;
+		}
+		
+		// Caption
+		if (this.data.caption && this.data.caption != "") {
+			this._el.caption				= VCO.Dom.create("div", "vco-caption", this._el.content_container);
+			this._el.caption.innerHTML		= this.data.caption;
+			this.options.caption_height 	= this._el.caption.offsetHeight;
+		}
 	},
 	
 	onAdd: function() {
@@ -4649,20 +4667,6 @@ VCO.Media = VCO.Class.extend({
 			
 		} else {
 			this._el.content = VCO.Dom.create("div", "vco-media-content", this._el.content_container);
-		}
-		
-		// Credit
-		if (this.data.credit && this.data.credit != "") {
-			this._el.credit					= VCO.Dom.create("div", "vco-credit", this._el.content_container);
-			this._el.credit.innerHTML		= this.data.credit;
-			this.options.credit_height 		= this._el.credit.offsetHeight;
-		}
-		
-		// Caption
-		if (this.data.caption && this.data.caption != "") {
-			this._el.caption				= VCO.Dom.create("div", "vco-caption", this._el.content_container);
-			this._el.caption.innerHTML		= this.data.caption;
-			this.options.caption_height 	= this._el.caption.offsetHeight;
 		}
 		
 		
@@ -4724,6 +4728,10 @@ VCO.Media.Blockquote = VCO.Media.extend({
 		
 		// After Loaded
 		this.onLoaded();
+	},
+	
+	_updateMediaDisplay: function() {
+		
 	}
 
 	
@@ -5227,30 +5235,50 @@ VCO.Media.Twitter = VCO.Media.extend({
 		
 		// API URL
 		api_url = "http://api.twitter.com/1/statuses/oembed.json?id=" + this.media_id + "&omit_script=true&include_entities=true&callback=?";
+		//api_url = "http://api.twitter.com/1/statuses/oembed.json?id=" + this.media_id + "&include_entities=true&callback=?";
 		
 		// API Call
 		VCO.getJSON(api_url, function(d) {
 			self.createMedia(d);
 		});
-		
+		 
 	},
 	
 	createMedia: function(d) {		
-		var tweet		= "",
-			tweetuser	= "";
+		var tweet				= "",
+			tweet_text			= "",
+			tweetuser			= "",
+			tweet_status_temp 	= "",
+			tweet_status_url 	= "",
+			tweet_status_date 	= "";
 			
 		//	TWEET CONTENT
-		tweet += d.html.split("<\/p>\&mdash;")[0] + "</p></blockquote>";
-		tweetuser = d.author_url.split("twitter.com\/")[1];
+		tweet_text 			= d.html.split("<\/p>\&mdash;")[0] + "</p></blockquote>";
+		tweetuser			= d.author_url.split("twitter.com\/")[1];
+		tweet_status_temp 	= d.html.split("<\/p>\&mdash;")[1].split("<a href=\"")[1];
+		tweet_status_url 	= tweet_status_temp.split("\"\>")[0];
+		tweet_status_date 	= tweet_status_temp.split("\"\>")[1].split("<\/a>")[0];
+		
+		trace("tweet_status_url " + tweet_status_url);
+		trace("tweet_status_date " + tweet_status_date);
+		
+		// 	TWEET CONTENT
+		tweet += tweet_text;
+		
+		//tweet += "</blockquote>";
 		
 		//	TWEET AUTHOR
-		tweet += "<div class='vcard author'>";
+		tweet += "<div class='vcard'>";
+		tweet += "<a href='" + tweet_status_url + "' class='twitter-date' target='_blank'>" + tweet_status_date + "</a>";
+		tweet += "<div class='author'>";
 		tweet += "<a class='screen-name url' href='" + d.author_url + "' target='_blank'>";
 		tweet += "<span class='avatar'></span>";
-		tweet += "<span class='fn'>" + d.author_name + "</span>";
+		tweet += "<span class='fn'>" + d.author_name + " <span class='vco-icon-twitter'></span></span>";
 		tweet += "<span class='nickname'>@" + tweetuser + "<span class='thumbnail-inline'></span></span>";
 		tweet += "</a>";
 		tweet += "</div>";
+		tweet += "</div>";
+		
 		
 		// Add to DOM
 		this._el.content_item.innerHTML	= tweet;
@@ -5258,6 +5286,10 @@ VCO.Media.Twitter = VCO.Media.extend({
 		// After Loaded
 		this.onLoaded();
 			
+	},
+	
+	_updateMediaDisplay: function() {
+		
 	}
 	
 	
@@ -5520,8 +5552,6 @@ VCO.Media.Wikipedia = VCO.Media.extend({
 			self.createMedia(d);
 		});
 		
-		// After Loaded
-		this.onLoaded();
 	},
 	createMedia: function(d) {
 		var wiki = "";
@@ -5569,6 +5599,10 @@ VCO.Media.Wikipedia = VCO.Media.extend({
 			
 		}
 			
+	},
+	
+	_updateMediaDisplay: function() {
+		
 	}
 	
 });
@@ -5945,6 +5979,7 @@ VCO.Slide = VCO.Class.extend({
 			}
 			if (this.data.background.color) {
 				this.has.background.color = true;
+				this._el.container.className += ' vco-full-color-background';
 				this.has.background.color_value = this.data.background.color;
 				this._el.container.style.backgroundColor = this.data.background.color;
 			}
