@@ -4722,6 +4722,10 @@ VCO.Media.Blockquote = VCO.Media.extend({
 		this.onLoaded();
 	},
 	
+	updateMediaDisplay: function() {
+		
+	},
+	
 	_updateMediaDisplay: function() {
 		
 	}
@@ -5280,6 +5284,10 @@ VCO.Media.Twitter = VCO.Media.extend({
 			
 	},
 	
+	updateMediaDisplay: function() {
+		
+	},
+	
 	_updateMediaDisplay: function() {
 		
 	}
@@ -5591,6 +5599,10 @@ VCO.Media.Wikipedia = VCO.Media.extend({
 			
 		}
 			
+	},
+	
+	updateMediaDisplay: function() {
+		
 	},
 	
 	_updateMediaDisplay: function() {

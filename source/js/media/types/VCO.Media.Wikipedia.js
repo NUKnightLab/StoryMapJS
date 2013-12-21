@@ -80,6 +80,10 @@ VCO.Media.Wikipedia = VCO.Media.extend({
 			
 	},
 	
+	updateMediaDisplay: function() {
+		
+	},
+	
 	_updateMediaDisplay: function() {
 		
 	}
