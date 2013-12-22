@@ -8,6 +8,7 @@
 <meta name="apple-touch-fullscreen" content="yes">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <link rel="stylesheet" href="http://cdn.knightlab.com/libs/storymapjs/latest/css/storymap.css">
+<link rel="stylesheet" href="http://cdn.knightlab.com/libs/storymapjs/latest/css/fonts/font.default.css">
 <script type="text/javascript" src="http://cdn.knightlab.com/libs/storymapjs/latest/js/storymap-min.js"></script>
 <style>
 html, body {
@@ -99,7 +100,7 @@ VCO.getJSON(url, function(d) {
         if(d.storymap.language) {
             options.language = d.storymap.language;
         }
-
+		/*
         var font = "stock:default";
         if(d.font_css) {
             font = d.font_css;
@@ -112,7 +113,7 @@ VCO.getJSON(url, function(d) {
             font = url_join(options.script_path, font);
         }
         VCO.Load.css(font,function(){ trace('font loaded: ' + font);});
-
+		*/
 
         
         storymap = new VCO.StoryMap('storymap-embed', d, options);
