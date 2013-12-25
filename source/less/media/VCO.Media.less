@@ -16,6 +16,19 @@
 			position: relative;
 			.clearfix();
 			
+			.vco-media-loaderror {
+				border: 1px solid @color-foreground;
+				//min-height:200px;
+				//min-width:200px;
+				padding:20px;
+				padding-top:50px;
+				padding-bottom:50px;
+				color: darken(@color-background,50);
+				[class^="vco-icon-"], [class*=" vco-icon-"] {
+					font-size:@base-font-size-xlarge;
+				}
+			}
+			
 			img, embed, object, video {
 				max-width: 100%;
 				max-height:100%;
