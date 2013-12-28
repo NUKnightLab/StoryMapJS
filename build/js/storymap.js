@@ -1,4 +1,4 @@
-/* storymapjs - v0.1.7 - 2013-12-22
+/* storymapjs - v0.1.8 - 2013-12-28
  * Copyright (c) 2013 Northwestern University Knight Lab 
  */
 
@@ -4604,6 +4604,16 @@ VCO.Media = VCO.Class.extend({
 	stopMedia: function() {
 		this._stopMedia();
 	},
+	
+	loadErrorDisplay: function(message) {
+		trace("loadErrorDisplay");
+		this._el.content.removeChild(this._el.content_item);
+		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-loaderror", this._el.content);
+		this._el.content_item.innerHTML = message + "<br/><span class='vco-icon-" + this.options.media_type + "'></span>";
+		if (this.message) {
+			this.message.hide();
+		}
+	},
 
 	/*	Events
 	================================================== */
@@ -4773,8 +4783,13 @@ VCO.Media.Flickr = VCO.Media.extend({
 		api_url = "http://api.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key=" + this.options.api_key_flickr + "&photo_id=" + this.media_id + "&format=json&jsoncallback=?";
 		
 		// API Call
+		trace("FLICKR")
 		VCO.getJSON(api_url, function(d) {
-			self.createMedia(d);
+			if (d.stat == "ok") {
+				self.createMedia(d);
+			} else {
+				self.loadErrorDisplay("Photo not found or private.");
+			}
 		});
 		
 	},
@@ -6014,6 +6029,7 @@ VCO.Slide = VCO.Class.extend({
 			// Determine the media type
 			this.data.media.mediatype = VCO.MediaType(this.data.media);
 			this.options.media_name = this.data.media.mediatype.name;
+			this.options.media_type = this.data.media.mediatype.type;
 			
 			// Create a media object using the matched class name
 			this._media = new this.data.media.mediatype.cls(this.data.media, this.options);
@@ -6036,7 +6052,7 @@ VCO.Slide = VCO.Class.extend({
 		} else if (this.has.text && this.has.media) {
 			this._media.addTo(this._el.content);
 			this._text.addTo(this._el.content);
-		} else if (this.has.text) {
+		} else if (this.has.text || this.has.headline) {
 			this._el.container.className += ' vco-slide-text-only';
 			this._text.addTo(this._el.content);
 		}
