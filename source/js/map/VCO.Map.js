@@ -147,24 +147,31 @@ VCO.Map = VCO.Class.extend({
 						if (this.options.line_follows_path) {
 							if (this.options.show_history_line && marker.data.real_marker && this._markers[previous_marker].data.real_marker) {
 								var lines_array = [],
-									line_num = previous_marker;
+									line_num = previous_marker,
+									point;
 							
 								if (line_num < this.current_marker) {
 									while (line_num < this.current_marker) {
-										var point = {
-											lat:this._markers[line_num].data.location.lat,
-											lon:this._markers[line_num].data.location.lon
+										if (this._markers[line_num].data.location && this._markers[line_num].data.location.lat) {
+											point = {
+												lat:this._markers[line_num].data.location.lat,
+												lon:this._markers[line_num].data.location.lon
+											}
+											lines_array.push(point);
 										}
-										lines_array.push(point);
+										
 										line_num++;
 									}
 								} else if (line_num > this.current_marker) {
 									while (line_num > this.current_marker) {
-										var point = {
-											lat:this._markers[line_num].data.location.lat,
-											lon:this._markers[line_num].data.location.lon
+										if (this._markers[line_num].data.location && this._markers[line_num].data.location.lat) {
+											point = {
+												lat:this._markers[line_num].data.location.lat,
+												lon:this._markers[line_num].data.location.lon
+											}
+											lines_array.push(point);
 										}
-										lines_array.push(point);
+										
 										line_num--;
 									}
 								}
