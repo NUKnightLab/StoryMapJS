@@ -18,31 +18,37 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		this._map.on("load", this._onMapLoaded, this);
 		//this._map.setView([51.505, -0.09], 13);
 			
-		var layer,
-			map_type_arr = this.options.map_type.split(':');		
+		var map_type_arr = this.options.map_type.split(':');		
 
 		// Set Tiles
 		switch(map_type_arr[0]) {
 			case 'stamen':
-				layer = new L.StamenTileLayer(map_type_arr[1] || 'toner')
+				this._tile_layer = new L.StamenTileLayer(map_type_arr[1] || 'toner');
 				break;
-
+			case 'zoomify':
+				this._tile_layer = new L.tileLayer.zoomify(this.options.zoomify.path, {
+					width: 			this.options.zoomify.width,
+					height: 		this.options.zoomify.height,
+					tolerance: 		this.options.zoomify.tolerance,
+					attribution: 	this.options.zoomify.attribution,
+				});
+				break;
 			case 'osm':
-				layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {subdomains: 'ab'});
+				this._tile_layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {subdomains: 'ab'});
 				break;
 		    
 			case 'http':
 			case 'https':
-				layer = new L.TileLayer(this.options.map_type, {subdomains: this.options.map_subdomains});
+				this._tile_layer = new L.TileLayer(this.options.map_type, {subdomains: this.options.map_subdomains});
 				break;
 		        
 			default:
-				layer = new L.StamenTileLayer('toner');
+				this._tile_layer = new L.StamenTileLayer('toner');
 				break;		
 		}
 		
 		// Add Tile Layer
-		this._map.addLayer(layer);
+		this._map.addLayer(this._tile_layer);
 		
 		// Create Overall Connection Line
 		this._line = this._createLine(this._line);
@@ -78,15 +84,29 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	},
 	
 	_markerOverview: function() {
-		var bounds_array = [];
 		
-		for (var i = 0; i < this._markers.length; i++) {
-			if (this._markers[i].data.real_marker) {
-				bounds_array.push( [this._markers[i].data.location.lat, this._markers[i].data.location.lon]);
-			}
-		};
+		if (this.options.map_type == "zoomify") {
+			trace("MARKER OVERVIEW ZOOMIFY");
+			trace(this._tile_layer.getCenterZoom(this._map));
+			var center_zoom = this._tile_layer.getCenterZoom(this._map);
+			this._map.setView(center_zoom.center, center_zoom.zoom, {
+					pan:{animate: true, duration: this.options.duration/1000, easeLinearity:.10},
+					zoom:{animate: true, duration: this.options.duration/1000, easeLinearity:.10}
+			});
+			//this._viewTo(center_zoom);
+			//this._viewTo(center_zoom, {zoom:center_zoom.zoom, calculate_zoom:false});
+		} else {
+			var bounds_array = [];
 		
-		this._map.fitBounds(bounds_array, {padding:[15,15]});
+			for (var i = 0; i < this._markers.length; i++) {
+				if (this._markers[i].data.real_marker) {
+					bounds_array.push( [this._markers[i].data.location.lat, this._markers[i].data.location.lon]);
+				}
+			};
+		
+			this._map.fitBounds(bounds_array, {padding:[15,15]});
+		}
+		
 	},
 	
 	/*	Line
@@ -224,6 +244,10 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		return this._map.getBoundsZoom(bounds, false);
 	},
 	
+	_getZoomifyZoom: function() {
+		//this.options.zoomify.image_size
+
+	},
 	
 	/*	Display
 	================================================== */

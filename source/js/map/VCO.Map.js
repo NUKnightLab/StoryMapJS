@@ -46,6 +46,9 @@ VCO.Map = VCO.Class.extend({
 		
 		// Current Marker
 		this.current_marker = 0;
+		
+		// Map Tiles Layer
+		this._tile_layer = null;
 	
 		// Data
 		this.data = {
@@ -56,6 +59,14 @@ VCO.Map = VCO.Class.extend({
 		//Options
 		this.options = {
 			map_type: 			"stamen:toner",
+			map_subdomains: 	"",
+			zoomify: {
+				path: 			"",
+				width: 			"",
+				height: 		"",
+				tolerance: 		0.8,
+				attribution: 	""
+			},
 			path_gfx: 			"gfx",
 			start_at_slide: 	0,
 			map_popup: 			false, 

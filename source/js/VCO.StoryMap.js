@@ -64,6 +64,7 @@
 // @codekit-prepend "slider/VCO.StorySlider.js";
 
 // @codekit-prepend "map/leaflet/VCO.Leaflet.js";
+// @codekit-prepend "map/leaflet/VCO.Leaflet.TileLayer.Zoomify.js";
 
 // @codekit-prepend "map/VCO.StamenMaps.js";
 // @codekit-prepend "map/VCO.MapMarker.js";
@@ -512,6 +513,14 @@ VCO.StoryMap = VCO.Class.extend({
 			dragging: 				true,
 			trackResize: 			true,
 			map_type: 				"toner-lite",
+			map_subdomains: 		"",
+			zoomify: {
+				path: 				"",
+				width: 				"",
+				height: 			"",
+				tolerance: 			0.8,
+				attribution: 		""
+			},
 			map_height: 			300,
 			storyslider_height: 	600,
 			slide_padding_lr: 		100, // padding on slide of slide
@@ -542,6 +551,11 @@ VCO.StoryMap = VCO.Class.extend({
 		
 		// Merge Options
 		VCO.Util.mergeData(this.options, options);
+		
+		// Zoomify Layout
+		if (this.options.map_type == "zoomify") {
+			this.options.map_size_sticky = 2;
+		}
 		
 		// Load language
 		if(this.options.language == 'en') {
