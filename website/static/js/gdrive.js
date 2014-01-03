@@ -436,12 +436,16 @@ function gdrive_storymap_save_draft(storymapFolder, data, callback) {
             callback(error);
         } else if(file) {
             gdrive_file_update(file.id, content, function(error, file) {
-                storymapFolder['draft_on'] = file.modifiedDate;
+                if(file) {
+                    storymapFolder['draft_on'] = file.modifiedDate;
+                }
                 callback(error, file);
             });
         } else {
             gdrive_file_create('draft.json', content, [storymapFolder], function(error, file) {
-                storymapFolder['draft_on'] = file.modifiedDate;
+                if(file) {
+                    storymapFolder['draft_on'] = file.modifiedDate;
+                }
                 callback(error, file);
             });
         }
