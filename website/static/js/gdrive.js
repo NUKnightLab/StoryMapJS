@@ -44,6 +44,10 @@ const STORYMAP_TEMPLATE = { storymap: { slides: [] }};
 var STORYMAP_INFO = {};
 
 
+function utf8_to_b64(str) {
+    return window.btoa(unescape(encodeURIComponent(str)));
+}
+
 ////////////////////////////////////////////////////////////
 // Requests
 ////////////////////////////////////////////////////////////
@@ -133,7 +137,7 @@ function gdrive_file_create(title, content, parents, callback) {
         metadata['parents'] = parents;
     }
     var contentType = 'application/json';
-    var base64Data = btoa(content);
+    var base64Data = utf8_to_b64(content);
     
     var request = gapiRequest('POST', metadata, contentType, base64Data);   
     gdrive_exec(request, callback);
@@ -162,7 +166,7 @@ function gdrive_file_get(id, callback) {
 }
 
 function gdrive_file_update(id, content, callback) {
-    var request = gapiPUTRequest(id, 'application/json', btoa(content));
+    var request = gapiPUTRequest(id, 'application/json', utf8_to_b64(content));
     gdrive_exec(request, callback);
 }
 
