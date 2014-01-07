@@ -2,13 +2,13 @@ VCO.Language = {
     name: "Polski",
     lang: "pl",
     messages: {
-        loading: "Wczytujê",
-        wikipedia: "z Wikipedi, wolnej encyklopedii",
+        loading: "Wczytuję",
+        wikipedia: "z Wikipedii, wolnej encyklopedii",
     },
     buttons: {
-        map_overview: "Przeglıdaj mapê",
+        map_overview: "Przeglądaj mapę",
         backtostart: "Powrót",
-        collapse_toggle: "Ukryj mapê",
-        uncollapse_toggle: "Pokaż mapê"
+        collapse_toggle: "Ukryj mapę",
+        uncollapse_toggle: "Pokaż mapę"
     }
 };
