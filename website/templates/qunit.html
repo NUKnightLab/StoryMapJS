@@ -40,6 +40,25 @@
             }
         });
 
+        test("Flickr IDs", function() {
+            var media = {
+                        "url": "http://www.flickr.com/photos/graysonfamily/349095341/",
+                     "credit": "graysonfamily",
+                    "caption": "1820 Census Record"
+            }
+            var media_obj = new VCO.Media.Flickr(media,{});
+            media_obj.establishMediaID();
+            equal(media_obj.media_id,"349095341");
+
+            media = {
+                "url": "http://www.flickr.com/photos/statephotos/8507434935/in/photostream/",
+                "credit": "State Department photo by Glen Johnson"
+            }
+            var media_obj = new VCO.Media.Flickr(media,{});
+            media_obj.establishMediaID();
+            equal(media_obj.media_id,"8507434935");
+        })
+
     </script>
 </head>
 <body>
