@@ -68,7 +68,7 @@ VCO.MediaType = function(m) {
 			{
 				type: 		"instagram",
 				name: 		"Instagram", 
-				match_str: 	/(instagr.am|instagram.com)\/p//,
+				match_str: 	/(instagr.am|instagram.com)\/p/,
 				cls: 		VCO.Media
 			},
 			{
