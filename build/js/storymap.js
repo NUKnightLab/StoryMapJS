@@ -1,4 +1,4 @@
-/* storymapjs - v0.1.9 - 2014-01-07
+/* storymapjs - v2014-01-09-20-35-43 - 2014-01-09
  * Copyright (c) 2014 Northwestern University Knight Lab 
  */
 
@@ -4371,7 +4371,7 @@ VCO.MediaType = function(m) {
 			{
 				type: 		"instagram",
 				name: 		"Instagram", 
-				match_str: 	"instagr.am/p/",
+				match_str: 	/(instagr.am|instagram.com)\/p/,
 				cls: 		VCO.Media
 			},
 			{
@@ -4442,6 +4442,7 @@ VCO.MediaType = function(m) {
 	return false;
 	
 }
+
 
 /* **********************************************
      Begin VCO.Media.js
