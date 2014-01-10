@@ -1,1 +1,1 @@
-VCO.Language={name:"Polski",lang:"pl",messages:{loading:"Wczytujê",wikipedia:"z Wikipedi, wolnej encyklopedii"},buttons:{map_overview:"Przeglıdaj mapê",backtostart:"Powrót",collapse_toggle:"Ukryj mapê",uncollapse_toggle:"Pokaż mapê"}};
+VCO.Language={name:"Polski",lang:"pl",messages:{loading:"Wczytuję",wikipedia:"z Wikipedii, wolnej encyklopedii"},buttons:{map_overview:"Przeglądaj mapę",backtostart:"Powrót",collapse_toggle:"Ukryj mapę",uncollapse_toggle:"Pokaż mapę"}};
