@@ -98,27 +98,28 @@ function gapiPUTRequest(fileId, contentType, base64Data) {
 // callback(error, response)
 // error = string || {code: <int>, message: <string> }
 function gdrive_exec(request, callback, debug) {
-    request.execute(function(response) {
-        if(response.error) {
-// DEBUG START
-//console.log('gdrive_exec', response.error, response.error.code);
-// DEBUG END           
-            // If authorization error, try to reauthorize and re-exec
-            if(response.error.code == 401 || response.error.code == 403) {
-                gdrive_check_auth(function(authorized) {         
-                    if(authorized) {
-                        gdrive_exec(request, callback, debug);
-                    } else {
-                        callback(response.error, null);
-                    }
-                });
+    try {
+        request.execute(function(response) {
+            if(response.error) {
+                // If authorization error, try to reauthorize and re-exec
+                if(response.error.code == 401 || response.error.code == 403) {
+                    gdrive_check_auth(function(authorized) {         
+                        if(authorized) {
+                            gdrive_exec(request, callback, debug);
+                        } else {
+                            callback(response.error, null);
+                        }
+                    });
+                } else {
+                    callback(response.error, null);
+                }
             } else {
-                callback(response.error, null);
-            }
-        } else {
-            callback(null, response);
-        }   
-    });
+                callback(null, response);
+            }   
+        });
+    } catch(err) {
+        callback(err, null);
+    }
 }
 
 //////////////////////////////////////////////////////////////////////

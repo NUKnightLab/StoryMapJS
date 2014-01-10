@@ -665,7 +665,7 @@ function storymap_save() {
     gdrive_storymap_save_draft(_storymap_info, _storymap_data, function(error, file) {
         if(error) {
             $('#storymap_save').removeClass('disabled').addClass('btn-primary');
-            show_error('Error saving storymap: '+(error.message || error));
+            show_error('Error saving storymap', error);
        } else {
             storymap_dirty(0);
        }
@@ -693,7 +693,7 @@ function storymap_publish() {
         
         gdrive_storymap_save_draft(_storymap_info, _storymap_data, function(error, file) {
             if(error) {
-                show_error('Error saving storymap: '+(error.message || error));                
+                show_error('Error saving storymap', error);                
             } else {
                 storymap_dirty(0);
                 storymap_publish();
@@ -704,7 +704,7 @@ function storymap_publish() {
         
         gdrive_storymap_publish(_storymap_info, function(error, file) {
             if(error) {
-                show_error('Error publishing StoryMap: '+ (error.message || error));
+                show_error('Error publishing StoryMap', error);
             } else {
                 hide_progress();
                 
@@ -803,7 +803,7 @@ function storymap_init() {
         // Load storymap folder
         gdrive_storymap_load(params.id, function(error, storymapFolder) {
             if(error) {
-                show_error('Error loading StoryMap: '+(error.message || error));
+                show_error('Error loading StoryMap', error);
             } else {
                 _storymap_info = storymapFolder;
                 storymap_saved_msg();
@@ -813,7 +813,7 @@ function storymap_init() {
                 // Load draft
                 gdrive_storymap_load_draft(storymapFolder, function(error, data) {
                     if(error) {
-                        show_error('Error loading StoryMap data: '+(error.message || error));
+                        show_error('Error loading StoryMap data', error);
                     } else {
                         _storymap_data = data;
                         _slides = _storymap_data.storymap.slides;
