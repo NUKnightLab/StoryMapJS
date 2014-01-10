@@ -841,7 +841,6 @@ function handle_onload() {
     });
 }
 
-
 $(function() {        
     $('a.help').popover({
         trigger: 'manual'
@@ -921,7 +920,7 @@ $(function() {
         storymap_dirty(1);
         $('.slide-title').eq(_current_slide_index).html(value);
     });
-
+    
     $('#text').wysihtml5({
         "stylesheets": ["{{ STATIC_URL }}/bootstrap-wysihtml5/lib/css/wysiwyg-color.css"],
         "font-styles": false,   // Font styling, e.g. h1, h2, etc. Default true
@@ -944,9 +943,10 @@ $(function() {
         },
         'events': {
             'change': function() { 
-                _slides[_current_slide_index].text['text'] = $('#text').val().trim();
+                var val = $('#text').data("wysihtml5").editor.getValue().trim();
+                _slides[_current_slide_index].text['text'] = val;
                 storymap_dirty(1);
-             }
+            }
         }
     });
         
