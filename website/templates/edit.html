@@ -144,6 +144,10 @@
                 <div class="controls">
                     <select id="language">
                         <option value="en">English</option>
+                        <option value="de">German</option>
+                        <option value="it">Italian</option>
+                        <option value="no">Norwegian</option>
+                        <option value="pl">Polish</option>
                         <option value="es">Spanish</option>
                     </select>
                     <a class="help" href="javascript:"
@@ -687,7 +691,7 @@ function storymap_save() {
     gdrive_storymap_save_draft(_storymap_info, _storymap_data, function(error, file) {
         if(error) {
             $('#storymap_save').removeClass('disabled').addClass('btn-primary');
-            show_error('Error saving storymap: '+(error.message || error));
+            show_error('Error saving storymap', error);
        } else {
             storymap_dirty(0);
        }
@@ -715,7 +719,7 @@ function storymap_publish() {
         
         gdrive_storymap_save_draft(_storymap_info, _storymap_data, function(error, file) {
             if(error) {
-                show_error('Error saving storymap: '+(error.message || error));                
+                show_error('Error saving storymap', error);                
             } else {
                 storymap_dirty(0);
                 storymap_publish();
@@ -726,7 +730,7 @@ function storymap_publish() {
         
         gdrive_storymap_publish(_storymap_info, function(error, file) {
             if(error) {
-                show_error('Error publishing StoryMap: '+ (error.message || error));
+                show_error('Error publishing StoryMap', error);
             } else {
                 hide_progress();
                 
@@ -825,7 +829,7 @@ function storymap_init() {
         // Load storymap folder
         gdrive_storymap_load(params.id, function(error, storymapFolder) {
             if(error) {
-                show_error('Error loading StoryMap: '+(error.message || error));
+                show_error('Error loading StoryMap', error);
             } else {
                 _storymap_info = storymapFolder;
                 storymap_saved_msg();
@@ -835,7 +839,7 @@ function storymap_init() {
                 // Load draft
                 gdrive_storymap_load_draft(storymapFolder, function(error, data) {
                     if(error) {
-                        show_error('Error loading StoryMap data: '+(error.message || error));
+                        show_error('Error loading StoryMap data', error);
                     } else {
                         _storymap_data = data;
                         _slides = _storymap_data.storymap.slides;
@@ -863,7 +867,6 @@ function handle_onload() {
         }
     });
 }
-
 
 $(function() {        
     $('a.help').popover({
@@ -949,7 +952,7 @@ $(function() {
         storymap_dirty(1);
         $('.slide-title').eq(_current_slide_index).html(value);
     });
-
+    
     $('#text').wysihtml5({
         "stylesheets": ["{{ STATIC_URL }}/bootstrap-wysihtml5/lib/css/wysiwyg-color.css"],
         "font-styles": false,   // Font styling, e.g. h1, h2, etc. Default true
@@ -972,9 +975,10 @@ $(function() {
         },
         'events': {
             'change': function() { 
-                _slides[_current_slide_index].text['text'] = $('#text').val().trim();
+                var val = $('#text').data("wysihtml5").editor.getValue().trim();
+                _slides[_current_slide_index].text['text'] = val;
                 storymap_dirty(1);
-             }
+            }
         }
     });
         

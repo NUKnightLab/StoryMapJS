@@ -82,6 +82,10 @@ VCO.Media.Twitter = VCO.Media.extend({
 			
 	},
 	
+	updateMediaDisplay: function() {
+		
+	},
+	
 	_updateMediaDisplay: function() {
 		
 	}

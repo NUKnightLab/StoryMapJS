@@ -48,9 +48,40 @@ function do_ajax(url, data, on_error, on_success) {
     });
 }
 
-function show_error(msg) {
+function show_error(msg, err) { 
+    var message = msg;
+    
+    if(err) {
+        if(err.hasOwnProperty('message')) {
+            message += ': ' + err.message;
+        } else {
+            message += ': ' + err;
+        }
+        
+        if(err.hasOwnProperty('stack')) {
+            var subject = 'StoryMapJS Editor Report ('+msg+')';
+            var body = 'Please describe what you were doing when this error occurred:\n\n\n'
+                    + '---DIAGNOSTICS---\n'
+                    + message+'\n'
+                    + '\n'
+                    + 'appCodeName: '+navigator.appCodeName+'\n'
+                    + 'appName: '+navigator.appName+'\n'
+                    + 'appVersion: '+navigator.appVersion+'\n'
+                    + 'platform: '+navigator.platform+'\n'
+                    + 'userAgent: '+navigator.userAgent+'\n'
+                    + '\n'
+                    + err.stack+'\n';
+            
+            var link = 'mailto:support@knightlab.zendesk.com?'
+                + 'subject='+encodeURIComponent(subject)
+                + '&body='+encodeURIComponent(body);
+
+            message += '<p><a class="report" href="'+link+'">Report this error to the Knight Lab</a></p>';
+        }
+    }
+       
     hide_progress();
-    $('#error_msg').html(msg);
+    $('#error_msg').html(message);
     $('#error_modal').modal('show');
 }
 

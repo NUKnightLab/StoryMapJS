@@ -203,6 +203,7 @@ VCO.Slide = VCO.Class.extend({
 			// Determine the media type
 			this.data.media.mediatype = VCO.MediaType(this.data.media);
 			this.options.media_name = this.data.media.mediatype.name;
+			this.options.media_type = this.data.media.mediatype.type;
 			
 			// Create a media object using the matched class name
 			this._media = new this.data.media.mediatype.cls(this.data.media, this.options);
@@ -225,7 +226,7 @@ VCO.Slide = VCO.Class.extend({
 		} else if (this.has.text && this.has.media) {
 			this._media.addTo(this._el.content);
 			this._text.addTo(this._el.content);
-		} else if (this.has.text) {
+		} else if (this.has.text || this.has.headline) {
 			this._el.container.className += ' vco-slide-text-only';
 			this._text.addTo(this._el.content);
 		}

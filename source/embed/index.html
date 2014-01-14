@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="/build/css/storymap.css">
 <!-- endbuild -->
 <!-- build:js http://cdn.knightlab.com/libs/storymapjs/latest/js/storymap-min.js -->
-<script type="text/javascript" src="/build/js/storymap-min.js"></script>
+<script type="text/javascript" src="/build/js/storymap.js"></script>
 <!-- endbuild -->
 <style>
 html, body {
@@ -54,28 +54,22 @@ function getScriptPath(scriptname) {
 }
 
 function url_join(url, concat) { // see http://stackoverflow.com/questions/2676178/joining-relative-urls
-  var url1 = url.split('/');
-  var url2 = concat.split('/');
-  var url3 = [ ];
-  for (var i = 0, l = url1.length; i < l; i ++) {
-    if (url1[i] == '..') {
-      url3.pop();
-    } else if (url1[i] == '.') {
-      continue;
-    } else {
-      url3.push(url1[i]);
+  function build(parts,container) {
+    for (var i = 0, l = parts.length; i < l; i ++) {
+      if (parts[i] == '..') {
+        container.pop();
+      } else if (parts[i] == '.') {
+        continue;
+      } else {
+        container.push(parts[i]);
+      }
     }
+
   }
-  for (var i = 0, l = url2.length; i < l; i ++) {
-    if (url2[i] == '..') {
-      url3.pop();
-    } else if (url2[i] == '.') {
-      continue;
-    } else {
-      url3.push(url2[i]);
-    }
-  }
-  return url3.join('/');
+  var url_parts = [ ];
+  build(url.split('/'),url_parts);
+  build(concat.split('/'),url_parts);
+  return url_parts.join('/');
 }
 
 
@@ -108,9 +102,9 @@ VCO.getJSON(url, function(d) {
         if(d.font_css) {
             font = d.font_css;
         }
-        if(font.startsWith("stock:")) {
+        if(font.indexOf("stock:") == 0) {
             var font_name = font.split(':')[1];
-            var base_url = url_join(options.script_path,"../css/fonts/");
+            var base_url = url_join(options.script_path,"../css/fonts");
             font = url_join(base_url, "font." + font_name + ".css");
         } else if(!(font.startsWith('http') || font.startsWith('//'))) {
             font = url_join(options.script_path, font);

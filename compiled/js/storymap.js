@@ -4596,6 +4596,16 @@ VCO.Media = VCO.Class.extend({
 	stopMedia: function() {
 		this._stopMedia();
 	},
+	
+	loadErrorDisplay: function(message) {
+		trace("loadErrorDisplay");
+		this._el.content.removeChild(this._el.content_item);
+		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-loaderror", this._el.content);
+		this._el.content_item.innerHTML = message + "<br/><span class='vco-icon-" + this.options.media_type + "'></span>";
+		if (this.message) {
+			this.message.hide();
+		}
+	},
 
 	/*	Events
 	================================================== */
@@ -4722,6 +4732,10 @@ VCO.Media.Blockquote = VCO.Media.extend({
 		this.onLoaded();
 	},
 	
+	updateMediaDisplay: function() {
+		
+	},
+	
 	_updateMediaDisplay: function() {
 		
 	}
@@ -4761,8 +4775,13 @@ VCO.Media.Flickr = VCO.Media.extend({
 		api_url = "http://api.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key=" + this.options.api_key_flickr + "&photo_id=" + this.media_id + "&format=json&jsoncallback=?";
 		
 		// API Call
+		trace("FLICKR")
 		VCO.getJSON(api_url, function(d) {
-			self.createMedia(d);
+			if (d.stat == "ok") {
+				self.createMedia(d);
+			} else {
+				self.loadErrorDisplay("Photo not found or private.");
+			}
 		});
 		
 	},
@@ -5280,6 +5299,10 @@ VCO.Media.Twitter = VCO.Media.extend({
 			
 	},
 	
+	updateMediaDisplay: function() {
+		
+	},
+	
 	_updateMediaDisplay: function() {
 		
 	}
@@ -5591,6 +5614,10 @@ VCO.Media.Wikipedia = VCO.Media.extend({
 			
 		}
 			
+	},
+	
+	updateMediaDisplay: function() {
+		
 	},
 	
 	_updateMediaDisplay: function() {
@@ -5994,6 +6021,7 @@ VCO.Slide = VCO.Class.extend({
 			// Determine the media type
 			this.data.media.mediatype = VCO.MediaType(this.data.media);
 			this.options.media_name = this.data.media.mediatype.name;
+			this.options.media_type = this.data.media.mediatype.type;
 			
 			// Create a media object using the matched class name
 			this._media = new this.data.media.mediatype.cls(this.data.media, this.options);
@@ -6016,7 +6044,7 @@ VCO.Slide = VCO.Class.extend({
 		} else if (this.has.text && this.has.media) {
 			this._media.addTo(this._el.content);
 			this._text.addTo(this._el.content);
-		} else if (this.has.text) {
+		} else if (this.has.text || this.has.headline) {
 			this._el.container.className += ' vco-slide-text-only';
 			this._text.addTo(this._el.content);
 		}
@@ -15882,6 +15910,143 @@ L.Map.include({
 }(window, document));
 
 /* **********************************************
+     Begin VCO.Leaflet.TileLayer.Zoomify.js
+********************************************** */
+
+/*
+ * L.TileLayer.Zoomify display Zoomify tiles with Leaflet
+ */
+
+L.TileLayer.Zoomify = L.TileLayer.extend({
+	options: {
+		continuousWorld: true,
+		tolerance: 0.8
+	},
+
+	initialize: function (url, options) {
+		options = L.setOptions(this, options);
+		this._url = url;
+
+    	var imageSize = L.point(options.width, options.height),
+	    	tileSize = options.tileSize;
+
+    	this._imageSize = [imageSize];
+    	this._gridSize = [this._getGridSize(imageSize)];
+
+        while (imageSize.x > tileSize || imageSize.y > tileSize) {
+        	imageSize = imageSize.divideBy(2).floor();
+        	this._imageSize.push(imageSize);
+        	this._gridSize.push(this._getGridSize(imageSize));
+        }
+
+		this._imageSize.reverse();
+		this._gridSize.reverse();
+
+        this.options.maxZoom = this._gridSize.length - 1;
+	},
+
+	onAdd: function (map) {
+		L.TileLayer.prototype.onAdd.call(this, map);
+
+		var mapSize = map.getSize(),
+			zoom = this._getBestFitZoom(mapSize),
+			imageSize = this._imageSize[zoom],
+			center = map.options.crs.pointToLatLng(L.point(imageSize.x / 2, imageSize.y / 2), zoom);
+
+		map.setView(center, zoom, true);
+	},
+	
+	getCenterZoom: function(map) {
+		var mapSize = map.getSize(),
+			zoom = this._getBestFitZoom(mapSize),
+			imageSize = this._imageSize[zoom],
+			center = map.options.crs.pointToLatLng(L.point(imageSize.x / 2, imageSize.y / 2), zoom);
+			
+		return {
+			center: center,
+			lat: 	center.lat,
+			lon: 	center.lng,
+			zoom: 	zoom
+		};
+	},
+
+	_getGridSize: function (imageSize) {
+		var tileSize = this.options.tileSize;
+		return L.point(Math.ceil(imageSize.x / tileSize), Math.ceil(imageSize.y / tileSize));
+	},
+
+	_getBestFitZoom: function (mapSize) {
+		var tolerance = this.options.tolerance,
+			zoom = this._imageSize.length - 1,
+			imageSize, zoom;
+
+		while (zoom) {
+			imageSize = this._imageSize[zoom];
+			if (imageSize.x * tolerance < mapSize.x && imageSize.y * tolerance < mapSize.y) {
+				return zoom;
+			}			
+			zoom--;
+		}
+
+		return zoom;
+	},
+
+	_tileShouldBeLoaded: function (tilePoint) {
+		var gridSize = this._gridSize[this._map.getZoom()];
+		return (tilePoint.x >= 0 && tilePoint.x < gridSize.x && tilePoint.y >= 0 && tilePoint.y < gridSize.y);
+	},
+
+	_addTile: function (tilePoint, container) {
+		var tilePos = this._getTilePos(tilePoint),
+			tile = this._getTile(),
+			zoom = this._map.getZoom(),
+			imageSize = this._imageSize[zoom],
+			gridSize = this._gridSize[zoom],
+			tileSize = this.options.tileSize;
+
+		if (tilePoint.x === gridSize.x - 1) {
+			tile.style.width = imageSize.x - (tileSize * (gridSize.x - 1)) + 'px';
+		} 
+
+		if (tilePoint.y === gridSize.y - 1) {
+			tile.style.height = imageSize.y - (tileSize * (gridSize.y - 1)) + 'px';			
+		} 
+
+		L.DomUtil.setPosition(tile, tilePos, L.Browser.chrome || L.Browser.android23);
+
+		this._tiles[tilePoint.x + ':' + tilePoint.y] = tile;
+		this._loadTile(tile, tilePoint);
+
+		if (tile.parentNode !== this._tileContainer) {
+			container.appendChild(tile);
+		}
+	},
+
+	getTileUrl: function (tilePoint) {
+		return this._url + 'TileGroup' + this._getTileGroup(tilePoint) + '/' + this._map.getZoom() + '-' + tilePoint.x + '-' + tilePoint.y + '.jpg';
+	},
+
+	_getTileGroup: function (tilePoint) {
+		var zoom = this._map.getZoom(),
+			num = 0,
+			gridSize;
+
+		for (z = 0; z < zoom; z++) {
+			gridSize = this._gridSize[z];
+			num += gridSize.x * gridSize.y; 
+		}	
+
+		num += tilePoint.y * this._gridSize[zoom].x + tilePoint.x;
+      	return Math.floor(num / 256);;
+	}
+
+});
+
+L.tileLayer.zoomify = function (url, options) {
+	return new L.TileLayer.Zoomify(url, options);
+};
+
+/* **********************************************
      Begin VCO.StamenMaps.js
 ********************************************** */
 
@@ -16266,6 +16431,9 @@ VCO.Map = VCO.Class.extend({
 		
 		// Current Marker
 		this.current_marker = 0;
+		
+		// Map Tiles Layer
+		this._tile_layer = null;
 	
 		// Data
 		this.data = {
@@ -16276,6 +16444,14 @@ VCO.Map = VCO.Class.extend({
 		//Options
 		this.options = {
 			map_type: 			"stamen:toner",
+			map_subdomains: 	"",
+			zoomify: {
+				path: 			"",
+				width: 			"",
+				height: 		"",
+				tolerance: 		0.8,
+				attribution: 	""
+			},
 			path_gfx: 			"gfx",
 			start_at_slide: 	0,
 			map_popup: 			false, 
@@ -16367,24 +16543,31 @@ VCO.Map = VCO.Class.extend({
 						if (this.options.line_follows_path) {
 							if (this.options.show_history_line && marker.data.real_marker && this._markers[previous_marker].data.real_marker) {
 								var lines_array = [],
-									line_num = previous_marker;
+									line_num = previous_marker,
+									point;
 							
 								if (line_num < this.current_marker) {
 									while (line_num < this.current_marker) {
-										var point = {
-											lat:this._markers[line_num].data.location.lat,
-											lon:this._markers[line_num].data.location.lon
+										if (this._markers[line_num].data.location && this._markers[line_num].data.location.lat) {
+											point = {
+												lat:this._markers[line_num].data.location.lat,
+												lon:this._markers[line_num].data.location.lon
+											}
+											lines_array.push(point);
 										}
-										lines_array.push(point);
+										
 										line_num++;
 									}
 								} else if (line_num > this.current_marker) {
 									while (line_num > this.current_marker) {
-										var point = {
-											lat:this._markers[line_num].data.location.lat,
-											lon:this._markers[line_num].data.location.lon
+										if (this._markers[line_num].data.location && this._markers[line_num].data.location.lat) {
+											point = {
+												lat:this._markers[line_num].data.location.lat,
+												lon:this._markers[line_num].data.location.lon
+											}
+											lines_array.push(point);
 										}
-										lines_array.push(point);
+										
 										line_num--;
 									}
 								}
@@ -16802,31 +16985,37 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		this._map.on("load", this._onMapLoaded, this);
 		//this._map.setView([51.505, -0.09], 13);
 			
-		var layer,
-			map_type_arr = this.options.map_type.split(':');		
+		var map_type_arr = this.options.map_type.split(':');		
 
 		// Set Tiles
 		switch(map_type_arr[0]) {
 			case 'stamen':
-				layer = new L.StamenTileLayer(map_type_arr[1] || 'toner')
+				this._tile_layer = new L.StamenTileLayer(map_type_arr[1] || 'toner');
 				break;
-
+			case 'zoomify':
+				this._tile_layer = new L.tileLayer.zoomify(this.options.zoomify.path, {
+					width: 			this.options.zoomify.width,
+					height: 		this.options.zoomify.height,
+					tolerance: 		this.options.zoomify.tolerance,
+					attribution: 	this.options.zoomify.attribution,
+				});
+				break;
 			case 'osm':
-				layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {subdomains: 'ab'});
+				this._tile_layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {subdomains: 'ab'});
 				break;
 		    
 			case 'http':
 			case 'https':
-				layer = new L.TileLayer(this.options.map_type, {subdomains: this.options.map_subdomains});
+				this._tile_layer = new L.TileLayer(this.options.map_type, {subdomains: this.options.map_subdomains});
 				break;
 		        
 			default:
-				layer = new L.StamenTileLayer('toner');
+				this._tile_layer = new L.StamenTileLayer('toner');
 				break;		
 		}
 		
 		// Add Tile Layer
-		this._map.addLayer(layer);
+		this._map.addLayer(this._tile_layer);
 		
 		// Create Overall Connection Line
 		this._line = this._createLine(this._line);
@@ -16862,15 +17051,29 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	},
 	
 	_markerOverview: function() {
-		var bounds_array = [];
 		
-		for (var i = 0; i < this._markers.length; i++) {
-			if (this._markers[i].data.real_marker) {
-				bounds_array.push( [this._markers[i].data.location.lat, this._markers[i].data.location.lon]);
-			}
-		};
+		if (this.options.map_type == "zoomify") {
+			trace("MARKER OVERVIEW ZOOMIFY");
+			trace(this._tile_layer.getCenterZoom(this._map));
+			var center_zoom = this._tile_layer.getCenterZoom(this._map);
+			this._map.setView(center_zoom.center, center_zoom.zoom, {
+					pan:{animate: true, duration: this.options.duration/1000, easeLinearity:.10},
+					zoom:{animate: true, duration: this.options.duration/1000, easeLinearity:.10}
+			});
+			//this._viewTo(center_zoom);
+			//this._viewTo(center_zoom, {zoom:center_zoom.zoom, calculate_zoom:false});
+		} else {
+			var bounds_array = [];
 		
-		this._map.fitBounds(bounds_array, {padding:[15,15]});
+			for (var i = 0; i < this._markers.length; i++) {
+				if (this._markers[i].data.real_marker) {
+					bounds_array.push( [this._markers[i].data.location.lat, this._markers[i].data.location.lon]);
+				}
+			};
+		
+			this._map.fitBounds(bounds_array, {padding:[15,15]});
+		}
+		
 	},
 	
 	/*	Line
@@ -17008,6 +17211,10 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		return this._map.getBoundsZoom(bounds, false);
 	},
 	
+	_getZoomifyZoom: function() {
+		//this.options.zoomify.image_size
+
+	},
 	
 	/*	Display
 	================================================== */
@@ -17124,6 +17331,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 // @codekit-prepend "slider/VCO.StorySlider.js";
 
 // @codekit-prepend "map/leaflet/VCO.Leaflet.js";
+// @codekit-prepend "map/leaflet/VCO.Leaflet.TileLayer.Zoomify.js";
 
 // @codekit-prepend "map/VCO.StamenMaps.js";
 // @codekit-prepend "map/VCO.MapMarker.js";
@@ -17572,6 +17780,14 @@ VCO.StoryMap = VCO.Class.extend({
 			dragging: 				true,
 			trackResize: 			true,
 			map_type: 				"toner-lite",
+			map_subdomains: 		"",
+			zoomify: {
+				path: 				"",
+				width: 				"",
+				height: 			"",
+				tolerance: 			0.8,
+				attribution: 		""
+			},
 			map_height: 			300,
 			storyslider_height: 	600,
 			slide_padding_lr: 		100, // padding on slide of slide
@@ -17602,6 +17818,11 @@ VCO.StoryMap = VCO.Class.extend({
 		
 		// Merge Options
 		VCO.Util.mergeData(this.options, options);
+		
+		// Zoomify Layout
+		if (this.options.map_type == "zoomify") {
+			this.options.map_size_sticky = 2;
+		}
 		
 		// Load language
 		if(this.options.language == 'en') {

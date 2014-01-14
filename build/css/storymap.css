@@ -1,5 +1,5 @@
-/* storymapjs - v0.1.6 - 2013-12-20
- * Copyright (c) 2013 Northwestern University Knight Lab 
+/* storymapjs - v2014-01-09-20-35-43 - 2014-01-09
+ * Copyright (c) 2014 Northwestern University Knight Lab 
  */
 
 .vco-storyjs{}.vco-storyjs div *{-webkit-box-sizing:content-box;-moz-box-sizing:content-box;box-sizing:content-box}
@@ -142,6 +142,7 @@
 .vco-storyslider .vco-slider-container-mask{text-align:center;width:100%;height:100%;overflow:hidden}.vco-storyslider .vco-slider-container-mask .vco-slider-container{position:relative;top:0;left:0;width:100%;height:100%;text-align:center}.vco-storyslider .vco-slider-container-mask .vco-slider-container .vco-slider-item-container{width:100%;height:100%;display:table-cell;vertical-align:middle}
 .vco-media{width:100%;min-width:50%;height:100%;float:left;margin-top:auto;margin-bottom:auto;position:relative}.vco-media .vco-media-content-container .vco-media-content{position:relative;*zoom:1}.vco-media .vco-media-content-container .vco-media-content:before,.vco-media .vco-media-content-container .vco-media-content:after{display:table;content:""}
 .vco-media .vco-media-content-container .vco-media-content:after{clear:both}
+.vco-media .vco-media-content-container .vco-media-content .vco-media-loaderror{border:1px solid #333;padding:20px;padding-top:50px;padding-bottom:50px;color:#808080}.vco-media .vco-media-content-container .vco-media-content .vco-media-loaderror [class^="vco-icon-"],.vco-media .vco-media-content-container .vco-media-content .vco-media-loaderror [class*=" vco-icon-"]{font-size:36px}
 .vco-media .vco-media-content-container .vco-media-content img,.vco-media .vco-media-content-container .vco-media-content embed,.vco-media .vco-media-content-container .vco-media-content object,.vco-media .vco-media-content-container .vco-media-content video{max-width:100%;max-height:100%}
 .vco-media-shadow{position:relative;z-index:1;-webkit-box-shadow:1px 1px 7px rgba(0,0,0,0.5);-moz-box-shadow:1px 1px 7px rgba(0,0,0,0.5);box-shadow:1px 1px 7px rgba(0,0,0,0.5)}
 .vcard{*zoom:1;margin-bottom:15px;margin-top:10px}.vcard:before,.vcard:after{display:table;content:""}
@@ -283,6 +284,7 @@
 .vco-map{}.vco-map .leaflet-zoom-anim .leaflet-zoom-animated{-webkit-transition:-webkit-transform 1s cubic-bezier(.75, .1, .2, 1);-moz-transition:-moz-transform 1s cubic-bezier(.75, .1, .2, 1);-o-transition:-o-transform 1s cubic-bezier(.75, .1, .2, 1);transition:transform 1s cubic-bezier(.75, .1, .2, 1);-webkit-transform:translateZ(0);-webkit-perspective:1000;-webkit-backface-visibility:hidden}
 .vco-map .leaflet-bottom{top:0}
 .vco-map .leaflet-container .leaflet-control-attribution{background-color:transparent;box-shadow:none;margin:0;border:none}
+.vco-map .leaflet-container{background-color:#333}
 .vco-map .leaflet-popup-content-wrapper{display:none;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;border:1px solid #b3b3b3;-webkit-box-shadow:1px 1px 7px rgba(0,0,0,0.3);-moz-box-shadow:1px 1px 7px rgba(0,0,0,0.3);box-shadow:1px 1px 7px rgba(0,0,0,0.3);-webkit-box-shadow:1px 1px 2px rgba(0,0,0,0.3);-moz-box-shadow:1px 1px 2px rgba(0,0,0,0.3);box-shadow:1px 1px 2px rgba(0,0,0,0.3)}.vco-map .leaflet-popup-content-wrapper .leaflet-popup-content{margin:7px}.vco-map .leaflet-popup-content-wrapper .leaflet-popup-content h4{margin:0;font-weight:normal}
 .vco-map .leaflet-popup-tip-container{margin:0 auto;width:40px;height:20px;position:relative;overflow:hidden;display:none}
 @media only screen and (max-width:500px),only screen and (max-device-width:500px){}.vco-map{}.vco-map .vco-mapmarker,.vco-map .vco-mapmarker-active{font-family:'vco-icons';speak:none;font-style:normal;font-weight:normal;font-variant:normal;text-transform:none;line-height:1;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;width:38px !important;height:52px !important;top:-46px;left:-13px}

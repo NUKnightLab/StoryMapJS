@@ -71,13 +71,20 @@
  
 <!-- START STORYMAP PANEL --> 
     <div id="storymap_panel" class="span7">
-         <div class="row">
+         <div class="row loggedin hide">
             <div class="login-info span7 pull-right">
                 <span></span><br />
                 <a href="http:///www.google.com/accounts/Logout" class="logout-link">Log out of your Google account</a>
             </div>
         </div>
-        <div class="row">
+        <div class="row badperms hide">
+            <div class="span7 alert alert-danger">
+                <p>
+                    This Google Account does not support public Google Drive sharing.  Please sign in with a different Google account.     
+                </p>
+            </div>        
+        </div>
+        <div class="row perms hide">
             <div class="span7">
             <table id="storymap_table" class="table table-striped table-bordered">
             <thead>
@@ -105,7 +112,7 @@
             </table>
             </div>
         </div>
-        <div class="row control-row">
+        <div class="row perms control-row hide">
             <div class="span7">
                 <button id="storymap_new" class="btn btn-primary">New StoryMap</button>
             </div>        
@@ -144,7 +151,7 @@ function storymap_new(event) {
 
     gdrive_storymap_create(name, _storymap_folder, function(error, folder) {
         if(error) {
-            show_error('Error creating StoryMap: '+(error.message || error));
+            show_error('Error creating StoryMap', error);
         } else {
             hide_progress();
             document.location.href = 'edit.html?id='+folder.id;
@@ -163,7 +170,7 @@ function storymap_delete(event) {
         gdrive_file_delete(item.id, function(error, response) {
             hide_progress();
             if(error) {
-                show_error('Error deleting StoryMap: '+(error.message || error));
+                show_error('Error deleting StoryMap', error);
             } else {
                 _storymap_names.remove(item.title.toLowerCase());
                 _storymap_list.remove(item);
@@ -236,7 +243,7 @@ function storymap_list(file_list) {
 
     gdrive_storymap_list(_storymap_folder, function(error, storymap_map) {
         if(error) {
-            show_error('Error listing StoryMaps: '+(error.message || error));
+            show_error('Error listing StoryMaps', error);
         } else {
             _storymap_map = storymap_map;
             
@@ -253,22 +260,28 @@ function storymap_list(file_list) {
 }
 
 function storymap_init() {
-    show_progress('Getting StoryMap list');
-
     gdrive_about(function(error, info) {
         if(error) {
-            show_error('Error getting user info: '+(error.message || error));
+            show_error('Error getting user info', error);
         } else {
             $('.login-info span').html('Logged in as '+info.name);
             
-            gdrive_storymap_init(true, function(error, publicFolder) {
-                if(error) {
-                    show_error('Error initializing StoryMap: '+(error.message || error));
-                } else {
-                    _storymap_folder = publicFolder;     
-                    storymap_list();
-                 }         
-            });    
+            if(info.domainSharingPolicy != 'allowed') {
+                $('.badperms').show();
+                hide_progress();
+            } else {
+                $('.perms').show();                
+                show_progress('Getting StoryMap list');
+            
+                gdrive_storymap_init(true, function(error, publicFolder) {
+                    if(error) {
+                        show_error('Error initializing StoryMap', error);
+                    } else {
+                        _storymap_folder = publicFolder;     
+                        storymap_list();
+                     }         
+                });    
+            }
         }  
     });
 }
@@ -276,11 +289,10 @@ function storymap_init() {
 function handle_authorized(authorized) {
     if(authorized) {
         $('#login_panel').hide();
-        $('#storymap_panel').show();
+        $('.loggedin').show();
         gapi.client.load('drive', 'v2', storymap_init);
      
     } else {
-        $('#storymap_panel').hide();
         $('#login_panel').show();
         hide_progress();        
     }

@@ -155,6 +155,16 @@ VCO.Media = VCO.Class.extend({
 	stopMedia: function() {
 		this._stopMedia();
 	},
+	
+	loadErrorDisplay: function(message) {
+		trace("loadErrorDisplay");
+		this._el.content.removeChild(this._el.content_item);
+		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-loaderror", this._el.content);
+		this._el.content_item.innerHTML = message + "<br/><span class='vco-icon-" + this.options.media_type + "'></span>";
+		if (this.message) {
+			this.message.hide();
+		}
+	},
 
 	/*	Events
 	================================================== */

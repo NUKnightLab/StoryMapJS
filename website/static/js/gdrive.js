@@ -44,6 +44,10 @@ const STORYMAP_TEMPLATE = { storymap: { slides: [] }};
 var STORYMAP_INFO = {};
 
 
+function utf8_to_b64(str) {
+    return window.btoa(unescape(encodeURIComponent(str)));
+}
+
 ////////////////////////////////////////////////////////////
 // Requests
 ////////////////////////////////////////////////////////////
@@ -94,27 +98,28 @@ function gapiPUTRequest(fileId, contentType, base64Data) {
 // callback(error, response)
 // error = string || {code: <int>, message: <string> }
 function gdrive_exec(request, callback, debug) {
-    request.execute(function(response) {
-        if(response.error) {
-// DEBUG START
-//console.log('gdrive_exec', response.error, response.error.code);
-// DEBUG END           
-            // If authorization error, try to reauthorize and re-exec
-            if(response.error.code == 401 || response.error.code == 403) {
-                gdrive_check_auth(function(authorized) {         
-                    if(authorized) {
-                        gdrive_exec(request, callback, debug);
-                    } else {
-                        callback(response.error, null);
-                    }
-                });
+    try {
+        request.execute(function(response) {
+            if(response.error) {
+                // If authorization error, try to reauthorize and re-exec
+                if(response.error.code == 401 || response.error.code == 403) {
+                    gdrive_check_auth(function(authorized) {         
+                        if(authorized) {
+                            gdrive_exec(request, callback, debug);
+                        } else {
+                            callback(response.error, null);
+                        }
+                    });
+                } else {
+                    callback(response.error, null);
+                }
             } else {
-                callback(response.error, null);
-            }
-        } else {
-            callback(null, response);
-        }   
-    });
+                callback(null, response);
+            }   
+        });
+    } catch(err) {
+        callback(err, null);
+    }
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -133,7 +138,7 @@ function gdrive_file_create(title, content, parents, callback) {
         metadata['parents'] = parents;
     }
     var contentType = 'application/json';
-    var base64Data = btoa(content);
+    var base64Data = utf8_to_b64(content);
     
     var request = gapiRequest('POST', metadata, contentType, base64Data);   
     gdrive_exec(request, callback);
@@ -162,7 +167,7 @@ function gdrive_file_get(id, callback) {
 }
 
 function gdrive_file_update(id, content, callback) {
-    var request = gapiPUTRequest(id, 'application/json', btoa(content));
+    var request = gapiPUTRequest(id, 'application/json', utf8_to_b64(content));
     gdrive_exec(request, callback);
 }
 
@@ -432,12 +437,16 @@ function gdrive_storymap_save_draft(storymapFolder, data, callback) {
             callback(error);
         } else if(file) {
             gdrive_file_update(file.id, content, function(error, file) {
-                storymapFolder['draft_on'] = file.modifiedDate;
+                if(file) {
+                    storymapFolder['draft_on'] = file.modifiedDate;
+                }
                 callback(error, file);
             });
         } else {
             gdrive_file_create('draft.json', content, [storymapFolder], function(error, file) {
-                storymapFolder['draft_on'] = file.modifiedDate;
+                if(file) {
+                    storymapFolder['draft_on'] = file.modifiedDate;
+                }
                 callback(error, file);
             });
         }

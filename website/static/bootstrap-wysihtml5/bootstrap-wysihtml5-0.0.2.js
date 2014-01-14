@@ -306,6 +306,18 @@
                     'target' : (newWindow ? '_blank' : '_self'),
                     'rel' : (newWindow ? 'nofollow' : '')
                 });
+
+                // Clicking the link button opens up a dialog which takes the focus 
+                // away from the edit control.  Once the dialog is dismissed, 
+                // focus moves back to the edit control.  This updates the internal
+                // state of the control.  When the focus later then moves to a 
+                // different control, wysihtml5 decides whether or not to fire the 
+                // change event(s) by comparing the internal state with the current 
+                // value.  Since the internal state has already been updated,
+                // wysihtml5 thinks there is no change and does not fire the event.
+                //
+                // So explicitly fire change event(s)...
+                setTimeout(function() { self.editor.fire("change").fire("change:composer"); }, 0);
             };
             var pressedEnter = false;
 
