@@ -15,6 +15,7 @@ a.help:hover {text-decoration: none;}
 .popover-content {font-size: 12px;}
 
 .smaller {font-size: 0.8em;}
+.note {font-size: 0.8em;}
 
 label, select, textarea, input[type="text"] {font-size: 14px;}
 
