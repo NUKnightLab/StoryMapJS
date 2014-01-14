@@ -97,6 +97,9 @@ VCO.getJSON(url, function(d) {
         if(d.storymap.language) {
             options.language = d.storymap.language;
         }
+        if(d.storymap.zoomify) {
+            options.zoomify = d.storymap.zoomify;
+        }
 
         var font = "stock:default";
         if(d.font_css) {

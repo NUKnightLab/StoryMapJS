@@ -115,6 +115,7 @@
         <div class="row perms control-row hide">
             <div class="span7">
                 <button id="storymap_new" class="btn btn-primary">New StoryMap</button>
+                <button id="storymap_new_zoomify" class="btn">New Zoomify StoryMap</button>
             </div>        
         </div>
     </div>
@@ -133,8 +134,13 @@ var _storymap_list = [];        // [object]
 
 
 function storymap_new(event) {
-    var name = $('#new_name').val().trim();
+    var data = { 
+        storymap: { 
+            slides: []            
+        }
+    };
     
+    var name = $('#new_name').val().trim();    
     if(!name.length) {
         $('#new_modal .error').html('You must enter a name');
         return false;
@@ -144,12 +150,74 @@ function storymap_new(event) {
         $('#new_modal .error').html('You already have a StoryMap named "' + _storymap_names[idx] + '".');
         return false;
     }
-         
+             
     $('#new_modal').modal('hide');
   
     show_progress('Creating StoryMap');
 
-    gdrive_storymap_create(name, _storymap_folder, function(error, folder) {
+    gdrive_storymap_create(name, data, _storymap_folder, function(error, folder) {
+        if(error) {
+            show_error('Error creating StoryMap', error);
+        } else {
+            hide_progress();
+            document.location.href = 'edit.html?id='+folder.id;
+        }  
+    });
+}
+
+function storymap_new_zoomify(event) {
+    var data = { 
+        storymap: { 
+            slides: [],            
+            map_type: "zoomify",
+            zoomify: {
+                path: 			"",
+                width: 			0,
+                height: 		0,
+                tolerance: 		0.9,
+                attribution: 	""
+            } 
+        }
+    };
+    
+    var name = $('#new_zoomify_name').val().trim();   
+    if(!name.length) {
+        $('#new_zoomify_modal .error').html('You must enter a name');
+        return false;
+    }
+    if(_storymap_names.indexOf(name.toLowerCase()) >= 0) {
+        var idx = _storymap_names.indexOf(name.toLowerCase());
+        $('#new_zoomify_modal .error').html('You already have a StoryMap named "' + _storymap_names[idx] + '".');
+        return false;
+    }
+    
+    var path = $('#new_zoomify_path').val().trim();   
+    if(!path.length) {
+        $('#new_zoomify_modal .error').html('You must enter an URL path');
+        return false;
+    }  
+    
+    var width = parseInt($('#new_zoomify_width').val().trim());   
+    if(!width || isNaN(width)) {
+        $('#new_zoomify_modal .error').html('The image width must be a positive integer');
+        return false;
+    }  
+
+    var height = parseInt($('#new_zoomify_height').val().trim());   
+    if(!height || isNaN(height)) {
+        $('#new_zoomify_modal .error').html('The image height must be a positive integer');
+        return false;
+    }  
+    
+    data.storymap.zoomify.path = path;
+    data.storymap.zoomify.width = width;
+    data.storymap.zoomify.height = height;
+                
+    $('#new_zoomify_modal').modal('hide');
+  
+    show_progress('Creating StoryMap');
+
+    gdrive_storymap_create(name, data, _storymap_folder, function(error, folder) {
         if(error) {
             show_error('Error creating StoryMap', error);
         } else {
@@ -312,6 +380,17 @@ $(function() {
         
         $('#new_modal').modal('show').on('shown', function() { 
             $('#new_name').focus();
+        });
+    });
+
+    $('#new_zoomify_modal .btn-primary').bind('click', storymap_new_zoomify);
+ 
+    $('#storymap_new_zoomify').click(function(event) {
+        $('#new_zoomify_modal .error').html('');
+        $('#new_zoomify_name, #new_zoomify_path, #new_zoomify_width, #new_zoomify_height').val('');
+        
+        $('#new_zoomify_modal').modal('show').on('shown', function() { 
+            $('#new_zoomify_name').focus();
         });
     });
 

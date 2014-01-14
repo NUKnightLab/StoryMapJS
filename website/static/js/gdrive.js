@@ -40,7 +40,7 @@ const BOUNDARY = '-------314159265358979323846';
 const MULTIPART_DELIMITER = "\r\n--" + BOUNDARY + "\r\n";
 const MULTIPART_CLOSE = "\r\n--" + BOUNDARY + "--";
 
-const STORYMAP_TEMPLATE = { storymap: { slides: [] }};
+//const STORYMAP_TEMPLATE = { storymap: { slides: [] }};
 var STORYMAP_INFO = {};
 
 
@@ -377,8 +377,8 @@ function gdrive_storymap_list(parentFolder, callback) {
 // Create storymap in rootFolder
 // callback(error, <folder resource>)
 //
-function gdrive_storymap_create(title, rootFolder, callback) {
-    var data = JSON.stringify(STORYMAP_TEMPLATE);
+function gdrive_storymap_create(title, data, rootFolder, callback) {
+    var data = JSON.stringify(data);
     
     gdrive_folder_create(title, [rootFolder], function(error, storymapFolder) {
         if(error) {

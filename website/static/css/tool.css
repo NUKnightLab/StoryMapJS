@@ -6,6 +6,7 @@ COMMON
 #error_modal {background-color: #f2dede;color: #b94a48;border-color: #eed3d7;}
 #progress_msg {margin-left: 10px;}
 #new_modal .error {color: #cc0000;font-size: 0.9em;font-style: italic;}
+#new_zoomify_modal .error {color: #cc0000;font-size: 0.9em;font-style: italic;}
 
 a.help {color: #333;margin-left: 6px;}
 a.help:hover {text-decoration: none;}
@@ -82,7 +83,7 @@ EDIT PAGE
 .add-container a {cursor: pointer;}
 .add-container p {margin: 0;}
   
-.slides-container {position: absolute;top: 0px;bottom:0;left: 80px;right: 120px;overflow: scroll;}
+.slides-container {position: absolute;top: 0px;bottom:0;left: 80px;right: 128px;overflow: scroll;}
 
 #slides {position: relative;display: block;list-style: none;height: 100%;font-size: 0.7em;margin: 0;padding: 0;}
 
