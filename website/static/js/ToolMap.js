@@ -20,7 +20,7 @@ function ToolMap(options) {
         map_overlay_id: 'map_overlay',
         handlers: {
             zoom: function(zoom) {},
-            double_click: function(lat, lng) {},
+            double_click: function(lat, lng) { console.log('default dblclick handler'); },
             marker_drag: function(lat, lng) {}
         }
     };        
@@ -72,7 +72,7 @@ function GoogleToolMap(map_element_id, options) {
         zoomControlOptions: {
             style: google.maps.ZoomControlStyle.SMALL
         },
-        mapTypeId: "stamen:toner"    // << FIX THIS
+       // mapTypeId: "stamen:toner"    // << FIX THIS?
     });
     
     // Preset map types
@@ -84,6 +84,7 @@ function GoogleToolMap(map_element_id, options) {
     this.map.mapTypes.set("osm:standard",new google.maps.OSMMapType());
    
     google.maps.event.addListener(this.map, 'dblclick', function(e) {
+        console.log('GoogleToolMap dblclick');
         self.handlers.double_click(e.latLng.lat(), e.latLng.lng());
     });
 }
@@ -280,6 +281,7 @@ LeafletToolMap.prototype.addPolyLine = function(latlngArray) {
     this.polyline = L.polyline(latlngArray, {  
         color: '#cc0000',
         weight: 2,
+        opacity: 1,
         fill: false
     });
     this.polyline.addTo(this.map);  

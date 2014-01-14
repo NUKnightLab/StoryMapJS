@@ -81,11 +81,37 @@
                     </div>
                 </div>
             </div>
+
+            <div class="control-group">
+                <label class="control-label">Language</label>
+                <div class="controls">
+                    <select id="language">
+                        <option value="en">English</option>
+                        <option value="de">German</option>
+                        <option value="it">Italian</option>
+                        <option value="no">Norwegian</option>
+                        <option value="pl">Polish</option>
+                        <option value="es">Spanish</option>
+                    </select>
+                    <a class="help" href="javascript:"
+                        data-placement="left"
+                        data-content="Select the language to use in controls and messages when displaying your StoryMap."                    
+                    >&nbsp;<i class="icon-question-sign icon-large"></i></a>
+                </div>
+            </div>      
             
             <div class="control-group zoomify-control-group">
                 <label class="control-label">Zoomify URL Path</label>
                 <div class="controls">
                     <input id="zoomify_path" type="text" class="span6" placeholder="http://www.domain.org/directory/">
+                    <a class="help" href="javascript:"
+                        data-html="true"
+                        data-placement="left"
+                        data-content='
+                        <p>PUT HELP TEXT HERE</p>
+                        ' 
+                    >&nbsp;<i class="icon-question-sign icon-large"></i>
+                    </a>
                 </div>
             </div>
 
@@ -143,23 +169,6 @@
                 </div>
             </div>
             
-            <div class="control-group">
-                <label class="control-label">Language</label>
-                <div class="controls">
-                    <select id="language">
-                        <option value="en">English</option>
-                        <option value="de">German</option>
-                        <option value="it">Italian</option>
-                        <option value="no">Norwegian</option>
-                        <option value="pl">Polish</option>
-                        <option value="es">Spanish</option>
-                    </select>
-                    <a class="help" href="javascript:"
-                        data-placement="left"
-                        data-content="Select the language to use in controls and messages when displaying your StoryMap."                    
-                    >&nbsp;<i class="icon-question-sign icon-large"></i></a>
-                </div>
-            </div>      
         </form>
     </div>
 </div>
@@ -523,12 +532,11 @@ function slides_load() {
 }
 
 function storymap_options() {
+    $('.option-row').toggle();
     if($('.option-row').is(':visible')) {
-        $('.option-row').hide();
-        $('#storymap_option_link span').html('Show Options');
-    } else {
-        $('.option-row').show();
         $('#storymap_option_link span').html('Hide Options');
+    } else {
+        $('#storymap_option_link span').html('Show Options');
     }
 }
 
@@ -630,18 +638,15 @@ window.onbeforeunload = function confirmExit() {
 var _map_options = {
     handlers: {
         double_click: function(lat, lng) {
-            console.log('double click', lat, lng);
             var data = {lat: lat, lon: lng};
             location_mark(data);
             location_set(_current_slide_index, data);
         
         },
         zoom: function(zoom) {
-            console.log('handle_zoom');
             location_set(_current_slide_index, {zoom: zoom});   
         },
         marker_drag: function(lat, lng) {
-            console.log('handle_marker_drag');
             location_set(_current_slide_index, {lat: lat, lon: lng});   
         }
     }
@@ -659,7 +664,7 @@ function map_init() {
         $('#zoomify_height').val(_storymap_data.storymap.zoomify.height);
         $('#zoomify_attribution').val(_storymap_data.storymap.zoomify.attribution);
                
-        _map = new LeafletToolMap('map', _map_options);
+        _map = new LeafletToolMap(_map_options);
 
 // TODO: this needs to go in class -->        
         var layer = L.tileLayer.zoomify(
@@ -668,11 +673,7 @@ function map_init() {
         );
         layer.addTo(_map.map);
    
-        _map_center_zoom = layer.getCenterZoom(_map.map);
-        console.log(_map_center_zoom);
-    
-        _map.map.setView(L.latLng(_map_center_zoom.lat, _map_center_zoom.lon), _map_center_zoom.zoom);   
-    
+        _map_center_zoom = layer.getCenterZoom(_map.map);    
     } else {
         // Initialize map controls
         $('.zoomify-control-group').hide();
@@ -693,7 +694,7 @@ function map_init() {
                 break;    
         }    
 
-        _map = new GoogleToolMap('map', _map_options);
+        _map = new GoogleToolMap(_map_options);
         map_set_type();
     }
      
