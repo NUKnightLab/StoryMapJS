@@ -100,7 +100,8 @@ var url = decodeURIComponent(params['url']);
 
 var options = {
     script_path: getScriptPath(/storymap(-min)?\.js/),
-    start_at_slide: 0
+    start_at_slide: 0,
+    show_lines: true
 };
 
 if(params.hasOwnProperty('start_at_slide')) {
@@ -118,6 +119,9 @@ VCO.getJSON(url, function(d) {
         if(d.storymap.language) {
             options.language = d.storymap.language;
         }
+        if(d.storymap.hasOwnProperty('show_lines')) {
+            options.show_lines = d.storymap.show_lines;
+        }
         if(d.storymap.zoomify) {
             options.zoomify = d.storymap.zoomify;
         }
@@ -134,8 +138,6 @@ VCO.getJSON(url, function(d) {
             font = url_join(options.script_path, font);
         }
         VCO.Load.css(font,function(){ trace('font loaded: ' + font);});
-
-
         
         storymap = new VCO.StoryMap('storymap-embed', d, options);
     }

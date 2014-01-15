@@ -2,10 +2,6 @@
 //
 // Requires: Google Maps, Leaflet, jquery
 //
-// ref: http://book.mixu.net/node/ch6.html
-//
-// ToolMap.prototype.method = function(params) { };
-// var _map = new ToolMap();
 
 function ToolMap(options) {
     this.name = "";
@@ -20,7 +16,7 @@ function ToolMap(options) {
         map_overlay_id: 'map_overlay',
         handlers: {
             zoom: function(zoom) {},
-            double_click: function(lat, lng) { console.log('default dblclick handler'); },
+            double_click: function(lat, lng) {},
             marker_drag: function(lat, lng) {}
         }
     };        
@@ -71,8 +67,7 @@ function GoogleToolMap(map_element_id, options) {
         zoomControl: true,
         zoomControlOptions: {
             style: google.maps.ZoomControlStyle.SMALL
-        },
-       // mapTypeId: "stamen:toner"    // << FIX THIS?
+        }
     });
     
     // Preset map types
@@ -84,7 +79,6 @@ function GoogleToolMap(map_element_id, options) {
     this.map.mapTypes.set("osm:standard",new google.maps.OSMMapType());
    
     google.maps.event.addListener(this.map, 'dblclick', function(e) {
-        console.log('GoogleToolMap dblclick');
         self.handlers.double_click(e.latLng.lat(), e.latLng.lng());
     });
 }
@@ -99,7 +93,7 @@ GoogleToolMap.prototype.LatLngBounds = function() {
     return new google.maps.LatLngBounds();
 }
 
-GoogleToolMap.prototype.addPolyLine = function(latlngArray) {
+GoogleToolMap.prototype.addPolyLine = function() {
     var that = this;
     var div = null;
     
@@ -111,8 +105,6 @@ GoogleToolMap.prototype.addPolyLine = function(latlngArray) {
  
         var panes = this.getPanes();
         panes.overlayImage.appendChild(div);    
-        
-        $('#'+that.options.map_overlay_id).show();
     };
 
     this.overlay.draw = function() {
@@ -124,8 +116,8 @@ GoogleToolMap.prototype.addPolyLine = function(latlngArray) {
         var overlayProjection = this.getProjection();
  
         var points = [];   
-        for(var i = 0; i < latlngArray.length; i++) {
-            var pixel = overlayProjection.fromLatLngToContainerPixel(latlngArray[i]);
+        for(var i = 0; i < that.markers.length; i++) {
+            var pixel = overlayProjection.fromLatLngToContainerPixel(that.markers[i].getPosition());
             points.push(pixel.x+','+pixel.y);
         }       
         $('#'+that.options.map_overlay_id+' polyline').attr('points', points.join(' '));
@@ -135,16 +127,22 @@ GoogleToolMap.prototype.addPolyLine = function(latlngArray) {
         div.parentNode.removeChild(div);
         div = null;
         $('#'+that.options.map_overlay_id+' polyline').attr('points', '');
-        $('#'+that.options.map_overlay_id).hide();
     };
     
     this.overlay.setMap(this.map);
 }
 
+GoogleToolMap.prototype.removePolyLine = function() {
+    if(this.overlay) {
+        this.overlay.setMap(null);
+        this.overlay = null;
+    }
+}
+
 GoogleToolMap.prototype.addMarker = function(lat, lng, draggable) {
     var marker = new google.maps.Marker({
         map: this.map,
-        draggable: true,    // always true, for display purposes
+        draggable: true,    // always true for display purposes
         position: new google.maps.LatLng(lat, lng)
     });
     
@@ -156,13 +154,8 @@ GoogleToolMap.prototype.addMarker = function(lat, lng, draggable) {
 }
 
 GoogleToolMap.prototype.clearOverlays = function() {
-    // Clear map overlay
-    if(this.overlay) {
-        this.overlay.setMap(null);
-        this.overlay = null;
-    }
+    this.removePolyLine();
     
-    // Remove markers
     for(var i = this.markers.length - 1; i >=0; i--) {
         this.markers[i].setMap(null);
     } 
@@ -191,18 +184,14 @@ GoogleToolMap.prototype.zoomEnable = function(enable) {
     }
 }
 
-// Set geographical center and zoom
+// Set center and zoom
 GoogleToolMap.prototype.setView = function(lat, lng, zoom) {
     this.panTo(lat, lng);
     this.setZoom(zoom);
 }
 
-
-
 // Set mapTypeId
-GoogleToolMap.prototype.setMapType = function(map_type, map_subdomains) {
-    console.log('setMapType', map_type);
-    
+GoogleToolMap.prototype.setMapType = function(map_type, map_subdomains) {    
     if(map_type && map_type.match("http://")) {
         this.map.mapTypes.set("custom", new google.maps.ImageMapType({
             getTileUrl: function(coord, zoom) {
@@ -235,15 +224,13 @@ GoogleToolMap.prototype.setMapType = function(map_type, map_subdomains) {
     }
 }
 
-
-
 // ------------------------------------------------------------
 // Leaflet
 // ------------------------------------------------------------
 
 function LeafletToolMap(map_element_id, options) {
     var self = this;
-    
+        
     ToolMap.apply(this, Array.prototype.slice.call(arguments));
 
     this.name = "leaflet";
@@ -267,7 +254,6 @@ function LeafletToolMap(map_element_id, options) {
 
 LeafletToolMap.prototype = Object.create(ToolMap.prototype);
 
-
 LeafletToolMap.prototype.LatLng = function(lat, lng) {
     return L.latLng(lat, lng);
 }
@@ -276,20 +262,27 @@ LeafletToolMap.prototype.LatLngBounds = function() {
     return L.latLngBounds([]);
 }
 
-// Draw polyline
-LeafletToolMap.prototype.addPolyLine = function(latlngArray) {
-    this.polyline = L.polyline(latlngArray, {  
+LeafletToolMap.prototype.addPolyLine = function() {
+    this.polyline = L.polyline([], {  
         color: '#cc0000',
         weight: 2,
         opacity: 1,
         fill: false
     });
-    this.polyline.addTo(this.map);  
+    for(var i = 0; i < this.markers.length; i++) {
+        this.polyline.addLatLng(this.markers[i].getLatLng());
+    }
     
-    $('#'+this.options.map_overlay_id).show();
+    this.polyline.addTo(this.map);  
 }
 
-// Add single marker
+LeafletToolMap.prototype.removePolyLine = function() {
+    if(this.polyline) {
+        this.map.removeLayer(this.polyline);
+        this.polyline = null;
+    }
+}
+
 LeafletToolMap.prototype.addMarker = function(lat, lng, draggable) {
     var latlng = L.latLng(lat, lng);
     var marker = L.marker(latlng, {draggable: (draggable || false)})
@@ -302,16 +295,9 @@ LeafletToolMap.prototype.addMarker = function(lat, lng, draggable) {
     return marker;
 }
 
-// Clear overlays
 LeafletToolMap.prototype.clearOverlays = function() {
-    // Clear map overlay
-    if(this.polyline) {
-        this.map.removeLayer(this.polyline);
-        this.polyline = null;
-    }
-    $('#'+this.options.map_overlay_id).hide();
+    this.removePolyLine();
     
-    // Remove markers
     for(var i = this.markers.length - 1; i >=0; i--) {
         this.map.removeLayer(this.markers[i]);
     } 
@@ -339,7 +325,7 @@ LeafletToolMap.prototype.zoomEnable = function(enable) {
     }
 }
 
-// Set geographical center and zoom
+// Set center and zoom
 LeafletToolMap.prototype.setView = function(lat, lng, zoom) {
     this.map.setView(L.latLng(lat, lng), zoom);
 }

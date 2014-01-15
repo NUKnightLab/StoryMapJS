@@ -125,7 +125,29 @@
                     >&nbsp;<i class="icon-question-sign icon-large"></i></a>
                 </div>
             </div>      
-            
+ 
+            <div class="control-group">
+                <label class="control-label">Show Lines</label>
+                <div class="controls">
+                    <label class="radio inline">
+                        <input type="radio" name="show_lines" id="show_lines_true" value="true" checked>
+                        Yes
+                    </label>
+                    <label class="radio inline">
+                        <input type="radio" name="show_lines" id="show_lines_false" value="false">
+                        No
+                    </label>                
+                    <a class="help" href="javascript:"
+                        data-html="true"
+                        data-placement="left"
+                        data-content='
+                        <p>PUT HELP TEXT HERE</p>
+                        ' 
+                    >&nbsp;<i class="icon-question-sign icon-large"></i>
+                    </a>
+                </div>       
+            </div>
+           
             <div class="control-group zoomify-control-group">
                 <label class="control-label">Zoomify URL Path</label>
                 <div class="controls">
@@ -320,6 +342,16 @@ var _dirty = 0;
 var _map_center_zoom = {};
 
 
+function get_show_lines() {
+    if(_storymap_data.storymap.hasOwnProperty('show_lines')) {
+        if(!_storymap_data.storymap.show_lines) {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
 function map_set_type() {    
     var map_type = (_storymap_data.storymap.map_type || '');
     var map_subdomains = (_storymap_data.storymap.map_subdomains || 'a').split('');
@@ -398,7 +430,7 @@ function slide_select(event) {
       
     if(data.type == "overview") {
         // Show overview view
-        $('#map_info').show();
+        $('#map_info, #map_overlay').show();
                                
         if(_slides.length > 1) {
             var latlngbounds = _map.LatLngBounds();
@@ -425,7 +457,9 @@ function slide_select(event) {
                 _map.fitBounds(latlngbounds);
             }
         
-            _map.addPolyLine(path);
+            if(get_show_lines()) {
+                _map.addPolyLine();
+            }
         } else {
             if(_map.name == "leaflet") {    
                 _map.setView(_map_center_zoom.lat, _map_center_zoom.lon, _map_center_zoom.zoom);
@@ -437,8 +471,8 @@ function slide_select(event) {
         }
      } else {
         // Show slide view
-        $('#map_info').hide();
-
+        $('#map_info, #map_overlay').hide();
+ 
         _map.setView(data.location.lat, data.location.lon, data.location.zoom);
         _map.zoomEnable(true);
          
@@ -536,6 +570,9 @@ function slides_load() {
     $('#height').val(_storymap_data.height || _default_height);            
     $('#language').val(_storymap_data.storymap.language || _default_language);
     $('#font_css').val(_storymap_data.font_css || '');
+        
+    $('input:radio[name="show_lines"][value="'+get_show_lines()+'"]').prop('checked', true);
+     
     // Slides 1,...,n
     $('#slides').html();  
               
@@ -802,9 +839,31 @@ $(function() {
     $('.overview-container .slide').click(slide_select);
     
     // top-level options
-    $('#width, #height').change(function(event) {
+    $('#width, #height, #font_css').change(function(event) {
         _storymap_data[$(this).attr('id')] = $(this).val().trim();
         storymap_dirty(1);
+    });
+
+    $('#language').change(function(event) {
+        _storymap_data.storymap['language'] = $(this).val();
+        storymap_dirty(1);
+    });
+    
+    $("input[name='show_lines']").click(function(){
+        var value = ($(this).val() == "true");
+        
+        if(value != get_show_lines()) {
+            _storymap_data.storymap.show_lines = value;
+            storymap_dirty(1);
+            
+            if(_current_slide_index == 0) {
+                if(value) {
+                    _map.addPolyLine();
+                } else {
+                    _map.removePolyLine();
+                }
+            }
+        }
     });
 
     $('#zoomify_path').change(function(event) {
@@ -851,22 +910,12 @@ $(function() {
         map_set_type();        
     });
     
-    $('#font_css').change(function(event) {
-        _storymap_data.font_css = $('#font_css').val().trim();
-        storymap_dirty(1);
-    });
-
     $('#map_subdomains').change(function(event) {
         _storymap_data.storymap.map_subdomains = $('#map_subdomains').val().trim();
         storymap_dirty(1);
         map_set_type();        
     });
-   
-    $('#language').change(function(event) {
-        _storymap_data.storymap['language'] = $(this).val();
-        storymap_dirty(1);
-     });
-         
+            
     // slide-level media options
     $('#url, #credit, #caption').change(function(event) { 
         var id = $(this).attr('id');
