@@ -127,9 +127,12 @@
     }],
     //
     // deploy
-    // input: name of the S3 bucket that will host the website 
+    // input: {
+    //   env: {bucket: name of the S3 bucket that will host the website}
+    // }
     //
     "deploy": {
-        "bucket": "storymap.knightlab.com"
+        "stg": {"bucket": "storymap.knilab.com"},
+        "prd": {"bucket": "storymap.knightlab.com"}
     }
 }
