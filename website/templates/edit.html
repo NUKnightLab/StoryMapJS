@@ -99,6 +99,32 @@
                     >&nbsp;<i class="icon-question-sign icon-large"></i></a>
                 </div>
             </div>      
+
+             <div class="control-group">
+                <label class="control-label">Fonts</label>
+                <div class="controls">
+                    <select id="font_css">
+                        <option value="">Default</option>
+                        <option value="stock:abril-droidsans">Abril Fatface &amp; Droid Sans</option>
+                        <option value="stock:amatic-andika">Amatic &amp; Andika</option>
+                        <option value="stock:bitter-raleway">Bitter &amp; Raleway</option>
+                        <option value="stock:clicker-garamond">Clicker &amp; Garamond</option>
+                        <option value="stock:dancing-ledger">Dancing &amp; Ledger</option>
+                        <option value="stock:fjalla-average">Fjalla &amp; Average</option>
+                        <option value="stock:lustria-lato">Lustria &amp; Lato</option>
+                        <option value="stock:medula-lato">Medula One &amp; Lato</option>
+                        <option value="stock:oldstandard">Old Standard</option>
+                        <option value="stock:opensans-gentiumbook">Open Sans &amp; Gentium Book Basic</option>
+                        <option value="stock:pt">PT Sans &amp; PT Serif &amp; PT Sans Narrow</option>
+                        <option value="stock:rufina-sintony">Rufina &amp; Sintony</option>
+                    </select>
+                    <a class="help" href="javascript:"
+                        data-placement="right"
+                        data-html="true"
+                        data-content="Select a font-set for your StoryMap.<br><img style='margin-top: 5px' src='{{ STATIC_URL }}/img/font-options.png'>"                    
+                    >&nbsp;<i class="icon-question-sign icon-large"></i></a>
+                </div>
+            </div>      
             
             <div class="control-group zoomify-control-group">
                 <label class="control-label">Zoomify URL Path</label>
@@ -138,6 +164,7 @@
                 </div>
             </div>
 
+
             <div class="control-group map-control-group">
                 <label class="control-label">Map Type</label>
                 <div class="controls">
@@ -160,7 +187,7 @@
                     </div>
                     <a class="help" href="javascript:"
                         data-html="true"
-                        data-placement="left"
+                        data-placement="right"
                         data-content='
                         <p>Select a predefined map tile type, or select "custom URL" to enter the URL for a tile server.</p>
                         <p>If the tile server supports multiple subdomains, enter them as a single string in the 
@@ -170,7 +197,6 @@
                     </a>
                 </div>
             </div>
-            
         </form>
     </div>
 </div>
@@ -509,7 +535,7 @@ function slides_load() {
     $('#width').val(_storymap_data.width || _default_width);
     $('#height').val(_storymap_data.height || _default_height);            
     $('#language').val(_storymap_data.storymap.language || _default_language);
-    
+    $('#font_css').val(_storymap_data.font_css || '');
     // Slides 1,...,n
     $('#slides').html();  
               
@@ -824,7 +850,12 @@ $(function() {
         storymap_dirty(1);
         map_set_type();        
     });
-   
+    
+    $('#font_css').change(function(event) {
+        _storymap_data.font_css = $('#font_css').val().trim();
+        storymap_dirty(1);
+    });
+
     $('#map_subdomains').change(function(event) {
         _storymap_data.storymap.map_subdomains = $('#map_subdomains').val().trim();
         storymap_dirty(1);
