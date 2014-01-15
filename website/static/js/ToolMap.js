@@ -7,6 +7,7 @@ function ToolMap(options) {
     this.name = "";
     this.map = null;       
     this.markers = [];
+    this.markerBounds = this.LatLngBounds();
     
     this.zoom_listener = null;
     
@@ -140,17 +141,37 @@ GoogleToolMap.prototype.removePolyLine = function() {
 }
 
 GoogleToolMap.prototype.addMarker = function(lat, lng, draggable) {
+    var latlng = new google.maps.LatLng(lat, lng);
     var marker = new google.maps.Marker({
         map: this.map,
         draggable: true,    // always true for display purposes
-        position: new google.maps.LatLng(lat, lng)
+        position: latlng
     });
     
     if(draggable) {
         google.maps.event.addListener(marker, 'dragend', this.onMarkerDrag.bind(this)); 
-    }   
+    }  
+     
     this.markers.push(marker);
+    this.markerBounds.extend(latlng); 
     return marker;
+}
+
+GoogleToolMap.prototype.removeMarker = function(i) {
+    // Remove marker
+    var removed = this.markers.splice(i, 1);
+    removed[0].setMap(null);
+    
+    // Update markerBounds
+    this.markerBounds = this.LatLngBounds();
+    for(var i = 0; i < this.markers.length; i++) {
+        this.markerBounds.extend(this.markers[i].getPosition());
+    }
+    
+    // Update polyline
+    if(this.overlay) {
+        this.overlay.draw();
+    }
 }
 
 GoogleToolMap.prototype.clearOverlays = function() {
@@ -160,6 +181,7 @@ GoogleToolMap.prototype.clearOverlays = function() {
         this.markers[i].setMap(null);
     } 
     this.markers = [];
+    this.markerBounds = this.LatLngBounds();
 }
 
 GoogleToolMap.prototype.onMarkerDrag = function() {
@@ -190,7 +212,18 @@ GoogleToolMap.prototype.setView = function(lat, lng, zoom) {
     this.setZoom(zoom);
 }
 
-// Set mapTypeId
+// Default view (bound all markers)
+GoogleToolMap.prototype.setDefaultView = function() {
+    if(this.markers.length) {
+        this.map.fitBounds(this.markerBounds);
+    } else {
+        // UGH
+        this.map.fitBounds(this.LatLngBounds(
+            this.LatLng(24.0, -124.47), this.LatLng(49.3843, -55.56)
+        ));
+    }
+}
+
 GoogleToolMap.prototype.setMapType = function(map_type, map_subdomains) {    
     if(map_type && map_type.match("http://")) {
         this.map.mapTypes.set("custom", new google.maps.ImageMapType({
@@ -234,6 +267,7 @@ function LeafletToolMap(map_element_id, options) {
     ToolMap.apply(this, Array.prototype.slice.call(arguments));
 
     this.name = "leaflet";
+    this.tilelayer = null;
     
     this.map = L.map(this.options.map_id, {
         touchZoom: false,
@@ -291,9 +325,32 @@ LeafletToolMap.prototype.addMarker = function(lat, lng, draggable) {
     if(draggable) {
         marker.on('drag', this.onMarkerDrag.bind(this))
     }
+    
     this.markers.push(marker);
+    this.markerBounds.extend(latlng); 
     return marker;
 }
+
+LeafletToolMap.prototype.removeMarker = function(i) {
+    // Remove marker
+    var removed = this.markers.splice(i, 1);
+    this.map.removeLayer(removed[0]);
+   
+    // Update marker bounds
+    this.markerBounds = this.LatLngBounds();
+    for(var i = 0; i < this.markers.length; i++) {
+        this.markerBounds.extend(this.markers[i].getLatLng());
+    }
+   
+    // Update polyline
+    if(this.polyline) {
+        // Doesn't redraw properly when manipulating points via polyline object,
+        // even with explicit call to redraw.  So, remove and recreate.
+        this.removePolyLine();
+        this.addPolyLine();
+    }
+}
+
 
 LeafletToolMap.prototype.clearOverlays = function() {
     this.removePolyLine();
@@ -302,6 +359,7 @@ LeafletToolMap.prototype.clearOverlays = function() {
         this.map.removeLayer(this.markers[i]);
     } 
     this.markers = [];
+    this.markerBounds = this.LatLngBounds();
 }
 
 LeafletToolMap.prototype.onMarkerDrag = function() {
@@ -330,5 +388,23 @@ LeafletToolMap.prototype.setView = function(lat, lng, zoom) {
     this.map.setView(L.latLng(lat, lng), zoom);
 }
 
+// Default view (center zoom)
+LeafletToolMap.prototype.setDefaultView = function() {
+    var d = this.tilelayer.getCenterZoom(this.map)
+    this.map.setView(L.latLng(d.lat, d.lon), d.zoom);
+}
+
+LeafletToolMap.prototype.setMapType = function(map_type, zoomify_data) {  
+    if(this.tilelayer) {
+        this.map.removeLayer(this.tilelayer);
+        this.tilelayer = null;
+    }
+    
+    this.tilelayer = L.tileLayer.zoomify(
+        zoomify_data.path, 
+        zoomify_data
+    );
+    this.tilelayer.addTo(this.map);    
+}  
 
 

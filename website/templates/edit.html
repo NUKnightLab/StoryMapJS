@@ -140,9 +140,7 @@
                     <a class="help" href="javascript:"
                         data-html="true"
                         data-placement="left"
-                        data-content='
-                        <p>PUT HELP TEXT HERE</p>
-                        ' 
+                        data-content='This setting determines whether or not lines are drawn between markers on the map.' 
                     >&nbsp;<i class="icon-question-sign icon-large"></i>
                     </a>
                 </div>       
@@ -339,9 +337,6 @@ var _slides = null; // _storymap_data.storymap.slides
 var _current_slide_index = -1;
 var _dirty = 0;
 
-var _map_center_zoom = {};
-
-
 function get_show_lines() {
     if(_storymap_data.storymap.hasOwnProperty('show_lines')) {
         if(!_storymap_data.storymap.show_lines) {
@@ -354,8 +349,12 @@ function get_show_lines() {
 
 function map_set_type() {    
     var map_type = (_storymap_data.storymap.map_type || '');
-    var map_subdomains = (_storymap_data.storymap.map_subdomains || 'a').split('');
-    _map.setMapType(map_type, map_subdomains);
+    
+    if(map_type == "zoomify") {
+        _map.setMapType(map_type, _storymap_data.storymap.zoomify);
+    } else {
+        _map.setMapType(map_type, (_storymap_data.storymap.map_subdomains || 'a').split(''));
+    }
 }
 
 function location_set(slide_index, data) {    
@@ -428,48 +427,26 @@ function slide_select(event) {
     _map.zoomEnable(false);
     _map.clearOverlays();
       
-    if(data.type == "overview") {
+    if(_current_slide_index == 0 /*data.type == "overview"*/) {
         // Show overview view
         $('#map_info, #map_overlay').show();
                                
-        if(_slides.length > 1) {
-            var latlngbounds = _map.LatLngBounds();
-            var path = [];
-            
-            for(var i = 0; i < _slides.length;i++) {                
-                if(_slides[i].hasOwnProperty('location')) {                    
-                    var loc_data = _slides[i].location;
+        for(var i = 1; i < _slides.length;i++) {                
+            if(_slides[i].hasOwnProperty('location')) {                    
+                var loc_data = _slides[i].location;
                     
-                    if(loc_data.lat && loc_data.lon) {
-                        var latlng = _map.LatLng(loc_data.lat, loc_data.lon);
-                        
-                        _map.addMarker(loc_data.lat, loc_data.lon, false); 
-                                                               
-                        latlngbounds.extend(latlng);           
-                        path.push(latlng);
-                     }
-                }
-            }
-            
-            if(_map.name == "leaflet") {    
-                _map.setView(_map_center_zoom.lat, _map_center_zoom.lon, _map_center_zoom.zoom);
-            } else {
-                _map.fitBounds(latlngbounds);
-            }
-        
-            if(get_show_lines()) {
-                _map.addPolyLine();
-            }
-        } else {
-            if(_map.name == "leaflet") {    
-                _map.setView(_map_center_zoom.lat, _map_center_zoom.lon, _map_center_zoom.zoom);
-            } else {
-                _map.fitBounds(_map.LatLngBounds(
-                    _map.LatLng(24.0, -124.47), _map.LatLng(49.3843, -55.56)
-                ));
+                if(loc_data.lat && loc_data.lon) {
+                    _map.addMarker(loc_data.lat, loc_data.lon, false);         
+                 }
             }
         }
-     } else {
+            
+        _map.setDefaultView();
+                    
+        if(get_show_lines()) {
+            _map.addPolyLine();
+        }
+    } else {
         // Show slide view
         $('#map_info, #map_overlay').hide();
  
@@ -506,16 +483,21 @@ function slide_delete(event) {
         slide_elem.remove();
         
         // Adjust slide container width
-        $('#slides').css('width', width+"px");       
-                             
-        // Reset current slide
-        if(slide_index < _current_slide_index) {
-            _current_slide_index--;
-            storymap_auto_save();
-        } else if(slide_index == _current_slide_index) {
-            var n = Math.min(_current_slide_index, _slides.length - 1);            
-            $('.slide').eq(n).click();
-        }        
+        $('#slides').css('width', width+"px");    
+               
+        if(_current_slide_index == 0) {
+            // Update overlay view
+            _map.removeMarker(slide_index - 1);   
+        } else {                            
+            // Reset current slide
+            if(slide_index < _current_slide_index) {
+                _current_slide_index--;
+                storymap_auto_save();
+            } else if(slide_index == _current_slide_index) {
+                var n = Math.min(_current_slide_index, _slides.length - 1);            
+                $('.slide').eq(n).click();
+            }    
+        }    
     });
     
     return false;
@@ -721,7 +703,6 @@ function map_init() {
     var map_type = _storymap_data.storymap.map_type || _default_map_type;
     
     if(map_type == "zoomify") {  
-        // Initialize map controls
         $('.map-control-group').hide();
         
         $('#zoomify_path').val(_storymap_data.storymap.zoomify.path);
@@ -730,17 +711,7 @@ function map_init() {
         $('#zoomify_attribution').val(_storymap_data.storymap.zoomify.attribution);
                
         _map = new LeafletToolMap(_map_options);
-
-// TODO: this needs to go in class -->        
-        var layer = L.tileLayer.zoomify(
-            _storymap_data.storymap.zoomify.path, 
-            _storymap_data.storymap.zoomify
-        );
-        layer.addTo(_map.map);
-   
-        _map_center_zoom = layer.getCenterZoom(_map.map);    
     } else {
-        // Initialize map controls
         $('.zoomify-control-group').hide();
         
         switch(map_type) {
@@ -760,10 +731,10 @@ function map_init() {
         }    
 
         _map = new GoogleToolMap(_map_options);
-        map_set_type();
     }
+
+    map_set_type();
      
-    // LOAD SLIDES
     slides_load();
 }
 
