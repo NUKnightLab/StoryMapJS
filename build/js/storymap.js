@@ -1,4 +1,4 @@
-/* storymapjs - v2014-01-09-20-35-43 - 2014-01-09
+/* storymapjs - v0.1.10 - 2014-01-15
  * Copyright (c) 2014 Northwestern University Knight Lab 
  */
 
@@ -4778,7 +4778,7 @@ VCO.Media.Flickr = VCO.Media.extend({
 		this._el.content_item	= VCO.Dom.create("img", "vco-media-item vco-media-image vco-media-flickr vco-media-shadow", this._el.content);
 		
 		// Get Media ID
-		this.media_id = this.data.url.split("photos\/")[1].split("/")[1];
+		this.establishMediaID();
 		
 		// API URL
 		api_url = "http://api.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key=" + this.options.api_key_flickr + "&photo_id=" + this.media_id + "&format=json&jsoncallback=?";
@@ -4793,6 +4793,14 @@ VCO.Media.Flickr = VCO.Media.extend({
 			}
 		});
 		
+	},
+
+	establishMediaID: function() {
+		var marker = 'flickr.com/photos/';
+		var idx = this.data.url.indexOf(marker);
+		if (idx == -1) { throw "Invalid Flickr URL"; }
+		var pos = idx + marker.length;
+		this.media_id = this.data.url.substr(pos).split("/")[1];
 	},
 	
 	createMedia: function(d) {
