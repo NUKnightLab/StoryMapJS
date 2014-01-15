@@ -366,6 +366,7 @@ function location_mark(data) {
     _map.clearOverlays();    
     if(data) {
         _map.addMarker(data.lat, data.lon, true);
+        _map.panTo(data.lat, data.lon);
     } 
 }
 
@@ -430,6 +431,7 @@ function slide_select(event) {
     if(_current_slide_index == 0 /*data.type == "overview"*/) {
         // Show overview view
         $('#map_info, #map_overlay').show();
+        $('#map_search_input').hide();   
                                
         for(var i = 1; i < _slides.length;i++) {                
             if(_slides[i].hasOwnProperty('location')) {                    
@@ -444,12 +446,13 @@ function slide_select(event) {
         _map.setDefaultView();
                     
         if(get_show_lines()) {
-            _map.addPolyLine();
+            //_map.addPolyLine();
         }
     } else {
         // Show slide view
         $('#map_info, #map_overlay').hide();
- 
+        $('#map_search_input').show();   
+        
         _map.setView(data.location.lat, data.location.lon, data.location.zoom);
         _map.zoomEnable(true);
          
@@ -514,10 +517,12 @@ function slide_add() {
     
     // Add location data if not overview slide, else add type 
     if(n > 0) {
+        var d = _map.getDefaultView();
+        
         data.location =  $.extend({}, _slides[n - 1].location || {
-            lat: _map_center_zoom.lat,
-            lon: _map_center_zoom.lon,
-            zoom: _map_center_zoom.zoom,
+            lat: d.lat,
+            lon: d.lng,
+            zoom: d.zoom,
             line: true,
             icon: "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
         });
@@ -682,7 +687,10 @@ window.onbeforeunload = function confirmExit() {
 // Map
 //
 
-var _map_options = {
+var _map_options = {    
+    map_id: 'map',
+    map_overlay_id: 'map_overlay',
+    search_id: 'map_search_input',
     handlers: {
         double_click: function(lat, lng) {
             var data = {lat: lat, lon: lng};
@@ -691,10 +699,16 @@ var _map_options = {
         
         },
         zoom: function(zoom) {
+            console.log('zoom', zoom);
             location_set(_current_slide_index, {zoom: zoom});   
         },
         marker_drag: function(lat, lng) {
             location_set(_current_slide_index, {lat: lat, lon: lng});   
+        },
+        search: function(lat, lng) {
+            var data = {lat: lat, lon: lng};                               
+            location_mark(data);
+            location_set(_current_slide_index, data);
         }
     }
 };
@@ -791,8 +805,6 @@ function handle_onload() {
 }
 
 $(function() {     
-    console.log('READY');
-       
     $('a.help').popover({
         trigger: 'manual'
     }).click(function(event) {

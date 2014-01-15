@@ -18,7 +18,8 @@ function ToolMap(options) {
         handlers: {
             zoom: function(zoom) {},
             double_click: function(lat, lng) {},
-            marker_drag: function(lat, lng) {}
+            marker_drag: function(lat, lng) {},
+            search: function(lat, lng) {}
         }
     };        
     $.extend(true, this.options, options || {});
@@ -68,7 +69,8 @@ function GoogleToolMap(map_element_id, options) {
         zoomControl: true,
         zoomControlOptions: {
             style: google.maps.ZoomControlStyle.SMALL
-        }
+        },
+        mapTypeId: "stamen:toner"
     });
     
     // Preset map types
@@ -82,6 +84,20 @@ function GoogleToolMap(map_element_id, options) {
     google.maps.event.addListener(this.map, 'dblclick', function(e) {
         self.handlers.double_click(e.latLng.lat(), e.latLng.lng());
     });
+    
+    // Search box?
+    if(this.options.search_id) {
+        var search_box = new google.maps.places.SearchBox(
+            document.getElementById(this.options.search_id));
+            
+        google.maps.event.addListener(search_box, 'places_changed', function() {
+            var places = search_box.getPlaces();   
+            if(places.length) {
+                var location = places[0].geometry.location;
+                self.handlers.search(location.lat(), location.lng());        
+             } 
+        });
+    }
 }
 
 GoogleToolMap.prototype = Object.create(ToolMap.prototype);
@@ -217,14 +233,20 @@ GoogleToolMap.prototype.setDefaultView = function() {
     if(this.markers.length) {
         this.map.fitBounds(this.markerBounds);
     } else {
-        // UGH
+        /* OLD CODE
         this.map.fitBounds(this.LatLngBounds(
             this.LatLng(24.0, -124.47), this.LatLng(49.3843, -55.56)
         ));
+        */
+        this.setView(0, 0, 1);
     }
 }
 
-GoogleToolMap.prototype.setMapType = function(map_type, map_subdomains) {    
+GoogleToolMap.prototype.getDefaultView = function() {
+    return {lat: 0, lng: 0, zoom: 1};
+}
+
+GoogleToolMap.prototype.setMapType = function(map_type, map_subdomains) { 
     if(map_type && map_type.match("http://")) {
         this.map.mapTypes.set("custom", new google.maps.ImageMapType({
             getTileUrl: function(coord, zoom) {
@@ -392,6 +414,11 @@ LeafletToolMap.prototype.setView = function(lat, lng, zoom) {
 LeafletToolMap.prototype.setDefaultView = function() {
     var d = this.tilelayer.getCenterZoom(this.map)
     this.map.setView(L.latLng(d.lat, d.lon), d.zoom);
+}
+
+LeafletToolMap.prototype.getDefaultView = function() {
+    var d = this.tilelayer.getCenterZoom(this.map)
+    return {lat: d.lat, lng: d.lon, zoom: d.zoom};
 }
 
 LeafletToolMap.prototype.setMapType = function(map_type, zoomify_data) {  
