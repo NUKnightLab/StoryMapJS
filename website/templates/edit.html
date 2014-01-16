@@ -531,11 +531,8 @@ function slide_add() {
     // Add location data if not overview slide, else add type 
     if(n > 0) {
         var d = _map.getDefaultView();        
-        $.extend(true, data.location, _slides[n - 1].location || {
-            lat: d.lat,
-            lon: d.lng,
-            zoom: d.zoom
-        });
+        $.extend(true, data.location, {lat: d.lat, lon: d.lng, zoom: d.zoom},
+            _slides[n - 1].location || {});
     } else {
         data.type = "overview";
     }   
