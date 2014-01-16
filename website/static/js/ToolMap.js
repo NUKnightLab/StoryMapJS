@@ -13,16 +13,16 @@ function ToolMap(options) {
     
     // Default options
     this.options = {
-        map_id: 'map',
-        map_overlay_id: 'map_overlay',
+        map_id: options.map_id || 'map',
+        map_overlay_id: options.map_overlay_id || 'map_overlay',
+        search_id: options.search_id || 'map_search_input',
         handlers: {
-            zoom: function(zoom) {},
-            double_click: function(lat, lng) {},
-            marker_drag: function(lat, lng) {},
-            search: function(lat, lng) {}
+            zoom: options.handlers.zoom || function(zoom) {},
+            double_click: options.handlers.double_click || function(lat, lng) {},
+            marker_drag: options.handlers.marker_drag || function(lat, lng) {},
+            search: options.handlers.search || function(lat, lng) {}
         }
     };        
-    $.extend(true, this.options, options || {});
     
     // Shortcut
     this.handlers = this.options.handlers;
@@ -125,11 +125,15 @@ GoogleToolMap.prototype.addPolyLine = function() {
     };
 
     this.overlay.draw = function() {
+        var map_div = document.getElementById(that.options.map_id);
+        
         div.style.left = '0px';
         div.style.top = '0px';
-        div.style.width = $(that.map.getDiv()).width()+'px';
-        div.style.height = $(that.map.getDiv()).height()+'px';
-  
+        //div.style.width = $(that.map.getDiv()).width()+'px';
+        //div.style.height = $(that.map.getDiv()).height()+'px';
+        div.style.width = map_div.offsetWidth+'px';
+        div.style.height = map_div.offsetHeight+'px';
+         
         var overlayProjection = this.getProjection();
  
         var points = [];   
@@ -138,6 +142,11 @@ GoogleToolMap.prototype.addPolyLine = function() {
             points.push(pixel.x+','+pixel.y);
         }       
         $('#'+that.options.map_overlay_id+' polyline').attr('points', points.join(' '));
+        
+        /*
+        var elem = document.getElementById(that.options.map_overlay_id);
+        var poly = elem.getElementsByTagName("polyline")[0];
+        */
     };
 
     this.overlay.onRemove = function() {
@@ -202,7 +211,7 @@ GoogleToolMap.prototype.clearOverlays = function() {
 
 GoogleToolMap.prototype.onMarkerDrag = function() {
     var pos = this.markers[0].getPosition();
-    this.handlers.marker_drag(pos.lat, pos.lng);
+    this.handlers.marker_drag(pos.lat(), pos.lng());
 }
 
 GoogleToolMap.prototype.zoomEnable = function(enable) {
