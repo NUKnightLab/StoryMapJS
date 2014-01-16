@@ -28,19 +28,19 @@ writersCanShare: true
 */
 
 // Auth
-const CLIENT_ID = '1087881665848.apps.googleusercontent.com';
-const SCOPES = 'https://www.googleapis.com/auth/drive';
+var CLIENT_ID = '1087881665848.apps.googleusercontent.com';
+var SCOPES = 'https://www.googleapis.com/auth/drive';
 
 // Folders
-const STORYMAP_ROOT_FOLDER = 'KnightLabStoryMap';
-const PUBLIC_SUBFOLDER = 'public';
+var STORYMAP_ROOT_FOLDER = 'KnightLabStoryMap';
+var PUBLIC_SUBFOLDER = 'public';
 
 // Uploads
-const BOUNDARY = '-------314159265358979323846';
-const MULTIPART_DELIMITER = "\r\n--" + BOUNDARY + "\r\n";
-const MULTIPART_CLOSE = "\r\n--" + BOUNDARY + "--";
+var BOUNDARY = '-------314159265358979323846';
+var MULTIPART_DELIMITER = "\r\n--" + BOUNDARY + "\r\n";
+var MULTIPART_CLOSE = "\r\n--" + BOUNDARY + "--";
 
-const STORYMAP_TEMPLATE = { storymap: { slides: [] }};
+var STORYMAP_TEMPLATE = { storymap: { slides: [] }};
 var STORYMAP_INFO = {};
 
 
