@@ -869,19 +869,22 @@ $(function() {
         _storymap_data.storymap.zoomify.path = value;
         
         storymap_dirty(1);
-        alert('TODO: zoomify_path change');    
+        map_set_type();   
     });
     $('#zoomify_width').change(function(event) {
         _storymap_data.storymap.zoomify.width = parseInt($(this).val().trim());  
         storymap_dirty(1);
+        map_set_type();   
     });
     $('#zoomify_height').change(function(event) {
         _storymap_data.storymap.zoomify.height = parseInt($(this).val().trim());  
         storymap_dirty(1);
+        map_set_type();   
     });
     $('#zoomify_attribution').change(function(event) {
         _storymap_data.storymap.zoomify.attribution = $(this).val().trim();
         storymap_dirty(1);
+        map_set_type();   
     });
 
     $('#map_type_menu a').click(function(event) {
