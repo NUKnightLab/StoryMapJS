@@ -196,6 +196,10 @@ function storymap_new_zoomify(event) {
         $('#new_zoomify_modal .error').html('You must enter an URL path');
         return false;
     }  
+    if(!path.match(/\/$/)) {
+        path += '/';
+        $('#new_zoomify_path').val(path);
+    }
     
     var width = parseInt($('#new_zoomify_width').val().trim());   
     if(!width || isNaN(width)) {

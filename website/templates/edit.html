@@ -142,7 +142,7 @@
                     <a class="help" href="javascript:"
                         data-html="true"
                         data-placement="left"
-                        data-content='This setting determines whether or not lines are drawn between markers on the map.' 
+                        data-content='This setting determines whether or not lines are drawn between markers on the overview slide.' 
                     >&nbsp;<i class="icon-question-sign icon-large"></i>
                     </a>
                 </div>       
@@ -155,9 +155,7 @@
                     <a class="help" href="javascript:"
                         data-html="true"
                         data-placement="left"
-                        data-content='
-                        <p>PUT HELP TEXT HERE</p>
-                        ' 
+                        data-content='Enter the URL path for your zoomable image folder.' 
                     >&nbsp;<i class="icon-question-sign icon-large"></i>
                     </a>
                 </div>
@@ -863,7 +861,13 @@ $(function() {
     });
 
     $('#zoomify_path').change(function(event) {
-        _storymap_data.storymap.zoomify.path = $(this).val().trim();
+        var value = $(this).val().trim();       
+        if(!value.match(/\/$/)) {
+            value += '/';
+            $(this).val(value);
+        }
+        _storymap_data.storymap.zoomify.path = value;
+        
         storymap_dirty(1);
         alert('TODO: zoomify_path change');    
     });
