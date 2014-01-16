@@ -260,7 +260,8 @@ GoogleToolMap.prototype.setMapType = function(map_type, map_subdomains) {
             tileSize: new google.maps.Size(256, 256),
             name: "Custom",
             maxZoom: 18
-        }));
+        }));        
+        this.map.setOptions({mapTypeId: 'custom'}); 
     } else {
         switch(map_type) {
             case "stamen:toner":
