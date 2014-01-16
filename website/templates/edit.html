@@ -1,5 +1,11 @@
 {% extends "_base.html" %}
 {% block title %}TITLE (Editing) - {% endblock %}
+{% block prehead %}
+<!-- START LEAFLET -->
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.css" />
+<script src="http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.js?2"></script>
+<!-- END LEAFLET -->
+{% endblock %}
 {% block head %}
 <script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 <!-- START GOOGLE MAPS -->
@@ -8,13 +14,6 @@
 <!-- START maps.stamen.com -->
 <script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.2.4"></script>
 <!-- END maps.stamen.com -->
-<!-- START LEAFLET -->
-<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.css" />
-<script src="http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.js?2"></script>
-<!-- END LEAFLET -->
-<!-- build:js http://cdn.knightlab.com/libs/storymapjs/latest/js/storymap-min.js -->
-<script type="text/javascript" src="/build/js/storymap.js"></script>
-<!-- endbuild -->
 <!-- START bootstrap-wysihtml5 -->
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/bootstrap-wysihtml5/bootstrap-wysihtml5-0.0.2.css"></link>
 <script type="text/javascript" src="{{ STATIC_URL }}/bootstrap-wysihtml5/lib/js/wysihtml5-0.3.0.min.js"></script>
@@ -319,7 +318,10 @@ switch(document.location.hostname) {
     case '127.0.0.1':
     case '0.0.0.0':
     case 'localhost':
-        _embed_url = '/source/embed/index.html';
+// TESTING DEPLOYMENT USES ALTERNATE WEBSITE-LOCAL EMBED PAGE
+    default:
+        //_embed_url = '/source/embed/index.html';
+        _embed_url = 'embed.html';
         break;
 }  
 

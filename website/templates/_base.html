@@ -13,14 +13,17 @@
     <link href="//cloud.webtype.com/css/d4767ecb-457a-4677-8761-72f890add836.css" rel="stylesheet" type="text/css">
 	<link rel="stylesheet" href="http://cdn.knightlab.com/libs/blueline/latest/css/blueline.min.css">
 	<link rel="stylesheet" type="text/css" href="{{ static_url }}/css/site.css">
+	{% block prehead %}	
+	{# Allow scripts to load before storymap (e.g. Leaflet) #}
+	{% endblock %}
 	<!-- build:css http://cdn.knightlab.com/libs/storymapjs/latest/css/storymap.css -->
-  <link rel="stylesheet" href="/build/css/storymap.css?v1">
-  <!-- endbuild -->
+    <link rel="stylesheet" href="/build/css/storymap.css?v1">
+    <!-- endbuild -->
 	<!-- build:js http://cdn.knightlab.com/libs/storymapjs/latest/js/storymap-min.js -->
 	<script type="text/javascript" src="/build/js/storymap.js"></script>
-  <!-- endbuild -->
+    <!-- endbuild -->
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-   <script src="http://cdn.knightlab.com/libs/blueline/latest/js/blueline.min.js"></script>
+    <script src="http://cdn.knightlab.com/libs/blueline/latest/js/blueline.min.js"></script>
    <!-- Google Analytics: don't mess with this stuff -->
    <!-- named tracker notes from https://developers.google.com/analytics/devguides/collection/gajs/ -->
    <!-- multi-domain tracking notes from https://developers.google.com/analytics/devguides/collection/gajs/gaTrackingSite -->
