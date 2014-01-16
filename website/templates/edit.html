@@ -187,7 +187,6 @@
                 </div>
             </div>
 
-
             <div class="control-group map-control-group">
                 <label class="control-label">Map Type</label>
                 <div class="controls">
@@ -324,10 +323,26 @@ switch(document.location.hostname) {
         break;
 }  
 
-var _default_width = '100%';
-var _default_height = '800';
-var _default_map_type = 'stamen:toner';
-var _default_language = 'en';
+var _default_data = {
+    width: "100%",
+    height: "800",
+    font_css: '',
+    storymap: {
+        language: "en",
+        map_type: "stamen:toner",
+        map_subdomains: "",
+        // just one...
+        slide: {
+            date: "",
+            text: {headline: "", text: ""},
+            media: {url: "", credit: "", caption: ""},
+            location: {
+                line: true, 
+                icon: 'http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png'
+            }
+        }
+    }
+};
 
 var _re_slide_cls = /^slide-icon-\w+$/;
 
@@ -425,8 +440,8 @@ function slide_select(event) {
     $('.slide.selected').removeClass('selected');    
     $(this).addClass('selected');
         
-    _current_slide_index = $('.slide').index(this);
-    var data = _slides[_current_slide_index];
+    _current_slide_index = $('.slide').index(this);   
+    var data = $.extend(true, {}, _default_data.storymap.slide, _slides[_current_slide_index]);
 
     _map.zoomEnable(false);
     _map.clearOverlays();
@@ -462,13 +477,13 @@ function slide_select(event) {
         location_mark(data.location);       
     }
       
-    $('#url').val(data.media ? (data.media.url || '') : '');
-    $('#credit').val(data.media ? (data.media.credit || '') : '');
-    $('#caption').val(data.media ? (data.media.caption || '') : '');
+    $('#url').val(data.media.url);
+    $('#credit').val(data.media.credit);
+    $('#caption').val(data.media.caption);
         
-    $('#headline').val(data.text ? (data.text.headline || '') : '');
-    $('#text').val(data.text ? (data.text.text || '') : '');    
-    $('iframe.wysihtml5-sandbox').contents().find('body').html(data.text ? (data.text.text || '') : '');
+    $('#headline').val(data.text.headline);
+    $('#text').val(data.text.text);    
+    $('iframe.wysihtml5-sandbox').contents().find('body').html(data.text.text);
 }
 
 function slide_delete(event) {
@@ -510,29 +525,21 @@ function slide_delete(event) {
 }
 
 function slide_add() {
-    var data = {
-        date: "",
-        text: {headline: "", text: ""},
-        media: {url: "", credit: "", caption: ""}
-    };
-
+    var data = $.extend({}, _default_data.storymap.slide);
     var n = _slides.length; 
     
     // Add location data if not overview slide, else add type 
     if(n > 0) {
-        var d = _map.getDefaultView();
-        
-        data.location =  $.extend({}, _slides[n - 1].location || {
+        var d = _map.getDefaultView();        
+        $.extend(true, data.location, _slides[n - 1].location || {
             lat: d.lat,
             lon: d.lng,
-            zoom: d.zoom,
-            line: true,
-            icon: "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
+            zoom: d.zoom
         });
     } else {
         data.type = "overview";
     }   
-    
+       
     // Add slide 
     _slides.push(data);
     storymap_dirty(1);
@@ -556,10 +563,10 @@ function slide_add() {
 }   
 
 function slides_load() {
-    $('#width').val(_storymap_data.width || _default_width);
-    $('#height').val(_storymap_data.height || _default_height);            
-    $('#language').val(_storymap_data.storymap.language || _default_language);
-    $('#font_css').val(_storymap_data.font_css || '');
+    $('#width').val(_storymap_data.width || _default_data.width);
+    $('#height').val(_storymap_data.height || _default_data.height);            
+    $('#language').val(_storymap_data.storymap.language || _default_data.storymap.language);
+    $('#font_css').val(_storymap_data.font_css || _default_data.font_css);
         
     $('input:radio[name="show_lines"][value="'+get_show_lines()+'"]').prop('checked', true);
      
@@ -668,8 +675,8 @@ function storymap_publish() {
                 
                 var url = gdrive_storymap_published_url(_storymap_info);
                 var html = '<iframe src="'+_embed_url+'?url='+url+'" frameborder="0"'
-                    + ' width="'+(_storymap_data.width || _default_width)+'"'
-                    + ' height="'+(_storymap_data.height || _default_height)+'"'
+                    + ' width="'+(_storymap_data.width || _default_data.width)+'"'
+                    + ' height="'+(_storymap_data.height || _default_data.height)+'"'
                     + '></iframe>';
                 
                 $('#embed_modal textarea').html(html);
@@ -702,7 +709,6 @@ var _map_options = {
         
         },
         zoom: function(zoom) {
-            console.log('zoom', zoom);
             location_set(_current_slide_index, {zoom: zoom});   
         },
         marker_drag: function(lat, lng) {
@@ -717,7 +723,7 @@ var _map_options = {
 };
 
 function map_init() {
-    var map_type = _storymap_data.storymap.map_type || _default_map_type;
+    var map_type = _storymap_data.storymap.map_type || _default_data.storymap.map_type;
     
     if(map_type == "zoomify") {  
         $('.map-control-group').hide();
@@ -743,7 +749,8 @@ function map_init() {
         
             default:
                 $('#map_type').val(map_type).removeAttr('disabled');
-                $('#map_subdomains').val(_storymap_data.storymap.map_subdomains || '').removeAttr('disabled').parent().show();
+                $('#map_subdomains').val(_storymap_data.storymap.map_subdomains || _storymap_data.storymap.map_subdomains)
+                    .removeAttr('disabled').parent().show();
                 break;    
         }    
 
@@ -776,6 +783,7 @@ function storymap_init() {
                                
                 $('#title').html(_storymap_info.title);
                 document.title = document.title.replace("TITLE", _storymap_info.title);
+                
                 // Load draft
                 gdrive_storymap_load_draft(storymapFolder, function(error, data) {
                     if(error) {
