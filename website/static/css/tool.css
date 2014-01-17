@@ -85,7 +85,10 @@ EDIT PAGE
 .add-container a {cursor: pointer;}
 .add-container p {margin: 0;}
   
-.slides-container {position: absolute;top: 0px;bottom:0;left: 80px;right: 128px;overflow: scroll;}
+.slides-container {
+    position: absolute;top: 0px;bottom:0;left: 80px;right: 128px;overflow: scroll;
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+}
 
 #slides {position: relative;display: block;list-style: none;height: 100%;font-size: 0.7em;margin: 0;padding: 0;}
 
