@@ -376,7 +376,7 @@ function map_set_type() {
 }
 
 function location_set(slide_index, data) {    
-    $.extend(_slides[slide_index].location, data);      
+    $.extend(_slides[slide_index].location, data);     
     storymap_dirty(1);
 }
 
@@ -525,7 +525,7 @@ function slide_delete(event) {
 }
 
 function slide_add() {
-    var data = $.extend({}, _default_data.storymap.slide);
+    var data = $.extend(true, {}, _default_data.storymap.slide);
     var n = _slides.length; 
     
     // Add location data if not overview slide, else add type 
@@ -993,7 +993,7 @@ $(function() {
                 storymap_auto_save();
             }             
         }
-    });
+    });    
 });
 
 </script>
