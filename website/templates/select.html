@@ -284,15 +284,17 @@ function storymap_display_list(sortby) {
             // Keep track of names for anti-duplication     
             _storymap_names.push(item.title.toLowerCase());
                  
-            html += '<tr id="'+item.id+'">'
-            html += '<td>'+item.title;
+            html += '<tr id="'+item.id+'"><td>';
 
             if(item.error) {
-                html += '<p class="modded"><i class="icon-warning-sign" title="Invalid StoryMap"></i>Invalid StoryMap found</p>'
+                html += item.title
+                    + '<p class="modded"><i class="icon-warning-sign" title="Invalid StoryMap"></i>Invalid StoryMap found</p>'
                     + '</td>'
                     + '<td> </td>';
                     
             } else {
+                html += '<a class="title" href="'+href+'">'+item.title+'</a>';
+                
                 if(item.published_on) {
                     html += '<p class="modded">Published on '+format_dt(item.published_on)+'</p>';
                 } 
