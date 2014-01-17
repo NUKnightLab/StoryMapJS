@@ -216,7 +216,7 @@ function storymap_display_list(sortby) {
 
             if(item.error) {
                 html += item.title
-                    + '<p class="modded"><i class="icon-warning-sign" title="Invalid StoryMap"></i>Invalid StoryMap found</p>'
+                    + '<p class="modded"><i class="icon-warning-sign" title="Error"></i>'+item.error+'</p>'
                     + '</td>'
                     + '<td> </td>';            
             } else {
