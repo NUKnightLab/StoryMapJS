@@ -324,7 +324,7 @@ function _gdrive_storymap_process(folder, callback) {
     var q = "trashed=false and '"+folder.id+"' in parents";
 
     gdrive_list(q, function(error, file_list) {
-        if(!error) {
+        if(!error && file_list) {
             for(var i = 0; i < file_list.length; i++) {
                 var file = file_list[i];        
                 if(file.title == 'draft.json') {
@@ -334,6 +334,11 @@ function _gdrive_storymap_process(folder, callback) {
                 }
             }            
         }        
+
+        // There should always by a draft.json 
+        if(!folder['draft_on']) {
+            folder['error'] = 'Invalid StoryMap';
+        }
         callback(error);
     });
 }

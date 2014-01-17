@@ -39,6 +39,7 @@ SELECT PAGE
 .login-info {margin-bottom: 12px;font-size: 0.9em;font-weight: bold;text-align: right;}
 
 #storymap_table {width: 100%;}
+#storymap_table i.icon-warning-sign { margin-right: 0.5em; }
 #storymap_table .storymap-edit,.storymap-delete {margin-left: 10px;}
 
 /*

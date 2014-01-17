@@ -212,25 +212,33 @@ function storymap_display_list(sortby) {
             // Keep track of names for anti-duplication     
             _storymap_names.push(item.title.toLowerCase());
                  
-            html += '<tr id="'+item.id+'">'   
-                + '<td><a class="title" href="'+href+'">'+item.title+'</a>';
+            html += '<tr id="'+item.id+'"><td>';
 
-            if(item.published_on) {
-                html += '<p class="modded">Published on '+format_dt(item.published_on)+'</p>';
-            }  else {
-                //html += '<span class="title-message">never published</span>';
-            }
-            if(item.draft_on > item.published_on) {
-                html += '<p class="modded">';
-                if (item.published_on) {
-                    html += '<i class="icon-warning-sign" title="This draft is newer than the most recently published version."></i>'
-            } 
-                html += 'Edited on '+format_dt(item.draft_on)+'</p>';
-            } 
+            if(item.error) {
+                html += item.title
+                    + '<p class="modded"><i class="icon-warning-sign" title="Invalid StoryMap"></i>Invalid StoryMap found</p>'
+                    + '</td>'
+                    + '<td> </td>';            
+            } else {
+                html += '<a class="title" href="'+href+'">'+item.title+'</a>';
+                
+                if(item.published_on) {
+                    html += '<p class="modded">Published on '+format_dt(item.published_on)+'</p>';
+                } 
+                if(item.draft_on > item.published_on) {
+                    html += '<p class="modded">';
+                    if (item.published_on) {
+                        html += '<i class="icon-warning-sign" title="This draft is newer than the most recently published version."></i>'
+                } 
+                    html += 'Edited on '+format_dt(item.draft_on)+'</p>';
+                } 
         
-            html += '<td><a class="storymap-edit" href="'+href+'" title="Edit"><i class="icon-edit icon-large"></i></td>'
-                + '<td><a class="storymap-delete" href="javascript:" title="Delete"><i class="icon-trash icon-large"></i></td>'
-                + '</tr>';           
+                html += '</td>'
+                    + '<td><a class="storymap-edit" href="'+href+'" title="Edit"><i class="icon-edit icon-large"></i></td>';
+            }  
+            
+            html += '<td><a class="storymap-delete" href="javascript:" title="Delete"><i class="icon-trash icon-large"></i></td>'
+                + '</tr>';  
         }  
     }
     
