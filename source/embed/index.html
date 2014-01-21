@@ -38,7 +38,8 @@ _gaq.push(
           },
          ['knightlabTracker._setDomainName', 'knightlab.com'] // DON'T CHANGE THIS FOR SUBDOMAINS
          ['knightlabTracker._setAllowLinker', true], 
-         ['knightlabTracker._trackPageview']
+         ['knightlabTracker._trackPageview'],
+         ['knightlabTracker._trackEvent', 'StoryMapJS', 'EmbeddedIn', document.referrer]
 );
 (function() {
  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
