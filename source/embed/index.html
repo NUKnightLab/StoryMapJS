@@ -7,10 +7,10 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-touch-fullscreen" content="yes">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<!-- build:css http://cdn.knightlab.com/libs/storymapjs/latest/css/storymap.css -->
+<!-- build:css //s3.amazonaws.com/cdn.knightlab.com/libs/storymapjs/latest/css/storymap.css -->
 <link rel="stylesheet" href="/build/css/storymap.css">
 <!-- endbuild -->
-<!-- build:js http://cdn.knightlab.com/libs/storymapjs/latest/js/storymap-min.js -->
+<!-- build:js //s3.amazonaws.com/cdn.knightlab.com/libs/storymapjs/latest/js/storymap-min.js -->
 <script type="text/javascript" src="/build/js/storymap.js"></script>
 <!-- endbuild -->
 <style>
@@ -22,7 +22,7 @@ html, body {
 }
 </style>
 <!-- HTML5 shim, for IE6-8 support of HTML elements--><!--[if lt IE 9]>
-<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 </head>
 <body>
 <div id="storymap-embed"></div>
@@ -70,28 +70,28 @@ function getScriptPath(scriptname) {
 }
 
 function url_join(url, concat) { // see http://stackoverflow.com/questions/2676178/joining-relative-urls
-  function build(parts,container) {
-    for (var i = 0, l = parts.length; i < l; i ++) {
-      if (parts[i] == '..') {
-        container.pop();
-      } else if (parts[i] == '.') {
-        continue;
-      } else {
-        container.push(parts[i]);
-      }
+    function build(parts,container) {
+        for (var i = 0, l = parts.length; i < l; i ++) {
+            if (parts[i] == '..') {
+                container.pop();
+            } else if (parts[i] == '.') {
+                continue;
+            } else {
+                container.push(parts[i]);
+            }
+        }
     }
-
-  }
-  var url_parts = [ ];
-  build(url.split('/'),url_parts);
-  build(concat.split('/'),url_parts);
-  return url_parts.join('/');
+    var url_parts = [ ];
+    build(url.split('/'),url_parts);
+    build(concat.split('/'),url_parts);
+    return url_parts.join('/');
 }
 
 
 var storymap = null;
+
 var params = parseQuerystring();
-var url = decodeURIComponent(params['url']);
+var storymap_url = decodeURIComponent(params['url']);
 
 var options = {
     script_path: getScriptPath(/storymap(-min)?\.js/),
@@ -102,7 +102,9 @@ if(params.hasOwnProperty('start_at_slide')) {
     options.start_at_slide = parseInt(params.start_at_slide);
 }
 
-VCO.getJSON(url, function(d) {
+function storymap_onload(d) {
+    trace('embed: storymap data loaded');
+
     if (d && d.storymap) {
         if(d.storymap.map_type) {
             options.map_type = d.storymap.map_type;
@@ -122,16 +124,55 @@ VCO.getJSON(url, function(d) {
             var font_name = font.split(':')[1];
             var base_url = url_join(options.script_path,"../css/fonts");
             font = url_join(base_url, "font." + font_name + ".css");
-        } else if(!(font.startsWith('http') || font.startsWith('//'))) {
+        } else if(!font.match('^(http|https|//)')) {
             font = url_join(options.script_path, font);
         }
         VCO.Load.css(font,function(){ trace('font loaded: ' + font);});
 
-
-        
         storymap = new VCO.StoryMap('storymap-embed', d, options);
     }
-});
+}
+
+function storymap_getjson() {
+    if('withCredentials' in new XMLHttpRequest()) {
+        // Supports cross-domain requests
+        trace('embed: loading data via XMLHttpRequest');
+        VCO.getJSON(storymap_url, storymap_onload);
+    } else if(typeof XDomainRequest !== "undefined")     {
+        // Use IE-specific "CORS" code with XDR
+        trace('embed: loading data via XDomainRequest');
+        var xdr = new XDomainRequest();
+        xdr.onload = function() {
+            storymap_onload(JSON.parse(xdr.responseText));
+        };
+        xdr.onerror = function() { /* doit */ };
+        xdr.onprogress = function() {};
+        xdr.open("get", storymap_url);
+        xdr.send();
+    }
+}
+
+window.onload = function() {
+    if(storymap_url.match('\\.js$')) {        
+        trace('embed: loading data via script injection');
+        var loaded = false;  
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src  = storymap_url;    
+        script.onload = script.onreadystatechange = function() {
+            if(!loaded && (!(d = this.readyState) || d == "loaded" || d == "complete")) {
+                loaded = true;
+                storymap_onload(storymap_json);
+            }
+        }
+    
+        // document.head not standard before HTML5
+        var insertionPoint = document.head || document.getElementsByTagName('head').item(0) || document.documentElement.childNodes[0];
+        insertionPoint.appendChild(script);
+    } else {    
+        storymap_getjson(); 
+    }
+}
 
 window.onresize = function(event) {
     if(storymap) {
