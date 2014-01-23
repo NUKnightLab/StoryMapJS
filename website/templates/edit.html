@@ -20,7 +20,7 @@
 <!-- END Moment.js -->
 <script type="text/javascript" src="{{ STATIC_URL }}/js/tool.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}/js/gdrive.js"></script>
-<link rel="stylesheet" type="text/css" href="{{ static_url }}/css/tool.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/css/tool.css">
 {% endblock %}
 
 {% block content %}
@@ -353,7 +353,7 @@ function map_set_type() {
             break;
             
         default:
-            if(map_type && map_type.match("http://")) {
+            if(map_type && map_type.match("^(http:|https:|//)")) {
                  _map.mapTypes.set("custom", new google.maps.ImageMapType({
                     getTileUrl: function(coord, zoom) {
                         var index = (coord.x + coord.y) % map_subdomains.length;                        
