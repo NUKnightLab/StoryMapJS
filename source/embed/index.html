@@ -87,7 +87,6 @@ function url_join(url, concat) { // see http://stackoverflow.com/questions/26761
     return url_parts.join('/');
 }
 
-
 var storymap = null;
 
 var params = parseQuerystring();
@@ -100,6 +99,12 @@ var options = {
 
 if(params.hasOwnProperty('start_at_slide')) {
     options.start_at_slide = parseInt(params.start_at_slide);
+}
+
+
+function show_error(error) {
+    document.getElementById('storymap-embed').innerHTML = 
+        '<p style="text-align: center;">'+error+'</p>';
 }
 
 function storymap_onload(d) {
@@ -133,25 +138,6 @@ function storymap_onload(d) {
     }
 }
 
-function storymap_getjson() {
-    if('withCredentials' in new XMLHttpRequest()) {
-        // Supports cross-domain requests
-        trace('embed: loading data via XMLHttpRequest');
-        VCO.getJSON(storymap_url, storymap_onload);
-    } else if(typeof XDomainRequest !== "undefined")     {
-        // Use IE-specific "CORS" code with XDR
-        trace('embed: loading data via XDomainRequest');
-        var xdr = new XDomainRequest();
-        xdr.onload = function() {
-            storymap_onload(JSON.parse(xdr.responseText));
-        };
-        xdr.onerror = function() { /* doit */ };
-        xdr.onprogress = function() {};
-        xdr.open("get", storymap_url);
-        xdr.send();
-    }
-}
-
 window.onload = function() {
     if(storymap_url.match('\\.js$')) {        
         trace('embed: loading data via script injection');
@@ -162,15 +148,37 @@ window.onload = function() {
         script.onload = script.onreadystatechange = function() {
             if(!loaded && (!(d = this.readyState) || d == "loaded" || d == "complete")) {
                 loaded = true;
-                storymap_onload(storymap_json);
+                
+                if(typeof(storymap_json) == "object") {
+                    storymap_onload(storymap_json);               
+                } else {
+                    show_error('Unable to load storymap data via script');
+                }
             }
         }
     
         // document.head not standard before HTML5
         var insertionPoint = document.head || document.getElementsByTagName('head').item(0) || document.documentElement.childNodes[0];
         insertionPoint.appendChild(script);
-    } else {    
-        storymap_getjson(); 
+    } else if('withCredentials' in new XMLHttpRequest()) {
+        // Supports cross-domain requests
+        trace('embed: loading data via XMLHttpRequest');
+        VCO.getJSON(storymap_url, storymap_onload);
+    } else if(typeof XDomainRequest !== "undefined")     {
+        // Use IE-specific "CORS" code with XDR
+        trace('embed: loading data via XDomainRequest');
+        var xdr = new XDomainRequest();
+        xdr.onload = function() {
+            storymap_onload(JSON.parse(xdr.responseText));
+        };
+        xdr.onerror = function() { 
+            show_error('Unable to load StoryMap data via XDomainRequest');
+        };
+        xdr.onprogress = function() {};
+        xdr.open("get", storymap_url);
+        xdr.send();
+    } else {
+        show_error('Unable to load StoryMap data (no browser support)');     
     }
 }
 
