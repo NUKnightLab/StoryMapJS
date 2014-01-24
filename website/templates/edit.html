@@ -829,8 +829,6 @@ function map_init() {
 
 // callback(error, data)
 function storymap_getjson(url, callback) {
-    console.log('LOADING', url);
-    
     if(url.match('\\.js$')) {        
         trace('loading data via script injection');
         var loaded = false;  
@@ -840,11 +838,11 @@ function storymap_getjson(url, callback) {
         script.onload = script.onreadystatechange = function() {
             if(!loaded && (!(d = this.readyState) || d == "loaded" || d == "complete")) {
                 loaded = true;
-                
-                if(storymap_json) {
+                                
+                if(typeof(storymap_json) == "object") {
                     callback(null, storymap_json);
                 } else {
-                    
+                    callback('script load failed');
                 }
             }
         }
@@ -856,8 +854,12 @@ function storymap_getjson(url, callback) {
         // Supports cross-domain requests
         trace('loading data via XMLHttpRequest');
         $.getJSON(url)
-            .done(function(d) { callback(null, d); })
-            .fail(function(xhr, textStatus, error) { callback(textStatus+', '+error, null); });
+            .done(function(d) { 
+                callback(null, d); 
+            })
+            .fail(function(xhr, textStatus, error) { 
+                callback(textStatus+', '+error); 
+            });
     } else if(typeof XDomainRequest !== "undefined")     {
         // Use IE-specific "CORS" code with XDR
         trace('loading data via XDomainRequest');
@@ -866,11 +868,13 @@ function storymap_getjson(url, callback) {
             callback(null, JSON.parse(xdr.responseText)); 
         };
         xdr.onerror = function() { 
-            callback('Error laoding Storymap JSON', null);
+            callback('XDomainRequest failed');
         };
         xdr.onprogress = function() {};
         xdr.open("get", url);
         xdr.send();
+    } else {
+        callback('no browser support');
     }
 }
 
@@ -907,7 +911,9 @@ function storymap_init() {
                 // Load draft
                 storymap_getjson(gdrive_storymap_draft_url(_storymap_info), function(error, data) {
                     if(error) {
-                        show_error('Error loading StoryMap data', error);
+                        show_error('Error loading StoryMap data', error, function() {
+                            document.location.href = 'select.html';
+                        });
                     } else {
                         _storymap_data = data;
                         _slides = _storymap_data.storymap.slides;

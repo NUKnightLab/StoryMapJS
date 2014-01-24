@@ -48,7 +48,7 @@ function do_ajax(url, data, on_error, on_success) {
     });
 }
 
-function show_error(msg, err) { 
+function show_error(msg, err, callback) { 
     var message = msg;
     
     if(err) {
@@ -82,6 +82,12 @@ function show_error(msg, err) {
        
     hide_progress();
     $('#error_msg').html(message);
+    
+    $('#error_modal').on('hidden', function() {
+        if(callback) {
+            callback();
+        }
+    });
     $('#error_modal').modal('show');
 }
 
