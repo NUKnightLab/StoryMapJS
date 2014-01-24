@@ -1,4 +1,6 @@
 /*
+Requires:  base64.js
+
 format of Google Drive file/folder resource object
 --------------------------------------------------
 alternateLink: "https://docs.google.com/folderview?id=0B71wddT5Cwf-cXBDa0FHNk9qRE0&usp=drivesdk"
@@ -45,7 +47,8 @@ var STORYMAP_INFO = {};
 
 
 function utf8_to_b64(str) {
-    return window.btoa(unescape(encodeURIComponent(str)));
+    return B64.encode(str);
+    //return window.btoa(unescape(encodeURIComponent(str)));
 }
 
 ////////////////////////////////////////////////////////////
