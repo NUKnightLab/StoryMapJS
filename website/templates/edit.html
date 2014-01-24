@@ -254,13 +254,17 @@
 var _embed_url = 'http://cdn.knightlab.com/libs/storymapjs/latest/embed/';
 
 // If under local development, use source page
-switch(document.location.hostname) {
-    case '127.0.0.1':
-    case '0.0.0.0':
-    case 'localhost':
-        _embed_url = '/source/embed/index.html';
-        break;
-}  
+if(document.location.port == '5000') {
+    _embed_url = '/source/embed/index.html';
+} else {
+    switch(document.location.hostname) {
+        case '127.0.0.1':
+        case '0.0.0.0':
+        case 'localhost':
+            _embed_url = '/source/embed/index.html';
+            break;
+    }  
+}
 
 var _default_width = '100%';
 var _default_height = '800';
@@ -710,9 +714,9 @@ function storymap_auto_save() {
 
 function storymap_preview() {
     var preview_url = _embed_url
-        + '?url='+gdrive_storymap_draft_url(_storymap_info)
+        + '?url='+encodeURIComponent(gdrive_storymap_draft_url(_storymap_info))
         + '&start_at_slide='+_current_slide_index;     
-    window.open(preview_url, 'StoryMap Preview');
+    window.open(preview_url, 'StoryMap_Preview');
 }
 
 function storymap_publish() {
@@ -728,9 +732,15 @@ function storymap_publish() {
             }
         });
     } else {
+        if(_storymap_info.files['published.json'] && !_storymap_info.files['published.js']) {
+            $('#embed_modal .warning').show();
+        } else {
+            $('#embed_modal .warning').hide();        
+        }
+
         show_progress('Publishing StoryMap');
         
-        gdrive_storymap_publish(_storymap_info, function(error, file) {
+        gdrive_storymap_publish(_storymap_info, _storymap_data, function(error, file) {
             if(error) {
                 show_error('Error publishing StoryMap', error);
             } else {
@@ -817,6 +827,53 @@ function map_init() {
     slides_load();
 }
 
+// callback(error, data)
+function storymap_getjson(url, callback) {
+    console.log('LOADING', url);
+    
+    if(url.match('\\.js$')) {        
+        trace('loading data via script injection');
+        var loaded = false;  
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src  = url;    
+        script.onload = script.onreadystatechange = function() {
+            if(!loaded && (!(d = this.readyState) || d == "loaded" || d == "complete")) {
+                loaded = true;
+                
+                if(storymap_json) {
+                    callback(null, storymap_json);
+                } else {
+                    
+                }
+            }
+        }
+    
+        // document.head not standard before HTML5
+        var insertionPoint = document.head || document.getElementsByTagName('head').item(0) || document.documentElement.childNodes[0];
+        insertionPoint.appendChild(script);
+    } else if('withCredentials' in new XMLHttpRequest()) {
+        // Supports cross-domain requests
+        trace('loading data via XMLHttpRequest');
+        $.getJSON(url)
+            .done(function(d) { callback(null, d); })
+            .fail(function(xhr, textStatus, error) { callback(textStatus+', '+error, null); });
+    } else if(typeof XDomainRequest !== "undefined")     {
+        // Use IE-specific "CORS" code with XDR
+        trace('loading data via XDomainRequest');
+        var xdr = new XDomainRequest();
+        xdr.onload = function() { 
+            callback(null, JSON.parse(xdr.responseText)); 
+        };
+        xdr.onerror = function() { 
+            callback('Error laoding Storymap JSON', null);
+        };
+        xdr.onprogress = function() {};
+        xdr.open("get", url);
+        xdr.send();
+    }
+}
+
 function storymap_init() {
     show_progress('Loading StoryMap');
     
@@ -838,8 +895,17 @@ function storymap_init() {
                                
                 $('#title').html(_storymap_info.title);
                 document.title = document.title.replace("TITLE", _storymap_info.title);
+                
+                // If has old and new style drafts, delete the old draft
+                if(_storymap_info.files['draft.json'] && _storymap_info.files['draft.js']) {
+                    gdrive_file_delete(_storymap_info.files['draft.json'], function(error, response) {
+                        if(!error) {
+                            delete _storymap_info.files['draft.json'];
+                        }
+                    });                   
+                }
                 // Load draft
-                gdrive_storymap_load_draft(storymapFolder, function(error, data) {
+                storymap_getjson(gdrive_storymap_draft_url(_storymap_info), function(error, data) {
                     if(error) {
                         show_error('Error loading StoryMap data', error);
                     } else {
@@ -848,9 +914,9 @@ function storymap_init() {
                     
                         // LOAD SLIDES
                         slides_load();
-                    }
+                    }                
                 });
-            }
+             }
         });
     }
 }

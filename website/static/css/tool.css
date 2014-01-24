@@ -6,6 +6,7 @@ COMMON
 #error_modal {background-color: #f2dede;color: #b94a48;border-color: #eed3d7;}
 #progress_msg {margin-left: 10px;}
 #new_modal .error {color: #cc0000;font-size: 0.9em;font-style: italic;}
+#embed_modal .warning {color: #cc0000;font-size: 0.9em;font-style: italic;}
 
 a.help {color: #333;margin-left: 6px;}
 a.help:hover {text-decoration: none;}
