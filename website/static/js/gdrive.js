@@ -129,17 +129,35 @@ function gdrive_exec(request, callback, debug) {
 //////////////////////////////////////////////////////////////////////
 
 function gdrive_file_create(title, content, parents, callback) {
-    var metadata = {
-        'title': title,
-        'mimeType': 'application/json'
-    };
+    var request = null;    
+    var metadata = {'title': title};
+    
     if (parents) {
         metadata['parents'] = parents;
     }
-    var contentType = 'application/json';
-    var base64Data = utf8_to_b64(content);
     
-    var request = gapiRequest('POST', metadata, contentType, base64Data);   
+    // data:image/jpeg;base64,.....        
+    var m = content.match('^data:(.+);base64,(.+)');
+    if(m) {
+        metadata['mimeType'] = m[1];
+        request = gapiRequest('POST', metadata, m[1], m[2]);          
+    } else {    
+        metadata['mimeType'] = 'application/json';
+        request = gapiRequest('POST', metadata, 'application/json', utf8_to_b64(content));          
+    }   
+    gdrive_exec(request, callback);
+}
+
+function gdrive_file_update(id, content, callback) {
+    var request = null;
+    
+    // data:image/jpeg;base64,.....        
+    var m = content.match('^data:(.+);base64,(.+)');
+    if(m) {
+        request = gapiPUTRequest(id, m[1], m[2]);          
+    } else {
+        request = gapiPUTRequest(id, 'application/json', utf8_to_b64(content));
+    }    
     gdrive_exec(request, callback);
 }
 
@@ -165,14 +183,24 @@ function gdrive_file_get(id, callback) {
     gdrive_exec(request, callback);
 }
 
-function gdrive_file_update(id, content, callback) {
-    var request = gapiPUTRequest(id, 'application/json', utf8_to_b64(content));
-    gdrive_exec(request, callback);
-}
-
 function gdrive_file_delete(id, callback) {
     var request = gapi.client.drive.files.delete({'fileId': id});
     gdrive_exec(request, callback);
+}
+
+function gdrive_file_save(storymapFolder, title, data, callback) {
+    var query = "title='"+title+"' and trashed=false"
+        + " and '"+storymapFolder.id+"' in parents";
+
+    gdrive_file_find(query, function(error, file) {
+        if(error) {
+            callback(error);
+        } else if(file) {
+            gdrive_file_update(file.id, data, callback);                
+        } else {
+            gdrive_file_create(title, data, [storymapFolder], callback);               
+        }
+    });
 }
 
 ////////////////////////////////////////////////////////////
@@ -332,8 +360,8 @@ function _gdrive_storymap_process(folder, callback) {
                     folder['published_on'] = file.modifiedDate;             
                 }
             }            
-        }   
-        
+        }        
+
         // There should always by a draft.json 
         if(!folder['draft_on']) {
             folder['error'] = 'Invalid StoryMap';
@@ -343,7 +371,7 @@ function _gdrive_storymap_process(folder, callback) {
 }
 
 //
-// List storymaps in parentFolder
+// List items in parentFolder
 // callback(error, { storymap info by id })
 //
 function gdrive_storymap_list(parentFolder, callback) {
@@ -428,61 +456,37 @@ function gdrive_storymap_load_draft(storymapFolder, callback) {
 }
 
 //
-// Save draft.json in storymapFolder
+// Create/update draft.json in storymapFolder
 // callback(error, <file resource>)
 //
 function gdrive_storymap_save_draft(storymapFolder, data, callback) {
     var content = JSON.stringify(data);
-    var query = "title='draft.json' and trashed=false"
-        + " and '"+storymapFolder.id+"' in parents";
-        
-    gdrive_file_find(query, function(error, file) {
-        if(error) {
-            callback(error);
-        } else if(file) {
-            gdrive_file_update(file.id, content, function(error, file) {
-                if(file) {
-                    storymapFolder['draft_on'] = file.modifiedDate;
-                }
-                callback(error, file);
-            });
-        } else {
-            gdrive_file_create('draft.json', content, [storymapFolder], function(error, file) {
-                if(file) {
-                    storymapFolder['draft_on'] = file.modifiedDate;
-                }
-                callback(error, file);
-            });
+    gdrive_file_save(storymapFolder, 'draft.json', content, function(error, file) {
+        if(file) {
+            storymapFolder['draft_on'] = file.modifiedDate;
         }
+        callback(error, file);
     });
 }
 
 //
-// Save published.json
+// Create/update published.json
 // callback(error, <file resource>)
 //
 function gdrive_storymap_publish(storymapFolder, callback) {
-    var query = "title='published.json' and trashed=false"
-        + " and '"+storymapFolder.id+"' in parents";
-
     // Load content from draft.json
     gdrive_storymap_load_draft(storymapFolder, function(error, data) {
         if(error) {
             callback(error);
         } else {
             var content = JSON.stringify(data);
-            // Create/update published.json
-            gdrive_file_find(query, function(error, file) {
-                if(error) {
-                    callback(error);
-                } else if(file) {
-                    gdrive_file_update(file.id, content, callback);                
-                } else {
-                    gdrive_file_create('published.json', content, [storymapFolder], callback);               
-                }
-            });
+            gdrive_file_save(storymapFolder, 'published.json', content, callback);            
         }
     });
+}
+
+function gdrive_storymap_url(storymapFolder, title) {
+    return storymapFolder.webViewLink + title;
 }
 
 function gdrive_storymap_draft_url(storymapFolder) {

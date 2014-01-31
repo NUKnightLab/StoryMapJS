@@ -247,10 +247,16 @@
     </div>
     <div class="span6" style="">
         <div class="data-frame">
-            <label>Media <a class="help" href="javascript:"
+            <label>Media 
+            <a class="help" href="javascript:"
                 data-placement="left"
-                data-content="Enter the URL for your media.  It can come from Flickr, YouTube, Vimeo, Twitter, and more."
-            >&nbsp;<i class="icon-question-sign icon-large"></i></a></label> 
+                data-html="true"
+                data-content="
+                Enter the URL for your media.  It can come from Flickr, YouTube, Vimeo, Twitter, and more.  
+                Or, click the <i class='icon-cloud-upload icon-large'></i> icon to the right to upload an image to your Google Drive."
+            >&nbsp;<i class="icon-question-sign icon-large"></i></a>
+            <a href="javascript:" id="upload" title="Upload image" style="float:right;"><i class="icon-cloud-upload icon-large"></i></a>
+            </label> 
             <input id="url" type="text" placeholder="URL to media (YouTube, Flickr, etc.)" />
 
             <label>Credit</label>
@@ -348,9 +354,10 @@ var _re_slide_cls = /^slide-icon-\w+$/;
 
 var _map;
 
-var _storymap_info; // folder 
-var _storymap_data; // { width: n, height: n, ..., storymap: { } }
-var _slides = null; // _storymap_data.storymap.slides
+var _storymap_info;          // folder 
+var _storymap_files = [];    // array of file names in this storymap folder
+var _storymap_data;          // { width: n, height: n, ..., storymap: { } }
+var _slides = null;          // _storymap_data.storymap.slides
 
 var _current_slide_index = -1;
 var _dirty = 0;
@@ -781,17 +788,31 @@ function storymap_init() {
                 $('#title').html(_storymap_info.title);
                 document.title = document.title.replace("TITLE", _storymap_info.title);
                 
-                // Load draft
-                gdrive_storymap_load_draft(storymapFolder, function(error, data) {
+                // List files in folder
+                gdrive_storymap_list(storymapFolder, function(error, d) {
                     if(error) {
-                        show_error('Error loading StoryMap data', error);
+                        show_error('Error listing StoryMap files', error);
                     } else {
-                        _storymap_data = data;
-                        _slides = _storymap_data.storymap.slides;
+                        for(var key in d) {
+                            _storymap_files.push(d[key].title);
+                        }
+
+                        console.log('files');
+                        console.log(_storymap_files);
+                        
+                        // Load draft
+                        gdrive_storymap_load_draft(storymapFolder, function(error, data) {
+                            if(error) {
+                                show_error('Error loading StoryMap data', error);
+                            } else {
+                                _storymap_data = data;
+                                _slides = _storymap_data.storymap.slides;
                     
-                        map_init();
-                    }
-                });
+                                map_init();
+                            }
+                        });   
+                    }            
+                });                
             }
         });
     }
@@ -968,7 +989,11 @@ $(function() {
     $('#storymap_save').click(storymap_save);
     $('#storymap_preview').click(storymap_preview); 
     $('#storymap_publish').click(storymap_publish);   
-       
+    
+    
+    // ------------------------------------------------------------
+    // Slide sorting
+    // ------------------------------------------------------------
     var sortable_i = 0;
     var sortable_j = 0;
     
@@ -993,9 +1018,110 @@ $(function() {
                 storymap_auto_save();
             }             
         }
-    });    
-});
+    });
+    
+    // ------------------------------------------------------------
+    // Media uploads
+    // ------------------------------------------------------------ 
+      
+    $('#upload_file').change(function(event) {    
+        var file = document.getElementById('upload_file').files[0];
+        if(file) {
+            $('#upload_modal .error').html('');
+            $('#upload_file_info').html(file.name);
+            $('#upload_upload').removeClass('disabled');
+                        
+            if(_storymap_files.indexOf(file.name) < 0) {
+                $('#upload_conflict').hide();
+            } else {
+                $('#upload_replace').prop('checked', true);
+                $('#upload_name').val('');                             
+                $('#upload_conflict').show();
+            }
+        }
+    });
+    $('#upload_rename').click(function(event) {
+        $('#upload_name').focus();
+    });
+    $('#upload_name').click(function(event) {
+        $('#upload_rename').prop('checked', true);
+    });
+    
+    $('#upload_upload').click(function(event) {
+        var file = document.getElementById('upload_file').files[0]; 
+        
+        // Must have a file selected  
+        if(!file) {
+            return; 
+        }
 
+        // File must be image
+        if(!file.type.match("image.*")) {
+            $('#upload_modal .error').html('Unsupported file type.  Please select an image.'); 
+            return;
+        }   
+
+        var name = file.name;
+        
+        if($('#upload_rename').is(':checked')) {                
+            name = $('#upload_name').val().trim();
+            if(!name) {
+                $('#upload_modal .error').html('You must enter a file name.');
+                return;
+            }
+            if(_storymap_files.indexOf(name) > -1) {
+                $('#upload_modal .error').html('A file with this name already exists.  Please enter a different name.');
+                $('#upload_name').focus();
+                return;           
+            }           
+        } 
+        
+        $('#upload_modal .error').html('');                
+        $('#upload_choose, #upload_upload').addClass('disabled');
+        
+        $('#upload_progress_msg').html('Loading file...');
+        $('#upload_progress').show();
+                                                               
+        var reader = new FileReader();
+                    
+        reader.onerror = function() {
+            $('#upload_modal .error').html('Error loading file');    
+            $('#upload_choose, #upload_upload').removeClass('disabled');         
+            $('#upload_progress_msg').html('');
+            $('#upload_progress').hide();                   
+        }
+        
+        reader.onload = function() {
+            $('#upload_progress_msg').html('Uploading file...');  
+            
+            gdrive_file_save(_storymap_info, file.name, reader.result, function(error, file_resource) {
+                if(error || !file_resource) {
+                    $('#upload_modal .error').html('Error uploading file' + ((error) ? ' ('+error+')' : ''));    
+                    $('#upload_choose, #upload_upload').removeClass('disabled');         
+                    $('#upload_progress_msg').html('');
+                    $('#upload_progress').hide();  
+               } else {
+                    $('#url').val(gdrive_storymap_url(_storymap_info, file.name)).change(); 
+                    $('#upload_modal').modal('hide');                               
+                }               
+            });
+        }
+        
+        reader.readAsDataURL(file);                
+    });
+    
+    $('#upload').click(function(event) { 
+        $('#upload_choose').removeClass('disabled');
+        $('#upload_upload').addClass('disabled');
+        $('#upload_file').val('');
+        
+        $('#upload_modal .error, #upload_file_info').html('');
+        $('#upload_progress, #upload_conflict').hide();
+        
+        $('#upload_modal').modal('show');    
+    });
+    
+});
 </script>
 
 <script type="text/javascript" src="https://apis.google.com/js/client.js?onload=handle_onload"></script>

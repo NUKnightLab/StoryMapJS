@@ -69,7 +69,6 @@
     </div>
 </div>
 
-
 <div id="embed_modal" class="modal hide fade" role="dialog" aria-hidden="true">
     <div class="modal-body">
         <p>Copy this code and paste it on your site where you want your StoryMap to appear.</p>
@@ -79,3 +78,42 @@
         <button class="btn" data-dismiss="modal" aria-hidden="true">Done</button>
     </div>
 </div>
+
+<div id="upload_modal" class="modal hide fade" role="dialog" aria-hidden="true">
+    <div class="modal-body">
+        <small class="error"></small>
+        <p>Select an image file to upload to your Google Drive.</p>
+        <div style="position:relative;">
+            <form class="form-inline">
+            <a id="upload_choose" class="btn" href="javascript:">
+            Choose File...
+            <input type="file" id="upload_file" accept="image/*" name="file_source" size="40">
+            </a>
+            &nbsp;
+            <label id="upload_file_info"></label>
+            </form>
+        </div>
+        <div id="upload_conflict">
+            <p>A file with the same name already exists.</p>
+            <label class="radio">
+                <input type="radio" id="upload_replace" name="upload_as" value="replace">Replace existing file
+            </label>
+            <div>
+            <label class="radio inline" style="vertical-align: text-bottom;">
+                <input type="radio" id="upload_rename" name="upload_as" value="rename">Save file as:
+            </label>
+            <input id="upload_name" type="text" size="40"  style="margin-left: 4px;margin-bottom: 4px;">
+            </div>
+        </div>
+        <div id="upload_progress">
+            <p>
+            <i class="icon-spinner icon-spin"></i><span id="upload_progress_msg">my progress</span>
+            </p>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <a href="javascript:;" class="btn" data-dismiss="modal">Cancel</a>
+        <a href="javascript:;" id="upload_upload" class="btn btn-primary">Upload</a>
+    </div>
+</div>
+

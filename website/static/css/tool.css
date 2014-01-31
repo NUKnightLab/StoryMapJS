@@ -5,8 +5,21 @@ COMMON
 */
 #error_modal {background-color: #f2dede;color: #b94a48;border-color: #eed3d7;}
 #progress_msg {margin-left: 10px;}
-#new_modal .error {color: #cc0000;font-size: 0.9em;font-style: italic;}
-#new_zoomify_modal .error {color: #cc0000;font-size: 0.9em;font-style: italic;}
+#upload_progress {margin-top: 6px;}
+#upload_progress_msg {margin-left: 10px;}
+.modal .error {color: #cc0000;font-size: 0.9em;font-style: italic;}
+
+#upload_modal input[type="file"] {
+    position:absolute;
+    z-index:2;
+    top:0;
+    left:0;
+    filter: alpha(opacity=0);
+    -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+    opacity:0;
+    background-color:transparent;
+    color:transparent;
+}
 
 a.help {color: #333;margin-left: 6px;}
 a.help:hover {text-decoration: none;}
