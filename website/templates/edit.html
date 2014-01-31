@@ -796,9 +796,6 @@ function storymap_init() {
                         for(var key in d) {
                             _storymap_files.push(d[key].title);
                         }
-
-                        console.log('files');
-                        console.log(_storymap_files);
                         
                         // Load draft
                         gdrive_storymap_load_draft(storymapFolder, function(error, data) {
