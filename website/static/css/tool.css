@@ -19,6 +19,7 @@ COMMON
     opacity:0;
     background-color:transparent;
     color:transparent;
+    width: 146px;
 }
 
 a.help {color: #333;margin-left: 6px;}
