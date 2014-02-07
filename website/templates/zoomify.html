@@ -1,0 +1,63 @@
+{% extends "_base.html" %}
+{% block title %}StoryMap for Images - {% endblock %}
+{% block content %}
+<style>
+    ol {
+        counter-reset: item
+    }
+    ol li {
+        display: block
+    }
+    li:before {
+        content: counters(item, ".") ". ";
+        counter-increment: item
+    }
+</style>
+<div class="container">
+<div class="row-fluid">
+    <div class="span12">
+    <h3>How to use StoryMap with images</h3>
+    <p>In addition to using StoryMap to tell a story about places in the world, our tool can be used to guide people through a closer look at images: works of art, historical maps, photography, or anything else you can think of. </p>
+    <h4>A Simple Tutorial</h4>
+    <p>This tutorial assumes the following:
+        <ul>
+            <li>You have Adobe Photoshop with the <a href="http://www.zoomify.com/photoshop.htm">Zoomify plugin</a> installed. The plugin is installed by default in Photoshop CC.</li>
+            <li>You have a very large image—this method is only interesting if your image is at least 8-10,000 pixels on at least one dimension. (Below we'll use <a href="http://upload.wikimedia.org/wikipedia/commons/3/3a/1878_Adams_Monumental_Illustrated_Panorama_of_History_-_Geographicus_-_WorldHistory-adams-1871.jpg">this image from Wikimedia commons</a>.)</li>
+            <li>Access to a web server where you can share an entire folder of images. (The instructions below will explain how to do this with Dropbox.)</li>
+        </ul>
+    </p>
+    <h5>Getting started</h5>
+    <img src="{{STATIC_URL}}/img/zoomify-tutorial-image-size.png" style="float:right;">
+    <ol>
+        <li>Open your image in Adobe Photoshop</li>
+        <li>Note the pixel dimensions of your image:
+          <ol>
+              <li>From the <strong>Image</strong>menu, choose <strong>Image Size</strong></li>
+              <li>If the dimensions aren't in pixels, use the menu next to "Dimensions:" to set it to pixels. </li>
+              <li>Make a note of the dimensions: the first number is width, the second is height.</li>
+          </ol>
+        </li>
+        <li>From the <strong>File</strong> menu choose <strong>Export > Zoomify.</strong></li>
+        <li>Set the output folder and click OK. You can ignore the other settings.</li>
+        <li>After you click OK, Photoshop will open a page in your browser showing your Zoomify export. You can ignore this.</li>
+        <li>Put the folder of images which you exported on a web server and make note of the root URL. Here's how to do that using DropBox:
+        <img src="{{STATIC_URL}}/img/zoomify-tutorial-db_copy_public_link.png" style="float:right;">
+        <ol>
+            <li>Upload the entire folder (from step 4 above).</li>
+            <li>In the folder you uploaded is another folder, which should have a name like the original file name, except without an extension. Open that folder.</li>
+            <li>Locate a file named <strong><code>ImageProperties.xml</code></strong> and copy its public link.</li>
+            <li>Paste it somewhere for a minute, and delete the "ImageProperties.xml" part of the URL. For example:
+                    copied: <code>https://dl.dropboxusercontent.com/u/2653407/adams_panorama_tiles/1878_Adams_Monumental_Illustrated_Panorama_of_History_-_Geographicus_-_WorldHistory-adams-1871/ImageProperties.xml</code>
+                    edited: <code>https://dl.dropboxusercontent.com/u/2653407/adams_panorama_tiles/1878_Adams_Monumental_Illustrated_Panorama_of_History_-_Geographicus_-_WorldHistory-adams-1871/</code></li>
+            </li>
+        </ol></li>
+        <li>Go to <a href="http://storymap.knightlab.com/select.html">http://storymap.knightlab.com/select.html</a> and click on "New Zoomify StoryMap".</li>
+        <li>Enter a name for your StoryMap, the URL (from step 6.4) and the image dimensions (from step 2.3), and click "Create".</li>
+
+    </ol>
+    <p>From here on out, there's not much different than making a normal StoryMap. Of course, you can't search for places to put your pins on the map. Instead, navigate to the map and double-click on the location where you want your pin. You can also drag an existing pin to a new location.</p>
+    <p>We're still refining this feature, so <a href="https://knightlab.zendesk.com/">let us know what you think</a> and how we could improve it.</p>
+    </div>
+</div>
+</div>
+{% endblock %}
