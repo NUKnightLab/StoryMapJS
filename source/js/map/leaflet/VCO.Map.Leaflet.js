@@ -13,10 +13,10 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		// Set Marker Path
 		L.Icon.Default.imagePath = this.options.path_gfx;
 		
-		//this._map = new L.map(this._el.map, {scrollWheelZoom:false});
 		this._map = new L.map(this._el.map, {scrollWheelZoom:false});
 		this._map.on("load", this._onMapLoaded, this);
-		//this._map.setView([51.505, -0.09], 13);
+		
+		this._map.on("moveend", this._onMapMoveEnd, this);
 			
 		var map_type_arr = this.options.map_type.split(':');		
 
@@ -63,6 +63,13 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		
 	},
 	
+	/*	Event
+	================================================== */
+	_onMapMoveEnd: function(e) {
+		trace(this._map.getCenter());
+		trace(this._map.getZoom());
+	},
+	
 	/*	Marker
 	================================================== */
 	_createMarker: function(d) {
@@ -85,7 +92,9 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	
 	_markerOverview: function() {
 		
-		if (this.options.map_type == "zoomify") {
+		if (this.options.map_type == "zoomify" && this.options.zoomify && !this.options.zoomify.is_map) {
+			trace("IS MAP " + this.options.zoomify.is_map);
+			trace(this.options.zoomify);
 			trace("MARKER OVERVIEW ZOOMIFY");
 			trace(this._tile_layer.getCenterZoom(this._map));
 			var center_zoom = this._tile_layer.getCenterZoom(this._map);

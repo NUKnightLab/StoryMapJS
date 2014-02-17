@@ -285,19 +285,20 @@ VCO.Util = {
 ********************************************** */
 
 // Expects VCO to be visible in scope
-;(function(VCO){
-    /* Zepto v1.0-7-g579f376 - zepto event ajax - zeptojs.com/license */
 
+;(function(VCO){
+    /* Zepto v1.1.2-15-g59d3fe5 - zepto event ajax form ie - zeptojs.com/license */
 
     var Zepto = (function() {
       var undefined, key, $, classList, emptyArray = [], slice = emptyArray.slice, filter = emptyArray.filter,
         document = window.document,
         elementDisplay = {}, classCache = {},
-        getComputedStyle = document.defaultView.getComputedStyle,
         cssNumber = { 'column-count': 1, 'columns': 1, 'font-weight': 1, 'line-height': 1,'opacity': 1, 'z-index': 1, 'zoom': 1 },
         fragmentRE = /^\s*<(\w+|!)[^>]*>/,
+        singleTagRE = /^<(\w+)\s*\/?>(?:<\/\1>|)$/,
         tagExpanderRE = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>]*)\/>/ig,
         rootNodeRE = /^(?:body|html)$/i,
+        capitalRE = /([A-Z])/g,
 
         // special attributes that should be get/set via method calls
         methodAttributes = ['val', 'css', 'html', 'text', 'data', 'width', 'height', 'offset'],
@@ -314,15 +315,31 @@ VCO.Util = {
         readyRE = /complete|loaded|interactive/,
         classSelectorRE = /^\.([\w-]+)$/,
         idSelectorRE = /^#([\w-]*)$/,
-        tagSelectorRE = /^[\w-]+$/,
+        simpleSelectorRE = /^[\w-]*$/,
         class2type = {},
         toString = class2type.toString,
         zepto = {},
         camelize, uniq,
-        tempParent = document.createElement('div')
+        tempParent = document.createElement('div'),
+        propMap = {
+          'tabindex': 'tabIndex',
+          'readonly': 'readOnly',
+          'for': 'htmlFor',
+          'class': 'className',
+          'maxlength': 'maxLength',
+          'cellspacing': 'cellSpacing',
+          'cellpadding': 'cellPadding',
+          'rowspan': 'rowSpan',
+          'colspan': 'colSpan',
+          'usemap': 'useMap',
+          'frameborder': 'frameBorder',
+          'contenteditable': 'contentEditable'
+        },
+        isArray = Array.isArray ||
+          function(object){ return object instanceof Array }
 
       zepto.matches = function(element, selector) {
-        if (!element || element.nodeType !== 1) return false
+        if (!selector || !element || element.nodeType !== 1) return false
         var matchesSelector = element.webkitMatchesSelector || element.mozMatchesSelector ||
                               element.oMatchesSelector || element.matchesSelector
         if (matchesSelector) return matchesSelector.call(element, selector)
@@ -344,9 +361,8 @@ VCO.Util = {
       function isDocument(obj)   { return obj != null && obj.nodeType == obj.DOCUMENT_NODE }
       function isObject(obj)     { return type(obj) == "object" }
       function isPlainObject(obj) {
-        return isObject(obj) && !isWindow(obj) && obj.__proto__ == Object.prototype
+        return isObject(obj) && !isWindow(obj) && Object.getPrototypeOf(obj) == Object.prototype
       }
-      function isArray(value) { return value instanceof Array }
       function likeArray(obj) { return typeof obj.length == 'number' }
 
       function compact(array) { return filter.call(array, function(item){ return item != null }) }
@@ -395,15 +411,23 @@ VCO.Util = {
       // This function can be overriden in plugins for example to make
       // it compatible with browsers that don't support the DOM fully.
       zepto.fragment = function(html, name, properties) {
-        if (html.replace) html = html.replace(tagExpanderRE, "<$1></$2>")
-        if (name === undefined) name = fragmentRE.test(html) && RegExp.$1
-        if (!(name in containers)) name = '*'
+        var dom, nodes, container
 
-        var nodes, dom, container = containers[name]
-        container.innerHTML = '' + html
-        dom = $.each(slice.call(container.childNodes), function(){
-          container.removeChild(this)
-        })
+        // A special case optimization for a single tag
+        if (singleTagRE.test(html)) dom = $(document.createElement(RegExp.$1))
+
+        if (!dom) {
+          if (html.replace) html = html.replace(tagExpanderRE, "<$1></$2>")
+          if (name === undefined) name = fragmentRE.test(html) && RegExp.$1
+          if (!(name in containers)) name = '*'
+
+          container = containers[name]
+          container.innerHTML = '' + html
+          dom = $.each(slice.call(container.childNodes), function(){
+            container.removeChild(this)
+          })
+        }
+
         if (isPlainObject(properties)) {
           nodes = $(dom)
           $.each(properties, function(key, value) {
@@ -411,6 +435,7 @@ VCO.Util = {
             else nodes.attr(key, value)
           })
         }
+
         return dom
       }
 
@@ -436,19 +461,33 @@ VCO.Util = {
       // special cases).
       // This method can be overriden in plugins.
       zepto.init = function(selector, context) {
+        var dom
         // If nothing given, return an empty Zepto collection
         if (!selector) return zepto.Z()
+        // Optimize for string selectors
+        else if (typeof selector == 'string') {
+          selector = selector.trim()
+          // If it's a html fragment, create nodes from it
+          // Note: In both Chrome 21 and Firefox 15, DOM error 12
+          // is thrown if the fragment doesn't begin with <
+          if (selector[0] == '<' && fragmentRE.test(selector))
+            dom = zepto.fragment(selector, RegExp.$1, context), selector = null
+          // If there's a context, create a collection on that context first, and select
+          // nodes from there
+          else if (context !== undefined) return $(context).find(selector)
+          // If it's a CSS selector, use it to select nodes.
+          else dom = zepto.qsa(document, selector)
+        }
         // If a function is given, call it when the DOM is ready
         else if (isFunction(selector)) return $(document).ready(selector)
-        // If a Zepto collection is given, juts return it
+        // If a Zepto collection is given, just return it
         else if (zepto.isZ(selector)) return selector
         else {
-          var dom
           // normalize array if an array of nodes is given
           if (isArray(selector)) dom = compact(selector)
-          // Wrap DOM nodes. If a plain object is given, duplicate it.
+          // Wrap DOM nodes.
           else if (isObject(selector))
-            dom = [isPlainObject(selector) ? $.extend({}, selector) : selector], selector = null
+            dom = [selector], selector = null
           // If it's a html fragment, create nodes from it
           else if (fragmentRE.test(selector))
             dom = zepto.fragment(selector.trim(), RegExp.$1, context), selector = null
@@ -457,9 +496,9 @@ VCO.Util = {
           else if (context !== undefined) return $(context).find(selector)
           // And last but no least, if it's a CSS selector, use it to select nodes.
           else dom = zepto.qsa(document, selector)
-          // create a new Zepto collection from the nodes found
-          return zepto.Z(dom, selector)
         }
+        // create a new Zepto collection from the nodes found
+        return zepto.Z(dom, selector)
       }
 
       // `$` will be the base `Zepto` object. When calling this
@@ -498,14 +537,19 @@ VCO.Util = {
       // uses `document.querySelectorAll` and optimizes for some special cases, like `#id`.
       // This method can be overriden in plugins.
       zepto.qsa = function(element, selector){
-        var found
-        return (isDocument(element) && idSelectorRE.test(selector)) ?
-          ( (found = element.getElementById(RegExp.$1)) ? [found] : [] ) :
+        var found,
+            maybeID = selector[0] == '#',
+            maybeClass = !maybeID && selector[0] == '.',
+            nameOnly = maybeID || maybeClass ? selector.slice(1) : selector, // Ensure that a 1 char tag name still gets checked
+            isSimple = simpleSelectorRE.test(nameOnly)
+        return (isDocument(element) && isSimple && maybeID) ?
+          ( (found = element.getElementById(nameOnly)) ? [found] : [] ) :
           (element.nodeType !== 1 && element.nodeType !== 9) ? [] :
           slice.call(
-            classSelectorRE.test(selector) ? element.getElementsByClassName(RegExp.$1) :
-            tagSelectorRE.test(selector) ? element.getElementsByTagName(selector) :
-            element.querySelectorAll(selector)
+            isSimple && !maybeID ?
+              maybeClass ? element.getElementsByClassName(nameOnly) : // If it's simple, it could be a class
+              element.getElementsByTagName(selector) : // Or a tag
+              element.querySelectorAll(selector) // Or it's not simple, and we need to query all
           )
       }
 
@@ -539,6 +583,7 @@ VCO.Util = {
       // "null"  => null
       // "42"    => 42
       // "42.5"  => 42.5
+      // "08"    => "08"
       // JSON    => parse if valid
       // String  => self
       function deserializeValue(value) {
@@ -548,7 +593,7 @@ VCO.Util = {
             value == "true" ||
             ( value == "false" ? false :
               value == "null" ? null :
-              !isNaN(num = Number(value)) ? num :
+              !/^0/.test(value) && !isNaN(num = Number(value)) ? num :
               /^[\[\{]/.test(value) ? $.parseJSON(value) :
               value )
             : value
@@ -644,7 +689,9 @@ VCO.Util = {
         },
 
         ready: function(callback){
-          if (readyRE.test(document.readyState)) callback($)
+          // need to check if document.body exists for IE as that browser reports
+          // document ready when it hasn't yet created the body element
+          if (readyRE.test(document.readyState) && document.body) callback($)
           else document.addEventListener('DOMContentLoaded', function(){ callback($) }, false)
           return this
         },
@@ -766,7 +813,7 @@ VCO.Util = {
         },
         show: function(){
           return this.each(function(){
-            this.style.display == "none" && (this.style.display = null)
+            this.style.display == "none" && (this.style.display = '')
             if (getComputedStyle(this, '').getPropertyValue("display") == "none")
               this.style.display = defaultDisplay(this.nodeName)
           })
@@ -826,7 +873,7 @@ VCO.Util = {
         prev: function(selector){ return $(this.pluck('previousElementSibling')).filter(selector || '*') },
         next: function(selector){ return $(this.pluck('nextElementSibling')).filter(selector || '*') },
         html: function(html){
-          return html === undefined ?
+          return arguments.length === 0 ?
             (this.length > 0 ? this[0].innerHTML : null) :
             this.each(function(idx){
               var originHtml = this.innerHTML
@@ -834,9 +881,9 @@ VCO.Util = {
             })
         },
         text: function(text){
-          return text === undefined ?
+          return arguments.length === 0 ?
             (this.length > 0 ? this[0].textContent : null) :
-            this.each(function(){ this.textContent = text })
+            this.each(function(){ this.textContent = (text === undefined) ? '' : ''+text })
         },
         attr: function(name, value){
           var result
@@ -855,6 +902,7 @@ VCO.Util = {
           return this.each(function(){ this.nodeType === 1 && setAttribute(this, name) })
         },
         prop: function(name, value){
+          name = propMap[name] || name
           return (value === undefined) ?
             (this[0] && this[0][name]) :
             this.each(function(idx){
@@ -862,13 +910,13 @@ VCO.Util = {
             })
         },
         data: function(name, value){
-          var data = this.attr('data-' + dasherize(name), value)
+          var data = this.attr('data-' + name.replace(capitalRE, '-$1').toLowerCase(), value)
           return data !== null ? deserializeValue(data) : undefined
         },
         val: function(value){
-          return (value === undefined) ?
+          return arguments.length === 0 ?
             (this[0] && (this[0].multiple ?
-               $(this[0]).find('option').filter(function(o){ return this.selected }).pluck('value') :
+               $(this[0]).find('option').filter(function(){ return this.selected }).pluck('value') :
                this[0].value)
             ) :
             this.each(function(idx){
@@ -898,8 +946,19 @@ VCO.Util = {
           }
         },
         css: function(property, value){
-          if (arguments.length < 2 && typeof property == 'string')
-            return this[0] && (this[0].style[camelize(property)] || getComputedStyle(this[0], '').getPropertyValue(property))
+          if (arguments.length < 2) {
+            var element = this[0], computedStyle = getComputedStyle(element, '')
+            if(!element) return
+            if (typeof property == 'string')
+              return element.style[camelize(property)] || computedStyle.getPropertyValue(property)
+            else if (isArray(property)) {
+              var props = {}
+              $.each(isArray(property) ? property: [property], function(_, prop){
+                props[prop] = (element.style[camelize(prop)] || computedStyle.getPropertyValue(prop))
+              })
+              return props
+            }
+          }
 
           var css = ''
           if (type(property) == 'string') {
@@ -921,11 +980,13 @@ VCO.Util = {
           return element ? this.indexOf($(element)[0]) : this.parent().children().indexOf(this[0])
         },
         hasClass: function(name){
+          if (!name) return false
           return emptyArray.some.call(this, function(el){
             return this.test(className(el))
           }, classRE(name))
         },
         addClass: function(name){
+          if (!name) return this
           return this.each(function(idx){
             classList = []
             var cls = className(this), newName = funcArg(this, name, idx, cls)
@@ -946,6 +1007,7 @@ VCO.Util = {
           })
         },
         toggleClass: function(name, when){
+          if (!name) return this
           return this.each(function(idx){
             var $this = $(this), names = funcArg(this, name, idx, className(this))
             names.split(/\s+/g).forEach(function(klass){
@@ -954,9 +1016,21 @@ VCO.Util = {
             })
           })
         },
-        scrollTop: function(){
+        scrollTop: function(value){
           if (!this.length) return
-          return ('scrollTop' in this[0]) ? this[0].scrollTop : this[0].scrollY
+          var hasScrollTop = 'scrollTop' in this[0]
+          if (value === undefined) return hasScrollTop ? this[0].scrollTop : this[0].pageYOffset
+          return this.each(hasScrollTop ?
+            function(){ this.scrollTop = value } :
+            function(){ this.scrollTo(this.scrollX, value) })
+        },
+        scrollLeft: function(value){
+          if (!this.length) return
+          var hasScrollLeft = 'scrollLeft' in this[0]
+          if (value === undefined) return hasScrollLeft ? this[0].scrollLeft : this[0].pageXOffset
+          return this.each(hasScrollLeft ?
+            function(){ this.scrollLeft = value } :
+            function(){ this.scrollTo(value, this.scrollY) })
         },
         position: function() {
           if (!this.length) return
@@ -999,11 +1073,13 @@ VCO.Util = {
 
       // Generate the `width` and `height` functions
       ;['width', 'height'].forEach(function(dimension){
+        var dimensionProperty =
+          dimension.replace(/./, function(m){ return m[0].toUpperCase() })
+
         $.fn[dimension] = function(value){
-          var offset, el = this[0],
-            Dimension = dimension.replace(/./, function(m){ return m[0].toUpperCase() })
-          if (value === undefined) return isWindow(el) ? el['inner' + Dimension] :
-            isDocument(el) ? el.documentElement['offset' + Dimension] :
+          var offset, el = this[0]
+          if (value === undefined) return isWindow(el) ? el['inner' + dimensionProperty] :
+            isDocument(el) ? el.documentElement['scroll' + dimensionProperty] :
             (offset = this.offset()) && offset[dimension]
           else return this.each(function(idx){
             el = $(this)
@@ -1074,8 +1150,18 @@ VCO.Util = {
       return $
     })()
 
+    window.Zepto = Zepto
+    window.$ === undefined && (window.$ = Zepto)
+
     ;(function($){
-      var $$ = $.zepto.qsa, handlers = {}, _zid = 1, specialEvents={},
+      var $$ = $.zepto.qsa, _zid = 1, undefined,
+          slice = Array.prototype.slice,
+          isFunction = $.isFunction,
+          isString = function(obj){ return typeof obj == 'string' },
+          handlers = {},
+          specialEvents={},
+          focusinSupported = 'onfocusin' in window,
+          focus = { focus: 'focusin', blur: 'focusout' },
           hover = { mouseenter: 'mouseover', mouseleave: 'mouseout' }
 
       specialEvents.click = specialEvents.mousedown = specialEvents.mouseup = specialEvents.mousemove = 'MouseEvents'
@@ -1102,24 +1188,20 @@ VCO.Util = {
         return new RegExp('(?:^| )' + ns.replace(' ', ' .* ?') + '(?: |$)')
       }
 
-      function eachEvent(events, fn, iterator){
-        if ($.type(events) != "string") $.each(events, iterator)
-        else events.split(/\s/).forEach(function(type){ iterator(type, fn) })
-      }
-
       function eventCapture(handler, captureSetting) {
         return handler.del &&
-          (handler.e == 'focus' || handler.e == 'blur') ||
+          (!focusinSupported && (handler.e in focus)) ||
           !!captureSetting
       }
 
       function realEvent(type) {
-        return hover[type] || type
+        return hover[type] || (focusinSupported && focus[type]) || type
       }
 
-      function add(element, events, fn, selector, getDelegate, capture){
+      function add(element, events, fn, data, selector, delegator, capture){
         var id = zid(element), set = (handlers[id] || (handlers[id] = []))
-        eachEvent(events, fn, function(event, fn){
+        events.split(/\s/).forEach(function(event){
+          if (event == 'ready') return $(document).ready(fn)
           var handler   = parse(event)
           handler.fn    = fn
           handler.sel   = selector
@@ -1129,23 +1211,28 @@ VCO.Util = {
             if (!related || (related !== this && !$.contains(this, related)))
               return handler.fn.apply(this, arguments)
           }
-          handler.del   = getDelegate && getDelegate(fn, event)
-          var callback  = handler.del || fn
-          handler.proxy = function (e) {
-            var result = callback.apply(element, [e].concat(e.data))
+          handler.del   = delegator
+          var callback  = delegator || fn
+          handler.proxy = function(e){
+            e = compatible(e)
+            if (e.isImmediatePropagationStopped()) return
+            e.data = data
+            var result = callback.apply(element, e._args == undefined ? [e] : [e].concat(e._args))
             if (result === false) e.preventDefault(), e.stopPropagation()
             return result
           }
           handler.i = set.length
           set.push(handler)
-          element.addEventListener(realEvent(handler.e), handler.proxy, eventCapture(handler, capture))
+          if ('addEventListener' in element)
+            element.addEventListener(realEvent(handler.e), handler.proxy, eventCapture(handler, capture))
         })
       }
       function remove(element, events, fn, selector, capture){
         var id = zid(element)
-        eachEvent(events || '', fn, function(event, fn){
+        ;(events || '').split(/\s/).forEach(function(event){
           findHandlers(element, event, fn, selector).forEach(function(handler){
             delete handlers[id][handler.i]
+          if ('removeEventListener' in element)
             element.removeEventListener(realEvent(handler.e), handler.proxy, eventCapture(handler, capture))
           })
         })
@@ -1154,91 +1241,70 @@ VCO.Util = {
       $.event = { add: add, remove: remove }
 
       $.proxy = function(fn, context) {
-        if ($.isFunction(fn)) {
+        if (isFunction(fn)) {
           var proxyFn = function(){ return fn.apply(context, arguments) }
           proxyFn._zid = zid(fn)
           return proxyFn
-        } else if (typeof context == 'string') {
+        } else if (isString(context)) {
           return $.proxy(fn[context], fn)
         } else {
           throw new TypeError("expected function")
         }
       }
 
-      $.fn.bind = function(event, callback){
-        return this.each(function(){
-          add(this, event, callback)
-        })
+      $.fn.bind = function(event, data, callback){
+        return this.on(event, data, callback)
       }
       $.fn.unbind = function(event, callback){
-        return this.each(function(){
-          remove(this, event, callback)
-        })
+        return this.off(event, callback)
       }
-      $.fn.one = function(event, callback){
-        return this.each(function(i, element){
-          add(this, event, callback, null, function(fn, type){
-            return function(){
-              var result = fn.apply(element, arguments)
-              remove(element, type, fn)
-              return result
-            }
-          })
-        })
+      $.fn.one = function(event, selector, data, callback){
+        return this.on(event, selector, data, callback, 1)
       }
 
       var returnTrue = function(){return true},
           returnFalse = function(){return false},
-          ignoreProperties = /^([A-Z]|layer[XY]$)/,
+          ignoreProperties = /^([A-Z]|returnValue$|layer[XY]$)/,
           eventMethods = {
             preventDefault: 'isDefaultPrevented',
             stopImmediatePropagation: 'isImmediatePropagationStopped',
             stopPropagation: 'isPropagationStopped'
           }
+
+      function compatible(event, source) {
+        if (source || !event.isDefaultPrevented) {
+          source || (source = event)
+
+          $.each(eventMethods, function(name, predicate) {
+            var sourceMethod = source[name]
+            event[name] = function(){
+              this[predicate] = returnTrue
+              return sourceMethod && sourceMethod.apply(source, arguments)
+            }
+            event[predicate] = returnFalse
+          })
+
+          if (source.defaultPrevented !== undefined ? source.defaultPrevented :
+              'returnValue' in source ? source.returnValue === false :
+              source.getPreventDefault && source.getPreventDefault())
+            event.isDefaultPrevented = returnTrue
+        }
+        return event
+      }
+
       function createProxy(event) {
         var key, proxy = { originalEvent: event }
         for (key in event)
           if (!ignoreProperties.test(key) && event[key] !== undefined) proxy[key] = event[key]
 
-        $.each(eventMethods, function(name, predicate) {
-          proxy[name] = function(){
-            this[predicate] = returnTrue
-            return event[name].apply(event, arguments)
-          }
-          proxy[predicate] = returnFalse
-        })
-        return proxy
-      }
-
-      // emulates the 'defaultPrevented' property for browsers that have none
-      function fix(event) {
-        if (!('defaultPrevented' in event)) {
-          event.defaultPrevented = false
-          var prevent = event.preventDefault
-          event.preventDefault = function() {
-            this.defaultPrevented = true
-            prevent.call(this)
-          }
-        }
+        return compatible(proxy, event)
       }
 
       $.fn.delegate = function(selector, event, callback){
-        return this.each(function(i, element){
-          add(element, event, callback, selector, function(fn){
-            return function(e){
-              var evt, match = $(e.target).closest(selector, element).get(0)
-              if (match) {
-                evt = $.extend(createProxy(e), {currentTarget: match, liveFired: element})
-                return fn.apply(match, [evt].concat([].slice.call(arguments, 1)))
-              }
-            }
-          })
-        })
+        return this.on(event, selector, callback)
       }
       $.fn.undelegate = function(selector, event, callback){
-        return this.each(function(){
-          remove(this, event, callback, selector)
-        })
+        return this.off(event, selector, callback)
       }
 
       $.fn.live = function(event, callback){
@@ -1250,33 +1316,75 @@ VCO.Util = {
         return this
       }
 
-      $.fn.on = function(event, selector, callback){
-        return !selector || $.isFunction(selector) ?
-          this.bind(event, selector || callback) : this.delegate(selector, event, callback)
+      $.fn.on = function(event, selector, data, callback, one){
+        var autoRemove, delegator, $this = this
+        if (event && !isString(event)) {
+          $.each(event, function(type, fn){
+            $this.on(type, selector, data, fn, one)
+          })
+          return $this
+        }
+
+        if (!isString(selector) && !isFunction(callback) && callback !== false)
+          callback = data, data = selector, selector = undefined
+        if (isFunction(data) || data === false)
+          callback = data, data = undefined
+
+        if (callback === false) callback = returnFalse
+
+        return $this.each(function(_, element){
+          if (one) autoRemove = function(e){
+            remove(element, e.type, callback)
+            return callback.apply(this, arguments)
+          }
+
+          if (selector) delegator = function(e){
+            var evt, match = $(e.target).closest(selector, element).get(0)
+            if (match && match !== element) {
+              evt = $.extend(createProxy(e), {currentTarget: match, liveFired: element})
+              return (autoRemove || callback).apply(match, [evt].concat(slice.call(arguments, 1)))
+            }
+          }
+
+          add(element, event, callback, data, selector, delegator || autoRemove)
+        })
       }
       $.fn.off = function(event, selector, callback){
-        return !selector || $.isFunction(selector) ?
-          this.unbind(event, selector || callback) : this.undelegate(selector, event, callback)
+        var $this = this
+        if (event && !isString(event)) {
+          $.each(event, function(type, fn){
+            $this.off(type, selector, fn)
+          })
+          return $this
+        }
+
+        if (!isString(selector) && !isFunction(callback) && callback !== false)
+          callback = selector, selector = undefined
+
+        if (callback === false) callback = returnFalse
+
+        return $this.each(function(){
+          remove(this, event, callback, selector)
+        })
       }
 
-      $.fn.trigger = function(event, data){
-        if (typeof event == 'string' || $.isPlainObject(event)) event = $.Event(event)
-        fix(event)
-        event.data = data
+      $.fn.trigger = function(event, args){
+        event = (isString(event) || $.isPlainObject(event)) ? $.Event(event) : compatible(event)
+        event._args = args
         return this.each(function(){
           // items in the collection might not be DOM elements
-          // (todo: possibly support events on plain old objects)
           if('dispatchEvent' in this) this.dispatchEvent(event)
+          else $(this).triggerHandler(event, args)
         })
       }
 
       // triggers event handlers on current element just as if an event occurred,
       // doesn't trigger an actual event, doesn't bubble
-      $.fn.triggerHandler = function(event, data){
+      $.fn.triggerHandler = function(event, args){
         var e, result
         this.each(function(i, element){
-          e = createProxy(typeof event == 'string' ? $.Event(event) : event)
-          e.data = data
+          e = createProxy(isString(event) ? $.Event(event) : event)
+          e._args = args
           e.target = element
           $.each(findHandlers(element, event.type || event), function(i, handler){
             result = handler.proxy(e)
@@ -1309,12 +1417,11 @@ VCO.Util = {
       })
 
       $.Event = function(type, props) {
-        if (typeof type != 'string') props = type, type = props.type
+        if (!isString(type)) props = type, type = props.type
         var event = document.createEvent(specialEvents[type] || 'Events'), bubbles = true
         if (props) for (var name in props) (name == 'bubbles') ? (bubbles = !!props[name]) : (event[name] = props[name])
-        event.initEvent(type, bubbles, true, null, null, null, null, null, null, null, null, null, null, null, null)
-        event.isDefaultPrevented = function(){ return this.defaultPrevented }
-        return event
+        event.initEvent(type, bubbles, true)
+        return compatible(event)
       }
 
     })(Zepto)
@@ -1335,7 +1442,7 @@ VCO.Util = {
       function triggerAndReturn(context, eventName, data) {
         var event = $.Event(eventName)
         $(context).trigger(event, data)
-        return !event.defaultPrevented
+        return !event.isDefaultPrevented()
       }
 
       // trigger an Ajax "global" event
@@ -1362,17 +1469,19 @@ VCO.Util = {
 
         triggerGlobal(settings, context, 'ajaxSend', [xhr, settings])
       }
-      function ajaxSuccess(data, xhr, settings) {
+      function ajaxSuccess(data, xhr, settings, deferred) {
         var context = settings.context, status = 'success'
         settings.success.call(context, data, status, xhr)
+        if (deferred) deferred.resolveWith(context, [data, status, xhr])
         triggerGlobal(settings, context, 'ajaxSuccess', [xhr, settings, data])
         ajaxComplete(status, xhr, settings)
       }
       // type: "timeout", "error", "abort", "parsererror"
-      function ajaxError(error, type, xhr, settings) {
+      function ajaxError(error, type, xhr, settings, deferred) {
         var context = settings.context
         settings.error.call(context, xhr, type, error)
-        triggerGlobal(settings, context, 'ajaxError', [xhr, settings, error])
+        if (deferred) deferred.rejectWith(context, [xhr, type, error])
+        triggerGlobal(settings, context, 'ajaxError', [xhr, settings, error || type])
         ajaxComplete(type, xhr, settings)
       }
       // status: "success", "notmodified", "error", "timeout", "abort", "parsererror"
@@ -1386,39 +1495,50 @@ VCO.Util = {
       // Empty function, used as default callback
       function empty() {}
 
-      $.ajaxJSONP = function(options){
+      $.ajaxJSONP = function(options, deferred){
         if (!('type' in options)) return $.ajax(options)
 
-        var callbackName = 'jsonp' + (++jsonpID),
+        var _callbackName = options.jsonpCallback,
+          callbackName = ($.isFunction(_callbackName) ?
+            _callbackName() : _callbackName) || ('jsonp' + (++jsonpID)),
           script = document.createElement('script'),
-          cleanup = function() {
-            clearTimeout(abortTimeout)
-            $(script).remove()
-            delete window[callbackName]
-          },
-          abort = function(type){
-            cleanup()
-            // In case of manual abort or timeout, keep an empty function as callback
-            // so that the SCRIPT tag that eventually loads won't result in an error.
-            if (!type || type == 'timeout') window[callbackName] = empty
-            ajaxError(null, type || 'abort', xhr, options)
+          originalCallback = window[callbackName],
+          responseData,
+          abort = function(errorType) {
+            $(script).triggerHandler('error', errorType || 'abort')
           },
           xhr = { abort: abort }, abortTimeout
 
+        if (deferred) deferred.promise(xhr)
+
+        $(script).on('load error', function(e, errorType){
+          clearTimeout(abortTimeout)
+          $(script).off().remove()
+
+          if (e.type == 'error' || !responseData) {
+            ajaxError(null, errorType || 'error', xhr, options, deferred)
+          } else {
+            ajaxSuccess(responseData[0], xhr, options, deferred)
+          }
+
+          window[callbackName] = originalCallback
+          if (responseData && $.isFunction(originalCallback))
+            originalCallback(responseData[0])
+
+          originalCallback = responseData = undefined
+        })
+
         if (ajaxBeforeSend(xhr, options) === false) {
           abort('abort')
-          return false
+          return xhr
         }
 
-        window[callbackName] = function(data){
-          cleanup()
-          ajaxSuccess(data, xhr, options)
+        window[callbackName] = function(){
+          responseData = arguments
         }
 
-        script.onerror = function() { abort('error') }
-
-        script.src = options.url.replace(/=\?/, '=' + callbackName)
-        $('head').append(script)
+        script.src = options.url.replace(/\?(.+)=\?/, '?$1=' + callbackName)
+        document.head.appendChild(script)
 
         if (options.timeout > 0) abortTimeout = setTimeout(function(){
           abort('timeout')
@@ -1447,8 +1567,9 @@ VCO.Util = {
           return new window.XMLHttpRequest()
         },
         // MIME types mapping
+        // IIS returns Javascript as "application/x-javascript"
         accepts: {
-          script: 'text/javascript, application/javascript',
+          script: 'text/javascript, application/javascript, application/x-javascript',
           json:   jsonType,
           xml:    'application/xml, text/xml',
           html:   htmlType,
@@ -1473,6 +1594,7 @@ VCO.Util = {
       }
 
       function appendQuery(url, query) {
+        if (query == '') return url
         return (url + '&' + query).replace(/[&?]{1,2}/, '?')
       }
 
@@ -1481,11 +1603,12 @@ VCO.Util = {
         if (options.processData && options.data && $.type(options.data) != "string")
           options.data = $.param(options.data, options.traditional)
         if (options.data && (!options.type || options.type.toUpperCase() == 'GET'))
-          options.url = appendQuery(options.url, options.data)
+          options.url = appendQuery(options.url, options.data), options.data = undefined
       }
 
       $.ajax = function(options){
-        var settings = $.extend({}, options || {})
+        var settings = $.extend({}, options || {}),
+            deferred = $.Deferred && $.Deferred()
         for (key in $.ajaxSettings) if (settings[key] === undefined) settings[key] = $.ajaxSettings[key]
 
         ajaxStart(settings)
@@ -1497,34 +1620,43 @@ VCO.Util = {
         serializeData(settings)
         if (settings.cache === false) settings.url = appendQuery(settings.url, '_=' + Date.now())
 
-        var dataType = settings.dataType, hasPlaceholder = /=\?/.test(settings.url)
+        var dataType = settings.dataType, hasPlaceholder = /\?.+=\?/.test(settings.url)
         if (dataType == 'jsonp' || hasPlaceholder) {
-          if (!hasPlaceholder) settings.url = appendQuery(settings.url, 'callback=?')
-          return $.ajaxJSONP(settings)
+          if (!hasPlaceholder)
+            settings.url = appendQuery(settings.url,
+              settings.jsonp ? (settings.jsonp + '=?') : settings.jsonp === false ? '' : 'callback=?')
+          return $.ajaxJSONP(settings, deferred)
         }
 
         var mime = settings.accepts[dataType],
-            baseHeaders = { },
+            headers = { },
+            setHeader = function(name, value) { headers[name.toLowerCase()] = [name, value] },
             protocol = /^([\w-]+:)\/\//.test(settings.url) ? RegExp.$1 : window.location.protocol,
-            xhr = settings.xhr(), abortTimeout
+            xhr = settings.xhr(),
+            nativeSetHeader = xhr.setRequestHeader,
+            abortTimeout
 
-        if (!settings.crossDomain) baseHeaders['X-Requested-With'] = 'XMLHttpRequest'
-        if (mime) {
-          baseHeaders['Accept'] = mime
+        if (deferred) deferred.promise(xhr)
+
+        if (!settings.crossDomain) setHeader('X-Requested-With', 'XMLHttpRequest')
+        setHeader('Accept', mime || '*/*')
+        if (mime = settings.mimeType || mime) {
           if (mime.indexOf(',') > -1) mime = mime.split(',', 2)[0]
           xhr.overrideMimeType && xhr.overrideMimeType(mime)
         }
         if (settings.contentType || (settings.contentType !== false && settings.data && settings.type.toUpperCase() != 'GET'))
-          baseHeaders['Content-Type'] = (settings.contentType || 'application/x-www-form-urlencoded')
-        settings.headers = $.extend(baseHeaders, settings.headers || {})
+          setHeader('Content-Type', settings.contentType || 'application/x-www-form-urlencoded')
+
+        if (settings.headers) for (name in settings.headers) setHeader(name, settings.headers[name])
+        xhr.setRequestHeader = setHeader
 
         xhr.onreadystatechange = function(){
           if (xhr.readyState == 4) {
-            xhr.onreadystatechange = empty;
+            xhr.onreadystatechange = empty
             clearTimeout(abortTimeout)
             var result, error = false
             if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304 || (xhr.status == 0 && protocol == 'file:')) {
-              dataType = dataType || mimeToDataType(xhr.getResponseHeader('content-type'))
+              dataType = dataType || mimeToDataType(settings.mimeType || xhr.getResponseHeader('content-type'))
               result = xhr.responseText
 
               try {
@@ -1534,28 +1666,31 @@ VCO.Util = {
                 else if (dataType == 'json') result = blankRE.test(result) ? null : $.parseJSON(result)
               } catch (e) { error = e }
 
-              if (error) ajaxError(error, 'parsererror', xhr, settings)
-              else ajaxSuccess(result, xhr, settings)
+              if (error) ajaxError(error, 'parsererror', xhr, settings, deferred)
+              else ajaxSuccess(result, xhr, settings, deferred)
             } else {
-              ajaxError(null, xhr.status ? 'error' : 'abort', xhr, settings)
+              ajaxError(xhr.statusText || null, xhr.status ? 'error' : 'abort', xhr, settings, deferred)
             }
           }
         }
 
-        var async = 'async' in settings ? settings.async : true
-        xhr.open(settings.type, settings.url, async)
-
-        for (name in settings.headers) xhr.setRequestHeader(name, settings.headers[name])
-
         if (ajaxBeforeSend(xhr, settings) === false) {
           xhr.abort()
-          return false
+          ajaxError(null, 'abort', xhr, settings, deferred)
+          return xhr
         }
+
+        if (settings.xhrFields) for (name in settings.xhrFields) xhr[name] = settings.xhrFields[name]
+
+        var async = 'async' in settings ? settings.async : true
+        xhr.open(settings.type, settings.url, async, settings.username, settings.password)
+
+        for (name in headers) nativeSetHeader.apply(xhr, headers[name])
 
         if (settings.timeout > 0) abortTimeout = setTimeout(function(){
             xhr.onreadystatechange = empty
             xhr.abort()
-            ajaxError(null, 'timeout', xhr, settings)
+            ajaxError(null, 'timeout', xhr, settings, deferred)
           }, settings.timeout)
 
         // avoid sending empty string (#319)
@@ -1609,10 +1744,11 @@ VCO.Util = {
       var escape = encodeURIComponent
 
       function serialize(params, obj, traditional, scope){
-        var type, array = $.isArray(obj)
+        var type, array = $.isArray(obj), hash = $.isPlainObject(obj)
         $.each(obj, function(key, value) {
           type = $.type(value)
-          if (scope) key = traditional ? scope : scope + '[' + (array ? '' : key) + ']'
+          if (scope) key = traditional ? scope :
+            scope + '[' + (hash || type == 'object' || type == 'array' ? key : '') + ']'
           // handle data in serializeArray() format
           if (!scope && array) params.add(value.name, value.value)
           // recurse into nested objects
@@ -1629,6 +1765,80 @@ VCO.Util = {
         return params.join('&').replace(/%20/g, '+')
       }
     })(Zepto)
+
+    ;(function($){
+      $.fn.serializeArray = function() {
+        var result = [], el
+        $([].slice.call(this.get(0).elements)).each(function(){
+          el = $(this)
+          var type = el.attr('type')
+          if (this.nodeName.toLowerCase() != 'fieldset' &&
+            !this.disabled && type != 'submit' && type != 'reset' && type != 'button' &&
+            ((type != 'radio' && type != 'checkbox') || this.checked))
+            result.push({
+              name: el.attr('name'),
+              value: el.val()
+            })
+        })
+        return result
+      }
+
+      $.fn.serialize = function(){
+        var result = []
+        this.serializeArray().forEach(function(elm){
+          result.push(encodeURIComponent(elm.name) + '=' + encodeURIComponent(elm.value))
+        })
+        return result.join('&')
+      }
+
+      $.fn.submit = function(callback) {
+        if (callback) this.bind('submit', callback)
+        else if (this.length) {
+          var event = $.Event('submit')
+          this.eq(0).trigger(event)
+          if (!event.isDefaultPrevented()) this.get(0).submit()
+        }
+        return this
+      }
+
+    })(Zepto)
+
+    ;(function($){
+      // __proto__ doesn't exist on IE<11, so redefine
+      // the Z function to use object extension instead
+      if (!('__proto__' in {})) {
+        $.extend($.zepto, {
+          Z: function(dom, selector){
+            dom = dom || []
+            $.extend(dom, $.fn)
+            dom.selector = selector || ''
+            dom.__Z = true
+            return dom
+          },
+          // this is a kludge but works
+          isZ: function(object){
+            return $.type(object) === 'array' && '__Z' in object
+          }
+        })
+      }
+
+      // getComputedStyle shouldn't freak out when called
+      // without a valid element as argument
+      try {
+        getComputedStyle(undefined)
+      } catch(e) {
+        var nativeGetComputedStyle = getComputedStyle;
+        window.getComputedStyle = function(element){
+          try {
+            return nativeGetComputedStyle(element)
+          } catch(e) {
+            return null
+          }
+        }
+      }
+    })(Zepto)
+
+
     VCO.getJSON = Zepto.getJSON;
 	VCO.ajax = Zepto.ajax;
 })(VCO)
@@ -4363,7 +4573,7 @@ VCO.MediaType = function(m) {
 			{
 				type: 		"instagram",
 				name: 		"Instagram", 
-				match_str: 	"instagr.am/p/",
+				match_str: 	/(instagr.am|instagram.com)\/p/,
 				cls: 		VCO.Media
 			},
 			{
@@ -4434,6 +4644,7 @@ VCO.MediaType = function(m) {
 	return false;
 	
 }
+
 
 /* **********************************************
      Begin VCO.Media.js
@@ -4769,7 +4980,7 @@ VCO.Media.Flickr = VCO.Media.extend({
 		this._el.content_item	= VCO.Dom.create("img", "vco-media-item vco-media-image vco-media-flickr vco-media-shadow", this._el.content);
 		
 		// Get Media ID
-		this.media_id = this.data.url.split("photos\/")[1].split("/")[1];
+		this.establishMediaID();
 		
 		// API URL
 		api_url = "http://api.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key=" + this.options.api_key_flickr + "&photo_id=" + this.media_id + "&format=json&jsoncallback=?";
@@ -4784,6 +4995,14 @@ VCO.Media.Flickr = VCO.Media.extend({
 			}
 		});
 		
+	},
+
+	establishMediaID: function() {
+		var marker = 'flickr.com/photos/';
+		var idx = this.data.url.indexOf(marker);
+		if (idx == -1) { throw "Invalid Flickr URL"; }
+		var pos = idx + marker.length;
+		this.media_id = this.data.url.substr(pos).split("/")[1];
 	},
 	
 	createMedia: function(d) {
@@ -7492,10 +7711,10 @@ L.Mixin.Events = {
 	}
 };
 
-L.Mixin.Events.on = L.Mixin.Events.addEventListener;
-L.Mixin.Events.off = L.Mixin.Events.removeEventListener;
-L.Mixin.Events.once = L.Mixin.Events.addOneTimeEventListener;
-L.Mixin.Events.fire = L.Mixin.Events.fireEvent;
+L.Mixin.Events.on	= L.Mixin.Events.addEventListener;
+L.Mixin.Events.off	= L.Mixin.Events.removeEventListener;
+L.Mixin.Events.once	= L.Mixin.Events.addOneTimeEventListener;
+L.Mixin.Events.fire	= L.Mixin.Events.fireEvent;
 
 
 /*
@@ -7570,26 +7789,26 @@ L.Mixin.Events.fire = L.Mixin.Events.fireEvent;
 		ie7: ie7,
 		ielt9: ielt9,
 		webkit: webkit,
-
+		
 		android: android,
 		android23: android23,
-
+		
 		chrome: chrome,
-
+		
 		ie3d: ie3d,
 		webkit3d: webkit3d,
 		gecko3d: gecko3d,
 		opera3d: opera3d,
 		any3d: any3d,
-
+		
 		mobile: mobile,
 		mobileWebkit: mobile && webkit,
 		mobileWebkit3d: mobile && webkit3d,
 		mobileOpera: mobile && window.opera,
-
+		
 		touch: touch,
 		msTouch: msTouch,
-
+		
 		retina: retina
 	};
 
@@ -8642,13 +8861,13 @@ L.Map = L.Class.extend({
 	panInsideBounds: function (bounds) {
 		bounds = L.latLngBounds(bounds);
 
-		var viewBounds = this.getPixelBounds(),
-		    viewSw = viewBounds.getBottomLeft(),
-		    viewNe = viewBounds.getTopRight(),
-		    sw = this.project(bounds.getSouthWest()),
-		    ne = this.project(bounds.getNorthEast()),
-		    dx = 0,
-		    dy = 0;
+		var viewBounds		= this.getPixelBounds(),
+			viewSw			= viewBounds.getBottomLeft(),
+			viewNe			= viewBounds.getTopRight(),
+			sw				= this.project(bounds.getSouthWest()),
+			ne				= this.project(bounds.getNorthEast()),
+			dx				= 0,
+			dy				= 0;
 
 		if (viewNe.y < ne.y) { // north
 			dy = Math.ceil(ne.y - viewNe.y);
@@ -9014,14 +9233,14 @@ L.Map = L.Class.extend({
 	_initPanes: function () {
 		var panes = this._panes = {};
 
-		this._mapPane = panes.mapPane = this._createPane('leaflet-map-pane', this._container);
-
-		this._tilePane = panes.tilePane = this._createPane('leaflet-tile-pane', this._mapPane);
-		panes.objectsPane = this._createPane('leaflet-objects-pane', this._mapPane);
-		panes.shadowPane = this._createPane('leaflet-shadow-pane');
-		panes.overlayPane = this._createPane('leaflet-overlay-pane');
-		panes.markerPane = this._createPane('leaflet-marker-pane');
-		panes.popupPane = this._createPane('leaflet-popup-pane');
+		this._mapPane		= panes.mapPane = this._createPane('leaflet-map-pane', this._container);
+		
+		this._tilePane		= panes.tilePane = this._createPane('leaflet-tile-pane', this._mapPane);
+		panes.objectsPane	= this._createPane('leaflet-objects-pane', this._mapPane);
+		panes.shadowPane	= this._createPane('leaflet-shadow-pane');
+		panes.overlayPane	= this._createPane('leaflet-overlay-pane');
+		panes.markerPane	= this._createPane('leaflet-marker-pane');
+		panes.popupPane		= this._createPane('leaflet-popup-pane');
 
 		var zoomHide = ' leaflet-zoom-hide';
 
@@ -15915,6 +16134,7 @@ L.Map.include({
 
 /*
  * L.TileLayer.Zoomify display Zoomify tiles with Leaflet
+ * Modified from https://github.com/turban/Leaflet.Zoomify
  */
 
 L.TileLayer.Zoomify = L.TileLayer.extend({
@@ -15953,7 +16173,7 @@ L.TileLayer.Zoomify = L.TileLayer.extend({
 			imageSize = this._imageSize[zoom],
 			center = map.options.crs.pointToLatLng(L.point(imageSize.x / 2, imageSize.y / 2), zoom);
 
-		map.setView(center, zoom, true);
+		//map.setView(center, zoom, true);
 	},
 	
 	getCenterZoom: function(map) {
@@ -16059,10 +16279,10 @@ L.tileLayer.zoomify = function (url, options) {
 
 	/*	tile.stamen.js v1.2.3
 	================================================== */
-	var SUBDOMAINS = " a. b. c. d.".split(" "),
+	var SUBDOMAINS = "a b c d".split(" "),
 		MAKE_PROVIDER = function(layer, type, minZoom, maxZoom) {
 			return {
-				"url":          ["http://{S}tile.stamen.com/", layer, "/{Z}/{X}/{Y}.", type].join(""),
+				"url":          ["//stamen-tiles-{S}.a.ssl.fastly.net/", layer, "/{Z}/{X}/{Y}.", type].join(""),
 				"type":         type,
 				"subdomains":   SUBDOMAINS.slice(),
 				"minZoom":      minZoom,
@@ -16446,6 +16666,7 @@ VCO.Map = VCO.Class.extend({
 			map_type: 			"stamen:toner",
 			map_subdomains: 	"",
 			zoomify: {
+				is_map: 		true,
 				path: 			"",
 				width: 			"",
 				height: 		"",
@@ -16477,6 +16698,14 @@ VCO.Map = VCO.Class.extend({
 		// Merge Data and Options
 		VCO.Util.mergeData(this.options, options);
 		VCO.Util.mergeData(this.data, data);
+		
+		// Set zoomify type
+		if (this.options.zoomify) {
+			if(typeof this.options.zoomify.is_map === 'undefined'){
+				this.options.zoomify.is_map = true;
+			};
+		}
+		
 		
 		this._initLayout();
 		this._initEvents();
@@ -16980,10 +17209,10 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		// Set Marker Path
 		L.Icon.Default.imagePath = this.options.path_gfx;
 		
-		//this._map = new L.map(this._el.map, {scrollWheelZoom:false});
 		this._map = new L.map(this._el.map, {scrollWheelZoom:false});
 		this._map.on("load", this._onMapLoaded, this);
-		//this._map.setView([51.505, -0.09], 13);
+		
+		this._map.on("moveend", this._onMapMoveEnd, this);
 			
 		var map_type_arr = this.options.map_type.split(':');		
 
@@ -17030,6 +17259,13 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		
 	},
 	
+	/*	Event
+	================================================== */
+	_onMapMoveEnd: function(e) {
+		trace(this._map.getCenter());
+		trace(this._map.getZoom());
+	},
+	
 	/*	Marker
 	================================================== */
 	_createMarker: function(d) {
@@ -17052,7 +17288,9 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	
 	_markerOverview: function() {
 		
-		if (this.options.map_type == "zoomify") {
+		if (this.options.map_type == "zoomify" && this.options.zoomify && !this.options.zoomify.is_map) {
+			trace("IS MAP " + this.options.zoomify.is_map);
+			trace(this.options.zoomify);
 			trace("MARKER OVERVIEW ZOOMIFY");
 			trace(this._tile_layer.getCenterZoom(this._map));
 			var center_zoom = this._tile_layer.getCenterZoom(this._map);
@@ -17782,6 +18020,7 @@ VCO.StoryMap = VCO.Class.extend({
 			map_type: 				"toner-lite",
 			map_subdomains: 		"",
 			zoomify: {
+				is_map: 			true,
 				path: 				"",
 				width: 				"",
 				height: 			"",

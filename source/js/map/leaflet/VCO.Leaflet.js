@@ -494,10 +494,10 @@ L.Mixin.Events = {
 	}
 };
 
-L.Mixin.Events.on = L.Mixin.Events.addEventListener;
-L.Mixin.Events.off = L.Mixin.Events.removeEventListener;
-L.Mixin.Events.once = L.Mixin.Events.addOneTimeEventListener;
-L.Mixin.Events.fire = L.Mixin.Events.fireEvent;
+L.Mixin.Events.on	= L.Mixin.Events.addEventListener;
+L.Mixin.Events.off	= L.Mixin.Events.removeEventListener;
+L.Mixin.Events.once	= L.Mixin.Events.addOneTimeEventListener;
+L.Mixin.Events.fire	= L.Mixin.Events.fireEvent;
 
 
 /*
@@ -572,26 +572,26 @@ L.Mixin.Events.fire = L.Mixin.Events.fireEvent;
 		ie7: ie7,
 		ielt9: ielt9,
 		webkit: webkit,
-
+		
 		android: android,
 		android23: android23,
-
+		
 		chrome: chrome,
-
+		
 		ie3d: ie3d,
 		webkit3d: webkit3d,
 		gecko3d: gecko3d,
 		opera3d: opera3d,
 		any3d: any3d,
-
+		
 		mobile: mobile,
 		mobileWebkit: mobile && webkit,
 		mobileWebkit3d: mobile && webkit3d,
 		mobileOpera: mobile && window.opera,
-
+		
 		touch: touch,
 		msTouch: msTouch,
-
+		
 		retina: retina
 	};
 
@@ -1644,13 +1644,13 @@ L.Map = L.Class.extend({
 	panInsideBounds: function (bounds) {
 		bounds = L.latLngBounds(bounds);
 
-		var viewBounds = this.getPixelBounds(),
-		    viewSw = viewBounds.getBottomLeft(),
-		    viewNe = viewBounds.getTopRight(),
-		    sw = this.project(bounds.getSouthWest()),
-		    ne = this.project(bounds.getNorthEast()),
-		    dx = 0,
-		    dy = 0;
+		var viewBounds		= this.getPixelBounds(),
+			viewSw			= viewBounds.getBottomLeft(),
+			viewNe			= viewBounds.getTopRight(),
+			sw				= this.project(bounds.getSouthWest()),
+			ne				= this.project(bounds.getNorthEast()),
+			dx				= 0,
+			dy				= 0;
 
 		if (viewNe.y < ne.y) { // north
 			dy = Math.ceil(ne.y - viewNe.y);
@@ -2016,14 +2016,14 @@ L.Map = L.Class.extend({
 	_initPanes: function () {
 		var panes = this._panes = {};
 
-		this._mapPane = panes.mapPane = this._createPane('leaflet-map-pane', this._container);
-
-		this._tilePane = panes.tilePane = this._createPane('leaflet-tile-pane', this._mapPane);
-		panes.objectsPane = this._createPane('leaflet-objects-pane', this._mapPane);
-		panes.shadowPane = this._createPane('leaflet-shadow-pane');
-		panes.overlayPane = this._createPane('leaflet-overlay-pane');
-		panes.markerPane = this._createPane('leaflet-marker-pane');
-		panes.popupPane = this._createPane('leaflet-popup-pane');
+		this._mapPane		= panes.mapPane = this._createPane('leaflet-map-pane', this._container);
+		
+		this._tilePane		= panes.tilePane = this._createPane('leaflet-tile-pane', this._mapPane);
+		panes.objectsPane	= this._createPane('leaflet-objects-pane', this._mapPane);
+		panes.shadowPane	= this._createPane('leaflet-shadow-pane');
+		panes.overlayPane	= this._createPane('leaflet-overlay-pane');
+		panes.markerPane	= this._createPane('leaflet-marker-pane');
+		panes.popupPane		= this._createPane('leaflet-popup-pane');
 
 		var zoomHide = ' leaflet-zoom-hide';
 

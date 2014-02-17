@@ -61,6 +61,7 @@ VCO.Map = VCO.Class.extend({
 			map_type: 			"stamen:toner",
 			map_subdomains: 	"",
 			zoomify: {
+				is_map: 		true,
 				path: 			"",
 				width: 			"",
 				height: 		"",
@@ -92,6 +93,14 @@ VCO.Map = VCO.Class.extend({
 		// Merge Data and Options
 		VCO.Util.mergeData(this.options, options);
 		VCO.Util.mergeData(this.data, data);
+		
+		// Set zoomify type
+		if (this.options.zoomify) {
+			if(typeof this.options.zoomify.is_map === 'undefined'){
+				this.options.zoomify.is_map = true;
+			};
+		}
+		
 		
 		this._initLayout();
 		this._initEvents();
