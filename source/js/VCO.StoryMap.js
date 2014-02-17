@@ -514,8 +514,8 @@ VCO.StoryMap = VCO.Class.extend({
 			trackResize: 			true,
 			map_type: 				"toner-lite",
 			map_subdomains: 		"",
+			map_as_image: 			false,
 			zoomify: {
-				is_map: 			true,
 				path: 				"",
 				width: 				"",
 				height: 			"",

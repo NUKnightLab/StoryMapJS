@@ -92,7 +92,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	
 	_markerOverview: function() {
 		
-		if (this.options.map_type == "zoomify" && this.options.zoomify && !this.options.zoomify.is_map) {
+		if (this.options.map_type == "zoomify" && this.options.map_as_image) {
 			trace("IS MAP " + this.options.zoomify.is_map);
 			trace(this.options.zoomify);
 			trace("MARKER OVERVIEW ZOOMIFY");

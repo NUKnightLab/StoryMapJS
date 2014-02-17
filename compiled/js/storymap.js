@@ -16664,9 +16664,9 @@ VCO.Map = VCO.Class.extend({
 		//Options
 		this.options = {
 			map_type: 			"stamen:toner",
+			map_as_image: 		false,
 			map_subdomains: 	"",
 			zoomify: {
-				is_map: 		true,
 				path: 			"",
 				width: 			"",
 				height: 		"",
@@ -16698,14 +16698,6 @@ VCO.Map = VCO.Class.extend({
 		// Merge Data and Options
 		VCO.Util.mergeData(this.options, options);
 		VCO.Util.mergeData(this.data, data);
-		
-		// Set zoomify type
-		if (this.options.zoomify) {
-			if(typeof this.options.zoomify.is_map === 'undefined'){
-				this.options.zoomify.is_map = true;
-			};
-		}
-		
 		
 		this._initLayout();
 		this._initEvents();
@@ -17288,7 +17280,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	
 	_markerOverview: function() {
 		
-		if (this.options.map_type == "zoomify" && this.options.zoomify && !this.options.zoomify.is_map) {
+		if (this.options.map_type == "zoomify" && this.options.map_as_image) {
 			trace("IS MAP " + this.options.zoomify.is_map);
 			trace(this.options.zoomify);
 			trace("MARKER OVERVIEW ZOOMIFY");
@@ -18019,8 +18011,8 @@ VCO.StoryMap = VCO.Class.extend({
 			trackResize: 			true,
 			map_type: 				"toner-lite",
 			map_subdomains: 		"",
+			map_as_image: 			false,
 			zoomify: {
-				is_map: 			true,
 				path: 				"",
 				width: 				"",
 				height: 			"",
