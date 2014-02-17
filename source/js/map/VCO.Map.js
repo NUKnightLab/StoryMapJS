@@ -58,7 +58,7 @@ VCO.Map = VCO.Class.extend({
 	
 		//Options
 		this.options = {
-			map_type: 			"stamen:toner",
+			map_type: 			"stamen:toner-lite",
 			map_as_image: 		false,
 			map_subdomains: 	"",
 			zoomify: {
@@ -79,6 +79,7 @@ VCO.Map = VCO.Class.extend({
 			line_weight: 		5,
 			line_opacity: 		0.20,
 			line_dash: 			"5,5",
+			line_join: 			"miter",
 			show_lines: 		true,
 			show_history_line: 	true,
 			map_center_offset:  10
@@ -454,8 +455,14 @@ VCO.Map = VCO.Class.extend({
 	_initLayout: function() {
 		
 		// Create Layout
-		this._el.map_mask = VCO.Dom.create("div", "vco-map-mask", this._el.container);
-		this._el.map = VCO.Dom.create("div", "vco-map-display", this._el.map_mask);
+		this._el.map_mask 	= VCO.Dom.create("div", "vco-map-mask", this._el.container);
+		
+		if (this.options.map_as_image) {
+			this._el.map 	= VCO.Dom.create("div", "vco-map-display vco-mapimage-display", this._el.map_mask);
+		} else {
+			this._el.map 	= VCO.Dom.create("div", "vco-map-display", this._el.map_mask);
+		}
+		
 		
 	},
 	

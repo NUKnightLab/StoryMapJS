@@ -23,7 +23,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		// Set Tiles
 		switch(map_type_arr[0]) {
 			case 'stamen':
-				this._tile_layer = new L.StamenTileLayer(map_type_arr[1] || 'toner');
+				this._tile_layer = new L.StamenTileLayer(map_type_arr[1] || 'toner-lite');
 				break;
 			case 'zoomify':
 				this._tile_layer = new L.tileLayer.zoomify(this.options.zoomify.path, {
@@ -60,6 +60,11 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		this._line_active.setStyle({opacity:1});
 		this._addLineToMap(this._line_active);
 		
+		if (this.options.map_as_image) {
+			this._line_active.setStyle({opacity:0});
+			this._line.setStyle({opacity:0});
+		}
+
 		
 	},
 	
@@ -124,10 +129,12 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	_createLine: function(d) {
 		return new L.Polyline([], {
 			clickable: false,
-			color: this.options.line_color,
-			weight: this.options.line_weight,
-			opacity: this.options.line_opacity,
-			dashArray: this.options.line_dash
+			color: 		this.options.line_color,
+			weight: 	this.options.line_weight,
+			opacity: 	this.options.line_opacity,
+			dashArray: 	this.options.line_dash,
+			lineJoin: 	this.options.line_join,
+			className: 	"vco-map-line"
 		} );
 		
 	},
@@ -141,6 +148,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	},
 	
 	_replaceLines: function(line, array) {
+		trace("REPLACE LINES")
 		line.setLatLngs(array);
 	},
 	

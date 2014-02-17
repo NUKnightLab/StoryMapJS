@@ -10,7 +10,7 @@
 	var SUBDOMAINS = "a b c d".split(" "),
 		MAKE_PROVIDER = function(layer, type, minZoom, maxZoom) {
 			return {
-				"url":          ["//stamen-tiles-{S}.a.ssl.fastly.net/", layer, "/{Z}/{X}/{Y}.", type].join(""),
+				"url":          ["http://stamen-tiles-{S}.a.ssl.fastly.net/", layer, "/{Z}/{X}/{Y}.", type].join(""),
 				"type":         type,
 				"subdomains":   SUBDOMAINS.slice(),
 				"minZoom":      minZoom,

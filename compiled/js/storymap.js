@@ -16282,7 +16282,7 @@ L.tileLayer.zoomify = function (url, options) {
 	var SUBDOMAINS = "a b c d".split(" "),
 		MAKE_PROVIDER = function(layer, type, minZoom, maxZoom) {
 			return {
-				"url":          ["//stamen-tiles-{S}.a.ssl.fastly.net/", layer, "/{Z}/{X}/{Y}.", type].join(""),
+				"url":          ["http://stamen-tiles-{S}.a.ssl.fastly.net/", layer, "/{Z}/{X}/{Y}.", type].join(""),
 				"type":         type,
 				"subdomains":   SUBDOMAINS.slice(),
 				"minZoom":      minZoom,
@@ -16663,7 +16663,7 @@ VCO.Map = VCO.Class.extend({
 	
 		//Options
 		this.options = {
-			map_type: 			"stamen:toner",
+			map_type: 			"stamen:toner-lite",
 			map_as_image: 		false,
 			map_subdomains: 	"",
 			zoomify: {
@@ -16684,6 +16684,7 @@ VCO.Map = VCO.Class.extend({
 			line_weight: 		5,
 			line_opacity: 		0.20,
 			line_dash: 			"5,5",
+			line_join: 			"miter",
 			show_lines: 		true,
 			show_history_line: 	true,
 			map_center_offset:  10
@@ -17059,8 +17060,14 @@ VCO.Map = VCO.Class.extend({
 	_initLayout: function() {
 		
 		// Create Layout
-		this._el.map_mask = VCO.Dom.create("div", "vco-map-mask", this._el.container);
-		this._el.map = VCO.Dom.create("div", "vco-map-display", this._el.map_mask);
+		this._el.map_mask 	= VCO.Dom.create("div", "vco-map-mask", this._el.container);
+		
+		if (this.options.map_as_image) {
+			this._el.map 	= VCO.Dom.create("div", "vco-map-display vco-mapimage-display", this._el.map_mask);
+		} else {
+			this._el.map 	= VCO.Dom.create("div", "vco-map-display", this._el.map_mask);
+		}
+		
 		
 	},
 	
@@ -17211,7 +17218,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		// Set Tiles
 		switch(map_type_arr[0]) {
 			case 'stamen':
-				this._tile_layer = new L.StamenTileLayer(map_type_arr[1] || 'toner');
+				this._tile_layer = new L.StamenTileLayer(map_type_arr[1] || 'toner-lite');
 				break;
 			case 'zoomify':
 				this._tile_layer = new L.tileLayer.zoomify(this.options.zoomify.path, {
@@ -17248,6 +17255,11 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		this._line_active.setStyle({opacity:1});
 		this._addLineToMap(this._line_active);
 		
+		if (this.options.map_as_image) {
+			this._line_active.setStyle({opacity:0});
+			this._line.setStyle({opacity:0});
+		}
+
 		
 	},
 	
@@ -17312,10 +17324,12 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	_createLine: function(d) {
 		return new L.Polyline([], {
 			clickable: false,
-			color: this.options.line_color,
-			weight: this.options.line_weight,
-			opacity: this.options.line_opacity,
-			dashArray: this.options.line_dash
+			color: 		this.options.line_color,
+			weight: 	this.options.line_weight,
+			opacity: 	this.options.line_opacity,
+			dashArray: 	this.options.line_dash,
+			lineJoin: 	this.options.line_join,
+			className: 	"vco-map-line"
 		} );
 		
 	},
@@ -17329,6 +17343,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	},
 	
 	_replaceLines: function(line, array) {
+		trace("REPLACE LINES")
 		line.setLatLngs(array);
 	},
 	
@@ -18009,7 +18024,7 @@ VCO.StoryMap = VCO.Class.extend({
 			// interaction
 			dragging: 				true,
 			trackResize: 			true,
-			map_type: 				"toner-lite",
+			map_type: 				"stamen:toner-lite",
 			map_subdomains: 		"",
 			map_as_image: 			false,
 			zoomify: {
@@ -18030,9 +18045,9 @@ VCO.StoryMap = VCO.Class.extend({
 			use_custom_markers: 	false,  // Allow use of custom map marker icons
 			line_follows_path: 		true,   // Map history path follows default line, if false it will connect previous and current only
 			line_color: 			"#DA0000",
-			line_color_inactive: 	"#000", 
+			line_color_inactive: 	"#CCC", 
 			line_weight: 			3,
-			line_opacity: 			0.20,
+			line_opacity: 			0.80,
 			line_dash: 				"5,5",
 			show_lines: 			true,
 			show_history_line: 		true,

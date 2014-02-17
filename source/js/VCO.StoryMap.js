@@ -512,7 +512,7 @@ VCO.StoryMap = VCO.Class.extend({
 			// interaction
 			dragging: 				true,
 			trackResize: 			true,
-			map_type: 				"toner-lite",
+			map_type: 				"stamen:toner-lite",
 			map_subdomains: 		"",
 			map_as_image: 			false,
 			zoomify: {
@@ -533,9 +533,9 @@ VCO.StoryMap = VCO.Class.extend({
 			use_custom_markers: 	false,  // Allow use of custom map marker icons
 			line_follows_path: 		true,   // Map history path follows default line, if false it will connect previous and current only
 			line_color: 			"#DA0000",
-			line_color_inactive: 	"#000", 
+			line_color_inactive: 	"#CCC", 
 			line_weight: 			3,
-			line_opacity: 			0.20,
+			line_opacity: 			0.80,
 			line_dash: 				"5,5",
 			show_lines: 			true,
 			show_history_line: 		true,
