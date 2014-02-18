@@ -1,372 +1,430 @@
-
 {
-	"storymap":{
-		"test": "test",
-		"slides": [
-			{
-				"type": 					"overview", 
-
-				"date": 					"1835",
-				"location": {
-					"lat": 				39.491711,
-					"lon": 				-91.793260,
-					"name": 				"Florida, Missouri",
-					"zoom": 				12,
-					"icon": 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
-					"line": 				true
-				},
-				"text": {
-					"headline": 			"Mark Twain JSON",
-					"text": 				"Samuel Langhorne Clemens (November 30, 1835 – April 21, 1910), better known by his pen name Mark Twain, was an American author and humorist. He wrote The Adventures of Tom Sawyer (1876) and its sequel, Adventures of Huckleberry Finn (1885), the later often called \"the Great American Novel.\""
-				},
-				"media": {
-					"url": 				"http://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Mark_Twain_Vanity_Fair_1908-05-13.jpeg/375px-Mark_Twain_Vanity_Fair_1908-05-13.jpeg",
-					"credit":				"Vanity Fair",
-					"caption":			"Twain caricatured by Spy for Vanity Fair, 1908"
-				}
-			},
-			{
-				"uniqueid": 				"",
+    "storymap": {
+        "map_type": "zoomify",
+        "slides": [
+            {
+                "date": "",
+                "location": {
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+                    "line": true
+                },
 				"background": {			
-					"url": 				null,
+					"url": 	"http://www.premierlife.ca/wp-content/uploads/2012/11/Arya-Stark-arya-stark-25155750-818-1000.png",
 					"color": 				"#cdbfe3",
 					"opacity": 			50
 				},
-				"date": 					"1835",
-				"location": {
-					"lat": 				39.491711,
-					"lon": 				-91.793260,
-					"name": 				"Florida, Missouri",
-					"zoom": 				12,
-					"icon": 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
-					"line": 				true
-				},
-				"text": {
-					"headline": 			"Florida, Missouri",
-					"text": 				"Born in Florida, Missouri. Halley’s comet visible from earth."
-				},
-				"media": {
-					"url": 				"http://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Mark_Twain_birthplace.jpg/800px-Mark_Twain_birthplace.jpg",
-					"credit":				"",
-					"caption":			"Mark Twain's birthplace, Florida, Missouri"
-				}
-			},
-			{
-				"uniqueid": 				"",
+                "text": {
+                    "headline": "Arya's Journey",
+                    "text": "<strong>SPOILERS</strong>. This map is based on the books.</p><p><strong>Arya Stark</strong> is the youngest daughter of&nbsp;Lord Eddard&nbsp;and&nbsp;Lady Catelyn&nbsp;Stark. At the start of&nbsp;<em>A Game of Thrones&nbsp;</em>she is nine and so far throughout the novels she has reached eleven. She is the only character to have at least one&nbsp;POV&nbsp;chapter in all of the published novels.</p><p><strong>Aliases:</strong>&nbsp;<br></span>Arya Horseface, Arya Underfoot, Arry, Weasel, Nan, Squab, Salty, Cat of the Canals, Blind Beth</p>"
+                },
+                "type": "overview"
+            },
+            {
+                "date": "",
+                "location": {
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+                    "lat": 81.22826656005543,
+                    "line": true,
+                    "lon": -131.923828125,
+                    "zoom": 4
+                },
+                "media": {
+                    "caption": "Character Feature - Arya Stark",
+                    "credit": "HBO",
+                    "url": "http://www.youtube.com/watch?v=5FoXU1pNr7g&list=PL3D195AFFBB8D144F&index=7"
+                },
+                "text": {
+                    "headline": "Winterfell",
+                    "text": "<span>Arya is set to leave her home and travel to King's landing with her older sister Sansa,&nbsp;when her father is made Hand of the King to Robert Baratheon.&nbsp;Before she leaves, her half-brother Jon Snow gives her a sword called Needle as a parting gift.&nbsp;</span><br>"
+                }
+            },
+            {
+                "date": "",
+                "location": {
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+                    "lat": 72.04683989379397,
+                    "line": true,
+                    "lon": -126.298828125,
+                    "zoom": 4
+                },
+                "media": {
+                    "caption": "Nymeria",
+                    "credit": "",
+                    "url": "http://media-cache-ak0.pinimg.com/736x/07/2d/fb/072dfb6bb5d52f81e652aced9e764ceb.jpg"
+                },
+                "text": {
+                    "headline": "Travels to King's Landing",
+                    "text": "At Winterfell&nbsp;each of the Stark children got a&nbsp;direwolf<span>&nbsp;pup to keep, Arya named hers&nbsp;</span>Nymeria<span>. While traveling to King's Landing,</span><span>&nbsp;Nymeria attacks&nbsp;</span>Joffrey<span>, for hitting&nbsp;Arya. Arya must then&nbsp;throw rocks at Nymeria to scare her away so&nbsp;</span>Cersei<span>&nbsp;will not kill her.&nbsp;</span>Sansa<span>'s wolf, Lady, was killed in place of Nymeria's attack on Prince Joffrey.</span>"
+                }
+            },
+            {
+                "date": "",
+                "location": {
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+                    "lat": 66.687783861162,
+                    "line": true,
+                    "lon": -116.98242187499999,
+                    "zoom": 4
+                },
+                "media": {
+                    "caption": "Making of Arya Stark's New Look",
+                    "credit": "HBO",
+                    "url": "http://www.youtube.com/watch?v=E5BrH30yE4c&list=PL3D195AFFBB8D144F&index=4"
+                },
+                "text": {
+                    "headline": "King's Landing",
+                    "text": "When her father is executed, Arya manages to escape with the help of&nbsp;Yoren (a friend of Ned's from the Night's Watch)<span>, who cuts her hair and poses her&nbsp;as a boy named Arry.&nbsp;</span>"
+                }
+            },
+            {
+                "date": "",
+                "location": {
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+                    "lat": 68.72044056989829,
+                    "line": true,
+                    "lon": -124.8046875,
+                    "zoom": 4
+                },
 				"background": {			
-					"url": 				null, 
-					"color": 				"#8b4513",
-					"opacity": 			50
-				},
-				"date": 					"1839",
-
-				"text": {
-					"headline": 			"Hannibal, Missouri",
-					"text": 				"Moves to Hannibal, Missouri, which later serves as the model town for Tom Sawyer and Huckleberry Finn."
-				},
-				"media": {
-					"url": 				"http://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Mark_Twain_Boyhood_Home_1.jpg/800px-Mark_Twain_Boyhood_Home_1.jpg",
-					"credit":				"",
-					"caption":			"Mark Twain's boyhood home in Hannibal, Missouri."
-				}
-			},
-			{
-				"uniqueid": 				"",
-				"background": {			
-					"url": 				null,
-					"color": 				null,
-					"opacity": 			50
-				},
-				"date": 					"1851",
-				"location": {
-					"lat": 				39.710083,
-					"lon": 				-91.357441,
-					"zoom": 				12,
-					"icon": 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
-					"line": 				true
-				},
-				"text": {
-					"headline": 			"Hannibal Gazette",
-					"text": 				"Begins work as a journeyman printer with the Hannibal Gazette. Publishes first sketches."
-				},
-				"media": {
-					"url": 				"http://www.youtube.com/watch?v=C-nTpGMMVjY",
-					"credit":				null,
-					"caption":			null
-				}
-			},
-			{
-				"uniqueid": 				"",
-				"background": {			
-					"url": 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
+					"url": 	"http://images5.fanpop.com/image/photos/30400000/Arya-Stark-with-Jaqen-H-ghar-Rorge-and-Biter-house-stark-30463848-1280-660.jpg",
 					"color": 				"#cdbfe3",
 					"opacity": 			50
 				},
-				"date": 					null,
-				"location": {
-					"lat": 				40.714353,
-					"lon": 				-74.005973,
-					"zoom": 				11,
-					"icon": 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
-					"line": 				true
-				},
-				"text": {
-					"headline": 			"Itinerant Printer",
-					"text": 				"Visits St. Louis, New York, and Philadelphia as an itinerant printer."
-				},
-				"media": {
-					"url": 				"https://vine.co/v/bjHh0zHdgZT",
-					"credit":				null,
-					"caption":			null
-				}
-			},
-			{
-				"uniqueid": 				"",
-				"background": {			
-					"url": 				null,
-					"color": 				"#cdbfe3",
-					"opacity": 			50
-				},
-				"date": 					"1862",
-				"location": {
-					"lat": 				39.309514,
-					"lon": 				-119.649979,
-					"zoom": 				11,
-					"icon": 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
-					"line": 				true
-				},
-				"text": {
-					"headline": 			"Virginia City Territorial Enterprise",
-					"text": 				"Travels around Nevada and California. Takes job as reporter for the Virginia City Territorial Enterprise."
-				},
-				"media": {
-					"url": 				"http://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Mark_Twain%27s_desk_at_the_Mark_Twain_Territorial_Enterprise_Museum%2C_Virginia_City%2C_NV.jpg/794px-Mark_Twain%27s_desk_at_the_Mark_Twain_Territorial_Enterprise_Museum%2C_Virginia_City%2C_NV.jpg",
-					"credit":				"",
-					"caption":			"Mark Twain's desk when he was editor of the Territorial Enterprise. Mark Twain Territorial Enterprise Museum, Virginia City, NV."
-				}
-			},
-			{
-				"uniqueid": 				"",
-				"background": {			
-					"url": 				null,
-					"color": 				"#cdbfe3",
-					"opacity": 			50
-				},
-				"date": 					"1865",
-				"location": {
-					"lat": 				37.774929,
-					"lon": 				-122.419416,
-					"zoom": 				11,
-					"icon": 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
-					"line": 				true
-				},
-				"text": {
-					"headline": 			"San Francisco",
-					"text": 				"Forced to leave Nevada for breaking dueling laws. Prospects in Calaveras County, settles in San Francisco. Writes for magazines and newspapers."
-				},
-				"media": {
-					"url": 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-					"credit":				"ETC",
-					"caption":			"something"
-				}
-			},
-			{
-				"uniqueid": 				"",
-				"background": {			
-					"url": 				null,
-					"color": 				"#cdbfe3",
-					"opacity": 			50
-				},
-				"date": 					"1866",
-				"location": {
-					"lat": 				19.896766,
-					"lon": 				-155.582782,
-					"zoom": 				11,
-					"icon": 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
-					"line": 				true
-				},
-				"text": {
-					"headline": 			"Hawaii",
-					"text": 				"Takes trip to Hawaii as correspondent of the Sacramento Alta Californian. Reports on shipwreck of the Hornet. Gives first public lecture."
-				},
-				"media": {
-					"url": 				"http://photos.wikimapia.org/p/00/00/56/17/28_big.jpg",
-					"credit":				"",
-					"caption":			"Wreck of USS Hornet."
-				}
-			},
-			{
-				"uniqueid": 				"",
-				"background": {			
-					"url": 				null,
-					"color": 				"#cdbfe3",
-					"opacity": 			50
-				},
-				"date": 					"1867",
-				"location": {
-					"lat": 				54.525961,
-					"lon": 				15.255119,
-					"zoom": 				11,
-					"icon": 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
-					"line": 				true
-				},
-				"text": {
-					"headline": 			"Travels",
-					"text": 				"Travels as correspondent to Europe and the Holy Land on the Quaker City. Sees a picture of Olivia Langdon (Livy). Publishes The Celebrated Jumping Frog of Calaveras County, and Other Sketches. Sales are light."
-				},
-				"media": {
-					"url": 				"http://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/1867._The_Celebrated_Jumping_Frog_of_Calaveras_County%2C_and_Other_Sketches.djvu/page1-395px-1867._The_Celebrated_Jumping_Frog_of_Calaveras_County%2C_and_Other_Sketches.djvu.jpg",
-					"credit":				"",
-					"caption":			""
-				}
-			},
-			{
-				"uniqueid": 				"",
-				"background": {			
-					"url": 				null,
-					"color": 				"#cdbfe3",
-					"opacity": 			50
-				},
-				"date": 					"1868",
-				"location": {
-					"lat": 				42.089796,
-					"lon": 				-76.807734,
-					"zoom": 				11,
-					"icon": 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
-					"line": 				true
-				},
-				"text": {
-					"headline": 			"Livy",
-					"text": 				"Lectures across the United States. Meets and falls in love with Livy in Elmira, New York."
-				},
-				"media": {
-					"url": 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-					"credit":				"ETC",
-					"caption":			"something"
-				}
-			},
-			{
-				"uniqueid": 				"",
-				"background": {			
-					"url": 				null,
-					"color": 				"#cdbfe3",
-					"opacity": 			50
-				},
-				"date": 					"1870",
-				"location": {
-					"lat": 				42.886447,
-					"lon": 				-78.878369,
-					"zoom": 				11,
-					"icon": 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-				},
-				"text": {
-					"headline": 			"Married",
-					"text": 				"Marries Livy in Elmira. Her father buys them a house in Buffalo, New York. Son Langdon is born."
-				},
-				"media": {
-					"url": 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-					"credit":				"ETC",
-					"caption":			"something"
-				}
-			},
-			{
-				"uniqueid": 				"",
-				"background": {			
-					"url": 				null,
-					"color": 				"#cdbfe3",
-					"opacity": 			50
-				},
-				"date": 					"1872",
-				"location": {
-					"lat": 				41.763711,
-					"lon": 				-72.685093,
-					"zoom": 				11,
-					"icon": 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
-					"line": 				true
-				},
-				"text": {
-					"headline": 			"Roughing It",
-					"text": 				"Moves with Livy to Hartford. Publishes Roughing It. Daughter is born. Son Langdon dies."
-				},
-				"media": {
-					"url": 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-					"credit":				"ETC",
-					"caption":			"something"
-				}
-			},
-			{
-				"uniqueid": 				"",
-				"background": {			
-					"url": 				null,
-					"color": 				"#cdbfe3",
-					"opacity": 			50
-				},
-				"date": 					"1891",
-				"location": {
-					"lat": 				54.525961,
-					"lon": 				15.255119,
-					"zoom": 				11,
-					"icon": 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-				},
-				"text": {
-					"headline": 			"Financial",
-					"text": 				"Leaves Hartford to live in Europe because of financial difficulties."
-				},
-				"media": {
-					"url": 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-					"credit":				"ETC",
-					"caption":			"something"
-				}
-			},
-			{
-				"uniqueid": 				"",
-				"background": {			
-					"url": 				null,
-					"color": 				"#cdbfe3",
-					"opacity": 			50
-				},
-				"date": 					"1891",
-				"location": {
-					"lat": 				40.714353,
-					"lon": 				-74.005973,
-					"zoom": 				11,
-					"icon": 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-				},
-				"text": {
-					"headline": 			"Livy dies",
-					"text": 				"Livy dies. Begins dictating autobiography. Moves to New York City."
-				},
-				"media": {
-					"url": 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-					"credit":				"ETC",
-					"caption":			"something"
-				}
-			},
-			{
-				"uniqueid": 				"",
-				"background": {			
-					"url": 				null,
-					"color": 				null,
-					"opacity": 			50
-				},
-				"date": 					"1891",
-				"location": {
-					"lat": 				41.304540,
-					"lon": 				-73.392898,
-					"zoom": 				11,
-					"icon": 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
-					"line": 				true
-				},
-				"text": {
-					"headline": 			"Stormfield",
-					"text": 				"Moves into Stormfield in Redding, CT. Forms the Angelfish Club for young girls."
-				},
-				"media": {
-					"url": 				"http://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Mark_Twain%27s_house%2C_front_view._-_NARA_-_516527.tif/lossy-page1-800px-Mark_Twain%27s_house%2C_front_view._-_NARA_-_516527.tif.jpg",
-					"credit":				"",
-					"caption":			"Twains house, \"Stormfield\", in Redding, Connecticut (front view)"
-				}
-			}
-		]
-	}
+                "text": {
+                    "headline": "Village on the Gods Eye",
+                    "text": "Lannister freeriders led by Ser&nbsp;Amory Lorch&nbsp;kill Yoren on the shores of Gods Eye.&nbsp;Arya escapes, along with&nbsp;Gendry,&nbsp;Hot Pie, and Lommy Greenhands, and in the process saves the lives of&nbsp;Jaqen H'ghar,&nbsp;Rorge, and&nbsp;Biter, three criminals&nbsp;Yoren&nbsp;was bringing to the wall, who run off on their own."
+                }
+            },
+            {
+                "date": "",
+                "location": {
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+                    "lat": 68.56038368664157,
+                    "line": true,
+                    "lon": -126.826171875,
+                    "zoom": 4
+                },
+                "media": {
+                    "caption": "Arya, Gendry, Hot Pie",
+                    "credit": "",
+                    "url": "http://thehorticult.com/wp-content/uploads/2013/06/Game-of-Thrones-plants-thehorticult-GOT-Arya.jpg"
+                },
+                "text": {
+                    "headline": "Holdfast on the Gods Eye",
+                    "text": "<span>After their escape from the village, Arya and her friends&nbsp;are captured by men under the command of Gregor Clegane (The Mountain)&nbsp;and put to work as a servant in the undermanned castle of Harrenhall.</span>"
+                }
+            },
+            {
+                "date": "",
+                "location": {
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+                    "lat": 70.25945200030638,
+                    "line": true,
+                    "lon": -126.38671874999999,
+                    "zoom": 5
+                },
+                "media": {
+                    "caption": "Jaqen H'ghar handing his coin to Arya",
+                    "credit": "",
+                    "url": "http://www.nerdsraging.com/wp-content/uploads/2012/06/29jaqen.bmp.jpg"
+                },
+                "text": {
+                    "headline": "Harrenhall",
+                    "text": "Arya is made&nbsp;a servant at&nbsp;Harrenhal, going by the name 'Weasel', H'ghar, Rorge, and Biter reappear as members of the&nbsp;Brave Companions<span>. For saving his life during the attack, H'ghar promises to repay Arya by killing three men of her choice. For her three choices, Arya selects&nbsp;</span>Chiswyck<span>, a soldier in&nbsp;</span>Gregor Clegane<span>'s forces, Weese, her servant overseer, and Jaqen H'ghar himself. <br><br>The first two murders he carries out without question; in lieu of the third choice, Arya leverages H'ghar to help her slay the guards of&nbsp;</span>Robett Glover, who had been taken prisoner by the Brave Companions.&nbsp;<span>H'ghar gives gives Arya a mysterious iron coin and tells her to find him in Braavos if she should ever desire to learn his secrets. He then adopts a new identity and leaves. Arya kills a guard and escapes Harrenhal with Gendry and Hot Pie.</span>"
+                }
+            },
+            {
+                "date": "",
+                "location": {
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+                    "lat": 71.49703690095419,
+                    "line": true,
+                    "lon": -132.099609375,
+                    "zoom": 4
+                },
+                "media": {
+                    "caption": "Arya realizing The Hound is behind her",
+                    "credit": "",
+                    "url": "http://www.geekbinge.com/wp-content/uploads/2013/04/GoT-3.2-Arya.jpg"
+                },
+                "text": {
+                    "headline": "Inn at the Kneeling Man",
+                    "text": "Arya and friends encounter a group of men known as the Brotherhood Without Banners, led by Lord&nbsp;Beric Dondarrion<span>&nbsp;and the red priest,&nbsp;</span>Thoros of Myr<span>.&nbsp;</span>"
+                }
+            },
+            {
+                "date": "",
+                "location": {
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+                    "lat": 71.31487666166718,
+                    "line": true,
+                    "lon": -130.95703125,
+                    "zoom": 5
+                },
+                "media": {
+                    "caption": "Brotherhood Without Banners",
+                    "credit": "",
+                    "url": "http://i998.photobucket.com/albums/af107/FayleneSky/Iron%20Throne/competition/1-5.jpg"
+                },
+                "text": {
+                    "headline": "Lord Lychester's Keep",
+                    "text": "The&nbsp;Brotherhood Without Banners<span>&nbsp;visits with Lord Lychester's&nbsp;</span>maester<span>&nbsp;for information on Lord&nbsp;</span>Beric Dondarrion<span>'s whereabouts.</span>"
+                }
+            },
+            {
+                "date": "",
+                "location": {
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+                    "lat": 70.80136623397624,
+                    "line": true,
+                    "lon": -133.3740234375,
+                    "zoom": 5
+                },
+                "media": {
+                    "caption": "Beric Dondarrion",
+                    "credit": "",
+                    "url": "http://i.lv3.hbo.com/assets/images/series/game-of-thrones/character/s3/beric-dondarron-1024.jpg"
+                },
+                "text": {
+                    "headline": "Lady of the Leaves",
+                    "text": "The outlaws&nbsp;<span>then visit the&nbsp;</span>Lady of the Leaves&nbsp;<span>in search of word on Lord&nbsp;</span>Beric<span>'s whereabouts. But none have seen him, only hearing rumors that he was dead--hung once, killed by&nbsp;</span>Vargo Hoat<span>,&nbsp;</span>Amory Lorch<span>, and twice by&nbsp;</span>Gregor Clegane<span>. The same rumors&nbsp;</span>Arya<span>&nbsp;had been hearing at&nbsp;</span>Harrenhal<span>.&nbsp;</span>"
+                }
+            },
+            {
+                "date": "",
+                "location": {
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+                    "lat": 70.40734767606811,
+                    "line": true,
+                    "lon": -133.2861328125,
+                    "zoom": 5
+                },
+                "media": {
+                    "caption": "Weirwood",
+                    "credit": "sharksden.deviantart.com",
+                    "url": "http://fc05.deviantart.net/fs71/f/2011/104/f/6/heart_tree_by_sharksden-d3dzea0.jpg"
+                },
+                "text": {
+                    "headline": "High Heart",
+                    "text": "The outlaws plan to ransom Arya at&nbsp;Riverrun&nbsp;after they discover her identity and&nbsp;meet up with Beric and&nbsp;Thoros of Myr. They arrive at&nbsp;High Heart, an ancient hill sacred to the&nbsp;children of the forest. <br><br>Thirty-one mighty&nbsp;weirwoods&nbsp;had stood at the top of the hill, but only their stumps remained from after the&nbsp;Andals&nbsp;chopped them down. Yet Arya could still feel the power of the place. An old dwarf woman&nbsp;speaks in private to Lem, Tom and&nbsp;Greenbeard, but Arya overhears the conversation. The woman&nbsp;also tells of a prophetic dream she has had while sleeping under the weirwood."
+                }
+            },
+            {
+                "date": "",
+                "location": {
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+                    "lat": 70.11048478105927,
+                    "line": true,
+                    "lon": -133.9453125,
+                    "zoom": 5
+                },
+                "media": {
+                    "caption": "Thoros of Myr",
+                    "credit": "",
+                    "url": "http://images6.fanpop.com/image/photos/33900000/Game-of-Thrones-game-of-thrones-33974760-972-475.jpg"
+                },
+                "text": {
+                    "headline": "Acorn Hall",
+                    "text": "At&nbsp;Acorn Hall, Lady&nbsp;Smallwood&nbsp;informs the Brotherhood&nbsp;that Thoros had been through recently, and that&nbsp;Karstark&nbsp;men were searching for the&nbsp;Kingslayer (Jamie Lannister).&nbsp;<span>Upon learning&nbsp;that Ser&nbsp;</span>Jaime Lannister<span>&nbsp;has escaped&nbsp;</span><a href=\"http://awoiaf.westeros.org/index.php/Riverrun\" target=\"\" rel=\"\">Riverrun</a>, the Mad Huntsman sets out to track him.&nbsp;<span>He catches&nbsp;</span>Sandor Clegane (The Hound)<span>, but the&nbsp;</span>Brotherhood Without Banners<span>&nbsp;claim him before the Mad Huntsman can put him in the crow cages. The Mad Huntsman agrees to take Sandor before the Lightning Lord.&nbsp;</span>"
+                }
+            },
+            {
+                "date": "",
+                "location": {
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+                    "lat": 68.12248241161676,
+                    "line": true,
+                    "lon": -132.802734375,
+                    "zoom": 5
+                },
+                "media": {
+                    "caption": "Beric Dondarrion leading the Brotherhood",
+                    "credit": "",
+                    "url": "http://lossietereinos.com/wp-content/uploads/2013/04/Beric-Dondarrion.jpg"
+                },
+                "text": {
+                    "headline": "Stoney Sept",
+                    "text": "The town is supportive of the&nbsp;Brotherhood Without Banners.&nbsp;Arya finds&nbsp;northern&nbsp;prisoners captured by the&nbsp;Mad Huntsman&nbsp;wasting away in cages.<br><br><br>Stoney Sept was the site of one of the most important battles of&nbsp;Robert's Rebellion, the&nbsp;Battle of the Bells. Lord&nbsp;Robert Baratheon, with the aid of Lords&nbsp;Eddard Stark,&nbsp;Jon Arrynand&nbsp;Hoster Tully, defeated a royal army under the command of Lord&nbsp;Jon Connington, the&nbsp;Hand of the King&nbsp;to&nbsp;Aerys II Targaryen."
+                }
+            },
+            {
+                "date": "",
+                "location": {
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+                    "lat": 68.47992564291266,
+                    "line": true,
+                    "lon": -136.0986328125,
+                    "zoom": 5
+                },
+                "media": {
+                    "caption": "Beric Dondarrion and Sandor Clegane (The Hound) fighting to the death",
+                    "credit": "",
+                    "url": "http://images6.fanpop.com/image/photos/33900000/got-game-of-thrones-33960590-500-225.gif"
+                },
+                "text": {
+                    "headline": "Hollow Hill",
+                    "text": "Arya <span>and&nbsp;</span>Gendry<span>&nbsp;meet Beric in the&nbsp;</span>Hollow Hill<span>, where he is revealed to be a</span><span>&nbsp;follower of the&nbsp;</span>Lord of Light<span>. They watch as&nbsp;</span>Sandor Clegane<span>&nbsp;duels Beric in a&nbsp;</span>trial by battle<span>. While&nbsp;</span>Thoros of Myr&nbsp;<span>always lit his blades with&nbsp;</span>wildfire<span>, Beric uses his own blood to make his sword magically aflame. Despite Sandor's fear of fire, he is able to slay Beric. Much to their surprise, however, Beric is revived by Thoros of Myr.&nbsp;<br><br></span>"
+                }
+            },
+            {
+                "date": "",
+                "location": {
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+                    "lat": 71.01695975726373,
+                    "line": true,
+                    "lon": -126.03515625,
+                    "zoom": 5
+                },
+                "media": {
+                    "caption": "Sandor and Arya over the Riverlands",
+                    "credit": "",
+                    "url": "http://4.bp.blogspot.com/-tWdJbVkFcgY/UZv7npLN4zI/AAAAAAAAAmA/WQFKbsD42CM/s1600/Red_Fork.jpg"
+                },
+                "text": {
+                    "headline": "Lord Harroway's Town",
+                    "text": "Arya escapes from the Brotherhood when she finds out they plan to ransom her. She is then captured&nbsp;by<span>&nbsp;</span>Sandor Clegane<span>&nbsp;who decides to take her to her mother at the Twins and ransom her. On the way they find&nbsp;Lord Harroway's Town flooded when the Trident overflows its banks.</span>"
+                }
+            },
+            {
+                "date": "",
+                "location": {
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+                    "lat": 75.00494000767517,
+                    "line": true,
+                    "lon": -134.736328125,
+                    "zoom": 5
+                },
+                "media": {
+                    "caption": "Sandor and Arya outside the Twins during the Red Wedding",
+                    "credit": "",
+                    "url": "http://honestreviewscorner.com/wp-content/uploads/2013/06/game-of-thrones-mhysa-arya-the-hound.jpg"
+                },
+                "text": {
+                    "headline": "The Twins",
+                    "text": "Arya and Sandor are in the outskirts of the castle when the Red Wedding takes place, when Arya tries to rush in to help her family Sandor knocks her out to stop her, and they flee.<br><br>"
+                }
+            },
+            {
+                "date": "",
+                "location": {
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+                    "lat": 74.41397440280811,
+                    "line": true,
+                    "lon": -128.32031249999997,
+                    "zoom": 5
+                },
+                "media": {
+                    "caption": "Arya and Sandor camping in the mountains",
+                    "credit": "",
+                    "url": "http://comeonhitme.files.wordpress.com/2013/06/screen-shot-2013-06-10-at-6-25-21-pm.png"
+                },
+                "text": {
+                    "headline": "The mountains",
+                    "text": "While they are hiding out in the mountains,&nbsp;Arya has a strange dream that she is actually her direwolf,&nbsp;Nymeria, leading a huge pack of wolves in the Riverlands. She dreams of finding a familiar corpse floating in the&nbsp;Green Fork&nbsp;south of the Twins and pulling it ashore, only to flee as a group of men approach."
+                }
+            },
+            {
+                "date": "",
+                "location": {
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+                    "lat": 72.44879155730672,
+                    "line": true,
+                    "lon": -124.5849609375,
+                    "zoom": 5
+                },
+                "media": {
+                    "caption": "Arya and Sandor",
+                    "credit": "",
+                    "url": "http://cdn3-www.craveonline.com/assets/uploads/gallery/game-of-thrones-season-4-photo-preview/maisie-williams-as-arya-stark-rory-mccann-as-sandor-the-hound-clegane_photo-helen-sloan_hbo.jpg"
+                },
+                "text": {
+                    "headline": "Palisade Village",
+                    "text": "As they move deeper into the hills, Sandor and Arya come to an isolated village, and Sandor decides they need to stop for food and rest. The townsfolk are building a new palisade, and Sandor agrees to help in the labor for food, ale, lodging, and some coin. He also learns that taking the&nbsp;high road<span>&nbsp;will be impossible due to both the weather and the renewed depredations of the&nbsp;</span>mountain clans<span>. </span><span>&nbsp;</span><span>After two weeks in the town, Sandor decides they should just stay for a while until the situation in the&nbsp;</span>Riverlands<span>&nbsp;calms down, but the next day, they are turned out by the village elder, who recognizes Sandor and does not want any trouble. Sandor is paid with some copper, sour ale, and a sword that he trades for with his axe. He decides to make for&nbsp;</span>Riverrun<span>&nbsp;again to ransom Arya to Ser&nbsp;</span>Brynden<span>.&nbsp;</span>"
+                }
+            },
+            {
+                "date": "",
+                "location": {
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+                    "lat": 71.61521389461222,
+                    "line": true,
+                    "lon": -123.92578125,
+                    "zoom": 6
+                },
+                "media": {
+                    "caption": "Arya now on her own with Needle",
+                    "credit": "",
+                    "url": "http://oyster.ignimgs.com/mediawiki/apis.ign.com/game-of-thrones/thumb/f/fa/Game_of_thrones_season_4_arya_needle.png/468px-Game_of_thrones_season_4_arya_needle.png"
+                },
+                "text": {
+                    "headline": "Inn at the Crossroads",
+                    "text": "Arya and Sandor meet freeriders in the service of Sandor's hated brother, Gregor, in an inn. There is a fight and the freeriders are killed, but Sandor is wounded. Arya leaves him dying under a tree and goes to the nearby port town of&nbsp;Saltpans<span>, on the Trident.</span>"
+                }
+            },
+            {
+                "date": "",
+                "location": {
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+                    "lat": 70.75072302031475,
+                    "line": true,
+                    "lon": -120.12451171875,
+                    "zoom": 6
+                },
+                "media": {
+                    "caption": "The Xwejni Saltpans in Malta and example of what this scenery may look like on the show",
+                    "credit": "Francis Xavier Camilleri",
+                    "url": "http://i1.treklens.com/photos/24849/xwejni_salt_pans_final.jpg"
+                },
+                "text": {
+                    "headline": "Saltpans",
+                    "text": "She finds a ship from the Free City of&nbsp;Braavos<span>&nbsp;there, but they refuse to take her north. She pulls out the coin Jaqen H'ghar gave her and the ship crew suddenly become more cooperative. They won't take her north, but do agree to take over back to Braavos beyond the Narrow Sea with them. She agrees.</span>"
+                }
+            },
+            {
+                "date": "",
+                "location": {
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+                    "lat": 75.69393145698817,
+                    "line": true,
+                    "lon": -87.451171875,
+                    "zoom": 5
+                },
+                "media": {
+                    "caption": "Map of Braavos",
+                    "credit": "Fantastic Maps",
+                    "url": "http://www.fantasticmaps.com/wp-content/uploads/2013/03/Braavos_lowres.jpg"
+                },
+                "text": {
+                    "headline": "Braavos",
+                    "text": "<span>In the Free City of Braavos, Arya finds her way to the House of Black and White, a temple to the Many-Faced God. There Arya is inducted into the ranks of the&nbsp;Faceless Men&nbsp;as a novice. She learns that the Faceless Men are not simply a band of skilled assassins, but also a religious sect dating long before the Doom of Valyria. They consider their assassinations to be holy sacraments to their god of death. As Faceless Men must have no true identity, Arya assumes the role of 'Cat of the Canals' and becomes a familiar sight on the streets of the city. However, her old identity occasionally slips through. She hides her sword&nbsp;Needle&nbsp;rather than discarding it as ordered.&nbsp;</span>"
+                }
+            },
+            {
+                "date": "",
+                "location": {
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+                    "lat": 74.39034206491468,
+                    "line": true,
+                    "lon": -128.935546875,
+                    "zoom": 5
+                },
+                "media": {
+                    "caption": "Season 4 trailer featuring \"Feral Love\" by Chelsea Wolfe",
+                    "credit": "HBO",
+                    "url": "http://www.youtube.com/watch?v=xZY43QSx3Fk"
+                },
+                "text": {
+                    "headline": "Game of Thrones - Season 4 Trailer",
+                    "text": "April 6, 2014, on&nbsp;HBO<br>At the end of Season 3 Arya and Sandor Clegane (The Hound) had just escaped the Red Wedding at the Twins."
+                }
+            }
+        ],
+        "zoomify": {
+            "attribution": "",
+            "height": 7328,
+            "path": "http://cdn.verite.co/maps/zoomify/gameofthrones/",
+            "tolerance": 0.9,
+            "width": 10960
+        }
+    }
 }
