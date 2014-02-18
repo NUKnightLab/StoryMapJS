@@ -4827,6 +4827,7 @@ VCO.Media = VCO.Class.extend({
 			this.message.hide();
 		}
 		this.showMeta();
+		this.updateDisplay();
 	},
 	
 	showMeta: function() {
@@ -4899,7 +4900,7 @@ VCO.Media = VCO.Class.extend({
 			this.options.credit_height 		= this._el.credit.offsetHeight;
 		}
 		if (this._el.caption) {
-			this.options.caption_height 	= this._el.caption.offsetHeight;
+			this.options.caption_height 	= this._el.caption.offsetHeight + 5;
 		}
 		
 		this.updateMediaDisplay();
@@ -5216,6 +5217,14 @@ VCO.Media.Image = VCO.Media.extend({
 		this._el.content_item.src			= this.data.url;
 		
 		this.onLoaded();
+	},
+	
+	_updateMediaDisplay: function() {
+		this._el.content_item.style.maxHeight = (this.options.height - this.options.credit_height - this.options.caption_height - 16) + "px";
+		
+		if(VCO.Browser.firefox) {
+			this._el.content_item.style.maxWidth = (this.options.width/2) + "px";
+		}
 	}
 	
 });
