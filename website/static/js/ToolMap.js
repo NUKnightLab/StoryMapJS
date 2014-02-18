@@ -70,13 +70,15 @@ function GoogleToolMap(map_element_id, options) {
         zoomControlOptions: {
             style: google.maps.ZoomControlStyle.SMALL
         },
-        mapTypeId: "stamen:toner"
+        mapTypeId: "stamen:toner-lite"
     });
     
     // Preset map types
+    this.map.mapTypes.set("stamen:toner-lite", new google.maps.StamenMapType("toner-lite"))
     this.map.mapTypes.set("stamen:toner", new google.maps.StamenMapType("toner"))
     this.map.mapTypes.set("stamen:toner-lines", new google.maps.StamenMapType("toner-lines"))
     this.map.mapTypes.set("stamen:toner-labels", new google.maps.StamenMapType("toner-labels"))
+    this.map.mapTypes.set("stamen:toner-background", new google.maps.StamenMapType("toner-background"))
     this.map.mapTypes.set("stamen:terrain", new google.maps.StamenMapType("terrain"))
     this.map.mapTypes.set("stamen:watercolor", new google.maps.StamenMapType("watercolor"))
     this.map.mapTypes.set("osm:standard",new google.maps.OSMMapType());
@@ -273,9 +275,11 @@ GoogleToolMap.prototype.setMapType = function(map_type, map_subdomains) {
         this.map.setOptions({mapTypeId: 'custom'}); 
     } else {
         switch(map_type) {
+            case "stamen:toner-lite":
             case "stamen:toner":
             case "stamen:toner-lines":
             case "stamen:toner-labels":
+            case "stamen:toner-background":
             case "stamen:watercolor":
             case "stamen:terrain":
             case "osm:standard":
@@ -283,7 +287,7 @@ GoogleToolMap.prototype.setMapType = function(map_type, map_subdomains) {
                 break;    
             
             default:
-                this.map.setOptions({mapTypeId: "stamen:toner"});
+                this.map.setOptions({mapTypeId: "stamen:toner-lite"});
                 break;
         }
     }
