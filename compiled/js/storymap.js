@@ -6313,7 +6313,7 @@ VCO.Slide = VCO.Class.extend({
 		}
 
 		
-		if(VCO.Browser.mobile) {
+		if(VCO.Browser.mobile && (this.options.width <= 500)) {
 			this._el.content.style.paddingLeft 	= 0 + "px";
 			this._el.content.style.paddingRight = 0 + "px";
 			this._el.content.style.width		= this.options.width - 0 + "px";
@@ -18068,6 +18068,7 @@ VCO.StoryMap = VCO.Class.extend({
 			map_type: 				"stamen:toner-lite",
 			map_subdomains: 		"",
 			map_as_image: 			false,
+			map_background_color: 	"#333",
 			zoomify: {
 				path: 				"",
 				width: 				"",
@@ -18108,7 +18109,7 @@ VCO.StoryMap = VCO.Class.extend({
 		VCO.Util.mergeData(this.options, options);
 		
 		// Zoomify Layout
-		if (this.options.map_type == "zoomify") {
+		if (this.options.map_type == "zoomify" && this.options.map_as_image) {
 			this.options.map_size_sticky = 2;
 		}
 		
@@ -18188,6 +18189,9 @@ VCO.StoryMap = VCO.Class.extend({
 		// Create Map using preferred Map API
 		this._map = new VCO.Map.Leaflet(this._el.map, this.data, this.options);
 		this._map.on('loaded', this._onMapLoaded, this);
+		
+		// Map Background Color
+		this._el.map.style.backgroundColor = this.options.map_background_color;
 		
 		// Create SizeBar
 		this._sizebar = new VCO.SizeBar(this._el.sizebar, this._el.container, this.options);

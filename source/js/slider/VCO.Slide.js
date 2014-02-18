@@ -257,7 +257,7 @@ VCO.Slide = VCO.Class.extend({
 		}
 
 		
-		if(VCO.Browser.mobile) {
+		if(VCO.Browser.mobile && (this.options.width <= 500)) {
 			this._el.content.style.paddingLeft 	= 0 + "px";
 			this._el.content.style.paddingRight = 0 + "px";
 			this._el.content.style.width		= this.options.width - 0 + "px";
