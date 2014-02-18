@@ -4345,6 +4345,7 @@ VCO.SizeBar = VCO.Class.extend({
 			this._el.button_overview.innerHTML			= VCO.Language.buttons.map_overview;
 			this._el.button_backtostart.innerHTML		= "<span class='vco-icon-goback'></span>";
 			this._el.button_collapse_toggle.innerHTML	= "<span class='vco-icon-arrow-up'></span>";
+			this._el.container.setAttribute("ontouchstart"," ");
 		} else {
 			this._el.button_overview.innerHTML			= VCO.Language.buttons.map_overview;
 			this._el.button_backtostart.innerHTML		= VCO.Language.buttons.backtostart + " <span class='vco-icon-goback'></span>";
@@ -6311,12 +6312,15 @@ VCO.Slide = VCO.Class.extend({
 		} else {
 			this.options.width 					= this._el.container.offsetWidth;
 		}
-
 		
 		if(VCO.Browser.mobile && (this.options.width <= 500)) {
 			this._el.content.style.paddingLeft 	= 0 + "px";
 			this._el.content.style.paddingRight = 0 + "px";
 			this._el.content.style.width		= this.options.width - 0 + "px";
+		} else if (this.options.width <= 500) {
+			this._el.content.style.paddingLeft 	= 10 + "px";
+			this._el.content.style.paddingRight = 10 + "px";
+			this._el.content.style.width		= this.options.width - (10 * 2) + "px";
 		} else {
 			this._el.content.style.paddingLeft 	= this.options.slide_padding_lr + "px";
 			this._el.content.style.paddingRight = this.options.slide_padding_lr + "px";
@@ -6396,6 +6400,10 @@ VCO.SlideNav = VCO.Class.extend({
 		
 		
 		this._el.container = VCO.Dom.create("div", "vco-slidenav-" + this.options.direction);
+		
+		if (VCO.Browser.mobile) {
+			this._el.container.setAttribute("ontouchstart"," ");
+		}
 		
 		this._initLayout();
 		this._initEvents();
@@ -18249,6 +18257,12 @@ VCO.StoryMap = VCO.Class.extend({
 			this._el.container.className = this.options.base_class + " vco-skinny";
 		} else {
 			this._el.container.className = this.options.base_class;
+		}
+		
+		//Check if mobile
+		if (VCO.Browser.mobile) {
+			this._el.container.className += " vco-mobile";
+			
 		}
 		
 		// Set Sticky state of SizeBar

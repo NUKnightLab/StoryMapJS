@@ -698,6 +698,12 @@ VCO.StoryMap = VCO.Class.extend({
 			this._el.container.className = this.options.base_class;
 		}
 		
+		//Check if mobile
+		if (VCO.Browser.mobile) {
+			this._el.container.className += " vco-mobile";
+			
+		}
+		
 		// Set Sticky state of SizeBar
 		this._sizebar.setSticky(Math.floor(this._el.container.offsetHeight/this.options.map_size_sticky));
 		

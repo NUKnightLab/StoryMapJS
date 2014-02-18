@@ -206,6 +206,7 @@ VCO.SizeBar = VCO.Class.extend({
 			this._el.button_overview.innerHTML			= VCO.Language.buttons.map_overview;
 			this._el.button_backtostart.innerHTML		= "<span class='vco-icon-goback'></span>";
 			this._el.button_collapse_toggle.innerHTML	= "<span class='vco-icon-arrow-up'></span>";
+			this._el.container.setAttribute("ontouchstart"," ");
 		} else {
 			this._el.button_overview.innerHTML			= VCO.Language.buttons.map_overview;
 			this._el.button_backtostart.innerHTML		= VCO.Language.buttons.backtostart + " <span class='vco-icon-goback'></span>";

@@ -255,12 +255,15 @@ VCO.Slide = VCO.Class.extend({
 		} else {
 			this.options.width 					= this._el.container.offsetWidth;
 		}
-
 		
 		if(VCO.Browser.mobile && (this.options.width <= 500)) {
 			this._el.content.style.paddingLeft 	= 0 + "px";
 			this._el.content.style.paddingRight = 0 + "px";
 			this._el.content.style.width		= this.options.width - 0 + "px";
+		} else if (this.options.width <= 500) {
+			this._el.content.style.paddingLeft 	= 10 + "px";
+			this._el.content.style.paddingRight = 10 + "px";
+			this._el.content.style.width		= this.options.width - (10 * 2) + "px";
 		} else {
 			this._el.content.style.paddingLeft 	= this.options.slide_padding_lr + "px";
 			this._el.content.style.paddingRight = this.options.slide_padding_lr + "px";
