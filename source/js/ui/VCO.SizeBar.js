@@ -167,13 +167,21 @@ VCO.SizeBar = VCO.Class.extend({
 			this.show();
 			this._el.button_overview.style.display = "inline";
 			this.fire("swipe", {y:this.options.sizebar_default_y});
-			this._el.button_collapse_toggle.innerHTML	= VCO.Language.buttons.collapse_toggle + "<span class='vco-icon-arrow-up'></span>";;
+			if (VCO.Browser.mobile) {
+				this._el.button_collapse_toggle.innerHTML	= "<span class='vco-icon-arrow-up'></span>";
+			} else {
+				this._el.button_collapse_toggle.innerHTML	= VCO.Language.buttons.collapse_toggle + "<span class='vco-icon-arrow-up'></span>";
+			}
 		} else {
 			this.collapsed = true;
 			this.hide(25);
 			this._el.button_overview.style.display = "none";
 			this.fire("swipe", {y:1});
-			this._el.button_collapse_toggle.innerHTML = VCO.Language.buttons.uncollapse_toggle + "<span class='vco-icon-arrow-down'></span>";;
+			if (VCO.Browser.mobile) {
+				this._el.button_collapse_toggle.innerHTML	= "<span class='vco-icon-arrow-down'></span>";
+			} else {
+				this._el.button_collapse_toggle.innerHTML	= VCO.Language.buttons.uncollapse_toggle + "<span class='vco-icon-arrow-down'></span>";
+			}
 		}
 	},
 	
@@ -185,22 +193,24 @@ VCO.SizeBar = VCO.Class.extend({
 		this._el.container.style.top		= 0 + "px";
 		
 		// Buttons
-		this._el.button_overview 					= VCO.Dom.create('span', 'vco-sizebar-button', this._el.container);
-		this._el.button_overview.innerHTML			= VCO.Language.buttons.map_overview;
+		this._el.button_overview 						= VCO.Dom.create('span', 'vco-sizebar-button', this._el.container);
 		VCO.DomEvent.addListener(this._el.button_overview, 'click', this._onButtonOverview, this);
 		
-		this._el.button_backtostart 				= VCO.Dom.create('span', 'vco-sizebar-button', this._el.container);
-		this._el.button_backtostart.innerHTML		= VCO.Language.buttons.backtostart + " <span class='vco-icon-goback'></span>";
+		this._el.button_backtostart 					= VCO.Dom.create('span', 'vco-sizebar-button', this._el.container);
 		VCO.DomEvent.addListener(this._el.button_backtostart, 'click', this._onButtonBackToStart, this);
 		
-		this._el.button_collapse_toggle 			= VCO.Dom.create('span', 'vco-sizebar-button', this._el.container);
-		this._el.button_collapse_toggle.innerHTML	= VCO.Language.buttons.collapse_toggle + "<span class='vco-icon-arrow-up'></span>";
+		this._el.button_collapse_toggle 				= VCO.Dom.create('span', 'vco-sizebar-button', this._el.container);
 		VCO.DomEvent.addListener(this._el.button_collapse_toggle, 'click', this._onButtonCollapseMap, this);
 		
-		//this._el.line = VCO.Dom.create("div", "vco-map-line", this._el.container);
-		//this._el.coverbar = VCO.Dom.create("div", "vco-coverbar", this._el.container);
-		
-		//this._el.line.style.top = this.options.sizebar_default_y + "px";
+		if (VCO.Browser.mobile) {
+			this._el.button_overview.innerHTML			= VCO.Language.buttons.map_overview;
+			this._el.button_backtostart.innerHTML		= "<span class='vco-icon-goback'></span>";
+			this._el.button_collapse_toggle.innerHTML	= "<span class='vco-icon-arrow-up'></span>";
+		} else {
+			this._el.button_overview.innerHTML			= VCO.Language.buttons.map_overview;
+			this._el.button_backtostart.innerHTML		= VCO.Language.buttons.backtostart + " <span class='vco-icon-goback'></span>";
+			this._el.button_collapse_toggle.innerHTML	= VCO.Language.buttons.collapse_toggle + "<span class='vco-icon-arrow-up'></span>";
+		}
 		
 		//Make draggable
 		

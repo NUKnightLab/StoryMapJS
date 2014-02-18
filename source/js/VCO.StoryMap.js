@@ -627,10 +627,10 @@ VCO.StoryMap = VCO.Class.extend({
 		this._el.storyslider 	= VCO.Dom.create('div', 'vco-storyslider', this._el.container);
 		
 		// Initial Default Layout
-		this.options.width = this._el.container.offsetWidth;
-		this.options.height = this._el.container.offsetHeight;
-		this._el.map.style.height = "1px";
-		this._el.storyslider.style.top = "1px";
+		this.options.width 				= this._el.container.offsetWidth;
+		this.options.height 			= this._el.container.offsetHeight;
+		this._el.map.style.height 		= "1px";
+		this._el.storyslider.style.top 	= "1px";
 		
 		// Create Map using preferred Map API
 		this._map = new VCO.Map.Leaflet(this._el.map, this.data, this.options);
@@ -645,7 +645,7 @@ VCO.StoryMap = VCO.Class.extend({
 		this._storyslider.init();
 		
 		// Set Default Component Sizes
-		this.options.map_height = (this.options.height / this.options.map_size_sticky);
+		this.options.map_height 		= (this.options.height / this.options.map_size_sticky);
 		this.options.storyslider_height = (this.options.height - this._el.sizebar.offsetHeight - this.options.map_height - 1);
 		this._sizebar.setSticky(0);
 		

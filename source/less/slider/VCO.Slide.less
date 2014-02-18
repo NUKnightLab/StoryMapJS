@@ -220,6 +220,7 @@
 }
 
 // Skinny 500px or less
+
 .vco-skinny {
 	.vco-slide {
 		display:block;
@@ -232,13 +233,19 @@
 					height:auto;
 					float: none;
 					display:block;
+
 				}
 				.vco-text {
+					display:block;
 					width:100%;
 					max-width:100%;
-					min-width:auto;
+					min-width:0;
 					float:none;
 					padding: 0;
+					.vco-text-content-container {
+						padding-left:10px;
+						padding-right:10px;
+					}
 				}
 			}
 		}

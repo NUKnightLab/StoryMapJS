@@ -4306,13 +4306,21 @@ VCO.SizeBar = VCO.Class.extend({
 			this.show();
 			this._el.button_overview.style.display = "inline";
 			this.fire("swipe", {y:this.options.sizebar_default_y});
-			this._el.button_collapse_toggle.innerHTML	= VCO.Language.buttons.collapse_toggle + "<span class='vco-icon-arrow-up'></span>";;
+			if (VCO.Browser.mobile) {
+				this._el.button_collapse_toggle.innerHTML	= "<span class='vco-icon-arrow-up'></span>";
+			} else {
+				this._el.button_collapse_toggle.innerHTML	= VCO.Language.buttons.collapse_toggle + "<span class='vco-icon-arrow-up'></span>";
+			}
 		} else {
 			this.collapsed = true;
 			this.hide(25);
 			this._el.button_overview.style.display = "none";
 			this.fire("swipe", {y:1});
-			this._el.button_collapse_toggle.innerHTML = VCO.Language.buttons.uncollapse_toggle + "<span class='vco-icon-arrow-down'></span>";;
+			if (VCO.Browser.mobile) {
+				this._el.button_collapse_toggle.innerHTML	= "<span class='vco-icon-arrow-down'></span>";
+			} else {
+				this._el.button_collapse_toggle.innerHTML	= VCO.Language.buttons.uncollapse_toggle + "<span class='vco-icon-arrow-down'></span>";
+			}
 		}
 	},
 	
@@ -4324,22 +4332,24 @@ VCO.SizeBar = VCO.Class.extend({
 		this._el.container.style.top		= 0 + "px";
 		
 		// Buttons
-		this._el.button_overview 					= VCO.Dom.create('span', 'vco-sizebar-button', this._el.container);
-		this._el.button_overview.innerHTML			= VCO.Language.buttons.map_overview;
+		this._el.button_overview 						= VCO.Dom.create('span', 'vco-sizebar-button', this._el.container);
 		VCO.DomEvent.addListener(this._el.button_overview, 'click', this._onButtonOverview, this);
 		
-		this._el.button_backtostart 				= VCO.Dom.create('span', 'vco-sizebar-button', this._el.container);
-		this._el.button_backtostart.innerHTML		= VCO.Language.buttons.backtostart + " <span class='vco-icon-goback'></span>";
+		this._el.button_backtostart 					= VCO.Dom.create('span', 'vco-sizebar-button', this._el.container);
 		VCO.DomEvent.addListener(this._el.button_backtostart, 'click', this._onButtonBackToStart, this);
 		
-		this._el.button_collapse_toggle 			= VCO.Dom.create('span', 'vco-sizebar-button', this._el.container);
-		this._el.button_collapse_toggle.innerHTML	= VCO.Language.buttons.collapse_toggle + "<span class='vco-icon-arrow-up'></span>";
+		this._el.button_collapse_toggle 				= VCO.Dom.create('span', 'vco-sizebar-button', this._el.container);
 		VCO.DomEvent.addListener(this._el.button_collapse_toggle, 'click', this._onButtonCollapseMap, this);
 		
-		//this._el.line = VCO.Dom.create("div", "vco-map-line", this._el.container);
-		//this._el.coverbar = VCO.Dom.create("div", "vco-coverbar", this._el.container);
-		
-		//this._el.line.style.top = this.options.sizebar_default_y + "px";
+		if (VCO.Browser.mobile) {
+			this._el.button_overview.innerHTML			= VCO.Language.buttons.map_overview;
+			this._el.button_backtostart.innerHTML		= "<span class='vco-icon-goback'></span>";
+			this._el.button_collapse_toggle.innerHTML	= "<span class='vco-icon-arrow-up'></span>";
+		} else {
+			this._el.button_overview.innerHTML			= VCO.Language.buttons.map_overview;
+			this._el.button_backtostart.innerHTML		= VCO.Language.buttons.backtostart + " <span class='vco-icon-goback'></span>";
+			this._el.button_collapse_toggle.innerHTML	= VCO.Language.buttons.collapse_toggle + "<span class='vco-icon-arrow-up'></span>";
+		}
 		
 		//Make draggable
 		
@@ -6297,14 +6307,22 @@ VCO.Slide = VCO.Class.extend({
 	_updateDisplay: function(width, height, animate) {
 		
 		if (width) {
-			this.options.width = width;
-			//this._el.container.style.width = this.options.width + "px";
+			this.options.width 					= width;
 		} else {
-			this.options.width = this._el.container.offsetWidth;
+			this.options.width 					= this._el.container.offsetWidth;
 		}
-		this._el.content.style.paddingLeft = this.options.slide_padding_lr + "px";
-		this._el.content.style.paddingRight = this.options.slide_padding_lr + "px";
-		this._el.content.style.width = this.options.width - (this.options.slide_padding_lr * 2) + "px";
+
+		
+		if(VCO.Browser.mobile) {
+			this._el.content.style.paddingLeft 	= 0 + "px";
+			this._el.content.style.paddingRight = 0 + "px";
+			this._el.content.style.width		= this.options.width - 0 + "px";
+		} else {
+			this._el.content.style.paddingLeft 	= this.options.slide_padding_lr + "px";
+			this._el.content.style.paddingRight = this.options.slide_padding_lr + "px";
+			this._el.content.style.width		= this.options.width - (this.options.slide_padding_lr * 2) + "px";
+		}
+		
 		
 		if (height) {
 			this.options.height = height;
@@ -18162,10 +18180,10 @@ VCO.StoryMap = VCO.Class.extend({
 		this._el.storyslider 	= VCO.Dom.create('div', 'vco-storyslider', this._el.container);
 		
 		// Initial Default Layout
-		this.options.width = this._el.container.offsetWidth;
-		this.options.height = this._el.container.offsetHeight;
-		this._el.map.style.height = "1px";
-		this._el.storyslider.style.top = "1px";
+		this.options.width 				= this._el.container.offsetWidth;
+		this.options.height 			= this._el.container.offsetHeight;
+		this._el.map.style.height 		= "1px";
+		this._el.storyslider.style.top 	= "1px";
 		
 		// Create Map using preferred Map API
 		this._map = new VCO.Map.Leaflet(this._el.map, this.data, this.options);
@@ -18180,7 +18198,7 @@ VCO.StoryMap = VCO.Class.extend({
 		this._storyslider.init();
 		
 		// Set Default Component Sizes
-		this.options.map_height = (this.options.height / this.options.map_size_sticky);
+		this.options.map_height 		= (this.options.height / this.options.map_size_sticky);
 		this.options.storyslider_height = (this.options.height - this._el.sizebar.offsetHeight - this.options.map_height - 1);
 		this._sizebar.setSticky(0);
 		

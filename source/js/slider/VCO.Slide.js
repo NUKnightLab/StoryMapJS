@@ -251,14 +251,22 @@ VCO.Slide = VCO.Class.extend({
 	_updateDisplay: function(width, height, animate) {
 		
 		if (width) {
-			this.options.width = width;
-			//this._el.container.style.width = this.options.width + "px";
+			this.options.width 					= width;
 		} else {
-			this.options.width = this._el.container.offsetWidth;
+			this.options.width 					= this._el.container.offsetWidth;
 		}
-		this._el.content.style.paddingLeft = this.options.slide_padding_lr + "px";
-		this._el.content.style.paddingRight = this.options.slide_padding_lr + "px";
-		this._el.content.style.width = this.options.width - (this.options.slide_padding_lr * 2) + "px";
+
+		
+		if(VCO.Browser.mobile) {
+			this._el.content.style.paddingLeft 	= 0 + "px";
+			this._el.content.style.paddingRight = 0 + "px";
+			this._el.content.style.width		= this.options.width - 0 + "px";
+		} else {
+			this._el.content.style.paddingLeft 	= this.options.slide_padding_lr + "px";
+			this._el.content.style.paddingRight = this.options.slide_padding_lr + "px";
+			this._el.content.style.width		= this.options.width - (this.options.slide_padding_lr * 2) + "px";
+		}
+		
 		
 		if (height) {
 			this.options.height = height;

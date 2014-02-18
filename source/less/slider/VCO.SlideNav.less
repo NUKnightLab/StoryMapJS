@@ -121,5 +121,32 @@
 	}
 } 
 .vco-skinny {
-	
+	.vco-slidenav-next {
+	    right: 32px;
+		.vco-slidenav-icon {
+			margin-left:32 - 24px;
+		}
+	}
+	.vco-slidenav-previous, .vco-slidenav-next {
+		.vco-slidenav-content-container {
+			width:32px;
+			height:32px;
+		}
+		.vco-slidenav-title, .vco-slidenav-description {
+			display:none;
+		}
+		.vco-slidenav-icon {
+			.opacity(33);
+		}
+	}
+	.vco-slidenav-next:hover {
+		.vco-slidenav-icon {
+	       margin-left:32 - 24px;
+		}
+	}
+	.vco-slidenav-previous:hover {
+		.vco-slidenav-icon {
+			margin-left: 0px;
+		}
+	}
 }
