@@ -5234,7 +5234,7 @@ VCO.Media.Image = VCO.Media.extend({
 		this._el.content_item.style.maxHeight = (this.options.height - this.options.credit_height - this.options.caption_height - 16) + "px";
 		
 		if(VCO.Browser.firefox) {
-			this._el.content_item.style.maxWidth = (this.options.width/2) + "px";
+			this._el.content_item.style.maxWidth = (this.options.width/2) - 40 + "px";
 		}
 	}
 	
