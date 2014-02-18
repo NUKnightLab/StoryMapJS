@@ -104,11 +104,11 @@
                     "lon": -126.826171875,
                     "zoom": 4
                 },
-                "media": {
-                    "caption": "Arya, Gendry, Hot Pie",
-                    "credit": "",
-                    "url": "http://thehorticult.com/wp-content/uploads/2013/06/Game-of-Thrones-plants-thehorticult-GOT-Arya.jpg"
-                },
+				"background": {			
+					"url": 	"http://thehorticult.com/wp-content/uploads/2013/06/Game-of-Thrones-plants-thehorticult-GOT-Arya.jpg",
+					"color": 				"#cdbfe3",
+					"opacity": 			50
+				},
                 "text": {
                     "headline": "Holdfast on the Gods Eye",
                     "text": "<span>After their escape from the village, Arya and her friends&nbsp;are captured by men under the command of Gregor Clegane (The Mountain)&nbsp;and put to work as a servant in the undermanned castle of Harrenhall.</span>"
@@ -142,11 +142,11 @@
                     "lon": -132.099609375,
                     "zoom": 4
                 },
-                "media": {
-                    "caption": "Arya realizing The Hound is behind her",
-                    "credit": "",
-                    "url": "http://www.geekbinge.com/wp-content/uploads/2013/04/GoT-3.2-Arya.jpg"
-                },
+				"background": {			
+					"url": 	"http://www.geekbinge.com/wp-content/uploads/2013/04/GoT-3.2-Arya.jpg",
+					"color": 				"#cdbfe3",
+					"opacity": 			50
+				},
                 "text": {
                     "headline": "Inn at the Kneeling Man",
                     "text": "Arya and friends encounter a group of men known as the Brotherhood Without Banners, led by Lord&nbsp;Beric Dondarrion<span>&nbsp;and the red priest,&nbsp;</span>Thoros of Myr<span>.&nbsp;</span>"
@@ -161,11 +161,11 @@
                     "lon": -130.95703125,
                     "zoom": 5
                 },
-                "media": {
-                    "caption": "Brotherhood Without Banners",
-                    "credit": "",
-                    "url": "http://i998.photobucket.com/albums/af107/FayleneSky/Iron%20Throne/competition/1-5.jpg"
-                },
+				"background": {			
+					"url": 	"http://i998.photobucket.com/albums/af107/FayleneSky/Iron%20Throne/competition/1-5.jpg",
+					"color": 				"#cdbfe3",
+					"opacity": 			50
+				},
                 "text": {
                     "headline": "Lord Lychester's Keep",
                     "text": "The&nbsp;Brotherhood Without Banners<span>&nbsp;visits with Lord Lychester's&nbsp;</span>maester<span>&nbsp;for information on Lord&nbsp;</span>Beric Dondarrion<span>'s whereabouts.</span>"
@@ -180,11 +180,11 @@
                     "lon": -133.3740234375,
                     "zoom": 5
                 },
-                "media": {
-                    "caption": "Beric Dondarrion",
-                    "credit": "",
-                    "url": "http://i.lv3.hbo.com/assets/images/series/game-of-thrones/character/s3/beric-dondarron-1024.jpg"
-                },
+				"background": {			
+					"url": 	"http://i.lv3.hbo.com/assets/images/series/game-of-thrones/character/s3/beric-dondarron-1024.jpg",
+					"color": 				"#cdbfe3",
+					"opacity": 			50
+				},
                 "text": {
                     "headline": "Lady of the Leaves",
                     "text": "The outlaws&nbsp;<span>then visit the&nbsp;</span>Lady of the Leaves&nbsp;<span>in search of word on Lord&nbsp;</span>Beric<span>'s whereabouts. But none have seen him, only hearing rumors that he was dead--hung once, killed by&nbsp;</span>Vargo Hoat<span>,&nbsp;</span>Amory Lorch<span>, and twice by&nbsp;</span>Gregor Clegane<span>. The same rumors&nbsp;</span>Arya<span>&nbsp;had been hearing at&nbsp;</span>Harrenhal<span>.&nbsp;</span>"
@@ -199,11 +199,11 @@
                     "lon": -133.2861328125,
                     "zoom": 5
                 },
-                "media": {
-                    "caption": "Weirwood",
-                    "credit": "sharksden.deviantart.com",
-                    "url": "http://fc05.deviantart.net/fs71/f/2011/104/f/6/heart_tree_by_sharksden-d3dzea0.jpg"
-                },
+				"background": {			
+					"url": 	"http://fc05.deviantart.net/fs71/f/2011/104/f/6/heart_tree_by_sharksden-d3dzea0.jpg",
+					"color": 				"#cdbfe3",
+					"opacity": 			50
+				},
                 "text": {
                     "headline": "High Heart",
                     "text": "The outlaws plan to ransom Arya at&nbsp;Riverrun&nbsp;after they discover her identity and&nbsp;meet up with Beric and&nbsp;Thoros of Myr. They arrive at&nbsp;High Heart, an ancient hill sacred to the&nbsp;children of the forest. <br><br>Thirty-one mighty&nbsp;weirwoods&nbsp;had stood at the top of the hill, but only their stumps remained from after the&nbsp;Andals&nbsp;chopped them down. Yet Arya could still feel the power of the place. An old dwarf woman&nbsp;speaks in private to Lem, Tom and&nbsp;Greenbeard, but Arya overhears the conversation. The woman&nbsp;also tells of a prophetic dream she has had while sleeping under the weirwood."
@@ -218,11 +218,11 @@
                     "lon": -133.9453125,
                     "zoom": 5
                 },
-                "media": {
-                    "caption": "Thoros of Myr",
-                    "credit": "",
-                    "url": "http://images6.fanpop.com/image/photos/33900000/Game-of-Thrones-game-of-thrones-33974760-972-475.jpg"
-                },
+				"background": {			
+					"url": 	"http://images6.fanpop.com/image/photos/33900000/Game-of-Thrones-game-of-thrones-33974760-972-475.jpg",
+					"color": 				"#cdbfe3",
+					"opacity": 			50
+				},
                 "text": {
                     "headline": "Acorn Hall",
                     "text": "At&nbsp;Acorn Hall, Lady&nbsp;Smallwood&nbsp;informs the Brotherhood&nbsp;that Thoros had been through recently, and that&nbsp;Karstark&nbsp;men were searching for the&nbsp;Kingslayer (Jamie Lannister).&nbsp;<span>Upon learning&nbsp;that Ser&nbsp;</span>Jaime Lannister<span>&nbsp;has escaped&nbsp;</span><a href=\"http://awoiaf.westeros.org/index.php/Riverrun\" target=\"\" rel=\"\">Riverrun</a>, the Mad Huntsman sets out to track him.&nbsp;<span>He catches&nbsp;</span>Sandor Clegane (The Hound)<span>, but the&nbsp;</span>Brotherhood Without Banners<span>&nbsp;claim him before the Mad Huntsman can put him in the crow cages. The Mad Huntsman agrees to take Sandor before the Lightning Lord.&nbsp;</span>"
@@ -237,11 +237,11 @@
                     "lon": -132.802734375,
                     "zoom": 5
                 },
-                "media": {
-                    "caption": "Beric Dondarrion leading the Brotherhood",
-                    "credit": "",
-                    "url": "http://lossietereinos.com/wp-content/uploads/2013/04/Beric-Dondarrion.jpg"
-                },
+				"background": {			
+					"url": 	"http://lossietereinos.com/wp-content/uploads/2013/04/Beric-Dondarrion.jpg",
+					"color": 				"#cdbfe3",
+					"opacity": 			50
+				},
                 "text": {
                     "headline": "Stoney Sept",
                     "text": "The town is supportive of the&nbsp;Brotherhood Without Banners.&nbsp;Arya finds&nbsp;northern&nbsp;prisoners captured by the&nbsp;Mad Huntsman&nbsp;wasting away in cages.<br><br><br>Stoney Sept was the site of one of the most important battles of&nbsp;Robert's Rebellion, the&nbsp;Battle of the Bells. Lord&nbsp;Robert Baratheon, with the aid of Lords&nbsp;Eddard Stark,&nbsp;Jon Arrynand&nbsp;Hoster Tully, defeated a royal army under the command of Lord&nbsp;Jon Connington, the&nbsp;Hand of the King&nbsp;to&nbsp;Aerys II Targaryen."
