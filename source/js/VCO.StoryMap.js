@@ -512,8 +512,10 @@ VCO.StoryMap = VCO.Class.extend({
 			// interaction
 			dragging: 				true,
 			trackResize: 			true,
-			map_type: 				"toner-lite",
+			map_type: 				"stamen:toner-lite",
 			map_subdomains: 		"",
+			map_as_image: 			false,
+			map_background_color: 	"#d9d9d9",
 			zoomify: {
 				path: 				"",
 				width: 				"",
@@ -532,9 +534,10 @@ VCO.StoryMap = VCO.Class.extend({
 			use_custom_markers: 	false,  // Allow use of custom map marker icons
 			line_follows_path: 		true,   // Map history path follows default line, if false it will connect previous and current only
 			line_color: 			"#DA0000",
-			line_color_inactive: 	"#000", 
+			line_color_inactive: 	"#CCC",
+			line_join: 				"miter",
 			line_weight: 			3,
-			line_opacity: 			0.20,
+			line_opacity: 			0.80,
 			line_dash: 				"5,5",
 			show_lines: 			true,
 			show_history_line: 		true,
@@ -553,7 +556,7 @@ VCO.StoryMap = VCO.Class.extend({
 		VCO.Util.mergeData(this.options, options);
 		
 		// Zoomify Layout
-		if (this.options.map_type == "zoomify") {
+		if (this.options.map_type == "zoomify" && this.options.map_as_image) {
 			this.options.map_size_sticky = 2;
 		}
 		
@@ -625,14 +628,17 @@ VCO.StoryMap = VCO.Class.extend({
 		this._el.storyslider 	= VCO.Dom.create('div', 'vco-storyslider', this._el.container);
 		
 		// Initial Default Layout
-		this.options.width = this._el.container.offsetWidth;
-		this.options.height = this._el.container.offsetHeight;
-		this._el.map.style.height = "1px";
-		this._el.storyslider.style.top = "1px";
+		this.options.width 				= this._el.container.offsetWidth;
+		this.options.height 			= this._el.container.offsetHeight;
+		this._el.map.style.height 		= "1px";
+		this._el.storyslider.style.top 	= "1px";
 		
 		// Create Map using preferred Map API
 		this._map = new VCO.Map.Leaflet(this._el.map, this.data, this.options);
 		this._map.on('loaded', this._onMapLoaded, this);
+		
+		// Map Background Color
+		this._el.map.style.backgroundColor = this.options.map_background_color;
 		
 		// Create SizeBar
 		this._sizebar = new VCO.SizeBar(this._el.sizebar, this._el.container, this.options);
@@ -643,7 +649,7 @@ VCO.StoryMap = VCO.Class.extend({
 		this._storyslider.init();
 		
 		// Set Default Component Sizes
-		this.options.map_height = (this.options.height / this.options.map_size_sticky);
+		this.options.map_height 		= (this.options.height / this.options.map_size_sticky);
 		this.options.storyslider_height = (this.options.height - this._el.sizebar.offsetHeight - this.options.map_height - 1);
 		this._sizebar.setSticky(0);
 		

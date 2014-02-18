@@ -290,8 +290,7 @@ function storymap_display_list(sortby) {
                 html += item.title
                     + '<p class="modded"><i class="icon-warning-sign" title="Error"></i>'+item.error+'</p>'
                     + '</td>'
-                    + '<td> </td>';
-                    
+                    + '<td> </td>';            
             } else {
                 html += '<a class="title" href="'+href+'">'+item.title+'</a>';
                 
@@ -308,7 +307,6 @@ function storymap_display_list(sortby) {
         
                 html += '</td>'
                     + '<td><a class="storymap-edit" href="'+href+'" title="Edit"><i class="icon-edit icon-large"></i></td>';
-                       
             }     
             
             html += '<td><a class="storymap-delete" href="javascript:" title="Delete"><i class="icon-trash icon-large"></i></td>';

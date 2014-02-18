@@ -34,7 +34,9 @@ html(lang="en")
 		script(src='../js/storymap.js')
 		script
 			var storymap = new VCO.StoryMap('storymap', 'marktwain.json', {
-				map_type: "zoomify",
+				map_type: 			"zoomify",
+				map_background_color: "#000",
+				map_as_image: 		true,
 				zoomify: {
 					path: 			"http://cdn.verite.co/maps/zoomify_nightwatch/nightwatch/",
 					width: 			28128,

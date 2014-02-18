@@ -14,7 +14,6 @@ import traceback
 import sys
 import os
 
-#if __name__ == "__main__":
 # Add current directory to sys.path
 site_dir = os.path.dirname(os.path.abspath(__file__))
          
@@ -88,4 +87,23 @@ def catch_all(path='index.html'):
     
         
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    import getopt
+    
+    ssl_context = None
+    
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "s", [])
+        for opt, arg in opts:
+            if opt == '-s':
+                from OpenSSL import SSL
+                ssl_context = SSL.Context(SSL.SSLv23_METHOD)
+                ssl_context.use_privatekey_file(os.path.join(site_dir, 'website.key'))
+                ssl_context.use_certificate_file(os.path.join(site_dir, 'website.crt'))
+            else:
+                print 'Usage: app.py [-s]'
+                sys.exit(1)   
+    except getopt.GetoptError:
+        print 'Usage: app.py [-s]'
+        sys.exit(1)
+        
+    app.run(host='0.0.0.0', port=5000, debug=True, ssl_context=ssl_context)

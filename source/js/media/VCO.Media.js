@@ -175,6 +175,7 @@ VCO.Media = VCO.Class.extend({
 			this.message.hide();
 		}
 		this.showMeta();
+		this.updateDisplay();
 	},
 	
 	showMeta: function() {
@@ -247,7 +248,7 @@ VCO.Media = VCO.Class.extend({
 			this.options.credit_height 		= this._el.credit.offsetHeight;
 		}
 		if (this._el.caption) {
-			this.options.caption_height 	= this._el.caption.offsetHeight;
+			this.options.caption_height 	= this._el.caption.offsetHeight + 5;
 		}
 		
 		this.updateMediaDisplay();

@@ -1,5 +1,6 @@
 /*
  * L.TileLayer.Zoomify display Zoomify tiles with Leaflet
+ * Modified from https://github.com/turban/Leaflet.Zoomify
  */
 
 L.TileLayer.Zoomify = L.TileLayer.extend({
@@ -38,7 +39,7 @@ L.TileLayer.Zoomify = L.TileLayer.extend({
 			imageSize = this._imageSize[zoom],
 			center = map.options.crs.pointToLatLng(L.point(imageSize.x / 2, imageSize.y / 2), zoom);
 
-		map.setView(center, zoom, true);
+		//map.setView(center, zoom, true);
 	},
 	
 	getCenterZoom: function(map) {

@@ -59,6 +59,20 @@
             equal(media_obj.media_id,"8507434935");
         })
 
+        asyncTest("asynchronous test: JSON callback", function() {
+            VCO.getJSON('http://date.jsontest.com/?callback=?', function(data, status, xhr){
+              console.log('workin');
+              window.stash = { data: data, status: status, xhr: xhr };
+              equal(status,"success","Callback basically worked.")
+              var date_parts = data.date.split('-');
+              var date = new Date();
+              equal(parseInt(date_parts[0]),date.getMonth() + 1,"JSON returned correct month.");
+              equal(parseInt(date_parts[1]),date.getDate(),"JSON returned correct date.");
+              equal(parseInt(date_parts[2]),date.getFullYear(),"JSON returned correct year.");
+              start();
+            });
+
+        });
     </script>
 </head>
 <body>

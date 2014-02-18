@@ -42,10 +42,12 @@
 		box-shadow:none;
 		margin:0;
 		border:none;
+		font-size: 10px;
 	}
 	
 	.leaflet-container {
-		background-color: @color-foreground;
+		//background-color: @color-foreground;
+		background-color: transparent;
 		//background: @color-foreground url("cartographer.jpg") repeat;
 		
 	}
@@ -85,6 +87,15 @@
 @media only screen and (max-width: 500px), only screen and (max-device-width: 500px) {
 	.vco-map {
 
+	}
+}
+.vco-skinny {
+	.leaflet-container .leaflet-control-attribution{
+		background-color:transparent;
+		box-shadow:none;
+		margin:0;
+		border:none;
+		font-size: 6px !important;
 	}
 }
 

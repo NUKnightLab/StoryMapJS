@@ -13,17 +13,17 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		// Set Marker Path
 		L.Icon.Default.imagePath = this.options.path_gfx;
 		
-		//this._map = new L.map(this._el.map, {scrollWheelZoom:false});
 		this._map = new L.map(this._el.map, {scrollWheelZoom:false});
 		this._map.on("load", this._onMapLoaded, this);
-		//this._map.setView([51.505, -0.09], 13);
+		
+		this._map.on("moveend", this._onMapMoveEnd, this);
 			
 		var map_type_arr = this.options.map_type.split(':');		
 
 		// Set Tiles
 		switch(map_type_arr[0]) {
 			case 'stamen':
-				this._tile_layer = new L.StamenTileLayer(map_type_arr[1] || 'toner');
+				this._tile_layer = new L.StamenTileLayer(map_type_arr[1] || 'toner-lite');
 				break;
 			case 'zoomify':
 				this._tile_layer = new L.tileLayer.zoomify(this.options.zoomify.path, {
@@ -60,7 +60,19 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		this._line_active.setStyle({opacity:1});
 		this._addLineToMap(this._line_active);
 		
+		if (this.options.map_as_image) {
+			this._line_active.setStyle({opacity:0});
+			this._line.setStyle({opacity:0});
+		}
+
 		
+	},
+	
+	/*	Event
+	================================================== */
+	_onMapMoveEnd: function(e) {
+		trace(this._map.getCenter());
+		trace(this._map.getZoom());
 	},
 	
 	/*	Marker
@@ -85,7 +97,12 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	
 	_markerOverview: function() {
 		
-		if (this.options.map_type == "zoomify") {
+		// Hide Active Line
+		this._line_active.setStyle({opacity:0});
+		
+		if (this.options.map_type == "zoomify" && this.options.map_as_image) {
+			trace("IS MAP " + this.options.zoomify.is_map);
+			trace(this.options.zoomify);
 			trace("MARKER OVERVIEW ZOOMIFY");
 			trace(this._tile_layer.getCenterZoom(this._map));
 			var center_zoom = this._tile_layer.getCenterZoom(this._map);
@@ -115,10 +132,12 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	_createLine: function(d) {
 		return new L.Polyline([], {
 			clickable: false,
-			color: this.options.line_color,
-			weight: this.options.line_weight,
-			opacity: this.options.line_opacity,
-			dashArray: this.options.line_dash
+			color: 		this.options.line_color,
+			weight: 	this.options.line_weight,
+			opacity: 	this.options.line_opacity,
+			dashArray: 	this.options.line_dash,
+			lineJoin: 	this.options.line_join,
+			className: 	"vco-map-line"
 		} );
 		
 	},
@@ -132,6 +151,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	},
 	
 	_replaceLines: function(line, array) {
+		trace("REPLACE LINES")
 		line.setLatLngs(array);
 	},
 	
@@ -150,7 +170,10 @@ VCO.Map.Leaflet = VCO.Map.extend({
 			_duration 	= this.options.duration/1000,
 			_zoom 		= this._getMapZoom();
 		
-		
+		// Show Active Line
+		if (!this.options.map_as_image) {
+			this._line_active.setStyle({opacity:1});
+		}
 			
 		if (loc.zoom) {
 			_zoom = loc.zoom;
