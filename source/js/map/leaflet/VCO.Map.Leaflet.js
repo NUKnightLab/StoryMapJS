@@ -97,6 +97,9 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	
 	_markerOverview: function() {
 		
+		// Hide Active Line
+		this._line_active.setStyle({opacity:0});
+		
 		if (this.options.map_type == "zoomify" && this.options.map_as_image) {
 			trace("IS MAP " + this.options.zoomify.is_map);
 			trace(this.options.zoomify);
@@ -167,7 +170,10 @@ VCO.Map.Leaflet = VCO.Map.extend({
 			_duration 	= this.options.duration/1000,
 			_zoom 		= this._getMapZoom();
 		
-		
+		// Show Active Line
+		if (!this.options.map_as_image) {
+			this._line_active.setStyle({opacity:1});
+		}
 			
 		if (loc.zoom) {
 			_zoom = loc.zoom;

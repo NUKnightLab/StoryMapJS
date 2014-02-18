@@ -360,6 +360,7 @@ VCO.Map = VCO.Class.extend({
 			
 		},
 		
+		
 		/*	Map Specific Methods
 		================================================== */
 		
