@@ -113,9 +113,11 @@
                                 <span class="caret"></span>
                             </button>
                             <ul id="map_type_menu" class="dropdown-menu" role="menu">
+                                <li><a href="javascript:" storymap-data="stamen:toner-lite">Stamen Maps: Toner Lite</a></li>
                                 <li><a href="javascript:" storymap-data="stamen:toner">Stamen Maps: Toner</a></li>
                                 <li><a href="javascript:" storymap-data="stamen:toner-lines">Stamen Maps: Toner Lines</a></li>
                                 <li><a href="javascript:" storymap-data="stamen:toner-labels">Stamen Maps: Toner Labels</a></li>
+                                <li><a href="javascript:" storymap-data="stamen:toner-background">Stamen Maps: Toner Background</a></li>
                                 <li><a href="javascript:" storymap-data="stamen:watercolor">Stamen Maps: Watercolor</a></li>
                                 <li><a href="javascript:" storymap-data="stamen:terrain">Stamen Maps: Terrain</a></li>
                                 <li><a href="javascript:" storymap-data="osm:standard">Open Street Maps: Standard</a></li>
@@ -264,7 +266,7 @@ switch(document.location.hostname) {
 
 var _default_width = '100%';
 var _default_height = '800';
-var _default_map_type = 'stamen:toner';
+var _default_map_type = 'stamen:toner-lite';
 var _default_language = 'en';
 
 var _re_slide_cls = /^slide-icon-\w+$/;
@@ -343,9 +345,11 @@ function map_set_type() {
     var map_subdomains = (_storymap_data.storymap.map_subdomains || 'a').split('');
 
     switch(map_type) {
+        case "stamen:toner-lite":
         case "stamen:toner":
         case "stamen:toner-lines":
         case "stamen:toner-labels":
+        case "stamen:toner-background":
         case "stamen:watercolor":
         case "stamen:terrain":
         case "osm:standard":
@@ -614,9 +618,11 @@ function slides_load() {
    
     var map_type = _storymap_data.storymap.map_type || _default_map_type;
     switch(map_type) {
+        case "stamen:toner-lite":
         case "stamen:toner":
         case "stamen:toner-lines":
         case "stamen:toner-labels":
+        case "stamen:toner-background":
         case "stamen:watercolor":
         case "stamen:terrain":
             $('#map_type').val(map_type).attr('disabled', true);
@@ -783,9 +789,11 @@ function map_init() {
     
     
     // preset stamen map types
+    map.mapTypes.set("stamen:toner-lite", new google.maps.StamenMapType("toner-lite"))
     map.mapTypes.set("stamen:toner", new google.maps.StamenMapType("toner"))
     map.mapTypes.set("stamen:toner-lines", new google.maps.StamenMapType("toner-lines"))
     map.mapTypes.set("stamen:toner-labels", new google.maps.StamenMapType("toner-labels"))
+    map.mapTypes.set("stamen:toner-background", new google.maps.StamenMapType("toner-background"))
     map.mapTypes.set("stamen:terrain", new google.maps.StamenMapType("terrain"))
     map.mapTypes.set("stamen:watercolor", new google.maps.StamenMapType("watercolor"))
     map.mapTypes.set("osm:standard",new google.maps.OSMMapType());
