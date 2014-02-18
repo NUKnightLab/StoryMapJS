@@ -533,7 +533,8 @@ VCO.StoryMap = VCO.Class.extend({
 			use_custom_markers: 	false,  // Allow use of custom map marker icons
 			line_follows_path: 		true,   // Map history path follows default line, if false it will connect previous and current only
 			line_color: 			"#DA0000",
-			line_color_inactive: 	"#CCC", 
+			line_color_inactive: 	"#CCC",
+			line_join: 				"miter",
 			line_weight: 			3,
 			line_opacity: 			0.80,
 			line_dash: 				"5,5",

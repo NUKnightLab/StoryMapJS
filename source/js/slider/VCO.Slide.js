@@ -8,6 +8,7 @@
 		background: {			// OPTIONAL
 			url: 				null,
 			color: 				null,
+			text_background: 	null,
 			opacity: 			50
 		},
 		date: 					null,
@@ -167,6 +168,9 @@ VCO.Slide = VCO.Class.extend({
 		
 		// Create Layout
 		this._el.container 				= VCO.Dom.create("div", "vco-slide");
+		if (this.data.uniqueid) {
+			this._el.container.id 		= this.data.uniqueid;
+		}
 		this._el.container.id 			= this.data.uniqueid;
 		this._el.content_container		= VCO.Dom.create("div", "vco-slide-content-container", this._el.container);
 		this._el.content				= VCO.Dom.create("div", "vco-slide-content", this._el.content_container);
@@ -183,6 +187,9 @@ VCO.Slide = VCO.Class.extend({
 				this._el.container.className += ' vco-full-color-background';
 				this.has.background.color_value = this.data.background.color;
 				this._el.container.style.backgroundColor = this.data.background.color;
+			}
+			if (this.data.background.text_background) {
+				this._el.container.className += ' vco-text-background';
 			}
 		} 
 		
@@ -201,9 +208,9 @@ VCO.Slide = VCO.Class.extend({
 		if (this.has.media) {
 			
 			// Determine the media type
-			this.data.media.mediatype = VCO.MediaType(this.data.media);
-			this.options.media_name = this.data.media.mediatype.name;
-			this.options.media_type = this.data.media.mediatype.type;
+			this.data.media.mediatype 	= VCO.MediaType(this.data.media);
+			this.options.media_name 	= this.data.media.mediatype.name;
+			this.options.media_type 	= this.data.media.mediatype.type;
 			
 			// Create a media object using the matched class name
 			this._media = new this.data.media.mediatype.cls(this.data.media, this.options);

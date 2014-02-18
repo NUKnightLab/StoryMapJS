@@ -116,6 +116,7 @@
 
 .vco-slide.vco-full-image-background, .vco-slide.vco-full-color-background {
 	.slide-text-shadow();
+	
 	p, h1, h2, h3, h4, h5, h6 {
 		.slide-text-shadow();
 	}
@@ -153,22 +154,16 @@
 	//-ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='myBackground.jpg', sizingMethod='scale')";
 	background-position:center 25%;
 	text-shadow: 1px 1px 2px #000;
+	.vco-slide-content-container {
+		.translucent-background(#000, 0.66);
+	}
 	p, h1, h2, h3, h4, h5, h6 {
 		text-shadow: 1px 1px 2px #000;
 	}
 	.vco-caption, .vco-credit {
 		text-shadow: 1px 1px 2px #000;
 	}
-	.vco-text {
-		.vco-text-content-container {
-			padding:20px;
-			.background-color-opacity(0,0,0, 60);
-			.border-radius(7px);
-			h2 {
-				margin-top:5px;
-			}
-		}
-	}
+	
 	.vco-media-twitter, .vco-media-blockquote {
 		blockquote {
 			text-shadow: 1px 1px 2px #000 !important;
@@ -182,10 +177,22 @@
 /* Color Background 
 ================================================== */
 .vco-slide.vco-full-color-background {
-
+	
 }
-
-
+/* Text Background 
+================================================== */
+.vco-slide.vco-text-background {
+	.vco-text {
+		.vco-text-content-container {
+			padding:20px;
+			.background-color-opacity(0,0,0, 60);
+			.border-radius(7px);
+			h2 {
+				margin-top:5px;
+			}
+		}
+	}
+}
 // Mobile, iPhone
 @media only screen and (max-width: 500px), only screen and (max-device-width: 500px) {
 	.vco-slide {

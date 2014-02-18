@@ -6045,6 +6045,7 @@ VCO.Media.Slider = VCO.Media.extend({
 		background: {			// OPTIONAL
 			url: 				null,
 			color: 				null,
+			text_background: 	null,
 			opacity: 			50
 		},
 		date: 					null,
@@ -6204,6 +6205,9 @@ VCO.Slide = VCO.Class.extend({
 		
 		// Create Layout
 		this._el.container 				= VCO.Dom.create("div", "vco-slide");
+		if (this.data.uniqueid) {
+			this._el.container.id 		= this.data.uniqueid;
+		}
 		this._el.container.id 			= this.data.uniqueid;
 		this._el.content_container		= VCO.Dom.create("div", "vco-slide-content-container", this._el.container);
 		this._el.content				= VCO.Dom.create("div", "vco-slide-content", this._el.content_container);
@@ -6220,6 +6224,9 @@ VCO.Slide = VCO.Class.extend({
 				this._el.container.className += ' vco-full-color-background';
 				this.has.background.color_value = this.data.background.color;
 				this._el.container.style.backgroundColor = this.data.background.color;
+			}
+			if (this.data.background.text_background) {
+				this._el.container.className += ' vco-text-background';
 			}
 		} 
 		
@@ -6238,9 +6245,9 @@ VCO.Slide = VCO.Class.extend({
 		if (this.has.media) {
 			
 			// Determine the media type
-			this.data.media.mediatype = VCO.MediaType(this.data.media);
-			this.options.media_name = this.data.media.mediatype.name;
-			this.options.media_type = this.data.media.mediatype.type;
+			this.data.media.mediatype 	= VCO.MediaType(this.data.media);
+			this.options.media_name 	= this.data.media.mediatype.name;
+			this.options.media_type 	= this.data.media.mediatype.type;
 			
 			// Create a media object using the matched class name
 			this._media = new this.data.media.mediatype.cls(this.data.media, this.options);
@@ -18045,7 +18052,8 @@ VCO.StoryMap = VCO.Class.extend({
 			use_custom_markers: 	false,  // Allow use of custom map marker icons
 			line_follows_path: 		true,   // Map history path follows default line, if false it will connect previous and current only
 			line_color: 			"#DA0000",
-			line_color_inactive: 	"#CCC", 
+			line_color_inactive: 	"#CCC",
+			line_join: 				"miter",
 			line_weight: 			3,
 			line_opacity: 			0.80,
 			line_dash: 				"5,5",
