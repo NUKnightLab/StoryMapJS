@@ -256,11 +256,11 @@
                     "lon": -136.0986328125,
                     "zoom": 5
                 },
-                "media": {
-                    "caption": "Beric Dondarrion and Sandor Clegane (The Hound) fighting to the death",
-                    "credit": "",
-                    "url": "http://images6.fanpop.com/image/photos/33900000/got-game-of-thrones-33960590-500-225.gif"
-                },
+				"background": {			
+					"url": 	"http://images6.fanpop.com/image/photos/33900000/got-game-of-thrones-33960590-500-225.gif",
+					"color": 				"#cdbfe3",
+					"opacity": 			50
+				},
                 "text": {
                     "headline": "Hollow Hill",
                     "text": "Arya <span>and&nbsp;</span>Gendry<span>&nbsp;meet Beric in the&nbsp;</span>Hollow Hill<span>, where he is revealed to be a</span><span>&nbsp;follower of the&nbsp;</span>Lord of Light<span>. They watch as&nbsp;</span>Sandor Clegane<span>&nbsp;duels Beric in a&nbsp;</span>trial by battle<span>. While&nbsp;</span>Thoros of Myr&nbsp;<span>always lit his blades with&nbsp;</span>wildfire<span>, Beric uses his own blood to make his sword magically aflame. Despite Sandor's fear of fire, he is able to slay Beric. Much to their surprise, however, Beric is revived by Thoros of Myr.&nbsp;<br><br></span>"
