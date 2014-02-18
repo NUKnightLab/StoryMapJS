@@ -515,7 +515,7 @@ VCO.StoryMap = VCO.Class.extend({
 			map_type: 				"stamen:toner-lite",
 			map_subdomains: 		"",
 			map_as_image: 			false,
-			map_background_color: 	"#333",
+			map_background_color: 	"#d9d9d9",
 			zoomify: {
 				path: 				"",
 				width: 				"",
