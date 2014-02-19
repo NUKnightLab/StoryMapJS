@@ -38,6 +38,12 @@ VCO.StorySlider = VCO.Class.extend({
 		// Slides Array
 		this._slides = [];
 		
+		// Swipe Object
+		this._swipable;
+		
+		// Preload Timer
+		this.preloadTimer;
+		
 		// Current Slide
 		this.current_slide = 0;
 		
@@ -146,266 +152,6 @@ VCO.StorySlider = VCO.Class.extend({
 						caption:			"",
 						link: 				null,
 						link_target: 		null
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null,
-						color: 				null,
-						opacity: 			50
-					},
-					date: 					null,
-					location: {
-						lat: 				-9.143962,
-						lon: 				38.731094,
-						zoom: 				13,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-					},
-					text: {
-						headline: 			"Wikipedia",
-						text: 				"Just add a link to the video in the media field."
-					},
-					media: {
-						url: 				"http://en.wikipedia.org/wiki/Mark_Twain",
-						credit:				"",
-						caption:			"",
-						link: 				null,
-						link_target: 		null
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null,
-						color: 				null,
-						opacity: 			50
-					},
-					date: 					null,
-					location: {
-						lat: 				-9.143962,
-						lon: 				38.731094,
-						zoom: 				13,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-					},
-					text: {
-						headline: 			"Storify",
-						text: 				"Just add a link to the video in the media field."
-					},
-					media: {
-						url: 				"https://storify.com/kqednews/art-at-burning-man-2013",
-						credit:				"",
-						caption:			"",
-						link: 				null,
-						link_target: 		null
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				"https://secure-b.vimeocdn.com/ts/225/276/225276903_960.jpg",
-						color: 				null,
-						opacity: 			50
-					},
-					date: 					null,
-					location: {
-						lat: 				-9.143962,
-						lon: 				38.731094,
-						zoom: 				13,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-					},
-					text: {
-						headline: 			"Vimeo",
-						text: 				"Just add a link to the video in the media field."
-					},
-					media: {
-						url: 				"https://vimeo.com/33211636",
-						credit:				"",
-						caption:			"",
-						link: 				null,
-						link_target: 		null
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						color: 				null,
-						opacity: 			50
-					},
-					date: 					null,
-					location: {
-						lat: 				-9.143962,
-						lon: 				38.731094,
-						zoom: 				13,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-					},
-					text: {
-						headline: 			"iFrame",
-						text: 				""
-					},
-					media: {
-						url: 				"<iframe src='http://www.w3schools.com'></iframe>",
-						credit:				"",
-						caption:			"w3schools",
-						link: 				null,
-						link_target: 		null
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						color: 				"#cdbfe3",
-						opacity: 			50
-					},
-					date: 					null,
-					location: {
-						lat: 				-9.143962,
-						lon: 				38.731094,
-						zoom: 				13,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-					},
-					text: {
-						headline: 			"Flickr",
-						text: 				""
-					},
-					media: {
-						url: 				"http://www.flickr.com/photos/neera/6147067542/",
-						credit:				"Nosy Iranja",
-						caption:			"",
-						link: 				"http://www.flickr.com/photos/neera/6147067542/",
-						link_target: 		"_self"
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						color: 				"#8b4513",
-						opacity: 			50
-					},
-					date: 					null,
-					location: {
-						lat: 				-9.143962,
-						lon: 				38.731094,
-						zoom: 				13,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-					},
-					text: {
-						headline: 			"Flickr",
-						text: 				""
-					},
-					media: {
-						url: 				"https://twitter.com/ThisAmerLife/status/374975945825722368"
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						color: 				null,
-						opacity: 			50
-					},
-					date: 					null,
-					location: {
-						lat: 				-9.143962,
-						lon: 				38.731094,
-						zoom: 				13,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-					},
-					text: 					null,
-					media: {
-						url: 				"http://www.flickr.com/photos/neera/6147067542/",
-						credit:				"Nosy Iranja",
-						caption:			""
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						color: 				"#cdbfe3",
-						opacity: 			50
-					},
-					date: 					null,
-					location: {
-						lat: 				-9.143962,
-						lon: 				38.731094,
-						zoom: 				13,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-					},
-					text: {
-						headline: 			"La Lune",
-						text: 				""
-					},
-					media: {
-						url: 				"https://soundcloud.com/beastieboys/make-some-noise",
-						credit:				null,
-						caption:			null
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						color: 				null,
-						opacity: 			50
-					},
-					date: 					null,
-					location: {
-						lat: 				-9.143962,
-						lon: 				38.731094,
-						zoom: 				13,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-					},
-					text: 					null,
-					media: {
-						url: 				"https://soundcloud.com/beastieboys/make-some-noise",
-						credit:				null,
-						caption:			null
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						color: 				null,
-						opacity: 			50
-					},
-					date: 					null,
-					location: {
-						lat: 				-9.143962,
-						lon: 				38.731094,
-						zoom: 				13,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-					},
-					text: 					null,
-					media: {
-						url: 				"https://vine.co/v/bjHh0zHdgZT",
-						credit:				null,
-						caption:			null
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						color: 				null,
-						opacity: 			50
-					},
-					date: 					null,
-					location: {
-						lat: 				-9.143962,
-						lon: 				38.731094,
-						zoom: 				13,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-					},
-					text: 					null,
-					media: {
-						url: 				"http://www.flickr.com/photos/neera/6147067542/",
-						credit:				"Nosy Iranja",
-						caption:			""
 					}
 				}
 			]
@@ -523,18 +269,28 @@ VCO.StorySlider = VCO.Class.extend({
 	================================================== */
 	
 	goTo: function(n, fast, displayupdate) {
+		var self = this;
 		
+		// Clear Preloader Timer
+		if (this.preloadTimer) {
+			clearTimeout(this.preloadTimer);
+		}
 		// Stop Playing Media
 		for (var i = 0; i < this._slides.length; i++) {
 			this._slides[i].stopMedia();
 		}
 		
 		if (n < this._slides.length && n >= 0) {
+			
+			
 			this.current_slide = n;
 			
 			// Stop animation
 			if (this.animator) {
 				this.animator.stop();
+			}
+			if (this._swipable) {
+				this._swipable.stopMomentum();
 			}
 			
 			if (fast) {
@@ -567,40 +323,48 @@ VCO.StorySlider = VCO.Class.extend({
 			
 			//Info
 			if (this._slides[this.current_slide + 1]) {
-				this._nav.next.show();
+				this.showNav(this._nav.next, true);
 				this._nav.next.update(this.getNavInfo(this._slides[this.current_slide + 1]));
 			} else {
-				this._nav.next.hide();
+				this.showNav(this._nav.next, false);
 			}
 			if (this._slides[this.current_slide - 1]) {
-				this._nav.previous.show();
+				this.showNav(this._nav.previous, true);
 				this._nav.previous.update(this.getNavInfo(this._slides[this.current_slide - 1]));
 			} else {
-				this._nav.previous.hide();
+				this.showNav(this._nav.previous, false);
 			}
 			
-			// Preload Slides
-			this.preloadSlides();
 			
+			// Preload Slides
+			this._slides[this.current_slide].loadMedia();
+			
+			//this.preloadSlides();
+			
+			this.preloadTimer = setTimeout(function() {
+				self.preloadSlides();
+			}, this.options.duration);
 			
 		}
 	},
 	
 	preloadSlides: function() {
-		
-		this._slides[this.current_slide].loadMedia();
-		
+		trace("PRELOAD")
 		if (this._slides[this.current_slide + 1]) {
 			this._slides[this.current_slide + 1].loadMedia();
+			this._slides[this.current_slide + 1].scrollToTop();
 		}
 		if (this._slides[this.current_slide + 2]) {
 			this._slides[this.current_slide + 2].loadMedia();
+			this._slides[this.current_slide + 2].scrollToTop();
 		}
 		if (this._slides[this.current_slide - 1]) {
 			this._slides[this.current_slide - 1].loadMedia();
+			this._slides[this.current_slide - 1].scrollToTop();
 		}
 		if (this._slides[this.current_slide - 2]) {
 			this._slides[this.current_slide - 2].loadMedia();
+			this._slides[this.current_slide - 2].scrollToTop();
 		}
 	},
 	
@@ -635,6 +399,20 @@ VCO.StorySlider = VCO.Class.extend({
 	
 	previous: function() {
 		this.goTo(this.current_slide -1);
+	},
+	
+	showNav: function(nav_obj, show) {
+		
+		if (this.options.width <= 500 && VCO.Browser.mobile) {
+			
+		} else {
+			if (show) {
+				nav_obj.show();
+			} else {
+				nav_obj.hide();
+			}
+			
+		}
 	},
 	
 	/*	Private Methods
@@ -699,12 +477,28 @@ VCO.StorySlider = VCO.Class.extend({
 		this._nav.next.addTo(this._el.container);
 		this._nav.previous.addTo(this._el.container);
 				
-		this._el.slider_container.style.left="0px";		
+		this._el.slider_container.style.left="0px";
+		
+		if (VCO.Browser.touch) {
+			this._swipable = new VCO.Swipable(this._el.slider_container_mask, this._el.slider_container, {
+				enable: {x:true, y:false},
+				snap: 	true
+			});
+			this._swipable.enable();
+		}
+		
 	},
 	
 	_initEvents: function () {
 		this._nav.next.on('clicked', this._onNavigation, this);
 		this._nav.previous.on('clicked', this._onNavigation, this);
+		if (this._swipable) {
+			this._swipable.on('swipe_left', this._onNavigation, this);
+			this._swipable.on('swipe_right', this._onNavigation, this);
+			this._swipable.on('swipe_nodirection', this._onSwipeNoDirection, this);
+		}
+		
+		
 	},
 	
 	_initData: function() {
@@ -714,13 +508,18 @@ VCO.StorySlider = VCO.Class.extend({
 	
 	/*	Events
 	================================================== */
+	_onSwipeNoDirection: function(e) {
+		this.goTo(this.current_slide);
+	},
 	
 	_onNavigation: function(e) {
-		if (e.direction == "next") {
+		trace("on Navigation");
+		
+		if (e.direction == "next" || e.direction == "left") {
 			this.next();
-		} else if (e.direction == "previous") {
+		} else if (e.direction == "previous" || e.direction == "right") {
 			this.previous();
-		}
+		} 
 		this.fire("nav_" + e.direction, this.data);
 	},
 	
@@ -733,6 +532,7 @@ VCO.StorySlider = VCO.Class.extend({
 	},
 	
 	_onSlideChange: function(displayupdate) {
+		
 		if (!displayupdate) {
 			this.fire("change", {current_slide:this.current_slide});
 		}

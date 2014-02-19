@@ -142,6 +142,7 @@ VCO.Slide = VCO.Class.extend({
 	},
 	
 	loadMedia: function() {
+		
 		if (this._media && !this._state.loaded) {
 			this._media.loadMedia();
 			this._state.loaded = true;
@@ -156,6 +157,10 @@ VCO.Slide = VCO.Class.extend({
 	
 	getBackground: function() {
 		return this.has.background;
+	},
+	
+	scrollToTop: function() {
+		this._el.container.scrollTop = 0;
 	},
 	
 	/*	Events

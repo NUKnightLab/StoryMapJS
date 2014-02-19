@@ -35,6 +35,7 @@
 // @codekit-prepend "dom/VCO.DomEvent.js";
 
 // @codekit-prepend "ui/VCO.Draggable.js";
+// @codekit-prepend "ui/VCO.Swipable.js";
 // @codekit-prepend "ui/VCO.SizeBar.js";
 // @codekit-prepend "ui/VCO.Message.js";
 
