@@ -197,13 +197,9 @@
 		}
 	}
 }
-// Mobile, iPhone
-@media only screen and (max-width: 500px), only screen and (max-device-width: 500px) {
 
-}
 
 // Skinny 500px or less
-
 .vco-skinny {
 	.vco-slide {
 		display:block;
@@ -241,6 +237,21 @@
 						padding-right:10px;
 						padding-bottom:100px;
 					}
+				}
+			}
+		}
+	}
+}
+// Mobile, iPhone
+@media only screen and (max-width: 500px), only screen and (max-device-width: 500px) {
+
+}
+.vco-mobile.vco-skinny {
+	.vco-slide-content-container {
+		.vco-slide-content {
+			.vco-media {
+				img, embed, object, video, iframe {
+					max-height:175px;
 				}
 			}
 		}

@@ -4832,10 +4832,16 @@ VCO.Message = VCO.Class.extend({
 		//Options
 		this.options = {
 			width: 					600,
-			height: 				600
+			height: 				600,
+			message_class: 			"vco-message",
+			message_icon_class: 	"vco-loading-icon"
 		};
 		
-		this._el.container = VCO.Dom.create("div", "vco-message");
+		// Merge Data and Options
+		VCO.Util.mergeData(this.data, data);
+		VCO.Util.mergeData(this.options, options);
+		
+		this._el.container = VCO.Dom.create("div", this.options.message_class);
 		
 		if (add_to_container) {
 			add_to_container.appendChild(this._el.container);
@@ -4846,9 +4852,6 @@ VCO.Message = VCO.Class.extend({
 		// Animation
 		this.animator = {};
 		
-		// Merge Data and Options
-		VCO.Util.mergeData(this.data, data);
-		VCO.Util.mergeData(this.options, options);
 		
 		this._initLayout();
 		this._initEvents();
@@ -4895,7 +4898,7 @@ VCO.Message = VCO.Class.extend({
 		
 		// Create Layout
 		this._el.message_container = VCO.Dom.create("div", "vco-message-container", this._el.container);
-		this._el.loading_icon = VCO.Dom.create("div", "vco-loading-icon", this._el.message_container);
+		this._el.loading_icon = VCO.Dom.create("div", this.options.message_icon_class, this._el.message_container);
 		this._el.message = VCO.Dom.create("div", "vco-message-content", this._el.message_container);
 		
 		this._updateMessage();
@@ -4903,7 +4906,7 @@ VCO.Message = VCO.Class.extend({
 	},
 	
 	_initEvents: function () {
-		
+		VCO.DomEvent.addListener(this._el.container, 'click', this._onMouseClick, this);
 	},
 	
 	// Update Display
@@ -6931,6 +6934,9 @@ VCO.StorySlider = VCO.Class.extend({
 		// Preload Timer
 		this.preloadTimer;
 		
+		// Message
+		this._message;
+		
 		// Current Slide
 		this.current_slide = 0;
 		
@@ -7152,6 +7158,9 @@ VCO.StorySlider = VCO.Class.extend({
 		slide.off('added', this._onSlideAdded, this);
 	},
 	
+	/*	Message
+	================================================== */
+	
 	/*	Navigation
 	================================================== */
 	
@@ -7363,15 +7372,26 @@ VCO.StorySlider = VCO.Class.extend({
 		// add the navigation to the dom
 		this._nav.next.addTo(this._el.container);
 		this._nav.previous.addTo(this._el.container);
+		
+		
 				
 		this._el.slider_container.style.left="0px";
 		
 		if (VCO.Browser.touch) {
+			//this._el.slider_touch_mask = VCO.Dom.create('div', 'vco-slider-touch-mask', this._el.slider_container_mask);
 			this._swipable = new VCO.Swipable(this._el.slider_container_mask, this._el.slider_container, {
 				enable: {x:true, y:false},
 				snap: 	true
 			});
 			this._swipable.enable();
+			
+			// Message
+			this._message = new VCO.Message({}, {
+				message_class: 		"vco-message-full",
+				message_icon_class: "vco-icon-swipe-left"
+			});
+			this._message.updateMessage("Swipe to Navigate<br><span class='vco-button'>OK</span>");
+			this._message.addTo(this._el.container);
 		}
 		
 	},
@@ -7379,6 +7399,11 @@ VCO.StorySlider = VCO.Class.extend({
 	_initEvents: function () {
 		this._nav.next.on('clicked', this._onNavigation, this);
 		this._nav.previous.on('clicked', this._onNavigation, this);
+		
+		if (this._message) {
+			this._message.on('clicked', this._onMessageClick, this);
+		}
+		
 		if (this._swipable) {
 			this._swipable.on('swipe_left', this._onNavigation, this);
 			this._swipable.on('swipe_right', this._onNavigation, this);
@@ -7395,6 +7420,11 @@ VCO.StorySlider = VCO.Class.extend({
 	
 	/*	Events
 	================================================== */
+	_onMessageClick: function(e) {
+		trace("on Message Click");
+		this._message.hide();
+	},
+	
 	_onSwipeNoDirection: function(e) {
 		this.goTo(this.current_slide);
 	},
