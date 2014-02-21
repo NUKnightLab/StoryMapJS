@@ -355,7 +355,6 @@ VCO.StorySlider = VCO.Class.extend({
 	},
 	
 	preloadSlides: function() {
-		trace("PRELOAD")
 		if (this._slides[this.current_slide + 1]) {
 			this._slides[this.current_slide + 1].loadMedia();
 			this._slides[this.current_slide + 1].scrollToTop();
@@ -463,7 +462,6 @@ VCO.StorySlider = VCO.Class.extend({
 	================================================== */
 	_initLayout: function () {
 		
-		trace("initLayout " + this.options.id);
 		this._el.container.className += ' vco-storyslider';
 		
 		// Create Layout
@@ -531,7 +529,6 @@ VCO.StorySlider = VCO.Class.extend({
 	/*	Events
 	================================================== */
 	_onMessageClick: function(e) {
-		trace("on Message Click");
 		this._message.hide();
 	},
 	
@@ -540,7 +537,6 @@ VCO.StorySlider = VCO.Class.extend({
 	},
 	
 	_onNavigation: function(e) {
-		trace("on Navigation");
 		
 		if (e.direction == "next" || e.direction == "left") {
 			this.next();

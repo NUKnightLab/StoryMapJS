@@ -246,17 +246,6 @@ VCO.SizeBar = VCO.Class.extend({
 		
 		this._el.container.style.width = this.options.width + "px";
 		this._el.arrow.style.left = ((this.options.width/2) - 17) + "px";
-		
-		/*
-		this._el.line.style.left = ((this.options.width/2) ) + "px";
-		this._el.line.style.top = -((line_height/2) - 14) + "px";
-		this._el.line.style.height = ((line_height/2) - 20) + "px";
-		
-		this._el.coverbar.style.height = ((line_height/2) - 6) + "px";
-		this._el.coverbar.style.top = -((line_height/2) - 14) + "px";
-		this._el.coverbar.style.left = ((this.options.width/2) +1) + "px";
-		*/
-		trace(line_height);
 	}
 	
 });

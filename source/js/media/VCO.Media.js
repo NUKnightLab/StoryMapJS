@@ -105,9 +105,9 @@ VCO.Media = VCO.Class.extend({
 		if (this._state.loaded) {
 			this._updateMediaDisplay();
 			this._el.content_item.style.maxHeight = (this.options.height - this.options.credit_height - this.options.caption_height - 16) + "px";
+			
 			// Fix for max-width issues in Firefox
 			if (VCO.Browser.firefox) {
-				trace("FIREFOX");
 				if (this._el.content_item.offsetWidth > this._el.content_item.offsetHeight) {
 					this._el.content_item.style.width = "100%";
 				}
@@ -157,7 +157,6 @@ VCO.Media = VCO.Class.extend({
 	},
 	
 	loadErrorDisplay: function(message) {
-		trace("loadErrorDisplay");
 		this._el.content.removeChild(this._el.content_item);
 		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-loaderror", this._el.content);
 		this._el.content_item.innerHTML = message + "<br/><span class='vco-icon-" + this.options.media_type + "'></span>";
@@ -236,7 +235,6 @@ VCO.Media = VCO.Class.extend({
 	
 	// Update Display
 	_updateDisplay: function(w, h, animate) {
-		trace("UPDATE MEDIA DISPLAY")
 		if (w) {
 			this.options.width = w;
 		}

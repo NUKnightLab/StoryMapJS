@@ -117,10 +117,7 @@ VCO.Slide = VCO.Class.extend({
 		this.animator = VCO.Animate(this._el.slider_container, {
 			left: 		-(this._el.container.offsetWidth * n) + "px",
 			duration: 	this.options.duration,
-			easing: 	this.options.ease,
-			complete: function () {
-				trace("DONE");
-			}
+			easing: 	this.options.ease
 		});
 	},
 	
@@ -284,16 +281,12 @@ VCO.Slide = VCO.Class.extend({
 		
 		if (this._media) {
 			if (!this.has.text && this.has.headline) {
-				trace("headline height");
-				trace(this._text.headlineHeight());
-				trace(this.options.height)
-				trace(this.options.height - this._text.headlineHeight())
 				this._media.updateDisplay(this.options.width, (this.options.height - this._text.headlineHeight()));
 			} else {
 				this._media.updateDisplay(this.options.width, this.options.height);
 			}
 		}
-		//this._el.content_container.style.height = this.options.height + "px";
+		
 	}
 	
 });

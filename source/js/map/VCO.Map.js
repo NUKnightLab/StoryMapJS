@@ -148,8 +148,6 @@ VCO.Map = VCO.Class.extend({
 				} else {
 					if (marker.data.location && marker.data.location.lat) {
 						
-						trace("HAS LOCATION");
-						
 						// Calculate Zoom
 						zoom = this._calculateZoomChange(this._getMapCenter(true), marker.location());
 			
@@ -311,7 +309,7 @@ VCO.Map = VCO.Class.extend({
 		================================================== */
 		// Extend this map class and use this to create the map using preferred API
 		_createMap: function() {
-			trace("Create Map")
+			
 		},
 	
 		/*	Map Specific Marker
@@ -417,17 +415,13 @@ VCO.Map = VCO.Class.extend({
 	},
 	
 	_onMapLoaded: function(e) {
-		trace("MAP LOADED");
 		this._loaded.map = true;
 		this._initialMapLocation();
 		this.fire("loaded", this.data);
 	},
 	
 	_initialMapLocation: function() {
-		trace("_initialMapLocation 1")
 		if (this._loaded.data && this._loaded.map) {
-			trace("_initialMapLocation")
-			trace(this.options.start_at_slide)
 			this.goTo(this.options.start_at_slide, true);
 		}
 	},

@@ -318,11 +318,6 @@ VCO.Draggable = VCO.Class.extend({
 			animate.left = Math.floor(pos.x) + "px";
 		}
 		
-		
-		//trace(this._el.move.offsetParent);
-		//trace("this._el.move.offsetTop " + this._el.move.offsetTop);
-		//trace("pos.y " + pos.y);
-		//trace("this._el.move.offsetTop - pos.y " + (this._el.move.offsetTop - pos.y));
 		this.animator = VCO.Animate(this._el.move, animate);
 		
 		this.fire("momentum", this.data);

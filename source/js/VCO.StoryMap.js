@@ -252,9 +252,9 @@ VCO.StoryMap = VCO.Class.extend({
 	
 	/*	Private Methods
 	================================================== */
+	
 	// Initialize the data
 	_initData: function(data) {
-		trace("initData");
 		var self = this;
 		
 		if (typeof data === 'string') {
@@ -425,18 +425,14 @@ VCO.StoryMap = VCO.Class.extend({
 	
 	_onDataLoaded: function(e) {
 		trace("dataloaded");
-		
 		this.fire("dataloaded");
 		this._initLayout();
 		this._initEvents();
 		this.ready = true;
-		trace(this.ready);
 		
 	},
 	
 	_onColorChange: function(e) {
-		trace("COLOR CHANGE");
-		trace(e);
 		if (e.color || e.image) {
 			this._sizebar.setColor(true);
 		} else {
@@ -461,7 +457,7 @@ VCO.StoryMap = VCO.Class.extend({
 	},
 	
 	_onSizeBar: function(e) {
-		trace("ON SIZEBAR");
+		//trace("ON SIZEBAR");
 	},
 	
 	_onOverview: function(e) {
@@ -510,20 +506,17 @@ VCO.StoryMap = VCO.Class.extend({
 	},
 	
 	_onMapLoaded: function() {
-		trace("MAP READY")
 		this._loaded.map = true;
 		this._onLoaded();
 	},
 	
 	_onStorySliderLoaded: function() {
-		trace("STORYSLIDER READY")
 		this._loaded.storyslider = true;
 		this._onLoaded();
 	},
 		
 	_onLoaded: function() {
 		if (this._loaded.storyslider && this._loaded.map) {
-			trace("STORYMAP IS READY");
 			this.fire("loaded", this.data);
 		}
 	}

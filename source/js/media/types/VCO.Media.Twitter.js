@@ -29,7 +29,6 @@ VCO.Media.Twitter = VCO.Media.extend({
 		
 		// API URL
 		api_url = "http://api.twitter.com/1/statuses/oembed.json?id=" + this.media_id + "&omit_script=true&include_entities=true&callback=?";
-		//api_url = "http://api.twitter.com/1/statuses/oembed.json?id=" + this.media_id + "&include_entities=true&callback=?";
 		
 		// API Call
 		VCO.getJSON(api_url, function(d) {
@@ -53,13 +52,8 @@ VCO.Media.Twitter = VCO.Media.extend({
 		tweet_status_url 	= tweet_status_temp.split("\"\>")[0];
 		tweet_status_date 	= tweet_status_temp.split("\"\>")[1].split("<\/a>")[0];
 		
-		trace("tweet_status_url " + tweet_status_url);
-		trace("tweet_status_date " + tweet_status_date);
-		
 		// 	TWEET CONTENT
 		tweet += tweet_text;
-		
-		//tweet += "</blockquote>";
 		
 		//	TWEET AUTHOR
 		tweet += "<div class='vcard'>";
