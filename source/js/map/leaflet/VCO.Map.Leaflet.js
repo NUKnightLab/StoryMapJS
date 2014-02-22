@@ -32,6 +32,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 					tolerance: 		this.options.zoomify.tolerance,
 					attribution: 	this.options.zoomify.attribution,
 				});
+				this._image_layer = new L.imageOverlay(this.options.zoomify.path + "TileGroup0/0-0-0.jpg", this._tile_layer.getZoomifyBounds(this._map));
 				break;
 			case 'osm':
 				this._tile_layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {subdomains: 'ab'});
@@ -50,6 +51,10 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		// Add Tile Layer
 		this._map.addLayer(this._tile_layer);
 		
+		// Add Zoomify Image Layer
+		if (this._image_layer) {
+			this._map.addLayer(this._image_layer);
+		}
 		// Create Overall Connection Line
 		this._line = this._createLine(this._line);
 		this._line.setStyle({color:this.options.line_color_inactive});

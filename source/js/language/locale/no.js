@@ -7,6 +7,7 @@ VCO.Language = {
     },
     buttons: {
         map_overview:      "Se oversiktskart",
+		overview:          "Se oversiktskart",
         backtostart:       "Til begynnelsen",
         collapse_toggle:   "Skjul kartet",
         uncollapse_toggle: "Vis kartet"

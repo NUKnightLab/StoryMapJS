@@ -49,6 +49,9 @@ VCO.Map = VCO.Class.extend({
 		
 		// Map Tiles Layer
 		this._tile_layer = null;
+		
+		// Image Layer (for zoomify)
+		this._image_layer = null;
 	
 		// Data
 		this.data = {

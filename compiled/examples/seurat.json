@@ -30,8 +30,8 @@
                     "zoom": 6
                 },
                 "text": {
-                    "headline": "Work began in 1884",
-                    "text": "The artist worked on the painting in several campaigns, beginning in 1884 with a layer of small horizontal brushstrokes of complementary colors."
+                    "headline": "Small Horizontal Brushstrokes",
+                    "text": "Work began in 1884. The artist worked on the painting in several campaigns, beginning in 1884 with a layer of small horizontal brushstrokes of complementary colors."
                 }
             },
             {
@@ -74,6 +74,13 @@
             },
             {
                 "date": "",
+                "location": {
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+                    "lat": 77.62241984285832,
+                    "line": true,
+                    "lon": -20.478515625,
+                    "zoom": 3
+                },
                 "media": {
                     "caption": "Seurat made several studies for the large painting including a smaller version. Study for La Grand Jatte, 1884. ",
                     "credit": "Georges Seurat",
@@ -164,9 +171,9 @@
                 "date": "",
                 "location": {
                     "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
-                    "lat": 25.64152637306577,
+                    "lat": 17.14079039331665,
                     "line": true,
-                    "lon": -95.625,
+                    "lon": -95.44921875,
                     "zoom": 4
                 },
                 "media": {
@@ -183,10 +190,10 @@
                 "date": "",
                 "location": {
                     "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
-                    "lat": 61.438767493682825,
+                    "lat": -35.46066995149529,
                     "line": true,
-                    "lon": 147.65625,
-                    "zoom": 7
+                    "lon": -99.84374999999999,
+                    "zoom": 4
                 },
                 "media": {
                     "caption": "",
@@ -205,7 +212,7 @@
                     "lat": -30.826780904779774,
                     "line": true,
                     "lon": 128.056640625,
-                    "zoom": 5
+                    "zoom": 4
                 },
                 "media": {
                     "caption": "",

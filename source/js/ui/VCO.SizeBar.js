@@ -202,13 +202,19 @@ VCO.SizeBar = VCO.Class.extend({
 		this._el.button_collapse_toggle 				= VCO.Dom.create('span', 'vco-sizebar-button', this._el.container);
 		VCO.DomEvent.addListener(this._el.button_collapse_toggle, 'click', this._onButtonCollapseMap, this);
 		
-		if (VCO.Browser.mobile) {
+		if (this.options.map_as_image) {
+			this._el.button_overview.innerHTML			= VCO.Language.buttons.overview;
+		} else {
 			this._el.button_overview.innerHTML			= VCO.Language.buttons.map_overview;
+		}
+		
+		if (VCO.Browser.mobile) {
+			
 			this._el.button_backtostart.innerHTML		= "<span class='vco-icon-goback'></span>";
 			this._el.button_collapse_toggle.innerHTML	= "<span class='vco-icon-arrow-up'></span>";
 			this._el.container.setAttribute("ontouchstart"," ");
 		} else {
-			this._el.button_overview.innerHTML			= VCO.Language.buttons.map_overview;
+			
 			this._el.button_backtostart.innerHTML		= VCO.Language.buttons.backtostart + " <span class='vco-icon-goback'></span>";
 			this._el.button_collapse_toggle.innerHTML	= VCO.Language.buttons.collapse_toggle + "<span class='vco-icon-arrow-up'></span>";
 		}

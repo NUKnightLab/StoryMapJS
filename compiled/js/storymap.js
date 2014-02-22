@@ -2536,6 +2536,7 @@ VCO.Language = {
 	},
 	buttons: {
 	    map_overview: 		"Map Overview",
+		overview: 			"Overview",
 	    backtostart: 		"Back To Beginning",
 	    collapse_toggle: 	"Hide Map",
 	    uncollapse_toggle: 	"Show Map"
@@ -3415,6 +3416,12 @@ VCO.Dom = {
 
 	get: function(id) {
 		return (typeof id === 'string' ? document.getElementById(id) : id);
+	},
+	
+	getByClass: function(id) {
+		if (id) {
+			return document.getElementsByClassName(id);
+		}
 	},
 	
 	create: function(tagName, className, container) {
@@ -4739,13 +4746,19 @@ VCO.SizeBar = VCO.Class.extend({
 		this._el.button_collapse_toggle 				= VCO.Dom.create('span', 'vco-sizebar-button', this._el.container);
 		VCO.DomEvent.addListener(this._el.button_collapse_toggle, 'click', this._onButtonCollapseMap, this);
 		
-		if (VCO.Browser.mobile) {
+		if (this.options.map_as_image) {
+			this._el.button_overview.innerHTML			= VCO.Language.buttons.overview;
+		} else {
 			this._el.button_overview.innerHTML			= VCO.Language.buttons.map_overview;
+		}
+		
+		if (VCO.Browser.mobile) {
+			
 			this._el.button_backtostart.innerHTML		= "<span class='vco-icon-goback'></span>";
 			this._el.button_collapse_toggle.innerHTML	= "<span class='vco-icon-arrow-up'></span>";
 			this._el.container.setAttribute("ontouchstart"," ");
 		} else {
-			this._el.button_overview.innerHTML			= VCO.Language.buttons.map_overview;
+			
 			this._el.button_backtostart.innerHTML		= VCO.Language.buttons.backtostart + " <span class='vco-icon-goback'></span>";
 			this._el.button_collapse_toggle.innerHTML	= VCO.Language.buttons.collapse_toggle + "<span class='vco-icon-arrow-up'></span>";
 		}
@@ -16377,6 +16390,18 @@ L.TileLayer.Zoomify = L.TileLayer.extend({
 		//map.setView(center, zoom, true);
 	},
 	
+	getZoomifyBounds: function(map) {
+		//return "getZoomifyBounds";
+		var imageSize 	= this._imageSize[0],
+			topleft 	= map.options.crs.pointToLatLng(L.point(0, 0), 0),
+		    bottomright = map.options.crs.pointToLatLng(L.point(imageSize.x, imageSize.y), 0),
+		    bounds 		= L.latLngBounds(topleft, bottomright);
+			
+			
+		return bounds;
+		//[[75, -132], [-30, 128]]
+	},
+	
 	getCenterZoom: function(map) {
 		var mapSize = map.getSize(),
 			zoom = this._getBestFitZoom(mapSize),
@@ -16854,6 +16879,9 @@ VCO.Map = VCO.Class.extend({
 		
 		// Map Tiles Layer
 		this._tile_layer = null;
+		
+		// Image Layer (for zoomify)
+		this._image_layer = null;
 	
 		// Data
 		this.data = {
@@ -17418,6 +17446,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 					tolerance: 		this.options.zoomify.tolerance,
 					attribution: 	this.options.zoomify.attribution,
 				});
+				this._image_layer = new L.imageOverlay(this.options.zoomify.path + "TileGroup0/0-0-0.jpg", this._tile_layer.getZoomifyBounds(this._map));
 				break;
 			case 'osm':
 				this._tile_layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {subdomains: 'ab'});
@@ -17436,6 +17465,10 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		// Add Tile Layer
 		this._map.addLayer(this._tile_layer);
 		
+		// Add Zoomify Image Layer
+		if (this._image_layer) {
+			this._map.addLayer(this._image_layer);
+		}
 		// Create Overall Connection Line
 		this._line = this._createLine(this._line);
 		this._line.setStyle({color:this.options.line_color_inactive});

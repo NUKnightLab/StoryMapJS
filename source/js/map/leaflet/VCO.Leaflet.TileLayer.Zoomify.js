@@ -42,6 +42,18 @@ L.TileLayer.Zoomify = L.TileLayer.extend({
 		//map.setView(center, zoom, true);
 	},
 	
+	getZoomifyBounds: function(map) {
+		//return "getZoomifyBounds";
+		var imageSize 	= this._imageSize[0],
+			topleft 	= map.options.crs.pointToLatLng(L.point(0, 0), 0),
+		    bottomright = map.options.crs.pointToLatLng(L.point(imageSize.x, imageSize.y), 0),
+		    bounds 		= L.latLngBounds(topleft, bottomright);
+			
+			
+		return bounds;
+		//[[75, -132], [-30, 128]]
+	},
+	
 	getCenterZoom: function(map) {
 		var mapSize = map.getSize(),
 			zoom = this._getBestFitZoom(mapSize),

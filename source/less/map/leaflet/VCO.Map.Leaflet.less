@@ -25,9 +25,22 @@
 				color: #666;
 			}
 		}
+		img.leaflet-image-layer {
+		    max-width: none !important;
+		}
 
 		
 	}
+	.leaflet-overlay-pane {
+		z-index:auto;
+		.leaflet-image-layer {
+			z-index:-1;
+		}
+		svg {
+			z-index:4;
+		}
+	}
+
 	.leaflet-zoom-anim .leaflet-zoom-animated {
 		-webkit-transition: -webkit-transform 1s cubic-bezier(0.75, 0.1, 0.2, 1);
 		   -moz-transition: -moz-transform 1s cubic-bezier(0.75, 0.1, 0.2, 1);
