@@ -16,7 +16,19 @@
 	}
 	.vco-slidenav-title, .vco-slidenav-description {
 		width:100%;
-		
+		//word-break:break-all;
+
+				
+	    -ms-word-break: break-all;
+	        word-break: break-all;
+
+	        /* Non standard for webkit */
+	        word-break: break-word;
+
+	   -webkit-hyphens: auto;
+	      -moz-hyphens: auto;
+	       -ms-hyphens: auto;
+	           hyphens: auto;
 		.opacity(15);
 		a {
 			
@@ -29,6 +41,8 @@
 		margin-top:10px;
 		font-size: @base-font-size;
 		line-height: @base-font-size;
+		font-size: @base-font-size-small;
+		line-height: @base-font-size-small;
 		//font-weight: bold;
 	}
 	.vco-slidenav-description {
