@@ -23,10 +23,16 @@ VCO.Message = VCO.Class.extend({
 		//Options
 		this.options = {
 			width: 					600,
-			height: 				600
+			height: 				600,
+			message_class: 			"vco-message",
+			message_icon_class: 	"vco-loading-icon"
 		};
 		
-		this._el.container = VCO.Dom.create("div", "vco-message");
+		// Merge Data and Options
+		VCO.Util.mergeData(this.data, data);
+		VCO.Util.mergeData(this.options, options);
+		
+		this._el.container = VCO.Dom.create("div", this.options.message_class);
 		
 		if (add_to_container) {
 			add_to_container.appendChild(this._el.container);
@@ -37,9 +43,6 @@ VCO.Message = VCO.Class.extend({
 		// Animation
 		this.animator = {};
 		
-		// Merge Data and Options
-		VCO.Util.mergeData(this.data, data);
-		VCO.Util.mergeData(this.options, options);
 		
 		this._initLayout();
 		this._initEvents();
@@ -86,7 +89,7 @@ VCO.Message = VCO.Class.extend({
 		
 		// Create Layout
 		this._el.message_container = VCO.Dom.create("div", "vco-message-container", this._el.container);
-		this._el.loading_icon = VCO.Dom.create("div", "vco-loading-icon", this._el.message_container);
+		this._el.loading_icon = VCO.Dom.create("div", this.options.message_icon_class, this._el.message_container);
 		this._el.message = VCO.Dom.create("div", "vco-message-content", this._el.message_container);
 		
 		this._updateMessage();
@@ -94,7 +97,7 @@ VCO.Message = VCO.Class.extend({
 	},
 	
 	_initEvents: function () {
-		
+		VCO.DomEvent.addListener(this._el.container, 'click', this._onMouseClick, this);
 	},
 	
 	// Update Display

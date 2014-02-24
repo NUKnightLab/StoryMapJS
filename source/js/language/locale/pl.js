@@ -7,6 +7,7 @@ VCO.Language = {
     },
     buttons: {
         map_overview: "Przeglądaj mapę",
+		overview: "Przeglądaj",
         backtostart: "Powrót",
         collapse_toggle: "Ukryj mapę",
         uncollapse_toggle: "Pokaż mapę"

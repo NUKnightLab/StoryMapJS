@@ -1,0 +1,248 @@
+{
+    "font_css": "stock:opensans-gentiumbook",
+    "storymap": {
+        "map_type": "zoomify",
+        "slides": [
+            {
+                "date": "",
+                "location": {
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+                    "line": true
+                },
+				"background": {			
+					"url": 				"http://cdn.verite.co/maps/zoomify/seurat/seurat_portrait.jpg",
+					"color": 			"#FFF",
+					"opacity": 			50
+				},
+                "text": {
+                    "headline": "A Sunday on La Grande Jatte <br><small>Georges Seurat</small>",
+                    "text": "In his best-known and largest painting, Georges Seurat depicted people relaxing in a suburban park on an island in the Seine River called La Grande Jatte."
+                },
+                "type": "overview"
+            },
+            {
+                "date": "",
+                "location": {
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+                    "lat": 75.71563324165896,
+                    "line": true,
+                    "lon": -132.1875,
+                    "zoom": 6
+                },
+                "text": {
+                    "headline": "Small Horizontal Brushstrokes",
+                    "text": "Work began in 1884. The artist worked on the painting in several campaigns, beginning in 1884 with a layer of small horizontal brushstrokes of complementary colors."
+                }
+            },
+            {
+                "date": "",
+                "location": {
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+                    "lat": 77.62241984285832,
+                    "line": true,
+                    "lon": -20.478515625,
+                    "zoom": 3
+                },
+                "media": {
+                    "caption": "",
+                    "credit": "",
+                    "url": ""
+                },
+                "text": {
+                    "headline": "Complementary Colors",
+                    "text": "The complementary colors give the painting a unified sense of color"
+                }
+            },
+            {
+                "date": "",
+                "location": {
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+                    "lat": 77.62241984285832,
+                    "line": true,
+                    "lon": -20.478515625,
+                    "zoom": 7
+                },
+                "media": {
+                    "caption": "",
+                    "credit": "",
+                    "url": ""
+                },
+                "text": {
+                    "headline": "Small Dots",
+                    "text": "He later added small dots, also in complementary colors."
+                }
+            },
+            {
+                "date": "",
+                "location": {
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+                    "lat": 77.62241984285832,
+                    "line": true,
+                    "lon": -20.478515625,
+                    "zoom": 3
+                },
+                "media": {
+                    "caption": "Seurat made several studies for the large painting including a smaller version. Study for La Grand Jatte, 1884. ",
+                    "credit": "Georges Seurat",
+                    "url": "http://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Study_for_La_Grande_Jatte%2C_Georges_Seurat%2C_1884.jpg/800px-Study_for_La_Grande_Jatte%2C_Georges_Seurat%2C_1884.jpg"
+                },
+                "text": {
+                    "headline": "Dots as Solid Forms from a Distance",
+                    "text": "The dots appear as solid and luminous forms when seen from a distance."
+                }
+            },
+            {
+                "date": "",
+                "location": {
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+                    "lat": 77.63654163009744,
+                    "line": true,
+                    "lon": 79.62890625,
+                    "zoom": 7
+                },
+                "media": {
+                    "caption": "",
+                    "credit": "",
+                    "url": "http://en.wikipedia.org/wiki/Pointillism"
+                },
+                "text": {
+                    "headline": "Pointillism",
+                    "text": "Seurat's use of this highly systematic and \"scientific\" technique, subsequently called Pointillism, distinguished his art from the more intuitive approach to painting used by the Impressionists."
+                }
+            },
+            {
+                "date": "",
+                "location": {
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+                    "lat": 72.71190310803662,
+                    "line": true,
+                    "lon": -9.140625,
+                    "zoom": 3
+                },
+                "media": {
+                    "caption": "La plage de Trouville, 1870, National Gallery, London. ",
+                    "credit": "Claude Monet",
+                    "url": "http://upload.wikimedia.org/wikipedia/commons/d/df/Claude_Monet_002.jpg"
+                },
+                "text": {
+                    "headline": "Modern Life",
+                    "text": "Although Seurat embraced the subject matter of modern life preferred by artists such as Claude Monet and Pierre-Auguste Renoir, he went beyond their concern for capturing the accidental and instantaneous qualities of light in nature."
+                }
+            },
+            {
+                "date": "",
+                "location": {
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+                    "lat": 75.32002523220804,
+                    "line": true,
+                    "lon": 49.5703125,
+                    "zoom": 4
+                },
+                "media": {
+                    "caption": "Riace bronzes, examples of proto classic bronze sculpture",
+                    "credit": "<a href='http://en.wikipedia.org/wiki/Ancient_Greek_sculpture' target='_blank'>Wikipedia</a>",
+                    "url": "http://upload.wikimedia.org/wikipedia/commons/9/96/Reggio_calabria_museo_nazionale_bronzi_di_riace.jpg"
+                },
+                "text": {
+                    "headline": "Permanence",
+                    "text": "Seurat sought to evoke permanence by recalling the art of the past, especially Egyptian and Greek sculpture and even Italian Renaissance frescoes."
+                }
+            },
+            {
+                "date": "",
+                "location": {
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+                    "lat": 75.45307133006602,
+                    "line": true,
+                    "lon": -65.126953125,
+                    "zoom": 4
+                },
+                "media": {
+                    "caption": "Cattle led to sacrifice, South XLV, 137–140, British Museum.",
+                    "credit": "Wikipedia",
+                    "url": "http://upload.wikimedia.org/wikipedia/commons/thumb/7/79/Sacrifice_south_frieze_Parthenon_BM.jpg/794px-Sacrifice_south_frieze_Parthenon_BM.jpg"
+                },
+                "text": {
+                    "headline": "Procession",
+                    "text": "Seurat explained to the French poet Gustave Kahn, \"The Panathenaeans of Phidias formed a procession. I want to make modern people, in their essential traits, move about as they do on those friezes, and place them on canvases organized by harmonies of color.\""
+                }
+            },
+            {
+                "date": "",
+                "location": {
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+                    "lat": 17.14079039331665,
+                    "line": true,
+                    "lon": -95.44921875,
+                    "zoom": 4
+                },
+                "media": {
+                    "caption": "",
+                    "credit": "",
+                    "url": "<blockquote><p>faux Puvis de Chavannes</p><cite>Art Critic Paul Alexis</cite></blockquote>"
+                },
+                "text": {
+                    "headline": "Critics",
+                    "text": "Some contemporary critics, however, found his figures to be less a nod to earlier art history than a commentary on the posturing and artificiality of modern Parisian society."
+                }
+            },
+            {
+                "date": "",
+                "location": {
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+                    "lat": -35.46066995149529,
+                    "line": true,
+                    "lon": -99.84374999999999,
+                    "zoom": 4
+                },
+                "media": {
+                    "caption": "",
+                    "credit": "",
+                    "url": ""
+                },
+                "text": {
+                    "headline": "Frame",
+                    "text": "Seurat made the final changes to La Grande Jatte in 1889. He restretched the canvas in order to add a painted border of red, orange, and blue dots that provides a visual transition between the interior of the painting and his specially designed white frame."
+                }
+            },
+            {
+                "date": "",
+                "location": {
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+                    "lat": -30.826780904779774,
+                    "line": true,
+                    "lon": 128.056640625,
+                    "zoom": 4
+                },
+                "media": {
+                    "caption": "",
+                    "credit": "",
+                    "url": "http://en.wikipedia.org/wiki/Georges_Seurat"
+                },
+                "text": {
+                    "headline": "Inscriptions",
+                    "text": "Inscribed at lower right: Seurat"
+                }
+            },
+            {
+                "date": "",
+                "media": {
+                    "caption": "Island of La Grande Jatte",
+                    "credit": "Stamen Maps",
+                    "url": "https://s3.amazonaws.com/images.m2i.stamen.com/20140221/toner_uC3-XT7eNGQ.png"
+                },
+                "text": {
+                    "headline": "Info",
+                    "text": "<strong>Georges Seurat (Creator)1859 - 1891</strong><br> <strong>Physical Format:</strong> w3079.75 x h2076.45 in <br><strong>See on institution's site:</strong> The Art Institute of Chicago<br> <strong>Medium:</strong> Oil on canvas<br><strong>Nationality:</strong> French"
+                }
+            }
+        ],
+        "zoomify": {
+            "attribution": "",
+            "height": 19970,
+            "path": "http://cdn.verite.co/maps/zoomify/seurat/",
+            "tolerance": 0.9,
+            "width": 30000
+        }
+    }
+}

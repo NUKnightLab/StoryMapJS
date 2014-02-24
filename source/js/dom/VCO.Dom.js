@@ -8,6 +8,12 @@ VCO.Dom = {
 		return (typeof id === 'string' ? document.getElementById(id) : id);
 	},
 	
+	getByClass: function(id) {
+		if (id) {
+			return document.getElementsByClassName(id);
+		}
+	},
+	
 	create: function(tagName, className, container) {
 		var el = document.createElement(tagName);
 		el.className = className;

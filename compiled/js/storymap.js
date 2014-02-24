@@ -2536,6 +2536,7 @@ VCO.Language = {
 	},
 	buttons: {
 	    map_overview: 		"Map Overview",
+		overview: 			"Overview",
 	    backtostart: 		"Back To Beginning",
 	    collapse_toggle: 	"Hide Map",
 	    uncollapse_toggle: 	"Show Map"
@@ -3417,6 +3418,12 @@ VCO.Dom = {
 		return (typeof id === 'string' ? document.getElementById(id) : id);
 	},
 	
+	getByClass: function(id) {
+		if (id) {
+			return document.getElementsByClassName(id);
+		}
+	},
+	
 	create: function(tagName, className, container) {
 		var el = document.createElement(tagName);
 		el.className = className;
@@ -4098,36 +4105,434 @@ VCO.Draggable = VCO.Class.extend({
 	
 	_animateMomentum: function() {
 		var pos = {
-			x: this.data.new_pos.x,
-			y: this.data.new_pos.y
+				x: this.data.new_pos.x,
+				y: this.data.new_pos.y
+			},
+			animate = {
+				duration: 	this.options.duration,
+				easing: 	VCO.Ease.easeOutStrong
+			};
+		
+		if (this.options.enable.y) {
+			if (this.options.constraint.top || this.options.constraint.bottom) {
+				if (pos.y > this.options.constraint.bottom) {
+					pos.y = this.options.constraint.bottom;
+				} else if (pos.y < this.options.constraint.top) {
+					pos.y = this.options.constraint.top;
+				}
+			}
+			animate.top = Math.floor(pos.y) + "px";
 		}
 		
-		if (this.options.constraint.top || this.options.constraint.bottom) {
-			if (pos.y > this.options.constraint.bottom) {
-				pos.y = this.options.constraint.bottom;
-			} else if (pos.y < this.options.constraint.top) {
-				pos.y = this.options.constraint.top;
+		if (this.options.enable.x) {
+			if (this.options.constraint.left || this.options.constraint.right) {
+				if (pos.x > this.options.constraint.left) {
+					pos.x = this.options.constraint.left;
+				} else if (pos.x < this.options.constraint.right) {
+					pos.x = this.options.constraint.right;
+				}
+			}
+			animate.left = Math.floor(pos.x) + "px";
+		}
+		
+		this.animator = VCO.Animate(this._el.move, animate);
+		
+		this.fire("momentum", this.data);
+	}
+});
+
+
+/* **********************************************
+     Begin VCO.Swipable.js
+********************************************** */
+
+/*	VCO.Swipable
+	VCO.Draggable allows you to add dragging capabilities to any element. Supports mobile devices too.
+	TODO Enable constraints
+================================================== */
+
+VCO.Swipable = VCO.Class.extend({
+	
+	includes: VCO.Events,
+	
+	_el: {},
+	
+	mousedrag: {
+		down:		"mousedown",
+		up:			"mouseup",
+		leave:		"mouseleave",
+		move:		"mousemove"
+	},
+	
+	touchdrag: {
+		down:		"touchstart",
+		up:			"touchend",
+		leave:		"mouseleave",
+		move:		"touchmove"
+	},
+
+	initialize: function (drag_elem, move_elem, options) {
+		
+		// DOM ELements 
+		this._el = {
+			drag: drag_elem,
+			move: drag_elem
+		};
+		
+		if (move_elem) {
+			this._el.move = move_elem;
+		}
+		
+		
+		//Options
+		this.options = {
+			snap: false,
+			enable:	{
+				x: true,
+				y: true
+			},
+			constraint: {
+				top: false,
+				bottom: false,
+				left: 0,
+				right: false
+			},
+			momentum_multiplier: 	2000,
+			duration: 				1000,
+			ease: 					VCO.Ease.easeInOutQuint
+		};
+		
+		
+		// Animation Object
+		this.animator = null;
+		
+		// Drag Event Type
+		this.dragevent = this.mousedrag;
+		
+		if (VCO.Browser.touch) {
+			this.dragevent = this.touchdrag;
+		}
+		
+		// Draggable Data
+		this.data = {
+			sliding:		false,
+			direction: 		"none",
+			pagex: {
+				start:		0,
+				end:		0
+			},
+			pagey: {
+				start:		0,
+				end:		0
+			},
+			pos: {
+				start: {
+					x: 0,
+					y:0
+				},
+				end: {
+					x: 0,
+					y:0
+				}
+			},
+			new_pos: {
+				x: 0,
+				y: 0
+			},
+			new_pos_parent: {
+				x: 0,
+				y: 0
+			},
+			time: {
+				start:		0,
+				end:		0
+			},
+			touch:			false
+		};
+		
+		// Merge Data and Options
+		VCO.Util.mergeData(this.options, options);
+		
+		
+	},
+	
+	enable: function(e) {
+		VCO.DomEvent.addListener(this._el.drag, this.dragevent.down, this._onDragStart, this);
+		VCO.DomEvent.addListener(this._el.drag, this.dragevent.up, this._onDragEnd, this);
+		
+		this.data.pos.start = 0; //VCO.Dom.getPosition(this._el.move);
+		this._el.move.style.left = this.data.pos.start.x + "px";
+		this._el.move.style.top = this.data.pos.start.y + "px";
+		this._el.move.style.position = "absolute";
+		//this._el.move.style.zIndex = "11";
+		//this._el.move.style.cursor = "move";
+	},
+	
+	disable: function() {
+		VCO.DomEvent.removeListener(this._el.drag, this.dragevent.down, this._onDragStart, this);
+		VCO.DomEvent.removeListener(this._el.drag, this.dragevent.up, this._onDragEnd, this);
+	},
+	
+	stopMomentum: function() {
+		if (this.animator) {
+			this.animator.stop();
+		}
+
+	},
+	
+	updateConstraint: function(c) {
+		this.options.constraint = c;
+		
+		// Temporary until issues are fixed
+		
+	},
+	
+	/*	Private Methods
+	================================================== */
+	_onDragStart: function(e) {
+		
+		if (this.animator) {
+			this.animator.stop();
+		}
+		
+		if (VCO.Browser.touch) {
+			if (e.originalEvent) {
+				this.data.pagex.start = e.originalEvent.touches[0].screenX;
+				this.data.pagey.start = e.originalEvent.touches[0].screenY;
+			} else {
+				this.data.pagex.start = e.targetTouches[0].screenX;
+				this.data.pagey.start = e.targetTouches[0].screenY;
+			}
+		} else {
+			this.data.pagex.start = e.pageX;
+			this.data.pagey.start = e.pageY;
+		}
+		
+		// Center element to finger or mouse
+		if (this.options.enable.x) {
+			//this._el.move.style.left = this.data.pagex.start - (this._el.move.offsetWidth / 2) + "px";
+		}
+		
+		if (this.options.enable.y) {
+			//this._el.move.style.top = this.data.pagey.start - (this._el.move.offsetHeight / 2) + "px";
+		}
+		
+		this.data.pos.start = {x:this._el.move.offsetLeft, y:this._el.move.offsetTop};
+		
+		
+		this.data.time.start 			= new Date().getTime();
+		
+		this.fire("dragstart", this.data);
+		VCO.DomEvent.addListener(this._el.drag, this.dragevent.move, this._onDragMove, this);
+		VCO.DomEvent.addListener(this._el.drag, this.dragevent.leave, this._onDragEnd, this);
+	},
+	
+	_onDragEnd: function(e) {
+		this.data.sliding = false;
+		VCO.DomEvent.removeListener(this._el.drag, this.dragevent.move, this._onDragMove, this);
+		VCO.DomEvent.removeListener(this._el.drag, this.dragevent.leave, this._onDragEnd, this);
+		this.fire("dragend", this.data);
+		
+		//  momentum
+		this._momentum();
+	},
+	
+	_onDragMove: function(e) {
+		var change = {
+			x:0,
+			y:0
+		}
+		//e.preventDefault();
+		this.data.sliding = true;
+		
+		if (VCO.Browser.touch) {
+			if (e.originalEvent) {
+				this.data.pagex.end = e.originalEvent.touches[0].screenX;
+				this.data.pagey.end = e.originalEvent.touches[0].screenY;
+			} else {
+				this.data.pagex.end = e.targetTouches[0].screenX;
+				this.data.pagey.end = e.targetTouches[0].screenY;
+			}
+
+		} else {
+			this.data.pagex.end = e.pageX;
+			this.data.pagey.end = e.pageY;
+		}
+		
+		change.x = this.data.pagex.start - this.data.pagex.end;
+		change.y = this.data.pagey.start - this.data.pagey.end;
+		
+		this.data.pos.end = {x:this._el.drag.offsetLeft, y:this._el.drag.offsetTop};
+		
+		this.data.new_pos.x = -(change.x - this.data.pos.start.x);
+		this.data.new_pos.y = -(change.y - this.data.pos.start.y );
+		
+		
+		if (this.options.enable.x && ( Math.abs(change.x) > Math.abs(change.y) ) ) {
+			e.preventDefault();
+			this._el.move.style.left = this.data.new_pos.x + "px";
+		}
+		
+		if (this.options.enable.y && ( Math.abs(change.y) > Math.abs(change.y) ) ) {
+			e.preventDefault();
+			this._el.move.style.top = this.data.new_pos.y + "px";
+		}
+		
+		this.fire("dragmove", this.data);
+	},
+	
+	_momentum: function() {
+		var pos_adjust = {
+				x: 0,
+				y: 0,
+				time: 0
+			},
+			pos_change = {
+				x: 0,
+				y: 0,
+				time: 0
+			},
+			swipe_detect = {
+				x: false,
+				y: false
+			},
+			swipe = false,
+			swipe_direction = "";
+		
+		
+		this.data.direction = null;
+		
+		pos_adjust.time = (new Date().getTime() - this.data.time.start) * 10;
+		pos_change.time = (new Date().getTime() - this.data.time.start) * 10;
+		
+		pos_change.x = this.options.momentum_multiplier * (Math.abs(this.data.pagex.end) - Math.abs(this.data.pagex.start));
+		pos_change.y = this.options.momentum_multiplier * (Math.abs(this.data.pagey.end) - Math.abs(this.data.pagey.start));
+		
+		pos_adjust.x = Math.round(pos_change.x / pos_change.time);
+		pos_adjust.y = Math.round(pos_change.y / pos_change.time);
+		
+		this.data.new_pos.x = Math.min(this.data.pos.end.x + pos_adjust.x);
+		this.data.new_pos.y = Math.min(this.data.pos.end.y + pos_adjust.y);
+
+		
+		if (!this.options.enable.x) {
+			this.data.new_pos.x = this.data.pos.start.x;
+		} else if (this.data.new_pos.x > 0) {
+			this.data.new_pos.x = 0;
+		}
+		
+		if (!this.options.enable.y) {
+			this.data.new_pos.y = this.data.pos.start.y;
+		} else if (this.data.new_pos.y < 0) {
+			this.data.new_pos.y = 0;
+		}
+		
+		// Detect Swipe
+		if (pos_change.time < 2000) {
+			swipe = true;
+		}
+		
+		
+		if (this.options.enable.x && this.options.enable.y) {
+			if (Math.abs(pos_change.x) > Math.abs(pos_change.y)) {
+				swipe_detect.x = true;
+			} else {
+				swipe_detect.y = true;
+			}
+		} else if (this.options.enable.x) {
+			if (Math.abs(pos_change.x) > Math.abs(pos_change.y)) {
+				swipe_detect.x = true;
+			}
+		} else {
+			if (Math.abs(pos_change.y) > Math.abs(pos_change.x)) {
+				swipe_detect.y = true;
 			}
 		}
 		
-		if (this.options.constraint.left || this.options.constraint.right) {
-			if (pos.x > this.options.constraint.left) {
-				pos.x = this.options.constraint.left;
-			} else if (pos.x < this.options.constraint.right) {
-				pos.x = this.options.constraint.right;
+		// Detect Direction and long swipe
+		if (swipe_detect.x) {
+			
+			// Long Swipe
+			if (Math.abs(pos_change.x) > (this._el.drag.offsetWidth/2)) {
+				swipe = true;
+			}
+			
+			if (Math.abs(pos_change.x) > 10000) {
+				this.data.direction = "left";
+				if (pos_change.x > 0) {
+					this.data.direction = "right";
+				}
 			}
 		}
 		
-		//trace(this._el.move.offsetParent);
-		//trace("this._el.move.offsetTop " + this._el.move.offsetTop);
-		//trace("pos.y " + pos.y);
-		//trace("this._el.move.offsetTop - pos.y " + (this._el.move.offsetTop - pos.y));
-		this.animator = VCO.Animate(this._el.move, {
-			left: 		Math.floor(pos.x) + "px",
-			top: 		Math.floor(pos.y) + "px",
-			duration: 	this.options.duration,
-			easing: 	VCO.Ease.easeOutStrong
-		});
+		if (swipe_detect.y) {
+			
+			// Long Swipe
+			if (Math.abs(pos_change.y) > (this._el.drag.offsetHeight/2)) {
+				swipe = true;
+			}
+			
+			if (Math.abs(pos_change.y) > 10000) {
+				this.data.direction = "up";
+				if (pos_change.y > 0) {
+					this.data.direction = "down";
+				}
+			}
+		}
+		
+		this._animateMomentum();
+		if (swipe && this.data.direction) {
+			this.fire("swipe_" + this.data.direction, this.data);
+		} else if (this.data.direction) {
+			this.fire("swipe_nodirection", this.data);
+		} else if (this.options.snap) {
+			this.animator.stop();
+			
+			this.animator = VCO.Animate(this._el.move, {
+				top: 		this.data.pos.start.y,
+				left: 		this.data.pos.start.x,
+				duration: 	this.options.duration,
+				easing: 	VCO.Ease.easeOutStrong
+			});
+		}
+		
+	},
+	
+	
+	_animateMomentum: function() {
+		var pos = {
+				x: this.data.new_pos.x,
+				y: this.data.new_pos.y
+			},
+			animate = {
+				duration: 	this.options.duration,
+				easing: 	VCO.Ease.easeOutStrong
+			};
+		
+		if (this.options.enable.y) {
+			if (this.options.constraint.top || this.options.constraint.bottom) {
+				if (pos.y > this.options.constraint.bottom) {
+					pos.y = this.options.constraint.bottom;
+				} else if (pos.y < this.options.constraint.top) {
+					pos.y = this.options.constraint.top;
+				}
+			}
+			animate.top = Math.floor(pos.y) + "px";
+		}
+		
+		if (this.options.enable.x) {
+			if (this.options.constraint.left || this.options.constraint.right) {
+				if (pos.x >= this.options.constraint.left) {
+					pos.x = this.options.constraint.left;
+				} else if (pos.x < this.options.constraint.right) {
+					pos.x = this.options.constraint.right;
+				}
+			}
+			animate.left = Math.floor(pos.x) + "px";
+		}
+		
+		this.animator = VCO.Animate(this._el.move, animate);
+		
 		this.fire("momentum", this.data);
 	}
 });
@@ -4341,12 +4746,19 @@ VCO.SizeBar = VCO.Class.extend({
 		this._el.button_collapse_toggle 				= VCO.Dom.create('span', 'vco-sizebar-button', this._el.container);
 		VCO.DomEvent.addListener(this._el.button_collapse_toggle, 'click', this._onButtonCollapseMap, this);
 		
-		if (VCO.Browser.mobile) {
-			this._el.button_overview.innerHTML			= VCO.Language.buttons.map_overview;
-			this._el.button_backtostart.innerHTML		= "<span class='vco-icon-goback'></span>";
-			this._el.button_collapse_toggle.innerHTML	= "<span class='vco-icon-arrow-up'></span>";
+		if (this.options.map_as_image) {
+			this._el.button_overview.innerHTML			= VCO.Language.buttons.overview;
 		} else {
 			this._el.button_overview.innerHTML			= VCO.Language.buttons.map_overview;
+		}
+		
+		if (VCO.Browser.mobile) {
+			
+			this._el.button_backtostart.innerHTML		= "<span class='vco-icon-goback'></span>";
+			this._el.button_collapse_toggle.innerHTML	= "<span class='vco-icon-arrow-up'></span>";
+			this._el.container.setAttribute("ontouchstart"," ");
+		} else {
+			
 			this._el.button_backtostart.innerHTML		= VCO.Language.buttons.backtostart + " <span class='vco-icon-goback'></span>";
 			this._el.button_collapse_toggle.innerHTML	= VCO.Language.buttons.collapse_toggle + "<span class='vco-icon-arrow-up'></span>";
 		}
@@ -4384,17 +4796,6 @@ VCO.SizeBar = VCO.Class.extend({
 		
 		this._el.container.style.width = this.options.width + "px";
 		this._el.arrow.style.left = ((this.options.width/2) - 17) + "px";
-		
-		/*
-		this._el.line.style.left = ((this.options.width/2) ) + "px";
-		this._el.line.style.top = -((line_height/2) - 14) + "px";
-		this._el.line.style.height = ((line_height/2) - 20) + "px";
-		
-		this._el.coverbar.style.height = ((line_height/2) - 6) + "px";
-		this._el.coverbar.style.top = -((line_height/2) - 14) + "px";
-		this._el.coverbar.style.left = ((this.options.width/2) +1) + "px";
-		*/
-		trace(line_height);
 	}
 	
 });
@@ -4428,10 +4829,16 @@ VCO.Message = VCO.Class.extend({
 		//Options
 		this.options = {
 			width: 					600,
-			height: 				600
+			height: 				600,
+			message_class: 			"vco-message",
+			message_icon_class: 	"vco-loading-icon"
 		};
 		
-		this._el.container = VCO.Dom.create("div", "vco-message");
+		// Merge Data and Options
+		VCO.Util.mergeData(this.data, data);
+		VCO.Util.mergeData(this.options, options);
+		
+		this._el.container = VCO.Dom.create("div", this.options.message_class);
 		
 		if (add_to_container) {
 			add_to_container.appendChild(this._el.container);
@@ -4442,9 +4849,6 @@ VCO.Message = VCO.Class.extend({
 		// Animation
 		this.animator = {};
 		
-		// Merge Data and Options
-		VCO.Util.mergeData(this.data, data);
-		VCO.Util.mergeData(this.options, options);
 		
 		this._initLayout();
 		this._initEvents();
@@ -4491,7 +4895,7 @@ VCO.Message = VCO.Class.extend({
 		
 		// Create Layout
 		this._el.message_container = VCO.Dom.create("div", "vco-message-container", this._el.container);
-		this._el.loading_icon = VCO.Dom.create("div", "vco-loading-icon", this._el.message_container);
+		this._el.loading_icon = VCO.Dom.create("div", this.options.message_icon_class, this._el.message_container);
 		this._el.message = VCO.Dom.create("div", "vco-message-content", this._el.message_container);
 		
 		this._updateMessage();
@@ -4499,7 +4903,7 @@ VCO.Message = VCO.Class.extend({
 	},
 	
 	_initEvents: function () {
-		
+		VCO.DomEvent.addListener(this._el.container, 'click', this._onMouseClick, this);
 	},
 	
 	// Update Display
@@ -4638,7 +5042,6 @@ VCO.MediaType = function(m) {
 	
 	for (var i = 0; i < media_types.length; i++) {
 		if (m instanceof Array) {
-			trace("SLIDER");
 			return media = {
 				type: 		"slider",
 				cls: 		VCO.Media.Slider
@@ -4767,9 +5170,9 @@ VCO.Media = VCO.Class.extend({
 		if (this._state.loaded) {
 			this._updateMediaDisplay();
 			this._el.content_item.style.maxHeight = (this.options.height - this.options.credit_height - this.options.caption_height - 16) + "px";
+			
 			// Fix for max-width issues in Firefox
 			if (VCO.Browser.firefox) {
-				trace("FIREFOX");
 				if (this._el.content_item.offsetWidth > this._el.content_item.offsetHeight) {
 					this._el.content_item.style.width = "100%";
 				}
@@ -4819,7 +5222,6 @@ VCO.Media = VCO.Class.extend({
 	},
 	
 	loadErrorDisplay: function(message) {
-		trace("loadErrorDisplay");
 		this._el.content.removeChild(this._el.content_item);
 		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-loaderror", this._el.content);
 		this._el.content_item.innerHTML = message + "<br/><span class='vco-icon-" + this.options.media_type + "'></span>";
@@ -4898,7 +5300,6 @@ VCO.Media = VCO.Class.extend({
 	
 	// Update Display
 	_updateDisplay: function(w, h, animate) {
-		trace("UPDATE MEDIA DISPLAY")
 		if (w) {
 			this.options.width = w;
 		}
@@ -4997,7 +5398,6 @@ VCO.Media.Flickr = VCO.Media.extend({
 		api_url = "http://api.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key=" + this.options.api_key_flickr + "&photo_id=" + this.media_id + "&format=json&jsoncallback=?";
 		
 		// API Call
-		trace("FLICKR")
 		VCO.getJSON(api_url, function(d) {
 			if (d.stat == "ok") {
 				self.createMedia(d);
@@ -5222,7 +5622,7 @@ VCO.Media.Image = VCO.Media.extend({
 	_loadMedia: function() {
 		// Loading Message
 		this.message.updateMessage(VCO.Language.messages.loading + " " + this.options.media_name);
-		//this._el.content.className += " vco-media-shadow ";
+		
 		this._el.content_item				= VCO.Dom.create("img", "vco-media-item vco-media-image vco-media-shadow", this._el.content);
 		this._el.content_item.src			= this.data.url;
 		
@@ -5233,7 +5633,7 @@ VCO.Media.Image = VCO.Media.extend({
 		this._el.content_item.style.maxHeight = (this.options.height - this.options.credit_height - this.options.caption_height - 16) + "px";
 		
 		if(VCO.Browser.firefox) {
-			this._el.content_item.style.maxWidth = (this.options.width/2) + "px";
+			this._el.content_item.style.maxWidth = (this.options.width/2) - 40 + "px";
 		}
 	}
 	
@@ -5349,8 +5749,8 @@ VCO.Media.Text = VCO.Class.extend({
 	// Data
 	data: {
 		uniqueid: 			"",
-		headline: 			"Le portrait mystérieux",
-		text: 				"Lorem ipsum dolor sit amet, consectetuer adipiscing elit."
+		headline: 			"headline",
+		text: 				"text"
 	},
 	
 	// Options
@@ -5367,7 +5767,6 @@ VCO.Media.Text = VCO.Class.extend({
 		// Merge Options
 		VCO.Util.mergeData(this.options, options);
 		
-		//this._container = VCO.Dom.get(id);
 		this._el.container = VCO.Dom.create("div", "vco-text");
 		this._el.container.id = this.data.uniqueid;
 		
@@ -5422,7 +5821,6 @@ VCO.Media.Text = VCO.Class.extend({
 		
 		// Create Layout
 		this._el.content_container			= VCO.Dom.create("div", "vco-text-content-container", this._el.container);
-		//this._el.content					= VCO.Dom.create("div", "vco-text-content", this._el.content_container);
 		
 		// Headline
 		if (this.data.headline != "") {
@@ -5484,7 +5882,6 @@ VCO.Media.Twitter = VCO.Media.extend({
 		
 		// API URL
 		api_url = "http://api.twitter.com/1/statuses/oembed.json?id=" + this.media_id + "&omit_script=true&include_entities=true&callback=?";
-		//api_url = "http://api.twitter.com/1/statuses/oembed.json?id=" + this.media_id + "&include_entities=true&callback=?";
 		
 		// API Call
 		VCO.getJSON(api_url, function(d) {
@@ -5508,13 +5905,8 @@ VCO.Media.Twitter = VCO.Media.extend({
 		tweet_status_url 	= tweet_status_temp.split("\"\>")[0];
 		tweet_status_date 	= tweet_status_temp.split("\"\>")[1].split("<\/a>")[0];
 		
-		trace("tweet_status_url " + tweet_status_url);
-		trace("tweet_status_date " + tweet_status_date);
-		
 		// 	TWEET CONTENT
 		tweet += tweet_text;
-		
-		//tweet += "</blockquote>";
 		
 		//	TWEET AUTHOR
 		tweet += "<div class='vcard'>";
@@ -5579,35 +5971,11 @@ VCO.Media.Vimeo = VCO.Media.extend({
 		// API URL
 		api_url = "http://player.vimeo.com/video/" + this.media_id + "?api=1&title=0&amp;byline=0&amp;portrait=0&amp;color=ffffff";
 		
-		/*
-		// Player ID
-		this.player = VCO.Util.unique_ID(6, "vco-vimeo");
-		
-		// API URL
-		api_url = "http://player.vimeo.com/video/" + this.media_id + "?api=1&player_id=" + this.player + "&title=0&amp;byline=0&amp;portrait=0&amp;color=ffffff";
-		
-		// API Call
-		// API Call
-		//this.player = VCO.Util.unique_ID(6, "vco-vimeo");
-		this._el.content_item.innerHTML = "<iframe autostart='false' id='" + this.player + "' frameborder='0' width='100%' height='100%' src='" + api_url + "'></iframe>";
-		
-		VCO.Load.js('http://a.vimeocdn.com/js/froogaloop2.min.js', function() {
-			trace("Vimeo API Library Loaded");
-			self.onLoaded();
-			$f(self.player).api('play');
-		});
-		*/
-		
-		
 		this.player = VCO.Dom.create("iframe", "", this._el.content_item);
 		this.player.width 		= "100%";
 		this.player.height 		= "100%";
 		this.player.frameBorder = "0";
 		this.player.src 		= api_url;
-		
-		//this.player = VCO.Util.unique_ID(6, "vco-vimeo");
-		//this._el.content_item.innerHTML = "<iframe autostart='false' frameborder='0' width='100%' height='100%' src='" + api_url + "'></iframe>"		
-		
 		
 		// After Loaded
 		this.onLoaded();
@@ -5620,9 +5988,6 @@ VCO.Media.Vimeo = VCO.Media.extend({
 	},
 	
 	_stopMedia: function() {
-		//trace(this.player.contentWindow);
-		//trace(this.player);
-		//$f(this.player).api('pause');
 		
 		try {
 			this.player.contentWindow.postMessage(JSON.stringify({method: "pause"}), "http://player.vimeo.com");
@@ -5630,12 +5995,7 @@ VCO.Media.Vimeo = VCO.Media.extend({
 		catch(err) {
 			trace(err);
 		}
-		/*
-		this._el.content_item.postMessage({
-			"method": "pause",
-			"value": ""
-		});
-		*/
+		
 	}
 	
 });
@@ -5728,10 +6088,8 @@ VCO.Media.Vine = VCO.Media.extend({
 	
 	// Update Media Display
 	_updateMediaDisplay: function() {
-		//var size = VCO.Util.ratio.square({w:this._el.content_item.offsetWidth , h:this.options.height});
 		var size = VCO.Util.ratio.square({w:this._el.content_item.offsetWidth , h:this.options.height});
 		this._el.content_item.style.height = size.h + "px";
-		//this._el.content_item.style.width = size.w + "px";
 	}
 	
 });
@@ -5913,7 +6271,6 @@ VCO.Media.YouTube = VCO.Media.extend({
 		
 		// API Call
 		VCO.Load.js('https://www.youtube.com/player_api', function() {
-			trace("YouTube API Library Loaded");
 			self.createMedia();
 		});
 		
@@ -5921,8 +6278,6 @@ VCO.Media.YouTube = VCO.Media.extend({
 	
 	// Update Media Display
 	_updateMediaDisplay: function() {
-		//this._el.content_item.style.height = VCO.Util.ratio.r16_9({w:this._el.content_item.offsetWidth}) + "px";
-		//this._el.content_item.height = VCO.Util.ratio.r16_9({w:this._el.content_item.offsetWidth}) + "px";
 		this._el.content_item.style.height = VCO.Util.ratio.r16_9({w:this._el.content_item.offsetWidth}) + "px";
 	},
 	
@@ -5974,8 +6329,6 @@ VCO.Media.YouTube = VCO.Media.extend({
 	createPlayer: function() {
 		var self = this;
 		
-		trace("createPlayer");
-		
 		clearTimeout(this.timer);
 		
 		if(typeof YT != 'undefined' && typeof YT.Player != 'undefined') {
@@ -6010,13 +6363,12 @@ VCO.Media.YouTube = VCO.Media.extend({
 	/*	Events
 	================================================== */
 	onPlayerReady: function(e) {
-		trace("onPlayerReady");
 		this.youtube_loaded = true;
 		
 	},
 	
 	onStateChange: function(e) {
-		trace("onStateChange");
+		
 	}
 
 	
@@ -6173,10 +6525,7 @@ VCO.Slide = VCO.Class.extend({
 		this.animator = VCO.Animate(this._el.slider_container, {
 			left: 		-(this._el.container.offsetWidth * n) + "px",
 			duration: 	this.options.duration,
-			easing: 	this.options.ease,
-			complete: function () {
-				trace("DONE");
-			}
+			easing: 	this.options.ease
 		});
 	},
 	
@@ -6198,6 +6547,7 @@ VCO.Slide = VCO.Class.extend({
 	},
 	
 	loadMedia: function() {
+		
 		if (this._media && !this._state.loaded) {
 			this._media.loadMedia();
 			this._state.loaded = true;
@@ -6212,6 +6562,10 @@ VCO.Slide = VCO.Class.extend({
 	
 	getBackground: function() {
 		return this.has.background;
+	},
+	
+	scrollToTop: function() {
+		this._el.container.scrollTop = 0;
 	},
 	
 	/*	Events
@@ -6311,12 +6665,15 @@ VCO.Slide = VCO.Class.extend({
 		} else {
 			this.options.width 					= this._el.container.offsetWidth;
 		}
-
 		
 		if(VCO.Browser.mobile && (this.options.width <= 500)) {
 			this._el.content.style.paddingLeft 	= 0 + "px";
 			this._el.content.style.paddingRight = 0 + "px";
 			this._el.content.style.width		= this.options.width - 0 + "px";
+		} else if (this.options.width <= 500) {
+			this._el.content.style.paddingLeft 	= 10 + "px";
+			this._el.content.style.paddingRight = 10 + "px";
+			this._el.content.style.width		= this.options.width - (10 * 2) + "px";
 		} else {
 			this._el.content.style.paddingLeft 	= this.options.slide_padding_lr + "px";
 			this._el.content.style.paddingRight = this.options.slide_padding_lr + "px";
@@ -6332,16 +6689,12 @@ VCO.Slide = VCO.Class.extend({
 		
 		if (this._media) {
 			if (!this.has.text && this.has.headline) {
-				trace("headline height");
-				trace(this._text.headlineHeight());
-				trace(this.options.height)
-				trace(this.options.height - this._text.headlineHeight())
 				this._media.updateDisplay(this.options.width, (this.options.height - this._text.headlineHeight()));
 			} else {
 				this._media.updateDisplay(this.options.width, this.options.height);
 			}
 		}
-		//this._el.content_container.style.height = this.options.height + "px";
+		
 	}
 	
 });
@@ -6396,6 +6749,10 @@ VCO.SlideNav = VCO.Class.extend({
 		
 		
 		this._el.container = VCO.Dom.create("div", "vco-slidenav-" + this.options.direction);
+		
+		if (VCO.Browser.mobile) {
+			this._el.container.setAttribute("ontouchstart"," ");
+		}
 		
 		this._initLayout();
 		this._initEvents();
@@ -6509,6 +6866,15 @@ VCO.StorySlider = VCO.Class.extend({
 		// Slides Array
 		this._slides = [];
 		
+		// Swipe Object
+		this._swipable;
+		
+		// Preload Timer
+		this.preloadTimer;
+		
+		// Message
+		this._message;
+		
 		// Current Slide
 		this.current_slide = 0;
 		
@@ -6617,266 +6983,6 @@ VCO.StorySlider = VCO.Class.extend({
 						caption:			"",
 						link: 				null,
 						link_target: 		null
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null,
-						color: 				null,
-						opacity: 			50
-					},
-					date: 					null,
-					location: {
-						lat: 				-9.143962,
-						lon: 				38.731094,
-						zoom: 				13,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-					},
-					text: {
-						headline: 			"Wikipedia",
-						text: 				"Just add a link to the video in the media field."
-					},
-					media: {
-						url: 				"http://en.wikipedia.org/wiki/Mark_Twain",
-						credit:				"",
-						caption:			"",
-						link: 				null,
-						link_target: 		null
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null,
-						color: 				null,
-						opacity: 			50
-					},
-					date: 					null,
-					location: {
-						lat: 				-9.143962,
-						lon: 				38.731094,
-						zoom: 				13,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-					},
-					text: {
-						headline: 			"Storify",
-						text: 				"Just add a link to the video in the media field."
-					},
-					media: {
-						url: 				"https://storify.com/kqednews/art-at-burning-man-2013",
-						credit:				"",
-						caption:			"",
-						link: 				null,
-						link_target: 		null
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				"https://secure-b.vimeocdn.com/ts/225/276/225276903_960.jpg",
-						color: 				null,
-						opacity: 			50
-					},
-					date: 					null,
-					location: {
-						lat: 				-9.143962,
-						lon: 				38.731094,
-						zoom: 				13,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-					},
-					text: {
-						headline: 			"Vimeo",
-						text: 				"Just add a link to the video in the media field."
-					},
-					media: {
-						url: 				"https://vimeo.com/33211636",
-						credit:				"",
-						caption:			"",
-						link: 				null,
-						link_target: 		null
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						color: 				null,
-						opacity: 			50
-					},
-					date: 					null,
-					location: {
-						lat: 				-9.143962,
-						lon: 				38.731094,
-						zoom: 				13,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-					},
-					text: {
-						headline: 			"iFrame",
-						text: 				""
-					},
-					media: {
-						url: 				"<iframe src='http://www.w3schools.com'></iframe>",
-						credit:				"",
-						caption:			"w3schools",
-						link: 				null,
-						link_target: 		null
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						color: 				"#cdbfe3",
-						opacity: 			50
-					},
-					date: 					null,
-					location: {
-						lat: 				-9.143962,
-						lon: 				38.731094,
-						zoom: 				13,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-					},
-					text: {
-						headline: 			"Flickr",
-						text: 				""
-					},
-					media: {
-						url: 				"http://www.flickr.com/photos/neera/6147067542/",
-						credit:				"Nosy Iranja",
-						caption:			"",
-						link: 				"http://www.flickr.com/photos/neera/6147067542/",
-						link_target: 		"_self"
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						color: 				"#8b4513",
-						opacity: 			50
-					},
-					date: 					null,
-					location: {
-						lat: 				-9.143962,
-						lon: 				38.731094,
-						zoom: 				13,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-					},
-					text: {
-						headline: 			"Flickr",
-						text: 				""
-					},
-					media: {
-						url: 				"https://twitter.com/ThisAmerLife/status/374975945825722368"
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						color: 				null,
-						opacity: 			50
-					},
-					date: 					null,
-					location: {
-						lat: 				-9.143962,
-						lon: 				38.731094,
-						zoom: 				13,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-					},
-					text: 					null,
-					media: {
-						url: 				"http://www.flickr.com/photos/neera/6147067542/",
-						credit:				"Nosy Iranja",
-						caption:			""
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						color: 				"#cdbfe3",
-						opacity: 			50
-					},
-					date: 					null,
-					location: {
-						lat: 				-9.143962,
-						lon: 				38.731094,
-						zoom: 				13,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-					},
-					text: {
-						headline: 			"La Lune",
-						text: 				""
-					},
-					media: {
-						url: 				"https://soundcloud.com/beastieboys/make-some-noise",
-						credit:				null,
-						caption:			null
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						color: 				null,
-						opacity: 			50
-					},
-					date: 					null,
-					location: {
-						lat: 				-9.143962,
-						lon: 				38.731094,
-						zoom: 				13,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-					},
-					text: 					null,
-					media: {
-						url: 				"https://soundcloud.com/beastieboys/make-some-noise",
-						credit:				null,
-						caption:			null
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						color: 				null,
-						opacity: 			50
-					},
-					date: 					null,
-					location: {
-						lat: 				-9.143962,
-						lon: 				38.731094,
-						zoom: 				13,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-					},
-					text: 					null,
-					media: {
-						url: 				"https://vine.co/v/bjHh0zHdgZT",
-						credit:				null,
-						caption:			null
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						color: 				null,
-						opacity: 			50
-					},
-					date: 					null,
-					location: {
-						lat: 				-9.143962,
-						lon: 				38.731094,
-						zoom: 				13,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-					},
-					text: 					null,
-					media: {
-						url: 				"http://www.flickr.com/photos/neera/6147067542/",
-						credit:				"Nosy Iranja",
-						caption:			""
 					}
 				}
 			]
@@ -6990,22 +7096,35 @@ VCO.StorySlider = VCO.Class.extend({
 		slide.off('added', this._onSlideAdded, this);
 	},
 	
+	/*	Message
+	================================================== */
+	
 	/*	Navigation
 	================================================== */
 	
 	goTo: function(n, fast, displayupdate) {
+		var self = this;
 		
+		// Clear Preloader Timer
+		if (this.preloadTimer) {
+			clearTimeout(this.preloadTimer);
+		}
 		// Stop Playing Media
 		for (var i = 0; i < this._slides.length; i++) {
 			this._slides[i].stopMedia();
 		}
 		
 		if (n < this._slides.length && n >= 0) {
+			
+			
 			this.current_slide = n;
 			
 			// Stop animation
 			if (this.animator) {
 				this.animator.stop();
+			}
+			if (this._swipable) {
+				this._swipable.stopMomentum();
 			}
 			
 			if (fast) {
@@ -7038,40 +7157,47 @@ VCO.StorySlider = VCO.Class.extend({
 			
 			//Info
 			if (this._slides[this.current_slide + 1]) {
-				this._nav.next.show();
+				this.showNav(this._nav.next, true);
 				this._nav.next.update(this.getNavInfo(this._slides[this.current_slide + 1]));
 			} else {
-				this._nav.next.hide();
+				this.showNav(this._nav.next, false);
 			}
 			if (this._slides[this.current_slide - 1]) {
-				this._nav.previous.show();
+				this.showNav(this._nav.previous, true);
 				this._nav.previous.update(this.getNavInfo(this._slides[this.current_slide - 1]));
 			} else {
-				this._nav.previous.hide();
+				this.showNav(this._nav.previous, false);
 			}
 			
-			// Preload Slides
-			this.preloadSlides();
 			
+			// Preload Slides
+			this._slides[this.current_slide].loadMedia();
+			
+			//this.preloadSlides();
+			
+			this.preloadTimer = setTimeout(function() {
+				self.preloadSlides();
+			}, this.options.duration);
 			
 		}
 	},
 	
 	preloadSlides: function() {
-		
-		this._slides[this.current_slide].loadMedia();
-		
 		if (this._slides[this.current_slide + 1]) {
 			this._slides[this.current_slide + 1].loadMedia();
+			this._slides[this.current_slide + 1].scrollToTop();
 		}
 		if (this._slides[this.current_slide + 2]) {
 			this._slides[this.current_slide + 2].loadMedia();
+			this._slides[this.current_slide + 2].scrollToTop();
 		}
 		if (this._slides[this.current_slide - 1]) {
 			this._slides[this.current_slide - 1].loadMedia();
+			this._slides[this.current_slide - 1].scrollToTop();
 		}
 		if (this._slides[this.current_slide - 2]) {
 			this._slides[this.current_slide - 2].loadMedia();
+			this._slides[this.current_slide - 2].scrollToTop();
 		}
 	},
 	
@@ -7106,6 +7232,20 @@ VCO.StorySlider = VCO.Class.extend({
 	
 	previous: function() {
 		this.goTo(this.current_slide -1);
+	},
+	
+	showNav: function(nav_obj, show) {
+		
+		if (this.options.width <= 500 && VCO.Browser.mobile) {
+			
+		} else {
+			if (show) {
+				nav_obj.show();
+			} else {
+				nav_obj.hide();
+			}
+			
+		}
 	},
 	
 	/*	Private Methods
@@ -7150,7 +7290,6 @@ VCO.StorySlider = VCO.Class.extend({
 	================================================== */
 	_initLayout: function () {
 		
-		trace("initLayout " + this.options.id);
 		this._el.container.className += ' vco-storyslider';
 		
 		// Create Layout
@@ -7169,13 +7308,45 @@ VCO.StorySlider = VCO.Class.extend({
 		// add the navigation to the dom
 		this._nav.next.addTo(this._el.container);
 		this._nav.previous.addTo(this._el.container);
+		
+		
 				
-		this._el.slider_container.style.left="0px";		
+		this._el.slider_container.style.left="0px";
+		
+		if (VCO.Browser.touch) {
+			//this._el.slider_touch_mask = VCO.Dom.create('div', 'vco-slider-touch-mask', this._el.slider_container_mask);
+			this._swipable = new VCO.Swipable(this._el.slider_container_mask, this._el.slider_container, {
+				enable: {x:true, y:false},
+				snap: 	true
+			});
+			this._swipable.enable();
+			
+			// Message
+			this._message = new VCO.Message({}, {
+				message_class: 		"vco-message-full",
+				message_icon_class: "vco-icon-swipe-left"
+			});
+			this._message.updateMessage("Swipe to Navigate<br><span class='vco-button'>OK</span>");
+			this._message.addTo(this._el.container);
+		}
+		
 	},
 	
 	_initEvents: function () {
 		this._nav.next.on('clicked', this._onNavigation, this);
 		this._nav.previous.on('clicked', this._onNavigation, this);
+		
+		if (this._message) {
+			this._message.on('clicked', this._onMessageClick, this);
+		}
+		
+		if (this._swipable) {
+			this._swipable.on('swipe_left', this._onNavigation, this);
+			this._swipable.on('swipe_right', this._onNavigation, this);
+			this._swipable.on('swipe_nodirection', this._onSwipeNoDirection, this);
+		}
+		
+		
 	},
 	
 	_initData: function() {
@@ -7185,13 +7356,21 @@ VCO.StorySlider = VCO.Class.extend({
 	
 	/*	Events
 	================================================== */
+	_onMessageClick: function(e) {
+		this._message.hide();
+	},
+	
+	_onSwipeNoDirection: function(e) {
+		this.goTo(this.current_slide);
+	},
 	
 	_onNavigation: function(e) {
-		if (e.direction == "next") {
+		
+		if (e.direction == "next" || e.direction == "left") {
 			this.next();
-		} else if (e.direction == "previous") {
+		} else if (e.direction == "previous" || e.direction == "right") {
 			this.previous();
-		}
+		} 
 		this.fire("nav_" + e.direction, this.data);
 	},
 	
@@ -7204,6 +7383,7 @@ VCO.StorySlider = VCO.Class.extend({
 	},
 	
 	_onSlideChange: function(displayupdate) {
+		
 		if (!displayupdate) {
 			this.fire("change", {current_slide:this.current_slide});
 		}
@@ -16210,6 +16390,18 @@ L.TileLayer.Zoomify = L.TileLayer.extend({
 		//map.setView(center, zoom, true);
 	},
 	
+	getZoomifyBounds: function(map) {
+		//return "getZoomifyBounds";
+		var imageSize 	= this._imageSize[0],
+			topleft 	= map.options.crs.pointToLatLng(L.point(0, 0), 0),
+		    bottomright = map.options.crs.pointToLatLng(L.point(imageSize.x, imageSize.y), 0),
+		    bounds 		= L.latLngBounds(topleft, bottomright);
+			
+			
+		return bounds;
+		//[[75, -132], [-30, 128]]
+	},
+	
 	getCenterZoom: function(map) {
 		var mapSize = map.getSize(),
 			zoom = this._getBestFitZoom(mapSize),
@@ -16615,7 +16807,6 @@ VCO.MapMarker = VCO.Class.extend({
 	/*	Events
 	================================================== */
 	_onMarkerClick: function(e) {
-		trace("MARKER CLICK");
 		this.fire("markerclick", {marker_number: this.marker_number});
 	},
 	
@@ -16688,6 +16879,9 @@ VCO.Map = VCO.Class.extend({
 		
 		// Map Tiles Layer
 		this._tile_layer = null;
+		
+		// Image Layer (for zoomify)
+		this._image_layer = null;
 	
 		// Data
 		this.data = {
@@ -16786,8 +16980,6 @@ VCO.Map = VCO.Class.extend({
 					
 				} else {
 					if (marker.data.location && marker.data.location.lat) {
-						
-						trace("HAS LOCATION");
 						
 						// Calculate Zoom
 						zoom = this._calculateZoomChange(this._getMapCenter(true), marker.location());
@@ -16950,7 +17142,7 @@ VCO.Map = VCO.Class.extend({
 		================================================== */
 		// Extend this map class and use this to create the map using preferred API
 		_createMap: function() {
-			trace("Create Map")
+			
 		},
 	
 		/*	Map Specific Marker
@@ -17056,17 +17248,13 @@ VCO.Map = VCO.Class.extend({
 	},
 	
 	_onMapLoaded: function(e) {
-		trace("MAP LOADED");
 		this._loaded.map = true;
 		this._initialMapLocation();
 		this.fire("loaded", this.data);
 	},
 	
 	_initialMapLocation: function() {
-		trace("_initialMapLocation 1")
 		if (this._loaded.data && this._loaded.map) {
-			trace("_initialMapLocation")
-			trace(this.options.start_at_slide)
 			this.goTo(this.options.start_at_slide, true);
 		}
 	},
@@ -17173,7 +17361,6 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 	_createPopup: function(d, o) {
 		var html = "";
 		html += "<h4>" + this.data.text.headline + "</h4>";
-		//html += "<p>" + this.data.text.text + "</p>";
 		this._marker.bindPopup(html, {closeButton:false, offset:[0, 43]});
 	},
 	
@@ -17188,16 +17375,13 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 		
 		if (this.data.real_marker) {
 			if (a) {
-				//this._marker.setOpacity(1);
 				this._marker.setZIndexOffset(100);
 				this._icon = L.divIcon({className: 'vco-mapmarker-active ' + this.media_icon_class});
 				this.timer = setTimeout(function() {self._openPopup();}, this.options.duration + 200);
 				this._setIcon();
 			} else {
-				//this._marker.setOpacity(.25);
 				this._marker.closePopup();
 				clearTimeout(this.timer);
-				//this._marker.setOpacity(1);
 				this._marker.setZIndexOffset(0);
 				this._icon = L.divIcon({className: 'vco-mapmarker ' + this.media_icon_class});
 				this._setIcon();
@@ -17262,6 +17446,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 					tolerance: 		this.options.zoomify.tolerance,
 					attribution: 	this.options.zoomify.attribution,
 				});
+				this._image_layer = new L.imageOverlay(this.options.zoomify.path + "TileGroup0/0-0-0.jpg", this._tile_layer.getZoomifyBounds(this._map));
 				break;
 			case 'osm':
 				this._tile_layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {subdomains: 'ab'});
@@ -17280,6 +17465,10 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		// Add Tile Layer
 		this._map.addLayer(this._tile_layer);
 		
+		// Add Zoomify Image Layer
+		if (this._image_layer) {
+			this._map.addLayer(this._image_layer);
+		}
 		// Create Overall Connection Line
 		this._line = this._createLine(this._line);
 		this._line.setStyle({color:this.options.line_color_inactive});
@@ -17301,8 +17490,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	/*	Event
 	================================================== */
 	_onMapMoveEnd: function(e) {
-		trace(this._map.getCenter());
-		trace(this._map.getZoom());
+		
 	},
 	
 	/*	Marker
@@ -17331,17 +17519,14 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		this._line_active.setStyle({opacity:0});
 		
 		if (this.options.map_type == "zoomify" && this.options.map_as_image) {
-			trace("IS MAP " + this.options.zoomify.is_map);
-			trace(this.options.zoomify);
-			trace("MARKER OVERVIEW ZOOMIFY");
-			trace(this._tile_layer.getCenterZoom(this._map));
+			
 			var center_zoom = this._tile_layer.getCenterZoom(this._map);
+			
 			this._map.setView(center_zoom.center, center_zoom.zoom, {
 					pan:{animate: true, duration: this.options.duration/1000, easeLinearity:.10},
 					zoom:{animate: true, duration: this.options.duration/1000, easeLinearity:.10}
 			});
-			//this._viewTo(center_zoom);
-			//this._viewTo(center_zoom, {zoom:center_zoom.zoom, calculate_zoom:false});
+			
 		} else {
 			var bounds_array = [];
 		
@@ -17381,7 +17566,6 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	},
 	
 	_replaceLines: function(line, array) {
-		trace("REPLACE LINES")
 		line.setLatLngs(array);
 	},
 	
@@ -17427,7 +17611,6 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		// OFFSET VIEW
 		if (this.options.map_center_offset) {
 			this._map.setView(
-				//this._getMapCenterOffset({lat:loc.lat, lon:loc.lon}, _zoom), 
 				{lat:loc.lat, lon:loc.lon}, 
 				_zoom,
 				{
@@ -17498,7 +17681,6 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	},
 	
 	_getZoomifyZoom: function() {
-		//this.options.zoomify.image_size
 
 	},
 	
@@ -17588,6 +17770,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 // @codekit-prepend "dom/VCO.DomEvent.js";
 
 // @codekit-prepend "ui/VCO.Draggable.js";
+// @codekit-prepend "ui/VCO.Swipable.js";
 // @codekit-prepend "ui/VCO.SizeBar.js";
 // @codekit-prepend "ui/VCO.Message.js";
 
@@ -17688,11 +17871,6 @@ VCO.StoryMap = VCO.Class.extend({
 				},
 				{
 					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						color: 				"",
-						opacity: 			50
-					},
 					date: 					"1835",
 					location: {
 						lat: 				39.491711,
@@ -17710,340 +17888,6 @@ VCO.StoryMap = VCO.Class.extend({
 						url: 				"http://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Mark_Twain_birthplace.jpg/800px-Mark_Twain_birthplace.jpg",
 						credit:				"",
 						caption:			"Mark Twain's birthplace, Florida, Missouri"
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						color: 				"",
-						opacity: 			50
-					},
-					date: 					"1839",
-					location: {
-						lat: 				39.712304,
-						lon: 				-91.358088,
-						zoom: 				10,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
-						line: 				true
-					},
-					text: {
-						headline: 			"Hannibal, Missouri",
-						text: 				"Moves to Hannibal, Missouri, which later serves as the model town for Tom Sawyer and Huckleberry Finn."
-					},
-					media: {
-						url: 				"http://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Mark_Twain_Boyhood_Home_1.jpg/800px-Mark_Twain_Boyhood_Home_1.jpg",
-						credit:				"",
-						caption:			"Mark Twain's boyhood home in Hannibal, Missouri."
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						color: 				null,
-						opacity: 			50
-					},
-					date: 					"1851",
-					location: {
-						lat: 				39.710083,
-						lon: 				-91.357441,
-						zoom: 				12,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
-						line: 				true
-					},
-					text: {
-						headline: 			"Hannibal Gazette",
-						text: 				"Begins work as a journeyman printer with the Hannibal Gazette. Publishes first sketches."
-					},
-					media: {
-						url: 				"https://soundcloud.com/beastieboys/make-some-noise",
-						credit:				null,
-						caption:			null
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						color: 				"",
-						opacity: 			50
-					},
-					date: 					null,
-					location: {
-						lat: 				40.714353,
-						lon: 				-74.005973,
-						zoom: 				11,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
-						line: 				true
-					},
-					text: {
-						headline: 			"Itinerant Printer",
-						text: 				"Visits St. Louis, New York, and Philadelphia as an itinerant printer."
-					},
-					media: {
-						url: 				"https://twitter.com/MarkTwainQuote/status/384850339297755136",
-						credit:				null,
-						caption:			null
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null,
-						color: 				"#cdbfe3",
-						opacity: 			50
-					},
-					date: 					"1862",
-					location: {
-						lat: 				39.309514,
-						lon: 				-119.649979,
-						zoom: 				11,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
-						line: 				true
-					},
-					text: {
-						headline: 			"Virginia City Territorial Enterprise",
-						text: 				"Travels around Nevada and California. Takes job as reporter for the Virginia City Territorial Enterprise."
-					},
-					media: {
-						url: 				"http://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Mark_Twain%27s_desk_at_the_Mark_Twain_Territorial_Enterprise_Museum%2C_Virginia_City%2C_NV.jpg/794px-Mark_Twain%27s_desk_at_the_Mark_Twain_Territorial_Enterprise_Museum%2C_Virginia_City%2C_NV.jpg",
-						credit:				"",
-						caption:			"Mark Twain's desk when he was editor of the Territorial Enterprise. Mark Twain Territorial Enterprise Museum, Virginia City, NV."
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null,
-						color: 				"#cdbfe3",
-						opacity: 			50
-					},
-					date: 					"1865",
-					location: {
-						lat: 				37.774929,
-						lon: 				-122.419416,
-						zoom: 				11,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-					},
-					text: {
-						headline: 			"San Francisco",
-						text: 				"Forced to leave Nevada for breaking dueling laws. Prospects in Calaveras County, settles in San Francisco. Writes for magazines and newspapers."
-					},
-					media: {
-						url: 				"http://www.youtube.com/watch?v=xp9kONt2X54",
-						credit:				"ETC",
-						caption:			"something"
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null,
-						color: 				"",
-						opacity: 			50
-					},
-					date: 					"1866",
-					location: {
-						lat: 				19.896766,
-						lon: 				-155.582782,
-						zoom: 				11,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-					},
-					text: {
-						headline: 			"Hawaii",
-						text: 				"Takes trip to Hawaii as correspondent of the Sacramento Alta Californian. Reports on shipwreck of the Hornet. Gives first public lecture."
-					},
-					media: {
-						url: 				"http://photos.wikimapia.org/p/00/00/56/17/28_big.jpg",
-						credit:				"",
-						caption:			"Wreck of USS Hornet."
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null,
-						color: 				"",
-						opacity: 			50
-					},
-					date: 					"1867",
-					location: {
-						lat: 				54.525961,
-						lon: 				15.255119,
-						zoom: 				11,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
-						line: 				true
-					},
-					text: {
-						headline: 			"Travels",
-						text: 				"Travels as correspondent to Europe and the Holy Land on the Quaker City. Sees a picture of Olivia Langdon (Livy). Publishes The Celebrated Jumping Frog of Calaveras County, and Other Sketches. Sales are light."
-					},
-					media: {
-						url: 				"http://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/1867._The_Celebrated_Jumping_Frog_of_Calaveras_County%2C_and_Other_Sketches.djvu/page1-395px-1867._The_Celebrated_Jumping_Frog_of_Calaveras_County%2C_and_Other_Sketches.djvu.jpg",
-						credit:				"",
-						caption:			""
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null,
-						color: 				"#cdbfe3",
-						opacity: 			50
-					},
-					date: 					"1868",
-					location: {
-						lat: 				42.089796,
-						lon: 				-76.807734,
-						zoom: 				11,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
-						line: 				true
-					},
-					text: {
-						headline: 			"Livy",
-						text: 				"Lectures across the United States. Meets and falls in love with Livy in Elmira, New York."
-					},
-					media: {
-						url: 				"https://twitter.com/MarkTwainQuote/status/384850339297755136",
-						credit:				"ETC",
-						caption:			"something"
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null,
-						color: 				"#cdbfe3",
-						opacity: 			50
-					},
-					date: 					"1870",
-					location: {
-						lat: 				42.886447,
-						lon: 				-78.878369,
-						zoom: 				11,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-					},
-					text: {
-						headline: 			"Married",
-						text: 				"Marries Livy in Elmira. Her father buys them a house in Buffalo, New York. Son Langdon is born."
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null,
-						color: 				"#cdbfe3",
-						opacity: 			50
-					},
-					date: 					"1870",
-					location: {
-						lat: 				42.886447,
-						lon: 				-78.878369,
-						zoom: 				11,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-					},
-					text: {
-						headline: 			"Married",
-						text: 				"Marries Livy in Elmira. Her father buys them a house in Buffalo, New York. Son Langdon is born."
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null,
-						color: 				"#cdbfe3",
-						opacity: 			50
-					},
-					date: 					"1872",
-					location: {
-						lat: 				41.763711,
-						lon: 				-72.685093,
-						zoom: 				11,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
-						line: 				true
-					},
-					text: {
-						headline: 			"Roughing It",
-						text: 				"Moves with Livy to Hartford. Publishes Roughing It. Daughter is born. Son Langdon dies."
-					},
-					media: {
-						url: 				"",
-						credit:				"ETC",
-						caption:			"something"
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null,
-						color: 				"#cdbfe3",
-						opacity: 			50
-					},
-					date: 					"1891",
-					location: {
-						lat: 				54.525961,
-						lon: 				15.255119,
-						zoom: 				11,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-					},
-					text: {
-						headline: 			"Financial",
-						text: 				"Leaves Hartford to live in Europe because of financial difficulties."
-					},
-					media: {
-						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						credit:				"ETC",
-						caption:			"something"
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null,
-						color: 				"",
-						opacity: 			50
-					},
-					date: 					"1891",
-					location: {
-						lat: 				40.714353,
-						lon: 				-74.005973,
-						zoom: 				11,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-					},
-					text: {
-						headline: 			"Livy dies",
-						text: 				"Livy dies. Begins dictating autobiography. Moves to New York City."
-					},
-					media: {
-						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						credit:				"ETC",
-						caption:			"something"
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null,
-						color: 				null,
-						opacity: 			50
-					},
-					date: 					"1891",
-					location: {
-						lat: 				41.304540,
-						lon: 				-73.392898,
-						zoom: 				11,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
-						line: 				true
-					},
-					text: {
-						headline: 			"Stormfield",
-						text: 				"Moves into Stormfield in Redding, CT. Forms the Angelfish Club for young girls."
-					},
-					media: {
-						url: 				"http://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Mark_Twain%27s_house%2C_front_view._-_NARA_-_516527.tif/lossy-page1-800px-Mark_Twain%27s_house%2C_front_view._-_NARA_-_516527.tif.jpg",
-						credit:				"",
-						caption:			"Twain\'s house, \"Stormfield\", in Redding, Connecticut (front view)"
 					}
 				}
 			]
@@ -18143,9 +17987,9 @@ VCO.StoryMap = VCO.Class.extend({
 	
 	/*	Private Methods
 	================================================== */
+	
 	// Initialize the data
 	_initData: function(data) {
-		trace("initData");
 		var self = this;
 		
 		if (typeof data === 'string') {
@@ -18251,6 +18095,12 @@ VCO.StoryMap = VCO.Class.extend({
 			this._el.container.className = this.options.base_class;
 		}
 		
+		//Check if mobile
+		if (VCO.Browser.mobile) {
+			this._el.container.className += " vco-mobile";
+			
+		}
+		
 		// Set Sticky state of SizeBar
 		this._sizebar.setSticky(Math.floor(this._el.container.offsetHeight/this.options.map_size_sticky));
 		
@@ -18310,18 +18160,14 @@ VCO.StoryMap = VCO.Class.extend({
 	
 	_onDataLoaded: function(e) {
 		trace("dataloaded");
-		
 		this.fire("dataloaded");
 		this._initLayout();
 		this._initEvents();
 		this.ready = true;
-		trace(this.ready);
 		
 	},
 	
 	_onColorChange: function(e) {
-		trace("COLOR CHANGE");
-		trace(e);
 		if (e.color || e.image) {
 			this._sizebar.setColor(true);
 		} else {
@@ -18346,7 +18192,7 @@ VCO.StoryMap = VCO.Class.extend({
 	},
 	
 	_onSizeBar: function(e) {
-		trace("ON SIZEBAR");
+		//trace("ON SIZEBAR");
 	},
 	
 	_onOverview: function(e) {
@@ -18395,20 +18241,17 @@ VCO.StoryMap = VCO.Class.extend({
 	},
 	
 	_onMapLoaded: function() {
-		trace("MAP READY")
 		this._loaded.map = true;
 		this._onLoaded();
 	},
 	
 	_onStorySliderLoaded: function() {
-		trace("STORYSLIDER READY")
 		this._loaded.storyslider = true;
 		this._onLoaded();
 	},
 		
 	_onLoaded: function() {
 		if (this._loaded.storyslider && this._loaded.map) {
-			trace("STORYMAP IS READY");
 			this.fire("loaded", this.data);
 		}
 	}

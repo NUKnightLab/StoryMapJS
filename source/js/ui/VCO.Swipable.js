@@ -1,9 +1,9 @@
-/*	VCO.Draggable
+/*	VCO.Swipable
 	VCO.Draggable allows you to add dragging capabilities to any element. Supports mobile devices too.
 	TODO Enable constraints
 ================================================== */
 
-VCO.Draggable = VCO.Class.extend({
+VCO.Swipable = VCO.Class.extend({
 	
 	includes: VCO.Events,
 	
@@ -23,7 +23,7 @@ VCO.Draggable = VCO.Class.extend({
 		move:		"touchmove"
 	},
 
-	initialize: function (drag_elem, options, move_elem) {
+	initialize: function (drag_elem, move_elem, options) {
 		
 		// DOM ELements 
 		this._el = {
@@ -38,6 +38,7 @@ VCO.Draggable = VCO.Class.extend({
 		
 		//Options
 		this.options = {
+			snap: false,
 			enable:	{
 				x: true,
 				y: true
@@ -45,7 +46,7 @@ VCO.Draggable = VCO.Class.extend({
 			constraint: {
 				top: false,
 				bottom: false,
-				left: false,
+				left: 0,
 				right: false
 			},
 			momentum_multiplier: 	2000,
@@ -108,9 +109,8 @@ VCO.Draggable = VCO.Class.extend({
 	},
 	
 	enable: function(e) {
-		// Temporarily disableing this until I have time to fix some issues.
-		//VCO.DomEvent.addListener(this._el.drag, this.dragevent.down, this._onDragStart, this);
-		//VCO.DomEvent.addListener(this._el.drag, this.dragevent.up, this._onDragEnd, this);
+		VCO.DomEvent.addListener(this._el.drag, this.dragevent.down, this._onDragStart, this);
+		VCO.DomEvent.addListener(this._el.drag, this.dragevent.up, this._onDragEnd, this);
 		
 		this.data.pos.start = 0; //VCO.Dom.getPosition(this._el.move);
 		this._el.move.style.left = this.data.pos.start.x + "px";
@@ -142,6 +142,11 @@ VCO.Draggable = VCO.Class.extend({
 	/*	Private Methods
 	================================================== */
 	_onDragStart: function(e) {
+		
+		if (this.animator) {
+			this.animator.stop();
+		}
+		
 		if (VCO.Browser.touch) {
 			if (e.originalEvent) {
 				this.data.pagex.start = e.originalEvent.touches[0].screenX;
@@ -157,15 +162,17 @@ VCO.Draggable = VCO.Class.extend({
 		
 		// Center element to finger or mouse
 		if (this.options.enable.x) {
-			this._el.move.style.left = this.data.pagex.start - (this._el.move.offsetWidth / 2) + "px";
+			//this._el.move.style.left = this.data.pagex.start - (this._el.move.offsetWidth / 2) + "px";
 		}
 		
 		if (this.options.enable.y) {
-			this._el.move.style.top = this.data.pagey.start - (this._el.move.offsetHeight / 2) + "px";
+			//this._el.move.style.top = this.data.pagey.start - (this._el.move.offsetHeight / 2) + "px";
 		}
 		
-		this.data.pos.start = VCO.Dom.getPosition(this._el.drag);
-		this.data.time.start = new Date().getTime();
+		this.data.pos.start = {x:this._el.move.offsetLeft, y:this._el.move.offsetTop};
+		
+		
+		this.data.time.start 			= new Date().getTime();
 		
 		this.fire("dragstart", this.data);
 		VCO.DomEvent.addListener(this._el.drag, this.dragevent.move, this._onDragMove, this);
@@ -183,7 +190,11 @@ VCO.Draggable = VCO.Class.extend({
 	},
 	
 	_onDragMove: function(e) {
-		e.preventDefault();
+		var change = {
+			x:0,
+			y:0
+		}
+		//e.preventDefault();
 		this.data.sliding = true;
 		
 		if (VCO.Browser.touch) {
@@ -200,15 +211,22 @@ VCO.Draggable = VCO.Class.extend({
 			this.data.pagey.end = e.pageY;
 		}
 		
-		this.data.pos.end = VCO.Dom.getPosition(this._el.drag);
-		this.data.new_pos.x = -(this.data.pagex.start - this.data.pagex.end - this.data.pos.start.x)//-(this.data.pagex.start - this.data.pagex.end - this.data.pos.end.x);
-		this.data.new_pos.y = -(this.data.pagey.start - this.data.pagey.end - this.data.pos.start.y );
+		change.x = this.data.pagex.start - this.data.pagex.end;
+		change.y = this.data.pagey.start - this.data.pagey.end;
 		
-		if (this.options.enable.x) {
+		this.data.pos.end = {x:this._el.drag.offsetLeft, y:this._el.drag.offsetTop};
+		
+		this.data.new_pos.x = -(change.x - this.data.pos.start.x);
+		this.data.new_pos.y = -(change.y - this.data.pos.start.y );
+		
+		
+		if (this.options.enable.x && ( Math.abs(change.x) > Math.abs(change.y) ) ) {
+			e.preventDefault();
 			this._el.move.style.left = this.data.new_pos.x + "px";
 		}
 		
-		if (this.options.enable.y) {
+		if (this.options.enable.y && ( Math.abs(change.y) > Math.abs(change.y) ) ) {
+			e.preventDefault();
 			this._el.move.style.top = this.data.new_pos.y + "px";
 		}
 		
@@ -226,13 +244,15 @@ VCO.Draggable = VCO.Class.extend({
 				y: 0,
 				time: 0
 			},
+			swipe_detect = {
+				x: false,
+				y: false
+			},
 			swipe = false,
 			swipe_direction = "";
 		
 		
-		if (VCO.Browser.touch) {
-			//this.options.momentum_multiplier = this.options.momentum_multiplier * 2;
-		}
+		this.data.direction = null;
 		
 		pos_adjust.time = (new Date().getTime() - this.data.time.start) * 10;
 		pos_change.time = (new Date().getTime() - this.data.time.start) * 10;
@@ -249,7 +269,7 @@ VCO.Draggable = VCO.Class.extend({
 		
 		if (!this.options.enable.x) {
 			this.data.new_pos.x = this.data.pos.start.x;
-		} else if (this.data.new_pos.x < 0) {
+		} else if (this.data.new_pos.x > 0) {
 			this.data.new_pos.x = 0;
 		}
 		
@@ -260,27 +280,72 @@ VCO.Draggable = VCO.Class.extend({
 		}
 		
 		// Detect Swipe
-		if (pos_change.time < 3000) {
+		if (pos_change.time < 2000) {
 			swipe = true;
 		}
 		
-		// Detect Direction
-		if (Math.abs(pos_change.x) > 10000) {
-			this.data.direction = "left";
-			if (pos_change.x > 0) {
-				this.data.direction = "right";
+		
+		if (this.options.enable.x && this.options.enable.y) {
+			if (Math.abs(pos_change.x) > Math.abs(pos_change.y)) {
+				swipe_detect.x = true;
+			} else {
+				swipe_detect.y = true;
+			}
+		} else if (this.options.enable.x) {
+			if (Math.abs(pos_change.x) > Math.abs(pos_change.y)) {
+				swipe_detect.x = true;
+			}
+		} else {
+			if (Math.abs(pos_change.y) > Math.abs(pos_change.x)) {
+				swipe_detect.y = true;
 			}
 		}
-		// Detect Swipe
-		if (Math.abs(pos_change.y) > 10000) {
-			this.data.direction = "up";
-			if (pos_change.y > 0) {
-				this.data.direction = "down";
+		
+		// Detect Direction and long swipe
+		if (swipe_detect.x) {
+			
+			// Long Swipe
+			if (Math.abs(pos_change.x) > (this._el.drag.offsetWidth/2)) {
+				swipe = true;
+			}
+			
+			if (Math.abs(pos_change.x) > 10000) {
+				this.data.direction = "left";
+				if (pos_change.x > 0) {
+					this.data.direction = "right";
+				}
 			}
 		}
+		
+		if (swipe_detect.y) {
+			
+			// Long Swipe
+			if (Math.abs(pos_change.y) > (this._el.drag.offsetHeight/2)) {
+				swipe = true;
+			}
+			
+			if (Math.abs(pos_change.y) > 10000) {
+				this.data.direction = "up";
+				if (pos_change.y > 0) {
+					this.data.direction = "down";
+				}
+			}
+		}
+		
 		this._animateMomentum();
-		if (swipe) {
+		if (swipe && this.data.direction) {
 			this.fire("swipe_" + this.data.direction, this.data);
+		} else if (this.data.direction) {
+			this.fire("swipe_nodirection", this.data);
+		} else if (this.options.snap) {
+			this.animator.stop();
+			
+			this.animator = VCO.Animate(this._el.move, {
+				top: 		this.data.pos.start.y,
+				left: 		this.data.pos.start.x,
+				duration: 	this.options.duration,
+				easing: 	VCO.Ease.easeOutStrong
+			});
 		}
 		
 	},
@@ -309,7 +374,7 @@ VCO.Draggable = VCO.Class.extend({
 		
 		if (this.options.enable.x) {
 			if (this.options.constraint.left || this.options.constraint.right) {
-				if (pos.x > this.options.constraint.left) {
+				if (pos.x >= this.options.constraint.left) {
 					pos.x = this.options.constraint.left;
 				} else if (pos.x < this.options.constraint.right) {
 					pos.x = this.options.constraint.right;

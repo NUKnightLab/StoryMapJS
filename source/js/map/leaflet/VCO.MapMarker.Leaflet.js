@@ -44,7 +44,6 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 	_createPopup: function(d, o) {
 		var html = "";
 		html += "<h4>" + this.data.text.headline + "</h4>";
-		//html += "<p>" + this.data.text.text + "</p>";
 		this._marker.bindPopup(html, {closeButton:false, offset:[0, 43]});
 	},
 	
@@ -59,16 +58,13 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 		
 		if (this.data.real_marker) {
 			if (a) {
-				//this._marker.setOpacity(1);
 				this._marker.setZIndexOffset(100);
 				this._icon = L.divIcon({className: 'vco-mapmarker-active ' + this.media_icon_class});
 				this.timer = setTimeout(function() {self._openPopup();}, this.options.duration + 200);
 				this._setIcon();
 			} else {
-				//this._marker.setOpacity(.25);
 				this._marker.closePopup();
 				clearTimeout(this.timer);
-				//this._marker.setOpacity(1);
 				this._marker.setZIndexOffset(0);
 				this._icon = L.divIcon({className: 'vco-mapmarker ' + this.media_icon_class});
 				this._setIcon();

@@ -202,12 +202,19 @@ VCO.SizeBar = VCO.Class.extend({
 		this._el.button_collapse_toggle 				= VCO.Dom.create('span', 'vco-sizebar-button', this._el.container);
 		VCO.DomEvent.addListener(this._el.button_collapse_toggle, 'click', this._onButtonCollapseMap, this);
 		
-		if (VCO.Browser.mobile) {
-			this._el.button_overview.innerHTML			= VCO.Language.buttons.map_overview;
-			this._el.button_backtostart.innerHTML		= "<span class='vco-icon-goback'></span>";
-			this._el.button_collapse_toggle.innerHTML	= "<span class='vco-icon-arrow-up'></span>";
+		if (this.options.map_as_image) {
+			this._el.button_overview.innerHTML			= VCO.Language.buttons.overview;
 		} else {
 			this._el.button_overview.innerHTML			= VCO.Language.buttons.map_overview;
+		}
+		
+		if (VCO.Browser.mobile) {
+			
+			this._el.button_backtostart.innerHTML		= "<span class='vco-icon-goback'></span>";
+			this._el.button_collapse_toggle.innerHTML	= "<span class='vco-icon-arrow-up'></span>";
+			this._el.container.setAttribute("ontouchstart"," ");
+		} else {
+			
 			this._el.button_backtostart.innerHTML		= VCO.Language.buttons.backtostart + " <span class='vco-icon-goback'></span>";
 			this._el.button_collapse_toggle.innerHTML	= VCO.Language.buttons.collapse_toggle + "<span class='vco-icon-arrow-up'></span>";
 		}
@@ -245,17 +252,6 @@ VCO.SizeBar = VCO.Class.extend({
 		
 		this._el.container.style.width = this.options.width + "px";
 		this._el.arrow.style.left = ((this.options.width/2) - 17) + "px";
-		
-		/*
-		this._el.line.style.left = ((this.options.width/2) ) + "px";
-		this._el.line.style.top = -((line_height/2) - 14) + "px";
-		this._el.line.style.height = ((line_height/2) - 20) + "px";
-		
-		this._el.coverbar.style.height = ((line_height/2) - 6) + "px";
-		this._el.coverbar.style.top = -((line_height/2) - 14) + "px";
-		this._el.coverbar.style.left = ((this.options.width/2) +1) + "px";
-		*/
-		trace(line_height);
 	}
 	
 });

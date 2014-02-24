@@ -32,6 +32,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 					tolerance: 		this.options.zoomify.tolerance,
 					attribution: 	this.options.zoomify.attribution,
 				});
+				this._image_layer = new L.imageOverlay(this.options.zoomify.path + "TileGroup0/0-0-0.jpg", this._tile_layer.getZoomifyBounds(this._map));
 				break;
 			case 'osm':
 				this._tile_layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {subdomains: 'ab'});
@@ -50,6 +51,10 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		// Add Tile Layer
 		this._map.addLayer(this._tile_layer);
 		
+		// Add Zoomify Image Layer
+		if (this._image_layer) {
+			this._map.addLayer(this._image_layer);
+		}
 		// Create Overall Connection Line
 		this._line = this._createLine(this._line);
 		this._line.setStyle({color:this.options.line_color_inactive});
@@ -71,8 +76,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	/*	Event
 	================================================== */
 	_onMapMoveEnd: function(e) {
-		trace(this._map.getCenter());
-		trace(this._map.getZoom());
+		
 	},
 	
 	/*	Marker
@@ -101,17 +105,14 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		this._line_active.setStyle({opacity:0});
 		
 		if (this.options.map_type == "zoomify" && this.options.map_as_image) {
-			trace("IS MAP " + this.options.zoomify.is_map);
-			trace(this.options.zoomify);
-			trace("MARKER OVERVIEW ZOOMIFY");
-			trace(this._tile_layer.getCenterZoom(this._map));
+			
 			var center_zoom = this._tile_layer.getCenterZoom(this._map);
+			
 			this._map.setView(center_zoom.center, center_zoom.zoom, {
 					pan:{animate: true, duration: this.options.duration/1000, easeLinearity:.10},
 					zoom:{animate: true, duration: this.options.duration/1000, easeLinearity:.10}
 			});
-			//this._viewTo(center_zoom);
-			//this._viewTo(center_zoom, {zoom:center_zoom.zoom, calculate_zoom:false});
+			
 		} else {
 			var bounds_array = [];
 		
@@ -151,7 +152,6 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	},
 	
 	_replaceLines: function(line, array) {
-		trace("REPLACE LINES")
 		line.setLatLngs(array);
 	},
 	
@@ -197,7 +197,6 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		// OFFSET VIEW
 		if (this.options.map_center_offset) {
 			this._map.setView(
-				//this._getMapCenterOffset({lat:loc.lat, lon:loc.lon}, _zoom), 
 				{lat:loc.lat, lon:loc.lon}, 
 				_zoom,
 				{
@@ -268,7 +267,6 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	},
 	
 	_getZoomifyZoom: function() {
-		//this.options.zoomify.image_size
 
 	},
 	
