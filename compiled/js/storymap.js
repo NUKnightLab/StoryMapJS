@@ -6863,6 +6863,9 @@ VCO.StorySlider = VCO.Class.extend({
 		this._nav.previous = {};
 		this._nav.next = {};
 		
+		// Slide Spacing
+		this.slide_spacing = 0;
+		
 		// Slides Array
 		this._slides = [];
 		
@@ -6990,6 +6993,7 @@ VCO.StorySlider = VCO.Class.extend({
 		
 		this.options = {
 			id: 					"",
+			layout: 				"portrait",
 			width: 					600,
 			height: 				600,
 			slide_padding_lr: 		100, // padding on slide of slide
@@ -7132,7 +7136,7 @@ VCO.StorySlider = VCO.Class.extend({
 				this._onSlideChange(displayupdate);
 			} else {
 				this.animator = VCO.Animate(this._el.slider_container, {
-					left: 		-(this.options.width * n) + "px",
+					left: 		-(this.slide_spacing * n) + "px",
 					duration: 	this.options.duration,
 					easing: 	this.options.ease,
 					complete: 	this._onSlideChange(displayupdate)
@@ -7256,6 +7260,8 @@ VCO.StorySlider = VCO.Class.extend({
 		
 		var nav_pos;
 		
+		this.slide_spacing = this.options.width;
+		
 		if (width) {
 			this.options.width = width;
 		} else {
@@ -7275,10 +7281,23 @@ VCO.StorySlider = VCO.Class.extend({
 		this._nav.next.setPosition({top:nav_pos});
 		this._nav.previous.setPosition({top:nav_pos});
 		
+		
+		if (this.options.layout == "landscape") {
+			trace("slider landscape");
+			
+			// MASK Width
+			this._el.slider_container_mask.style.width = this.options.width  + "px";
+			this._el.slider_container_mask.style.left =  this.options.width  + "px";
+			//this._el.slider_item_container.style.width 	= this.options.width  + "px";
+			//this._el.slider_item_container.style.left	= this.options.width  + "px";
+			
+			this.slide_spacing = this.options.width * 2;
+		} 
+		
 		// Position slides
 		for (var i = 0; i < this._slides.length; i++) {
 			this._slides[i].updateDisplay(this.options.width, this.options.height);
-			this._slides[i].setPosition({left:(this.options.width * i), top:0});
+			this._slides[i].setPosition({left:(this.slide_spacing * i), top:0});
 			
 		};
 		
@@ -17897,7 +17916,7 @@ VCO.StoryMap = VCO.Class.extend({
 			script_path:            "",
 			height: 				this._el.container.offsetHeight,
 			width: 					this._el.container.offsetWidth,
-			layout: 				"normal", // sidebyside to be added later
+			layout: 				"landscape", // portrait or landscape
 			base_class: 			"",
 			map_size_sticky: 		3, // Set as division 1/3 etc
 			map_center_offset: 		60, 
@@ -18045,10 +18064,20 @@ VCO.StoryMap = VCO.Class.extend({
 		this._storyslider.on('loaded', this._onStorySliderLoaded, this);
 		this._storyslider.init();
 		
-		// Set Default Component Sizes
-		this.options.map_height 		= (this.options.height / this.options.map_size_sticky);
-		this.options.storyslider_height = (this.options.height - this._el.sizebar.offsetHeight - this.options.map_height - 1);
-		this._sizebar.setSticky(0);
+		// LAYOUT
+		if (this.options.layout == "portrait") {
+			// Set Default Component Sizes
+			this.options.map_height 		= (this.options.height / this.options.map_size_sticky);
+			this.options.storyslider_height = (this.options.height - this._el.sizebar.offsetHeight - this.options.map_height - 1);
+			this._sizebar.setSticky(0);
+		} else {
+			this.options.sizebar_height = this._el.sizebar.offsetHeight;
+			// Set Default Component Sizes
+			this.options.map_height 		= this.options.height;
+			this.options.storyslider_height = (this.options.height - this._el.sizebar.offsetHeight - 1);
+			this._sizebar.setSticky(this.options.sizebar_height);
+		}
+		
 		
 		// Update Display
 		this._updateDisplay(this.options.map_height, true, 2000);
@@ -18078,80 +18107,112 @@ VCO.StoryMap = VCO.Class.extend({
 	
 	// Update View
 	_updateDisplay: function(map_height, animate, d) {
-		var duration 	= this.options.duration,
-			self		= this;
+		var duration 		= this.options.duration,
+			display_class 	= this.options.base_class,
+			self			= this;
 		
 		if (d) {
 			duration = d;
 		}
 		
+		// Update width and height
 		this.options.width = this._el.container.offsetWidth;
 		this.options.height = this._el.container.offsetHeight;
 		
-		// Check if skinny
-		if (this.options.width <= 500) {
-			this._el.container.className = this.options.base_class + " vco-skinny";
-		} else {
-			this._el.container.className = this.options.base_class;
-		}
-		
-		//Check if mobile
-		if (VCO.Browser.mobile) {
-			this._el.container.className += " vco-mobile";
-			
-		}
-		
-		// Set Sticky state of SizeBar
-		this._sizebar.setSticky(Math.floor(this._el.container.offsetHeight/this.options.map_size_sticky));
 		
 		// Map Height
 		if (map_height) {
 			this.options.map_height = map_height;
 		}
 		
-		// StorySlider Height
-		this.options.storyslider_height = (this.options.height - this.options.sizebar_height - this.options.map_height- 1);
-		
-		if (animate) {
+		// LAYOUT
+		if (this.options.layout == "portrait") {
 			
-			// Animate Map
-			if (this.animator_map) {
-				this.animator_map.stop();
-			}
+			// Portrait
+			display_class += " vco-layout-portrait";
+			trace("PORTRAIT LAYOUT");
 			
-			this.animator_map = VCO.Animate(this._el.map, {
-				height: 	(map_height) + "px",
-				duration: 	duration,
-				easing: 	VCO.Ease.easeOutStrong,
-				complete: function () {
-					self._map.updateDisplay(self.options.width, self.options.map_height, animate, d, self.options.sizebar_height);
+			// Set Sticky state of SizeBar
+			this._sizebar.setSticky(Math.floor(this._el.container.offsetHeight/this.options.map_size_sticky));
+			
+			// StorySlider Height
+			this.options.storyslider_height = (this.options.height - this.options.sizebar_height - this.options.map_height- 1);
+			
+			if (animate) {
+			
+				// Animate Map
+				if (this.animator_map) {
+					this.animator_map.stop();
 				}
-			});
 			
-			// Animate StorySlider
-			if (this.animator_storyslider) {
-				this.animator_storyslider.stop();
+				this.animator_map = VCO.Animate(this._el.map, {
+					height: 	(map_height) + "px",
+					duration: 	duration,
+					easing: 	VCO.Ease.easeOutStrong,
+					complete: function () {
+						self._map.updateDisplay(self.options.width, self.options.map_height, animate, d, self.options.sizebar_height);
+					}
+				});
+			
+				// Animate StorySlider
+				if (this.animator_storyslider) {
+					this.animator_storyslider.stop();
+				}
+				this.animator_storyslider = VCO.Animate(this._el.storyslider, {
+					height: 	this.options.storyslider_height + "px",
+					top: 		this.options.sizebar_height + "px",
+					duration: 	duration,
+					easing: 	VCO.Ease.easeOutStrong
+				});
+			
+			} else {
+				// Map
+				this._el.map.style.height = Math.ceil(map_height) + "px";
+			
+				// StorySlider
+				this._el.storyslider.style.height = this.options.storyslider_height + "px";
+				this._el.storyslider.style.top = this.options.sizebar_height + "px";
 			}
-			this.animator_storyslider = VCO.Animate(this._el.storyslider, {
-				height: 	this.options.storyslider_height + "px",
-				top: 		this.options.sizebar_height + "px",
-				duration: 	duration,
-				easing: 	VCO.Ease.easeOutStrong
-			});
+			
+			// Update Component Displays
+			this._sizebar.updateDisplay(this.options.width, this.options.height, animate, this.options.map_height);
+			this._storyslider.updateDisplay(this.options.width, this.options.storyslider_height, animate);
 			
 		} else {
-			// Map
-			this._el.map.style.height = Math.ceil(map_height) + "px";
 			
-			// StorySlider
-			this._el.storyslider.style.height = this.options.storyslider_height + "px";
-			this._el.storyslider.style.top = this.options.sizebar_height + "px";
+			// Landscape
+			display_class += " vco-layout-landscape";
+			trace("LANDSCAPE LAYOUT");
+			
+			// StorySlider Height
+			this.options.storyslider_height = (this.options.height - this._el.sizebar.offsetHeight - 1);
+			
+			// Set Sticky state of SizeBar
+			this._sizebar.setSticky(this.options.sizebar_height);
+			
+			this._el.map.style.height = this.options.height + "px";
+			this._el.sizebar.style.top =  this.options.sizebar_height + "px";
+			
+			// Update Component Displays
+			this._map.updateDisplay(this.options.width, this.options.height, animate, d);
+			this._storyslider.updateDisplay(this.options.width/2, this.options.storyslider_height, animate);
 		}
 		
-		// Update Component Displays
-		//this._map.updateDisplay(this.options.width, this.options.map_height, animate, d, sizebar_height);
-		this._storyslider.updateDisplay(this.options.width, this.options.storyslider_height, animate);
-		this._sizebar.updateDisplay(this.options.width, this.options.height, animate, this.options.map_height);
+		// CSS Classes
+		// Check if skinny
+		if (this.options.width <= 500) {
+			display_class += " vco-skinny";
+		}
+		
+		//Check if mobile
+		if (VCO.Browser.mobile) {
+			display_class += " vco-mobile";
+			
+		}
+		
+		// Apply class
+		this._el.container.className = display_class;
+		
 		
 	},
 	

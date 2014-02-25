@@ -35,6 +35,9 @@ VCO.StorySlider = VCO.Class.extend({
 		this._nav.previous = {};
 		this._nav.next = {};
 		
+		// Slide Spacing
+		this.slide_spacing = 0;
+		
 		// Slides Array
 		this._slides = [];
 		
@@ -162,6 +165,7 @@ VCO.StorySlider = VCO.Class.extend({
 		
 		this.options = {
 			id: 					"",
+			layout: 				"portrait",
 			width: 					600,
 			height: 				600,
 			slide_padding_lr: 		100, // padding on slide of slide
@@ -304,7 +308,7 @@ VCO.StorySlider = VCO.Class.extend({
 				this._onSlideChange(displayupdate);
 			} else {
 				this.animator = VCO.Animate(this._el.slider_container, {
-					left: 		-(this.options.width * n) + "px",
+					left: 		-(this.slide_spacing * n) + "px",
 					duration: 	this.options.duration,
 					easing: 	this.options.ease,
 					complete: 	this._onSlideChange(displayupdate)
@@ -428,6 +432,8 @@ VCO.StorySlider = VCO.Class.extend({
 		
 		var nav_pos;
 		
+		this.slide_spacing = this.options.width;
+		
 		if (width) {
 			this.options.width = width;
 		} else {
@@ -447,10 +453,23 @@ VCO.StorySlider = VCO.Class.extend({
 		this._nav.next.setPosition({top:nav_pos});
 		this._nav.previous.setPosition({top:nav_pos});
 		
+		
+		if (this.options.layout == "landscape") {
+			trace("slider landscape");
+			
+			// MASK Width
+			this._el.slider_container_mask.style.width = this.options.width  + "px";
+			this._el.slider_container_mask.style.left =  this.options.width  + "px";
+			//this._el.slider_item_container.style.width 	= this.options.width  + "px";
+			//this._el.slider_item_container.style.left	= this.options.width  + "px";
+			
+			this.slide_spacing = this.options.width * 2;
+		} 
+		
 		// Position slides
 		for (var i = 0; i < this._slides.length; i++) {
 			this._slides[i].updateDisplay(this.options.width, this.options.height);
-			this._slides[i].setPosition({left:(this.options.width * i), top:0});
+			this._slides[i].setPosition({left:(this.slide_spacing * i), top:0});
 			
 		};
 		

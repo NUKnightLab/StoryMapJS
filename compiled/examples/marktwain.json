@@ -27,11 +27,6 @@
 			},
 			{
 				"uniqueid": 				"",
-				"background": {			
-					"url": 				null,
-					"color": 				"#cdbfe3",
-					"opacity": 			50
-				},
 				"date": 					"1835",
 				"location": {
 					"lat": 				39.491711,
@@ -53,11 +48,6 @@
 			},
 			{
 				"uniqueid": 				"",
-				"background": {			
-					"url": 				null, 
-					"color": 				"#8b4513",
-					"opacity": 			50
-				},
 				"date": 					"1839",
 
 				"text": {
@@ -72,11 +62,6 @@
 			},
 			{
 				"uniqueid": 				"",
-				"background": {			
-					"url": 				null,
-					"color": 				null,
-					"opacity": 			50
-				},
 				"date": 					"1851",
 				"location": {
 					"lat": 				39.710083,
@@ -97,11 +82,6 @@
 			},
 			{
 				"uniqueid": 				"",
-				"background": {			
-					"url": 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-					"color": 				"#cdbfe3",
-					"opacity": 			50
-				},
 				"date": 					null,
 				"location": {
 					"lat": 				40.714353,
@@ -122,11 +102,6 @@
 			},
 			{
 				"uniqueid": 				"",
-				"background": {			
-					"url": 				null,
-					"color": 				"#cdbfe3",
-					"opacity": 			50
-				},
 				"date": 					"1862",
 				"location": {
 					"lat": 				39.309514,
@@ -172,11 +147,6 @@
 			},
 			{
 				"uniqueid": 				"",
-				"background": {			
-					"url": 				null,
-					"color": 				"#cdbfe3",
-					"opacity": 			50
-				},
 				"date": 					"1866",
 				"location": {
 					"lat": 				19.896766,
@@ -197,11 +167,6 @@
 			},
 			{
 				"uniqueid": 				"",
-				"background": {			
-					"url": 				null,
-					"color": 				"#cdbfe3",
-					"opacity": 			50
-				},
 				"date": 					"1867",
 				"location": {
 					"lat": 				54.525961,
