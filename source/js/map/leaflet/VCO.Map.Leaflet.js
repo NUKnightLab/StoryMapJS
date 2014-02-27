@@ -100,17 +100,24 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	},
 	
 	_markerOverview: function() {
-		
+		var _location, _zoom;
 		// Hide Active Line
 		this._line_active.setStyle({opacity:0});
 		
 		if (this.options.map_type == "zoomify" && this.options.map_as_image) {
 			
-			var center_zoom = this._tile_layer.getCenterZoom(this._map);
+			var _center_zoom 	= this._tile_layer.getCenterZoom(this._map);
 			
-			this._map.setView(center_zoom.center, center_zoom.zoom, {
-					pan:{animate: true, duration: this.options.duration/1000, easeLinearity:.10},
-					zoom:{animate: true, duration: this.options.duration/1000, easeLinearity:.10}
+			_location = _center_zoom.center;
+			
+			if (this.options.map_center_offset) {
+				trace("marker overview offset")
+				_location = this._getMapCenterOffset(_location, _center_zoom.zoom);
+			}
+			
+			this._map.setView(_location, _center_zoom.zoom, {
+				pan:{animate: true, duration: this.options.duration/1000, easeLinearity:.10},
+				zoom:{animate: true, duration: this.options.duration/1000, easeLinearity:.10}
 			});
 			
 		} else {
@@ -121,8 +128,25 @@ VCO.Map.Leaflet = VCO.Map.extend({
 					bounds_array.push( [this._markers[i].data.location.lat, this._markers[i].data.location.lon]);
 				}
 			};
-		
-			this._map.fitBounds(bounds_array, {padding:[15,15]});
+			
+			if (this.options.map_center_offset) {
+				trace("marker overview offset")
+				var the_bounds 	= new L.latLngBounds(bounds_array);
+				_location 		= the_bounds.getCenter();
+				_zoom 			= this._map.getBoundsZoom(the_bounds)
+				
+				_location = this._getMapCenterOffset(_location, _zoom);
+				
+				this._map.setView(_location, _zoom, {
+					pan:{animate: true, duration: this.options.duration/1000, easeLinearity:.10},
+					zoom:{animate: true, duration: this.options.duration/1000, easeLinearity:.10}
+				});
+				
+				
+			} else {
+				this._map.fitBounds(bounds_array, {padding:[15,15]});
+			}
+			
 		}
 		
 	},
@@ -168,7 +192,8 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	_viewTo: function(loc, opts) {
 		var _animate 	= true,
 			_duration 	= this.options.duration/1000,
-			_zoom 		= this._getMapZoom();
+			_zoom 		= this._getMapZoom(),
+			_location 	= {lat:loc.lat, lon:loc.lon};
 		
 		// Show Active Line
 		if (!this.options.map_as_image) {
@@ -194,26 +219,19 @@ VCO.Map.Leaflet = VCO.Map.extend({
 			}
 		}	
 		
-		// OFFSET VIEW
+		// OFFSET
 		if (this.options.map_center_offset) {
-			this._map.setView(
-				{lat:loc.lat, lon:loc.lon}, 
-				_zoom,
-				{
-					pan:{animate: _animate, duration: _duration, easeLinearity:.10},
-					zoom:{animate: _animate, duration: _duration, easeLinearity:.10}
-				}
-			)
-		} else {
-			this._map.setView(
-				{lat:loc.lat, lon:loc.lon}, 
-				_zoom,
-				{
-					pan:{animate: _animate, duration: _duration, easeLinearity:.10},
-					zoom:{animate: _animate, duration: _duration, easeLinearity:.10}
-				}
-			)
+			_location = this._getMapCenterOffset(_location, _zoom);
 		}
+		
+		this._map.setView(
+			_location, 
+			_zoom,
+			{
+				pan:{animate: _animate, duration: _duration, easeLinearity:.10},
+				zoom:{animate: _animate, duration: _duration, easeLinearity:.10}
+			}
+		)
 		
 		
 	},
@@ -233,7 +251,17 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		return this._map.getCenter();
 	},
 	
-	_getMapCenterOffset: function(location, zoom, add) {
+	_getMapCenterOffset: function(location, zoom) {
+		var target_point,
+			target_latlng;
+		
+		target_point 	= this._map.project(location, zoom).subtract([this.options.map_center_offset.left, this.options.map_center_offset.top]);
+		target_latlng 	= this._map.unproject(target_point, zoom);
+		
+		return target_latlng;
+		
+		
+		/*
 		var point, offset_y;
 		
 		offset_y = (this._map.getSize().y/2);
@@ -247,6 +275,8 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		}
 
 		return this._map.unproject(point, zoom);
+		*/
+
 	},
 	
 	_getBoundsZoom: function(origin, destination, correct_for_center) {

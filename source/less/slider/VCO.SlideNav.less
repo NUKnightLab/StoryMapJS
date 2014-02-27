@@ -196,3 +196,29 @@
 		display:none;
 	}
 }
+
+/* Landscape
+================================================== */
+.vco-layout-landscape {
+	.vco-slidenav-previous {
+		margin-left:0px;
+		.vco-slidenav-icon:before {
+			background-color:@color-background;
+			padding:20px;
+			.border-right-radius(7px);
+			border: 2px solid darken(@color-background,30);
+			border-left: 0;
+		}
+		.vco-slidenav-icon, .vco-slidenav-title, .vco-slidenav-description {
+			text-shadow: none;
+		}
+		.vco-slidenav-title, .vco-slidenav-description {
+			display:none;
+		}
+	}
+	.vco-slidenav-previous:hover {
+		.vco-slidenav-icon {
+			margin-left: -4px;
+		}
+	}
+}

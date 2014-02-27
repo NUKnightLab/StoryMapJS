@@ -162,10 +162,10 @@ VCO.StoryMap = VCO.Class.extend({
 			script_path:            "",
 			height: 				this._el.container.offsetHeight,
 			width: 					this._el.container.offsetWidth,
-			layout: 				"landscape", // portrait or landscape
+			layout: 				"landscape", 	// portrait or landscape
 			base_class: 			"",
-			map_size_sticky: 		3, // Set as division 1/3 etc
-			map_center_offset: 		60, 
+			map_size_sticky: 		3, 				// Set as division 1/3 etc
+			map_center_offset:  	null, 			// takes object {top:0,left:0}
 			start_at_slide: 		0,
 			sizebar_height: 		0,
 			// animation
@@ -187,14 +187,14 @@ VCO.StoryMap = VCO.Class.extend({
 			},
 			map_height: 			300,
 			storyslider_height: 	600,
-			slide_padding_lr: 		100, // padding on slide of slide
+			slide_padding_lr: 		100, 			// padding on slide of slide
 			sizebar_default_y: 		0,
 			path_gfx: 				"gfx",
 			map_popup: 				false,
 			zoom_distance: 			100,
-			calculate_zoom: 		true,   // Allow map to determine best zoom level between markers (recommended)
-			use_custom_markers: 	false,  // Allow use of custom map marker icons
-			line_follows_path: 		true,   // Map history path follows default line, if false it will connect previous and current only
+			calculate_zoom: 		true,   		// Allow map to determine best zoom level between markers (recommended)
+			use_custom_markers: 	false,  		// Allow use of custom map marker icons
+			line_follows_path: 		true,   		// Map history path follows default line, if false it will connect previous and current only
 			line_color: 			"#DA0000",
 			line_color_inactive: 	"#CCC",
 			line_join: 				"miter",
@@ -216,6 +216,10 @@ VCO.StoryMap = VCO.Class.extend({
 		
 		// Merge Options
 		VCO.Util.mergeData(this.options, options);
+		
+		if (this.options.layout == "landscape") {
+			this.options.map_center_offset = {left: -200, top: 0};
+		}
 		
 		// Zoomify Layout
 		if (this.options.map_type == "zoomify" && this.options.map_as_image) {
@@ -440,6 +444,8 @@ VCO.StoryMap = VCO.Class.extend({
 			this._el.sizebar.style.top =  this.options.sizebar_height + "px";
 			
 			// Update Component Displays
+			this._map.options.map_center_offset.left = -(this.options.width/4);
+			this._map.options.map_center_offset.top = this.options.sizebar_height;
 			this._map.updateDisplay(this.options.width, this.options.height, animate, d);
 			this._storyslider.updateDisplay(this.options.width/2, this.options.storyslider_height, animate);
 		}

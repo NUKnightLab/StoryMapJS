@@ -325,10 +325,14 @@ VCO.StorySlider = VCO.Class.extend({
 			
 			if (slide_background.color || slide_background.image) {
 				this._nav.next.setColor(true);
-				this._nav.previous.setColor(true);
+				if (this.options.layout != "landscape") {
+					this._nav.previous.setColor(true);
+				}
 			} else {
 				this._nav.next.setColor(false);
-				this._nav.previous.setColor(false);
+				if (this.options.layout != "landscape") {
+					this._nav.previous.setColor(false);
+				}
 			}
 			
 			//Info

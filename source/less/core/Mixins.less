@@ -38,6 +38,25 @@
  	   -moz-border-radius: @radius;
  	        border-radius: @radius;
 }
+
+// Single side border-radius
+.border-top-radius(@radius) {
+  border-top-right-radius: @radius;
+   border-top-left-radius: @radius;
+}
+.border-right-radius(@radius) {
+  border-bottom-right-radius: @radius;
+     border-top-right-radius: @radius;
+}
+.border-bottom-radius(@radius) {
+  border-bottom-right-radius: @radius;
+   border-bottom-left-radius: @radius;
+}
+.border-left-radius(@radius) {
+  border-bottom-left-radius: @radius;
+     border-top-left-radius: @radius;
+}
+
 // Box Shadow
 .box-shadow(@shadow: 1px 1px 7px rgba(0,0,0,.30)) {
 	-webkit-box-shadow: @shadow;

@@ -7153,10 +7153,14 @@ VCO.StorySlider = VCO.Class.extend({
 			
 			if (slide_background.color || slide_background.image) {
 				this._nav.next.setColor(true);
-				this._nav.previous.setColor(true);
+				if (this.options.layout != "landscape") {
+					this._nav.previous.setColor(true);
+				}
 			} else {
 				this._nav.next.setColor(false);
-				this._nav.previous.setColor(false);
+				if (this.options.layout != "landscape") {
+					this._nav.previous.setColor(false);
+				}
 			}
 			
 			//Info
@@ -16934,7 +16938,7 @@ VCO.Map = VCO.Class.extend({
 			line_join: 			"miter",
 			show_lines: 		true,
 			show_history_line: 	true,
-			map_center_offset:  10
+			map_center_offset:  null // takes object {top:0,left:0}
 		};
 		
 		// Animation
@@ -17533,17 +17537,24 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	},
 	
 	_markerOverview: function() {
-		
+		var _location, _zoom;
 		// Hide Active Line
 		this._line_active.setStyle({opacity:0});
 		
 		if (this.options.map_type == "zoomify" && this.options.map_as_image) {
 			
-			var center_zoom = this._tile_layer.getCenterZoom(this._map);
+			var _center_zoom 	= this._tile_layer.getCenterZoom(this._map);
 			
-			this._map.setView(center_zoom.center, center_zoom.zoom, {
-					pan:{animate: true, duration: this.options.duration/1000, easeLinearity:.10},
-					zoom:{animate: true, duration: this.options.duration/1000, easeLinearity:.10}
+			_location = _center_zoom.center;
+			
+			if (this.options.map_center_offset) {
+				trace("marker overview offset")
+				_location = this._getMapCenterOffset(_location, _center_zoom.zoom);
+			}
+			
+			this._map.setView(_location, _center_zoom.zoom, {
+				pan:{animate: true, duration: this.options.duration/1000, easeLinearity:.10},
+				zoom:{animate: true, duration: this.options.duration/1000, easeLinearity:.10}
 			});
 			
 		} else {
@@ -17554,8 +17565,25 @@ VCO.Map.Leaflet = VCO.Map.extend({
 					bounds_array.push( [this._markers[i].data.location.lat, this._markers[i].data.location.lon]);
 				}
 			};
-		
-			this._map.fitBounds(bounds_array, {padding:[15,15]});
+			
+			if (this.options.map_center_offset) {
+				trace("marker overview offset")
+				var the_bounds 	= new L.latLngBounds(bounds_array);
+				_location 		= the_bounds.getCenter();
+				_zoom 			= this._map.getBoundsZoom(the_bounds)
+				
+				_location = this._getMapCenterOffset(_location, _zoom);
+				
+				this._map.setView(_location, _zoom, {
+					pan:{animate: true, duration: this.options.duration/1000, easeLinearity:.10},
+					zoom:{animate: true, duration: this.options.duration/1000, easeLinearity:.10}
+				});
+				
+				
+			} else {
+				this._map.fitBounds(bounds_array, {padding:[15,15]});
+			}
+			
 		}
 		
 	},
@@ -17601,7 +17629,8 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	_viewTo: function(loc, opts) {
 		var _animate 	= true,
 			_duration 	= this.options.duration/1000,
-			_zoom 		= this._getMapZoom();
+			_zoom 		= this._getMapZoom(),
+			_location 	= {lat:loc.lat, lon:loc.lon};
 		
 		// Show Active Line
 		if (!this.options.map_as_image) {
@@ -17627,26 +17656,19 @@ VCO.Map.Leaflet = VCO.Map.extend({
 			}
 		}	
 		
-		// OFFSET VIEW
+		// OFFSET
 		if (this.options.map_center_offset) {
-			this._map.setView(
-				{lat:loc.lat, lon:loc.lon}, 
-				_zoom,
-				{
-					pan:{animate: _animate, duration: _duration, easeLinearity:.10},
-					zoom:{animate: _animate, duration: _duration, easeLinearity:.10}
-				}
-			)
-		} else {
-			this._map.setView(
-				{lat:loc.lat, lon:loc.lon}, 
-				_zoom,
-				{
-					pan:{animate: _animate, duration: _duration, easeLinearity:.10},
-					zoom:{animate: _animate, duration: _duration, easeLinearity:.10}
-				}
-			)
+			_location = this._getMapCenterOffset(_location, _zoom);
 		}
+		
+		this._map.setView(
+			_location, 
+			_zoom,
+			{
+				pan:{animate: _animate, duration: _duration, easeLinearity:.10},
+				zoom:{animate: _animate, duration: _duration, easeLinearity:.10}
+			}
+		)
 		
 		
 	},
@@ -17666,7 +17688,17 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		return this._map.getCenter();
 	},
 	
-	_getMapCenterOffset: function(location, zoom, add) {
+	_getMapCenterOffset: function(location, zoom) {
+		var target_point,
+			target_latlng;
+		
+		target_point 	= this._map.project(location, zoom).subtract([this.options.map_center_offset.left, this.options.map_center_offset.top]);
+		target_latlng 	= this._map.unproject(target_point, zoom);
+		
+		return target_latlng;
+		
+		
+		/*
 		var point, offset_y;
 		
 		offset_y = (this._map.getSize().y/2);
@@ -17680,6 +17712,8 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		}
 
 		return this._map.unproject(point, zoom);
+		*/
+
 	},
 	
 	_getBoundsZoom: function(origin, destination, correct_for_center) {
@@ -17916,10 +17950,10 @@ VCO.StoryMap = VCO.Class.extend({
 			script_path:            "",
 			height: 				this._el.container.offsetHeight,
 			width: 					this._el.container.offsetWidth,
-			layout: 				"landscape", // portrait or landscape
+			layout: 				"landscape", 	// portrait or landscape
 			base_class: 			"",
-			map_size_sticky: 		3, // Set as division 1/3 etc
-			map_center_offset: 		60, 
+			map_size_sticky: 		3, 				// Set as division 1/3 etc
+			map_center_offset:  	null, 			// takes object {top:0,left:0}
 			start_at_slide: 		0,
 			sizebar_height: 		0,
 			// animation
@@ -17941,14 +17975,14 @@ VCO.StoryMap = VCO.Class.extend({
 			},
 			map_height: 			300,
 			storyslider_height: 	600,
-			slide_padding_lr: 		100, // padding on slide of slide
+			slide_padding_lr: 		100, 			// padding on slide of slide
 			sizebar_default_y: 		0,
 			path_gfx: 				"gfx",
 			map_popup: 				false,
 			zoom_distance: 			100,
-			calculate_zoom: 		true,   // Allow map to determine best zoom level between markers (recommended)
-			use_custom_markers: 	false,  // Allow use of custom map marker icons
-			line_follows_path: 		true,   // Map history path follows default line, if false it will connect previous and current only
+			calculate_zoom: 		true,   		// Allow map to determine best zoom level between markers (recommended)
+			use_custom_markers: 	false,  		// Allow use of custom map marker icons
+			line_follows_path: 		true,   		// Map history path follows default line, if false it will connect previous and current only
 			line_color: 			"#DA0000",
 			line_color_inactive: 	"#CCC",
 			line_join: 				"miter",
@@ -17970,6 +18004,10 @@ VCO.StoryMap = VCO.Class.extend({
 		
 		// Merge Options
 		VCO.Util.mergeData(this.options, options);
+		
+		if (this.options.layout == "landscape") {
+			this.options.map_center_offset = {left: -200, top: 0};
+		}
 		
 		// Zoomify Layout
 		if (this.options.map_type == "zoomify" && this.options.map_as_image) {
@@ -18194,6 +18232,8 @@ VCO.StoryMap = VCO.Class.extend({
 			this._el.sizebar.style.top =  this.options.sizebar_height + "px";
 			
 			// Update Component Displays
+			this._map.options.map_center_offset.left = -(this.options.width/4);
+			this._map.options.map_center_offset.top = this.options.sizebar_height;
 			this._map.updateDisplay(this.options.width, this.options.height, animate, d);
 			this._storyslider.updateDisplay(this.options.width/2, this.options.storyslider_height, animate);
 		}

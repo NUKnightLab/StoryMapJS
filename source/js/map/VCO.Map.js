@@ -85,7 +85,7 @@ VCO.Map = VCO.Class.extend({
 			line_join: 			"miter",
 			show_lines: 		true,
 			show_history_line: 	true,
-			map_center_offset:  10
+			map_center_offset:  null // takes object {top:0,left:0}
 		};
 		
 		// Animation

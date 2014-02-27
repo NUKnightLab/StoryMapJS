@@ -102,9 +102,35 @@
 		display:none;
 	}
 	
+	.leaflet-bar {
+		.box-shadow(none);
+	}
+	
 }
 
-
+/* Landscape
+================================================== */
+.vco-layout-landscape {
+	.vco-map {
+		.leaflet-bottom {
+			bottom: 0;
+			top: auto;
+		}
+		.leaflet-right {
+			left: 0;
+			right:auto;
+		}
+		.leaflet-top {
+			bottom: 0;
+			top: 28px;
+		}
+		.leaflet-left {
+			//left: 0;
+			//right:auto;
+		}
+	}
+	
+}
 
 /* Mobile, iPhone and skinny
 ================================================== */
