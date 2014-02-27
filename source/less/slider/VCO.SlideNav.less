@@ -200,20 +200,36 @@
 /* Landscape
 ================================================== */
 .vco-layout-landscape {
-	.vco-slidenav-previous {
-		margin-left:0px;
+	
+	.vco-slidenav-next, .vco-slidenav-previous {
 		.vco-slidenav-icon:before {
 			background-color:@color-background;
+			//.translucent-background(@color-background, .85);
+			.box-shadow(1px 1px 7px rgba(0,0,0,.30));
 			padding:20px;
-			.border-right-radius(7px);
-			border: 2px solid darken(@color-background,30);
-			border-left: 0;
+			border: 1px solid darken(@color-background,30);
 		}
 		.vco-slidenav-icon, .vco-slidenav-title, .vco-slidenav-description {
 			text-shadow: none;
 		}
 		.vco-slidenav-title, .vco-slidenav-description {
 			display:none;
+		}
+	}
+	
+	.vco-slidenav-previous {
+		margin-left:0px;
+		.vco-slidenav-icon:before {
+			.border-right-radius(7px);
+			border-left: 0;
+		}
+	}
+	.vco-slidenav-next {
+		//margin-left:0px;
+		 right: 130px;
+		.vco-slidenav-icon:before {
+			.border-left-radius(7px);
+			border-right: 0;
 		}
 	}
 	.vco-slidenav-previous:hover {

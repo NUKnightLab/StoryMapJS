@@ -4763,6 +4763,9 @@ VCO.SizeBar = VCO.Class.extend({
 			this._el.button_collapse_toggle.innerHTML	= VCO.Language.buttons.collapse_toggle + "<span class='vco-icon-arrow-up'></span>";
 		}
 		
+		if (this.options.layout == "landscape") {
+			this._el.button_collapse_toggle.style.display = "none";
+		}
 		//Make draggable
 		
 		this._draggable = new VCO.Draggable(this._el.container, {enable:{x:false, y:true}, constraint:{bottom:this.options.height}});
@@ -7152,13 +7155,13 @@ VCO.StorySlider = VCO.Class.extend({
 			this.fire("colorchange", slide_background);
 			
 			if (slide_background.color || slide_background.image) {
-				this._nav.next.setColor(true);
 				if (this.options.layout != "landscape") {
+					this._nav.next.setColor(true);
 					this._nav.previous.setColor(true);
 				}
 			} else {
-				this._nav.next.setColor(false);
 				if (this.options.layout != "landscape") {
+					this._nav.next.setColor(false);
 					this._nav.previous.setColor(false);
 				}
 			}

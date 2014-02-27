@@ -219,6 +219,9 @@ VCO.SizeBar = VCO.Class.extend({
 			this._el.button_collapse_toggle.innerHTML	= VCO.Language.buttons.collapse_toggle + "<span class='vco-icon-arrow-up'></span>";
 		}
 		
+		if (this.options.layout == "landscape") {
+			this._el.button_collapse_toggle.style.display = "none";
+		}
 		//Make draggable
 		
 		this._draggable = new VCO.Draggable(this._el.container, {enable:{x:false, y:true}, constraint:{bottom:this.options.height}});
