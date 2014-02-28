@@ -426,13 +426,12 @@ VCO.StoryMap = VCO.Class.extend({
 			
 			// Update Component Displays
 			this._sizebar.updateDisplay(this.options.width, this.options.height, animate, this.options.map_height);
-			this._storyslider.updateDisplay(this.options.width, this.options.storyslider_height, animate);
+			this._storyslider.updateDisplay(this.options.width, this.options.storyslider_height, animate, this.options.layout);
 			
 		} else {
 			
 			// Landscape
 			display_class += " vco-layout-landscape";
-			trace("LANDSCAPE LAYOUT");
 			
 			// StorySlider Height
 			this.options.storyslider_height = (this.options.height - this._el.sizebar.offsetHeight - 1);
@@ -447,7 +446,7 @@ VCO.StoryMap = VCO.Class.extend({
 			this._map.options.map_center_offset.left = -(this.options.width/4);
 			this._map.options.map_center_offset.top = this.options.sizebar_height;
 			this._map.updateDisplay(this.options.width, this.options.height, animate, d);
-			this._storyslider.updateDisplay(this.options.width/2, this.options.storyslider_height, animate);
+			this._storyslider.updateDisplay(this.options.width/2, this.options.storyslider_height, animate, this.options.layout);
 		}
 		
 		// CSS Classes
