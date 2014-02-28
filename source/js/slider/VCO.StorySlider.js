@@ -217,8 +217,8 @@ VCO.StorySlider = VCO.Class.extend({
 	
 	/*	Public
 	================================================== */
-	updateDisplay: function(w, h) {
-		this._updateDisplay(w, h);
+	updateDisplay: function(w, h, a, l) {
+		this._updateDisplay(w, h, a, l);
 	},
 	
 	// Create a slide
@@ -304,7 +304,7 @@ VCO.StorySlider = VCO.Class.extend({
 			}
 			
 			if (fast) {
-				this._el.slider_container.style.left = -(this.options.width * n) + "px";
+				this._el.slider_container.style.left = -(this.slide_spacing * n) + "px";
 				this._onSlideChange(displayupdate);
 			} else {
 				this.animator = VCO.Animate(this._el.slider_container, {
@@ -432,9 +432,15 @@ VCO.StorySlider = VCO.Class.extend({
 	================================================== */
 	
 	// Update Display
-	_updateDisplay: function(width, height, animate) {
+	_updateDisplay: function(width, height, animate, layout) {
+		var nav_pos, _layout;
 		
-		var nav_pos;
+		if(typeof layout === 'undefined'){
+			_layout = this.options.layout;
+		} else {
+			_layout = layout;
+		}
+		
 		
 		this.slide_spacing = this.options.width;
 		
@@ -459,7 +465,6 @@ VCO.StorySlider = VCO.Class.extend({
 		
 		
 		if (this.options.layout == "landscape") {
-			trace("slider landscape");
 			
 			// MASK Width
 			this._el.slider_container_mask.style.width = this.options.width  + "px";
@@ -472,7 +477,7 @@ VCO.StorySlider = VCO.Class.extend({
 		
 		// Position slides
 		for (var i = 0; i < this._slides.length; i++) {
-			this._slides[i].updateDisplay(this.options.width, this.options.height);
+			this._slides[i].updateDisplay(this.options.width, this.options.height, _layout);
 			this._slides[i].setPosition({left:(this.slide_spacing * i), top:0});
 			
 		};

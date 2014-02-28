@@ -5168,11 +5168,15 @@ VCO.Media = VCO.Class.extend({
 		
 	},
 	
-	updateMediaDisplay: function() {
-		
+	updateMediaDisplay: function(layout) {
 		if (this._state.loaded) {
-			this._updateMediaDisplay();
-			this._el.content_item.style.maxHeight = (this.options.height - this.options.credit_height - this.options.caption_height - 16) + "px";
+			this._updateMediaDisplay(layout);
+			
+			if (layout != "landscape") {
+				this._el.content_item.style.maxHeight = (this.options.height - this.options.credit_height - this.options.caption_height - 16) + "px";
+			}
+			
+			
 			
 			// Fix for max-width issues in Firefox
 			if (VCO.Browser.firefox) {
@@ -5191,8 +5195,8 @@ VCO.Media = VCO.Class.extend({
 		
 		},
 		
-		_updateMediaDisplay: function() {
-			this._el.content_item.style.maxHeight = (this.options.height - this.options.credit_height - this.options.caption_height - 16) + "px";
+		_updateMediaDisplay: function(l) {
+			//this._el.content_item.style.maxHeight = (this.options.height - this.options.credit_height - this.options.caption_height - 16) + "px";
 		},
 	
 	/*	Public
@@ -5216,8 +5220,8 @@ VCO.Media = VCO.Class.extend({
 	},
 	
 	// Update Display
-	updateDisplay: function(w, h, animate) {
-		this._updateDisplay(w, h, animate);
+	updateDisplay: function(w, h, l) {
+		this._updateDisplay(w, h, l);
 	},
 	
 	stopMedia: function() {
@@ -5302,13 +5306,17 @@ VCO.Media = VCO.Class.extend({
 	},
 	
 	// Update Display
-	_updateDisplay: function(w, h, animate) {
+	_updateDisplay: function(w, h, l) {
 		if (w) {
 			this.options.width = w;
 		}
 		if (h) {
 			this.options.height = h;
 		}
+		
+		if (l) {
+			this.options.layout = l;
+		} 
 		
 		if (this._el.credit) {
 			this.options.credit_height 		= this._el.credit.offsetHeight;
@@ -5317,7 +5325,7 @@ VCO.Media = VCO.Class.extend({
 			this.options.caption_height 	= this._el.caption.offsetHeight + 5;
 		}
 		
-		this.updateMediaDisplay();
+		this.updateMediaDisplay(this.options.layout);
 		
 	},
 	
@@ -5632,8 +5640,12 @@ VCO.Media.Image = VCO.Media.extend({
 		this.onLoaded();
 	},
 	
-	_updateMediaDisplay: function() {
-		this._el.content_item.style.maxHeight = (this.options.height - this.options.credit_height - this.options.caption_height - 16) + "px";
+	_updateMediaDisplay: function(layout) {
+		if (layout == "landscape") {
+			this._el.content_item.style.maxHeight = "50%";
+		} else {
+			this._el.content_item.style.maxHeight = (this.options.height - this.options.credit_height - this.options.caption_height - 16) + "px";
+		}
 		
 		if(VCO.Browser.firefox) {
 			this._el.content_item.style.maxWidth = (this.options.width/2) - 40 + "px";
@@ -6545,8 +6557,8 @@ VCO.Slide = VCO.Class.extend({
 		container.removeChild(this._el.container);
 	},
 	
-	updateDisplay: function(w, h, a) {
-		this._updateDisplay(w, h, a);
+	updateDisplay: function(w, h, l) {
+		this._updateDisplay(w, h, l);
 	},
 	
 	loadMedia: function() {
@@ -6661,7 +6673,7 @@ VCO.Slide = VCO.Class.extend({
 	},
 	
 	// Update Display
-	_updateDisplay: function(width, height, animate) {
+	_updateDisplay: function(width, height, layout) {
 		
 		if (width) {
 			this.options.width 					= width;
@@ -6673,6 +6685,11 @@ VCO.Slide = VCO.Class.extend({
 			this._el.content.style.paddingLeft 	= 0 + "px";
 			this._el.content.style.paddingRight = 0 + "px";
 			this._el.content.style.width		= this.options.width - 0 + "px";
+		} else if (layout == "landscape") {
+			this._el.content.style.paddingLeft 	= 40 + "px";
+			this._el.content.style.paddingRight = this.options.slide_padding_lr + "px";
+			this._el.content.style.width		= this.options.width - (this.options.slide_padding_lr + 40) + "px";
+		
 		} else if (this.options.width <= 500) {
 			this._el.content.style.paddingLeft 	= 10 + "px";
 			this._el.content.style.paddingRight = 10 + "px";
@@ -6692,9 +6709,9 @@ VCO.Slide = VCO.Class.extend({
 		
 		if (this._media) {
 			if (!this.has.text && this.has.headline) {
-				this._media.updateDisplay(this.options.width, (this.options.height - this._text.headlineHeight()));
+				this._media.updateDisplay(this.options.width, (this.options.height - this._text.headlineHeight()), layout);
 			} else {
-				this._media.updateDisplay(this.options.width, this.options.height);
+				this._media.updateDisplay(this.options.width, this.options.height, layout);
 			}
 		}
 		
@@ -7048,8 +7065,8 @@ VCO.StorySlider = VCO.Class.extend({
 	
 	/*	Public
 	================================================== */
-	updateDisplay: function(w, h) {
-		this._updateDisplay(w, h);
+	updateDisplay: function(w, h, a, l) {
+		this._updateDisplay(w, h, a, l);
 	},
 	
 	// Create a slide
@@ -7135,7 +7152,7 @@ VCO.StorySlider = VCO.Class.extend({
 			}
 			
 			if (fast) {
-				this._el.slider_container.style.left = -(this.options.width * n) + "px";
+				this._el.slider_container.style.left = -(this.slide_spacing * n) + "px";
 				this._onSlideChange(displayupdate);
 			} else {
 				this.animator = VCO.Animate(this._el.slider_container, {
@@ -7263,9 +7280,15 @@ VCO.StorySlider = VCO.Class.extend({
 	================================================== */
 	
 	// Update Display
-	_updateDisplay: function(width, height, animate) {
+	_updateDisplay: function(width, height, animate, layout) {
+		var nav_pos, _layout;
 		
-		var nav_pos;
+		if(typeof layout === 'undefined'){
+			_layout = this.options.layout;
+		} else {
+			_layout = layout;
+		}
+		
 		
 		this.slide_spacing = this.options.width;
 		
@@ -7290,7 +7313,6 @@ VCO.StorySlider = VCO.Class.extend({
 		
 		
 		if (this.options.layout == "landscape") {
-			trace("slider landscape");
 			
 			// MASK Width
 			this._el.slider_container_mask.style.width = this.options.width  + "px";
@@ -7303,7 +7325,7 @@ VCO.StorySlider = VCO.Class.extend({
 		
 		// Position slides
 		for (var i = 0; i < this._slides.length; i++) {
-			this._slides[i].updateDisplay(this.options.width, this.options.height);
+			this._slides[i].updateDisplay(this.options.width, this.options.height, _layout);
 			this._slides[i].setPosition({left:(this.slide_spacing * i), top:0});
 			
 		};
@@ -18217,13 +18239,12 @@ VCO.StoryMap = VCO.Class.extend({
 			
 			// Update Component Displays
 			this._sizebar.updateDisplay(this.options.width, this.options.height, animate, this.options.map_height);
-			this._storyslider.updateDisplay(this.options.width, this.options.storyslider_height, animate);
+			this._storyslider.updateDisplay(this.options.width, this.options.storyslider_height, animate, this.options.layout);
 			
 		} else {
 			
 			// Landscape
 			display_class += " vco-layout-landscape";
-			trace("LANDSCAPE LAYOUT");
 			
 			// StorySlider Height
 			this.options.storyslider_height = (this.options.height - this._el.sizebar.offsetHeight - 1);
@@ -18238,7 +18259,7 @@ VCO.StoryMap = VCO.Class.extend({
 			this._map.options.map_center_offset.left = -(this.options.width/4);
 			this._map.options.map_center_offset.top = this.options.sizebar_height;
 			this._map.updateDisplay(this.options.width, this.options.height, animate, d);
-			this._storyslider.updateDisplay(this.options.width/2, this.options.storyslider_height, animate);
+			this._storyslider.updateDisplay(this.options.width/2, this.options.storyslider_height, animate, this.options.layout);
 		}
 		
 		// CSS Classes

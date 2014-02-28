@@ -20,8 +20,12 @@ VCO.Media.Image = VCO.Media.extend({
 		this.onLoaded();
 	},
 	
-	_updateMediaDisplay: function() {
-		this._el.content_item.style.maxHeight = (this.options.height - this.options.credit_height - this.options.caption_height - 16) + "px";
+	_updateMediaDisplay: function(layout) {
+		if (layout == "landscape") {
+			this._el.content_item.style.maxHeight = "50%";
+		} else {
+			this._el.content_item.style.maxHeight = (this.options.height - this.options.credit_height - this.options.caption_height - 16) + "px";
+		}
 		
 		if(VCO.Browser.firefox) {
 			this._el.content_item.style.maxWidth = (this.options.width/2) - 40 + "px";

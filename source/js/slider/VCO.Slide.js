@@ -134,8 +134,8 @@ VCO.Slide = VCO.Class.extend({
 		container.removeChild(this._el.container);
 	},
 	
-	updateDisplay: function(w, h, a) {
-		this._updateDisplay(w, h, a);
+	updateDisplay: function(w, h, l) {
+		this._updateDisplay(w, h, l);
 	},
 	
 	loadMedia: function() {
@@ -250,7 +250,7 @@ VCO.Slide = VCO.Class.extend({
 	},
 	
 	// Update Display
-	_updateDisplay: function(width, height, animate) {
+	_updateDisplay: function(width, height, layout) {
 		
 		if (width) {
 			this.options.width 					= width;
@@ -262,6 +262,11 @@ VCO.Slide = VCO.Class.extend({
 			this._el.content.style.paddingLeft 	= 0 + "px";
 			this._el.content.style.paddingRight = 0 + "px";
 			this._el.content.style.width		= this.options.width - 0 + "px";
+		} else if (layout == "landscape") {
+			this._el.content.style.paddingLeft 	= 40 + "px";
+			this._el.content.style.paddingRight = this.options.slide_padding_lr + "px";
+			this._el.content.style.width		= this.options.width - (this.options.slide_padding_lr + 40) + "px";
+		
 		} else if (this.options.width <= 500) {
 			this._el.content.style.paddingLeft 	= 10 + "px";
 			this._el.content.style.paddingRight = 10 + "px";
@@ -281,9 +286,9 @@ VCO.Slide = VCO.Class.extend({
 		
 		if (this._media) {
 			if (!this.has.text && this.has.headline) {
-				this._media.updateDisplay(this.options.width, (this.options.height - this._text.headlineHeight()));
+				this._media.updateDisplay(this.options.width, (this.options.height - this._text.headlineHeight()), layout);
 			} else {
-				this._media.updateDisplay(this.options.width, this.options.height);
+				this._media.updateDisplay(this.options.width, this.options.height, layout);
 			}
 		}
 		
