@@ -35,25 +35,17 @@ html(lang="en")
 		script
 			var storymap = new VCO.StoryMap('storymap', 'seurat.json', {
 				map_type: 				"zoomify",
-				map_background_color: 	"#333",
+				map_background_color: 	"#000",
 				map_as_image: 			true,
 				calculate_zoom: 		false,
 				zoomify: {
-					path: 				"http://cdn.verite.co/maps/zoomify/seurat/",
-					width: 				30000,
-					height: 			19970,
+					path: 				"http://cdn.verite.co/maps/zoomify/jansteen/",
+					width: 				11668,
+					height: 			8592,
 					tolerance: 			0.9,
-					attribution: 		"<a href='http://www.google.com/culturalinstitute/asset-viewer/a-sunday-on-la-grande-jatte-1884/twGyqq52R-lYpA?projectId=art-project' target='_blank'>Google Art Project</a>"
+					attribution: 		"<a href='https://www.rijksmuseum.nl/en/explore-the-collection/overview/jan-havicksz-steen/objects#/SK-A-384,7' target='_blank'>Rijks Museum</a>"
 				}
 			});
 			window.onresize = function(event) {
 				storymap.updateDisplay();
 			}
-		script
-			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-			})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-			ga('create', 'UA-537357-18', 'verite.co');
-			ga('send', 'pageview');

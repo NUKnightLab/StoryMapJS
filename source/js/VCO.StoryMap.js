@@ -66,6 +66,7 @@
 
 // @codekit-prepend "map/leaflet/VCO.Leaflet.js";
 // @codekit-prepend "map/leaflet/VCO.Leaflet.TileLayer.Zoomify.js";
+// @codekit-prepend "map/leaflet/VCO.Leaflet.MiniMap.js";
 
 // @codekit-prepend "map/VCO.StamenMaps.js";
 // @codekit-prepend "map/VCO.MapMarker.js";
@@ -175,6 +176,7 @@ VCO.StoryMap = VCO.Class.extend({
 			dragging: 				true,
 			trackResize: 			true,
 			map_type: 				"stamen:toner-lite",
+			map_mini: 				true,
 			map_subdomains: 		"",
 			map_as_image: 			false,
 			map_background_color: 	"#d9d9d9",
@@ -188,6 +190,7 @@ VCO.StoryMap = VCO.Class.extend({
 			map_height: 			300,
 			storyslider_height: 	600,
 			slide_padding_lr: 		100, 			// padding on slide of slide
+			slide_default_fade: 	"40%", 			// landscape fade
 			sizebar_default_y: 		0,
 			path_gfx: 				"gfx",
 			map_popup: 				false,
@@ -224,6 +227,7 @@ VCO.StoryMap = VCO.Class.extend({
 		// Zoomify Layout
 		if (this.options.map_type == "zoomify" && this.options.map_as_image) {
 			this.options.map_size_sticky = 2;
+			this.options.slide_default_fade = "40%";
 		}
 		
 		// Load language
@@ -375,8 +379,17 @@ VCO.StoryMap = VCO.Class.extend({
 			this.options.map_height = map_height;
 		}
 		
+		
+		// Update Orientation on Touch devices
+		if (VCO.Browser.touch) {
+			this.options.layout = VCO.Browser.orientation;
+			trace(VCO.Browser.orientation);
+		}
+		
 		// LAYOUT
 		if (this.options.layout == "portrait") {
+			// Map Padding
+			this._map.padding = [0,0];
 			
 			// Portrait
 			display_class += " vco-layout-portrait";
@@ -433,6 +446,10 @@ VCO.StoryMap = VCO.Class.extend({
 			// Landscape
 			display_class += " vco-layout-landscape";
 			
+			// Map Padding
+			//this._map.padding = [0,this.options.width/2];
+			
+			
 			// StorySlider Height
 			this.options.storyslider_height = (this.options.height - this._el.sizebar.offsetHeight - 1);
 			
@@ -449,6 +466,7 @@ VCO.StoryMap = VCO.Class.extend({
 			this._storyslider.updateDisplay(this.options.width/2, this.options.storyslider_height, animate, this.options.layout);
 		}
 		
+		trace(this._map.padding);
 		// CSS Classes
 		// Check if skinny
 		if (this.options.width <= 500) {

@@ -11,7 +11,7 @@
                 },
 				"background": {			
 					"url": 				"http://cdn.verite.co/maps/zoomify/seurat/seurat_portrait.jpg",
-					"color": 			"#FFF",
+					"color": 			"#000",
 					"opacity": 			50
 				},
                 "text": {
@@ -41,7 +41,7 @@
                     "lat": 77.62241984285832,
                     "line": true,
                     "lon": -20.478515625,
-                    "zoom": 3
+                    "zoom": 4
                 },
                 "media": {
                     "caption": "",
@@ -79,7 +79,7 @@
                     "lat": 77.62241984285832,
                     "line": true,
                     "lon": -20.478515625,
-                    "zoom": 3
+                    "zoom": 4
                 },
                 "media": {
                     "caption": "Seurat made several studies for the large painting including a smaller version. Study for La Grand Jatte, 1884. ",
@@ -117,7 +117,7 @@
                     "lat": 72.71190310803662,
                     "line": true,
                     "lon": -9.140625,
-                    "zoom": 3
+                    "zoom": 4
                 },
                 "media": {
                     "caption": "La plage de Trouville, 1870, National Gallery, London. ",
@@ -136,7 +136,7 @@
                     "lat": 75.32002523220804,
                     "line": true,
                     "lon": 49.5703125,
-                    "zoom": 4
+                    "zoom": 5
                 },
                 "media": {
                     "caption": "Riace bronzes, examples of proto classic bronze sculpture",
@@ -193,7 +193,7 @@
                     "lat": -35.46066995149529,
                     "line": true,
                     "lon": -99.84374999999999,
-                    "zoom": 4
+                    "zoom": 6
                 },
                 "media": {
                     "caption": "",
@@ -212,7 +212,7 @@
                     "lat": -30.826780904779774,
                     "line": true,
                     "lon": 128.056640625,
-                    "zoom": 4
+                    "zoom": 5
                 },
                 "media": {
                     "caption": "",

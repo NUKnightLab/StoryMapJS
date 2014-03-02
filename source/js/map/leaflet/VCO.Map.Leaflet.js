@@ -13,40 +13,15 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		// Set Marker Path
 		L.Icon.Default.imagePath = this.options.path_gfx;
 		
-		this._map = new L.map(this._el.map, {scrollWheelZoom:false});
+		this._map = new L.map(this._el.map, {scrollWheelZoom:false, zoomControl:!this.options.map_mini});
 		this._map.on("load", this._onMapLoaded, this);
 		
 		this._map.on("moveend", this._onMapMoveEnd, this);
 			
 		var map_type_arr = this.options.map_type.split(':');		
 
-		// Set Tiles
-		switch(map_type_arr[0]) {
-			case 'stamen':
-				this._tile_layer = new L.StamenTileLayer(map_type_arr[1] || 'toner-lite');
-				break;
-			case 'zoomify':
-				this._tile_layer = new L.tileLayer.zoomify(this.options.zoomify.path, {
-					width: 			this.options.zoomify.width,
-					height: 		this.options.zoomify.height,
-					tolerance: 		this.options.zoomify.tolerance,
-					attribution: 	this.options.zoomify.attribution,
-				});
-				this._image_layer = new L.imageOverlay(this.options.zoomify.path + "TileGroup0/0-0-0.jpg", this._tile_layer.getZoomifyBounds(this._map));
-				break;
-			case 'osm':
-				this._tile_layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {subdomains: 'ab'});
-				break;
-		    
-			case 'http':
-			case 'https':
-				this._tile_layer = new L.TileLayer(this.options.map_type, {subdomains: this.options.map_subdomains});
-				break;
-		        
-			default:
-				this._tile_layer = new L.StamenTileLayer('toner');
-				break;		
-		}
+		// Create Tile Layer
+		this._tile_layer = this._createTileLayer();
 		
 		// Add Tile Layer
 		this._map.addLayer(this._tile_layer);
@@ -71,6 +46,63 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		}
 
 		
+	},
+	
+	/*	Create Mini Map
+	================================================== */
+	_createMiniMap: function() {
+		this._tile_layer_mini = this._createTileLayer();
+		this._mini_map = new L.Control.MiniMap(this._tile_layer_mini, {
+			width: 				150,
+			height: 			100,
+			position: 			"topleft",
+			zoomLevelFixed: 	0,
+			zoomAnimation: 		true,
+			aimingRectOptions: 	{
+				fillColor: 		"#FFFFFF",
+				color: 			"#da0000",
+				opacity: 		1,
+				weight: 		2
+			}
+		}).addTo(this._map);
+		
+	},
+	
+	/*	Create Tile Layer
+	================================================== */
+	_createTileLayer: function() {
+		var _tilelayer,
+			_map_type_arr = this.options.map_type.split(':');		
+
+		// Set Tiles
+		switch(_map_type_arr[0]) {
+			case 'stamen':
+				_tilelayer = new L.StamenTileLayer(_map_type_arr[1] || 'toner-lite');
+				break;
+			case 'zoomify':
+				_tilelayer = new L.tileLayer.zoomify(this.options.zoomify.path, {
+					width: 			this.options.zoomify.width,
+					height: 		this.options.zoomify.height,
+					tolerance: 		this.options.zoomify.tolerance,
+					attribution: 	this.options.zoomify.attribution,
+				});
+				this._image_layer = new L.imageOverlay(this.options.zoomify.path + "TileGroup0/0-0-0.jpg", _tilelayer.getZoomifyBounds(this._map));
+				break;
+			case 'osm':
+				_tilelayer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {subdomains: 'ab'});
+				break;
+		    
+			case 'http':
+			case 'https':
+				_tilelayer = new L.TileLayer(this.options.map_type, {subdomains: this.options.map_subdomains});
+				break;
+		        
+			default:
+				_tilelayer = new L.StamenTileLayer('toner');
+				break;		
+		}
+		
+		return _tilelayer;
 	},
 	
 	/*	Event
@@ -217,6 +249,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 			if (opts.zoom && opts.calculate_zoom) {
 				_zoom = opts.zoom;
 			}
+			
 		}	
 		
 		// OFFSET
@@ -293,7 +326,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		}
 		
 		var bounds = new L.LatLngBounds([_origin, destination]);
-		return this._map.getBoundsZoom(bounds, false);
+		return this._map.getBoundsZoom(bounds, false, this.padding);
 	},
 	
 	_getZoomifyZoom: function() {

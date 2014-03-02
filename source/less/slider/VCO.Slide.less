@@ -9,12 +9,29 @@
 	display:table;
 	table-layout: fixed;
 	overflow-y:auto;
+	.vco-slide-background {
+		position:absolute;
+		left:0;
+		top:0;
+		width:100%;
+		height:100%;
+		z-index:2;
+		//background-color:#333;
+		display:none;
+		.opacity(50);
+		background: no-repeat center center; 
+		-webkit-background-size: cover;
+		   -moz-background-size: cover;
+		     -o-background-size: cover;
+			    background-size: cover;
+	}
 	.vco-slide-content-container {
 		display:table-cell;
 		vertical-align:middle;
 		position:relative;
 		width:100%;
 		height:100%;
+		z-index:3;
 		.vco-slide-content {
 			//width:100%;
 			
@@ -175,7 +192,7 @@
 	background-position:center 25%;
 	text-shadow: 1px 1px 2px #000;
 	.vco-slide-content-container {
-		.translucent-background(#000, 0.50);
+		//.translucent-background(#000, 0.50);
 	}
 	p, h1, h2, h3, h4, h5, h6 {
 		text-shadow: 1px 1px 2px #000;

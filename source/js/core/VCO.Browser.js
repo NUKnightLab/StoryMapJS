@@ -60,7 +60,16 @@
 		msPointer: !! msPointer,
 		pointer: !! pointer,
 
-		retina: !! retina
+		retina: !! retina,
+		orientation: function() {
+			var _orientation = "portrait";
+			
+			if (Math.abs(window.orientation) == 90) {
+				_orientation = "landscape";
+			}
+			
+			return _orientation;
+		}
 	};
 
 }()); 

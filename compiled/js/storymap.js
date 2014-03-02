@@ -203,6 +203,22 @@ VCO.Util = {
 			return value;
 		});
 	},
+	
+	hexToRgb: function(hex) {
+	    // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+	    var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+	    hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+	        return r + r + g + g + b + b;
+	    });
+
+	    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+	    return result ? {
+	        r: parseInt(result[1], 16),
+	        g: parseInt(result[2], 16),
+	        b: parseInt(result[3], 16)
+	    } : null;
+	},
+	
 	ratio: {
 		square: function(size) {
 			var s = {
@@ -2072,7 +2088,16 @@ VCO.Events.fire = VCO.Events.fireEvent;
 		msPointer: !! msPointer,
 		pointer: !! pointer,
 
-		retina: !! retina
+		retina: !! retina,
+		orientation: function() {
+			var _orientation = "portrait";
+			
+			if (Math.abs(window.orientation) == 90) {
+				_orientation = "landscape";
+			}
+			
+			return _orientation;
+		}
 	};
 
 }()); 
@@ -6471,6 +6496,7 @@ VCO.Slide = VCO.Class.extend({
 		// DOM Elements
 		this._el = {
 			container: {},
+			background: {},
 			content_container: {},
 			content: {}
 		};
@@ -6493,7 +6519,7 @@ VCO.Slide = VCO.Class.extend({
 			background: {
 				image: false,
 				color: false,
-				color_value :false
+				color_value :"#FFF"
 			}
 		}
 		
@@ -6520,6 +6546,8 @@ VCO.Slide = VCO.Class.extend({
 			media_name: 		""
 		};
 		
+		// Actively Displaying
+		this.active = false;
 		
 		// Animation Object
 		this.animator = {};
@@ -6537,6 +6565,7 @@ VCO.Slide = VCO.Class.extend({
 	/*	Adding, Hiding, Showing etc
 	================================================== */
 	show: function() {
+		trace("show")
 		this.animator = VCO.Animate(this._el.slider_container, {
 			left: 		-(this._el.container.offsetWidth * n) + "px",
 			duration: 	this.options.duration,
@@ -6546,6 +6575,19 @@ VCO.Slide = VCO.Class.extend({
 	
 	hide: function() {
 		
+	},
+	
+	setActive: function(is_active) {
+		this.active = is_active;
+		
+		if (this.active) {
+			if (this.data.background) {
+				this.fire("background_change", this.has.background);
+			}
+			this.loadMedia();
+		} else {
+			this.stopMedia();
+		}
 	},
 	
 	addTo: function(container) {
@@ -6596,27 +6638,35 @@ VCO.Slide = VCO.Class.extend({
 		if (this.data.uniqueid) {
 			this._el.container.id 		= this.data.uniqueid;
 		}
-		this._el.container.id 			= this.data.uniqueid;
+		this._el.background				= VCO.Dom.create("div", "vco-slide-background", this._el.container);
 		this._el.content_container		= VCO.Dom.create("div", "vco-slide-content-container", this._el.container);
 		this._el.content				= VCO.Dom.create("div", "vco-slide-content", this._el.content_container);
 		
 		// Style Slide Background
 		if (this.data.background) {
 			if (this.data.background.url) {
-				this.has.background.image = true;
-				this._el.container.className += ' vco-full-image-background';
-				this._el.container.style.backgroundImage="url('" + this.data.background.url + "')";
+				this.has.background.image 					= true;
+				this._el.container.className 				+= ' vco-full-image-background';
+				//this._el.container.style.backgroundImage="url('" + this.data.background.url + "')";
+				this.has.background.color_value 			= "#000";
+				this._el.background.style.backgroundImage 	= "url('" + this.data.background.url + "')";
+				this._el.background.style.display 			= "block";
 			}
 			if (this.data.background.color) {
-				this.has.background.color = true;
-				this._el.container.className += ' vco-full-color-background';
-				this.has.background.color_value = this.data.background.color;
-				this._el.container.style.backgroundColor = this.data.background.color;
+				this.has.background.color 					= true;
+				this._el.container.className 				+= ' vco-full-color-background';
+				this.has.background.color_value 			= this.data.background.color;
+				//this._el.container.style.backgroundColor = this.data.background.color;
+				//this._el.background.style.backgroundColor 	= this.data.background.color;
+				//this._el.background.style.display 			= "block";
 			}
 			if (this.data.background.text_background) {
-				this._el.container.className += ' vco-text-background';
+				this._el.container.className 				+= ' vco-text-background';
 			}
+			
 		} 
+		
+		
 		
 		// Determine Assets for layout and loading
 		if (this.data.media && this.data.media.url && this.data.media.url != "") {
@@ -6859,7 +6909,7 @@ VCO.SlideNav = VCO.Class.extend({
 	slideRemoved
 
 	TODO
-	Memory handling
+	Fix overflow scoll in landscape view
 	
 ================================================== */
 
@@ -6874,6 +6924,7 @@ VCO.StorySlider = VCO.Class.extend({
 		// DOM ELEMENTS
 		this._el = {
 			container: {},
+			background: {},
 			slider_container_mask: {},
 			slider_container: {},
 			slider_item_container: {}
@@ -7016,8 +7067,9 @@ VCO.StorySlider = VCO.Class.extend({
 			layout: 				"portrait",
 			width: 					600,
 			height: 				600,
-			slide_padding_lr: 		100, // padding on slide of slide
+			slide_padding_lr: 		100, 			// padding on slide of slide
 			start_at_slide: 		1,
+			slide_default_fade: 	"40%", 			// landscape fade
 			// animation
 			duration: 				1000,
 			ease: 					VCO.Ease.easeInOutQuint,
@@ -7096,6 +7148,7 @@ VCO.StorySlider = VCO.Class.extend({
 	},
 	
 	_createSlide: function(d, title_slide) {
+		trace("create slide")
 		var slide = new VCO.Slide(d, this.options, title_slide);
 		this._addSlide(slide);
 		this._slides.push(slide);
@@ -7113,11 +7166,13 @@ VCO.StorySlider = VCO.Class.extend({
 	_addSlide:function(slide) {
 		slide.addTo(this._el.slider_item_container);
 		slide.on('added', this._onSlideAdded, this);
+		slide.on('background_change', this._onBackgroundChange, this);
 	},
 	
 	_removeSlide: function(slide) {
 		slide.removeFrom(this._el.slider_item_container);
 		slide.off('added', this._onSlideAdded, this);
+		slide.off('background_change', this._onBackgroundChange);
 	},
 	
 	/*	Message
@@ -7128,14 +7183,15 @@ VCO.StorySlider = VCO.Class.extend({
 	
 	goTo: function(n, fast, displayupdate) {
 		var self = this;
-		
+		this.changeBackground({color_value:"#FFF", image:false});
 		// Clear Preloader Timer
 		if (this.preloadTimer) {
 			clearTimeout(this.preloadTimer);
 		}
-		// Stop Playing Media
+		
+		// Set Slide Active State
 		for (var i = 0; i < this._slides.length; i++) {
-			this._slides[i].stopMedia();
+			this._slides[i].setActive(false);
 		}
 		
 		if (n < this._slides.length && n >= 0) {
@@ -7164,26 +7220,10 @@ VCO.StorySlider = VCO.Class.extend({
 				
 			}
 			
+			// Set Slide Active State
+			this._slides[this.current_slide].setActive(true);
 			
-			// Update Navigation
-			
-			// Color
-			var slide_background = this._slides[this.current_slide].getBackground();
-			this.fire("colorchange", slide_background);
-			
-			if (slide_background.color || slide_background.image) {
-				if (this.options.layout != "landscape") {
-					this._nav.next.setColor(true);
-					this._nav.previous.setColor(true);
-				}
-			} else {
-				if (this.options.layout != "landscape") {
-					this._nav.next.setColor(false);
-					this._nav.previous.setColor(false);
-				}
-			}
-			
-			//Info
+			// Update Navigation and Info
 			if (this._slides[this.current_slide + 1]) {
 				this.showNav(this._nav.next, true);
 				this._nav.next.update(this.getNavInfo(this._slides[this.current_slide + 1]));
@@ -7199,10 +7239,6 @@ VCO.StorySlider = VCO.Class.extend({
 			
 			
 			// Preload Slides
-			this._slides[this.current_slide].loadMedia();
-			
-			//this.preloadSlides();
-			
 			this.preloadTimer = setTimeout(function() {
 				self.preloadSlides();
 			}, this.options.duration);
@@ -7276,6 +7312,50 @@ VCO.StorySlider = VCO.Class.extend({
 		}
 	},
 	
+	changeBackground: function(bg) {
+		
+		// TODO Add opacity fade out/in transition
+		
+		var bg_color = {r:256, g:256, b:256},
+			bg_color_rgb,
+			bg_percent_start 	= this.options.slide_default_fade,
+			bg_percent_end 		= "50%",
+			bg_alpha_end 		= "0.80",
+			bg_css 				= "";
+		
+		if (this.options.layout == "landscape") {
+			this._el.background.style.backgroundImage = "none";
+		
+			if (bg.color_value) {
+				bg_color		= VCO.Util.hexToRgb(bg.color_value);
+				bg_color_rgb 	= bg_color.r + "," + bg_color.g + "," + bg_color.b;
+			}
+			
+			bg_color_rgb 	= bg_color.r + "," + bg_color.g + "," + bg_color.b;
+			
+			// If background is not white, less fade is better
+			if (bg_color.r < 255 && bg_color.g < 255 && bg_color.b < 255) {
+				bg_percent_start = "49%";
+			}
+			
+			if (bg.image) {
+				bg_alpha_end = "0.90";
+				bg_percent_end = "50%";
+			}
+			
+			bg_css 	+= "background-image: -webkit-linear-gradient(left, color-stop(rgba(" + bg_color_rgb + ",0.0001 ) " + bg_percent_start + "), color-stop(rgba(" + bg_color_rgb + "," + bg_alpha_end + ") " + bg_percent_end + "));";
+			bg_css 	+= "background-image: linear-gradient(to right, rgba(" + bg_color_rgb + ",0.0001 ) "+ bg_percent_start + ", rgba(" + bg_color_rgb + "," + bg_alpha_end + ") " + bg_percent_end + ");";
+			bg_css 	+= "background-repeat: repeat-x;";
+			bg_css 	+= "filter: e(%('progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=1)',argb(" + bg_color_rgb + ", 0.0001),argb(" + bg_color_rgb + ",0.80)));";
+			
+			this._el.background.setAttribute("style", bg_css);
+		} else {
+			if (bg.color_value) {
+				this._el.background.style.backgroundColor = bg.color_value;
+			}
+		}
+	},
+	
 	/*	Private Methods
 	================================================== */
 	
@@ -7317,6 +7397,8 @@ VCO.StorySlider = VCO.Class.extend({
 			// MASK Width
 			this._el.slider_container_mask.style.width = this.options.width  + "px";
 			this._el.slider_container_mask.style.left =  this.options.width  + "px";
+			//this._el.slider_container_mask.style.paddingLeft =  this.options.width  + "px";
+			
 			//this._el.slider_item_container.style.width 	= this.options.width  + "px";
 			//this._el.slider_item_container.style.left	= this.options.width  + "px";
 			
@@ -7342,8 +7424,10 @@ VCO.StorySlider = VCO.Class.extend({
 		
 		// Create Layout
 		this._el.slider_container_mask		= VCO.Dom.create('div', 'vco-slider-container-mask', this._el.container);
+		this._el.background 				= VCO.Dom.create('div', 'vco-slider-background', this._el.container); 
 		this._el.slider_container			= VCO.Dom.create('div', 'vco-slider-container vcoanimate', this._el.slider_container_mask);
 		this._el.slider_item_container		= VCO.Dom.create('div', 'vco-slider-item-container', this._el.slider_container);
+		
 		
 		// Update Size
 		this.options.width = this._el.container.offsetWidth;
@@ -7404,6 +7488,27 @@ VCO.StorySlider = VCO.Class.extend({
 	
 	/*	Events
 	================================================== */
+	_onBackgroundChange: function(e) {
+		var slide_background;
+		
+		slide_background = this._slides[this.current_slide].getBackground();
+		this.changeBackground(e);
+		
+		this.fire("colorchange", slide_background);
+		
+		if (slide_background.color || slide_background.image) {
+			if (this.options.layout != "landscape") {
+				this._nav.next.setColor(true);
+				this._nav.previous.setColor(true);
+			}
+		} else {
+			if (this.options.layout != "landscape") {
+				this._nav.next.setColor(false);
+				this._nav.previous.setColor(false);
+			}
+		}
+	},
+	
 	_onMessageClick: function(e) {
 		this._message.hide();
 	},
@@ -7423,6 +7528,7 @@ VCO.StorySlider = VCO.Class.extend({
 	},
 	
 	_onSlideAdded: function(e) {
+		trace("slideadded")
 		this.fire("slideAdded", this.data);
 	},
 	
@@ -16541,6 +16647,290 @@ L.tileLayer.zoomify = function (url, options) {
 };
 
 /* **********************************************
+     Begin VCO.Leaflet.MiniMap.js
+********************************************** */
+
+/*
+	https://github.com/Norkart/Leaflet-MiniMap
+*/
+L.Control.MiniMap = L.Control.extend({
+	options: {
+		position: 'bottomright',
+		toggleDisplay: false,
+		zoomLevelOffset: -5,
+		zoomLevelFixed: false,
+		zoomAnimation: false,
+		autoToggleDisplay: false,
+		width: 150,
+		height: 150,
+		aimingRectOptions: {color: "#ff7800", weight: 1, clickable: false},
+		shadowRectOptions: {color: "#000000", weight: 1, clickable: false, opacity:0, fillOpacity:0}
+	},
+	
+	hideText: 'Hide MiniMap',
+	
+	showText: 'Show MiniMap',
+	
+	//layer is the map layer to be shown in the minimap
+	initialize: function (layer, options) {
+		L.Util.setOptions(this, options);
+		//Make sure the aiming rects are non-clickable even if the user tries to set them clickable (most likely by forgetting to specify them false)
+		this.options.aimingRectOptions.clickable = false;
+		this.options.shadowRectOptions.clickable = false;
+		this._layer = layer;
+	},
+	
+	onAdd: function (map) {
+
+		this._mainMap = map;
+
+		//Creating the container and stopping events from spilling through to the main map.
+		this._container = L.DomUtil.create('div', 'leaflet-control-minimap');
+		this._container.style.width = this.options.width + 'px';
+		this._container.style.height = this.options.height + 'px';
+		L.DomEvent.disableClickPropagation(this._container);
+		L.DomEvent.on(this._container, 'mousewheel', L.DomEvent.stopPropagation);
+
+
+		this._miniMap = new L.Map(this._container,
+		{
+			attributionControl: false,
+			zoomControl: false,
+			zoomAnimation: this.options.zoomAnimation,
+			autoToggleDisplay: this.options.autoToggleDisplay,
+			touchZoom: !this.options.zoomLevelFixed,
+			scrollWheelZoom: !this.options.zoomLevelFixed,
+			doubleClickZoom: !this.options.zoomLevelFixed,
+			boxZoom: !this.options.zoomLevelFixed,
+			crs: map.options.crs
+		});
+
+		this._miniMap.addLayer(this._layer);
+
+		//These bools are used to prevent infinite loops of the two maps notifying each other that they've moved.
+		this._mainMapMoving = false;
+		this._miniMapMoving = false;
+
+		//Keep a record of this to prevent auto toggling when the user explicitly doesn't want it.
+		this._userToggledDisplay = false;
+		this._minimized = false;
+
+		if (this.options.toggleDisplay) {
+			this._addToggleButton();
+		}
+
+		this._miniMap.whenReady(L.Util.bind(function () {
+			this._aimingRect = L.rectangle(this._mainMap.getBounds(), this.options.aimingRectOptions).addTo(this._miniMap);
+			this._shadowRect = L.rectangle(this._mainMap.getBounds(), this.options.shadowRectOptions).addTo(this._miniMap);
+			this._mainMap.on('moveend', this._onMainMapMoved, this);
+			this._mainMap.on('move', this._onMainMapMoving, this);
+			this._miniMap.on('movestart', this._onMiniMapMoveStarted, this);
+			this._miniMap.on('move', this._onMiniMapMoving, this);
+			this._miniMap.on('moveend', this._onMiniMapMoved, this);
+		}, this));
+
+		return this._container;
+	},
+
+	addTo: function (map) {
+		L.Control.prototype.addTo.call(this, map);
+		this._miniMap.setView(this._mainMap.getCenter(), this._decideZoom(true));
+		this._setDisplay(this._decideMinimized());
+		return this;
+	},
+
+	onRemove: function (map) {
+		this._mainMap.off('moveend', this._onMainMapMoved, this);
+		this._mainMap.off('move', this._onMainMapMoving, this);
+		this._miniMap.off('moveend', this._onMiniMapMoved, this);
+
+		this._miniMap.removeLayer(this._layer);
+	},
+
+	_addToggleButton: function () {
+		this._toggleDisplayButton = this.options.toggleDisplay ? this._createButton(
+				'', this.hideText, 'leaflet-control-minimap-toggle-display', this._container, this._toggleDisplayButtonClicked, this) : undefined;
+	},
+
+	_createButton: function (html, title, className, container, fn, context) {
+		var link = L.DomUtil.create('a', className, container);
+		link.innerHTML = html;
+		link.href = '#';
+		link.title = title;
+
+		var stop = L.DomEvent.stopPropagation;
+
+		L.DomEvent
+			.on(link, 'click', stop)
+			.on(link, 'mousedown', stop)
+			.on(link, 'dblclick', stop)
+			.on(link, 'click', L.DomEvent.preventDefault)
+			.on(link, 'click', fn, context);
+
+		return link;
+	},
+
+	_toggleDisplayButtonClicked: function () {
+		this._userToggledDisplay = true;
+		if (!this._minimized) {
+			this._minimize();
+			this._toggleDisplayButton.title = this.showText;
+		}
+		else {
+			this._restore();
+			this._toggleDisplayButton.title = this.hideText;
+		}
+	},
+
+	_setDisplay: function (minimize) {
+		if (minimize != this._minimized) {
+			if (!this._minimized) {
+				this._minimize();
+			}
+			else {
+				this._restore();
+			}
+		}
+	},
+
+	_minimize: function () {
+		// hide the minimap
+		if (this.options.toggleDisplay) {
+			this._container.style.width = '19px';
+			this._container.style.height = '19px';
+			this._toggleDisplayButton.className += ' minimized';
+		}
+		else {
+			this._container.style.display = 'none';
+		}
+		this._minimized = true;
+	},
+
+	_restore: function () {
+		if (this.options.toggleDisplay) {
+			this._container.style.width = this.options.width + 'px';
+			this._container.style.height = this.options.height + 'px';
+			this._toggleDisplayButton.className = this._toggleDisplayButton.className
+					.replace(/(?:^|\s)minimized(?!\S)/g, '');
+		}
+		else {
+			this._container.style.display = 'block';
+		}
+		this._minimized = false;
+	},
+
+	_onMainMapMoved: function (e) {
+		if (!this._miniMapMoving) {
+			this._mainMapMoving = true;
+			this._miniMap.setView(this._mainMap.getCenter(), this._decideZoom(true));
+			this._setDisplay(this._decideMinimized());
+		} else {
+			this._miniMapMoving = false;
+		}
+		this._aimingRect.setBounds(this._mainMap.getBounds());
+	},
+
+	_onMainMapMoving: function (e) {
+		this._aimingRect.setBounds(this._mainMap.getBounds());
+	},
+
+	_onMiniMapMoveStarted:function (e) {
+		var lastAimingRect = this._aimingRect.getBounds();
+		var sw = this._miniMap.latLngToContainerPoint(lastAimingRect.getSouthWest());
+		var ne = this._miniMap.latLngToContainerPoint(lastAimingRect.getNorthEast());
+		this._lastAimingRectPosition = {sw:sw,ne:ne};
+	},
+
+	_onMiniMapMoving: function (e) {
+		if (!this._mainMapMoving && this._lastAimingRectPosition) {
+			this._shadowRect.setBounds(new L.LatLngBounds(this._miniMap.containerPointToLatLng(this._lastAimingRectPosition.sw),this._miniMap.containerPointToLatLng(this._lastAimingRectPosition.ne)));
+			this._shadowRect.setStyle({opacity:1,fillOpacity:0.3});
+		}
+	},
+
+	_onMiniMapMoved: function (e) {
+		if (!this._mainMapMoving) {
+			this._miniMapMoving = true;
+			this._mainMap.setView(this._miniMap.getCenter(), this._decideZoom(false));
+			this._shadowRect.setStyle({opacity:0,fillOpacity:0});
+		} else {
+			this._mainMapMoving = false;
+		}
+	},
+
+	_decideZoom: function (fromMaintoMini) {
+		if (!this.options.zoomLevelFixed && this.options.zoomLevelFixed != 0) {
+			if (fromMaintoMini)
+				return this._mainMap.getZoom() + this.options.zoomLevelOffset;
+			else {
+				var currentDiff = this._miniMap.getZoom() - this._mainMap.getZoom();
+				var proposedZoom = this._miniMap.getZoom() - this.options.zoomLevelOffset;
+				var toRet;
+				
+				if (currentDiff > this.options.zoomLevelOffset && this._mainMap.getZoom() < this._miniMap.getMinZoom() - this.options.zoomLevelOffset) {
+					//This means the miniMap is zoomed out to the minimum zoom level and can't zoom any more.
+					if (this._miniMap.getZoom() > this._lastMiniMapZoom) {
+						//This means the user is trying to zoom in by using the minimap, zoom the main map.
+						toRet = this._mainMap.getZoom() + 1;
+						//Also we cheat and zoom the minimap out again to keep it visually consistent.
+						this._miniMap.setZoom(this._miniMap.getZoom() -1);
+					} else {
+						//Either the user is trying to zoom out past the mini map's min zoom or has just panned using it, we can't tell the difference.
+						//Therefore, we ignore it!
+						toRet = this._mainMap.getZoom();
+					}
+				} else {
+					//This is what happens in the majority of cases, and always if you configure the min levels + offset in a sane fashion.
+					toRet = proposedZoom;
+				}
+				this._lastMiniMapZoom = this._miniMap.getZoom();
+				return toRet;
+			}
+		} else {
+			
+			
+			if (fromMaintoMini) {
+				return this.options.zoomLevelFixed;
+			} else {
+				return this._mainMap.getZoom();
+			}
+
+			
+		}
+	},
+
+	_decideMinimized: function () {
+		if (this._userToggledDisplay) {
+			return this._minimized;
+		}
+
+		if (this.options.autoToggleDisplay) {
+			if (this._mainMap.getBounds().contains(this._miniMap.getBounds())) {
+				return true;
+			}
+			return false;
+		}
+
+		return this._minimized;
+	}
+});
+
+L.Map.mergeOptions({
+	miniMapControl: false
+});
+
+L.Map.addInitHook(function () {
+	if (this.options.miniMapControl) {
+		this.miniMapControl = (new L.Control.MiniMap()).addTo(this);
+	}
+});
+
+L.control.minimap = function (options) {
+	return new L.Control.MiniMap(options);
+};
+
+
+/* **********************************************
      Begin VCO.StamenMaps.js
 ********************************************** */
 
@@ -16882,6 +17272,10 @@ VCO.MapMarker = VCO.Class.extend({
 	Events:
 	markerAdded
 	markerRemoved
+
+	TODO 	Revisit calculations to determine zoom for landscape mode 
+			since only half the map is visible but the map extends the full width
+
 ================================================== */
  
 VCO.Map = VCO.Class.extend({
@@ -16915,6 +17309,9 @@ VCO.Map = VCO.Class.extend({
 		// MAP
 		this._map = null;
 		
+		// MINI MAP
+		this._mini_map = null;
+		
 		// Markers
 		this._markers = [];
 		
@@ -16927,6 +17324,12 @@ VCO.Map = VCO.Class.extend({
 		
 		// Map Tiles Layer
 		this._tile_layer = null;
+		
+		// Map Tiles Layer for Mini Map
+		this._tile_layer_mini = null;
+		
+		// Map Padding
+		this.padding = [0,0];
 		
 		// Image Layer (for zoomify)
 		this._image_layer = null;
@@ -16941,6 +17344,7 @@ VCO.Map = VCO.Class.extend({
 		this.options = {
 			map_type: 			"stamen:toner-lite",
 			map_as_image: 		false,
+			map_mini: 			false,
 			map_subdomains: 	"",
 			zoomify: {
 				path: 			"",
@@ -17031,7 +17435,7 @@ VCO.Map = VCO.Class.extend({
 						
 						// Calculate Zoom
 						zoom = this._calculateZoomChange(this._getMapCenter(true), marker.location());
-			
+						trace(zoom);
 						// Set Map View
 						this._viewTo(marker.data.location, {calculate_zoom: this.options.calculate_zoom, zoom:zoom});
 					
@@ -17129,6 +17533,10 @@ VCO.Map = VCO.Class.extend({
 		this._markerOverview();
 	},
 	
+	createMiniMap: function() {
+		this._createMiniMap();
+	},
+	
 	/*	Adding, Hiding, Showing etc
 	================================================== */
 	show: function() {
@@ -17190,6 +17598,13 @@ VCO.Map = VCO.Class.extend({
 		================================================== */
 		// Extend this map class and use this to create the map using preferred API
 		_createMap: function() {
+			
+		},
+		
+		/*	Mini Map Specific Create
+		================================================== */
+		// Extend this map class and use this to create the map using preferred API
+		_createMiniMap: function() {
 			
 		},
 	
@@ -17298,6 +17713,9 @@ VCO.Map = VCO.Class.extend({
 	_onMapLoaded: function(e) {
 		this._loaded.map = true;
 		this._initialMapLocation();
+		if (this.options.map_mini) {
+			this.createMiniMap();
+		}
 		this.fire("loaded", this.data);
 	},
 	
@@ -17311,7 +17729,7 @@ VCO.Map = VCO.Class.extend({
 	================================================== */
 	
 	_calculateZoomChange: function(origin, destination) {
-		return this._getBoundsZoom(origin, destination, true);
+		return this._getBoundsZoom(origin, destination, false, this.padding);
 	},
 	
 	_updateDisplay: function(w, h, animate, d, offset) {
@@ -17475,40 +17893,15 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		// Set Marker Path
 		L.Icon.Default.imagePath = this.options.path_gfx;
 		
-		this._map = new L.map(this._el.map, {scrollWheelZoom:false});
+		this._map = new L.map(this._el.map, {scrollWheelZoom:false, zoomControl:!this.options.map_mini});
 		this._map.on("load", this._onMapLoaded, this);
 		
 		this._map.on("moveend", this._onMapMoveEnd, this);
 			
 		var map_type_arr = this.options.map_type.split(':');		
 
-		// Set Tiles
-		switch(map_type_arr[0]) {
-			case 'stamen':
-				this._tile_layer = new L.StamenTileLayer(map_type_arr[1] || 'toner-lite');
-				break;
-			case 'zoomify':
-				this._tile_layer = new L.tileLayer.zoomify(this.options.zoomify.path, {
-					width: 			this.options.zoomify.width,
-					height: 		this.options.zoomify.height,
-					tolerance: 		this.options.zoomify.tolerance,
-					attribution: 	this.options.zoomify.attribution,
-				});
-				this._image_layer = new L.imageOverlay(this.options.zoomify.path + "TileGroup0/0-0-0.jpg", this._tile_layer.getZoomifyBounds(this._map));
-				break;
-			case 'osm':
-				this._tile_layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {subdomains: 'ab'});
-				break;
-		    
-			case 'http':
-			case 'https':
-				this._tile_layer = new L.TileLayer(this.options.map_type, {subdomains: this.options.map_subdomains});
-				break;
-		        
-			default:
-				this._tile_layer = new L.StamenTileLayer('toner');
-				break;		
-		}
+		// Create Tile Layer
+		this._tile_layer = this._createTileLayer();
 		
 		// Add Tile Layer
 		this._map.addLayer(this._tile_layer);
@@ -17533,6 +17926,63 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		}
 
 		
+	},
+	
+	/*	Create Mini Map
+	================================================== */
+	_createMiniMap: function() {
+		this._tile_layer_mini = this._createTileLayer();
+		this._mini_map = new L.Control.MiniMap(this._tile_layer_mini, {
+			width: 				150,
+			height: 			100,
+			position: 			"topleft",
+			zoomLevelFixed: 	0,
+			zoomAnimation: 		true,
+			aimingRectOptions: 	{
+				fillColor: 		"#FFFFFF",
+				color: 			"#da0000",
+				opacity: 		1,
+				weight: 		2
+			}
+		}).addTo(this._map);
+		
+	},
+	
+	/*	Create Tile Layer
+	================================================== */
+	_createTileLayer: function() {
+		var _tilelayer,
+			_map_type_arr = this.options.map_type.split(':');		
+
+		// Set Tiles
+		switch(_map_type_arr[0]) {
+			case 'stamen':
+				_tilelayer = new L.StamenTileLayer(_map_type_arr[1] || 'toner-lite');
+				break;
+			case 'zoomify':
+				_tilelayer = new L.tileLayer.zoomify(this.options.zoomify.path, {
+					width: 			this.options.zoomify.width,
+					height: 		this.options.zoomify.height,
+					tolerance: 		this.options.zoomify.tolerance,
+					attribution: 	this.options.zoomify.attribution,
+				});
+				this._image_layer = new L.imageOverlay(this.options.zoomify.path + "TileGroup0/0-0-0.jpg", _tilelayer.getZoomifyBounds(this._map));
+				break;
+			case 'osm':
+				_tilelayer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {subdomains: 'ab'});
+				break;
+		    
+			case 'http':
+			case 'https':
+				_tilelayer = new L.TileLayer(this.options.map_type, {subdomains: this.options.map_subdomains});
+				break;
+		        
+			default:
+				_tilelayer = new L.StamenTileLayer('toner');
+				break;		
+		}
+		
+		return _tilelayer;
 	},
 	
 	/*	Event
@@ -17679,6 +18129,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 			if (opts.zoom && opts.calculate_zoom) {
 				_zoom = opts.zoom;
 			}
+			
 		}	
 		
 		// OFFSET
@@ -17755,7 +18206,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		}
 		
 		var bounds = new L.LatLngBounds([_origin, destination]);
-		return this._map.getBoundsZoom(bounds, false);
+		return this._map.getBoundsZoom(bounds, false, this.padding);
 	},
 	
 	_getZoomifyZoom: function() {
@@ -17879,6 +18330,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 
 // @codekit-prepend "map/leaflet/VCO.Leaflet.js";
 // @codekit-prepend "map/leaflet/VCO.Leaflet.TileLayer.Zoomify.js";
+// @codekit-prepend "map/leaflet/VCO.Leaflet.MiniMap.js";
 
 // @codekit-prepend "map/VCO.StamenMaps.js";
 // @codekit-prepend "map/VCO.MapMarker.js";
@@ -17988,6 +18440,7 @@ VCO.StoryMap = VCO.Class.extend({
 			dragging: 				true,
 			trackResize: 			true,
 			map_type: 				"stamen:toner-lite",
+			map_mini: 				true,
 			map_subdomains: 		"",
 			map_as_image: 			false,
 			map_background_color: 	"#d9d9d9",
@@ -18001,6 +18454,7 @@ VCO.StoryMap = VCO.Class.extend({
 			map_height: 			300,
 			storyslider_height: 	600,
 			slide_padding_lr: 		100, 			// padding on slide of slide
+			slide_default_fade: 	"40%", 			// landscape fade
 			sizebar_default_y: 		0,
 			path_gfx: 				"gfx",
 			map_popup: 				false,
@@ -18037,6 +18491,7 @@ VCO.StoryMap = VCO.Class.extend({
 		// Zoomify Layout
 		if (this.options.map_type == "zoomify" && this.options.map_as_image) {
 			this.options.map_size_sticky = 2;
+			this.options.slide_default_fade = "40%";
 		}
 		
 		// Load language
@@ -18188,8 +18643,17 @@ VCO.StoryMap = VCO.Class.extend({
 			this.options.map_height = map_height;
 		}
 		
+		
+		// Update Orientation on Touch devices
+		if (VCO.Browser.touch) {
+			this.options.layout = VCO.Browser.orientation;
+			trace(VCO.Browser.orientation);
+		}
+		
 		// LAYOUT
 		if (this.options.layout == "portrait") {
+			// Map Padding
+			this._map.padding = [0,0];
 			
 			// Portrait
 			display_class += " vco-layout-portrait";
@@ -18246,6 +18710,10 @@ VCO.StoryMap = VCO.Class.extend({
 			// Landscape
 			display_class += " vco-layout-landscape";
 			
+			// Map Padding
+			//this._map.padding = [0,this.options.width/2];
+			
+			
 			// StorySlider Height
 			this.options.storyslider_height = (this.options.height - this._el.sizebar.offsetHeight - 1);
 			
@@ -18262,6 +18730,7 @@ VCO.StoryMap = VCO.Class.extend({
 			this._storyslider.updateDisplay(this.options.width/2, this.options.storyslider_height, animate, this.options.layout);
 		}
 		
+		trace(this._map.padding);
 		// CSS Classes
 		// Check if skinny
 		if (this.options.width <= 500) {

@@ -49,7 +49,14 @@
 			{
 				"uniqueid": 				"",
 				"date": 					"1839",
-
+				"location": {
+					"lat": 				39.501711,
+					"lon": 				-91.943260,
+					"name": 				"Florida, Missouri",
+					"zoom": 				12,
+					"icon": 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+					"line": 				true
+				},
 				"text": {
 					"headline": 			"Hannibal, Missouri",
 					"text": 				"Moves to Hannibal, Missouri, which later serves as the model town for Tom Sawyer and Huckleberry Finn."
@@ -124,7 +131,7 @@
 				"uniqueid": 				"",
 				"background": {			
 					"url": 				null,
-					"color": 				"#cdbfe3",
+					"color": 				"#000000",
 					"opacity": 			50
 				},
 				"date": 					"1865",
@@ -189,7 +196,7 @@
 				"uniqueid": 				"",
 				"background": {			
 					"url": 				null,
-					"color": 				"#cdbfe3",
+					"color": 				"#000000",
 					"opacity": 			50
 				},
 				"date": 					"1868",
@@ -214,7 +221,7 @@
 				"uniqueid": 				"",
 				"background": {			
 					"url": 				null,
-					"color": 				"#cdbfe3",
+					"color": 				"#000000",
 					"opacity": 			50
 				},
 				"date": 					"1870",
@@ -238,7 +245,7 @@
 				"uniqueid": 				"",
 				"background": {			
 					"url": 				null,
-					"color": 				"#cdbfe3",
+					"color": 				"#000000",
 					"opacity": 			50
 				},
 				"date": 					"1872",
@@ -263,7 +270,7 @@
 				"uniqueid": 				"",
 				"background": {			
 					"url": 				null,
-					"color": 				"#cdbfe3",
+					"color": 				"#000000",
 					"opacity": 			50
 				},
 				"date": 					"1891",
@@ -287,7 +294,7 @@
 				"uniqueid": 				"",
 				"background": {			
 					"url": 				null,
-					"color": 				"#cdbfe3",
+					"color": 				"#000000",
 					"opacity": 			50
 				},
 				"date": 					"1891",
