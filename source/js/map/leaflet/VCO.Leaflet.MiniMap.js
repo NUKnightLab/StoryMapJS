@@ -69,9 +69,9 @@ L.Control.MiniMap = L.Control.extend({
 
 		this._miniMap.whenReady(L.Util.bind(function () {
 			this._aimingRect = L.rectangle(this._mainMap.getBounds(), this.options.aimingRectOptions).addTo(this._miniMap);
-			this._shadowRect = L.rectangle(this._mainMap.getBounds(), this.options.shadowRectOptions).addTo(this._miniMap);
-			this._mainMap.on('moveend', this._onMainMapMoved, this);
-			this._mainMap.on('move', this._onMainMapMoving, this);
+			//this._shadowRect = L.rectangle(this._mainMap.getBounds(), this.options.shadowRectOptions).addTo(this._miniMap);
+			//this._mainMap.on('moveend', this._onMainMapMoved, this);
+			//this._mainMap.on('move', this._onMainMapMoving, this);
 			this._miniMap.on('movestart', this._onMiniMapMoveStarted, this);
 			this._miniMap.on('move', this._onMiniMapMoving, this);
 			this._miniMap.on('moveend', this._onMiniMapMoved, this);
@@ -191,19 +191,23 @@ L.Control.MiniMap = L.Control.extend({
 
 	_onMiniMapMoving: function (e) {
 		if (!this._mainMapMoving && this._lastAimingRectPosition) {
-			this._shadowRect.setBounds(new L.LatLngBounds(this._miniMap.containerPointToLatLng(this._lastAimingRectPosition.sw),this._miniMap.containerPointToLatLng(this._lastAimingRectPosition.ne)));
-			this._shadowRect.setStyle({opacity:1,fillOpacity:0.3});
+			//this._shadowRect.setBounds(new L.LatLngBounds(this._miniMap.containerPointToLatLng(this._lastAimingRectPosition.sw),this._miniMap.containerPointToLatLng(this._lastAimingRectPosition.ne)));
+			//this._shadowRect.setStyle({opacity:1,fillOpacity:0.3});
+			//this._aimingRect.setBounds(this._mainMap.getBounds());
+			
 		}
+		
 	},
 
 	_onMiniMapMoved: function (e) {
 		if (!this._mainMapMoving) {
 			this._miniMapMoving = true;
-			this._mainMap.setView(this._miniMap.getCenter(), this._decideZoom(false));
-			this._shadowRect.setStyle({opacity:0,fillOpacity:0});
+			//this._mainMap.setView(this._miniMap.getCenter(), this._decideZoom(false));
+			//this._shadowRect.setStyle({opacity:0,fillOpacity:0});
 		} else {
 			this._mainMapMoving = false;
 		}
+		this._aimingRect.setBounds(this._mainMap.getBounds());
 	},
 
 	_decideZoom: function (fromMaintoMini) {
@@ -260,7 +264,22 @@ L.Control.MiniMap = L.Control.extend({
 		}
 
 		return this._minimized;
+	},
+	
+	updateDisplay: function(_location, _zoom, _duration) {
+		//this._miniMap.setView(_location, this._decideZoom(true));
+		this._miniMap.setView(
+			_location, 
+			this._decideZoom(true),
+			{
+				pan:{animate: true, duration: _duration+0.2, easeLinearity:.10},
+				zoom:{animate: true, duration: _duration+0.2, easeLinearity:.10}
+			}
+		)
+		
+		this._aimingRect.setBounds(this._mainMap.getBounds());
 	}
+	
 });
 
 L.Map.mergeOptions({
