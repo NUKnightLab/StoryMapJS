@@ -2,13 +2,17 @@
 ================================================== */
 .vco-slide {
 	position:absolute;
+
 	width:100%;
 	height:100%;
 	padding:0px;
 	margin:0px;
-	display:table;
-	table-layout: fixed;
+	//display:table;
+	//table-layout: fixed;
 	overflow-y:auto;
+//	overflow-y:auto;
+	//z-index:26;
+	
 	.vco-slide-background {
 		position:absolute;
 		left:0;
@@ -25,16 +29,21 @@
 		     -o-background-size: cover;
 			    background-size: cover;
 	}
+	.vco-slide-scrollable-container {
+		display:table;
+		table-layout: fixed;
+		height:100%;
+	}
 	.vco-slide-content-container {
 		display:table-cell;
 		vertical-align:middle;
 		position:relative;
 		width:100%;
 		height:100%;
+		
 		z-index:3;
 		.vco-slide-content {
 			//width:100%;
-			
 			display:table;
 			vertical-align:middle;
 			padding-left:100px;
@@ -57,11 +66,11 @@
 				}
 			}
 			.vco-text {
+				
 				width:50%;
 				max-width:50%;
 				min-width:120px;
 				//height:100%;
-				//overflow:hidden;
 				//overflow-y:auto;
 				padding: 0 20px 0 20px;
 				display:table-cell;

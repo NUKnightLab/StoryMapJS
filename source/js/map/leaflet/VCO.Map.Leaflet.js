@@ -56,7 +56,8 @@ VCO.Map.Leaflet = VCO.Map.extend({
 			width: 				150,
 			height: 			100,
 			position: 			"bottomleft",
-			zoomLevelFixed: 	0,
+			zoomLevelFixed: 	false,
+			zoomLevelOffset: 	-6,
 			zoomAnimation: 		true,
 			aimingRectOptions: 	{
 				fillColor: 		"#FFFFFF",

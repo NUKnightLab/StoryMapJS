@@ -171,7 +171,7 @@ VCO.StorySlider = VCO.Class.extend({
 			height: 				600,
 			slide_padding_lr: 		100, 			// padding on slide of slide
 			start_at_slide: 		1,
-			slide_default_fade: 	"40%", 			// landscape fade
+			slide_default_fade: 	"0%", 			// landscape fade
 			// animation
 			duration: 				1000,
 			ease: 					VCO.Ease.easeInOutQuint,
@@ -421,8 +421,8 @@ VCO.StorySlider = VCO.Class.extend({
 		var bg_color = {r:256, g:256, b:256},
 			bg_color_rgb,
 			bg_percent_start 	= this.options.slide_default_fade,
-			bg_percent_end 		= "50%",
-			bg_alpha_end 		= "0.80",
+			bg_percent_end 		= "15%",
+			bg_alpha_end 		= "0.90",
 			bg_css 				= "";
 		
 		if (this.options.layout == "landscape") {
@@ -437,14 +437,16 @@ VCO.StorySlider = VCO.Class.extend({
 			
 			// If background is not white, less fade is better
 			if (bg_color.r < 255 && bg_color.g < 255 && bg_color.b < 255) {
-				bg_percent_start = "49%";
+				bg_percent_start = "0%";
 			}
 			
 			if (bg.image) {
-				bg_alpha_end = "0.90";
-				bg_percent_end = "50%";
-			}
-			
+				//bg_alpha_end = "0.85";
+				//bg_percent_start = "0%";
+				//bg_percent_end = "0%";
+				
+			} 
+			trace(this.options.slide_default_fade)
 			bg_css 	+= "background-image: -webkit-linear-gradient(left, color-stop(rgba(" + bg_color_rgb + ",0.0001 ) " + bg_percent_start + "), color-stop(rgba(" + bg_color_rgb + "," + bg_alpha_end + ") " + bg_percent_end + "));";
 			bg_css 	+= "background-image: linear-gradient(to right, rgba(" + bg_color_rgb + ",0.0001 ) "+ bg_percent_start + ", rgba(" + bg_color_rgb + "," + bg_alpha_end + ") " + bg_percent_end + ");";
 			bg_css 	+= "background-repeat: repeat-x;";
@@ -472,7 +474,7 @@ VCO.StorySlider = VCO.Class.extend({
 		}
 		
 		
-		this.slide_spacing = this.options.width;
+		this.slide_spacing = this.options.width*2;
 		
 		if (width) {
 			this.options.width = width;
@@ -493,19 +495,6 @@ VCO.StorySlider = VCO.Class.extend({
 		this._nav.next.setPosition({top:nav_pos});
 		this._nav.previous.setPosition({top:nav_pos});
 		
-		
-		if (this.options.layout == "landscape") {
-			
-			// MASK Width
-			this._el.slider_container_mask.style.width = this.options.width  + "px";
-			this._el.slider_container_mask.style.left =  this.options.width  + "px";
-			//this._el.slider_container_mask.style.paddingLeft =  this.options.width  + "px";
-			
-			//this._el.slider_item_container.style.width 	= this.options.width  + "px";
-			//this._el.slider_item_container.style.left	= this.options.width  + "px";
-			
-			this.slide_spacing = this.options.width * 2;
-		} 
 		
 		// Position slides
 		for (var i = 0; i < this._slides.length; i++) {

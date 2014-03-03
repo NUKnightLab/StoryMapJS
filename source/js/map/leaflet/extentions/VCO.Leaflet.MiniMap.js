@@ -212,7 +212,7 @@ L.Control.MiniMap = L.Control.extend({
 	},
 
 	_decideZoom: function (fromMaintoMini) {
-		if (!this.options.zoomLevelFixed && this.options.zoomLevelFixed != 0) {
+		if (!this.options.zoomLevelFixed ) {
 			if (fromMaintoMini)
 				return this._mainMap.getZoom() + this.options.zoomLevelOffset;
 			else {
@@ -243,7 +243,7 @@ L.Control.MiniMap = L.Control.extend({
 			
 			
 			if (fromMaintoMini) {
-				return this.options.zoomLevelFixed;
+				//return this.options.zoomLevelFixed;
 			} else {
 				return this._mainMap.getZoom();
 			}

@@ -48,6 +48,7 @@ VCO.Slide = VCO.Class.extend({
 		// DOM Elements
 		this._el = {
 			container: {},
+			scroll_container: {},
 			background: {},
 			content_container: {},
 			content: {}
@@ -190,10 +191,10 @@ VCO.Slide = VCO.Class.extend({
 		if (this.data.uniqueid) {
 			this._el.container.id 		= this.data.uniqueid;
 		}
-		this._el.background				= VCO.Dom.create("div", "vco-slide-background", this._el.container);
-		this._el.content_container		= VCO.Dom.create("div", "vco-slide-content-container", this._el.container);
+		this._el.scroll_container 		= VCO.Dom.create("div", "vco-slide-scrollable-container", this._el.container);
+		this._el.content_container		= VCO.Dom.create("div", "vco-slide-content-container", this._el.scroll_container);
 		this._el.content				= VCO.Dom.create("div", "vco-slide-content", this._el.content_container);
-		
+		this._el.background				= VCO.Dom.create("div", "vco-slide-background", this._el.container);
 		// Style Slide Background
 		if (this.data.background) {
 			if (this.data.background.url) {
@@ -305,6 +306,8 @@ VCO.Slide = VCO.Class.extend({
 		
 		if (height) {
 			this.options.height = height;
+			//this._el.scroll_container.style.height		= this.options.height + "px";
+			
 		} else {
 			this.options.height = this._el.container.offsetHeight;
 		}
