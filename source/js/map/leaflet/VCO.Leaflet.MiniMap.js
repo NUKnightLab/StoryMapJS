@@ -1,5 +1,6 @@
 /*
 	https://github.com/Norkart/Leaflet-MiniMap
+	TODO distinguish between user dragging minimap and main map asking minimap to move
 */
 L.Control.MiniMap = L.Control.extend({
 	options: {
