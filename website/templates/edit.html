@@ -220,11 +220,6 @@ var _slides = null;          // _storymap_data.storymap.slides
 var _current_slide_index = -1;
 var _dirty = 0;
 
-//
-// TESTING
-//
-_slides = [{}];
-_current_slide_index = 0;
 
 function get_show_lines() {
     if(_storymap_data.storymap.hasOwnProperty('show_lines')) {
@@ -374,8 +369,7 @@ function slide_delete(event) {
         // Delete the slide data
         _slides.splice(slide_index, 1); 
         storymap_dirty(1);    
-            
-        
+                 
         // Remove DOM element
         slide_elem.remove();
         
@@ -504,8 +498,7 @@ function storymap_publish(callback) {
 
 function storymap_auto_save() {
     if(_dirty) {
-// TEMP
-//      $('#storymap_save').click();
+        $('#storymap_save').click();
     }
 }
 
@@ -551,7 +544,6 @@ function font_update() {
     var val = $('#font_css').val().trim() || 'stock:default';
     var href = _font_url + 'font.'+val.split(':')[1]+'.css';
     $('head').append('<link rel="stylesheet" type="text/css" href="'+href+'">');   
-    console.log(href);
 }
 
 //
@@ -604,7 +596,10 @@ function slides_load() {
     $('#slides').css('height', height + "px");
           
     if(_slides.length > 0) {
-        slide_set_class(0);
+        var data = _slides[0];
+        
+        slide_set_class(0);        
+        $('.slide:first .slide-title').html(((data.text) ? (data.text.headline || "(untitled)") : "(untitled)"));
         $('.slide:first').click();  
     } else {
         slide_add();
@@ -709,8 +704,6 @@ function storymap_init() {
 }
 
 function handle_onload() {   
-//return;
-
     show_progress('Checking authorization');
         
     gdrive_check_auth(function(authorized) {
@@ -742,7 +735,7 @@ $(function() {
 
     $('.slide:first').click(slide_select); 
     
-    
+   
     //------------------------------------------------------------
     // Menu
     //------------------------------------------------------------
