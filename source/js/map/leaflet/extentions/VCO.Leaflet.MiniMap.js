@@ -87,6 +87,13 @@ L.Control.MiniMap = L.Control.extend({
 			this._toggleDisplayButton.title = this.showText;
 		}
 	},
+	
+	restore: function() {
+		if (this._minimized) {
+			this._restore();
+			this._toggleDisplayButton.title = this.hideText;
+		}
+	},
 
 	addTo: function (map) {
 		L.Control.prototype.addTo.call(this, map);

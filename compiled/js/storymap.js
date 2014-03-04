@@ -15045,6 +15045,13 @@ L.Control.MiniMap = L.Control.extend({
 			this._toggleDisplayButton.title = this.showText;
 		}
 	},
+	
+	restore: function() {
+		if (this._minimized) {
+			this._restore();
+			this._toggleDisplayButton.title = this.hideText;
+		}
+	},
 
 	addTo: function (map) {
 		L.Control.prototype.addTo.call(this, map);
@@ -16356,7 +16363,8 @@ VCO.Map.Leaflet = VCO.Map.extend({
 			
 			_location = _center_zoom.center;
 			
-			if (this.options.map_center_offset) {
+			if (this.options.map_center_offset && this.options.map_center_offset.left != 0 || this.options.map_center_offset.top != 0) {
+				_center_zoom.zoom = _center_zoom.zoom - 1;
 				_location = this._getMapCenterOffset(_location, _center_zoom.zoom);
 			}
 			
@@ -16364,6 +16372,8 @@ VCO.Map.Leaflet = VCO.Map.extend({
 				pan:{animate: true, duration: this.options.duration/1000, easeLinearity:.10},
 				zoom:{animate: true, duration: this.options.duration/1000, easeLinearity:.10}
 			});
+			
+			
 			
 		} else {
 			var bounds_array = [];
@@ -16374,14 +16384,14 @@ VCO.Map.Leaflet = VCO.Map.extend({
 				}
 			};
 			
-			if (this.options.map_center_offset && this.options.map_center_offset.left != 0 && this.options.map_center_offset.top != 0) {
+			if (this.options.map_center_offset && this.options.map_center_offset.left != 0 || this.options.map_center_offset.top != 0) {
 				var the_bounds 	= new L.latLngBounds(bounds_array);
 				_location 		= the_bounds.getCenter();
 				_zoom 			= this._map.getBoundsZoom(the_bounds)
 				
-				_location = this._getMapCenterOffset(_location, _zoom);
+				_location = this._getMapCenterOffset(_location, _zoom - 1);
 				
-				this._map.setView(_location, _zoom, {
+				this._map.setView(_location, _zoom -1, {
 					pan:{animate: true, duration: this.options.duration/1000, easeLinearity:.10},
 					zoom:{animate: true, duration: this.options.duration/1000, easeLinearity:.10}
 				});
@@ -16391,6 +16401,10 @@ VCO.Map.Leaflet = VCO.Map.extend({
 				this._map.fitBounds(bounds_array, {padding:[15,15]});
 			}
 			
+		}
+		
+		if (this._mini_map) {
+			this._mini_map.minimize();
 		}
 		
 	},
@@ -16479,6 +16493,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		)
 		
 		if (this._mini_map) {
+			this._mini_map.restore();
 			this._mini_map.updateDisplay(_location, _zoom, _duration);
 		}
 		
