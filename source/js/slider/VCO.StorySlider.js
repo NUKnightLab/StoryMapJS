@@ -285,7 +285,9 @@ VCO.StorySlider = VCO.Class.extend({
 	
 	goTo: function(n, fast, displayupdate) {
 		var self = this;
+		
 		this.changeBackground({color_value:"#FFF", image:false});
+		
 		// Clear Preloader Timer
 		if (this.preloadTimer) {
 			clearTimeout(this.preloadTimer);
@@ -424,16 +426,18 @@ VCO.StorySlider = VCO.Class.extend({
 			bg_percent_end 		= "15%",
 			bg_alpha_end 		= "0.90",
 			bg_css 				= "";
+			
+		if (bg.color_value) {
+			bg_color		= VCO.Util.hexToRgb(bg.color_value);
+		}
+		
+		bg_color_rgb 	= bg_color.r + "," + bg_color.g + "," + bg_color.b;
+		this._el.background.style.backgroundImage = "none";
 		
 		if (this.options.layout == "landscape") {
-			this._el.background.style.backgroundImage = "none";
-		
-			if (bg.color_value) {
-				bg_color		= VCO.Util.hexToRgb(bg.color_value);
-				bg_color_rgb 	= bg_color.r + "," + bg_color.g + "," + bg_color.b;
-			}
 			
-			bg_color_rgb 	= bg_color.r + "," + bg_color.g + "," + bg_color.b;
+			this._nav.next.setColor(false);
+			this._nav.previous.setColor(false);
 			
 			// If background is not white, less fade is better
 			if (bg_color.r < 255 && bg_color.g < 255 && bg_color.b < 255) {
@@ -446,16 +450,27 @@ VCO.StorySlider = VCO.Class.extend({
 				//bg_percent_end = "0%";
 				
 			} 
-			trace(this.options.slide_default_fade)
+			
 			bg_css 	+= "background-image: -webkit-linear-gradient(left, color-stop(rgba(" + bg_color_rgb + ",0.0001 ) " + bg_percent_start + "), color-stop(rgba(" + bg_color_rgb + "," + bg_alpha_end + ") " + bg_percent_end + "));";
 			bg_css 	+= "background-image: linear-gradient(to right, rgba(" + bg_color_rgb + ",0.0001 ) "+ bg_percent_start + ", rgba(" + bg_color_rgb + "," + bg_alpha_end + ") " + bg_percent_end + ");";
 			bg_css 	+= "background-repeat: repeat-x;";
 			bg_css 	+= "filter: e(%('progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=1)',argb(" + bg_color_rgb + ", 0.0001),argb(" + bg_color_rgb + ",0.80)));";
 			
 			this._el.background.setAttribute("style", bg_css);
+			
 		} else {
 			if (bg.color_value) {
 				this._el.background.style.backgroundColor = bg.color_value;
+			} else {
+				this._el.background.style.backgroundColor = "#FFF";
+			}
+			
+			if (bg_color.r < 255 && bg_color.g < 255 && bg_color.b < 255 || bg.image) {
+				this._nav.next.setColor(true);
+				this._nav.previous.setColor(true);
+			} else {
+				this._nav.next.setColor(false);
+				this._nav.previous.setColor(false);
 			}
 		}
 	},
@@ -473,6 +488,7 @@ VCO.StorySlider = VCO.Class.extend({
 			_layout = layout;
 		}
 		
+		this.options.layout = _layout;
 		
 		this.slide_spacing = this.options.width*2;
 		
@@ -586,7 +602,7 @@ VCO.StorySlider = VCO.Class.extend({
 		this.changeBackground(e);
 		
 		this.fire("colorchange", slide_background);
-		
+		/*
 		if (slide_background.color || slide_background.image) {
 			if (this.options.layout != "landscape") {
 				this._nav.next.setColor(true);
@@ -598,6 +614,7 @@ VCO.StorySlider = VCO.Class.extend({
 				this._nav.previous.setColor(false);
 			}
 		}
+		*/
 	},
 	
 	_onMessageClick: function(e) {

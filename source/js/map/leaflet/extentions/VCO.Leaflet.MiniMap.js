@@ -71,14 +71,21 @@ L.Control.MiniMap = L.Control.extend({
 		this._miniMap.whenReady(L.Util.bind(function () {
 			this._aimingRect = L.rectangle(this._mainMap.getBounds(), this.options.aimingRectOptions).addTo(this._miniMap);
 			//this._shadowRect = L.rectangle(this._mainMap.getBounds(), this.options.shadowRectOptions).addTo(this._miniMap);
-			//this._mainMap.on('moveend', this._onMainMapMoved, this);
-			//this._mainMap.on('move', this._onMainMapMoving, this);
+			this._mainMap.on('moveend', this._onMainMapMoved, this);
+			this._mainMap.on('move', this._onMainMapMoving, this);
 			this._miniMap.on('movestart', this._onMiniMapMoveStarted, this);
 			this._miniMap.on('move', this._onMiniMapMoving, this);
 			this._miniMap.on('moveend', this._onMiniMapMoved, this);
 		}, this));
 
 		return this._container;
+	},
+	
+	minimize: function() {
+		if (!this._minimized) {
+			this._minimize();
+			this._toggleDisplayButton.title = this.showText;
+		}
 	},
 
 	addTo: function (map) {
@@ -124,8 +131,7 @@ L.Control.MiniMap = L.Control.extend({
 		if (!this._minimized) {
 			this._minimize();
 			this._toggleDisplayButton.title = this.showText;
-		}
-		else {
+		} else {
 			this._restore();
 			this._toggleDisplayButton.title = this.hideText;
 		}
@@ -192,10 +198,12 @@ L.Control.MiniMap = L.Control.extend({
 
 	_onMiniMapMoving: function (e) {
 		if (!this._mainMapMoving && this._lastAimingRectPosition) {
-			//this._shadowRect.setBounds(new L.LatLngBounds(this._miniMap.containerPointToLatLng(this._lastAimingRectPosition.sw),this._miniMap.containerPointToLatLng(this._lastAimingRectPosition.ne)));
-			//this._shadowRect.setStyle({opacity:1,fillOpacity:0.3});
-			//this._aimingRect.setBounds(this._mainMap.getBounds());
-			
+			/*
+			this._shadowRect.setBounds(new L.LatLngBounds(this._miniMap.containerPointToLatLng(this._lastAimingRectPosition.sw),this._miniMap.containerPointToLatLng(this._lastAimingRectPosition.ne)));
+			this._shadowRect.setStyle({opacity:1,fillOpacity:0.3});
+			this._aimingRect.setBounds(this._mainMap.getBounds());
+			*/
+			this._aimingRect.setBounds(this._mainMap.getBounds());
 		}
 		
 	},

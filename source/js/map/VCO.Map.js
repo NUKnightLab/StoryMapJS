@@ -60,9 +60,6 @@ VCO.Map = VCO.Class.extend({
 		// Map Tiles Layer for Mini Map
 		this._tile_layer_mini = null;
 		
-		// Map Padding
-		this.padding = [0,0];
-		
 		// Image Layer (for zoomify)
 		this._image_layer = null;
 	
@@ -85,6 +82,7 @@ VCO.Map = VCO.Class.extend({
 				tolerance: 		0.8,
 				attribution: 	""
 			},
+			skinny_size: 		650,
 			path_gfx: 			"gfx",
 			start_at_slide: 	0,
 			map_popup: 			false, 
@@ -269,6 +267,12 @@ VCO.Map = VCO.Class.extend({
 		this._createMiniMap();
 	},
 	
+	setMapOffset: function(left, top) {
+		// Update Component Displays
+		this.options.map_center_offset.left = left;
+		this.options.map_center_offset.top 	= top;
+	},
+	
 	/*	Adding, Hiding, Showing etc
 	================================================== */
 	show: function() {
@@ -402,7 +406,7 @@ VCO.Map = VCO.Class.extend({
 		
 		},
 		
-		_updateMapDisplay: function(w, h, animate, d) {
+		_updateMapDisplay: function(animate, d) {
 			
 		},
 		
@@ -460,22 +464,14 @@ VCO.Map = VCO.Class.extend({
 	/*	Private Methods
 	================================================== */
 	
-	_calculateZoomChange: function(origin, destination) {
-		return this._getBoundsZoom(origin, destination, false, this.padding);
+	_calculateZoomChange: function(origin, destination, padding) {
+		return this._getBoundsZoom(origin, destination, false);
 	},
 	
-	_updateDisplay: function(w, h, animate, d, offset) {
-		
-		if (h) {
-			//this._el.map.style.height = ((h *2) - offset) + "px";
-			//this._el.map_mask.style.height = (h + offset) + "px";
-			this._el.map.style.height = h + "px";
-			this._el.map_mask.style.height = h + "px";
-		}
-		
+	_updateDisplay: function(w, h, animate, d) {
 		
 		// Update Map Display
-		this._updateMapDisplay();
+		this._updateMapDisplay(animate, d);
 	},
 	
 	_initLayout: function() {

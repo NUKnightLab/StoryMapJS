@@ -58,6 +58,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 			position: 			"bottomleft",
 			zoomLevelFixed: 	false,
 			zoomLevelOffset: 	-6,
+			toggleDisplay: 		true,
 			zoomAnimation: 		true,
 			aimingRectOptions: 	{
 				fillColor: 		"#FFFFFF",
@@ -144,7 +145,6 @@ VCO.Map.Leaflet = VCO.Map.extend({
 			_location = _center_zoom.center;
 			
 			if (this.options.map_center_offset) {
-				trace("marker overview offset")
 				_location = this._getMapCenterOffset(_location, _center_zoom.zoom);
 			}
 			
@@ -162,8 +162,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 				}
 			};
 			
-			if (this.options.map_center_offset) {
-				trace("marker overview offset")
+			if (this.options.map_center_offset && this.options.map_center_offset.left != 0 && this.options.map_center_offset.top != 0) {
 				var the_bounds 	= new L.latLngBounds(bounds_array);
 				_location 		= the_bounds.getCenter();
 				_zoom 			= this._map.getBoundsZoom(the_bounds)
@@ -296,32 +295,11 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		target_latlng 	= this._map.unproject(target_point, zoom);
 		
 		return target_latlng;
-		
-		
-		/*
-		var point, offset_y;
-		
-		offset_y = (this._map.getSize().y/2);
-		
-		if (add) {
-			offset_y = offset_y + this.options.map_center_offset;
-			point = this._map.project(location, zoom).add([0, offset_y]);
-		} else {
-			offset_y = offset_y - this.options.map_center_offset;
-			point = this._map.project(location, zoom).subtract([0, offset_y]);
-		}
-
-		return this._map.unproject(point, zoom);
-		*/
 
 	},
 	
 	_getBoundsZoom: function(origin, destination, correct_for_center) {
 		var _origin = origin;
-		
-		if (this.options.map_center_offset) {
-			//_origin = this._getMapCenterOffset(origin, this._getMapZoom(), true);
-		}
 		
 		if (correct_for_center) {
 			var _lat = _origin.lat + (_origin.lat - destination.lat)/2,
@@ -339,7 +317,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	
 	/*	Display
 	================================================== */
-	_updateMapDisplay: function(w, h, animate, d) {
+	_updateMapDisplay: function(animate, d) {
 		if (animate) {
 			var duration = this.options.duration,
 				self = this;
@@ -355,6 +333,10 @@ VCO.Map.Leaflet = VCO.Map.extend({
 			if (!this.timer) {
 				this._refreshMap();
 			};
+		}
+		
+		if (this._mini_map && this._el.container.offsetWidth < this.options.skinny_size ) {
+			this._mini_map.minimize();
 		}
 	},
 	
@@ -379,4 +361,35 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	}
 	
 	
+});
+
+/*	Overwrite and customize Leaflet functions
+================================================== */
+L.Map.include({
+	_tryAnimatedPan: function (center, options) {
+		var offset = this._getCenterOffset(center)._floor();
+
+		this.panBy(offset, options);
+
+		return true;
+	},
+	
+	_tryAnimatedZoom: function (center, zoom, options) {
+		if (this._animatingZoom) { return true; }
+
+		options = options || {};
+
+		// offset is the pixel coords of the zoom origin relative to the current center
+		var scale = this.getZoomScale(zoom),
+		    offset = this._getCenterOffset(center)._divideBy(1 - 1 / scale),
+			origin = this._getCenterLayerPoint()._add(offset);
+
+		this
+		    .fire('movestart')
+		    .fire('zoomstart');
+
+		this._animateZoom(center, zoom, origin, scale, null, true);
+
+		return true;
+	}
 });

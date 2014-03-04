@@ -324,6 +324,7 @@ VCO.StoryMap = VCO.Class.extend({
 			map_center_offset:  	null, 			// takes object {top:0,left:0}
 			start_at_slide: 		0,
 			menubar_height: 		0,
+			skinny_size: 			650,
 			// animation
 			duration: 				1000,
 			ease: 					VCO.Ease.easeInOutQuint,
@@ -526,26 +527,13 @@ VCO.StoryMap = VCO.Class.extend({
 		this.options.height = this._el.container.offsetHeight;
 		
 		// Check if skinny
-		if (this.options.width <= 650) {
+		if (this.options.width <= this.options.skinny_size) {
 			this.options.layout = "portrait";
-			display_class += " vco-skinny";
+			//display_class += " vco-skinny";
 		} else {
 			this.options.layout = "landscape";
 		}
 		
-		// LAYOUT
-		if (this.options.layout == "portrait") {
-			// Set Default Component Sizes
-			this.options.map_height 		= (this.options.height / this.options.map_size_sticky);
-			this.options.storyslider_height = (this.options.height - this._el.menubar.offsetHeight - this.options.map_height - 1);
-			this._menubar.setSticky(0);
-		} else {
-			this.options.menubar_height = this._el.menubar.offsetHeight;
-			// Set Default Component Sizes
-			this.options.map_height 		= this.options.height;
-			this.options.storyslider_height = (this.options.height - this._el.menubar.offsetHeight - 1);
-			this._menubar.setSticky(this.options.menubar_height);
-		}
 		
 		// Map Height
 		if (map_height) {
@@ -555,24 +543,25 @@ VCO.StoryMap = VCO.Class.extend({
 		
 		// Detect Mobile and Update Orientation on Touch devices
 		if (VCO.Browser.touch) {
-			this.options.layout = VCO.Browser.orientation;
+			this.options.layout = VCO.Browser.orientation();
 			display_class += " vco-mobile";
-			trace(VCO.Browser.orientation);
+			trace(VCO.Browser.orientation());
 		}
 		
 		// LAYOUT
 		if (this.options.layout == "portrait") {
-			// Map Padding
-			this._map.padding = [0,0];
+			display_class += " vco-skinny";
+			// Map Offset
+			this._map.setMapOffset(0, 0);
+			
+			this.options.map_height 		= (this.options.height / this.options.map_size_sticky);
+			this.options.storyslider_height = (this.options.height - this.options.map_height - 1);
+			this._menubar.setSticky(0);
 			
 			// Portrait
 			display_class += " vco-layout-portrait";
 			
-			// Set Sticky state of Menu Bar
-			//this._menubar.setSticky(Math.floor(this._el.container.offsetHeight/this.options.map_size_sticky));
 			
-			// StorySlider Height
-			this.options.storyslider_height = (this.options.height - this.options.map_height- 1);
 			
 			if (animate) {
 			
@@ -596,7 +585,6 @@ VCO.StoryMap = VCO.Class.extend({
 				}
 				this.animator_storyslider = VCO.Animate(this._el.storyslider, {
 					height: 	this.options.storyslider_height + "px",
-					top: 		this.options.menubar_height + "px",
 					duration: 	duration,
 					easing: 	VCO.Ease.easeOutStrong
 				});
@@ -607,11 +595,11 @@ VCO.StoryMap = VCO.Class.extend({
 			
 				// StorySlider
 				this._el.storyslider.style.height = this.options.storyslider_height + "px";
-				this._el.storyslider.style.top = this.options.menubar_height + "px";
 			}
 			
 			// Update Component Displays
 			this._menubar.updateDisplay(this.options.width, this.options.height, animate);
+			this._map.updateDisplay(this.options.width, this.options.height, false);
 			this._storyslider.updateDisplay(this.options.width, this.options.storyslider_height, animate, this.options.layout);
 			
 		} else {
@@ -619,12 +607,14 @@ VCO.StoryMap = VCO.Class.extend({
 			// Landscape
 			display_class += " vco-layout-landscape";
 			
+			this.options.menubar_height = this._el.menubar.offsetHeight;
+			// Set Default Component Sizes
+			this.options.map_height 		= this.options.height;
+			this.options.storyslider_height = this.options.height;
+			this._menubar.setSticky(this.options.menubar_height);
+			
 			// Map Padding
 			//this._map.padding = [0,this.options.width/2];
-			
-			
-			// StorySlider Height
-			this.options.storyslider_height = (this.options.height - this._el.menubar.offsetHeight - 1);
 			
 			// Set Sticky state of MenuBar
 			this._menubar.setSticky(this.options.menubar_height);
@@ -633,8 +623,9 @@ VCO.StoryMap = VCO.Class.extend({
 			//this._el.menubar.style.top =  this.options.menubar_height + "px";
 			
 			// Update Component Displays
-			this._map.options.map_center_offset.left = -(this.options.width/4);
-			this._map.options.map_center_offset.top = 0;
+			//this._map.options.map_center_offset.left = -(this.options.width/4);
+			//this._map.options.map_center_offset.top = 0;
+			this._map.setMapOffset(-(this.options.width/4), 0);
 			//this._map.options.map_center_offset.top = this.options.menubar_height;
 			
 			// StorySlider
@@ -646,7 +637,6 @@ VCO.StoryMap = VCO.Class.extend({
 			this._storyslider.updateDisplay(this.options.width/2, this.options.storyslider_height, animate, this.options.layout);
 		}
 		
-		trace(this._map.padding);
 		
 		
 		// Apply class
