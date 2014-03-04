@@ -449,7 +449,7 @@ VCO.Map = VCO.Class.extend({
 	_onMapLoaded: function(e) {
 		this._loaded.map = true;
 		this._initialMapLocation();
-		if (this.options.map_mini) {
+		if (this.options.map_mini && !VCO.Browser.touch) {
 			this.createMiniMap();
 		}
 		this.fire("loaded", this.data);
