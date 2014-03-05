@@ -25,14 +25,14 @@ http://www.google.com/webfonts/specimen/PT+Serif
 		font-family: @font-secondary;
 		text-transform: uppercase;
 		font-weight:700;
-		font-size: @base-font-size-xlarge + 4;
-		line-height: @base-font-size-xlarge + 4;
+		font-size:46px;
+		line-height:46px;
 		margin-bottom:0;
 	}
 	
 	h2.vco-headline-title {
-		font-size: @base-font-size-xlarge + 10;
-		line-height: @base-font-size-xlarge + 10;
+		font-size: 64px;
+		line-height: 64px;
 	}
 	
 	p {
@@ -79,3 +79,30 @@ http://www.google.com/webfonts/specimen/PT+Serif
 	
 }
 
+// Skinnier
+@media only screen and (max-width: 800px), only screen and (max-device-width: 800px) {
+	.vco-storymap {
+		h1, h2, h3 {
+			font-size: 		@base-font-size-large;
+			line-height:	floor(@base-font-size-large * 1.1);
+		}
+		h2.vco-headline-title {
+			font-size: @base-font-size-xlarge;
+			line-height: @base-font-size-xlarge;
+		}
+	}
+	
+}
+// Mobile, iPhone and skinny
+@media only screen and (max-width: 500px), only screen and (max-device-width: 500px) {
+	.vco-storymap {
+		h1, h2, h3 {
+			font-size: 		@base-font-size;
+			line-height:	floor(@base-font-size * @base-line-height);
+		}
+		h2.vco-headline-title {
+			font-size: @base-font-size-large;
+			line-height: @base-font-size-large;
+		}
+	}
+}
