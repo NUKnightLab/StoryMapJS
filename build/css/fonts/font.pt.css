@@ -6,6 +6,6 @@
 .vco-storymap .vco-media .vco-media-wikipedia h4 a{font-family:'PT Serif',serif;font-weight:normal;font-size:28px;line-height:28px}
 .vco-storymap .vco-caption,.vco-storymap .vco-credit{font-family:'PT Serif',serif}
 .vco-storymap .vcard{font-family:'PT Sans',sans-serif;font-weight:400}
-.vco-storymap .vco-sizebar,.vco-storymap .vco-slidenav-next,.vco-storymap .vco-slidenav-previous{font-family:'PT Sans',sans-serif;font-weight:400;text-transform:uppercase}
-.vco-storymap .vco-sizebar .vco-sizebar-button{font-weight:400}
+.vco-storymap .vco-menubar,.vco-storymap .vco-slidenav-next,.vco-storymap .vco-slidenav-previous{font-family:'PT Sans',sans-serif;font-weight:400;text-transform:uppercase}
+.vco-storymap .vco-menubar .vco-menubar-button{font-weight:400}
 .vco-storymap blockquote,.vco-storymap blockquote p{font-family:'PT Serif',serif;font-style:italic}

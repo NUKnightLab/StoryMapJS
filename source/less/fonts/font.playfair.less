@@ -1,53 +1,51 @@
-/*	Font Abril Fatface & Droid Sans
+/*	Font Playfair & Playfair SC
 
-http://www.google.com/fonts/specimen/Abril+Fatface
-http://www.google.com/fonts/specimen/Droid+Sans
+https://www.google.com/fonts/specimen/Playfair+Display
+https://www.google.com/fonts/specimen/Playfair+Display+SC
 ----------------------------------------------------- */
 @import "../Variables.less"; 
 
 // Font Import
-@import url(http://fonts.googleapis.com/css?family=Droid+Sans:400,700|Abril+Fatface);
+@import url(http://fonts.googleapis.com/css?family=Playfair+Display:400,700|Playfair+Display+SC);
 
 
 
-@font-main:						'Droid Sans', sans-serif;
-@font-secondary:				'Abril Fatface', cursive;
+@font-main:						'Playfair Display', serif;
+@font-secondary:				'Playfair Display SC', serif;
 
 .vco-storymap {
 	font-family: @font-main;
 	font-weight:400;
-	font-size: 16px;
-	line-height: 24px;
+	font-size: 17px;
+	line-height: 25px;
 	
 	h1, h2, h3, h4, h5, h6 {
 		font-family: @font-secondary;
 		text-transform: none;
-		font-weight:700;
+		font-weight:400;
 		font-size:46px;
 		line-height:46px;
 	}
 	
 	h2.vco-headline-title {
 		font-size: 58px;
-		line-height: 58px;
+		line-height: 62px;
 	}
 	
 	p {
 		font-family: @font-main;
-		font-size: 16px;
-		line-height: 24px;
+		font-size: 17px;
+		line-height: 25px;
 	}
-	strong {
-		font-weight:700;
-	}
+	
 	ul {
 		font-family: @font-main;
 	}
 	.vco-media .vco-media-wikipedia h4 a {
 		font-family: @font-main;
-		font-weight:700;
-		font-size:28px;
-		line-height:28px;
+		font-weight:400;
+		font-size:24px;
+		line-height:24px;
 	}
 	.vco-caption, .vco-credit {
 		font-family: @font-main;
@@ -59,7 +57,7 @@ http://www.google.com/fonts/specimen/Droid+Sans
 	}
 	
 	.vco-slidenav-next, .vco-slidenav-previous {
-		font-family: @font-main;
+		font-family: 'Helvetica Neue', Helvetica, Arial, "MS Trebuchet", sans-serif;
 		font-weight:400;
 		text-transform: none;
 		.vco-slidenav-title {
@@ -68,19 +66,16 @@ http://www.google.com/fonts/specimen/Droid+Sans
 	}
 	
 	.vco-menubar {
-		font-family: @font-main;
-		
+		font-family: 'Helvetica Neue', Helvetica, Arial, "MS Trebuchet", sans-serif;
 		.vco-menubar-button {
-			font-weight:400 !important;
+			
 		}
 	}
 	
 	blockquote, blockquote p {
 		font-family: @font-main;
-		font-style: normal;
-		font-weight:400;
+		font-style: italic;
 	}
 	
 	
 }
-
