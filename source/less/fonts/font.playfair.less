@@ -1,23 +1,23 @@
-/*	Font Fjalla & Average
+/*	Font Playfair & Playfair SC
 
-http://www.google.com/fonts/specimen/Fjalla+One
-http://www.google.com/fonts/specimen/Average+Sans
+https://www.google.com/fonts/specimen/Playfair+Display
+https://www.google.com/fonts/specimen/Playfair+Display+SC
 ----------------------------------------------------- */
 @import "../Variables.less"; 
 
 // Font Import
-@import url(http://fonts.googleapis.com/css?family=Average+Sans|Fjalla+One);
+@import url(http://fonts.googleapis.com/css?family=Playfair+Display:400,700|Playfair+Display+SC);
 
 
 
-@font-main:						'Average Sans', sans-serif;
-@font-secondary:				'Fjalla One', sans-serif;
+@font-main:						'Playfair Display', serif;
+@font-secondary:				'Playfair Display SC', serif;
 
 .vco-storymap {
 	font-family: @font-main;
 	font-weight:400;
 	font-size: 17px;
-	line-height: 24px;
+	line-height: 25px;
 	
 	h1, h2, h3, h4, h5, h6 {
 		font-family: @font-secondary;
@@ -29,13 +29,13 @@ http://www.google.com/fonts/specimen/Average+Sans
 	
 	h2.vco-headline-title {
 		font-size: 58px;
-		line-height: 70px;
+		line-height: 62px;
 	}
 	
 	p {
 		font-family: @font-main;
 		font-size: 17px;
-		line-height: 23px;
+		line-height: 25px;
 	}
 	
 	ul {
@@ -43,9 +43,9 @@ http://www.google.com/fonts/specimen/Average+Sans
 	}
 	.vco-media .vco-media-wikipedia h4 a {
 		font-family: @font-main;
-		font-weight:normal;
-		font-size:28px;
-		line-height:28px;
+		font-weight:400;
+		font-size:24px;
+		line-height:24px;
 	}
 	.vco-caption, .vco-credit {
 		font-family: @font-main;
@@ -57,7 +57,7 @@ http://www.google.com/fonts/specimen/Average+Sans
 	}
 	
 	.vco-slidenav-next, .vco-slidenav-previous {
-		font-family: @font-secondary;
+		font-family: 'Helvetica Neue', Helvetica, Arial, "MS Trebuchet", sans-serif;
 		font-weight:400;
 		text-transform: none;
 		.vco-slidenav-title {
@@ -65,16 +65,16 @@ http://www.google.com/fonts/specimen/Average+Sans
 		}
 	}
 	
-	.vco-sizebar {
-		font-family: @font-main;
-		.vco-sizebar-button {
+	.vco-menubar {
+		font-family: 'Helvetica Neue', Helvetica, Arial, "MS Trebuchet", sans-serif;
+		.vco-menubar-button {
 			
 		}
 	}
 	
 	blockquote, blockquote p {
 		font-family: @font-main;
-		font-style: normal;
+		font-style: italic;
 	}
 	
 	
@@ -87,3 +87,4 @@ input[type="text"].editor-headline {
     font-size:46px;
     line-height:46px;
 }
+
