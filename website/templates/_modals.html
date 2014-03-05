@@ -1,3 +1,5 @@
+<!-- COMMON -->
+
 <div id="error_modal" class="modal hide fade">
     <div class="modal-body">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -30,11 +32,14 @@
     </div>
 </div>
 
-<!--- THIS NEED MORE WORK -->
+<!-- SELECT -->
 
 <div id="new_modal" class="modal hide fade" role="dialog" aria-hidden="true">
     <div class="modal-body">
-        <small class="error"> </small>
+        <!-- error -->
+        <div class="modal-error">    
+            <span class="modal-msg error"></span>
+        </div>    
         <p>Enter a unique name for your StoryMap:</p>
         <input type="text" id="new_name" value="" style="width: 95%;" />
         <p><small>This name is just for you. No one else will see it.</small></p>
@@ -47,7 +52,10 @@
 
 <div id="new_zoomify_modal" class="modal hide fade" role="dialog" aria-hidden="true">
     <div class="modal-body">
-        <small class="error"> </small>
+        <!-- error -->
+        <div class="modal-error">    
+            <span class="modal-msg error"></span>
+        </div>    
         <p>Enter a unique name for your StoryMap:</p>
         <input type="text" id="new_zoomify_name" value="" style="width: 95%;" />
         <p><small>This name is just for you. No one else will see it.</small></p>
@@ -71,12 +79,17 @@
     </div>
 </div>
 
+<!-- EDIT -->
+
 <div id="opt_modal" class="modal hide fade"">
     <div class="modal-header">
         <h5>Options</h5>
     </div>    
     <div class="modal-body">
-        <small class="error"></small>
+        <!-- error -->
+        <div class="modal-error hide">    
+            <span class="modal-msg error"></span>
+        </div>    
         <form class="form-horizontal">             
             <div class="control-group">
                 <label class="control-label">StoryMap Size</label>
@@ -360,7 +373,7 @@
         <!-- main -->
         <div id="share_publish_panel">
             <form class="form-inline">
-            <label>You have unpublished changes.</label>
+            <label><i class="icon-warning-sign"></i> You have unpublished changes:</label>
             &nbsp;
             <a id="share_publish" class="btn" href="javascript:;">Publish Changes</a>
             </form>
@@ -375,12 +388,12 @@
                         <i class="icon-facebook-sign icon-2x"></i></a>
                     <a class="share-link-googleplus" target="_blank" href='#' title="Share on Google+">
                         <i class="icon-google-plus-sign icon-2x"></i></a>                    
-                    <a class="share-link-reddit" target="_blank" href="#" title="Srae on Reddit">
-                        <img src="http://www.reddit.com/static/spreddit5.gif" alt="submit to reddit" border="0" /> 
+                    <a class="share-link-reddit" target="_blank" href="#" title="Share on Reddit">
+                        <img src="http://www.reddit.com/static/spreddit5.gif" /> 
                     </a>
                 </div>
             </div>
-            <textarea id="share_url" rows="2"></textarea>
+            <textarea id="share_url" rows="3"></textarea>
         </p>
         <p>
             <div>
@@ -398,7 +411,7 @@
                     </div>
                 </div>
             </div>
-            <textarea id="share_embed" rows="3"></textarea> 
+            <textarea id="share_embed" rows="5"></textarea> 
         </p>  
     </div>
     <div class="modal-footer">
