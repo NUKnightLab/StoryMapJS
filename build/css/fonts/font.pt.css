@@ -9,3 +9,4 @@
 .vco-storymap .vco-sizebar,.vco-storymap .vco-slidenav-next,.vco-storymap .vco-slidenav-previous{font-family:'PT Sans',sans-serif;font-weight:400;text-transform:uppercase}
 .vco-storymap .vco-sizebar .vco-sizebar-button{font-weight:400}
 .vco-storymap blockquote,.vco-storymap blockquote p{font-family:'PT Serif',serif;font-style:italic}
+input[type="text"].editor-headline{font-family:'PT Sans Narrow',sans-serif;text-transform:uppercase;font-weight:700;font-size:40px;line-height:40px}

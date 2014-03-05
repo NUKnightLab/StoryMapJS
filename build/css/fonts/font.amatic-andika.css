@@ -10,3 +10,4 @@
 .vco-storymap .vco-slidenav-next,.vco-storymap .vco-slidenav-previous{font-family:'Andika',sans-serif;font-weight:400;text-transform:none}.vco-storymap .vco-slidenav-next .vco-slidenav-title,.vco-storymap .vco-slidenav-previous .vco-slidenav-title{line-height:1.3em !important}
 .vco-storymap .vco-sizebar{font-family:'Andika',sans-serif}.vco-storymap .vco-sizebar .vco-sizebar-button{font-weight:400 !important}
 .vco-storymap blockquote,.vco-storymap blockquote p{font-family:'Amatic SC',cursive;font-style:normal;font-weight:400}
+input[type="text"].editor-headline{font-family:'Amatic SC',cursive;text-transform:none;font-weight:700;font-size:64px;line-height:64px}
