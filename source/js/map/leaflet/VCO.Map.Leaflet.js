@@ -57,8 +57,8 @@ VCO.Map.Leaflet = VCO.Map.extend({
 			height: 			100,
 			position: 			"bottomleft",
 			zoomLevelFixed: 	false,
-			zoomLevelOffset: 	-6,
-			toggleDisplay: 		true,
+			zoomLevelOffset: 	-5,
+			//toggleDisplay: 		false,
 			zoomAnimation: 		true,
 			aimingRectOptions: 	{
 				fillColor: 		"#FFFFFF",
@@ -273,10 +273,15 @@ VCO.Map.Leaflet = VCO.Map.extend({
 			}
 		)
 		
-		if (this._mini_map) {
-			this._mini_map.restore();
-			this._mini_map.updateDisplay(_location, _zoom, _duration);
-		}
+		if (this._mini_map && this.options.width > this.options.skinny_size) {
+			//this._mini_map.restore();
+			if ((_zoom - 5) < 0 ) {
+				this._mini_map.minimize();
+			} else {
+				this._mini_map.updateDisplay(_location, _zoom, _duration);
+			}
+			//this._mini_map.updateDisplay(_location, _zoom, _duration);
+		} 
 		
 	},
 	
@@ -344,7 +349,10 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		}
 		
 		if (this._mini_map && this._el.container.offsetWidth < this.options.skinny_size ) {
+			this._mini_map.true_hide = true;
 			this._mini_map.minimize();
+		} else if (this._mini_map) {
+			this._mini_map.true_hide = false;
 		}
 	},
 	

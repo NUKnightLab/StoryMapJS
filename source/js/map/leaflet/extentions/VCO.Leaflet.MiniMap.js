@@ -27,6 +27,7 @@ L.Control.MiniMap = L.Control.extend({
 		this.options.aimingRectOptions.clickable = false;
 		this.options.shadowRectOptions.clickable = false;
 		this._layer = layer;
+		this.true_hide = false;
 	},
 	
 	onAdd: function (map) {
@@ -81,20 +82,24 @@ L.Control.MiniMap = L.Control.extend({
 		return this._container;
 	},
 	
-	minimize: function() {
+	minimize: function(hide_completely) {
 		if (!this._minimized) {
 			this._minimize();
-			this._toggleDisplayButton.title = this.showText;
+			//this._toggleDisplayButton.title = this.showText;
 		}
 	},
 	
 	restore: function() {
 		if (this._minimized) {
 			this._restore();
-			this._toggleDisplayButton.title = this.hideText;
+			//this._toggleDisplayButton.title = this.hideText;
 		}
 	},
-
+	
+	decideShow: function() {
+		return this._decideShow();
+	},
+	
 	addTo: function (map) {
 		L.Control.prototype.addTo.call(this, map);
 		this._miniMap.setView(this._mainMap.getCenter(), this._decideZoom(true));
@@ -155,7 +160,7 @@ L.Control.MiniMap = L.Control.extend({
 		}
 	},
 
-	_minimize: function () {
+	_minimize: function (hide_completely) {
 		// hide the minimap
 		if (this.options.toggleDisplay) {
 			this._container.style.width = '19px';
@@ -163,7 +168,9 @@ L.Control.MiniMap = L.Control.extend({
 			this._toggleDisplayButton.className += ' minimized';
 		}
 		else {
-			this._container.style.display = 'none';
+			this._container.style.width = '0px';
+			this._container.style.height = '0px';
+			//this._container.style.display = 'none';
 		}
 		this._minimized = true;
 	},
@@ -176,6 +183,8 @@ L.Control.MiniMap = L.Control.extend({
 					.replace(/(?:^|\s)minimized(?!\S)/g, '');
 		}
 		else {
+			this._container.style.width = this.options.width + 'px';
+			this._container.style.height = this.options.height + 'px';
 			this._container.style.display = 'block';
 		}
 		this._minimized = false;
@@ -183,17 +192,39 @@ L.Control.MiniMap = L.Control.extend({
 
 	_onMainMapMoved: function (e) {
 		if (!this._miniMapMoving) {
-			this._mainMapMoving = true;
-			this._miniMap.setView(this._mainMap.getCenter(), this._decideZoom(true));
-			this._setDisplay(this._decideMinimized());
+			
+			if (!this._decideShow()) {
+				this._mainMapMoving = true;
+				this._miniMap.setView(this._mainMap.getCenter(), this._decideZoom(true));
+				this._setDisplay(this._decideMinimized());
+			} 
+			
 		} else {
 			this._miniMapMoving = false;
 		}
 		this._aimingRect.setBounds(this._mainMap.getBounds());
 	},
+	
+	_decideShow: function(zoom) {
+		var z = this._decideZoom(true);
+		if (zoom) {
+			z = zoom;
+		}
+		trace("decideshow " + z);
+		if (z < 0) {
+			this.minimize();
+			return false;
+		} else if (this.true_hide){
+			return false;
+		} else {
+			this.restore();
+			return true;
+		}
+	},
 
 	_onMainMapMoving: function (e) {
 		this._aimingRect.setBounds(this._mainMap.getBounds());
+		
 	},
 
 	_onMiniMapMoveStarted:function (e) {
@@ -223,29 +254,43 @@ L.Control.MiniMap = L.Control.extend({
 		} else {
 			this._mainMapMoving = false;
 		}
-		this._aimingRect.setBounds(this._mainMap.getBounds());
+		
+		if (this._decideShow()) {
+			this._aimingRect.setBounds(this._mainMap.getBounds());
+		}
+		
 	},
 
-	_decideZoom: function (fromMaintoMini) {
+	_decideZoom: function (fromMaintoMini, zoom) {
+		var z = this._mainMap.getZoom();
 		if (!this.options.zoomLevelFixed ) {
-			if (fromMaintoMini)
-				return this._mainMap.getZoom() + this.options.zoomLevelOffset;
-			else {
-				var currentDiff = this._miniMap.getZoom() - this._mainMap.getZoom();
+			if (fromMaintoMini) {
+				if (zoom) {
+					z = zoom + this.options.zoomLevelOffset;
+				} else {
+					z = this._mainMap.getZoom() + this.options.zoomLevelOffset;
+				}
+				
+				return z;
+			} else {
+				if (zoom) {
+					z = zoom;
+				}
+				var currentDiff = this._miniMap.getZoom() - z;
 				var proposedZoom = this._miniMap.getZoom() - this.options.zoomLevelOffset;
 				var toRet;
 				
-				if (currentDiff > this.options.zoomLevelOffset && this._mainMap.getZoom() < this._miniMap.getMinZoom() - this.options.zoomLevelOffset) {
+				if (currentDiff > this.options.zoomLevelOffset && z < this._miniMap.getMinZoom() - this.options.zoomLevelOffset) {
 					//This means the miniMap is zoomed out to the minimum zoom level and can't zoom any more.
 					if (this._miniMap.getZoom() > this._lastMiniMapZoom) {
 						//This means the user is trying to zoom in by using the minimap, zoom the main map.
-						toRet = this._mainMap.getZoom() + 1;
+						toRet = z + 1;
 						//Also we cheat and zoom the minimap out again to keep it visually consistent.
 						this._miniMap.setZoom(this._miniMap.getZoom() -1);
 					} else {
 						//Either the user is trying to zoom out past the mini map's min zoom or has just panned using it, we can't tell the difference.
 						//Therefore, we ignore it!
-						toRet = this._mainMap.getZoom();
+						toRet = z;
 					}
 				} else {
 					//This is what happens in the majority of cases, and always if you configure the min levels + offset in a sane fashion.
@@ -260,7 +305,7 @@ L.Control.MiniMap = L.Control.extend({
 			if (fromMaintoMini) {
 				//return this.options.zoomLevelFixed;
 			} else {
-				return this._mainMap.getZoom();
+				return z;
 			}
 
 			
@@ -284,16 +329,19 @@ L.Control.MiniMap = L.Control.extend({
 	
 	updateDisplay: function(_location, _zoom, _duration) {
 		//this._miniMap.setView(_location, this._decideZoom(true));
-		this._miniMap.setView(
-			_location, 
-			this._decideZoom(true),
-			{
-				pan:{animate: true, duration: _duration+0.2, easeLinearity:.10},
-				zoom:{animate: true, duration: _duration+0.2, easeLinearity:.10}
-			}
-		)
+		if (this._decideShow(_zoom)) {
+			this._miniMap.setView(
+				_location, 
+				this._decideZoom(true),
+				{
+					pan:{animate: true, duration: _duration+0.2, easeLinearity:.10},
+					zoom:{animate: true, duration: _duration+0.2, easeLinearity:.10}
+				}
+			)
 		
-		this._aimingRect.setBounds(this._mainMap.getBounds());
+			this._aimingRect.setBounds(this._mainMap.getBounds());
+		}
+		
 	}
 	
 });

@@ -545,7 +545,6 @@ VCO.StoryMap = VCO.Class.extend({
 		if (VCO.Browser.touch) {
 			this.options.layout = VCO.Browser.orientation();
 			display_class += " vco-mobile";
-			trace(VCO.Browser.orientation());
 		}
 		
 		// LAYOUT
