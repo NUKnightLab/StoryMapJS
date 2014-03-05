@@ -760,6 +760,39 @@ $(function() {
         });
     });
 
+    $('#storymap_share').click(function(event) {
+        // If never published, then publish (will also save draft, if needed)      
+        if(!_storymap_info.published_on) {
+            show_progress('Publishing StoryMap');
+            
+            storymap_publish(function(error) {
+                if(error) {
+                    show_error('Error publishing StoryMap', error);
+                } else {
+                    hide_progress();
+                    $('#share_modal').modal('show');
+                } 
+            }); 
+        } 
+        // If previously published but dirty, then save draft
+        else if(_dirty) {
+            show_progress('Saving StoryMap');
+            
+            storymap_save(function(error) {
+               if(error) {
+                    show_error('Error saving StoryMap', error);
+                } else {
+                    hide_progress();
+                    $('#share_modal').modal('show');                    
+                }
+            });
+        } 
+        // Else, just show the modal
+        else {
+            $('#share_modal').modal('show');
+        } 
+    });
+
 
     //------------------------------------------------------------
     // StoryMap Options
@@ -1050,24 +1083,6 @@ $(function() {
     // ------------------------------------------------------------
     // Sharing
     // ------------------------------------------------------------
-
-    $('#storymap_share').click(function(event) {
-        if(_storymap_info.published_on) {
-            $('#share_modal').modal('show');
-        } else {
-            // Auto-publish if never published
-            show_progress('Publishing StoryMap');
-            
-            storymap_publish(function(error) {
-                if(error) {
-                    show_error('Error publishing StoryMap', error);
-                } else {
-                    hide_progress();
-                     $('#share_modal').modal('show');
-                } 
-            }); 
-        }
-    });
     
     $('#share_publish').click(function(event) {       
         $('#share_modal').trigger('progress_show', 'Publishing StoryMap');
