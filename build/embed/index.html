@@ -91,7 +91,8 @@ var storymap_url = decodeURIComponent(params['url']);
 
 var options = {
     script_path: getScriptPath(/storymap(-min)?\.js/),
-    start_at_slide: 0
+    start_at_slide: 0,
+    show_lines: true
 };
 
 if(params.hasOwnProperty('start_at_slide')) {
@@ -111,6 +112,12 @@ function storymap_onload(d) {
         if(d.storymap.language) {
             options.language = d.storymap.language;
         }
+        if(d.storymap.hasOwnProperty('show_lines')) {
+            options.show_lines = d.storymap.show_lines;
+        }
+        if(d.storymap.zoomify) {
+            options.zoomify = d.storymap.zoomify;
+        }
 
         var font = "stock:default";
         if(d.font_css) {
@@ -124,7 +131,6 @@ function storymap_onload(d) {
             font = url_join(options.script_path, font);
         }
         VCO.Load.css(font,function(){ trace('font loaded: ' + font);});
-
         storymap = new VCO.StoryMap('storymap-embed', d, options);
     }
 }
