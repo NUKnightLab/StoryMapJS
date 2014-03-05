@@ -19,8 +19,8 @@
 		}
 	}
 	h2.vco-headline-title {
-		font-size: @base-font-size-xlarge + 4;
-		line-height: @base-font-size-xlarge + 4;
+		font-size: @base-font-size-xlarge + 10;
+		line-height: @base-font-size-xlarge + 10;
 		small {
 			display:block;
 			margin-top:5px;
@@ -40,16 +40,15 @@
 		font-size: @base-font-size;
 		//font-family: @font-secondary;
 		color: lighten(@color-dark, 40%);
-		b {
-			font-weight: bold;
-			line-height: @base-font-size;
-			color: lighten(@color-dark, 20%);
-		}
-		i, em {
-			font-style: italic;
-			line-height: @base-font-size;
-		}
 		
+		
+	}
+	b, strong {
+		font-weight: bold;
+		//color: @color-dark;
+	}
+	i, em {
+		font-style: italic;
 	}
 	a {
 		text-decoration:none;
@@ -63,6 +62,9 @@
 		//font-family: @font-sanserif;
 		font-size:@base-font-size-small;
 		line-height:@base-font-size-small;
+		a {
+			color: @color-dark;
+		}
 	}
 	
 	blockquote, blockquote p {
@@ -145,16 +147,15 @@
 	}
 }
 
+
 // Skinnier
 @media only screen and (max-width: 800px), only screen and (max-device-width: 800px) {
 	.vco-storymap {
 		h1, h2, h3 {
-			font-size: 		@base-font-size-large;
-			line-height:	floor(@base-font-size-large * 1.1);
-		}
-		h2.vco-headline-title {
 			font-size: @base-font-size-xlarge;
 			line-height: @base-font-size-xlarge;
+		}
+		h2.vco-headline-title {
 		}
 	}
 	
@@ -163,13 +164,17 @@
 @media only screen and (max-width: 500px), only screen and (max-device-width: 500px) {
 	.vco-storymap {
 		h1, h2, h3 {
-			font-size: 		@base-font-size;
-			line-height:	floor(@base-font-size * @base-line-height);
+			font-size: @base-font-size-xlarge - 4;
+			line-height: @base-font-size-xlarge - 4;
 		}
 		h2.vco-headline-title {
-			font-size: @base-font-size-large;
-			line-height: @base-font-size-large;
+
 		}
 	}
-	
+}
+.vco-skinny {
+	h2 {
+		margin-top:0px;
+		padding-top:20px;
+	}
 }

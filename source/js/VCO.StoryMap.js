@@ -35,6 +35,7 @@
 // @codekit-prepend "dom/VCO.DomEvent.js";
 
 // @codekit-prepend "ui/VCO.Draggable.js";
+// @codekit-prepend "ui/VCO.Swipable.js";
 // @codekit-prepend "ui/VCO.SizeBar.js";
 // @codekit-prepend "ui/VCO.Message.js";
 
@@ -135,11 +136,6 @@ VCO.StoryMap = VCO.Class.extend({
 				},
 				{
 					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						color: 				"",
-						opacity: 			50
-					},
 					date: 					"1835",
 					location: {
 						lat: 				39.491711,
@@ -157,340 +153,6 @@ VCO.StoryMap = VCO.Class.extend({
 						url: 				"http://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Mark_Twain_birthplace.jpg/800px-Mark_Twain_birthplace.jpg",
 						credit:				"",
 						caption:			"Mark Twain's birthplace, Florida, Missouri"
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						color: 				"",
-						opacity: 			50
-					},
-					date: 					"1839",
-					location: {
-						lat: 				39.712304,
-						lon: 				-91.358088,
-						zoom: 				10,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
-						line: 				true
-					},
-					text: {
-						headline: 			"Hannibal, Missouri",
-						text: 				"Moves to Hannibal, Missouri, which later serves as the model town for Tom Sawyer and Huckleberry Finn."
-					},
-					media: {
-						url: 				"http://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Mark_Twain_Boyhood_Home_1.jpg/800px-Mark_Twain_Boyhood_Home_1.jpg",
-						credit:				"",
-						caption:			"Mark Twain's boyhood home in Hannibal, Missouri."
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null, //"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						color: 				null,
-						opacity: 			50
-					},
-					date: 					"1851",
-					location: {
-						lat: 				39.710083,
-						lon: 				-91.357441,
-						zoom: 				12,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
-						line: 				true
-					},
-					text: {
-						headline: 			"Hannibal Gazette",
-						text: 				"Begins work as a journeyman printer with the Hannibal Gazette. Publishes first sketches."
-					},
-					media: {
-						url: 				"https://soundcloud.com/beastieboys/make-some-noise",
-						credit:				null,
-						caption:			null
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						color: 				"",
-						opacity: 			50
-					},
-					date: 					null,
-					location: {
-						lat: 				40.714353,
-						lon: 				-74.005973,
-						zoom: 				11,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
-						line: 				true
-					},
-					text: {
-						headline: 			"Itinerant Printer",
-						text: 				"Visits St. Louis, New York, and Philadelphia as an itinerant printer."
-					},
-					media: {
-						url: 				"https://twitter.com/MarkTwainQuote/status/384850339297755136",
-						credit:				null,
-						caption:			null
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null,
-						color: 				"#cdbfe3",
-						opacity: 			50
-					},
-					date: 					"1862",
-					location: {
-						lat: 				39.309514,
-						lon: 				-119.649979,
-						zoom: 				11,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
-						line: 				true
-					},
-					text: {
-						headline: 			"Virginia City Territorial Enterprise",
-						text: 				"Travels around Nevada and California. Takes job as reporter for the Virginia City Territorial Enterprise."
-					},
-					media: {
-						url: 				"http://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Mark_Twain%27s_desk_at_the_Mark_Twain_Territorial_Enterprise_Museum%2C_Virginia_City%2C_NV.jpg/794px-Mark_Twain%27s_desk_at_the_Mark_Twain_Territorial_Enterprise_Museum%2C_Virginia_City%2C_NV.jpg",
-						credit:				"",
-						caption:			"Mark Twain's desk when he was editor of the Territorial Enterprise. Mark Twain Territorial Enterprise Museum, Virginia City, NV."
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null,
-						color: 				"#cdbfe3",
-						opacity: 			50
-					},
-					date: 					"1865",
-					location: {
-						lat: 				37.774929,
-						lon: 				-122.419416,
-						zoom: 				11,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-					},
-					text: {
-						headline: 			"San Francisco",
-						text: 				"Forced to leave Nevada for breaking dueling laws. Prospects in Calaveras County, settles in San Francisco. Writes for magazines and newspapers."
-					},
-					media: {
-						url: 				"http://www.youtube.com/watch?v=xp9kONt2X54",
-						credit:				"ETC",
-						caption:			"something"
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null,
-						color: 				"",
-						opacity: 			50
-					},
-					date: 					"1866",
-					location: {
-						lat: 				19.896766,
-						lon: 				-155.582782,
-						zoom: 				11,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-					},
-					text: {
-						headline: 			"Hawaii",
-						text: 				"Takes trip to Hawaii as correspondent of the Sacramento Alta Californian. Reports on shipwreck of the Hornet. Gives first public lecture."
-					},
-					media: {
-						url: 				"http://photos.wikimapia.org/p/00/00/56/17/28_big.jpg",
-						credit:				"",
-						caption:			"Wreck of USS Hornet."
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null,
-						color: 				"",
-						opacity: 			50
-					},
-					date: 					"1867",
-					location: {
-						lat: 				54.525961,
-						lon: 				15.255119,
-						zoom: 				11,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
-						line: 				true
-					},
-					text: {
-						headline: 			"Travels",
-						text: 				"Travels as correspondent to Europe and the Holy Land on the Quaker City. Sees a picture of Olivia Langdon (Livy). Publishes The Celebrated Jumping Frog of Calaveras County, and Other Sketches. Sales are light."
-					},
-					media: {
-						url: 				"http://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/1867._The_Celebrated_Jumping_Frog_of_Calaveras_County%2C_and_Other_Sketches.djvu/page1-395px-1867._The_Celebrated_Jumping_Frog_of_Calaveras_County%2C_and_Other_Sketches.djvu.jpg",
-						credit:				"",
-						caption:			""
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null,
-						color: 				"#cdbfe3",
-						opacity: 			50
-					},
-					date: 					"1868",
-					location: {
-						lat: 				42.089796,
-						lon: 				-76.807734,
-						zoom: 				11,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
-						line: 				true
-					},
-					text: {
-						headline: 			"Livy",
-						text: 				"Lectures across the United States. Meets and falls in love with Livy in Elmira, New York."
-					},
-					media: {
-						url: 				"https://twitter.com/MarkTwainQuote/status/384850339297755136",
-						credit:				"ETC",
-						caption:			"something"
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null,
-						color: 				"#cdbfe3",
-						opacity: 			50
-					},
-					date: 					"1870",
-					location: {
-						lat: 				42.886447,
-						lon: 				-78.878369,
-						zoom: 				11,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-					},
-					text: {
-						headline: 			"Married",
-						text: 				"Marries Livy in Elmira. Her father buys them a house in Buffalo, New York. Son Langdon is born."
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null,
-						color: 				"#cdbfe3",
-						opacity: 			50
-					},
-					date: 					"1870",
-					location: {
-						lat: 				42.886447,
-						lon: 				-78.878369,
-						zoom: 				11,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-					},
-					text: {
-						headline: 			"Married",
-						text: 				"Marries Livy in Elmira. Her father buys them a house in Buffalo, New York. Son Langdon is born."
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null,
-						color: 				"#cdbfe3",
-						opacity: 			50
-					},
-					date: 					"1872",
-					location: {
-						lat: 				41.763711,
-						lon: 				-72.685093,
-						zoom: 				11,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
-						line: 				true
-					},
-					text: {
-						headline: 			"Roughing It",
-						text: 				"Moves with Livy to Hartford. Publishes Roughing It. Daughter is born. Son Langdon dies."
-					},
-					media: {
-						url: 				"",
-						credit:				"ETC",
-						caption:			"something"
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null,
-						color: 				"#cdbfe3",
-						opacity: 			50
-					},
-					date: 					"1891",
-					location: {
-						lat: 				54.525961,
-						lon: 				15.255119,
-						zoom: 				11,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-					},
-					text: {
-						headline: 			"Financial",
-						text: 				"Leaves Hartford to live in Europe because of financial difficulties."
-					},
-					media: {
-						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						credit:				"ETC",
-						caption:			"something"
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null,
-						color: 				"",
-						opacity: 			50
-					},
-					date: 					"1891",
-					location: {
-						lat: 				40.714353,
-						lon: 				-74.005973,
-						zoom: 				11,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-					},
-					text: {
-						headline: 			"Livy dies",
-						text: 				"Livy dies. Begins dictating autobiography. Moves to New York City."
-					},
-					media: {
-						url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-						credit:				"ETC",
-						caption:			"something"
-					}
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null,
-						color: 				null,
-						opacity: 			50
-					},
-					date: 					"1891",
-					location: {
-						lat: 				41.304540,
-						lon: 				-73.392898,
-						zoom: 				11,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
-						line: 				true
-					},
-					text: {
-						headline: 			"Stormfield",
-						text: 				"Moves into Stormfield in Redding, CT. Forms the Angelfish Club for young girls."
-					},
-					media: {
-						url: 				"http://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Mark_Twain%27s_house%2C_front_view._-_NARA_-_516527.tif/lossy-page1-800px-Mark_Twain%27s_house%2C_front_view._-_NARA_-_516527.tif.jpg",
-						credit:				"",
-						caption:			"Twain\'s house, \"Stormfield\", in Redding, Connecticut (front view)"
 					}
 				}
 			]
@@ -590,9 +252,9 @@ VCO.StoryMap = VCO.Class.extend({
 	
 	/*	Private Methods
 	================================================== */
+	
 	// Initialize the data
 	_initData: function(data) {
-		trace("initData");
 		var self = this;
 		
 		if (typeof data === 'string') {
@@ -698,6 +360,12 @@ VCO.StoryMap = VCO.Class.extend({
 			this._el.container.className = this.options.base_class;
 		}
 		
+		//Check if mobile
+		if (VCO.Browser.mobile) {
+			this._el.container.className += " vco-mobile";
+			
+		}
+		
 		// Set Sticky state of SizeBar
 		this._sizebar.setSticky(Math.floor(this._el.container.offsetHeight/this.options.map_size_sticky));
 		
@@ -757,18 +425,14 @@ VCO.StoryMap = VCO.Class.extend({
 	
 	_onDataLoaded: function(e) {
 		trace("dataloaded");
-		
 		this.fire("dataloaded");
 		this._initLayout();
 		this._initEvents();
 		this.ready = true;
-		trace(this.ready);
 		
 	},
 	
 	_onColorChange: function(e) {
-		trace("COLOR CHANGE");
-		trace(e);
 		if (e.color || e.image) {
 			this._sizebar.setColor(true);
 		} else {
@@ -793,7 +457,7 @@ VCO.StoryMap = VCO.Class.extend({
 	},
 	
 	_onSizeBar: function(e) {
-		trace("ON SIZEBAR");
+		//trace("ON SIZEBAR");
 	},
 	
 	_onOverview: function(e) {
@@ -842,20 +506,17 @@ VCO.StoryMap = VCO.Class.extend({
 	},
 	
 	_onMapLoaded: function() {
-		trace("MAP READY")
 		this._loaded.map = true;
 		this._onLoaded();
 	},
 	
 	_onStorySliderLoaded: function() {
-		trace("STORYSLIDER READY")
 		this._loaded.storyslider = true;
 		this._onLoaded();
 	},
 		
 	_onLoaded: function() {
 		if (this._loaded.storyslider && this._loaded.map) {
-			trace("STORYMAP IS READY");
 			this.fire("loaded", this.data);
 		}
 	}

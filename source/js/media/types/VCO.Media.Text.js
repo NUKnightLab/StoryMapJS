@@ -13,8 +13,8 @@ VCO.Media.Text = VCO.Class.extend({
 	// Data
 	data: {
 		uniqueid: 			"",
-		headline: 			"Le portrait mystérieux",
-		text: 				"Lorem ipsum dolor sit amet, consectetuer adipiscing elit."
+		headline: 			"headline",
+		text: 				"text"
 	},
 	
 	// Options
@@ -31,7 +31,6 @@ VCO.Media.Text = VCO.Class.extend({
 		// Merge Options
 		VCO.Util.mergeData(this.options, options);
 		
-		//this._container = VCO.Dom.get(id);
 		this._el.container = VCO.Dom.create("div", "vco-text");
 		this._el.container.id = this.data.uniqueid;
 		
@@ -86,7 +85,6 @@ VCO.Media.Text = VCO.Class.extend({
 		
 		// Create Layout
 		this._el.content_container			= VCO.Dom.create("div", "vco-text-content-container", this._el.container);
-		//this._el.content					= VCO.Dom.create("div", "vco-text-content", this._el.content_container);
 		
 		// Headline
 		if (this.data.headline != "") {

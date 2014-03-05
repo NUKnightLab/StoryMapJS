@@ -123,7 +123,6 @@ VCO.MediaType = function(m) {
 	
 	for (var i = 0; i < media_types.length; i++) {
 		if (m instanceof Array) {
-			trace("SLIDER");
 			return media = {
 				type: 		"slider",
 				cls: 		VCO.Media.Slider

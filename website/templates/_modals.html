@@ -1,19 +1,28 @@
-<div id="error_modal" class="modal hide fade" role="dialog" aria-hidden="true">
+<div id="error_modal" class="modal hide fade">
     <div class="modal-body">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <p><span id="error_msg"> </span></p>
+        <p class="modal-msg"></p>
    </div>
 </div>
 
-<div id="progress_modal" class="modal hide fade" role="dialog" aria-hidden="true">
+<div id="message_modal" class="modal hide fade">
     <div class="modal-body">
-        <p><i class="icon-spinner icon-spin"></i><span id="progress_msg"></span>...</p>
+        <p class="modal-msg"></p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">OK</button>
     </div>
 </div>
 
-<div id="confirm_modal" class="modal hide fade" role="dialog" aria-hidden="true">
+<div id="progress_modal" class="modal hide fade" data-backdrop="static">
     <div class="modal-body">
-        <p id="confirm_msg"></p>
+        <p><i class="icon-spinner icon-spin"></i><span class="modal-msg"></span>...</p>
+    </div>
+</div>
+
+<div id="confirm_modal" class="modal hide fade" data-backdrop="static">
+    <div class="modal-body">
+        <p class="modal-msg"></p>
     </div>
     <div class="modal-footer">
         <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
@@ -21,14 +30,7 @@
     </div>
 </div>
 
-<div id="message_modal" class="modal hide fade" role="dialog" aria-hidden="true">
-    <div class="modal-body">
-        <p id="message_msg"></p>
-    </div>
-    <div class="modal-footer">
-        <button class="btn" data-dismiss="modal" aria-hidden="true">OK</button>
-    </div>
-</div>
+<!--- THIS NEED MORE WORK -->
 
 <div id="new_modal" class="modal hide fade" role="dialog" aria-hidden="true">
     <div class="modal-body">
@@ -69,51 +71,346 @@
     </div>
 </div>
 
-<div id="embed_modal" class="modal hide fade" role="dialog" aria-hidden="true">
+<div id="opt_modal" class="modal hide fade"">
+    <div class="modal-header">
+        <h5>Options</h5>
+    </div>    
     <div class="modal-body">
-        <p>Copy this code and paste it on your site where you want your StoryMap to appear.</p>
-        <textarea rows="8"></textarea>
+        <small class="error"></small>
+        <form class="form-horizontal">             
+            <div class="control-group">
+                <label class="control-label">StoryMap Size</label>
+                <div class="controls">
+                    <div class="input-prepend">
+                        <span class="add-on">Width</span>
+                        <input type="text" id="width" value="" class="input-mini"> 
+                    </div>
+                     <div class="input-prepend">
+                        <span class="add-on">Height</span>
+                        <input type="text" id="height" value="" class="input-mini"> 
+                    </div>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Language</label>
+                <div class="controls">
+                    <select id="language">
+                        <option value="en">English</option>
+                        <option value="de">German</option>
+                        <option value="it">Italian</option>
+                        <option value="no">Norwegian</option>
+                        <option value="pl">Polish</option>
+                        <option value="es">Spanish</option>
+                    </select>
+                    <a class="help" href="javascript:"
+                        data-placement="left"
+                        data-content="Select the language to use in controls and messages when displaying your StoryMap."                    
+                    >&nbsp;<i class="icon-question-sign icon-large"></i></a>
+                </div>
+            </div>      
+            <div class="control-group">
+                <label class="control-label">Fonts</label>
+                <div class="controls">
+                    <select id="font_css">
+                        <option value="">Default</option>
+                        <option value="stock:abril-droidsans">Abril Fatface &amp; Droid Sans</option>
+                        <option value="stock:amatic-andika">Amatic &amp; Andika</option>
+                        <option value="stock:bitter-raleway">Bitter &amp; Raleway</option>
+                        <option value="stock:clicker-garamond">Clicker &amp; Garamond</option>
+                        <option value="stock:dancing-ledger">Dancing &amp; Ledger</option>
+                        <option value="stock:fjalla-average">Fjalla &amp; Average</option>
+                        <option value="stock:georgia-helvetica">Georgia &amp; Helvetica</option>
+                        <option value="stock:lustria-lato">Lustria &amp; Lato</option>
+                        <option value="stock:medula-lato">Medula One &amp; Lato</option>
+                        <option value="stock:oldstandard">Old Standard</option>
+                        <option value="stock:opensans-gentiumbook">Open Sans &amp; Gentium Book Basic</option>
+                        <option value="stock:playfair">Playfair SC &amp; Playfair</option>
+                        <option value="stock:pt">PT Sans &amp; PT Serif &amp; PT Sans Narrow</option>
+                        <option value="stock:rufina-sintony">Rufina &amp; Sintony</option>
+                    </select>
+                    <a class="help" href="javascript:"
+                        data-placement="left"
+                        data-html="true"
+                        data-content="Select a font-set for your StoryMap.<br><img style='margin-top: 5px' src='{{ STATIC_URL }}/img/font-options.png'>"                    
+                    >&nbsp;<i class="icon-question-sign icon-large"></i></a>
+                </div>
+            </div>      
+            <div class="control-group">
+                <label class="control-label">Show Lines</label>
+                <div class="controls">
+                    <label class="radio inline">
+                        <input type="radio" name="show_lines" id="show_lines_true" value="true" checked>
+                        Yes
+                    </label>
+                    <label class="radio inline">
+                        <input type="radio" name="show_lines" id="show_lines_false" value="false">
+                        No
+                    </label>                
+                    <a class="help" href="javascript:" style="display: inline-block;padding-top: 5px;vertical-align: middle;"
+                        data-html="true"
+                        data-placement="left"
+                        data-content='This setting determines whether or not lines are drawn between markers on the overview slide.' 
+                    >&nbsp;<i class="icon-question-sign icon-large"></i>
+                    </a>
+                </div>       
+            </div>
+            <div class="control-group zoomify-control-group">
+                <label class="control-label">Zoomify URL</label>
+                <div class="controls">
+                    <input id="zoomify_path" type="text" class="span5" placeholder="http://www.domain.org/directory/">
+                    <a class="help" href="javascript:"
+                        data-html="true"
+                        data-placement="left"
+                        data-content='Enter the URL path for your zoomable image folder.' 
+                    >&nbsp;<i class="icon-question-sign icon-large"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="control-group zoomify-control-group">
+                <label class="control-label">Max Image Size</label>
+                <div class="controls">
+                    <div class="input-prepend">
+                        <span class="add-on">Width</span>
+                        <input type="text" id="zoomify_width" value="" class="input-mini"> 
+                    </div>
+                     <div class="input-prepend">
+                        <span class="add-on">Height</span>
+                        <input type="text" id="zoomify_height" value="" class="input-mini"> 
+                     </div>
+                     <br />
+                    <span class="note"><i class="icon-warning-sign"></i> Changing the max image size may move the apparent location of your markers.</p>
+                </div>
+            </div>
+
+            <div class="control-group zoomify-control-group">
+                <label class="control-label">Attribution</label>
+                <div class="controls">
+                    <input id="zoomify_attribution" type="text" class="span5">
+                </div>
+            </div>
+
+            <div class="control-group map-control-group">
+                <label class="control-label">Map Type</label>
+                <div class="controls">
+                    <div class="input-prepend">
+                        <div class="btn-group dropup">
+                            <button class="btn dropdown-toggle" data-toggle="dropdown" tabindex="-1">
+                                <span class="caret"></span>
+                            </button>
+                            <ul id="map_type_menu" class="dropdown-menu dropup" role="menu">
+                                <li><a href="javascript:" storymap-data="stamen:toner-lite">Stamen Maps: Toner Lite</a></li>
+                                <li><a href="javascript:" storymap-data="stamen:toner">Stamen Maps: Toner</a></li>
+                                <li><a href="javascript:" storymap-data="stamen:toner-lines">Stamen Maps: Toner Lines</a></li>
+                                <li><a href="javascript:" storymap-data="stamen:toner-labels">Stamen Maps: Toner Labels</a></li>
+                                <li><a href="javascript:" storymap-data="stamen:toner-background">Stamen Maps: Toner Background</a></li>
+                                <li><a href="javascript:" storymap-data="stamen:watercolor">Stamen Maps: Watercolor</a></li>
+                                <li><a href="javascript:" storymap-data="stamen:terrain">Stamen Maps: Terrain</a></li>
+                                <li><a href="javascript:" storymap-data="osm:standard">Open Street Maps: Standard</a></li>
+                                <li><a href="javascript:" storymap-data="">custom URL...</a></li>
+                            </ul>
+                        </div>
+                        <input id="map_type" type="text" class="span5" placeholder="http://{s}.domain.org/{z}/{x}/{y}.png" disabled>
+                    </div>
+                    <a class="help" href="javascript:"
+                        data-html="true"
+                        data-placement="left"
+                        data-content='
+                        <p>Select a predefined map type, or select "custom URL" to enter the URL for a tile server.</p>
+                        <p>If the tile server supports multiple subdomains, enter them as a single string in the 
+                        Subdomain field (e.g. subdomains "a", "b", and "c" should be entered as "abc").</p>
+                        ' 
+                    >&nbsp;<i class="icon-question-sign icon-large"></i>
+                    </a>
+                    <p>
+                    <div class="input-prepend">
+                        <span class="add-on">Subdomains</span>
+                        <input id="map_subdomains" type="text" class="input-small" placeholder="abc">                    
+                    </div>
+                    </p>
+                </div>
+            </div>
+        </form>        
     </div>
     <div class="modal-footer">
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Done</button>
+        <a href="javascript:;" class="btn btn-primary" data-dismiss="modal">Done</a>
     </div>
 </div>
 
-<div id="upload_modal" class="modal hide fade" role="dialog" aria-hidden="true">
+
+<div id="slide_opt_modal" class="modal hide fade" role="dialog" aria-hidden="true">
+    <div class="modal-header">
+        <h5>Slide Options</h5>
+    </div>    
     <div class="modal-body">
-        <small class="error"></small>
-        <p>Select an image file to upload to your Google Drive.</p>
-        <div style="position:relative;">
+        <!-- error -->
+        <div class="modal-error hide">    
+            <span class="modal-msg error"></span>
+        </div>    
+        <p>
+        <label><strong>Background Color</strong></label>
+        <input id="background_color" type="text" placeholder="#ffffff">
+        </p>
+        <p>
+        <label><strong>Background Image</strong></label>
+        <div class="input-prepend" style="width: 96%;">       
+            <div class="btn-group">
+                <button class="btn dropdown-toggle" data-toggle="dropdown">
+                    <span class="caret"></span>
+                </button>
+                <ul id="background_image_select" class="dropdown-menu">
+                    <li><a href="javascript:">image 1</a></li>
+                    <li><a href="javascript:">image 2</a></li>
+                    <li><a href="javascript:">image 3</a></li>
+                    
+                </ul>
+            </div>
+            <input type="text" id="background_url" placeholder="<< select an image, or enter an URL">
+        </div>
+        <p>or upload an image to your Google Drive.</p>
+        <div class="upload-panel">
             <form class="form-inline">
-            <a id="upload_choose" class="btn" href="javascript:">
+            <a class="upload-file-link btn" href="javascript:">
             Choose File...
-            <input type="file" id="upload_file" accept="image/*" name="file_source" size="40">
+            <input type="file" class="upload-file" accept="image/*" size="40">
             </a>
-            &nbsp;
-            <label id="upload_file_info"></label>
+            &nbsp;<label class="upload-file-name"></label>
+            &nbsp;<a href="javascript:" class="btn btn-success upload pull-right">Upload</a>
             </form>
         </div>
-        <div id="upload_conflict">
-            <p>A file with the same name already exists.</p>
-            <label class="radio">
-                <input type="radio" id="upload_replace" name="upload_as" value="replace">Replace existing file
+        <div class="upload-conflict hide">
+            <p class="error">A file with the same name already exists.</p>
+            <label class="radio upload-conflict-replace">
+                <input type="radio" name="upload_modal_conflict" value="replace">Replace existing file
             </label>
             <div>
-            <label class="radio inline" style="vertical-align: text-bottom;">
-                <input type="radio" id="upload_rename" name="upload_as" value="rename">Save file as:
+            <label class="radio inline upload-conflict-rename">
+                <input type="radio" name="upload_modal_conflict" value="rename">Save file as:
+                <input class="upload-rename-as" type="text" size="40">
             </label>
-            <input id="upload_name" type="text" size="40"  style="margin-left: 4px;margin-bottom: 4px;">
             </div>
         </div>
-        <div id="upload_progress">
-            <p>
-            <i class="icon-spinner icon-spin"></i><span id="upload_progress_msg">my progress</span>
-            </p>
+    </div>
+    <div class="modal-footer">
+        <a href="javascript:;" class="btn" data-dismiss="modal">Done</a>
+    </div>
+    <!-- progress -->
+    <div class="modal-progress hide">
+        <div>
+            <div>
+                <i class="icon-spinner icon-4x icon-spin"></i>
+                <p><span class="modal-msg"></span>...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="upload_modal" class="modal hide fade" data-backdrop="static">
+    <div class="modal-body">
+        <!-- error -->
+        <div class="modal-error hide">    
+            <span class="modal-msg error"></span>
+        </div>    
+        <!-- main -->
+        <p>Select an image file to upload to your Google Drive.</p>
+        <div class="upload-panel">
+            <form class="form-inline">
+            <a class="upload-file-link btn" href="javascript:">
+            Choose File...
+            <input type="file" class="upload-file" accept="image/*" size="40">
+            </a>
+            &nbsp;<label class="upload-file-name"></label>
+            </form>
+        </div>
+        <div class="upload-conflict hide">
+            <p>A file with the same name already exists.</p>
+            <label class="radio upload-conflict-replace">
+                <input type="radio" name="upload_modal_conflict" value="replace">Replace existing file
+            </label>
+            <div>
+            <label class="radio inline upload-conflict-rename">
+                <input type="radio" name="upload_modal_conflict" value="rename">Save file as:
+                <input class="upload-rename-as" type="text" size="40">
+            </label>
+            </div>
         </div>
     </div>
     <div class="modal-footer">
         <a href="javascript:;" class="btn" data-dismiss="modal">Cancel</a>
-        <a href="javascript:;" id="upload_upload" class="btn btn-primary">Upload</a>
+        <a href="javascript:;" id="upload_upload" class="btn btn-primary upload">Upload</a>
+    </div>
+    <!-- progress -->
+    <div class="modal-progress hide">
+        <div>
+            <div>
+                <i class="icon-spinner icon-4x icon-spin"></i>
+                <p><span class="modal-msg"></span>...</p>
+            </div>
+        </div>
     </div>
 </div>
 
+
+<div id="share_modal" class="modal hide fade" data-backdrop="static">
+    <div class="modal-body">
+        <!-- error -->
+        <div class="modal-error hide">    
+            <span class="modal-msg error"></span>
+        </div>    
+        <!-- main -->
+        <div id="share_publish_panel">
+            <form class="form-inline">
+            <label>You have unpublished changes.</label>
+            &nbsp;
+            <a id="share_publish" class="btn" href="javascript:;">Publish Changes</a>
+            </form>
+        </div>
+        <p>
+            <div>
+                <label class="share-link-label">Link</label>
+                <div class="share-link-icons">
+                    <a class="share-link-twitter" target="_blank" href="#" title="Share on Twitter">
+                        <i class="icon-twitter icon-2x"></i></a>
+                    <a class="share-link-facebook" target="_blank" href='#' title="Share on Facebook">
+                        <i class="icon-facebook-sign icon-2x"></i></a>
+                    <a class="share-link-googleplus" target="_blank" href='#' title="Share on Google+">
+                        <i class="icon-google-plus-sign icon-2x"></i></a>                    
+                    <a class="share-link-reddit" target="_blank" href="#" title="Srae on Reddit">
+                        <img src="http://www.reddit.com/static/spreddit5.gif" alt="submit to reddit" border="0" /> 
+                    </a>
+                </div>
+            </div>
+            <textarea id="share_url" rows="2"></textarea>
+        </p>
+        <p>
+            <div>
+                <label class="share-embed-label">Embed Code</label>
+                <div class="share-embed-params">
+                     <div class="controls">
+                        <div class="input-prepend">
+                            <span class="add-on">Width</span>
+                            <input type="text" id="share_width" value="" class="input-mini"> 
+                        </div>
+                         <div class="input-prepend">
+                            <span class="add-on">Height</span>
+                            <input type="text" id="share_height" value="" class="input-mini"> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <textarea id="share_embed" rows="3"></textarea> 
+        </p>  
+    </div>
+    <div class="modal-footer">
+        <a href="javascript:;" class="btn btn-primary" data-dismiss="modal">Done</a>
+    </div>
+    <!-- progress -->
+    <div class="modal-progress hide">
+        <div>
+            <div>
+                <i class="icon-spinner icon-4x icon-spin"></i>
+                <p><span class="modal-msg"></span>...</p>
+            </div>
+        </div>
+    </div>
+</div>

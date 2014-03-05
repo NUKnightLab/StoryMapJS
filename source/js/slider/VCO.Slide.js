@@ -117,10 +117,7 @@ VCO.Slide = VCO.Class.extend({
 		this.animator = VCO.Animate(this._el.slider_container, {
 			left: 		-(this._el.container.offsetWidth * n) + "px",
 			duration: 	this.options.duration,
-			easing: 	this.options.ease,
-			complete: function () {
-				trace("DONE");
-			}
+			easing: 	this.options.ease
 		});
 	},
 	
@@ -142,6 +139,7 @@ VCO.Slide = VCO.Class.extend({
 	},
 	
 	loadMedia: function() {
+		
 		if (this._media && !this._state.loaded) {
 			this._media.loadMedia();
 			this._state.loaded = true;
@@ -156,6 +154,10 @@ VCO.Slide = VCO.Class.extend({
 	
 	getBackground: function() {
 		return this.has.background;
+	},
+	
+	scrollToTop: function() {
+		this._el.container.scrollTop = 0;
 	},
 	
 	/*	Events
@@ -255,12 +257,15 @@ VCO.Slide = VCO.Class.extend({
 		} else {
 			this.options.width 					= this._el.container.offsetWidth;
 		}
-
 		
 		if(VCO.Browser.mobile && (this.options.width <= 500)) {
 			this._el.content.style.paddingLeft 	= 0 + "px";
 			this._el.content.style.paddingRight = 0 + "px";
 			this._el.content.style.width		= this.options.width - 0 + "px";
+		} else if (this.options.width <= 500) {
+			this._el.content.style.paddingLeft 	= 10 + "px";
+			this._el.content.style.paddingRight = 10 + "px";
+			this._el.content.style.width		= this.options.width - (10 * 2) + "px";
 		} else {
 			this._el.content.style.paddingLeft 	= this.options.slide_padding_lr + "px";
 			this._el.content.style.paddingRight = this.options.slide_padding_lr + "px";
@@ -276,16 +281,12 @@ VCO.Slide = VCO.Class.extend({
 		
 		if (this._media) {
 			if (!this.has.text && this.has.headline) {
-				trace("headline height");
-				trace(this._text.headlineHeight());
-				trace(this.options.height)
-				trace(this.options.height - this._text.headlineHeight())
 				this._media.updateDisplay(this.options.width, (this.options.height - this._text.headlineHeight()));
 			} else {
 				this._media.updateDisplay(this.options.width, this.options.height);
 			}
 		}
-		//this._el.content_container.style.height = this.options.height + "px";
+		
 	}
 	
 });

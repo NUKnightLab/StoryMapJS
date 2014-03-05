@@ -48,6 +48,18 @@ function do_ajax(url, data, on_error, on_success) {
     });
 }
 
+function format_error(msg, err) {
+    var message = msg;
+    if(err) {
+        if(err.hasOwnProperty('message')) {
+            message += ': ' + err.message;
+        } else {
+            message += ': ' + err;
+        }    
+    }
+    return message;
+}
+
 function show_error(msg, err) { 
     var message = msg;
     
@@ -81,7 +93,7 @@ function show_error(msg, err) {
     }
        
     hide_progress();
-    $('#error_msg').html(message);
+    $('#error_modal .modal-msg').html(message);
     $('#error_modal').modal('show');
 }
 
@@ -91,7 +103,7 @@ function hide_error() {
 
 function show_progress(msg) {
     hide_error();
-    $('#progress_msg').html(msg);
+    $('#progress_modal .modal-msg').html(msg);
     $('#progress_modal').modal('show');
 }
 
@@ -100,7 +112,7 @@ function hide_progress() {
 }
 
 function show_confirm(msg, callback) {
-    $('#confirm_msg').html(msg);
+    $('#confirm_modal .modal-msg').html(msg);
     $('#confirm_modal .btn-primary').bind('click.confirm', function(event) {
         $(this).unbind('click.confirm');
         $('#confirm_modal').modal('hide');
@@ -112,7 +124,9 @@ function show_confirm(msg, callback) {
 }
 
 function show_message(msg, callback) {
-    $('#message_msg').html(msg);
+    hide_progress();
+    
+    $('#message_modal .modal-msg').html(msg);
     $('#message_modal .btn').bind('click.confirm', function(event) {
         $(this).unbind('click.confirm');
         $('#message_modal').modal('hide');

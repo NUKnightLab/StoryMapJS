@@ -44,6 +44,10 @@ VCO.SlideNav = VCO.Class.extend({
 		
 		this._el.container = VCO.Dom.create("div", "vco-slidenav-" + this.options.direction);
 		
+		if (VCO.Browser.mobile) {
+			this._el.container.setAttribute("ontouchstart"," ");
+		}
+		
 		this._initLayout();
 		this._initEvents();
 		

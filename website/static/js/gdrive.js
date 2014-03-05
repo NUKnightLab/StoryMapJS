@@ -480,7 +480,12 @@ function gdrive_storymap_publish(storymapFolder, callback) {
             callback(error);
         } else {
             var content = JSON.stringify(data);
-            gdrive_file_save(storymapFolder, 'published.json', content, callback);            
+            gdrive_file_save(storymapFolder, 'published.json', content, function(error, file) {
+                if(file) {
+                    storymapFolder['published_on'] = file.modifiedDate;
+                }
+                callback(error, file);
+            });            
         }
     });
 }

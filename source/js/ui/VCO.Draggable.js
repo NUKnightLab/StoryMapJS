@@ -288,36 +288,38 @@ VCO.Draggable = VCO.Class.extend({
 	
 	_animateMomentum: function() {
 		var pos = {
-			x: this.data.new_pos.x,
-			y: this.data.new_pos.y
-		}
+				x: this.data.new_pos.x,
+				y: this.data.new_pos.y
+			},
+			animate = {
+				duration: 	this.options.duration,
+				easing: 	VCO.Ease.easeOutStrong
+			};
 		
-		if (this.options.constraint.top || this.options.constraint.bottom) {
-			if (pos.y > this.options.constraint.bottom) {
-				pos.y = this.options.constraint.bottom;
-			} else if (pos.y < this.options.constraint.top) {
-				pos.y = this.options.constraint.top;
+		if (this.options.enable.y) {
+			if (this.options.constraint.top || this.options.constraint.bottom) {
+				if (pos.y > this.options.constraint.bottom) {
+					pos.y = this.options.constraint.bottom;
+				} else if (pos.y < this.options.constraint.top) {
+					pos.y = this.options.constraint.top;
+				}
 			}
+			animate.top = Math.floor(pos.y) + "px";
 		}
 		
-		if (this.options.constraint.left || this.options.constraint.right) {
-			if (pos.x > this.options.constraint.left) {
-				pos.x = this.options.constraint.left;
-			} else if (pos.x < this.options.constraint.right) {
-				pos.x = this.options.constraint.right;
+		if (this.options.enable.x) {
+			if (this.options.constraint.left || this.options.constraint.right) {
+				if (pos.x > this.options.constraint.left) {
+					pos.x = this.options.constraint.left;
+				} else if (pos.x < this.options.constraint.right) {
+					pos.x = this.options.constraint.right;
+				}
 			}
+			animate.left = Math.floor(pos.x) + "px";
 		}
 		
-		//trace(this._el.move.offsetParent);
-		//trace("this._el.move.offsetTop " + this._el.move.offsetTop);
-		//trace("pos.y " + pos.y);
-		//trace("this._el.move.offsetTop - pos.y " + (this._el.move.offsetTop - pos.y));
-		this.animator = VCO.Animate(this._el.move, {
-			left: 		Math.floor(pos.x) + "px",
-			top: 		Math.floor(pos.y) + "px",
-			duration: 	this.options.duration,
-			easing: 	VCO.Ease.easeOutStrong
-		});
+		this.animator = VCO.Animate(this._el.move, animate);
+		
 		this.fire("momentum", this.data);
 	}
 });

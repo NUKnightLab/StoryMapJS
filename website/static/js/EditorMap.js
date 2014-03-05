@@ -1,9 +1,9 @@
-// ToolMap.js
+// EditorMap.js
 //
 // Requires: Google Maps, Leaflet, jquery
 //
 
-function ToolMap(options) {
+function EditorMap(options) {
     this.name = "";
     this.map = null;       
     this.markers = [];
@@ -28,23 +28,23 @@ function ToolMap(options) {
     this.handlers = this.options.handlers;
 }
 
-ToolMap.prototype.onZoom = function() {
+EditorMap.prototype.onZoom = function() {
     this.handlers.zoom(this.map.getZoom());
 }
 
-ToolMap.prototype.getZoom = function() {
+EditorMap.prototype.getZoom = function() {
     return this.map.getZoom();
 }
 
-ToolMap.prototype.setZoom = function(zoom) {
+EditorMap.prototype.setZoom = function(zoom) {
     this.map.setZoom(zoom);
 }
 
-ToolMap.prototype.panTo = function(lat, lng) {
+EditorMap.prototype.panTo = function(lat, lng) {
     this.map.panTo(this.LatLng(lat, lng));
 }
 
-ToolMap.prototype.fitBounds = function(latlngbounds) {
+EditorMap.prototype.fitBounds = function(latlngbounds) {
     this.map.fitBounds(latlngbounds);
 }
 
@@ -52,23 +52,23 @@ ToolMap.prototype.fitBounds = function(latlngbounds) {
 // Google Maps
 // ------------------------------------------------------------
 
-function GoogleToolMap(map_element_id, options) {
+function GoogleEditorMap(map_element_id, options) {
     var self = this;
     
-    ToolMap.apply(this, Array.prototype.slice.call(arguments));
+    EditorMap.apply(this, Array.prototype.slice.call(arguments));
     
     this.name = "google";
     this.overlay = null;
-    
+     
     this.map = new google.maps.Map(document.getElementById(this.options.map_id), {
         disableDoubleClickZoom: true,
         mapTypeControl: false,
-        panControl: true,
+        panControl: false,
         scrollwheel: false,
         streetViewControl: false,
         zoomControl: true,
         zoomControlOptions: {
-            style: google.maps.ZoomControlStyle.SMALL
+            style: google.maps.ZoomControlStyle.DEFAULT
         },
         mapTypeId: "stamen:toner-lite"
     });
@@ -102,17 +102,17 @@ function GoogleToolMap(map_element_id, options) {
     }
 }
 
-GoogleToolMap.prototype = Object.create(ToolMap.prototype);
+GoogleEditorMap.prototype = Object.create(EditorMap.prototype);
 
-GoogleToolMap.prototype.LatLng = function(lat, lng) {
+GoogleEditorMap.prototype.LatLng = function(lat, lng) {
     return new google.maps.LatLng(lat, lng);
 }
 
-GoogleToolMap.prototype.LatLngBounds = function() {
+GoogleEditorMap.prototype.LatLngBounds = function() {
     return new google.maps.LatLngBounds();
 }
 
-GoogleToolMap.prototype.addPolyLine = function() {
+GoogleEditorMap.prototype.addPolyLine = function() {
     var that = this;
     var div = null;
     
@@ -160,14 +160,14 @@ GoogleToolMap.prototype.addPolyLine = function() {
     this.overlay.setMap(this.map);
 }
 
-GoogleToolMap.prototype.removePolyLine = function() {
+GoogleEditorMap.prototype.removePolyLine = function() {
     if(this.overlay) {
         this.overlay.setMap(null);
         this.overlay = null;
     }
 }
 
-GoogleToolMap.prototype.addMarker = function(lat, lng, draggable) {
+GoogleEditorMap.prototype.addMarker = function(lat, lng, draggable) {
     var latlng = new google.maps.LatLng(lat, lng);
     var marker = new google.maps.Marker({
         map: this.map,
@@ -184,7 +184,7 @@ GoogleToolMap.prototype.addMarker = function(lat, lng, draggable) {
     return marker;
 }
 
-GoogleToolMap.prototype.removeMarker = function(i) {
+GoogleEditorMap.prototype.removeMarker = function(i) {
     // Remove marker
     var removed = this.markers.splice(i, 1);
     removed[0].setMap(null);
@@ -201,7 +201,7 @@ GoogleToolMap.prototype.removeMarker = function(i) {
     }
 }
 
-GoogleToolMap.prototype.clearOverlays = function() {
+GoogleEditorMap.prototype.clearOverlays = function() {
     this.removePolyLine();
     
     for(var i = this.markers.length - 1; i >=0; i--) {
@@ -211,36 +211,36 @@ GoogleToolMap.prototype.clearOverlays = function() {
     this.markerBounds = this.LatLngBounds();
 }
 
-GoogleToolMap.prototype.onMarkerDrag = function() {
+GoogleEditorMap.prototype.onMarkerDrag = function() {
     var pos = this.markers[0].getPosition();
     this.handlers.marker_drag(pos.lat(), pos.lng());
 }
 
-GoogleToolMap.prototype.zoomEnable = function(enable) {
+GoogleEditorMap.prototype.zoomEnable = function(enable) {
     if(enable) {
         if(!this.zoom_listener) {
             this.zoom_listener = google.maps.event.addListener(
                 this.map, 'zoom_changed', this.onZoom.bind(this)
             );
         }
-        this.map.setOptions({panControl: true, zoomControl: true});
+        this.map.setOptions({zoomControl: true});
     } else {
         if(this.zoom_listener) {
             google.maps.event.removeListener(this.zoom_listener);
             this.zoom_listener = null;
         }
-        this.map.setOptions({panControl: false, zoomControl: false});
+        this.map.setOptions({zoomControl: false});
     }
 }
 
 // Set center and zoom
-GoogleToolMap.prototype.setView = function(lat, lng, zoom) {
+GoogleEditorMap.prototype.setView = function(lat, lng, zoom) {
     this.panTo(lat, lng);
     this.setZoom(zoom);
 }
 
 // Default view (bound all markers)
-GoogleToolMap.prototype.setDefaultView = function() {
+GoogleEditorMap.prototype.setDefaultView = function() {
     if(this.markers.length) {
         this.map.fitBounds(this.markerBounds);
     } else {
@@ -253,11 +253,11 @@ GoogleToolMap.prototype.setDefaultView = function() {
     }
 }
 
-GoogleToolMap.prototype.getDefaultView = function() {
+GoogleEditorMap.prototype.getDefaultView = function() {
     return {lat: 0, lng: 0, zoom: 1};
 }
 
-GoogleToolMap.prototype.setMapType = function(map_type, map_subdomains) { 
+GoogleEditorMap.prototype.setMapType = function(map_type, map_subdomains) { 
     if(map_type && map_type.match("http://")) {
         this.map.mapTypes.set("custom", new google.maps.ImageMapType({
             getTileUrl: function(coord, zoom) {
@@ -297,10 +297,10 @@ GoogleToolMap.prototype.setMapType = function(map_type, map_subdomains) {
 // Leaflet
 // ------------------------------------------------------------
 
-function LeafletToolMap(map_element_id, options) {
+function LeafletEditorMap(map_element_id, options) {
     var self = this;
         
-    ToolMap.apply(this, Array.prototype.slice.call(arguments));
+    EditorMap.apply(this, Array.prototype.slice.call(arguments));
 
     this.name = "leaflet";
     this.tilelayer = null;
@@ -322,17 +322,17 @@ function LeafletToolMap(map_element_id, options) {
     this.polyline = null;
 }
 
-LeafletToolMap.prototype = Object.create(ToolMap.prototype);
+LeafletEditorMap.prototype = Object.create(EditorMap.prototype);
 
-LeafletToolMap.prototype.LatLng = function(lat, lng) {
+LeafletEditorMap.prototype.LatLng = function(lat, lng) {
     return L.latLng(lat, lng);
 }
 
-LeafletToolMap.prototype.LatLngBounds = function() {
+LeafletEditorMap.prototype.LatLngBounds = function() {
     return L.latLngBounds([]);
 }
 
-LeafletToolMap.prototype.addPolyLine = function() {
+LeafletEditorMap.prototype.addPolyLine = function() {
     this.polyline = L.polyline([], {  
         color: '#cc0000',
         weight: 2,
@@ -346,14 +346,14 @@ LeafletToolMap.prototype.addPolyLine = function() {
     this.polyline.addTo(this.map);  
 }
 
-LeafletToolMap.prototype.removePolyLine = function() {
+LeafletEditorMap.prototype.removePolyLine = function() {
     if(this.polyline) {
         this.map.removeLayer(this.polyline);
         this.polyline = null;
     }
 }
 
-LeafletToolMap.prototype.addMarker = function(lat, lng, draggable) {
+LeafletEditorMap.prototype.addMarker = function(lat, lng, draggable) {
     var latlng = L.latLng(lat, lng);
     var marker = L.marker(latlng, {draggable: (draggable || false)})
     marker.addTo(this.map);
@@ -367,7 +367,7 @@ LeafletToolMap.prototype.addMarker = function(lat, lng, draggable) {
     return marker;
 }
 
-LeafletToolMap.prototype.removeMarker = function(i) {
+LeafletEditorMap.prototype.removeMarker = function(i) {
     // Remove marker
     var removed = this.markers.splice(i, 1);
     this.map.removeLayer(removed[0]);
@@ -388,7 +388,7 @@ LeafletToolMap.prototype.removeMarker = function(i) {
 }
 
 
-LeafletToolMap.prototype.clearOverlays = function() {
+LeafletEditorMap.prototype.clearOverlays = function() {
     this.removePolyLine();
     
     for(var i = this.markers.length - 1; i >=0; i--) {
@@ -398,12 +398,12 @@ LeafletToolMap.prototype.clearOverlays = function() {
     this.markerBounds = this.LatLngBounds();
 }
 
-LeafletToolMap.prototype.onMarkerDrag = function() {
+LeafletEditorMap.prototype.onMarkerDrag = function() {
     var pos = this.markers[0].getLatLng();
     this.handlers.marker_drag(pos.lat, pos.lng);
 }
 
-LeafletToolMap.prototype.zoomEnable = function(enable) {    
+LeafletEditorMap.prototype.zoomEnable = function(enable) {    
     if(enable) {
         if(!this.zoom_control) {
             this.zoom_control = L.control.zoom();
@@ -420,22 +420,22 @@ LeafletToolMap.prototype.zoomEnable = function(enable) {
 }
 
 // Set center and zoom
-LeafletToolMap.prototype.setView = function(lat, lng, zoom) {
+LeafletEditorMap.prototype.setView = function(lat, lng, zoom) {
     this.map.setView(L.latLng(lat, lng), zoom);
 }
 
 // Default view (center zoom)
-LeafletToolMap.prototype.setDefaultView = function() {
+LeafletEditorMap.prototype.setDefaultView = function() {
     var d = this.tilelayer.getCenterZoom(this.map)
     this.map.setView(L.latLng(d.lat, d.lon), d.zoom);
 }
 
-LeafletToolMap.prototype.getDefaultView = function() {
+LeafletEditorMap.prototype.getDefaultView = function() {
     var d = this.tilelayer.getCenterZoom(this.map)
     return {lat: d.lat, lng: d.lon, zoom: d.zoom};
 }
 
-LeafletToolMap.prototype.setMapType = function(map_type, zoomify_data) {  
+LeafletEditorMap.prototype.setMapType = function(map_type, zoomify_data) {  
     if(this.tilelayer) {
         this.map.removeLayer(this.tilelayer);
         this.tilelayer = null;

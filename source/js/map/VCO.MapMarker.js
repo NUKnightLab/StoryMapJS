@@ -128,7 +128,6 @@ VCO.MapMarker = VCO.Class.extend({
 	/*	Events
 	================================================== */
 	_onMarkerClick: function(e) {
-		trace("MARKER CLICK");
 		this.fire("markerclick", {marker_number: this.marker_number});
 	},
 	
