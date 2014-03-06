@@ -533,6 +533,10 @@ function preview_load() {
     }
           
     _storymap_object = new VCO.StoryMap('preview_embed', _storymap_data, options);
+    
+    _storymap_object.on('change', function(e) {
+        $('.slide').eq(this.current_slide).click();
+    }, false);
 }
 
 function preview_refresh() {
