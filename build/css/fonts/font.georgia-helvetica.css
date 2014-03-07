@@ -5,7 +5,7 @@
 .vco-storymap .vco-media .vco-media-wikipedia h4 a{font-family:'Helvetica Neue',Helvetica,Arial,"MS Trebuchet",sans-serif;font-weight:700;font-size:28px;line-height:28px}
 .vco-storymap .vco-caption,.vco-storymap .vco-credit{font-family:'Helvetica Neue',Helvetica,Arial,"MS Trebuchet",sans-serif}
 .vco-storymap .vcard{font-family:Georgia,Times,serif;font-weight:400}
-.vco-storymap .vco-sizebar,.vco-storymap .vco-slidenav-next,.vco-storymap .vco-slidenav-previous{font-family:Georgia,Times,serif;font-weight:400;text-transform:uppercase}
-.vco-storymap .vco-sizebar .vco-sizebar-button{font-weight:400}
+.vco-storymap .vco-menubar,.vco-storymap .vco-slidenav-next,.vco-storymap .vco-slidenav-previous{font-family:Georgia,Times,serif;font-weight:400;text-transform:uppercase}
+.vco-storymap .vco-menubar .vco-menubar-button{font-weight:400}
 .vco-storymap blockquote,.vco-storymap blockquote p{font-family:'Helvetica Neue',Helvetica,Arial,"MS Trebuchet",sans-serif;font-style:italic}
 input[type="text"].editor-headline{font-family:Georgia,Times,serif;text-transform:uppercase;font-weight:800;font-size:36px;line-height:36px}
