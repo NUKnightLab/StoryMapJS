@@ -32,55 +32,6 @@
     </div>
 </div>
 
-<!-- SELECT -->
-
-<div id="new_modal" class="modal hide fade" role="dialog" aria-hidden="true">
-    <div class="modal-body">
-        <!-- error -->
-        <div class="modal-error">    
-            <span class="modal-msg error"></span>
-        </div>    
-        <p>Enter a unique name for your StoryMap:</p>
-        <input type="text" id="new_name" value="" style="width: 95%;" />
-        <p><small>This name is just for you. No one else will see it.</small></p>
-    </div>
-    <div class="modal-footer">
-        <a href="#" class="btn" data-dismiss="modal">Cancel</a>
-        <a href="#" class="btn btn-primary">Create</a>
-    </div>
-</div>
-
-<div id="new_zoomify_modal" class="modal hide fade" role="dialog" aria-hidden="true">
-    <div class="modal-body">
-        <!-- error -->
-        <div class="modal-error">    
-            <span class="modal-msg error"></span>
-        </div>    
-        <p>Enter a unique name for your StoryMap:</p>
-        <input type="text" id="new_zoomify_name" value="" style="width: 95%;" />
-        <p><small>This name is just for you. No one else will see it.</small></p>
-        <p>Enter an URL path for a zoomify image directory:</p>
-        <input type="text" id="new_zoomify_path" value="" style="width: 95%;" placeholder="http://www.domain.org/directory/" />
-        <p>Enter the maximum dimensions of the image:</p>
-        <div class="controls">
-            <div class="input-prepend">
-                <span class="add-on">Width</span>
-                <input type="text" id="new_zoomify_width" value="" class="input-small"> 
-            </div>
-             <div class="input-prepend">
-                <span class="add-on">Height</span>
-                <input type="text" id="new_zoomify_height" value="" class="input-small"> 
-            </div>
-        </div>       
-    </div>
-    <div class="modal-footer">
-        <a href="#" class="btn" data-dismiss="modal">Cancel</a>
-        <a href="#" class="btn btn-primary">Create</a>
-    </div>
-</div>
-
-<!-- EDIT -->
-
 <div id="opt_modal" class="modal hide fade"">
     <div class="modal-header">
         <h5>Options</h5>
@@ -393,7 +344,10 @@
                     </a>
                 </div>
             </div>
+            <!--
             <textarea id="share_url" rows="3"></textarea>
+            -->
+            <input type="text" id="share_url" class="stretch" onfocus="this.select();" onmouseup="return false;">
         </p>
         <p>
             <div>
@@ -411,7 +365,7 @@
                     </div>
                 </div>
             </div>
-            <textarea id="share_embed" rows="5"></textarea> 
+            <textarea id="share_embed" rows="5" onfocus="this.select();" onmouseup="return false;"></textarea> 
         </p>  
     </div>
     <div class="modal-footer">

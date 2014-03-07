@@ -20,11 +20,23 @@ button.btn, .btn-group>.btn, .btn-group>.dropdown-menu, .btn-group>.popover {
 .popover-title, .popover-content {font-size: 12px;}
 
 label, select, textarea {font-size: 14px;}
+
 input[type="text"]:not(#headline) {font-size: 14px;line-height: 18px;}
+
+input[type="text"].stretch {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    -o-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 100%;
+    height: 32px;
+    margin-left: 0;
+    margin-right: 0;
+}
 
 .add-on {font-size: 14px !important;}
 
-.tabs-section .nav {margin-bottom: 0; padding-left: 300px;}
 ul { margin-bottom: 0;}
 li { padding: 0; }
 
@@ -38,12 +50,10 @@ a.help:hover {text-decoration: none;}
 .note {font-size: 0.8em;}
 .ui-note {font: 13px Roboto, Arial, Sans-serif;}
 
-
 /* MODALS
 */
 
 .modal-backdrop {background-color: #666;}
-
 .modal .error {color: #cc0000;font-style: italic;}
 
 /*      in-modal progress panel 
@@ -58,11 +68,31 @@ a.help:hover {text-decoration: none;}
     -moz-border-radius: 6px;
     border-radius: 6px;
     background-color: #fff;
-    opacity: 0.8;
+    opacity: 0.85;
+    z-index: 1000;
 }
 .modal-progress > div {display: table;width: 100%;height: 100%;}
 .modal-progress > div > div {display: table-cell;text-align: center;vertical-align: middle;}
 .modal-progress i {margin-bottom: 10px;}
+
+
+.modal-confirm {
+    position:absolute;
+    top: 0;
+    left:0;
+    bottom: 0;
+    right: 0;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    background-color: #fff;
+    opacity: 0.85;
+    z-index: 1001;
+}
+.modal-confirm > div {display: table;width: 100%;height: 100%;}
+.modal-confirm > div > div {display: table-cell;text-align: center;vertical-align: middle;}
+.modal-confirm button {margin-left: 8px;margin-right: 8px;}
+
 
 /*      in-modal upload panel 
 */
@@ -131,23 +161,29 @@ a.help:hover {text-decoration: none;}
 .share-embed-params {display: inline-block;float: right;}
 
 
-/* SELECT PAGE
+/* SELECT PAGE ENTRY MODAL
 */
 
-#selector {margin-top: 60px;margin-bottom: 10px;}
+#entry_modal .modal-body {min-height: 200px;}
 
-.intro-panel {padding-right: 20px;}
-.title {display: inline;margin-bottom: 6px;}
-.title-message {display: inline;margin-left: 10px;font: 12px Roboto,Arial,sans-serif;}
-.modded {font-size: .8em;margin: 0 0 0px;line-height: 1.6em;}
+#entry_user_info {float: left;font-size: 0.9em;}
 
-.login-info {margin-bottom: 12px;font-size: 0.9em;font-weight: bold;text-align: right;}
+.entry-panel.entry-login > div {display: table;width: 100%;height: 170px;}
+.entry-panel.entry-login > div > div {display: table-cell;text-align: center;vertical-align: middle;}
 
-#storymap_table {width: 100%;}
-#storymap_table i.icon-warning-sign { margin-right: 0.5em; }
-#storymap_table .storymap-edit,.storymap-delete {margin-left: 10px;}
+.entry-panel.entry-type {text-align: center;}
+.entry-panel.entry-type a {display: inline-block;font-size: 72px;border: 1px solid #ddd;padding: 10px;margin: 10px;}
+.entry-panel.entry-type a:hover {text-decoration: none;background-color: #ddd;}
 
-.button-row button {float: right;margin-left: 8px;}
+.entry-list .table-header {margin-bottom: 6px;}
+.entry-list .table-toggles {display: inline-block;float: right;}
+.entry-list .title {display: inline;margin-bottom: 6px;}
+.entry-list .modded {font-size: .8em;margin: 0 0 0px;line-height: 1.6em;}
+.entry-list i.icon-warning-sign { margin-right: 0.5em; }
+
+.entry-list .list-item-edit {margin-left: 10px;}
+.entry-list .list-item-delete {margin-left: 10px;}
+
 
 
 /* EDIT PAGE 
@@ -204,6 +240,10 @@ a.help:hover {text-decoration: none;}
     line-height: 36px;
     text-align: center;
     width: 100%;
+}
+.slides-add button {
+    width: 100%;
+    padding: 8px;
 }
 
 .slide {
@@ -286,6 +326,7 @@ a.help:hover {text-decoration: none;}
 */
 
 .tabs-section {position: absolute;top: 48px;left: 100px;bottom: 0;right: 0;}
+.tabs-section .nav {margin-bottom: 0; padding-left: 300px;}
 .tabs-section .tab-content {position: absolute; left: 0;top: 40px;bottom: 0;right: 0;border-left: 1px solid #ddd;}
 .tabs-section .tab-content .tab-pane {width: 100%;height: 100%;}
 
@@ -351,6 +392,8 @@ a.help:hover {text-decoration: none;}
 
 .data-media-icons {color: #aaa;margin-top: -8px;}
 .data-media-upload {margin-top: 4px;margin-bottom: 12px;}
+
+.data-right button {margin-bottom: 10px;}
 
 /* font-face, font-size, line-height, etc should be set in font-specific css */
 #headline {color: #000;margin-bottom: 11px;height: auto;}
