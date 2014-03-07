@@ -395,11 +395,19 @@ VCO.StorySlider = VCO.Class.extend({
 	},
 	
 	next: function() {
-		this.goTo(this.current_slide +1);
+		if ((this.current_slide +1) < (this._slides.length)) {
+			this.goTo(this.current_slide +1);
+		} else {
+			this.goTo(this.current_slide);
+		}
 	},
 	
 	previous: function() {
-		this.goTo(this.current_slide -1);
+		if (this.current_slide -1 >= 0) {
+			this.goTo(this.current_slide -1);
+		} else {
+			this.goTo(this.current_slide);
+		}
 	},
 	
 	showNav: function(nav_obj, show) {
