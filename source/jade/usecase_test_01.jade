@@ -1,0 +1,153 @@
+!!! 5
+html(lang="en")
+	head
+		title StoryMap Use Case Test
+		meta(charset='utf-8')
+		meta(name='description', content='TimelineJS Embed')
+		meta(name='apple-mobile-web-app-capable', content='yes')
+		meta(name='apple-touch-fullscreen', content='yes')
+		meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0')
+		// CSS
+		link(rel='stylesheet', href='../css/storymap.css?v1')
+		//link(rel='stylesheet', href='../css/fonts/font.oldstandard.css?v1')
+		//link(rel='stylesheet', href='../css/fonts/font.opensans-gentiumbook.css?v1')
+		link(rel='stylesheet', href='../css/fonts/font.default.css?v1')
+		//link(rel='stylesheet', href='../css/fonts/font.pt.css?v1')
+		//link(rel='stylesheet', href='../css/fonts/font.lustria-lato.css?v1')
+		//link(rel='stylesheet', href='../css/fonts/font.fjalla-average.css?v1')
+		//link(rel='stylesheet', href='../css/fonts/font.dancing-ledger.css?v1')
+		//link(rel='stylesheet', href='../css/fonts/font.bitter-raleway.css?v1')
+		//link(rel='stylesheet', href='../css/fonts/font.rufina-sintony.css?v1')
+		//link(rel='stylesheet', href='../css/fonts/font.abril-droidsans.css?v1')
+		//link(rel='stylesheet', href='../css/fonts/font.amatic-andika.css?v1')
+		//link(rel='stylesheet', href='../css/fonts/font.medula-lato.css?v1')
+		//link(rel='stylesheet', href='../css/fonts/font.clicker-garamond.css?v1')
+		
+		
+		//FONT
+		//link(rel='stylesheet', href='http://fonts.googleapis.com/css?family=Bevan%7CPontano+Sans&amp;subset=latin,latin')
+		
+		// Style
+		style
+			html, body {
+				width:100%;
+				padding: 0px;
+				margin: 0px;
+				
+			}
+			.vco-storymap {
+				margin-bottom:25px;
+			}
+			#storymap1 {
+				width:620px;
+				height:800px;
+				border: 1px solid #999;
+			}
+			#storymap2 {
+				width:994px;
+				height:800px;
+				border: 1px solid #999;
+			}
+			#storymap3 {
+				width:994px;
+				height:800px;
+				border: 1px solid #999;
+			}
+			#storymap4 {
+				width:100%;
+				height:900px;
+				border-top: 1px solid #999;
+				border-bottom: 1px solid #999;
+			}
+			#storymap5 {
+				width:100%;
+				height:900px;
+				border-top: 1px solid #999;
+				border-bottom: 1px solid #999;
+			}
+			#storymap6 {
+				width:100%;
+				height:900px;
+				border-top: 1px solid #999;
+				border-bottom: 1px solid #999;
+			}
+			#storymap7 {
+				width:100%;
+				height:900px;
+				border-top: 1px solid #999;
+				border-bottom: 1px solid #999;
+			}
+			#storymap8 {
+				width:100%;
+				height:900px;
+				border-top: 1px solid #999;
+				border-bottom: 1px solid #999;
+			}
+			#storymap9 {
+				width:600px;
+				height:800px;
+				border: 1px solid #999;
+			}
+			#storymap10 {
+				width:600px;
+				height:400px;
+				border: 1px solid #999;
+			}
+		//
+			style
+				html, body {
+					height:100%;
+					width:100%;
+					padding: 0px;
+					margin: 0px;
+				}
+				.vco-storymap {
+					font-family:'Pontano Sans',sans-serif !important;
+				}
+				.vco-storymap h1, .vco-storymap h2, .vco-storymap h3, .vco-storymap h4, .vco-storymap h5, .vco-storymap h6 {
+					font-family:'Bevan',serif !important;
+					font-weight: normal;
+				}
+
+		// HTML5 shim, for IE6-8 support of HTML elements
+		//if lt IE 9
+			script(src='http://html5shim.googlecode.com/svn/trunk/html5.js')
+
+	body
+
+		div#storymap1
+		div#storymap2
+		div#storymap3
+		div#storymap4
+		div#storymap5
+		div#storymap6
+		div#storymap7
+		div#storymap8
+		div#storymap9
+		div#storymap10
+		// JavaScript
+		script(src='../js/storymap.js')
+		script
+			var storymap1 = new VCO.StoryMap('storymap1', 'https://www.googledrive.com/host/0B5VRcp6WPOQoQmR0TnFISG9zR3c/published.json');
+			var storymap2 = new VCO.StoryMap('storymap2', 'https://www.googledrive.com/host/0B6IaAx71lB6zTHpfWjgtaFRUSW8/published.json');
+			var storymap3 = new VCO.StoryMap('storymap3', 'https://www.googledrive.com/host/0B6IaAx71lB6zV2lIR1pMRTlmdU0/published.json', {map_type: "osm:standard"});
+			var storymap4 = new VCO.StoryMap('storymap4', 'https://www.googledrive.com/host/0B6IaAx71lB6zNDFEUGVRY3puNXc/published.json', {map_type: "osm:standard"});
+			var storymap5 = new VCO.StoryMap('storymap5', 'http://extras.thetimes.co.uk/public/jsons/yanukovych.json');
+			var storymap6 = new VCO.StoryMap('storymap6', 'http://data.thetimes.co.uk/cdn/jsons/kiev.json');
+			var storymap7 = new VCO.StoryMap('storymap7', 'https://www.googledrive.com/host/0BwJSxlUpQB4eTzcyb1FsVjNnYTQ/published.json');
+			var storymap8 = new VCO.StoryMap('storymap8', 'https://www.googledrive.com/host/0B7WMyA40EyJrc2pEWFF1MzM4eHM/published.json');
+			var storymap9 = new VCO.StoryMap('storymap9', 'https://www.googledrive.com/host/0B-NHGDl9zM7FSTlkVHFyR2drMms/published.json');
+			var storymap10 = new VCO.StoryMap('storymap10', 'https://www.googledrive.com/host/0B4yooBeB3CQEM0NINENObGpnMkE/published.json');
+			window.onresize = function(event) {
+				storymap1.updateDisplay();
+				storymap2.updateDisplay();
+				storymap3.updateDisplay();
+				storymap4.updateDisplay();
+				storymap5.updateDisplay();
+				storymap6.updateDisplay();
+				storymap7.updateDisplay();
+				storymap8.updateDisplay();
+				storymap9.updateDisplay();
+				storymap10.updateDisplay();
+			}
+
