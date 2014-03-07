@@ -4,6 +4,10 @@
 	Events:
 	markerAdded
 	markerRemoved
+
+	TODO 	Revisit calculations to determine zoom for landscape mode 
+			since only half the map is visible but the map extends the full width
+
 ================================================== */
  
 VCO.Map = VCO.Class.extend({
@@ -37,6 +41,9 @@ VCO.Map = VCO.Class.extend({
 		// MAP
 		this._map = null;
 		
+		// MINI MAP
+		this._mini_map = null;
+		
 		// Markers
 		this._markers = [];
 		
@@ -49,6 +56,9 @@ VCO.Map = VCO.Class.extend({
 		
 		// Map Tiles Layer
 		this._tile_layer = null;
+		
+		// Map Tiles Layer for Mini Map
+		this._tile_layer_mini = null;
 		
 		// Image Layer (for zoomify)
 		this._image_layer = null;
@@ -63,6 +73,7 @@ VCO.Map = VCO.Class.extend({
 		this.options = {
 			map_type: 			"stamen:toner-lite",
 			map_as_image: 		false,
+			map_mini: 			false,
 			map_subdomains: 	"",
 			zoomify: {
 				path: 			"",
@@ -71,6 +82,7 @@ VCO.Map = VCO.Class.extend({
 				tolerance: 		0.8,
 				attribution: 	""
 			},
+			skinny_size: 		650,
 			path_gfx: 			"gfx",
 			start_at_slide: 	0,
 			map_popup: 			false, 
@@ -85,7 +97,7 @@ VCO.Map = VCO.Class.extend({
 			line_join: 			"miter",
 			show_lines: 		true,
 			show_history_line: 	true,
-			map_center_offset:  10
+			map_center_offset:  null // takes object {top:0,left:0}
 		};
 		
 		// Animation
@@ -153,7 +165,7 @@ VCO.Map = VCO.Class.extend({
 						
 						// Calculate Zoom
 						zoom = this._calculateZoomChange(this._getMapCenter(true), marker.location());
-			
+						trace(zoom);
 						// Set Map View
 						this._viewTo(marker.data.location, {calculate_zoom: this.options.calculate_zoom, zoom:zoom});
 					
@@ -251,6 +263,16 @@ VCO.Map = VCO.Class.extend({
 		this._markerOverview();
 	},
 	
+	createMiniMap: function() {
+		this._createMiniMap();
+	},
+	
+	setMapOffset: function(left, top) {
+		// Update Component Displays
+		this.options.map_center_offset.left = left;
+		this.options.map_center_offset.top 	= top;
+	},
+	
 	/*	Adding, Hiding, Showing etc
 	================================================== */
 	show: function() {
@@ -312,6 +334,13 @@ VCO.Map = VCO.Class.extend({
 		================================================== */
 		// Extend this map class and use this to create the map using preferred API
 		_createMap: function() {
+			
+		},
+		
+		/*	Mini Map Specific Create
+		================================================== */
+		// Extend this map class and use this to create the map using preferred API
+		_createMiniMap: function() {
 			
 		},
 	
@@ -377,7 +406,7 @@ VCO.Map = VCO.Class.extend({
 		
 		},
 		
-		_updateMapDisplay: function(w, h, animate, d) {
+		_updateMapDisplay: function(animate, d) {
 			
 		},
 		
@@ -420,6 +449,9 @@ VCO.Map = VCO.Class.extend({
 	_onMapLoaded: function(e) {
 		this._loaded.map = true;
 		this._initialMapLocation();
+		if (this.options.map_mini && !VCO.Browser.touch) {
+			this.createMiniMap();
+		}
 		this.fire("loaded", this.data);
 	},
 	
@@ -432,22 +464,14 @@ VCO.Map = VCO.Class.extend({
 	/*	Private Methods
 	================================================== */
 	
-	_calculateZoomChange: function(origin, destination) {
-		return this._getBoundsZoom(origin, destination, true);
+	_calculateZoomChange: function(origin, destination, padding) {
+		return this._getBoundsZoom(origin, destination, false);
 	},
 	
-	_updateDisplay: function(w, h, animate, d, offset) {
-		
-		if (h) {
-			//this._el.map.style.height = ((h *2) - offset) + "px";
-			//this._el.map_mask.style.height = (h + offset) + "px";
-			this._el.map.style.height = h + "px";
-			this._el.map_mask.style.height = h + "px";
-		}
-		
+	_updateDisplay: function(w, h, animate, d) {
 		
 		// Update Map Display
-		this._updateMapDisplay();
+		this._updateMapDisplay(animate, d);
 	},
 	
 	_initLayout: function() {

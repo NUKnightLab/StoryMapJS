@@ -13,40 +13,15 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		// Set Marker Path
 		L.Icon.Default.imagePath = this.options.path_gfx;
 		
-		this._map = new L.map(this._el.map, {scrollWheelZoom:false});
+		this._map = new L.map(this._el.map, {scrollWheelZoom:false, zoomControl:!this.options.map_mini});
 		this._map.on("load", this._onMapLoaded, this);
 		
 		this._map.on("moveend", this._onMapMoveEnd, this);
 			
 		var map_type_arr = this.options.map_type.split(':');		
 
-		// Set Tiles
-		switch(map_type_arr[0]) {
-			case 'stamen':
-				this._tile_layer = new L.StamenTileLayer(map_type_arr[1] || 'toner-lite');
-				break;
-			case 'zoomify':
-				this._tile_layer = new L.tileLayer.zoomify(this.options.zoomify.path, {
-					width: 			this.options.zoomify.width,
-					height: 		this.options.zoomify.height,
-					tolerance: 		this.options.zoomify.tolerance,
-					attribution: 	this.options.zoomify.attribution,
-				});
-				this._image_layer = new L.imageOverlay(this.options.zoomify.path + "TileGroup0/0-0-0.jpg", this._tile_layer.getZoomifyBounds(this._map));
-				break;
-			case 'osm':
-				this._tile_layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {subdomains: 'ab'});
-				break;
-		    
-			case 'http':
-			case 'https':
-				this._tile_layer = new L.TileLayer(this.options.map_type, {subdomains: this.options.map_subdomains});
-				break;
-		        
-			default:
-				this._tile_layer = new L.StamenTileLayer('toner');
-				break;		
-		}
+		// Create Tile Layer
+		this._tile_layer = this._createTileLayer();
 		
 		// Add Tile Layer
 		this._map.addLayer(this._tile_layer);
@@ -71,6 +46,65 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		}
 
 		
+	},
+	
+	/*	Create Mini Map
+	================================================== */
+	_createMiniMap: function() {
+		this._tile_layer_mini = this._createTileLayer();
+		this._mini_map = new L.Control.MiniMap(this._tile_layer_mini, {
+			width: 				150,
+			height: 			100,
+			position: 			"bottomleft",
+			zoomLevelFixed: 	false,
+			zoomLevelOffset: 	-5,
+			//toggleDisplay: 		false,
+			zoomAnimation: 		true,
+			aimingRectOptions: 	{
+				fillColor: 		"#FFFFFF",
+				color: 			"#da0000",
+				opacity: 		1,
+				weight: 		2
+			}
+		}).addTo(this._map);
+		
+	},
+	
+	/*	Create Tile Layer
+	================================================== */
+	_createTileLayer: function() {
+		var _tilelayer,
+			_map_type_arr = this.options.map_type.split(':');		
+
+		// Set Tiles
+		switch(_map_type_arr[0]) {
+			case 'stamen':
+				_tilelayer = new L.StamenTileLayer(_map_type_arr[1] || 'toner-lite');
+				break;
+			case 'zoomify':
+				_tilelayer = new L.tileLayer.zoomify(this.options.zoomify.path, {
+					width: 			this.options.zoomify.width,
+					height: 		this.options.zoomify.height,
+					tolerance: 		this.options.zoomify.tolerance,
+					attribution: 	this.options.zoomify.attribution,
+				});
+				this._image_layer = new L.imageOverlay(this.options.zoomify.path + "TileGroup0/0-0-0.jpg", _tilelayer.getZoomifyBounds(this._map));
+				break;
+			case 'osm':
+				_tilelayer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {subdomains: 'ab'});
+				break;
+		    
+			case 'http':
+			case 'https':
+				_tilelayer = new L.TileLayer(this.options.map_type, {subdomains: this.options.map_subdomains});
+				break;
+		        
+			default:
+				_tilelayer = new L.StamenTileLayer('toner');
+				break;		
+		}
+		
+		return _tilelayer;
 	},
 	
 	/*	Event
@@ -100,18 +134,27 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	},
 	
 	_markerOverview: function() {
-		
+		var _location, _zoom;
 		// Hide Active Line
 		this._line_active.setStyle({opacity:0});
 		
 		if (this.options.map_type == "zoomify" && this.options.map_as_image) {
 			
-			var center_zoom = this._tile_layer.getCenterZoom(this._map);
+			var _center_zoom 	= this._tile_layer.getCenterZoom(this._map);
 			
-			this._map.setView(center_zoom.center, center_zoom.zoom, {
-					pan:{animate: true, duration: this.options.duration/1000, easeLinearity:.10},
-					zoom:{animate: true, duration: this.options.duration/1000, easeLinearity:.10}
+			_location = _center_zoom.center;
+			
+			if (this.options.map_center_offset && this.options.map_center_offset.left != 0 || this.options.map_center_offset.top != 0) {
+				_center_zoom.zoom = _center_zoom.zoom - 1;
+				_location = this._getMapCenterOffset(_location, _center_zoom.zoom);
+			}
+			
+			this._map.setView(_location, _center_zoom.zoom, {
+				pan:{animate: true, duration: this.options.duration/1000, easeLinearity:.10},
+				zoom:{animate: true, duration: this.options.duration/1000, easeLinearity:.10}
 			});
+			
+			
 			
 		} else {
 			var bounds_array = [];
@@ -121,8 +164,28 @@ VCO.Map.Leaflet = VCO.Map.extend({
 					bounds_array.push( [this._markers[i].data.location.lat, this._markers[i].data.location.lon]);
 				}
 			};
+			
+			if (this.options.map_center_offset && this.options.map_center_offset.left != 0 || this.options.map_center_offset.top != 0) {
+				var the_bounds 	= new L.latLngBounds(bounds_array);
+				_location 		= the_bounds.getCenter();
+				_zoom 			= this._map.getBoundsZoom(the_bounds)
+				
+				_location = this._getMapCenterOffset(_location, _zoom - 1);
+				
+				this._map.setView(_location, _zoom -1, {
+					pan:{animate: true, duration: this.options.duration/1000, easeLinearity:.10},
+					zoom:{animate: true, duration: this.options.duration/1000, easeLinearity:.10}
+				});
+				
+				
+			} else {
+				this._map.fitBounds(bounds_array, {padding:[15,15]});
+			}
+			
+		}
 		
-			this._map.fitBounds(bounds_array, {padding:[15,15]});
+		if (this._mini_map) {
+			this._mini_map.minimize();
 		}
 		
 	},
@@ -168,7 +231,8 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	_viewTo: function(loc, opts) {
 		var _animate 	= true,
 			_duration 	= this.options.duration/1000,
-			_zoom 		= this._getMapZoom();
+			_zoom 		= this._getMapZoom(),
+			_location 	= {lat:loc.lat, lon:loc.lon};
 		
 		// Show Active Line
 		if (!this.options.map_as_image) {
@@ -192,29 +256,32 @@ VCO.Map.Leaflet = VCO.Map.extend({
 			if (opts.zoom && opts.calculate_zoom) {
 				_zoom = opts.zoom;
 			}
+			
 		}	
 		
-		// OFFSET VIEW
+		// OFFSET
 		if (this.options.map_center_offset) {
-			this._map.setView(
-				{lat:loc.lat, lon:loc.lon}, 
-				_zoom,
-				{
-					pan:{animate: _animate, duration: _duration, easeLinearity:.10},
-					zoom:{animate: _animate, duration: _duration, easeLinearity:.10}
-				}
-			)
-		} else {
-			this._map.setView(
-				{lat:loc.lat, lon:loc.lon}, 
-				_zoom,
-				{
-					pan:{animate: _animate, duration: _duration, easeLinearity:.10},
-					zoom:{animate: _animate, duration: _duration, easeLinearity:.10}
-				}
-			)
+			_location = this._getMapCenterOffset(_location, _zoom);
 		}
 		
+		this._map.setView(
+			_location, 
+			_zoom,
+			{
+				pan:{animate: _animate, duration: _duration, easeLinearity:.10},
+				zoom:{animate: _animate, duration: _duration, easeLinearity:.10}
+			}
+		)
+		
+		if (this._mini_map && this.options.width > this.options.skinny_size) {
+			//this._mini_map.restore();
+			if ((_zoom - 5) < 0 ) {
+				this._mini_map.minimize();
+			} else {
+				this._mini_map.updateDisplay(_location, _zoom, _duration);
+			}
+			//this._mini_map.updateDisplay(_location, _zoom, _duration);
+		} 
 		
 	},
 	
@@ -233,28 +300,19 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		return this._map.getCenter();
 	},
 	
-	_getMapCenterOffset: function(location, zoom, add) {
-		var point, offset_y;
+	_getMapCenterOffset: function(location, zoom) {
+		var target_point,
+			target_latlng;
 		
-		offset_y = (this._map.getSize().y/2);
+		target_point 	= this._map.project(location, zoom).subtract([this.options.map_center_offset.left, this.options.map_center_offset.top]);
+		target_latlng 	= this._map.unproject(target_point, zoom);
 		
-		if (add) {
-			offset_y = offset_y + this.options.map_center_offset;
-			point = this._map.project(location, zoom).add([0, offset_y]);
-		} else {
-			offset_y = offset_y - this.options.map_center_offset;
-			point = this._map.project(location, zoom).subtract([0, offset_y]);
-		}
+		return target_latlng;
 
-		return this._map.unproject(point, zoom);
 	},
 	
 	_getBoundsZoom: function(origin, destination, correct_for_center) {
 		var _origin = origin;
-		
-		if (this.options.map_center_offset) {
-			//_origin = this._getMapCenterOffset(origin, this._getMapZoom(), true);
-		}
 		
 		if (correct_for_center) {
 			var _lat = _origin.lat + (_origin.lat - destination.lat)/2,
@@ -263,7 +321,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		}
 		
 		var bounds = new L.LatLngBounds([_origin, destination]);
-		return this._map.getBoundsZoom(bounds, false);
+		return this._map.getBoundsZoom(bounds, false, this.padding);
 	},
 	
 	_getZoomifyZoom: function() {
@@ -272,7 +330,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	
 	/*	Display
 	================================================== */
-	_updateMapDisplay: function(w, h, animate, d) {
+	_updateMapDisplay: function(animate, d) {
 		if (animate) {
 			var duration = this.options.duration,
 				self = this;
@@ -288,6 +346,13 @@ VCO.Map.Leaflet = VCO.Map.extend({
 			if (!this.timer) {
 				this._refreshMap();
 			};
+		}
+		
+		if (this._mini_map && this._el.container.offsetWidth < this.options.skinny_size ) {
+			this._mini_map.true_hide = true;
+			this._mini_map.minimize();
+		} else if (this._mini_map) {
+			this._mini_map.true_hide = false;
 		}
 	},
 	
@@ -312,4 +377,35 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	}
 	
 	
+});
+
+/*	Overwrite and customize Leaflet functions
+================================================== */
+L.Map.include({
+	_tryAnimatedPan: function (center, options) {
+		var offset = this._getCenterOffset(center)._floor();
+
+		this.panBy(offset, options);
+
+		return true;
+	},
+	
+	_tryAnimatedZoom: function (center, zoom, options) {
+		if (this._animatingZoom) { return true; }
+
+		options = options || {};
+
+		// offset is the pixel coords of the zoom origin relative to the current center
+		var scale = this.getZoomScale(zoom),
+		    offset = this._getCenterOffset(center)._divideBy(1 - 1 / scale),
+			origin = this._getCenterLayerPoint()._add(offset);
+
+		this
+		    .fire('movestart')
+		    .fire('zoomstart');
+
+		this._animateZoom(center, zoom, origin, scale, null, true);
+
+		return true;
+	}
 });
