@@ -210,7 +210,7 @@ L.Control.MiniMap = L.Control.extend({
 		if (zoom) {
 			z = zoom;
 		}
-		trace("decideshow " + z);
+		//trace("decideshow " + z);
 		if (z < 0) {
 			this.minimize();
 			return false;
@@ -235,7 +235,7 @@ L.Control.MiniMap = L.Control.extend({
 	},
 
 	_onMiniMapMoving: function (e) {
-		if (!this._mainMapMoving && this._lastAimingRectPosition) {
+		if (!this._mainMapMoving && this._lastAimingRectPosition && this._decideShow()) {
 			/*
 			this._shadowRect.setBounds(new L.LatLngBounds(this._miniMap.containerPointToLatLng(this._lastAimingRectPosition.sw),this._miniMap.containerPointToLatLng(this._lastAimingRectPosition.ne)));
 			this._shadowRect.setStyle({opacity:1,fillOpacity:0.3});
