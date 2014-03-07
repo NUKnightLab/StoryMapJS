@@ -46,7 +46,6 @@
 
 {% include '_editor.html' %}
 
-
 <script type="text/javascript">
 
 var _font_url = 'http://cdn.knightlab.com/libs/storymapjs/latest/css/fonts/';
@@ -380,8 +379,6 @@ function storymap_auto_save() {
     }
 }
 
-
-
 function preview_clear() {
     $('#preview').html('<div id="preview_embed"></div>');
     _storymap_object = null;
@@ -616,8 +613,7 @@ $(function() {
     });
 
     $('.slide:first').click(slide_select); 
-    
-   
+     
     //------------------------------------------------------------
     // Menu
     //------------------------------------------------------------
@@ -648,43 +644,13 @@ $(function() {
     });
 
     $('#storymap_share').click(function(event) {
-        // If never published, then publish (will also save draft, if needed)      
-        if(!_storymap_info.published_on) {
-            show_progress('Publishing StoryMap');
-            
-            storymap_publish(function(error) {
-                if(error) {
-                    show_error('Error publishing StoryMap', error);
-                } else {
-                    hide_progress();
-                    $('#share_modal').modal('show');
-                } 
-            }); 
-        } 
-        // If previously published but dirty, then save draft
-        else if(_dirty) {
-            show_progress('Saving StoryMap');
-            
-            storymap_save(function(error) {
-               if(error) {
-                    show_error('Error saving StoryMap', error);
-                } else {
-                    hide_progress();
-                    $('#share_modal').modal('show');                    
-                }
-            });
-        } 
-        // Else, just show the modal
-        else {
-            $('#share_modal').modal('show');
-        } 
-    });
+        $('#share_modal').modal('show');
+    });   
 
     $('#storymap_add_slide').click(function(event) {
         slide_add();    
     });
     
-
     //------------------------------------------------------------
     // StoryMap Options
     //------------------------------------------------------------
@@ -1039,12 +1005,45 @@ $(function() {
  
             $(this).trigger('reset', error_msg)
         })
-        .on('show', function() {           
+        .on('show', function() {    
+            $('#share_publish_panel').hide();       
+            $('#share_url').val('');             
             $('#share_width').val(_storymap_data.width || _default_data.width);
             $('#share_height').val(_storymap_data.height || _default_data.height);
-
-            $(this).trigger('modal_show');            
-        });    
+            $('#share_embed').html('');
+        })
+        .on('shown', function() {
+            var $modal = $(this);
+            
+            // If never published, then publish (will also save draft, if needed)      
+            if(!_storymap_info.published_on) {
+                $modal.trigger('progress_show', 'Publishing changes');
+            
+                storymap_publish(function(error) {
+                    if(error) {
+                        $modal.trigger('modal_show', format_error('Error publishing changes', error));
+                    } else {
+                        $modal.trigger('modal_show');
+                    } 
+                }); 
+            } 
+            // If previously published but dirty, then save draft
+            else if(_dirty) {
+                $modal.trigger('progress_show', 'Saving StoryMap');
+             
+                storymap_save(function(error) {
+                    if(error) {
+                        $modal.trigger('modal_show', format_error('Error saving StoryMap', error));
+                    } else {
+                        $modal.trigger('modal_show');
+                    }
+                });
+            } 
+            // Else, just show the modal
+            else {
+                $modal.trigger('modal_show');
+            }        
+        });  
 
 });
 
