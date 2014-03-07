@@ -52,6 +52,7 @@
 // MEDIA TYPES
 	// @codekit-prepend "media/types/VCO.Media.Blockquote.js";
 	// @codekit-prepend "media/types/VCO.Media.Flickr.js";
+	// @codekit-prepend "media/types/VCO.Media.Instagram.js";
 	// @codekit-prepend "media/types/VCO.Media.GoogleDoc.js";
 	// @codekit-prepend "media/types/VCO.Media.GooglePlus.js";
 	// @codekit-prepend "media/types/VCO.Media.IFrame.js";

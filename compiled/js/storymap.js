@@ -4957,7 +4957,7 @@ VCO.MediaType = function(m) {
 				type: 		"instagram",
 				name: 		"Instagram", 
 				match_str: 	/(instagr.am|instagram.com)\/p/,
-				cls: 		VCO.Media
+				cls: 		VCO.Media.Instagram
 			},
 			{
 				type: 		"image",
@@ -5431,6 +5431,58 @@ VCO.Media.Flickr = VCO.Media.extend({
 			_size = "Large";
 		} else {
 			_size = "Large";
+		}
+		
+		return _size;
+	}
+	
+	
+	
+});
+
+
+/* **********************************************
+     Begin VCO.Media.Instagram.js
+********************************************** */
+
+/*	VCO.Media.Flickr
+
+================================================== */
+
+VCO.Media.Instagram = VCO.Media.extend({
+	
+	includes: [VCO.Events],
+	
+	/*	Load the media
+	================================================== */
+	_loadMedia: function() {
+		trace("Instagram")
+		var api_url,
+			self = this;
+		
+		// Loading Message
+		this.message.updateMessage(VCO.Language.messages.loading + " " + this.options.media_name);
+		
+		// Get Media ID
+		this.media_id = this.data.url.split("\/p\/")[1].split("/")[0];
+		
+		this._el.content_item				= VCO.Dom.create("img", "vco-media-item vco-media-image vco-media-instagram vco-media-shadow", this._el.content);
+		this._el.content_item.src			= "http://instagr.am/p/" + this.media_id + "/media/?size=" + this.sizes(this._el.content.offsetWidth);
+		
+		
+		this.onLoaded();
+		
+	},
+	
+	sizes: function(s) {
+		trace("size " + s)
+		var _size = "";
+		if (s <= 150) {
+			_size = "t";
+		} else if (s <= 306) {
+			_size = "m";
+		} else {
+			_size = "l";
 		}
 		
 		return _size;
@@ -15168,7 +15220,7 @@ L.Control.MiniMap = L.Control.extend({
 		if (zoom) {
 			z = zoom;
 		}
-		trace("decideshow " + z);
+		//trace("decideshow " + z);
 		if (z < 0) {
 			this.minimize();
 			return false;
@@ -15193,7 +15245,7 @@ L.Control.MiniMap = L.Control.extend({
 	},
 
 	_onMiniMapMoving: function (e) {
-		if (!this._mainMapMoving && this._lastAimingRectPosition) {
+		if (!this._mainMapMoving && this._lastAimingRectPosition && this._decideShow()) {
 			/*
 			this._shadowRect.setBounds(new L.LatLngBounds(this._miniMap.containerPointToLatLng(this._lastAimingRectPosition.sw),this._miniMap.containerPointToLatLng(this._lastAimingRectPosition.ne)));
 			this._shadowRect.setStyle({opacity:1,fillOpacity:0.3});
@@ -16735,6 +16787,7 @@ L.Map.include({
 // MEDIA TYPES
 	// @codekit-prepend "media/types/VCO.Media.Blockquote.js";
 	// @codekit-prepend "media/types/VCO.Media.Flickr.js";
+	// @codekit-prepend "media/types/VCO.Media.Instagram.js";
 	// @codekit-prepend "media/types/VCO.Media.GoogleDoc.js";
 	// @codekit-prepend "media/types/VCO.Media.GooglePlus.js";
 	// @codekit-prepend "media/types/VCO.Media.IFrame.js";
