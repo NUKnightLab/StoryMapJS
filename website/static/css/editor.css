@@ -171,9 +171,27 @@ a.help:hover {text-decoration: none;}
 .entry-panel.entry-login > div {display: table;width: 100%;height: 170px;}
 .entry-panel.entry-login > div > div {display: table-cell;text-align: center;vertical-align: middle;}
 
+
 .entry-panel.entry-type {text-align: center;}
-.entry-panel.entry-type a {display: inline-block;font-size: 72px;border: 1px solid #ddd;padding: 10px;margin: 10px;}
+.entry-panel.entry-type .type-panel {display: inline-block;}
+.entry-panel.entry-type .type-panel > div {position: relative;display: inline-block;border: 1px solid #ddd;margin: 10px;overflow: hidden;}
+
+.entry-panel.entry-type a {display: inline-block;font-size: 72px;padding: 10px;}
 .entry-panel.entry-type a:hover {text-decoration: none;background-color: #ddd;}
+
+.entry-panel.entry-type .beta-tag {
+    position: absolute;
+    font-size: 0.8em;
+    font-weight: 600;
+    background-color: rgb(245, 245, 245);
+    border: 1px solid #ddd;
+    width: 92px;
+    top: 6px;
+    left: 30px;
+    transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+}
 
 .entry-list .table-header {margin-bottom: 6px;}
 .entry-list .table-toggles {display: inline-block;float: right;}

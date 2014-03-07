@@ -60,9 +60,20 @@
         </div> 
 <!-- create select type panel -->     
         <div class="entry-panel entry-type hide">
-            <p>What type of StoryMap?</p>            
-            <a href="javascript:;" class="vco-icon-location" onclick="$('#entry_modal').trigger('show_create_map');"></a>
-            <a href="javascript:;" class="vco-icon-image" onclick="$('#entry_modal').trigger('show_create_zoomify');"></a>
+            <p>What type of StoryMap?</p>  
+            <div class="type-panel">
+                <div>          
+                    <a href="javascript:;" class="vco-icon-location" onclick="$('#entry_modal').trigger('show_create_map');"></a>
+                 </div>
+                <label>Map</label>
+            </div>
+             <div class="type-panel">
+                <div>          
+                    <a href="javascript:;" class="vco-icon-image" onclick="$('#entry_modal').trigger('show_create_zoomify');"></a>
+                    <div class="beta-tag">BETA</div>
+                </div>
+                <label>Zoomify</label>
+            </div>
         </div> 
 <!-- create map panel -->
         <div class="entry-panel entry-create-map hide">
@@ -235,7 +246,7 @@ $(function() {
         .on('confirm_hide', modal_confirm_hide)
         .on('reset', modal_reset)    
         ////// custom
-        .on('show', function(event) {     
+        .on('show', function(event) {                 
             var $modal = $(this).trigger('progress_show', 'Checking authorization');   
             
             gdrive_check_auth(function(authorized) {
