@@ -15240,7 +15240,6 @@ L.Control.MiniMap = L.Control.extend({
     },
 
     _decideZoom: function(fromMaintoMini) {
-		trace("decideZOOM")
         if (!this.options.zoomLevelFixed && this.options.zoomLevelFixed != 0) {
             if (fromMaintoMini) {
 				return this._mainMap.getZoom() + this.options.zoomLevelOffset;
