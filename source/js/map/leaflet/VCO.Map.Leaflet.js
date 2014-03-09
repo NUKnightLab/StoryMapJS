@@ -51,14 +51,21 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	/*	Create Mini Map
 	================================================== */
 	_createMiniMap: function() {
+		if (this.options.map_as_image) {
+			this.zoom_min_max.min = 0;
+		}
+		
+		if (!this.bounds_array) {
+			this.bounds_array = this._getAllMarkersBounds(this._markers);
+		} 
+		
 		this._tile_layer_mini = this._createTileLayer();
 		this._mini_map = new L.Control.MiniMap(this._tile_layer_mini, {
 			width: 				150,
 			height: 			100,
 			position: 			"bottomleft",
-			zoomLevelFixed: 	false,
-			zoomLevelOffset: 	-5,
-			//toggleDisplay: 		false,
+			bounds_array: 		this.bounds_array,
+			zoomLevelFixed: 	this.zoom_min_max.min,
 			zoomAnimation: 		true,
 			aimingRectOptions: 	{
 				fillColor: 		"#FFFFFF",
@@ -157,16 +164,10 @@ VCO.Map.Leaflet = VCO.Map.extend({
 			
 			
 		} else {
-			var bounds_array = [];
-		
-			for (var i = 0; i < this._markers.length; i++) {
-				if (this._markers[i].data.real_marker) {
-					bounds_array.push( [this._markers[i].data.location.lat, this._markers[i].data.location.lon]);
-				}
-			};
+			this.bounds_array = this._getAllMarkersBounds(this._markers);
 			
 			if (this.options.map_center_offset && this.options.map_center_offset.left != 0 || this.options.map_center_offset.top != 0) {
-				var the_bounds 	= new L.latLngBounds(bounds_array);
+				var the_bounds 	= new L.latLngBounds(this.bounds_array);
 				_location 		= the_bounds.getCenter();
 				_zoom 			= this._map.getBoundsZoom(the_bounds)
 				
@@ -179,7 +180,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 				
 				
 			} else {
-				this._map.fitBounds(bounds_array, {padding:[15,15]});
+				this._map.fitBounds(this.bounds_array, {padding:[15,15]});
 			}
 			
 		}
@@ -189,6 +190,76 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		}
 		
 	},
+	
+	_getAllMarkersBounds: function(markers_array) {
+		var bounds_array = [];
+		for (var i = 0; i < markers_array.length; i++) {
+			if (markers_array[i].data.real_marker) {
+				bounds_array.push( [markers_array[i].data.location.lat, markers_array[i].data.location.lon]);
+			}
+		};
+		return bounds_array;
+	},
+	
+	_calculateMarkerZooms: function() {
+		for (var i = 0; i < this._markers.length; i++) {
+			
+			if (this._markers[i].data.location) {
+				var marker = this._markers[i],
+					prev_marker,
+					next_marker,
+					marker_location,
+					prev_marker_zoom,
+					next_marker_zoom,
+					calculated_zoom;
+				
+				
+				// MARKER LOCATION
+				if (marker.data.type && marker.data.type == "overview") {
+					marker_location = this._getMapCenter(true);
+				} else {
+					marker_location = marker.location();
+				}
+				// PREVIOUS MARKER ZOOM
+				if (i > 0 ) {
+					prev_marker = this._markers[i-1].location();
+				} else {
+					prev_marker = this._getMapCenter(true);
+				}
+				prev_marker_zoom = this._calculateZoomChange(prev_marker, marker_location);
+			
+				// NEXT MARKER ZOOM
+				if (i < (this._markers.length - 1)) {
+					next_marker = this._markers[i+1].location();
+				} else {
+					next_marker = this._getMapCenter(true);
+				}
+				next_marker_zoom = this._calculateZoomChange(next_marker, marker_location);
+			
+			
+				if (prev_marker_zoom && prev_marker_zoom < next_marker_zoom) {
+					calculated_zoom = prev_marker_zoom;
+				} else if (next_marker_zoom){
+					calculated_zoom = next_marker_zoom;
+					
+				} else {
+					calculated_zoom = prev_marker_zoom;
+				}
+				
+				if (this.options.map_center_offset && this.options.map_center_offset.left != 0 || this.options.map_center_offset.top != 0) {
+					calculated_zoom = calculated_zoom -1;
+				}
+			
+				marker.data.location.zoom = calculated_zoom;
+			}
+			
+
+		};
+		
+		
+	},
+	
+	
 	
 	/*	Line
 	================================================== */
@@ -252,10 +323,12 @@ VCO.Map.Leaflet = VCO.Map.extend({
 					_duration = duration;
 				}
 			}
-		
-			if (opts.zoom && opts.calculate_zoom) {
+			
+			if (opts.zoom && this.options.calculate_zoom) {
 				_zoom = opts.zoom;
 			}
+			
+			
 			
 		}	
 		
@@ -274,13 +347,12 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		)
 		
 		if (this._mini_map && this.options.width > this.options.skinny_size) {
-			//this._mini_map.restore();
-			if ((_zoom - 5) < 0 ) {
+			if ((_zoom - 1) <= this.zoom_min_max.min ) {
 				this._mini_map.minimize();
 			} else {
-				this._mini_map.updateDisplay(_location, _zoom, _duration);
+				this._mini_map.restore();
+				//this._mini_map.updateDisplay(_location, _zoom, _duration);
 			}
-			//this._mini_map.updateDisplay(_location, _zoom, _duration);
 		} 
 		
 	},
@@ -321,7 +393,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		}
 		
 		var bounds = new L.LatLngBounds([_origin, destination]);
-		return this._map.getBoundsZoom(bounds, false, this.padding);
+		return this._map.getBoundsZoom(bounds, false);
 	},
 	
 	_getZoomifyZoom: function() {
@@ -350,7 +422,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		
 		if (this._mini_map && this._el.container.offsetWidth < this.options.skinny_size ) {
 			this._mini_map.true_hide = true;
-			this._mini_map.minimize();
+			//this._mini_map.minimize();
 		} else if (this._mini_map) {
 			this._mini_map.true_hide = false;
 		}
@@ -358,20 +430,18 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	
 	_refreshMap: function() {
 		if (this._map) {
-			//this._viewTo(this._markers[this.current_marker].data.location, {zoom:this._getMapZoom(), calculate_zoom:true});
 			if (this.timer) {
 				clearTimeout(this.timer);
 				this.timer = null;
 			};
 			
 			this._map.invalidateSize();
-			//this._viewTo(this._markers[this.current_marker].data.location);
-			//this._viewTo(this._markers[this.current_marker].data.location, {zoom:this._getMapZoom(), calculate_zoom:true});
+			
 			// Check to see if it's an overview
 			if (this._markers[this.current_marker].data.type && this._markers[this.current_marker].data.type == "overview") {
 				this._markerOverview();
 			} else {
-				this._viewTo(this._markers[this.current_marker].data.location, {zoom:this._getMapZoom(), calculate_zoom:true});
+				this._viewTo(this._markers[this.current_marker].data.location, {zoom:this._getMapZoom()});
 			}
 		};
 	}
