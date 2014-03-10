@@ -211,7 +211,12 @@ function slide_select(event) {
     } else {
         // Show slide view
         $('#map_info, #map_overlay').hide();
-        $('#map_search_input').val('').show();   
+
+        if(_storymap_data.storymap.zoomify) {
+            $('#map_search_input').hide();           
+        } else {
+            $('#map_search_input').val('').show();   
+        }
         
         _map.setView(data.location.lat, data.location.lon, data.location.zoom);
         _map.zoomEnable(true);
