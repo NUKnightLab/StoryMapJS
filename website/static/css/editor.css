@@ -1,7 +1,17 @@
 /*********** styles for storymap editor tool ***********/
 
-html, body {width: 100%;height: 100%;padding: 0;margin: 0;}
-body {font-size: 14px;min-width: 700px;counter-reset: slides;}
+html, body {
+	width: 100%;
+	height: 100%;
+	padding: 0;
+	margin: 0;
+}
+body {
+	background-color:#F8F8F8;
+	font-size: 14px;
+	min-width: 700px;
+	counter-reset: slides;
+}
 
 div, ol, li {
     margin: 0;
@@ -211,11 +221,42 @@ a.help:hover {text-decoration: none;}
 */
 .menu-bar {width: 100%;padding: 8px;z-index: 99;}
 .menu-bar-left {float: left;}
-.menu-bar-left * {margin-right: 8px;}
+.menu-bar-left * {margin-right: 2px;}
 .menu-bar-right {float: right;}
-.menu-bar-right button {margin-left: 8px;}
+.menu-bar-right button {margin-left: 2px;}
 
+.btn {
+	font-family: "Apres RE","Helvetica Neue",Helvetica,Arial,sans-serif;
+	display: inline-block;
+	padding: 4px 12px;
+	margin-bottom: 0;
+	font-size: 14px;
+	line-height: 22px;
+	text-align: center;
+	vertical-align: middle;
+	cursor: pointer;
+	color: #242424;
+	text-shadow: none;
+	background-color: #FFF;
+	background-image: none;
 
+	border: 1px solid #e6e6e6;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;
+}
+.btn:hover {
+	background-color: #F8F8F8;
+	background-image: none;
+	border: 1px solid #999;
+}
+
+.btn [class^="icon-"], [class*=" icon-"] {
+	margin-right:3px;
+}
 /* slides 
 */
 .slides-section {
@@ -224,7 +265,7 @@ a.help:hover {text-decoration: none;}
     left: 0;
     bottom: 0;
     right: 100px;
-    width: 100px;
+    width: 130px;
 }
 
 .slides-container {
@@ -232,12 +273,12 @@ a.help:hover {text-decoration: none;}
     top: 88px;
     left: 0px;
     width: 100%;
-    bottom: 36px;
+    bottom: 50px;
     right: 0px;
-    background: #efefef;
+	background-color:#F8F8F8;
     overflow: scroll;
-    border-top: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
+    border-top: 2px solid #CCC;
+    border-bottom: 2px solid #CCC;
     -ms-overflow-style: -ms-autohiding-scrollbar;
 }
 
@@ -254,24 +295,25 @@ a.help:hover {text-decoration: none;}
 
 .slides-add {
     position: absolute;
-    height: 36px;
+    height: 50px;
     bottom: 0;
     line-height: 36px;
     text-align: center;
     width: 100%;
 }
 .slides-add button {
-    width: 100%;
-    padding: 8px;
+    margin-top:8px;
 }
 
 .slide {
-    float: left;
+   
     position: relative;
     width: 100%;
-    margin: 8px 0 0 0;
-    padding: 0 16px 0 0;
-    text-align: right;
+    margin:0;
+	
+	margin-top:15px;
+    padding:0;
+    text-align: center;
     cursor: pointer;
     height: 72px;
 }
@@ -279,7 +321,15 @@ a.help:hover {text-decoration: none;}
 #slides .slide:before {
     counter-increment: slides;
     content: counter(slides);
-    margin-right: 4px;
+    margin-right: 6px;
+	
+	display:inline-block;
+	position:relative;
+	top:22px;
+	font-weight: bold;
+	width:10px;
+	font-size:11px;
+	text-align:right;
 }
 
 .slide:first-child {margin-top: 12px;}
@@ -288,20 +338,22 @@ a.help:hover {text-decoration: none;}
 
 .slide-icon {
     display: inline-block;
-    width: 60px;
-    height: 50px;    
+    width: 80px;
+    height: 60px;    
     margin-top: 4px;
+	margin-right:12px;
     background-color: #666;
 }
 
 .slide-title {
-    display: inline-block;
-    width:60px;
+    display: block;
+    width:80px;
     text-align: left;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
     font: 11px Roboto,Arial,sans-serif;
+	margin-left:26px;
 }
 
 .slide-icon:after {
@@ -350,9 +402,34 @@ a.help:hover {text-decoration: none;}
 /* tabs
 */
 
-.tabs-section {position: absolute;top: 48px;left: 100px;bottom: 0;right: 0;}
-.tabs-section .nav {margin-bottom: 0; padding-left: 300px;}
-.tabs-section .tab-content {position: absolute; left: 0;top: 40px;bottom: 0;right: 0;border-left: 1px solid #ddd;}
+.tabs-section {
+	position: absolute;
+	top: 48px;
+	left: 130px;
+	bottom: 0;
+	right: 0;
+	
+}
+.tabs-section .nav {
+	margin-bottom: 0;
+	margin-left: auto;
+	margin-right: auto;
+	padding:0;
+	font-family: "Apres RE","Helvetica Neue",Helvetica,Arial,sans-serif;
+	
+}
+.tabs-section .nav li:first-child {
+	margin-left:45%;
+}
+.tabs-section .tab-content {
+	position: absolute; 
+	left: 0;
+	top: 40px;
+	bottom: 0;
+	right: 0;
+	border-left: 1px solid #ddd;
+	background-color:#FFF;
+}
 .tabs-section .tab-content .tab-pane {width: 100%;height: 100%;}
 
 #preview_embed {width: 100%;height: 100%;}
@@ -397,11 +474,30 @@ a.help:hover {text-decoration: none;}
 
 /* slide data
 */
+label, .data-media-upload {
+	font-family: "Apres RE","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+.data-section.data-frame label {
+	display:inline-block;
+	font-weight: bold;
+	text-transform: uppercase;
+	color:#999;
+	font-size: 20px;
+	margin-bottom:10px;
+}
+.data-section.data-frame input#url{
+	margin-bottom:4px;
+}
+
 .data-left {position: absolute;height: 280px;left: 0;bottom:0;right: 50%;}
 .data-right {position: absolute;height: 280px;left: 50%;bottom:0;right: 0;text-align: right;}
 
 .data-section {position: absolute;top: 10px;left: 10px;bottom:10px;right: 10px;padding:8px;}
-.data-frame {border: 1px solid darkgray;}
+.data-frame {
+	border: 1px solid #CCC;
+	background-color:#F8F8F8;
+	border-radius:4px;
+}
 
 .data-section input[type="text"], .data-section textarea {
     -webkit-box-sizing: border-box;
@@ -415,8 +511,20 @@ a.help:hover {text-decoration: none;}
 }
 .data-section input[type="text"] {height: 28px;}
 
-.data-media-icons {color: #aaa;margin-top: -8px;}
-.data-media-upload {margin-top: 4px;margin-bottom: 12px;}
+.data-media-icons {
+	text-align:right;
+	width:100%;
+	font-size:16px;
+	color: #CCC;
+	position:absolute;
+	top:10px;
+	right:10px;
+	display:inline-block;
+}
+.data-media-upload {
+	margin-top: 4px;
+	margin-bottom: 24px;
+}
 
 .data-right button {margin-bottom: 10px;}
 
@@ -449,3 +557,7 @@ iframe.wysihtml5-sandbox {
     -ms-overflow-style: -ms-autohiding-scrollbar;
 }
 
+.leaflet-container {
+	background: #FFF;
+
+}
