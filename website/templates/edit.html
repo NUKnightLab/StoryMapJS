@@ -125,9 +125,18 @@ function map_set_type() {
     }
 }
 
-function location_set(slide_index, data) {    
-    $.extend(_slides[slide_index].location, data);     
-    storymap_dirty(1);
+function location_set(slide_index, data) {  
+    var dirty = 0;
+    
+    for(var key in data) {
+        if(_slides[slide_index].location[key] != data[key]) {
+            _slides[slide_index].location[key] = data[key];   
+            dirty = 1; 
+        }
+    }
+    if(dirty) {
+        storymap_dirty(1);
+    }
 }
 
 function location_mark(data) {    
