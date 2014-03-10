@@ -132,7 +132,7 @@
     // }
     //
     "deploy": {
-        "stg": {"bucket": "storymap.knilab.com"},
-        "prd": {"bucket": "storymap.knightlab.com"}
+        "stg": {"bucket": "storymap.knilab.com", "usemin_context": {"cdn": "dev"}},
+        "prd": {"bucket": "storymap.knightlab.com", "usemin_context": {"cdn": "latest"}}
     }
 }

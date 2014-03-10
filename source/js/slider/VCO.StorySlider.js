@@ -11,7 +11,7 @@
 	slideRemoved
 
 	TODO
-	Memory handling
+	Fix overflow scoll in landscape view
 	
 ================================================== */
 
@@ -26,6 +26,7 @@ VCO.StorySlider = VCO.Class.extend({
 		// DOM ELEMENTS
 		this._el = {
 			container: {},
+			background: {},
 			slider_container_mask: {},
 			slider_container: {},
 			slider_item_container: {}
@@ -34,6 +35,9 @@ VCO.StorySlider = VCO.Class.extend({
 		this._nav = {};
 		this._nav.previous = {};
 		this._nav.next = {};
+		
+		// Slide Spacing
+		this.slide_spacing = 0;
 		
 		// Slides Array
 		this._slides = [];
@@ -162,10 +166,12 @@ VCO.StorySlider = VCO.Class.extend({
 		
 		this.options = {
 			id: 					"",
+			layout: 				"portrait",
 			width: 					600,
 			height: 				600,
-			slide_padding_lr: 		100, // padding on slide of slide
+			slide_padding_lr: 		100, 			// padding on slide of slide
 			start_at_slide: 		1,
+			slide_default_fade: 	"0%", 			// landscape fade
 			// animation
 			duration: 				1000,
 			ease: 					VCO.Ease.easeInOutQuint,
@@ -213,8 +219,8 @@ VCO.StorySlider = VCO.Class.extend({
 	
 	/*	Public
 	================================================== */
-	updateDisplay: function(w, h) {
-		this._updateDisplay(w, h);
+	updateDisplay: function(w, h, a, l) {
+		this._updateDisplay(w, h, a, l);
 	},
 	
 	// Create a slide
@@ -244,6 +250,7 @@ VCO.StorySlider = VCO.Class.extend({
 	},
 	
 	_createSlide: function(d, title_slide) {
+		trace("create slide")
 		var slide = new VCO.Slide(d, this.options, title_slide);
 		this._addSlide(slide);
 		this._slides.push(slide);
@@ -261,11 +268,13 @@ VCO.StorySlider = VCO.Class.extend({
 	_addSlide:function(slide) {
 		slide.addTo(this._el.slider_item_container);
 		slide.on('added', this._onSlideAdded, this);
+		slide.on('background_change', this._onBackgroundChange, this);
 	},
 	
 	_removeSlide: function(slide) {
 		slide.removeFrom(this._el.slider_item_container);
 		slide.off('added', this._onSlideAdded, this);
+		slide.off('background_change', this._onBackgroundChange);
 	},
 	
 	/*	Message
@@ -277,13 +286,16 @@ VCO.StorySlider = VCO.Class.extend({
 	goTo: function(n, fast, displayupdate) {
 		var self = this;
 		
+		this.changeBackground({color_value:"#FFF", image:false});
+		
 		// Clear Preloader Timer
 		if (this.preloadTimer) {
 			clearTimeout(this.preloadTimer);
 		}
-		// Stop Playing Media
+		
+		// Set Slide Active State
 		for (var i = 0; i < this._slides.length; i++) {
-			this._slides[i].stopMedia();
+			this._slides[i].setActive(false);
 		}
 		
 		if (n < this._slides.length && n >= 0) {
@@ -300,11 +312,11 @@ VCO.StorySlider = VCO.Class.extend({
 			}
 			
 			if (fast) {
-				this._el.slider_container.style.left = -(this.options.width * n) + "px";
+				this._el.slider_container.style.left = -(this.slide_spacing * n) + "px";
 				this._onSlideChange(displayupdate);
 			} else {
 				this.animator = VCO.Animate(this._el.slider_container, {
-					left: 		-(this.options.width * n) + "px",
+					left: 		-(this.slide_spacing * n) + "px",
 					duration: 	this.options.duration,
 					easing: 	this.options.ease,
 					complete: 	this._onSlideChange(displayupdate)
@@ -312,22 +324,10 @@ VCO.StorySlider = VCO.Class.extend({
 				
 			}
 			
+			// Set Slide Active State
+			this._slides[this.current_slide].setActive(true);
 			
-			// Update Navigation
-			
-			// Color
-			var slide_background = this._slides[this.current_slide].getBackground();
-			this.fire("colorchange", slide_background);
-			
-			if (slide_background.color || slide_background.image) {
-				this._nav.next.setColor(true);
-				this._nav.previous.setColor(true);
-			} else {
-				this._nav.next.setColor(false);
-				this._nav.previous.setColor(false);
-			}
-			
-			//Info
+			// Update Navigation and Info
 			if (this._slides[this.current_slide + 1]) {
 				this.showNav(this._nav.next, true);
 				this._nav.next.update(this.getNavInfo(this._slides[this.current_slide + 1]));
@@ -343,10 +343,6 @@ VCO.StorySlider = VCO.Class.extend({
 			
 			
 			// Preload Slides
-			this._slides[this.current_slide].loadMedia();
-			
-			//this.preloadSlides();
-			
 			this.preloadTimer = setTimeout(function() {
 				self.preloadSlides();
 			}, this.options.duration);
@@ -399,11 +395,19 @@ VCO.StorySlider = VCO.Class.extend({
 	},
 	
 	next: function() {
-		this.goTo(this.current_slide +1);
+		if ((this.current_slide +1) < (this._slides.length)) {
+			this.goTo(this.current_slide +1);
+		} else {
+			this.goTo(this.current_slide);
+		}
 	},
 	
 	previous: function() {
-		this.goTo(this.current_slide -1);
+		if (this.current_slide -1 >= 0) {
+			this.goTo(this.current_slide -1);
+		} else {
+			this.goTo(this.current_slide);
+		}
 	},
 	
 	showNav: function(nav_obj, show) {
@@ -420,13 +424,81 @@ VCO.StorySlider = VCO.Class.extend({
 		}
 	},
 	
+	changeBackground: function(bg) {
+		
+		// TODO Add opacity fade out/in transition
+		
+		var bg_color = {r:256, g:256, b:256},
+			bg_color_rgb,
+			bg_percent_start 	= this.options.slide_default_fade,
+			bg_percent_end 		= "15%",
+			bg_alpha_end 		= "0.90",
+			bg_css 				= "";
+			
+		if (bg.color_value) {
+			bg_color		= VCO.Util.hexToRgb(bg.color_value);
+		}
+		
+		bg_color_rgb 	= bg_color.r + "," + bg_color.g + "," + bg_color.b;
+		this._el.background.style.backgroundImage = "none";
+		
+		if (this.options.layout == "landscape") {
+			
+			this._nav.next.setColor(false);
+			this._nav.previous.setColor(false);
+			
+			// If background is not white, less fade is better
+			if (bg_color.r < 255 && bg_color.g < 255 && bg_color.b < 255) {
+				bg_percent_start = "0%";
+			}
+			
+			if (bg.image) {
+				//bg_alpha_end = "0.85";
+				//bg_percent_start = "0%";
+				//bg_percent_end = "0%";
+				
+			} 
+			
+			bg_css 	+= "background-image: -webkit-linear-gradient(left, color-stop(rgba(" + bg_color_rgb + ",0.0001 ) " + bg_percent_start + "), color-stop(rgba(" + bg_color_rgb + "," + bg_alpha_end + ") " + bg_percent_end + "));";
+			bg_css 	+= "background-image: linear-gradient(to right, rgba(" + bg_color_rgb + ",0.0001 ) "+ bg_percent_start + ", rgba(" + bg_color_rgb + "," + bg_alpha_end + ") " + bg_percent_end + ");";
+			bg_css 	+= "background-repeat: repeat-x;";
+			bg_css 	+= "filter: e(%('progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=1)',argb(" + bg_color_rgb + ", 0.0001),argb(" + bg_color_rgb + ",0.80)));";
+			
+			this._el.background.setAttribute("style", bg_css);
+			
+		} else {
+			if (bg.color_value) {
+				this._el.background.style.backgroundColor = bg.color_value;
+			} else {
+				this._el.background.style.backgroundColor = "#FFF";
+			}
+			
+			if (bg_color.r < 255 && bg_color.g < 255 && bg_color.b < 255 || bg.image) {
+				this._nav.next.setColor(true);
+				this._nav.previous.setColor(true);
+			} else {
+				this._nav.next.setColor(false);
+				this._nav.previous.setColor(false);
+			}
+		}
+	},
+	
 	/*	Private Methods
 	================================================== */
 	
 	// Update Display
-	_updateDisplay: function(width, height, animate) {
+	_updateDisplay: function(width, height, animate, layout) {
+		var nav_pos, _layout;
 		
-		var nav_pos;
+		if(typeof layout === 'undefined'){
+			_layout = this.options.layout;
+		} else {
+			_layout = layout;
+		}
+		
+		this.options.layout = _layout;
+		
+		this.slide_spacing = this.options.width*2;
 		
 		if (width) {
 			this.options.width = width;
@@ -447,10 +519,11 @@ VCO.StorySlider = VCO.Class.extend({
 		this._nav.next.setPosition({top:nav_pos});
 		this._nav.previous.setPosition({top:nav_pos});
 		
+		
 		// Position slides
 		for (var i = 0; i < this._slides.length; i++) {
-			this._slides[i].updateDisplay(this.options.width, this.options.height);
-			this._slides[i].setPosition({left:(this.options.width * i), top:0});
+			this._slides[i].updateDisplay(this.options.width, this.options.height, _layout);
+			this._slides[i].setPosition({left:(this.slide_spacing * i), top:0});
 			
 		};
 		
@@ -466,8 +539,10 @@ VCO.StorySlider = VCO.Class.extend({
 		
 		// Create Layout
 		this._el.slider_container_mask		= VCO.Dom.create('div', 'vco-slider-container-mask', this._el.container);
+		this._el.background 				= VCO.Dom.create('div', 'vco-slider-background', this._el.container); 
 		this._el.slider_container			= VCO.Dom.create('div', 'vco-slider-container vcoanimate', this._el.slider_container_mask);
 		this._el.slider_item_container		= VCO.Dom.create('div', 'vco-slider-item-container', this._el.slider_container);
+		
 		
 		// Update Size
 		this.options.width = this._el.container.offsetWidth;
@@ -528,6 +603,28 @@ VCO.StorySlider = VCO.Class.extend({
 	
 	/*	Events
 	================================================== */
+	_onBackgroundChange: function(e) {
+		var slide_background;
+		
+		slide_background = this._slides[this.current_slide].getBackground();
+		this.changeBackground(e);
+		
+		this.fire("colorchange", slide_background);
+		/*
+		if (slide_background.color || slide_background.image) {
+			if (this.options.layout != "landscape") {
+				this._nav.next.setColor(true);
+				this._nav.previous.setColor(true);
+			}
+		} else {
+			if (this.options.layout != "landscape") {
+				this._nav.next.setColor(false);
+				this._nav.previous.setColor(false);
+			}
+		}
+		*/
+	},
+	
 	_onMessageClick: function(e) {
 		this._message.hide();
 	},
@@ -547,6 +644,7 @@ VCO.StorySlider = VCO.Class.extend({
 	},
 	
 	_onSlideAdded: function(e) {
+		trace("slideadded")
 		this.fire("slideAdded", this.data);
 	},
 	

@@ -1,258 +1,154 @@
-{% extends "_base.html" %}
-
-{% block head %}
-<!-- START Moment.js -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>StoryMap JS</title>
+<meta name="description" content="Telling stories with maps.">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<link href="//cloud.webtype.com/css/d4767ecb-457a-4677-8761-72f890add836.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="http://cdn.knightlab.com/libs/blueline/latest/css/blueline.min.css">
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="//code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<script src="http://cdn.knightlab.com/libs/blueline/latest/js/blueline.min.js"></script>
+<!-- === storymap -->
+<!-- build:css http://cdn.knightlab.com/libs/storymapjs/%(cdn)s/css/storymap.css -->
+<link rel="stylesheet" href="/build/css/storymap.css?v1">
+<!-- endbuild -->
+<!-- === Moment.js -->
 <script src="{{ STATIC_URL }}/js/moment.min.js"></script>
 <script src="{{ STATIC_URL }}/js/moment-timezone.min.js"></script>
 <script src="{{ STATIC_URL }}/js/moment-timezone-data.js"></script>
-<!-- END Moment.js -->
+<!-- === editor -->
 <script type="text/javascript" src="{{ STATIC_URL }}/js/gdrive.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}/js/editor.js"></script>
 <link rel="stylesheet" type="text/css" href="{{ static_url }}/css/editor.css">
-{% endblock %}
 
-{% block content %}
+{% include '_editor.html' %}
 
-{% include '_modals.html' %}
-
-<section id="selector" class="container">
-<div class="row">
-
-<!-- START YADDA YADDA SECTION -->   
-    <div class="span5 intro-panel">
-        <div class="row">
-            <div class="span5">
-               <p><img src="{{ STATIC_URL }}/img/editor_screenshot.png"></p>
-               <p>Making a StoryMap is <b>easy</b>.</p> 
-               <ol>
-               <li>Log in with your Google account. The StoryMaps you create will live on your Google Drive.</li>
-               <li>Click the blue "new StoryMap" button at the bottom right side of the page. You'll be asked to name your StoryMap. This name is just for you—no one else will see it.
-               <li>After naming your StoryMap, you'll see the editor tool—it looks like the image above.</li>
-               <li>The first slide is your "overview" or title slide. Give your StoryMap a title, and if you
-               like, add some more text setting the stage for the story you want to tell. You can also embed images, videos and other resources.
-               The map on the first screen of your StoryMap is automatically created for you, showing a view of all the places in your story.</li>
-               <li>Click on "add slide" in the top right corner, and add a slide. You can fill in the headline and explanatory text,
-                   and you can include media from other sources on the web, like Flickr, YouTube, Vimeo, and more. Add more slides to tell your story.</li>
-               </ol>   
-            </div>
+<div id="entry_modal" class="modal hide fade" data-backdrop="static">
+    <div class="modal-body">   
+        <!-- error -->
+        <div class="modal-error hide">    
+            <span class="modal-msg error"></span>
         </div>
-    </div>
-<!-- END YADDA YADDA SECTION -->
-
-<!-- START LOGIN PANEL -->
-    <div id="login_panel" class="span7 hide">
-        <div class="row">
-            <div class="span7">
-                <h3>Connect StoryMap to Google</h3>
-                
-                <p>The StoryMap editor uses your Google Drive account to store and serve the stories you create. 
-                To get started, click on "Authorize" below. (If you're not already logged in to Google, you'll be
-                prompted to log in.) You'll see a screen asking you to give StoryMap permission to use your Google Drive.
-                You must click the 'accept' button to use this tool.
-                </p>           
+<!-- login panel -->    
+        <div class="entry-panel entry-login hide">
+            <div>
+                <div>
+                    <p>Your StoryMaps will be saved to your Google Drive.</p>
+                    <a id="entry_login" href="javascript:;" class="btn btn-success">Connect your Google account</a> 
+                </div> 
+            </div>
+        </div>   
+<!-- list panel -->    
+        <div class="entry-panel entry-list hide">  
+            <div class="table-header">
+                <strong>Your StoryMaps </strong>
+                <div class="table-toggles">
+                    <div class="btn-group" data-toggle="buttons-radio">
+                        <button id="entry_sort_title" type="button" class="btn btn-small active" onclick="$('#entry_modal').trigger('display_list', 'title');">
+                            Title <i class="icon-angle-up"></i></button>
+                        <button id="entry_sort_date" type="button" class="btn btn-small" onclick="$('#entry_modal').trigger('display_list', 'date');">
+                            Date <i class="icon-angle-down"></i></button>
+                    </div>                 
+                </div>
+                <div style="clear:both;"></div>
+            </div>
+            <table class="table table-striped table-bordered">
+                <tbody></tbody>        
+            </table>
+        </div> 
+<!-- create select type panel -->     
+        <div class="entry-panel entry-type hide">
+            <p>What type of StoryMap?</p>  
+            <div class="type-panel">
+                <div>          
+                    <a href="javascript:;" class="vco-icon-location" onclick="$('#entry_modal').trigger('show_create_map');"></a>
+                 </div>
+                <label>Map</label>
+            </div>
+             <div class="type-panel">
+                <div>          
+                    <a href="javascript:;" class="vco-icon-image" onclick="$('#entry_modal').trigger('show_create_zoomify');"></a>
+                    <div class="beta-tag">BETA</div>
+                </div>
+                <label>Zoomify</label>
             </div>
         </div> 
-        <div class="row">
-            <div class="span7" style="text-align: center; margin: 20px 0">
-                <button id="storymap_login" class="btn btn-success">Authorize</button>
-            </div>         
-        </div>               
-        <div class="row">
-            <div class="span7">
-                <p>
-                    Once you create your first StoryMap, you'll find a folder in your Google Drive named "KnightLabStoryMap". You can
-                    actually go in there and fool around with the files StoryMap creates—but you shouldn't, unless you really know what
-                    you're doing.
-                </p>
-            </div>         
-        </div>               
+<!-- create map panel -->
+        <div class="entry-panel entry-create-map hide">
+            <p>
+                <label>Great!  Let's create your StoryMap.  What do you want to call it?</label>
+                <input type="text" class="entry-create-title stretch" />
+            </p>
+        </div>         
+<!-- create zoomify panel -->
+        <div class="entry-panel entry-create-zoomify hide">
+            <p>
+                <label>Great!  Let's create your StoryMap.  What do you want to call it?</label>
+                <input type="text" class="entry-create-title stretch" />
+            </p>
+            <p>
+                <label>URL path for your image directory:</label>
+                <input type="text" id="entry_create_path" class="stretch" value="" placeholder="http://www.domain.org/directory/" />
+            </p>
+            <p>
+                <label>Maximum dimensions of your image:</label>
+                <div class="controls">
+                    <div class="input-prepend">
+                        <span class="add-on">Width</span>
+                        <input type="text" id="entry_create_width" value="" class="input-small"> 
+                    </div>
+                     <div class="input-prepend">
+                        <span class="add-on">Height</span>
+                        <input type="text" id="entry_create_height" value="" class="input-small"> 
+                    </div>
+                </div>     
+            </p>             
+        </div>    
     </div>
-<!-- END LOGIN PANEL -->
- 
-<!-- START STORYMAP PANEL --> 
-    <div id="storymap_panel" class="span7">
-         <div class="row loggedin hide">
-            <div class="login-info span7 pull-right">
-                <span></span><br />
-                <a href="http:///www.google.com/accounts/Logout" class="logout-link">Log out of your Google account</a>
+    <div class="modal-footer">
+    <!-- <a href="javascript:;" id="entry_user"><i class="icon-user icon-2x"></i></a> -->
+        <div id="entry_user_info" class="hide">
+            <span id="entry_user_name"></span> | <a href="http://www.google.com/accounts/Logout">Logout</a>
+        </div>
+        <span>&nbsp;</span>
+        <a id="entry_create_cancel" class="entry-panel entry-create hide btn" onclick="$('#entry_modal').trigger('show_list');">
+            Cancel</a>
+        <a id="entry_create" class="entry-panel entry-create hide btn btn-success" href="javascript:;">
+            Create</a>
+        <a class="entry-panel entry-list hide btn btn-success" href="javascript:;" onclick="$('#entry_modal').trigger('show_type');">
+            New</a>    
+    </div>
+    <!-- progress -->
+    <div class="modal-progress hide">
+        <div>
+            <div>
+                <i class="icon-spinner icon-4x icon-spin"></i>
+                <p><span class="modal-msg"></span>...</p>
             </div>
         </div>
-        <div class="row badperms hide">
-            <div class="span7 alert alert-danger">
-                <p>
-                    This Google Account does not support public Google Drive sharing.  Please sign in with a different Google account.     
-                </p>
-            </div>        
-        </div>
-        <div class="row perms hide">
-            <div class="span7">
-            <table id="storymap_table" class="table table-striped table-bordered">
-            <thead>
-                <tr>
-                    <th colspan="3" >
-                    <span style="line-height: 34px;">
-                   StoryMaps
-                   </span>
-                    <span style="float: right;">
-                        <div class="btn-group" data-toggle="buttons-radio">
-                            <button type="button" class="btn btn-small active" onclick="storymap_display_list('title')">
-                                Title <i class="icon-angle-up"></i></button>
-                            <button type="button" class="btn btn-small" onclick="storymap_display_list('date')">
-                                Date <i class="icon-angle-down"></i></button>
-                        </div>                 
-                    </span>
-                    </th>
-                    
-                </tr>
-            </thead>
-                        
-            <tbody>
-            </tbody>
-            
-            </table>
+    </div>
+    <!-- confirm -->
+    <div class="modal-confirm hide">
+        <div>
+            <div>
+                <p><span class="modal-msg"></span></p>
+                <button class="btn">No</button>
+                <button class="btn btn-primary">Yes</button>
             </div>
         </div>
-        <div class="row perms button-row hide">
-            <div class="span7">
-                <button id="storymap_new" class="btn btn-primary">New StoryMap</button>
-                <button id="storymap_new_zoomify" class="btn">New Zoomify StoryMap</button>
-            </div>        
-        </div>
     </div>
-<!-- END STORYMAP PANEL --> 
-
 </div>
-</section>
- 
+
 <script type="text/javascript">
 
 var _storymap_folder = null;    // public folder
 
-var _storymap_names = [];       // lowercase names
+var _storymap_names = [];       // lowercase list of storymap names
 var _storymap_map = {};         // id => object
 var _storymap_list = [];        // [object]
 
-
-function storymap_new(event) {
-    var data = { 
-        storymap: { 
-            slides: []            
-        }
-    };
-    
-    var name = $('#new_name').val().trim();    
-    if(!name.length) {
-        $('#new_modal .error').html('You must enter a name');
-        return false;
-    }
-    if(_storymap_names.indexOf(name.toLowerCase()) >= 0) {
-        var idx = _storymap_names.indexOf(name.toLowerCase());
-        $('#new_modal .error').html('You already have a StoryMap named "' + _storymap_names[idx] + '".');
-        return false;
-    }
-             
-    $('#new_modal').modal('hide');
-  
-    show_progress('Creating StoryMap');
-
-    gdrive_storymap_create(name, data, _storymap_folder, function(error, folder) {
-        if(error) {
-            show_error('Error creating StoryMap', error);
-        } else {
-            hide_progress();
-            document.location.href = 'edit.html?id='+folder.id;
-        }  
-    });
-}
-
-function storymap_new_zoomify(event) {
-    var data = { 
-        storymap: { 
-            slides: [],            
-            map_type: "zoomify",
-            zoomify: {
-                path: 			"",
-                width: 			0,
-                height: 		0,
-                tolerance: 		0.9,
-                attribution: 	""
-            } 
-        }
-    };
-    
-    var name = $('#new_zoomify_name').val().trim();   
-    if(!name.length) {
-        $('#new_zoomify_modal .error').html('You must enter a name');
-        return false;
-    }
-    if(_storymap_names.indexOf(name.toLowerCase()) >= 0) {
-        var idx = _storymap_names.indexOf(name.toLowerCase());
-        $('#new_zoomify_modal .error').html('You already have a StoryMap named "' + _storymap_names[idx] + '".');
-        return false;
-    }
-    
-    var path = $('#new_zoomify_path').val().trim();   
-    if(!path.length) {
-        $('#new_zoomify_modal .error').html('You must enter an URL path');
-        return false;
-    }  
-    if(!path.match(/\/$/)) {
-        path += '/';
-        $('#new_zoomify_path').val(path);
-    }
-    
-    var width = parseInt($('#new_zoomify_width').val().trim());   
-    if(!width || isNaN(width)) {
-        $('#new_zoomify_modal .error').html('The image width must be a positive integer');
-        return false;
-    }  
-
-    var height = parseInt($('#new_zoomify_height').val().trim());   
-    if(!height || isNaN(height)) {
-        $('#new_zoomify_modal .error').html('The image height must be a positive integer');
-        return false;
-    }  
-    
-    data.storymap.zoomify.path = path;
-    data.storymap.zoomify.width = width;
-    data.storymap.zoomify.height = height;
-                
-    $('#new_zoomify_modal').modal('hide');
-  
-    show_progress('Creating StoryMap');
-
-    gdrive_storymap_create(name, data, _storymap_folder, function(error, folder) {
-        if(error) {
-            show_error('Error creating StoryMap', error);
-        } else {
-            hide_progress();
-            document.location.href = 'edit.html?id='+folder.id;
-        }  
-    });
-}
-  
-function storymap_delete(event) {
-    var elem = $(this).closest('tr');
-    var id = elem.attr('id');
-    var item = _storymap_map[id];
-       
-    show_confirm('Delete <strong>'+item.title+'</strong> StoryMap?', function() {
-        show_progress('Deleting StoryMap');
-        
-        gdrive_file_delete(item.id, function(error, response) {
-            hide_progress();
-            if(error) {
-                show_error('Error deleting StoryMap', error);
-            } else {
-                _storymap_names.remove(item.title.toLowerCase());
-                _storymap_list.remove(item);
-                delete _storymap_map[id];
-                                
-                elem.remove();
-            }       
-        });
-    });
-}
 
 function sortby_date(a, b) {
     adt = (a.draft_on > a.published_on) ? a.draft_on : a.published_on;
@@ -264,153 +160,273 @@ function sortby_title(a, b) {
     return (a.title.toUpperCase() < b.title.toUpperCase()) ? -1 : 1;
 }
 
-function storymap_display_list(sortby) {
-    if(sortby == 'date') {        
-        _storymap_list = _storymap_list.sort(sortby_date);
-    } else {
-        _storymap_list = _storymap_list.sort(sortby_title);
-    }
-    
-    var elem = $('#storymap_table > tbody').html('');
-    var html = "<tr><td span='2'>Click the blue “New StoryMap” button to create your first storymap.</td></tr>";
-
-    if (_storymap_list.length > 0) {
-        html = '';
-        
-        for(var i = 0; i < _storymap_list.length; i++) {
-            var item = _storymap_list[i];                
-            var href = '/edit.html?id='+item.id;
-               
-            // Keep track of names for anti-duplication     
-            _storymap_names.push(item.title.toLowerCase());
-                 
-            html += '<tr id="'+item.id+'"><td>';
-
-            if(item.error) {
-                html += item.title
-                    + '<p class="modded"><i class="icon-warning-sign" title="Error"></i>'+item.error+'</p>'
-                    + '</td>'
-                    + '<td> </td>';            
-            } else {
-                html += '<a class="title" href="'+href+'">'+item.title+'</a>';
-                
-                if(item.published_on) {
-                    html += '<p class="modded">Published on '+format_dt(item.published_on)+'</p>';
-                } 
-                if(item.draft_on > item.published_on) {
-                    html += '<p class="modded">';
-                    if (item.published_on) {
-                        html += '<i class="icon-warning-sign" title="This draft is newer than the most recently published version."></i>';
-                    } 
-                    html += 'Edited on '+format_dt(item.draft_on)+'</p>';
-                } 
-        
-                html += '</td>'
-                    + '<td><a class="storymap-edit" href="'+href+'" title="Edit"><i class="icon-edit icon-large"></i></td>';
-            }     
-            
-            html += '<td><a class="storymap-delete" href="javascript:" title="Delete"><i class="icon-trash icon-large"></i></td>';
-            html += '</tr>';   
-        }  
-    }
-    
-    elem.append(html);
-
+function handle_onload() {    
+    $('#entry_modal').modal('show');
 }
 
-function storymap_list(file_list) {
-    var elem = $('#storymap_table > tbody').html('');
+//
+// MAIN
+//
 
-    gdrive_storymap_list(_storymap_folder, function(error, storymap_map) {
-        if(error) {
-            show_error('Error listing StoryMaps', error);
-        } else {
-            _storymap_map = storymap_map;
-            
-            for(var id in _storymap_map) {
-                _storymap_list.push(_storymap_map[id]);
-            }
-            
-            storymap_display_list('title');
-            
-            elem.find('.storymap-delete').click(storymap_delete);          
-            hide_progress();
-        }
-    });    
-}
+$(function() {         
+    $('#entry_login').click(function() {
+        var $modal = $('#entry_modal').trigger('progress_show', 'Logging in');
 
-function storymap_init() {
-    gdrive_about(function(error, info) {
-        if(error) {
-            show_error('Error getting user info', error);
-        } else {
-            $('.login-info span').html('Logged in as '+info.name);
-            
-            if(info.domainSharingPolicy != 'allowed') {
-                $('.badperms').show();
-                hide_progress();
-            } else {
-                $('.perms').show();                
-                show_progress('Getting StoryMap list');
-            
-                gdrive_storymap_init(true, function(error, publicFolder) {
-                    if(error) {
-                        show_error('Error initializing StoryMap', error);
-                    } else {
-                        _storymap_folder = publicFolder;     
-                        storymap_list();
-                     }         
-                });    
-            }
-        }  
-    });
-}
-
-function handle_authorized(authorized) {
-    if(authorized) {
-        $('#login_panel').hide();
-        $('.loggedin').show();
-        gapi.client.load('drive', 'v2', storymap_init);
-     
-    } else {
-        $('#login_panel').show();
-        hide_progress();        
-    }
-}
-
-function handle_onload() {
-    show_progress('Checking authorization');    
-    gdrive_check_auth(handle_authorized);
-}
-
-$(function() {        
-    $('#new_modal .btn-primary').bind('click', storymap_new);
-  
-    $('#storymap_new').click(function(event) {
-        $('#new_modal .error').html('');
-        $('#new_name').val('');
-        
-        $('#new_modal').modal('show').on('shown', function() { 
-            $('#new_name').focus();
+        gdrive_login(function(authorized) {
+            $('#entry_modal').trigger('handle_auth', authorized);     
         });
-    });
-
-    $('#new_zoomify_modal .btn-primary').bind('click', storymap_new_zoomify);
- 
-    $('#storymap_new_zoomify').click(function(event) {
-        $('#new_zoomify_modal .error').html('');
-        $('#new_zoomify_name, #new_zoomify_path, #new_zoomify_width, #new_zoomify_height').val('');
-        
-        $('#new_zoomify_modal').modal('show').on('shown', function() { 
-            $('#new_zoomify_name').focus();
-        });
-    });
-
-    $('#storymap_login').click(function() {
-        gdrive_login(handle_authorized);
     }); 
+                
+    $('#entry_create').click(function() {
+        var $modal = $('#entry_modal');
+        
+        var is_map_type = $('.entry-create-map').is(":visible");        
+        var $panel = (is_map_type) ? $('.entry-create-map') : $('.entry-create-zoomify');
+           
+        var data = {storymap: {slides: []}};
+   
+        var name = $panel.find('.entry-create-title').val().trim();    
+        if(!name.length) {
+            $modal.trigger('error_show', 'You must enter a name');
+            return false;
+        }
+        if(_storymap_names.indexOf(name.toLowerCase()) >= 0) {
+            var idx = _storymap_names.indexOf(name.toLowerCase());
+            $modal.trigger('error_show', 'You already have a StoryMap named "'+name+'".');
+            return false;
+        }
+        
+        if(!is_map_type) {        
+            // Zoomify-only properties                
+            var path = $('#entry_create_path').val().trim();   
+            if(!path.length) {
+                $modal.trigger('error_show', 'You must enter an URL path');
+                return false;
+            }  
+            if(!path.match(/\/$/)) {
+                path += '/';
+                $('#entry_create_path').val(path);
+            }
+               
+            var width = parseInt($('#entry_create_width').val().trim());   
+            if(!width || isNaN(width)) {
+                $modal.trigger('error_show', 'Image width must be a positive integer');
+                return false;
+            }  
+
+            var height = parseInt($('#entry_create_height').val().trim());   
+            if(!height || isNaN(height)) {
+                $modal.trigger('error_show', 'Image height must be a positive integer');
+                return false;
+            }  
+             
+            $.extend(data.storymap, {
+                map_type: 'zoomify', 
+                zoomify: {path: path, width: width, height: height, tolerance: 0.9, attribution: ''}
+            });    
+        }
+                    
+        $modal.trigger('progress_show', 'Creating StoryMap');
+         
+        gdrive_storymap_create(name, data, _storymap_folder, function(error, folder) {
+            if(error) {
+                $modal.trigger('error_show', format_error('Error creating StoryMap', error));
+            } else {
+                document.location.href = 'edit.html?id='+folder.id;
+            }  
+        });    
+    });
+ 
+    $('#entry_modal')
+        .on('error_show', modal_error_show)
+        .on('error_hide', modal_error_hide)
+        .on('progress_show', modal_progress_show)
+        .on('progress_hide', modal_progress_hide)
+        .on('confirm_show', modal_confirm_show)
+        .on('confirm_hide', modal_confirm_hide)
+        .on('reset', modal_reset)    
+        ////// custom
+        .on('show', function(event) {                 
+            var $modal = $(this).trigger('progress_show', 'Checking authorization');   
+            
+            gdrive_check_auth(function(authorized) {
+                $modal.trigger('handle_auth', authorized); 
+            });           
+        })
+        .on('handle_auth', function(event, authorized) {
+            var $modal = $(this);
+            
+            $modal.find('.entry-panel').hide();
+            
+            if(authorized) {
+                var $modal = $(this).trigger('progress_show', 'Handling authorization');   
+                
+                gapi.client.load('drive', 'v2', function() {
+                    gdrive_about(function(error, info) {
+                        if(error) {
+                            $modal.trigger('error_show',  format_error('Error getting user info', error)); 
+                            $modal.trigger('progress_hide');  
+                            return;                             
+                        } 
+                        
+                        $('#entry_user_name').html(info.name);
+                        $('#entry_user_info').show();                          
+                        
+                        if(info.domainSharingPolicy != 'allowed') {
+                            $modal.trigger('error_show',  'This Google Account does not support public Google Drive sharing.  Please sign in with a different Google account.');                                
+                            $modal.trigger('progress_hide');
+                            return;
+                        } 
+                        
+                        gdrive_storymap_init(true, function(error, publicFolder) {
+                            if(error) {
+                                $modal.trigger('error_show', format_error('Error initializing StoryMap', error));
+                                $modal.trigger('progress_hide');
+                            } else {
+                                _storymap_folder = publicFolder;     
+                                $modal.trigger('show_list');
+                             }         
+                        });    
+                    });
+                }); 
+            } else {
+                $modal.trigger('show_login');
+            }           
+        })
+        .on('show_login', function(event) {
+            $(this).find('.entry-panel').hide();
+            $(this).find('.entry-login').show();
+            $(this).trigger('progress_hide');
+        })        
+        .on('show_type', function(event) {
+            $(this).find('.entry-panel').hide();
+            $(this).find('.entry-type').show();
+            $(this).trigger('progress_hide');
+        })
+        .on('show_create_map', function(event) {
+            $('.entry-create-map input[type="text"]').val('');
+
+            $(this).find('.entry-panel').hide();            
+            $(this).find('.entry-create, .entry-create-map').show();
+        })
+        .on('show_create_zoomify', function(event) {
+            $('.entry-create-zoomify input[type="text"]').val('');
+            
+            $(this).find('.entry-panel').hide();
+            $(this).find('.entry-create, .entry-create-zoomify').show();        
+        })      
+        .on('show_list', function(event) {
+            $(this).find('.entry-panel').hide();
+            
+            var $modal = $(this).trigger('progress_show', 'Getting StoryMap list');
+                        
+            gdrive_storymap_list(_storymap_folder, function(error, storymap_map) {                
+                if(error) {
+                    $modal.trigger('error_show', format_error('Error getting StoryMap list', error));
+                    $modal.trigger('progress_hide');
+                } else {
+                    _storymap_map = storymap_map;
+                    _storymap_list = [];
+                    _storymap_names = [];
+                    
+                    for(var id in _storymap_map) {
+                        _storymap_list.push(_storymap_map[id]);
+                        _storymap_names.push(_storymap_map[id].title.toLowerCase());
+                    }
+                    
+                    if(_storymap_list.length) {
+                        $modal.find('.entry-list').show();
+                        $modal.trigger('display_list', 'title');               
+                    } else {
+                        $modal.trigger('show_type');
+                    }                    
+                }
+            });       
+        })
+        .on('display_list', function(event, sortby) {
+            if(sortby == 'date') {        
+                _storymap_list = _storymap_list.sort(sortby_date);
+            } else {
+                _storymap_list = _storymap_list.sort(sortby_title);
+            }
+
+            var $modal = $(this);
+            var $table = $('.entry-list tbody').html('');
+            var html = '';
+            
+            for(var i = 0; i < _storymap_list.length; i++) {
+                var item = _storymap_list[i];                
+                var href = '/edit.html?id='+item.id;
+            
+                html += '<tr id="'+item.id+'"><td>';
+            
+                 if(item.error) {
+                    html += ''
+                        + '<div style="display: inline-block;float: right">'
+                        + '<a class="storymap-delete" href="javascript:" title="Delete"><i class="icon-trash icon-large"></i></a>'
+                        + '</div>'
+                        + item.title
+                        + '<p class="modded"><i class="icon-warning-sign" title="Error"></i>'+item.error+'</p>';
+                } else {
+                    html += ''
+                        + '<div style="display: inline-block;float: right">'
+                        + '<a class="list-item-edit" href="'+href+'" title="Edit"><i class="icon-edit icon-large"></i></a>'
+                        + '<a class="list-item-delete" href="javascript:" title="Delete"><i class="icon-trash icon-large"></i></a>'
+                        + '</div>'
+                        + '<a class="title" href="'+href+'">'+item.title+'</a>';
+
+                    if(item.published_on) {
+                        html += '<p class="modded">Published on '+format_dt(item.published_on)+'</p>';
+                    } 
+                    if(item.draft_on > item.published_on) {
+                        html += '<p class="modded">';
+                        if (item.published_on) {
+                            html += '<i class="icon-warning-sign" title="This draft is newer than the most recently published version."></i>';
+                        } 
+                        html += 'Edited on '+format_dt(item.draft_on)+'</p>';
+                    } 
+                }     
+            
+                html += '</td></tr>';             
+            }
+        
+            $table.append(html).find('.list-item-delete').click(function(event) {
+                $modal.trigger('delete_storymap', this);
+            }); 
+            
+            $modal.trigger('progress_hide');
+        })
+        .on('delete_storymap', function(event, obj) {
+            var $modal = $(this);
+            var $tr = $(obj).closest('tr');
+            var id = $tr.attr('id');
+            var item = _storymap_map[id];
+                        
+            $modal.trigger('confirm_show', ['Delete <strong>'+item.title+'</strong> StoryMap?', function(yes) {
+                if(yes) {
+                    $modal.trigger('progress_show', 'Deleting StoryMap');
+                    
+                    gdrive_file_delete(item.id, function(error, response) {
+                        if(error) {
+                            $modal.trigger('error_show', format_error('Error deleting StoryMap', error));
+                        } else {
+                            _storymap_names.remove(item.title.toLowerCase());
+                            _storymap_list.remove(item);
+                            delete _storymap_map[id];
+                                
+                            $tr.remove();
+                        }   
+                        
+                        $modal.trigger('progress_hide');    
+                    });               
+                }          
+            }]);
+        });    
 });
 
 </script>
+<!-- LEAVE THIS HERE -->
+<script type="text/javascript" src="{{ STATIC_URL }}/js/modals.js"></script>
 <script type="text/javascript" src="https://apis.google.com/js/client.js?onload=handle_onload"></script>
-{% endblock %}
+</body>
+</html>

@@ -27,11 +27,6 @@
 			},
 			{
 				"uniqueid": 				"",
-				"background": {			
-					"url": 				null,
-					"color": 				"#cdbfe3",
-					"opacity": 			50
-				},
 				"date": 					"1835",
 				"location": {
 					"lat": 				39.491711,
@@ -46,37 +41,34 @@
 					"text": 				"Born in Florida, Missouri. Halley’s comet visible from earth."
 				},
 				"media": {
-					"url": 				"http://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Mark_Twain_birthplace.jpg/800px-Mark_Twain_birthplace.jpg",
+					"url": 				"https://twitter.com/MarkTwainQuote/status/441928360583643136",
 					"credit":				"",
 					"caption":			"Mark Twain's birthplace, Florida, Missouri"
 				}
 			},
 			{
 				"uniqueid": 				"",
-				"background": {			
-					"url": 				null, 
-					"color": 				"#8b4513",
-					"opacity": 			50
-				},
 				"date": 					"1839",
-
+				"location": {
+					"lat": 				39.501711,
+					"lon": 				-91.943260,
+					"name": 				"Florida, Missouri",
+					"zoom": 				12,
+					"icon": 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+					"line": 				true
+				},
 				"text": {
 					"headline": 			"Hannibal, Missouri",
 					"text": 				"Moves to Hannibal, Missouri, which later serves as the model town for Tom Sawyer and Huckleberry Finn."
 				},
 				"media": {
-					"url": 				"http://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Mark_Twain_Boyhood_Home_1.jpg/800px-Mark_Twain_Boyhood_Home_1.jpg",
+					"url": 				"http://instagram.com/p/lEPdm4J20m/",
 					"credit":				"",
 					"caption":			"Mark Twain's boyhood home in Hannibal, Missouri."
 				}
 			},
 			{
 				"uniqueid": 				"",
-				"background": {			
-					"url": 				null,
-					"color": 				null,
-					"opacity": 			50
-				},
 				"date": 					"1851",
 				"location": {
 					"lat": 				39.710083,
@@ -97,11 +89,6 @@
 			},
 			{
 				"uniqueid": 				"",
-				"background": {			
-					"url": 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-					"color": 				"#cdbfe3",
-					"opacity": 			50
-				},
 				"date": 					null,
 				"location": {
 					"lat": 				40.714353,
@@ -122,11 +109,6 @@
 			},
 			{
 				"uniqueid": 				"",
-				"background": {			
-					"url": 				null,
-					"color": 				"#cdbfe3",
-					"opacity": 			50
-				},
 				"date": 					"1862",
 				"location": {
 					"lat": 				39.309514,
@@ -140,7 +122,7 @@
 					"text": 				"Travels around Nevada and California. Takes job as reporter for the Virginia City Territorial Enterprise."
 				},
 				"media": {
-					"url": 				"http://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Mark_Twain%27s_desk_at_the_Mark_Twain_Territorial_Enterprise_Museum%2C_Virginia_City%2C_NV.jpg/794px-Mark_Twain%27s_desk_at_the_Mark_Twain_Territorial_Enterprise_Museum%2C_Virginia_City%2C_NV.jpg",
+					"url": 				"http://en.wikipedia.org/wiki/Mark_Twain",
 					"credit":				"",
 					"caption":			"Mark Twain's desk when he was editor of the Territorial Enterprise. Mark Twain Territorial Enterprise Museum, Virginia City, NV."
 				}
@@ -149,7 +131,7 @@
 				"uniqueid": 				"",
 				"background": {			
 					"url": 				null,
-					"color": 				"#cdbfe3",
+					"color": 				"#000000",
 					"opacity": 			50
 				},
 				"date": 					"1865",
@@ -172,11 +154,6 @@
 			},
 			{
 				"uniqueid": 				"",
-				"background": {			
-					"url": 				null,
-					"color": 				"#cdbfe3",
-					"opacity": 			50
-				},
 				"date": 					"1866",
 				"location": {
 					"lat": 				19.896766,
@@ -197,11 +174,6 @@
 			},
 			{
 				"uniqueid": 				"",
-				"background": {			
-					"url": 				null,
-					"color": 				"#cdbfe3",
-					"opacity": 			50
-				},
 				"date": 					"1867",
 				"location": {
 					"lat": 				54.525961,
@@ -224,7 +196,7 @@
 				"uniqueid": 				"",
 				"background": {			
 					"url": 				null,
-					"color": 				"#cdbfe3",
+					"color": 				"#000000",
 					"opacity": 			50
 				},
 				"date": 					"1868",
@@ -249,7 +221,7 @@
 				"uniqueid": 				"",
 				"background": {			
 					"url": 				null,
-					"color": 				"#cdbfe3",
+					"color": 				"#000000",
 					"opacity": 			50
 				},
 				"date": 					"1870",
@@ -273,7 +245,7 @@
 				"uniqueid": 				"",
 				"background": {			
 					"url": 				null,
-					"color": 				"#cdbfe3",
+					"color": 				"#000000",
 					"opacity": 			50
 				},
 				"date": 					"1872",
@@ -298,7 +270,7 @@
 				"uniqueid": 				"",
 				"background": {			
 					"url": 				null,
-					"color": 				"#cdbfe3",
+					"color": 				"#000000",
 					"opacity": 			50
 				},
 				"date": 					"1891",
@@ -322,7 +294,7 @@
 				"uniqueid": 				"",
 				"background": {			
 					"url": 				null,
-					"color": 				"#cdbfe3",
+					"color": 				"#000000",
 					"opacity": 			50
 				},
 				"date": 					"1891",

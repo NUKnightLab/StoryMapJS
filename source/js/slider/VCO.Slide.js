@@ -48,6 +48,8 @@ VCO.Slide = VCO.Class.extend({
 		// DOM Elements
 		this._el = {
 			container: {},
+			scroll_container: {},
+			background: {},
 			content_container: {},
 			content: {}
 		};
@@ -70,7 +72,7 @@ VCO.Slide = VCO.Class.extend({
 			background: {
 				image: false,
 				color: false,
-				color_value :false
+				color_value :"#FFF"
 			}
 		}
 		
@@ -97,6 +99,8 @@ VCO.Slide = VCO.Class.extend({
 			media_name: 		""
 		};
 		
+		// Actively Displaying
+		this.active = false;
 		
 		// Animation Object
 		this.animator = {};
@@ -114,6 +118,7 @@ VCO.Slide = VCO.Class.extend({
 	/*	Adding, Hiding, Showing etc
 	================================================== */
 	show: function() {
+		trace("show")
 		this.animator = VCO.Animate(this._el.slider_container, {
 			left: 		-(this._el.container.offsetWidth * n) + "px",
 			duration: 	this.options.duration,
@@ -125,6 +130,19 @@ VCO.Slide = VCO.Class.extend({
 		
 	},
 	
+	setActive: function(is_active) {
+		this.active = is_active;
+		
+		if (this.active) {
+			if (this.data.background) {
+				this.fire("background_change", this.has.background);
+			}
+			this.loadMedia();
+		} else {
+			this.stopMedia();
+		}
+	},
+	
 	addTo: function(container) {
 		container.appendChild(this._el.container);
 		//this.onAdd();
@@ -134,8 +152,8 @@ VCO.Slide = VCO.Class.extend({
 		container.removeChild(this._el.container);
 	},
 	
-	updateDisplay: function(w, h, a) {
-		this._updateDisplay(w, h, a);
+	updateDisplay: function(w, h, l) {
+		this._updateDisplay(w, h, l);
 	},
 	
 	loadMedia: function() {
@@ -173,27 +191,35 @@ VCO.Slide = VCO.Class.extend({
 		if (this.data.uniqueid) {
 			this._el.container.id 		= this.data.uniqueid;
 		}
-		this._el.container.id 			= this.data.uniqueid;
-		this._el.content_container		= VCO.Dom.create("div", "vco-slide-content-container", this._el.container);
+		this._el.scroll_container 		= VCO.Dom.create("div", "vco-slide-scrollable-container", this._el.container);
+		this._el.content_container		= VCO.Dom.create("div", "vco-slide-content-container", this._el.scroll_container);
 		this._el.content				= VCO.Dom.create("div", "vco-slide-content", this._el.content_container);
-		
+		this._el.background				= VCO.Dom.create("div", "vco-slide-background", this._el.container);
 		// Style Slide Background
 		if (this.data.background) {
 			if (this.data.background.url) {
-				this.has.background.image = true;
-				this._el.container.className += ' vco-full-image-background';
-				this._el.container.style.backgroundImage="url('" + this.data.background.url + "')";
+				this.has.background.image 					= true;
+				this._el.container.className 				+= ' vco-full-image-background';
+				//this._el.container.style.backgroundImage="url('" + this.data.background.url + "')";
+				this.has.background.color_value 			= "#000";
+				this._el.background.style.backgroundImage 	= "url('" + this.data.background.url + "')";
+				this._el.background.style.display 			= "block";
 			}
 			if (this.data.background.color) {
-				this.has.background.color = true;
-				this._el.container.className += ' vco-full-color-background';
-				this.has.background.color_value = this.data.background.color;
-				this._el.container.style.backgroundColor = this.data.background.color;
+				this.has.background.color 					= true;
+				this._el.container.className 				+= ' vco-full-color-background';
+				this.has.background.color_value 			= this.data.background.color;
+				//this._el.container.style.backgroundColor = this.data.background.color;
+				//this._el.background.style.backgroundColor 	= this.data.background.color;
+				//this._el.background.style.display 			= "block";
 			}
 			if (this.data.background.text_background) {
-				this._el.container.className += ' vco-text-background';
+				this._el.container.className 				+= ' vco-text-background';
 			}
+			
 		} 
+		
+		
 		
 		// Determine Assets for layout and loading
 		if (this.data.media && this.data.media.url && this.data.media.url != "") {
@@ -250,7 +276,7 @@ VCO.Slide = VCO.Class.extend({
 	},
 	
 	// Update Display
-	_updateDisplay: function(width, height, animate) {
+	_updateDisplay: function(width, height, layout) {
 		
 		if (width) {
 			this.options.width 					= width;
@@ -262,6 +288,11 @@ VCO.Slide = VCO.Class.extend({
 			this._el.content.style.paddingLeft 	= 0 + "px";
 			this._el.content.style.paddingRight = 0 + "px";
 			this._el.content.style.width		= this.options.width - 0 + "px";
+		} else if (layout == "landscape") {
+			this._el.content.style.paddingLeft 	= 40 + "px";
+			this._el.content.style.paddingRight = this.options.slide_padding_lr + "px";
+			this._el.content.style.width		= this.options.width - (this.options.slide_padding_lr + 40) + "px";
+		
 		} else if (this.options.width <= 500) {
 			this._el.content.style.paddingLeft 	= 10 + "px";
 			this._el.content.style.paddingRight = 10 + "px";
@@ -275,15 +306,17 @@ VCO.Slide = VCO.Class.extend({
 		
 		if (height) {
 			this.options.height = height;
+			//this._el.scroll_container.style.height		= this.options.height + "px";
+			
 		} else {
 			this.options.height = this._el.container.offsetHeight;
 		}
 		
 		if (this._media) {
 			if (!this.has.text && this.has.headline) {
-				this._media.updateDisplay(this.options.width, (this.options.height - this._text.headlineHeight()));
+				this._media.updateDisplay(this.options.width, (this.options.height - this._text.headlineHeight()), layout);
 			} else {
-				this._media.updateDisplay(this.options.width, this.options.height);
+				this._media.updateDisplay(this.options.width, this.options.height, layout);
 			}
 		}
 		

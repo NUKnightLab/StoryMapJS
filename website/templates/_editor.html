@@ -1,0 +1,123 @@
+<div class="menu-bar">
+    <div class="menu-bar-left">
+        <button class="btn" onclick="document.location.href='select.html';">&lt; My Maps</button>
+        <button id="storymap_options" class="btn"><i class="icon-cog"></i> Options</button>
+        <button id="storymap_save" class="btn disabled"><i class="icon-save"></i> Save</button>    
+        <button id="storymap_publish" class="btn hide"><i class="icon-repeat"></i> Publish Changes</button>    
+    </div>
+    <div class="menu-bar-right">
+        <div class="btn-group">
+            <button class="btn dropdown-toggle" data-toggle="dropdown">Help <span class="caret"></span></button>
+            <ul class="dropdown-menu pull-right">
+                <li><a href="/advanced.html" target="_blank">Advanced</a></li>
+                <li><a href="https://knightlab.zendesk.com/forums/22615078-StoryMapJS" target="_blank">Support Forum</a></li>
+                <li><a href="https://github.com/NUKnightLab/StoryMapJS" target="_blank">GitHub Repository</a></li>
+            </ul>       
+        </div>     
+        <button id="storymap_share" class="btn"><i class="icon-share"></i> Share</button>
+    </div>
+</div>
+
+<div class="slides-section">
+    <div class="slide">
+        <div class="slide-icon">&nbsp;</div>
+        <div class="slide-title"></div>
+    </div>
+    <div class="slides-container">        
+        <ol id="slides"> 
+        </ol>
+    </div>
+    <div class="slides-add">        
+        <button id="storymap_add_slide" class="btn">Add Slide</button>
+    </div>
+</div>
+
+<div class="tabs-section">
+    <ul class="nav nav-tabs" id="tabs">
+        <li class="active"><a href="#edit" data-toggle="tab">Edit</a></li>
+        <li><a href="#preview" data-toggle="tab">Preview</a></li>
+    </ul>  
+    <div class="tab-content">
+        <div class="tab-pane active" id="edit">  
+            <div id="map-div">
+                <div id="map"></div>            
+                <svg id="map_overlay" xmlns="http://www.w3.org/2000/svg" version="1.1">
+                    <polyline points="" />
+                </svg>
+                <div id="map_info" class="ui-note">This is your title slide.  The title slide shows all points from your other slides.</div>
+                <input id="map_search_input" type="text" placeholder="Search">
+           </div>
+           
+            <div class="data-left">            
+                <div class="data-section data-frame">
+                    <label>Media</label>
+                    <input id="url" type="text" placeholder="Enter the URL for your media">
+                    <div class="data-media-icons"> 
+                        <span class="vco-icon-dailymotion"></span>
+                        <span class="vco-icon-flickr"></span>
+                        <span class="vco-icon-image"></span>
+                        <span class="vco-icon-instagram"></span>
+                        <span class="vco-icon-soundcloud"></span>
+                        <span class="vco-icon-storify"></span>
+                        <span class="vco-icon-twitter"></span>
+                        <span class="vco-icon-vimeo"></span>
+                        <span class="vco-icon-vine"></span>
+                        <span class="vco-icon-youtube-logo"></span>
+                        <span class="vco-icon-web"></span>
+                        <span class="vco-icon-wikipedia"></span>
+                    </div>                   
+                    <div class="data-media-upload">
+                    or upload an image <a id="upload_media" href="javascript:" title="Upload image">
+                        <i class="icon-cloud-upload icon-large"></i></a>
+                    </div>
+                    <input id="credit" type="text" placeholder="Credit">
+                    <textarea id="caption" placeholder="Caption" rows="3"></textarea>
+                </div>
+            </div>
+            
+            <div class="data-right">
+                <div class="data-section">
+                    <input id="headline" type="text" placeholder="Headline" class="editor-headline">
+                    <textarea id="text" rows="3"></textarea>
+                    <button id="slide_options" class="btn"><i class="icon-cog icon-medium"></i> Slide Options</button>
+               </div>    
+            </div>
+
+        </div>
+        <div class="tab-pane" id="preview">
+            <div id="preview_embed"></div>
+        </div>   
+    </div>
+</div>
+
+<!-- START BOOTSTRAP-WYSIHTML5 BUTTON TEMPLATES -->
+<ul id="wysihtml5_emphasis" style="display: none;">
+    <li>
+    <div class="btn-group">
+    <a class="btn btn-small" data-wysihtml5-command="bold" title="Bold" tabindex="-1" href="javascript:;" unselectable="on"><i class="icon-bold"></i></a>
+    <a class="btn btn-small" data-wysihtml5-command="italic" title="Italic" tabindex="-1" href="javascript:;" unselectable="on"><i class="icon-italic"></i></a>
+    </div>
+    </li>
+</ul>
+<ul id="wysihtml5_link" style="display: none;">
+<li>
+    <div class="bootstrap-wysihtml5-insert-link-modal modal hide fade">
+    <div class="modal-body">
+    <p><input value="http://" class="bootstrap-wysihtml5-insert-link-url input-xlarge"></p>
+    <label class="checkbox"> <input type="checkbox" class="bootstrap-wysihtml5-insert-link-target" checked="">Open link in new window</label>
+    </div>
+    <div class="modal-footer">
+    <a href="#" class="btn" data-dismiss="modal">Cancel</a><a href="#" class="btn btn-primary" data-dismiss="modal">Insert link</a>
+    </div>
+    </div>
+    <a class="btn btn-small" data-wysihtml5-command="createLink" title="Insert link" tabindex="-1" href="javascript:;" unselectable="on"><i class="icon-link"></i></a>
+</li>      
+</ul>
+<ul id="wysihtml5_html" style="display: none;">
+<li>
+    <div class="btn-group">
+    <a class="btn btn-small" data-wysihtml5-action="change_view" title="Edit HTML" tabindex="-1" href="javascript:;" unselectable="on">&lt;/&gt;</a>
+    </div>
+</li>
+</ul>
+<!-- END BOOTSTRAP-WYSIHTML5 BUTTON TEMPLATES -->

@@ -100,11 +100,15 @@ VCO.Media = VCO.Class.extend({
 		
 	},
 	
-	updateMediaDisplay: function() {
-		
+	updateMediaDisplay: function(layout) {
 		if (this._state.loaded) {
-			this._updateMediaDisplay();
-			this._el.content_item.style.maxHeight = (this.options.height - this.options.credit_height - this.options.caption_height - 16) + "px";
+			this._updateMediaDisplay(layout);
+			
+			if (layout != "landscape") {
+				this._el.content_item.style.maxHeight = (this.options.height - this.options.credit_height - this.options.caption_height - 16) + "px";
+			}
+			
+			
 			
 			// Fix for max-width issues in Firefox
 			if (VCO.Browser.firefox) {
@@ -123,8 +127,8 @@ VCO.Media = VCO.Class.extend({
 		
 		},
 		
-		_updateMediaDisplay: function() {
-			this._el.content_item.style.maxHeight = (this.options.height - this.options.credit_height - this.options.caption_height - 16) + "px";
+		_updateMediaDisplay: function(l) {
+			//this._el.content_item.style.maxHeight = (this.options.height - this.options.credit_height - this.options.caption_height - 16) + "px";
 		},
 	
 	/*	Public
@@ -148,8 +152,8 @@ VCO.Media = VCO.Class.extend({
 	},
 	
 	// Update Display
-	updateDisplay: function(w, h, animate) {
-		this._updateDisplay(w, h, animate);
+	updateDisplay: function(w, h, l) {
+		this._updateDisplay(w, h, l);
 	},
 	
 	stopMedia: function() {
@@ -234,13 +238,17 @@ VCO.Media = VCO.Class.extend({
 	},
 	
 	// Update Display
-	_updateDisplay: function(w, h, animate) {
+	_updateDisplay: function(w, h, l) {
 		if (w) {
 			this.options.width = w;
 		}
 		if (h) {
 			this.options.height = h;
 		}
+		
+		if (l) {
+			this.options.layout = l;
+		} 
 		
 		if (this._el.credit) {
 			this.options.credit_height 		= this._el.credit.offsetHeight;
@@ -249,7 +257,7 @@ VCO.Media = VCO.Class.extend({
 			this.options.caption_height 	= this._el.caption.offsetHeight + 5;
 		}
 		
-		this.updateMediaDisplay();
+		this.updateMediaDisplay(this.options.layout);
 		
 	},
 	

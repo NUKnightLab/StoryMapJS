@@ -21,6 +21,9 @@
             },
             {
                 "date": "",
+				"background": {			
+					"color": "#121619"
+				},
                 "location": {
                     "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
                     "lat": 81.22826656005543,
@@ -47,6 +50,9 @@
                     "lon": -126.298828125,
                     "zoom": 4
                 },
+				"background": {			
+					"color": "#121619"
+				},
                 "media": {
                     "caption": "Nymeria",
                     "credit": "",
@@ -59,6 +65,9 @@
             },
             {
                 "date": "",
+				"background": {			
+					"color": "#121619"
+				},
                 "location": {
                     "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
                     "lat": 66.687783861162,
@@ -123,6 +132,9 @@
                     "lon": -126.38671874999999,
                     "zoom": 5
                 },
+				"background": {			
+					"color": "#121619"
+				},
                 "media": {
                     "caption": "Jaqen H'ghar handing his coin to Arya",
                     "credit": "",
@@ -275,6 +287,9 @@
                     "lon": -126.03515625,
                     "zoom": 5
                 },
+				"background": {			
+					"color": "#121619"
+				},
                 "media": {
                     "caption": "Sandor and Arya over the Riverlands",
                     "credit": "",
@@ -294,6 +309,9 @@
                     "lon": -134.736328125,
                     "zoom": 5
                 },
+				"background": {			
+					"color": "#121619"
+				},
                 "media": {
                     "caption": "Sandor and Arya outside the Twins during the Red Wedding",
                     "credit": "",
@@ -313,6 +331,9 @@
                     "lon": -128.32031249999997,
                     "zoom": 5
                 },
+				"background": {			
+					"color": "#121619"
+				},
                 "media": {
                     "caption": "Arya and Sandor camping in the mountains",
                     "credit": "",
@@ -332,6 +353,9 @@
                     "lon": -124.5849609375,
                     "zoom": 5
                 },
+				"background": {			
+					"color": "#121619"
+				},
                 "media": {
                     "caption": "Arya and Sandor",
                     "credit": "",
@@ -351,6 +375,9 @@
                     "lon": -123.92578125,
                     "zoom": 6
                 },
+				"background": {			
+					"color": "#121619"
+				},
                 "media": {
                     "caption": "Arya now on her own with Needle",
                     "credit": "",
@@ -370,6 +397,9 @@
                     "lon": -120.12451171875,
                     "zoom": 6
                 },
+				"background": {			
+					"color": "#121619"
+				},
                 "media": {
                     "caption": "The Xwejni Saltpans in Malta and example of what this scenery may look like on the show",
                     "credit": "Francis Xavier Camilleri",
@@ -389,6 +419,9 @@
                     "lon": -87.451171875,
                     "zoom": 5
                 },
+				"background": {			
+					"color": "#121619"
+				},
                 "media": {
                     "caption": "Map of Braavos",
                     "credit": "Fantastic Maps",
@@ -408,6 +441,9 @@
                     "lon": -128.935546875,
                     "zoom": 5
                 },
+				"background": {			
+					"color": "#121619"
+				},
                 "media": {
                     "caption": "Season 4 trailer featuring \"Feral Love\" by Chelsea Wolfe",
                     "credit": "HBO",

@@ -12,6 +12,7 @@ modal_error_show = function(event, msg) {
 modal_error_hide = function(event, msg) {
     $(this).find('.modal-error').hide();  
 }
+
 modal_progress_show = function(event, msg) {
     $(this).find('.modal-progress .modal-msg').html(msg);
     $(this).find('.modal-progress').show();    
@@ -19,6 +20,28 @@ modal_progress_show = function(event, msg) {
 modal_progress_hide = function(event) {
     $(this).find('.modal-progress').hide(); 
 }
+
+modal_confirm_show = function(event, msg, callback) {
+    console.log(msg);
+    console.log(callback);
+    
+    var $panel = $(this).find('.modal-confirm');
+    
+    $panel.find('.modal-msg').html(msg);
+    
+    $panel.find('.btn').bind('click.confirm', function(event) {
+        $(this).unbind('click.confirm'); 
+        $panel.hide();  
+        
+        callback($(this).hasClass('btn-primary'));
+    });
+    
+    $panel.show();    
+}
+modal_confirm_hide = function(event) {
+    $(this).find('.modal-confirm').hide(); 
+}
+
 modal_reset = function(event, error_msg) {
     if(error_msg) {
         $(this).trigger('error_show', error_msg);            
