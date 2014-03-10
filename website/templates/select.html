@@ -183,7 +183,7 @@ $(function() {
         var is_map_type = $('.entry-create-map').is(":visible");        
         var $panel = (is_map_type) ? $('.entry-create-map') : $('.entry-create-zoomify');
            
-        var data = {storymap: {slides: []}};
+        var data = {storymap: {map_as_image: false, slides: []}};
    
         var name = $panel.find('.entry-create-title').val().trim();    
         if(!name.length) {
@@ -196,8 +196,8 @@ $(function() {
             return false;
         }
         
-        if(!is_map_type) {        
-            // Zoomify-only properties                
+        if(!is_map_type) {
+            // Zoomify properties                
             var path = $('#entry_create_path').val().trim();   
             if(!path.length) {
                 $modal.trigger('error_show', 'You must enter an URL path');
@@ -222,6 +222,7 @@ $(function() {
              
             $.extend(data.storymap, {
                 map_type: 'zoomify', 
+                map_as_image: true,
                 zoomify: {path: path, width: width, height: height, tolerance: 0.9, attribution: ''}
             });    
         }

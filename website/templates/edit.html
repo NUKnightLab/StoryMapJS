@@ -108,6 +108,13 @@ function get_show_lines() {
     return true;
 }
 
+function get_map_as_image() {
+    if(_storymap_data.storymap.hasOwnProperty('map_as_image')) {
+        return _storymap_data.storymap.map_as_image;
+    }    
+    return false;    
+}
+
 function map_set_type() {    
     var map_type = (_storymap_data.storymap.map_type || '');
     
@@ -400,6 +407,9 @@ function preview_load() {
     if(_storymap_data.storymap.map_subdomains) {
         options.map_subdomains = _storymap_data.storymap.map_subdomains;
     }
+    if(_storymap_data.storymap.hasOwnProperty('map_as_image')) {
+        options.map_as_image = _storymap_data.storymap.map_as_image;
+    }
     if(_storymap_data.storymap.language) {
         options.language = _storymap_data.storymap.language;
     }
@@ -466,6 +476,7 @@ function slides_load() {
     $('#font_css').val(_storymap_data.font_css || _default_data.font_css);
         
     $('input:radio[name="show_lines"][value="'+get_show_lines()+'"]').prop('checked', true);
+    $('input:radio[name="map_as_image"][value="'+get_map_as_image()+'"]').prop('checked', true);
  
     font_update();
     
@@ -675,7 +686,7 @@ $(function() {
         storymap_dirty(1);
     });
     
-    $("input[name='show_lines']").click(function(){
+    $("input[name='show_lines']").click(function() {
         var value = ($(this).val() == "true");
         
         if(value != get_show_lines()) {
@@ -689,6 +700,15 @@ $(function() {
                     _map.removePolyLine();
                 }
             }
+        }
+    });
+    
+    $("input[name='map_as_image']").click(function() {
+        var value = ($(this).val() == "true");
+        
+        if(value != get_map_as_image()) {
+            _storymap_data.storymap.map_as_image = value;
+            storymap_dirty(1);        
         }
     });
 
