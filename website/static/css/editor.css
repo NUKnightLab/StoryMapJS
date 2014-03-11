@@ -341,33 +341,6 @@ a.help:hover {text-decoration: none;}
     height: 72px;
 }
 
-#slides .slide:before {
-    counter-increment: slides;
-    content: counter(slides);
-	font-family: "Apres RE","Helvetica Neue",Helvetica,Arial,sans-serif;
-    margin-right: 6px;
-	color:#666;
-	display:inline-block;
-	position:relative;
-	top:22px;
-	
-	width:10px;
-	font-size:11px;
-	text-align:right;
-}
-
-
-.slide.selected .slide-icon {background: #e35a25;}
-
-.slide-icon {
-    display: inline-block;
-    width: 80px;
-    height: 60px;    
-    margin-top: 4px;
-	margin-right:14px;
-    background-color: #666;
-}
-
 .slide-title {
     display: block;
     width:80px;
@@ -377,67 +350,140 @@ a.help:hover {text-decoration: none;}
     text-overflow: ellipsis;
     font-size:11px;
 	font-family: "Apres RE","Helvetica Neue",Helvetica,Arial,sans-serif;
-	margin-left:26px;
+	margin-left:25px;
+	margin-right:25px;
+	color:#666;
 }
 
 .slide:first-child {
-	margin-top: 12px;
-	margin-left:10px;
-}
-.slide:first-child .slide-title {
-	margin-left:20px;
+	margin-top: 15px;
+	
 }
 .slides-container .slide:first-child {
-	margin-top: 12px;
+	margin-top: 15px;
 	margin-left:0;
 }
+.slide:first-child .slide-title {
+	margin-left:25px;
+
+}
 .slides-container .slide:first-child .slide-title {
-	margin-left:26px;
+	margin-left:25px;
+	
 }
 
-.slide-icon:after {
-    background: url(../img/storymap.png);
-    background-repeat: no-repeat;
-    background-position: 0 100px;
-    width:24px;
-    height:24px;
-    overflow:hidden;
-    content:'';  
+[class^="slide-icon-"], [class*=" slide-icon-"], .slide-icon {
+	font-family: 'vco-icons';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+	font-size:32px;
+	padding-top:12px;
+	
+	text-align:center;
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+#slides .slide-icon:before {
+    counter-increment: slides;
+    content: counter(slides);
+	font-family: "Apres RE","Helvetica Neue",Helvetica,Arial,sans-serif;
+    margin-right: 6px;
+	color:#666;
+	display:inline-block;
+	position:absolute;
+	top:26px;
+	left:-16px;
+	width:10px;
+	font-size:11px;
+	text-align:right;
+	font-weight:normal;
+}
+.slide-icon {
+	position:relative;
     display: block;
-    position: absolute;
-    top:20px;left:44px;    
+    width: 78px;
+    height: 58px;    
+    border: 1px solid #CCC;  
+    margin-left:25px;
+	margin-right:25px;
+	color:#999;
+    background-color: #666;
+	border-radius:4px;
+}
+.slide:first-child .slide-icon {
+	 background-color: #F8F8F8;
+	 border: 1px solid #F8F8F8;
+	 color:#CCC;
+}
+.slides-container .slide:first-child .slide-icon {
+	 background-color: #666;
+	 border: 1px solid #CCC; 
+	 color:#999;
+}
+.slide-icon:after {
+	content: "\e62e";
+	line-height: 1;
+	font-size:32px;
 }
 
-
-.slide-icon-website:after{background-position:-232px -24px}
-.slide-icon-googledoc:after{background-position:-256px -48px}
-.slide-icon-quote:after{background-position:-232px -48px}
-.slide-icon-plaintext:after{background-position:-280px -48px}
-.slide-icon-twitter:after{background-position:-256px -24px}
-.slide-icon-video:after{background-position:-328px -24px}
-.slide-icon-dailymotion:after{background-position:-328px -24px}
-.slide-icon-soundcloud:after{background-position:-304px -24px}
-.slide-icon-image:after{background-position:-280px -24px}
-.slide-icon-flickr:after{background-position:-280px -24px}
-.slide-icon-link:after{background-position:-184px -72px}
-.slide-icon-storify:after{background-position:-328px -96px}
-.slide-icon-wikipedia:after{background-position:-184px -48px}
-.slide-icon-instagram:after{background-position:-208px -96px}
-.slide-icon-vine:after{background-position:-232px -72px}
-.slide-icon-googleplus:after{background-position:-208px -72px}
-.slide-icon-vimeo:after{background-position:-328px -48px}
-.slide-icon-youtube:after{background-position:-328px -72px}
+.slide-icon-website:after{ 		content: "\e636";}
+.slide-icon-googledoc:after{ 	content: "\e63f";}
+.slide-icon-quote:after{ 		content: "\e64b";}
+.slide-icon-plaintext:after{ 	content: "\e62e";}
+.slide-icon-twitter:after{ 		content: "\e62b";}
+.slide-icon-video:after{ 		content: "\e62d";}
+.slide-icon-dailymotion:after{ 	content: "\e63a";}
+.slide-icon-soundcloud:after{ 	content: "\e639";}
+.slide-icon-image:after{ 		content: "\e605";}
+.slide-icon-flickr:after{ 		content: "\e642";}
+.slide-icon-link:after{ 		content: "\e636";}
+.slide-icon-storify:after{ 		content: "\e62e";}
+.slide-icon-wikipedia:after{ 	content: "\e64e";}
+.slide-icon-instagram:after{ 	content: "\e644";}
+.slide-icon-vine:after{ 		content: "\e64d";}
+.slide-icon-googleplus:after{ 	content: "\e62c";}
+.slide-icon-vimeo:after{ 		content: "\e606";}
+.slide-icon-youtube:after{ 		content: "\e651";}
 
 .slide a.close {
     position: absolute;
-    top: 0px;
-    right: 18px;
+    top: -4px;
+    right: 20px;
     z-index: 99;
     color: #000000;
     opacity: 1;
     width: 16px;
     height: 16px;
     background: url(../img/icon_delete.png);
+	display:none;
+}
+.slide:hover a.close {
+	display:block;
+}
+.slide.selected:first-child .slide-icon {
+	background-color:#DA0000;
+	border: 1px solid #FFF;
+	color: #FFF;
+}
+.slide.selected .slide-icon {
+	background-color:#DA0000;
+	border: 1px solid #FFF;
+	color: #FFF;
+}
+.slide.selected .slide-title {
+	
+	color: #DA0000;
+	font-weight:bold;
+}
+#slides .slide.selected .slide-icon:before {
+	
+	color: #DA0000;
+	font-weight:bold;
 }
 
 /* tabs
@@ -508,9 +554,10 @@ a.help:hover {text-decoration: none;}
     left: 50%;
     bottom: 10px;
     margin-left: -125px;
-    font: 14px Roboto, Arial, Sans-serif;  
-    border: 1px solid #666;
-    box-shadow: 2px 2px 5px #333;   
+    font-family: "Apres RE","Helvetica Neue",Helvetica,Arial,sans-serif;
+    border: 1px solid #CCC;
+   
+	box-shadow: 1px 1px 7px rgba(0,0,0,.30);
 }
 
 /* SearchBox drop-down items */
@@ -649,11 +696,43 @@ Progress Spinner
 */
 .icon-spin {
 display: inline-block;
--moz-animation: spin 2s infinite linear;
--o-animation: spin 2s infinite linear;
--webkit-animation: spin 2s infinite linear;
-animation: spin 2s infinite linear;
+-moz-animation: none;
+-o-animation: none;
+-webkit-animation: none
+animation: none;
 }
 .icon-spinner:before {
-content: "\f110";
+	content: "";
+}
+.icon-spin {
+  width: 15px;
+  height: 15px;
+  background-color: #333;
+
+  margin: 100px auto;
+  -webkit-animation: rotateplane 1.2s infinite ease-in-out;
+  animation: rotateplane 1.2s infinite ease-in-out;
+}
+#share_modal .icon-spin {
+    width: 30px;
+    height: 30px;
+}
+
+@-webkit-keyframes rotateplane {
+  0% { -webkit-transform: perspective(120px) }
+  50% { -webkit-transform: perspective(120px) rotateY(180deg) }
+  100% { -webkit-transform: perspective(120px) rotateY(180deg)  rotateX(180deg) }
+}
+
+@keyframes rotateplane {
+  0% { 
+    transform: perspective(120px) rotateX(0deg) rotateY(0deg);
+    -webkit-transform: perspective(120px) rotateX(0deg) rotateY(0deg) 
+  } 50% { 
+    transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);
+    -webkit-transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg) 
+  } 100% { 
+    transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+    -webkit-transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+  }
 }
