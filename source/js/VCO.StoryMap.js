@@ -346,7 +346,7 @@ VCO.StoryMap = VCO.Class.extend({
 			},
 			map_height: 			300,
 			storyslider_height: 	600,
-			slide_padding_lr: 		100, 			// padding on slide of slide
+			slide_padding_lr: 		45, 			// padding on slide of slide
 			slide_default_fade: 	"0%", 			// landscape fade
 			menubar_default_y: 		0,
 			path_gfx: 				"gfx",

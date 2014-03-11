@@ -47,12 +47,21 @@ VCO.Map = VCO.Class.extend({
 		// Markers
 		this._markers = [];
 		
+		// Marker Zoom Miniumum and Maximum
+		this.zoom_min_max = {
+			min: null,
+			max: null
+		};
+		
 		// Line
 		this._line = null;
 		this._line_active = null;
 		
 		// Current Marker
 		this.current_marker = 0;
+		
+		// Markers Bounds Array
+		this.bounds_array = null;
 		
 		// Map Tiles Layer
 		this._tile_layer = null;
@@ -165,7 +174,7 @@ VCO.Map = VCO.Class.extend({
 						
 						// Calculate Zoom
 						zoom = this._calculateZoomChange(this._getMapCenter(true), marker.location());
-						trace(zoom);
+						
 						// Set Map View
 						this._viewTo(marker.data.location, {calculate_zoom: this.options.calculate_zoom, zoom:zoom});
 					
@@ -263,6 +272,10 @@ VCO.Map = VCO.Class.extend({
 		this._markerOverview();
 	},
 	
+	calculateMarkerZooms: function() {
+		this._calculateMarkerZooms();
+	},
+	
 	createMiniMap: function() {
 		this._createMiniMap();
 	},
@@ -271,6 +284,34 @@ VCO.Map = VCO.Class.extend({
 		// Update Component Displays
 		this.options.map_center_offset.left = left;
 		this.options.map_center_offset.top 	= top;
+	},
+	
+	calculateMinMaxZoom: function() {
+		for (var i = 0; i < this._markers.length; i++) {
+			
+			if (this._markers[i].data.location && this._markers[i].data.location.zoom) {
+				this.updateMinMaxZoom(this._markers[i].data.location.zoom);
+			}
+			
+		}
+		trace("MAX ZOOM: " + this.zoom_min_max.max + " MIN ZOOM: " + this.zoom_min_max.min);
+	},
+	
+	updateMinMaxZoom: function(zoom) {
+		if (!this.zoom_min_max.max) {
+			this.zoom_min_max.max = zoom;
+		}
+		
+		if (!this.zoom_min_max.min) {
+			this.zoom_min_max.min = zoom;
+		}
+		
+		if (this.zoom_min_max.max < zoom) {
+			this.zoom_min_max.max = zoom;
+		}
+		if (this.zoom_min_max.min > zoom) {
+			this.zoom_min_max.min = zoom;
+		}
 	},
 	
 	/*	Adding, Hiding, Showing etc
@@ -320,6 +361,7 @@ VCO.Map = VCO.Class.extend({
 				this._addToLine(this._line, array[i]);
 			}
 		};
+		
 	},
 	
 	_createLines: function(array) {
@@ -370,7 +412,11 @@ VCO.Map = VCO.Class.extend({
 				this._markers[i].active(false);
 			};
 		},
-	
+		
+		_calculateMarkerZooms: function() {
+			
+		},
+		
 		/*	Map Specific Line
 		================================================== */
 		
@@ -449,9 +495,17 @@ VCO.Map = VCO.Class.extend({
 	_onMapLoaded: function(e) {
 		this._loaded.map = true;
 		this._initialMapLocation();
+		
+		if (this.options.calculate_zoom) {
+			this.calculateMarkerZooms();
+		}
+		
+		this.calculateMinMaxZoom();
+		
 		if (this.options.map_mini && !VCO.Browser.touch) {
 			this.createMiniMap();
 		}
+		
 		this.fire("loaded", this.data);
 	},
 	
@@ -464,8 +518,8 @@ VCO.Map = VCO.Class.extend({
 	/*	Private Methods
 	================================================== */
 	
-	_calculateZoomChange: function(origin, destination, padding) {
-		return this._getBoundsZoom(origin, destination, false);
+	_calculateZoomChange: function(origin, destination, correct_for_center) {
+		return this._getBoundsZoom(origin, destination, correct_for_center);
 	},
 	
 	_updateDisplay: function(w, h, animate, d) {

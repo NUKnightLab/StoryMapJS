@@ -169,7 +169,7 @@ VCO.StorySlider = VCO.Class.extend({
 			layout: 				"portrait",
 			width: 					600,
 			height: 				600,
-			slide_padding_lr: 		100, 			// padding on slide of slide
+			slide_padding_lr: 		40, 			// padding on slide of slide
 			start_at_slide: 		1,
 			slide_default_fade: 	"0%", 			// landscape fade
 			// animation
