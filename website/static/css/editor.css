@@ -296,7 +296,7 @@ a.help:hover {text-decoration: none;}
     top: 100px;
     left: 0px;
     width: 100%;
-    bottom: 50px;
+    bottom: 0px;
     right: 0px;
 	background-color:#F8F8F8;
     overflow: scroll;
@@ -315,7 +315,7 @@ a.help:hover {text-decoration: none;}
     margin: 0;
     font: 11px Roboto,Arial,sans-serif;
 }
-
+/*
 .slides-add {
     position: absolute;
     height: 50px;
@@ -327,7 +327,7 @@ a.help:hover {text-decoration: none;}
 .slides-add button {
     margin-top:8px;
 }
-
+*/
 .slide {
    
     position: relative;
@@ -403,6 +403,7 @@ a.help:hover {text-decoration: none;}
 	text-align:right;
 	font-weight:normal;
 }
+
 .slide-icon {
 	position:relative;
     display: block;
@@ -485,9 +486,60 @@ a.help:hover {text-decoration: none;}
 	color: #DA0000;
 	font-weight:bold;
 }
+.slide:first-child:hover .slide-icon {
+	background-color:#FFF;
+}
+.slides-container .slide:first-child:hover .slide-icon , .slide:hover .slide-icon {
+	background-color:#333;
+}
+.slide.selected:first-child:hover .slide-icon , .slide.selected:hover .slide-icon {
+	background-color:#DA0000;
+}
+/*	SLIDE ADD
+----------------------------------------------------- */
+#storymap_add_slide {
+	margin-bottom:25px;
+	cursor: pointer;
+}
+#storymap_add_slide .slide-icon:before {
+	display:none;
+}
+#storymap_add_slide .slide-title {
+	text-align:center;
+	color:#999;
+}
+#storymap_add_slide .slide-icon:after {
+	content: "+";
+	line-height: 0;
+	font-size:58px;
+	margin-top:-25px;
+	
+}
 
-/* tabs
-*/
+#storymap_add_slide .slide-icon {
+	position:relative;
+    display: block;
+    width: 80px;
+    height: auto;    
+    border:0;  
+    margin-left:25px;
+	margin-right:25px;
+	color:#999;
+    background-color: #F8F8F8;
+	border-radius:0;
+	padding-top: 0px;
+	border-top: 1px solid #CCC;
+	margin-top:20px;
+	padding-top:20px;
+}
+#storymap_add_slide:hover .slide-title {
+	color:#000;
+}
+#storymap_add_slide:hover .slide-icon:after {
+	color:#333;
+}
+/*	TABS
+----------------------------------------------------- */
 .nav-tabs {
 	border-bottom: 2px solid #CCC;
 }
