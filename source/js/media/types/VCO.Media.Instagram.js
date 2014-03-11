@@ -9,7 +9,6 @@ VCO.Media.Instagram = VCO.Media.extend({
 	/*	Load the media
 	================================================== */
 	_loadMedia: function() {
-		trace("Instagram")
 		var api_url,
 			self = this;
 		
@@ -28,7 +27,6 @@ VCO.Media.Instagram = VCO.Media.extend({
 	},
 	
 	sizes: function(s) {
-		trace("size " + s)
 		var _size = "";
 		if (s <= 150) {
 			_size = "t";
