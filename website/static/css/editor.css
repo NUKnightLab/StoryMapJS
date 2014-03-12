@@ -76,7 +76,10 @@ a.help:hover {text-decoration: none;}
 ----------------------------------------------------- */
 .modal-backdrop {background-color: #F8F8F8;}
 .modal .error {color: #cc0000;font-style: italic;}
-
+.modal {
+	border: 1px solid #CCC;
+	box-shadow: 1px 1px 7px rgba(0,0,0,.20);
+}
 /*      in-modal progress panel 
 */
 .modal-progress {
@@ -161,7 +164,7 @@ a.help:hover {text-decoration: none;}
 }
 
 /*#slide_opt_modal*/ .minicolors-theme-bootstrap .minicolors-swatch {width: 24px;height: 24px;}
-
+/*
 #share_modal textarea  {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -184,9 +187,78 @@ a.help:hover {text-decoration: none;}
 .share-embed-label {display: inline-block;font-weight: bold;}
 .share-embed-params {display: inline-block;float: right;}
 
+*/
+#share_modal label {
+	font-weight:bold;
+} 
 
+#share_modal .share-link-container:after, #share_modal .share-link-container:before {
+	display: table;
+	content: "";
+}
+#share_modal .share-link-container:after {
+	clear:both;
+}
+
+#share_modal .share-link {
+	width:70%;
+	float:left;
+}
+#share_modal .share-social {
+	width:28%;
+	margin-left:2%;
+	float:left;
+}
+#share_modal .share-social a:hover {
+	text-decoration:none;
+}
+
+#share_modal .share-embed-params .vco-icon-arrow-up {
+	font-size:32px;
+	height:22px;
+	margin-left:10px;
+	color:#F0F0F0;
+}
+#share_modal .share-embed-params {
+	margin-top:-8px;
+}
+#share_modal .share-embed-params .controls {
+	background-color:#F0F0F0;
+	border-radius:7px;
+	padding-top:10px;
+	padding-left:10px;
+	width:60%;
+}
+#share_modal .share-embed-params .input-prepend .add-on {
+	
+	color:#999;
+	text-shadow: none;
+	background-color: #F0F0F0;
+	border: 1px solid #F0F0F0;
+}
+#share_modal .share-embed-container {
+	margin-top:10px;
+	margin-bottom:10px;
+}
+#share_modal .share-embed-params input[type="text"] {
+	border: 1px solid #DDD;
+}
+#share_modal textarea  {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    -o-box-sizing: border-box;
+    box-sizing: border-box;
+    margin-left: 0;
+    margin-right: 0;
+	margin-bottom: 0;
+    width: 100%;
+}
 .input-prepend .add-on {
 	font-family: "Apres RE","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+.share-embed-label {
+	
 }
 /*	SELECT PAGE ENTRY MODAL
 ----------------------------------------------------- */
@@ -207,23 +279,44 @@ a.help:hover {text-decoration: none;}
 
 .entry-panel.entry-type {text-align: center;}
 .entry-panel.entry-type .type-panel {display: inline-block;}
-.entry-panel.entry-type .type-panel > div {position: relative;display: inline-block;border: 1px solid #ddd;margin: 10px;overflow: hidden;}
-
-.entry-panel.entry-type a {display: inline-block;font-size: 72px;padding: 10px;}
-.entry-panel.entry-type a:hover {text-decoration: none;background-color: #ddd;}
+.entry-panel.entry-type .type-panel > div {
+	position: relative;
+	display: inline-block;
+	border: 1px solid #CCC;
+	margin: 10px;
+	overflow: hidden;
+	border-radius:4px;
+}
+.entry-panel.entry-type .type-panel > div:hover {
+	border: 1px solid #999;
+}
+.entry-panel.entry-type a {
+	display: inline-block;
+	font-size: 72px;
+	padding: 10px;
+	background-color: #FFF;
+	
+}
+.entry-panel.entry-type a:hover {
+	text-decoration: none;
+	background-color: #F5F5F5;
+	
+}
 
 .entry-panel.entry-type .beta-tag {
     position: absolute;
     font-size: 0.8em;
     font-weight: 600;
-    background-color: rgb(245, 245, 245);
-    border: 1px solid #ddd;
+    background-color: #F8F8F8;
+    border: 1px solid #CCC;
+	color:#666;
     width: 92px;
     top: 6px;
     left: 30px;
     transform: rotate(45deg);
     -ms-transform: rotate(45deg);
     -webkit-transform: rotate(45deg);
+	font-family: "Apres RE","Helvetica Neue",Helvetica,Arial,sans-serif;
 }
 
 .entry-list .table-header {margin-bottom: 6px;}
@@ -248,6 +341,17 @@ a.help:hover {text-decoration: none;}
 	font-family: "Apres RE","Helvetica Neue",Helvetica,Arial,sans-serif;
 }
 
+.entry-panel p {
+	color:#333;
+	font-size:18px;
+}
+a.list-item-delete {
+	color:#999;
+}
+a.list-item-delete:hover {
+	text-decoration:none;
+	color:#DA0000;
+}
 /*	EDIT PAGE
 ----------------------------------------------------- */
 
