@@ -209,7 +209,7 @@ a.help:hover {text-decoration: none;}
 .entry-panel.entry-type .type-panel {display: inline-block;}
 .entry-panel.entry-type .type-panel > div {position: relative;display: inline-block;border: 1px solid #ddd;margin: 10px;overflow: hidden;}
 
-.entry-panel.entry-type a {display: inline-block;font-size: 72px;padding: 10px;}
+.entry-panel.entry-type a.icon-button {display: inline-block;font-size: 72px;padding: 10px;}
 .entry-panel.entry-type a:hover {text-decoration: none;background-color: #ddd;}
 
 .entry-panel.entry-type .beta-tag {
