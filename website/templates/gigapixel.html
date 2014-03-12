@@ -1,0 +1,114 @@
+{% extends "_base.html" %}
+{% block title %}StoryMap for Gigapixel Images - {% endblock %}
+{% block content %}
+<style>
+    #storymap {
+        height: 600px;
+        width: 100%;
+    }
+
+    .modal {
+        width: 80%;
+        margin-left:-40%; /* width/2) */ 
+    }
+</style>
+<div class="container">
+<div class="row-fluid">
+    <div class="span12">
+    <h3>StoryMap for Images</h3>
+    <p>
+        You can use StoryMap to tell stories about photography or art, or to show a journey on a historic map. Learn more <a href="#how-to-gigapixel">below the example</a>.
+    </p>
+    <div id="storymap"></div>
+    <!-- JavaScript-->
+    <script>
+      var storymap = new VCO.StoryMap('storymap', 'seurat.json', {
+       map_type:                "zoomify",
+       map_background_color:    "#333",
+       map_as_image:            true,
+       calculate_zoom:      false,
+       zoomify: {
+        path:               "http://cdn.verite.co/maps/zoomify/seurat/",
+        width:              30000,
+        height:             19970,
+        tolerance:          0.9,
+        attribution:        "<a href='http://www.google.com/culturalinstitute/asset-viewer/a-sunday-on-la-grande-jatte-1884/twGyqq52R-lYpA?projectId=art-project' target='_blank'>Google Art Project</a>"
+       }
+      });
+      window.onresize = function(event) {
+       storymap.updateDisplay();
+      }
+    </script>
+
+
+    </div>
+    <div class="span12" id="how-to-gigapixel">
+        <h3>How do I make one?</h3>
+        <p>
+            To begin, you need a large image. It doesn't actually need to be a <a href="http://en.wikipedia.org/wiki/Gigapixel_image">gigapixel</a> image, but images you take with your phone won't be big enough to be interesting. You need to know the image width and height in pixels as part of starting a gigapixel StoryMap.
+        </p>
+        
+        <p>
+            Once you have a large image, you need to export it as tiles. The easiest way to do this is with Photoshop's "Zoomify" export feature. <a href="#zoomify-export" data-toggle="modal">(show me how)</a>
+        </p>
+        <p>
+            When you have your image tiles, you need to put them on a web server. If you don't have a webserver, you can use <a href="http://dropbox.com/">Dropbox</a>. Unfortunately, you can't use Google Drive for this. You need the base url for your exported image tiles when you start making your gigapixel StoryMap. <a  href="#serving-with-dropbox" data-toggle="modal">(show me how)</a>
+        </p>
+        <p>
+            When you've got your image tiles up on a server, <a href="select.html">go to make a new StoryMap</a> and choose the "gigapixel" button. (<i class="vco-icon-image icon-button"></i>)
+        </p>
+    </div>
+</div>    
+<div id="zoomify-export" class="modal hide fade">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3>Zoomify help</h3>
+  </div>
+  <div class="modal-body">
+    <img src="{{STATIC_URL}}/img/zoomify-tutorial-image-size.png" style="float:right;">
+    <ol>
+        <li>Open your image in Adobe Photoshop</li>
+        <li>Note the pixel dimensions of your image:
+          <ol>
+              <li>From the <strong>Image</strong> menu, choose <strong>Image Size</strong></li>
+              <li>If the dimensions aren't in pixels, use the menu next to "Dimensions:" to set it to pixels. </li>
+              <li>Make a note of the dimensions: the first number is width, the second is height.</li>
+          </ol>
+        </li>
+        <li>From the <strong>File</strong> menu choose <strong>Export > Zoomify.</strong></li>
+        <li>Set the output folder and click OK. You can ignore the other settings.</li>
+        <li>After you click OK, Photoshop will open a page in your browser showing your Zoomify export. You can ignore this.</li>
+    </ol>
+  </div>
+  <div class="modal-footer">
+    <a href="#" class="btn" data-dismiss="modal" aria-hidden="true">Close</a>
+  </div>
+</div>
+<div id="serving-with-dropbox" class="modal hide fade">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3>Dropbox help</h3>
+  </div>
+    <div class="modal-body">
+
+        <img src="{{STATIC_URL}}/img/zoomify-tutorial-db_copy_public_link.png" style="float:right;">
+        <ol>
+            <li>Upload the entire folder (from step 4 above) <strong>to your DropBox <em>public</em> folder</strong>.</li>
+            <li>In the folder you uploaded is another folder, which should have a name like the original file name, except without an extension. Open that folder.</li>
+            <li>Locate a file named <strong><code>ImageProperties.xml</code></strong> and copy its public link.</li>
+            <li>Paste it somewhere for a minute, and delete the "ImageProperties.xml" part of the URL. For example:<br>
+                    copied: <code>https://dl.dropboxusercontent.com/u/2653407/folder_name/image_name/ImageProperties.xml</code>
+                    edited: <code>https://dl.dropboxusercontent.com/u/2653407/folder_name/image_name/</code>
+            </li>
+            <li>
+                Make note of the edited URL. You'll need it when you start your StoryMap.
+            </li>
+        </ol>
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn" data-dismiss="modal" aria-hidden="true">Close</a>
+    </div>
+</div>
+    
+</div>
+{% endblock %}

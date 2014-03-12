@@ -60,19 +60,25 @@
         </div> 
 <!-- create select type panel -->     
         <div class="entry-panel entry-type hide">
-            <p>What type of StoryMap?</p>  
+            <p>Which kind of Story?</p>  
             <div class="type-panel">
                 <div>          
-                    <a href="javascript:;" class="vco-icon-location" onclick="$('#entry_modal').trigger('show_create_map');"></a>
+                    <a href="javascript:;" class="vco-icon-location icon-button" onclick="$('#entry_modal').trigger('show_create_map');"></a>
                  </div>
-                <label>Map</label>
+                <label onclick="$('#entry_modal').trigger('show_create_map');">Map</label>
             </div>
              <div class="type-panel">
                 <div>          
-                    <a href="javascript:;" class="vco-icon-image" onclick="$('#entry_modal').trigger('show_create_zoomify');"></a>
+                    <a href="javascript:;" class="vco-icon-image icon-button" onclick="$('#entry_modal').trigger('show_create_zoomify');"></a>
                     <div class="beta-tag">BETA</div>
                 </div>
-                <label>Zoomify</label>
+                <label><span onclick="$('#entry_modal').trigger('show_create_zoomify');">Gigapixel</span> <a class="help" href="javascript:;"
+                        data-placement="top"
+                        data-html="true"
+                        data-content="Tell a story using a large photograph, a piece of art, or a historic map. <a href='gigapixel.html' target='_blank'>Learn more</a>"
+                    >&nbsp;<i class="icon-question-sign icon-large"></i></a>
+                </label>    
+
             </div>
         </div> 
 <!-- create map panel -->
@@ -168,7 +174,7 @@ function handle_onload() {
 // MAIN
 //
 
-$(function() {         
+$(function() {
     $('#entry_login').click(function() {
         var $modal = $('#entry_modal').trigger('progress_show', 'Logging in');
 
@@ -176,6 +182,24 @@ $(function() {
             $('#entry_modal').trigger('handle_auth', authorized);     
         });
     }); 
+
+    // popovers
+    $('a.help').popover({
+        trigger: 'manual'
+    }).click(function(event) {
+        if(!$(this).next().hasClass('popover')) {
+            $('a.help').not(this).popover('hide');
+        }     
+        $(this).popover('toggle');
+        event.stopPropagation();
+        event.preventDefault();
+    });
+
+    // enter to submit
+    $('input[type="text"]').keyup(function(event){
+        if(event.keyCode == 13) {
+            $('#entry_create').click();
+    }});
                 
     $('#entry_create').click(function() {
         var $modal = $('#entry_modal');
@@ -247,12 +271,14 @@ $(function() {
         .on('confirm_hide', modal_confirm_hide)
         .on('reset', modal_reset)    
         ////// custom
-        .on('show', function(event) {                 
-            var $modal = $(this).trigger('progress_show', 'Checking authorization');   
-            
-            gdrive_check_auth(function(authorized) {
-                $modal.trigger('handle_auth', authorized); 
-            });           
+        .on('show', function(event) {
+            if (event.target.id == 'entry_modal') {
+                var $modal = $(this).trigger('progress_show', 'Checking authorization');   
+                
+                gdrive_check_auth(function(authorized) {
+                    $modal.trigger('handle_auth', authorized); 
+                });           
+            }
         })
         .on('handle_auth', function(event, authorized) {
             var $modal = $(this);
@@ -301,6 +327,7 @@ $(function() {
         })        
         .on('show_type', function(event) {
             $(this).find('.entry-panel').hide();
+            $(this).find('a.help').popover('hide');
             $(this).find('.entry-type').show();
             $(this).trigger('progress_hide');
         })
@@ -318,31 +345,36 @@ $(function() {
         })      
         .on('show_list', function(event) {
             $(this).find('.entry-panel').hide();
-            
             var $modal = $(this).trigger('progress_show', 'Getting StoryMap list');
-                        
-            gdrive_storymap_list(_storymap_folder, function(error, storymap_map) {                
-                if(error) {
-                    $modal.trigger('error_show', format_error('Error getting StoryMap list', error));
-                    $modal.trigger('progress_hide');
-                } else {
-                    _storymap_map = storymap_map;
-                    _storymap_list = [];
-                    _storymap_names = [];
-                    
-                    for(var id in _storymap_map) {
-                        _storymap_list.push(_storymap_map[id]);
-                        _storymap_names.push(_storymap_map[id].title.toLowerCase());
-                    }
-                    
-                    if(_storymap_list.length) {
-                        $modal.find('.entry-list').show();
-                        $modal.trigger('display_list', 'title');               
+            if (_storymap_list && _storymap_list.length > 0) {
+                $modal.find('.entry-list').show();
+                $modal.trigger('display_list', 'title');               
+            } else {
+                            
+                gdrive_storymap_list(_storymap_folder, function(error, storymap_map) {                
+                    if(error) {
+                        $modal.trigger('error_show', format_error('Error getting StoryMap list', error));
+                        $modal.trigger('progress_hide');
                     } else {
-                        $modal.trigger('show_type');
-                    }                    
-                }
-            });       
+                        _storymap_map = storymap_map;
+                        _storymap_list = [];
+                        _storymap_names = [];
+                        
+                        for(var id in _storymap_map) {
+                            _storymap_list.push(_storymap_map[id]);
+                            _storymap_names.push(_storymap_map[id].title.toLowerCase());
+                        }
+                        
+                        if(_storymap_list.length) {
+                            $modal.find('.entry-list').show();
+                            $modal.trigger('display_list', 'title');               
+                        } else {
+                            $modal.trigger('show_type');
+                        }                    
+                    }
+                });       
+
+            }
         })
         .on('display_list', function(event, sortby) {
             if(sortby == 'date') {        
