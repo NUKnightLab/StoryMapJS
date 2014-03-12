@@ -211,7 +211,7 @@
         </form>        
     </div>
     <div class="modal-footer">
-        <a href="javascript:;" class="btn btn-primary" data-dismiss="modal">Done</a>
+        <a href="javascript:;" class="btn btn-primary" data-dismiss="modal">Close</a>
     </div>
 </div>
 
@@ -270,7 +270,7 @@
         </div>
     </div>
     <div class="modal-footer">
-        <a href="javascript:;" class="btn" data-dismiss="modal">Done</a>
+        <a href="javascript:;" class="btn btn-primary" data-dismiss="modal">Close</a>
     </div>
     <!-- progress -->
     <div class="modal-progress hide">
@@ -330,60 +330,70 @@
 
 
 <div id="share_modal" class="modal hide fade" data-backdrop="static">
-    <div class="modal-body">
+	<div class="modal-header">
+		<h4>Share This StoryMap</h4>
+	</div>
+	<div class="modal-body">
+		
         <!-- error -->
         <div class="modal-error hide">    
             <span class="modal-msg error"></span>
         </div>    
         <!-- main -->
-        <div id="share_publish_panel" class="hide">
-            <form class="form-inline">
-            <label><i class="icon-warning-sign"></i> You have unpublished changes:</label>
-            &nbsp;
-            <a id="share_publish" class="btn" href="javascript:;">Publish Changes</a>
-            </form>
-        </div>
-        <p>
-            <div>
-                <label class="share-link-label">Link</label>
-                <div class="share-link-icons">
-                    <a class="share-link-twitter" target="_blank" href="#" title="Share on Twitter">
-                        <i class="icon-twitter icon-2x"></i></a>
-                    <a class="share-link-facebook" target="_blank" href='#' title="Share on Facebook">
-                        <i class="icon-facebook-sign icon-2x"></i></a>
-                    <a class="share-link-googleplus" target="_blank" href='#' title="Share on Google+">
-                        <i class="icon-google-plus-sign icon-2x"></i></a>                    
-                    <a class="share-link-reddit" target="_blank" href="#" title="Share on Reddit">
-                        <img src="http://www.reddit.com/static/spreddit5.gif" /> 
-                    </a>
-                </div>
-            </div>
-            <!--
-            <textarea id="share_url" rows="3"></textarea>
-            -->
-            <input type="text" id="share_url" class="stretch" onfocus="this.select();" onmouseup="return false;">
-        </p>
-        <p>
-            <div>
-                <label class="share-embed-label">Embed Code</label>
-                <div class="share-embed-params">
-                     <div class="controls">
-                        <div class="input-prepend">
-                            <span class="add-on">Width</span>
-                            <input type="text" id="share_width" value="" class="input-mini"> 
-                        </div>
-                         <div class="input-prepend">
-                            <span class="add-on">Height</span>
-                            <input type="text" id="share_height" value="" class="input-mini"> 
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <textarea id="share_embed" rows="5" onfocus="this.select();" onmouseup="return false;"></textarea> 
-        </p>  
-    </div>
+		<div id="share_publish_panel" class="hide">
+			<form class="form-inline">
+				<label><i class="icon-warning-sign"></i> You have unpublished changes:</label>
+					&nbsp;
+				<a id="share_publish" class="btn" href="javascript:;">Publish Changes</a>
+			</form>
+		</div>
+		<div class="share-link-container">
+			<div class="share-link">
+				<label>Link</label>
+				<input type="text" id="share_url" class="stretch" onfocus="this.select();" onmouseup="return false;">
+			</div>
+			<div class="share-social">
+				<label>Social</label>
+				<div class="share-social-icons">
+					<a class="share-link-twitter" target="_blank" href="#" title="Share on Twitter">
+						<i class="icon-twitter icon-2x"></i>
+					</a>
+					<a class="share-link-facebook" target="_blank" href='#' title="Share on Facebook">
+						<i class="icon-facebook-sign icon-2x"></i>
+					</a>
+					<a class="share-link-googleplus" target="_blank" href='#' title="Share on Google+">
+						<i class="icon-google-plus-sign icon-2x"></i>
+					</a>                    
+					<a class="share-link-reddit" target="_blank" href="#" title="Share on Reddit">
+						<img src="http://www.reddit.com/static/spreddit5.gif" /> 
+					</a>
+				</div>
+				
+			</div>
+			
+			
+		</div>
+		<div class="share-embed-container">
+			<label>Embed</label>
+			 <textarea id="share_embed" rows="5" onfocus="this.select();" onmouseup="return false;"></textarea> 
+			 <div class="share-embed-params">
+				  <div class="vco-icon-arrow-up"></div>
+				 <div class="controls">
+					 <div class="input-prepend">
+						 <span class="add-on">Width</span>
+						 <input type="text" id="share_width" value="" class="input-mini"> 
+					 </div>
+					 <div class="input-prepend">
+						 <span class="add-on">Height</span>
+						 <input type="text" id="share_height" value="" class="input-mini"> 
+					 </div>
+				 </div>
+			 </div>
+		</div>
+
+	</div>
     <div class="modal-footer">
-        <a href="javascript:;" class="btn btn-primary" data-dismiss="modal">Done</a>
+        <a href="javascript:;" class="btn btn-primary" data-dismiss="modal">Close</a>
     </div>
     <!-- progress -->
     <div class="modal-progress">

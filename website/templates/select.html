@@ -60,7 +60,7 @@
         </div> 
 <!-- create select type panel -->     
         <div class="entry-panel entry-type hide">
-            <p>Which kind of Story?</p>  
+            <p>What type of story do you want to create?</p>  
             <div class="type-panel">
                 <div>          
                     <a href="javascript:;" class="vco-icon-location icon-button" onclick="$('#entry_modal').trigger('show_create_map');"></a>
@@ -124,7 +124,8 @@
         <a id="entry_create" class="entry-panel entry-create hide btn btn-success" href="javascript:;">
             Create</a>
         <a class="entry-panel entry-list hide btn btn-success" href="javascript:;" onclick="$('#entry_modal').trigger('show_type');">
-            New</a>    
+            <i class="icon-file "></i> New
+		</a>    
     </div>
     <!-- progress -->
     <div class="modal-progress hide">
@@ -403,7 +404,7 @@ $(function() {
                 } else {
                     html += ''
                         + '<div style="display: inline-block;float: right">'
-                        + '<a class="list-item-edit" href="'+href+'" title="Edit"><i class="icon-edit icon-large"></i></a>'
+                        //+ '<a class="list-item-edit" href="'+href+'" title="Edit"><i class="icon-edit icon-large"></i></a>'
                         + '<a class="list-item-delete" href="javascript:" title="Delete"><i class="icon-trash icon-large"></i></a>'
                         + '</div>'
                         + '<a class="title" href="'+href+'">'+item.title+'</a>';
