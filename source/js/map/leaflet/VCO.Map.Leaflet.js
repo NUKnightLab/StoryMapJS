@@ -91,7 +91,10 @@ VCO.Map.Leaflet = VCO.Map.extend({
 			case 'mapbox':
 				var mapbox_name = _map_type_arr[1] || 'zachwise.hgmmh8ho';
 				//_tilelayer = new L.TileLayer.Mapbox(_map_type_arr[1] || 'zachwise.hgn59jb1');
-				_tilelayer = new L.TileLayer("https://{s}.tiles.mapbox.com/v2/" + mapbox_name + "/{z}/{x}/{y}.png", {subdomains: 'abcd'});
+				_tilelayer = new L.TileLayer("https://{s}.tiles.mapbox.com/v2/" + mapbox_name + "/{z}/{x}/{y}.png", {
+					subdomains: 'abcd',
+					attribution: "<div class='mapbox-maplogo'></div><a href='https://www.mapbox.com/about/maps/' target='_blank'>© Mapbox © OpenStreetMap</a> <a class='mapbox-improve-map' href='https://www.mapbox.com/map-feedback/#zachwise.hgmmh8ho/-81.80419921875/39.58875727696545/5' target='_blank'>Improve this map</a>"
+				});
 				// "http://{s}.tiles.mapbox.com/v3/milwaukeejournalsentinel.map-fy8dzs4n/{z}/{x}/{y}.png",
 				//https://d.tiles.mapbox.com/v3/zachwise.hgmmh8ho/5/8/11.png
 				break;
