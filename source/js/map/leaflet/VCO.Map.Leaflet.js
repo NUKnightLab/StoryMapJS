@@ -82,9 +82,19 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	_createTileLayer: function() {
 		var _tilelayer,
 			_map_type_arr = this.options.map_type.split(':');		
-
+		
+		
+			// map_type: "http://{s}.tiles.mapbox.com/v3/milwaukeejournalsentinel.map-fy8dzs4n/{z}/{x}/{y}.png",
+			// map_subdomains: "ab"
 		// Set Tiles
 		switch(_map_type_arr[0]) {
+			case 'mapbox':
+				var mapbox_name = _map_type_arr[1] || 'zachwise.hgmmh8ho';
+				//_tilelayer = new L.TileLayer.Mapbox(_map_type_arr[1] || 'zachwise.hgn59jb1');
+				_tilelayer = new L.TileLayer("https://{s}.tiles.mapbox.com/v2/" + mapbox_name + "/{z}/{x}/{y}.png", {subdomains: 'abcd'});
+				// "http://{s}.tiles.mapbox.com/v3/milwaukeejournalsentinel.map-fy8dzs4n/{z}/{x}/{y}.png",
+				//https://d.tiles.mapbox.com/v3/zachwise.hgmmh8ho/5/8/11.png
+				break;
 			case 'stamen':
 				_tilelayer = new L.StamenTileLayer(_map_type_arr[1] || 'toner-lite');
 				break;

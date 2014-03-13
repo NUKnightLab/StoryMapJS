@@ -1,7 +1,7 @@
 !!! 5
 html(lang="en")
 	head
-		title StoryMap Zoomify
+		title StoryMapJS
 		meta(charset='utf-8')
 		meta(name='description', content='TimelineJS Embed')
 		meta(name='apple-mobile-web-app-capable', content='yes')
@@ -10,7 +10,7 @@ html(lang="en")
 		// CSS
 		link(rel='stylesheet', href='../css/storymap.css?v1')
 		//FONT
-		link(rel='stylesheet', href='../css/fonts/font.playfair.css?v1')
+		link(rel='stylesheet', href='http://fonts.googleapis.com/css?family=Bevan%7CPontano+Sans&amp;subset=latin,latin')
 		
 		// Style
 		style
@@ -19,6 +19,13 @@ html(lang="en")
 				width:100%;
 				padding: 0px;
 				margin: 0px;
+			}
+			.vco-storymap {
+				font-family:'Pontano Sans',sans-serif !important;
+			}
+			.vco-storymap h1, .vco-storymap h2, .vco-storymap h3, .vco-storymap h4, .vco-storymap h5, .vco-storymap h6 {
+				font-family:'Bevan',serif !important;
+				font-weight: normal;
 			}
 
 		// HTML5 shim, for IE6-8 support of HTML elements
@@ -33,16 +40,8 @@ html(lang="en")
 		// JavaScript
 		script(src='../js/storymap-min.js')
 		script
-			var storymap = new VCO.StoryMap('storymap', 'gameofthrones.json', {
-				map_type: "zoomify",
-				map_background_color: "#121619",
-				zoomify: {
-					path: 			"http://cdn.verite.co/maps/zoomify/got/",
-					width: 			21920,
-					height: 		14656,
-					tolerance: 		0.9,
-					attribution: 	"Google Search" //"Google Art Project"
-				}
+			var storymap = new VCO.StoryMap('storymap', 'population.json', {
+				map_type:"mapbox:zachwise.hgmmh8ho"
 			});
 			window.onresize = function(event) {
 				storymap.updateDisplay();
