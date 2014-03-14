@@ -159,10 +159,10 @@
 			// @codekit-prepend "map/leaflet/leaflet-src/layer/vector/Rectangle.js";
 
 		// Circle
-			// "map/leaflet/leaflet-src/layer/vector/Circle.js";
+			// @codekit-prepend "map/leaflet/leaflet-src/layer/vector/Circle.js";
 
 		// CircleMarker
-			// "map/leaflet/leaflet-src/layer/vector/CircleMarker.js";
+			// @codekit-prepend "map/leaflet/leaflet-src/layer/vector/CircleMarker.js";
 
 		// VectorsCanvas Canvas fallback for vector layers (polygons, polylines, circles, circlemarkers)
 			// @codekit-prepend "map/leaflet/leaflet-src/layer/vector/canvas/Polyline.Canvas.js";

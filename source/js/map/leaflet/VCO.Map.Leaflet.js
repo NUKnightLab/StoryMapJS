@@ -70,11 +70,14 @@ VCO.Map.Leaflet = VCO.Map.extend({
 			zoomAnimation: 		true,
 			aimingRectOptions: 	{
 				fillColor: 		"#FFFFFF",
-				color: 			"#da0000",
-				opacity: 		1,
-				weight: 		2
+				color: 			"#FFFFFF",
+				opacity: 		0.4,
+				weight: 		1,
+				stroke: 		true
 			}
 		}).addTo(this._map);
+		
+		this._mini_map.getContainer().style.backgroundColor = this.options.map_background_color;
 		
 	},
 	
@@ -143,7 +146,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 				_options.attribution 	= this.options.zoomify.attribution;
 				
 				_tilelayer = new L.tileLayer.zoomify(this.options.zoomify.path, _options);
-				this._image_layer = new L.imageOverlay(this.options.zoomify.path + "TileGroup0/0-0-0.jpg", _tilelayer.getZoomifyBounds(this._map));
+				//this._image_layer = new L.imageOverlay(this.options.zoomify.path + "TileGroup0/0-0-0.jpg", _tilelayer.getZoomifyBounds(this._map));
 				break;
 			case 'osm':
 				_options.subdomains = 'ab';

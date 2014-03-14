@@ -13316,6 +13316,161 @@ L.rectangle = function (latLngBounds, options) {
 
 
 /* **********************************************
+     Begin Circle.js
+********************************************** */
+
+/*
+ * L.Circle is a circle overlay (with a certain radius in meters).
+ */
+
+L.Circle = L.Path.extend({
+	initialize: function (latlng, radius, options) {
+		L.Path.prototype.initialize.call(this, options);
+
+		this._latlng = L.latLng(latlng);
+		this._mRadius = radius;
+	},
+
+	options: {
+		fill: true
+	},
+
+	setLatLng: function (latlng) {
+		this._latlng = L.latLng(latlng);
+		return this.redraw();
+	},
+
+	setRadius: function (radius) {
+		this._mRadius = radius;
+		return this.redraw();
+	},
+
+	projectLatlngs: function () {
+		var lngRadius = this._getLngRadius(),
+		    latlng = this._latlng,
+		    pointLeft = this._map.latLngToLayerPoint([latlng.lat, latlng.lng - lngRadius]);
+
+		this._point = this._map.latLngToLayerPoint(latlng);
+		this._radius = Math.max(this._point.x - pointLeft.x, 1);
+	},
+
+	getBounds: function () {
+		var lngRadius = this._getLngRadius(),
+		    latRadius = (this._mRadius / 40075017) * 360,
+		    latlng = this._latlng;
+
+		return new L.LatLngBounds(
+		        [latlng.lat - latRadius, latlng.lng - lngRadius],
+		        [latlng.lat + latRadius, latlng.lng + lngRadius]);
+	},
+
+	getLatLng: function () {
+		return this._latlng;
+	},
+
+	getPathString: function () {
+		var p = this._point,
+		    r = this._radius;
+
+		if (this._checkIfEmpty()) {
+			return '';
+		}
+
+		if (L.Browser.svg) {
+			return 'M' + p.x + ',' + (p.y - r) +
+			       'A' + r + ',' + r + ',0,1,1,' +
+			       (p.x - 0.1) + ',' + (p.y - r) + ' z';
+		} else {
+			p._round();
+			r = Math.round(r);
+			return 'AL ' + p.x + ',' + p.y + ' ' + r + ',' + r + ' 0,' + (65535 * 360);
+		}
+	},
+
+	getRadius: function () {
+		return this._mRadius;
+	},
+
+	// TODO Earth hardcoded, move into projection code!
+
+	_getLatRadius: function () {
+		return (this._mRadius / 40075017) * 360;
+	},
+
+	_getLngRadius: function () {
+		return this._getLatRadius() / Math.cos(L.LatLng.DEG_TO_RAD * this._latlng.lat);
+	},
+
+	_checkIfEmpty: function () {
+		if (!this._map) {
+			return false;
+		}
+		var vp = this._map._pathViewport,
+		    r = this._radius,
+		    p = this._point;
+
+		return p.x - r > vp.max.x || p.y - r > vp.max.y ||
+		       p.x + r < vp.min.x || p.y + r < vp.min.y;
+	}
+});
+
+L.circle = function (latlng, radius, options) {
+	return new L.Circle(latlng, radius, options);
+};
+
+
+/* **********************************************
+     Begin CircleMarker.js
+********************************************** */
+
+/*
+ * L.CircleMarker is a circle overlay with a permanent pixel radius.
+ */
+
+L.CircleMarker = L.Circle.extend({
+	options: {
+		radius: 10,
+		weight: 2
+	},
+
+	initialize: function (latlng, options) {
+		L.Circle.prototype.initialize.call(this, latlng, null, options);
+		this._radius = this.options.radius;
+	},
+
+	projectLatlngs: function () {
+		this._point = this._map.latLngToLayerPoint(this._latlng);
+	},
+
+	_updateStyle : function () {
+		L.Circle.prototype._updateStyle.call(this);
+		this.setRadius(this.options.radius);
+	},
+
+	setLatLng: function (latlng) {
+		L.Circle.prototype.setLatLng.call(this, latlng);
+		if (this._popup && this._popup._isOpen) {
+			this._popup.setLatLng(latlng);
+		}
+		return this;
+	},
+
+	setRadius: function (radius) {
+		this.options.radius = this._radius = radius;
+		return this.redraw();
+	},
+
+	getRadius: function () {
+		return this._radius;
+	}
+});
+
+L.circleMarker = function (latlng, options) {
+	return new L.CircleMarker(latlng, options);
+};
+
+
+/* **********************************************
      Begin Polyline.Canvas.js
 ********************************************** */
 
@@ -15020,12 +15175,14 @@ L.Control.MiniMap = L.Control.extend({
         zoomLevelFixed: false,
         zoomAnimation: false,
         autoToggleDisplay: false,
+		show_view: true,
         width: 150,
         height: 150,
         aimingRectOptions: {
-            color: "#ff7800",
+            color: "#da0000",
             weight: 1,
-            clickable: false
+            clickable: false,
+			stroke:true
         },
         shadowRectOptions: {
             color: "#000000",
@@ -15091,6 +15248,19 @@ L.Control.MiniMap = L.Control.extend({
         this._miniMap.whenReady(L.Util.bind(function() {
             this._aimingRect = L.rectangle(this._mainMap.getBounds(), this.options.aimingRectOptions).addTo(this._miniMap);
             this._shadowRect = L.rectangle(this._mainMap.getBounds(), this.options.shadowRectOptions).addTo(this._miniMap);
+			
+			this._locationCircle = L.circleMarker(this._mainMap.getCenter(), {
+				fillColor: "#da0000",
+				color: "#FFFFFF",
+				weight:2,
+				radius: 10,
+				fill:true,
+				fillOpacity: 1,
+				stroke:true,
+				clickable: false
+			}).addTo(this._miniMap);
+			this._locationCircle.setRadius(5);
+			
             this._mainMap.on('moveend', this._onMainMapMoved, this);
             this._mainMap.on('move', this._onMainMapMoving, this);
             //this._miniMap.on('movestart', this._onMiniMapMoveStarted, this);
@@ -15199,11 +15369,18 @@ L.Control.MiniMap = L.Control.extend({
         } else {
             this._miniMapMoving = false;
         }
-        this._aimingRect.setBounds(this._mainMap.getBounds());
+		if (this.options.show_view) {
+			this._aimingRect.setBounds(this._mainMap.getBounds());
+		}
+		this._locationCircle.setLatLng(this._mainMap.getCenter());
+        
     },
 
     _onMainMapMoving: function(e) {
-        this._aimingRect.setBounds(this._mainMap.getBounds());
+		if (this.options.show_view) {
+			this._aimingRect.setBounds(this._mainMap.getBounds());
+		}
+		this._locationCircle.setLatLng(this._mainMap.getCenter());
     },
 
     _onMiniMapMoveStarted: function(e) {
@@ -15735,6 +15912,7 @@ VCO.Map = VCO.Class.extend({
 			map_type: 			"stamen:toner-lite",
 			map_as_image: 		false,
 			map_mini: 			false,
+			map_background_color: "#d9d9d9",
 			map_subdomains: 	"",
 			zoomify: {
 				path: 			"",
@@ -16387,11 +16565,14 @@ VCO.Map.Leaflet = VCO.Map.extend({
 			zoomAnimation: 		true,
 			aimingRectOptions: 	{
 				fillColor: 		"#FFFFFF",
-				color: 			"#da0000",
-				opacity: 		1,
-				weight: 		2
+				color: 			"#FFFFFF",
+				opacity: 		0.4,
+				weight: 		1,
+				stroke: 		true
 			}
 		}).addTo(this._map);
+		
+		this._mini_map.getContainer().style.backgroundColor = this.options.map_background_color;
 		
 	},
 	
@@ -16460,7 +16641,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 				_options.attribution 	= this.options.zoomify.attribution;
 				
 				_tilelayer = new L.tileLayer.zoomify(this.options.zoomify.path, _options);
-				this._image_layer = new L.imageOverlay(this.options.zoomify.path + "TileGroup0/0-0-0.jpg", _tilelayer.getZoomifyBounds(this._map));
+				//this._image_layer = new L.imageOverlay(this.options.zoomify.path + "TileGroup0/0-0-0.jpg", _tilelayer.getZoomifyBounds(this._map));
 				break;
 			case 'osm':
 				_options.subdomains = 'ab';
@@ -17023,10 +17204,10 @@ L.TileLayer.include({
 			// @codekit-prepend "map/leaflet/leaflet-src/layer/vector/Rectangle.js";
 
 		// Circle
-			// "map/leaflet/leaflet-src/layer/vector/Circle.js";
+			// @codekit-prepend "map/leaflet/leaflet-src/layer/vector/Circle.js";
 
 		// CircleMarker
-			// "map/leaflet/leaflet-src/layer/vector/CircleMarker.js";
+			// @codekit-prepend "map/leaflet/leaflet-src/layer/vector/CircleMarker.js";
 
 		// VectorsCanvas Canvas fallback for vector layers (polygons, polylines, circles, circlemarkers)
 			// @codekit-prepend "map/leaflet/leaflet-src/layer/vector/canvas/Polyline.Canvas.js";
