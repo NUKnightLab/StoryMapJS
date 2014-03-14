@@ -506,6 +506,7 @@ VCO.Map = VCO.Class.extend({
 			this.createMiniMap();
 		}
 		
+		
 		this.fire("loaded", this.data);
 	},
 	

@@ -21,7 +21,8 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		var map_type_arr = this.options.map_type.split(':');		
 
 		// Create Tile Layer
-		this._tile_layer = this._createTileLayer();
+		this._tile_layer = this._createTileLayer(this.options.map_type);
+		this._tile_layer.on("load", this._onTilesLoaded, this);
 		
 		// Add Tile Layer
 		this._map.addLayer(this._tile_layer);
@@ -59,7 +60,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 			this.bounds_array = this._getAllMarkersBounds(this._markers);
 		} 
 		
-		this._tile_layer_mini = this._createTileLayer();
+		this._tile_layer_mini = this._createTileLayer(this.options.map_type);
 		this._mini_map = new L.Control.MiniMap(this._tile_layer_mini, {
 			width: 				150,
 			height: 			100,
@@ -77,60 +78,101 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		
 	},
 	
+	/*	Create Background Map
+	================================================== */
+	_createBackgroundMap: function(tiles) {
+		if (!this._image_layer) {
+			// Make Image Layer a Group
+			this._image_layer = new L.layerGroup();
+			// Add Layer Group to Map
+			this._map.addLayer(this._image_layer);
+			
+			// Create Image Overlay for each tile in the group
+			for (x in tiles) {
+				var target_tile = tiles[x],
+					image = {},
+					tile = {
+						x: 			parseInt(target_tile.style.left.split("px")[0]),
+						y: 			parseInt(target_tile.style.top.split("px")[0]),
+						url: 		target_tile.src,
+						height: 	parseInt(target_tile.style.height.split("px")[0]),
+						width: 		parseInt(target_tile.style.width.split("px")[0]),
+						pos: {
+							start: 	0,
+							end: 	0
+						}
+					};
+				
+				tile.pos.start 	= this._map.containerPointToLatLng([tile.x, tile.y]);
+				tile.pos.end 	= this._map.containerPointToLatLng([tile.x + tile.width, tile.y + tile.height]);
+				
+				image = new L.imageOverlay(tile.url, [tile.pos.start, tile.pos.end]);
+				this._image_layer.addLayer(image);
+				
+			}
+		}
+		
+	},
+	
 	/*	Create Tile Layer
 	================================================== */
-	_createTileLayer: function() {
-		var _tilelayer,
-			_map_type_arr = this.options.map_type.split(':');		
+	_createTileLayer: function(map_type, options) {
+		var _tilelayer = null,
+			_map_type_arr = map_type.split(':'),
+			_options = {};	
 		
+		if (options) {
+			_options = options;
+		}
 		
-			// map_type: "http://{s}.tiles.mapbox.com/v3/milwaukeejournalsentinel.map-fy8dzs4n/{z}/{x}/{y}.png",
-			// map_subdomains: "ab"
 		// Set Tiles
 		switch(_map_type_arr[0]) {
 			case 'mapbox':
 				var mapbox_name = _map_type_arr[1] || 'zachwise.hgmmh8ho';
-				//_tilelayer = new L.TileLayer.Mapbox(_map_type_arr[1] || 'zachwise.hgn59jb1');
-				_tilelayer = new L.TileLayer("https://{s}.tiles.mapbox.com/v2/" + mapbox_name + "/{z}/{x}/{y}.png", {
-					subdomains: 'abcd',
-					attribution: "<div class='mapbox-maplogo'></div><a href='https://www.mapbox.com/about/maps/' target='_blank'>© Mapbox © OpenStreetMap</a> <a class='mapbox-improve-map' href='https://www.mapbox.com/map-feedback/#zachwise.hgmmh8ho/-81.80419921875/39.58875727696545/5' target='_blank'>Improve this map</a>"
-				});
-				// "http://{s}.tiles.mapbox.com/v3/milwaukeejournalsentinel.map-fy8dzs4n/{z}/{x}/{y}.png",
-				//https://d.tiles.mapbox.com/v3/zachwise.hgmmh8ho/5/8/11.png
+				_options.subdomains 	= 'abcd';
+				_options.attribution 	= "<div class='mapbox-maplogo'></div><a href='https://www.mapbox.com/about/maps/' target='_blank'>© Mapbox © OpenStreetMap</a> <a class='mapbox-improve-map' href='https://www.mapbox.com/map-feedback/#zachwise.hgmmh8ho/-81.80419921875/39.58875727696545/5' target='_blank'>Improve this map</a>";
+				_tilelayer = new L.TileLayer("https://{s}.tiles.mapbox.com/v2/" + mapbox_name + "/{z}/{x}/{y}.png", _options);
 				break;
 			case 'stamen':
-				_tilelayer = new L.StamenTileLayer(_map_type_arr[1] || 'toner-lite');
+				_tilelayer = new L.StamenTileLayer(_map_type_arr[1] || 'toner-lite', _options);
 				break;
 			case 'zoomify':
-				_tilelayer = new L.tileLayer.zoomify(this.options.zoomify.path, {
-					width: 			this.options.zoomify.width,
-					height: 		this.options.zoomify.height,
-					tolerance: 		this.options.zoomify.tolerance,
-					attribution: 	this.options.zoomify.attribution,
-				});
+				_options.width			= this.options.zoomify.width;
+				_options.height 		= this.options.zoomify.height;
+				_options.tolerance 		= this.options.zoomify.tolerance;
+				_options.attribution 	= this.options.zoomify.attribution;
+				
+				_tilelayer = new L.tileLayer.zoomify(this.options.zoomify.path, _options);
 				this._image_layer = new L.imageOverlay(this.options.zoomify.path + "TileGroup0/0-0-0.jpg", _tilelayer.getZoomifyBounds(this._map));
 				break;
 			case 'osm':
-				_tilelayer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {subdomains: 'ab'});
+				_options.subdomains = 'ab';
+				_tilelayer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', _options);
 				break;
 		    
 			case 'http':
 			case 'https':
-				_tilelayer = new L.TileLayer(this.options.map_type, {subdomains: this.options.map_subdomains});
+				_options.subdomains = this.options.map_subdomains;
+				_tilelayer = new L.TileLayer(this.options.map_type, _options);
 				break;
 		        
 			default:
-				_tilelayer = new L.StamenTileLayer('toner');
+				_tilelayer = new L.StamenTileLayer('toner', _options);
 				break;		
 		}
 		
 		return _tilelayer;
 	},
 	
-	/*	Event
+	/*	Events
 	================================================== */
 	_onMapMoveEnd: function(e) {
 		
+	},
+	
+	_onTilesLoaded: function(e) {
+		this._createBackgroundMap(e.target._tiles);
+		this._tile_layer.off("load", this._onTilesLoaded, this);
 	},
 	
 	/*	Marker
@@ -490,5 +532,11 @@ L.Map.include({
 		this._animateZoom(center, zoom, origin, scale, null, true);
 
 		return true;
+	}
+});
+
+L.TileLayer.include({
+	getTiles: function() {
+		return this._tiles;
 	}
 });

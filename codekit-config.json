@@ -41,6 +41,17 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
+    "\/source\/js\/map\/leaflet\/leaflet-src\/layer\/tile\/TileLayer.Canvas.js" : {
+      "ignoreWasSetByUser" : 1,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/layer\/tile\/TileLayer.Canvas.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/layer\/tile\/TileLayer.Canvas-min.js",
+      "fileType" : 64
+    },
     "\/source\/less\/fonts\/font.rufina-sintony.less" : {
       "ieCompatibility" : 1,
       "inputAbbreviatedPath" : "\/source\/less\/fonts\/font.rufina-sintony.less",
@@ -57,17 +68,6 @@
       "outputStyle" : 1,
       "fileType" : 1,
       "debugStyle" : 0
-    },
-    "\/source\/js\/map\/leaflet\/leaflet-src\/layer\/tile\/TileLayer.Canvas.js" : {
-      "ignoreWasSetByUser" : 1,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/layer\/tile\/TileLayer.Canvas.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/layer\/tile\/TileLayer.Canvas-min.js",
-      "fileType" : 64
     },
     "\/source\/embed\/index.html" : {
       "ignoreWasSetByUser" : 0,
@@ -195,17 +195,6 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
-    "\/source\/js\/map\/leaflet\/leaflet-src\/geo\/LatLngBounds.js" : {
-      "ignoreWasSetByUser" : 1,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/geo\/LatLngBounds.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/geo\/LatLngBounds-min.js",
-      "fileType" : 64
-    },
     "\/source\/gfx\/map-pin.png" : {
       "ignoreWasSetByUser" : 0,
       "ignore" : 0,
@@ -216,6 +205,17 @@
       "outputAbbreviatedPath" : "\/source\/gfx\/map-pin.png",
       "initialSize" : 2120,
       "fileType" : 8192
+    },
+    "\/source\/js\/map\/leaflet\/leaflet-src\/geo\/LatLngBounds.js" : {
+      "ignoreWasSetByUser" : 1,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/geo\/LatLngBounds.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/geo\/LatLngBounds-min.js",
+      "fileType" : 64
     },
     "\/source\/js\/media\/types\/VCO.Media.Slider.js" : {
       "ignoreWasSetByUser" : 0,
@@ -333,17 +333,6 @@
       "outputAbbreviatedPath" : "\/source\/js\/animation\/VCO.Animate-min.js",
       "fileType" : 64
     },
-    "\/source\/js\/map\/leaflet\/leaflet-src\/layer\/vector\/Path.VML.js" : {
-      "ignoreWasSetByUser" : 1,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/layer\/vector\/Path.VML.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/layer\/vector\/Path.VML-min.js",
-      "fileType" : 64
-    },
     "\/source\/less\/fonts\/font.fjalla-average.less" : {
       "ieCompatibility" : 1,
       "inputAbbreviatedPath" : "\/source\/less\/fonts\/font.fjalla-average.less",
@@ -360,6 +349,17 @@
       "outputStyle" : 1,
       "fileType" : 1,
       "debugStyle" : 0
+    },
+    "\/source\/js\/map\/leaflet\/leaflet-src\/layer\/vector\/Path.VML.js" : {
+      "ignoreWasSetByUser" : 1,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/layer\/vector\/Path.VML.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/layer\/vector\/Path.VML-min.js",
+      "fileType" : 64
     },
     "\/source\/js\/map\/leaflet\/leaflet-src\/layer\/vector\/canvas\/Polygon.Canvas.js" : {
       "ignoreWasSetByUser" : 1,
@@ -500,6 +500,17 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
+    "\/source\/js\/map\/leaflet\/leaflet-src\/map\/Map.js" : {
+      "ignoreWasSetByUser" : 1,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/map\/Map.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/map\/Map-min.js",
+      "fileType" : 64
+    },
     "\/source\/js\/map\/leaflet\/leaflet-src\/map\/anim\/Map.ZoomAnimation.js" : {
       "ignoreWasSetByUser" : 1,
       "ignore" : 1,
@@ -511,16 +522,49 @@
       "outputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/map\/anim\/Map.ZoomAnimation-min.js",
       "fileType" : 64
     },
-    "\/source\/js\/animation\/VCO.Ease.js" : {
-      "ignoreWasSetByUser" : 0,
+    "\/source\/js\/map\/leaflet\/leaflet-src\/dom\/PosAnimation.js" : {
+      "ignoreWasSetByUser" : 1,
       "ignore" : 1,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/animation\/VCO.Ease.js",
+      "inputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/dom\/PosAnimation.js",
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/animation\/VCO.Ease-min.js",
+      "outputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/dom\/PosAnimation-min.js",
       "fileType" : 64
+    },
+    "\/source\/js\/map\/leaflet\/leaflet-src\/dom\/DomEvent.DoubleTap.js" : {
+      "ignoreWasSetByUser" : 1,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/dom\/DomEvent.DoubleTap.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/dom\/DomEvent.DoubleTap-min.js",
+      "fileType" : 64
+    },
+    "\/source\/js\/map\/leaflet\/leaflet-src\/core\/Browser.js" : {
+      "ignoreWasSetByUser" : 1,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/core\/Browser.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/core\/Browser-min.js",
+      "fileType" : 64
+    },
+    "\/source\/css\/storymap.png" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 0,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/css\/storymap.png",
+      "processed" : 0,
+      "outputAbbreviatedPath" : "\/source\/css\/storymap.png",
+      "initialSize" : 19146,
+      "fileType" : 8192
     },
     "\/source\/less\/media\/types\/VCO.Media.Wikipedia.less" : {
       "ieCompatibility" : 1,
@@ -539,77 +583,16 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
-    "\/source\/js\/map\/leaflet\/leaflet-src\/dom\/DomEvent.DoubleTap.js" : {
-      "ignoreWasSetByUser" : 1,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/dom\/DomEvent.DoubleTap.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/dom\/DomEvent.DoubleTap-min.js",
-      "fileType" : 64
-    },
-    "\/source\/js\/map\/leaflet\/leaflet-src\/map\/Map.js" : {
-      "ignoreWasSetByUser" : 1,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/map\/Map.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/map\/Map-min.js",
-      "fileType" : 64
-    },
-    "\/source\/css\/storymap.png" : {
+    "\/source\/js\/animation\/VCO.Ease.js" : {
       "ignoreWasSetByUser" : 0,
-      "ignore" : 0,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/css\/storymap.png",
-      "processed" : 0,
-      "outputAbbreviatedPath" : "\/source\/css\/storymap.png",
-      "initialSize" : 19146,
-      "fileType" : 8192
-    },
-    "\/source\/js\/map\/leaflet\/leaflet-src\/core\/Browser.js" : {
-      "ignoreWasSetByUser" : 1,
       "ignore" : 1,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/core\/Browser.js",
+      "inputAbbreviatedPath" : "\/source\/js\/animation\/VCO.Ease.js",
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/core\/Browser-min.js",
+      "outputAbbreviatedPath" : "\/source\/js\/animation\/VCO.Ease-min.js",
       "fileType" : 64
-    },
-    "\/source\/js\/map\/leaflet\/leaflet-src\/dom\/PosAnimation.js" : {
-      "ignoreWasSetByUser" : 1,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/dom\/PosAnimation.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/dom\/PosAnimation-min.js",
-      "fileType" : 64
-    },
-    "\/source\/less\/media\/types\/VCO.Media.Image.less" : {
-      "ieCompatibility" : 1,
-      "inputAbbreviatedPath" : "\/source\/less\/media\/types\/VCO.Media.Image.less",
-      "outputAbbreviatedPath" : "\/compiled\/css\/VCO.Media.Image.css",
-      "outputPathIsSetByUser" : 0,
-      "strictUnits" : 0,
-      "relativeURLS" : 0,
-      "ignore" : 1,
-      "strictImports" : 0,
-      "ignoreWasSetByUser" : 0,
-      "shouldRunBless" : 0,
-      "hidden" : 0,
-      "strictMath" : 0,
-      "outputStyle" : 1,
-      "fileType" : 1,
-      "debugStyle" : 0
     },
     "\/source\/less\/media\/VCO.Media.Text.less" : {
       "ieCompatibility" : 1,
@@ -628,6 +611,45 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
+    "\/source\/less\/media\/types\/VCO.Media.Image.less" : {
+      "ieCompatibility" : 1,
+      "inputAbbreviatedPath" : "\/source\/less\/media\/types\/VCO.Media.Image.less",
+      "outputAbbreviatedPath" : "\/compiled\/css\/VCO.Media.Image.css",
+      "outputPathIsSetByUser" : 0,
+      "strictUnits" : 0,
+      "relativeURLS" : 0,
+      "ignore" : 1,
+      "strictImports" : 0,
+      "ignoreWasSetByUser" : 0,
+      "shouldRunBless" : 0,
+      "hidden" : 0,
+      "strictMath" : 0,
+      "outputStyle" : 1,
+      "fileType" : 1,
+      "debugStyle" : 0
+    },
+    "\/source\/js\/language\/VCO.Language.js" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/js\/language\/VCO.Language.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/source\/js\/language\/VCO.Language-min.js",
+      "fileType" : 64
+    },
+    "\/source\/js\/map\/leaflet\/leaflet-src\/dom\/DomEvent.Pointer.js" : {
+      "ignoreWasSetByUser" : 1,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/dom\/DomEvent.Pointer.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/dom\/DomEvent.Pointer-min.js",
+      "fileType" : 64
+    },
     "\/source\/less\/map\/leaflet\/VCO.Map.Leaflet.less" : {
       "ieCompatibility" : 1,
       "inputAbbreviatedPath" : "\/source\/less\/map\/leaflet\/VCO.Map.Leaflet.less",
@@ -644,28 +666,6 @@
       "outputStyle" : 1,
       "fileType" : 1,
       "debugStyle" : 0
-    },
-    "\/source\/js\/map\/leaflet\/leaflet-src\/dom\/DomEvent.Pointer.js" : {
-      "ignoreWasSetByUser" : 1,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/dom\/DomEvent.Pointer.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/dom\/DomEvent.Pointer-min.js",
-      "fileType" : 64
-    },
-    "\/source\/js\/language\/VCO.Language.js" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/language\/VCO.Language.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/language\/VCO.Language-min.js",
-      "fileType" : 64
     },
     "\/source\/less\/fonts\/font.oldstandard.less" : {
       "ieCompatibility" : 1,
@@ -931,17 +931,6 @@
       "outputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/dom\/Draggable-min.js",
       "fileType" : 64
     },
-    "\/source\/js\/map\/leaflet\/leaflet-src\/layer\/marker\/Marker.Drag.js" : {
-      "ignoreWasSetByUser" : 1,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/layer\/marker\/Marker.Drag.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/layer\/marker\/Marker.Drag-min.js",
-      "fileType" : 64
-    },
     "\/source\/less\/animation\/VCO.Animate.less" : {
       "ieCompatibility" : 1,
       "inputAbbreviatedPath" : "\/source\/less\/animation\/VCO.Animate.less",
@@ -959,6 +948,17 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
+    "\/source\/js\/map\/leaflet\/leaflet-src\/layer\/marker\/Marker.Drag.js" : {
+      "ignoreWasSetByUser" : 1,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/layer\/marker\/Marker.Drag.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/layer\/marker\/Marker.Drag-min.js",
+      "fileType" : 64
+    },
     "\/source\/js\/map\/leaflet\/leaflet-src\/layer\/marker\/Icon.js" : {
       "ignoreWasSetByUser" : 1,
       "ignore" : 1,
@@ -969,6 +969,17 @@
       "syntaxCheckerStyle" : 0,
       "outputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/layer\/marker\/Icon-min.js",
       "fileType" : 64
+    },
+    "\/source\/jade\/usecase_test_02.jade" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 0,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 1,
+      "inputAbbreviatedPath" : "\/source\/jade\/usecase_test_02.jade",
+      "outputStyle" : 0,
+      "compileDebug" : 1,
+      "outputAbbreviatedPath" : "\/compiled\/examples\/usecase_test_02.html",
+      "fileType" : 512
     },
     "\/source\/js\/map\/leaflet\/leaflet-src\/geo\/projection\/Projection.LonLat.js" : {
       "ignoreWasSetByUser" : 1,
@@ -992,17 +1003,6 @@
       "outputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/geo\/crs\/CRS.Simple-min.js",
       "fileType" : 64
     },
-    "\/source\/jade\/usecase_test_02.jade" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 0,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 1,
-      "inputAbbreviatedPath" : "\/source\/jade\/usecase_test_02.jade",
-      "outputStyle" : 0,
-      "compileDebug" : 1,
-      "outputAbbreviatedPath" : "\/compiled\/examples\/usecase_test_02.html",
-      "fileType" : 512
-    },
     "\/source\/gfx\/overlay.png" : {
       "ignoreWasSetByUser" : 0,
       "ignore" : 0,
@@ -1025,15 +1025,15 @@
       "outputAbbreviatedPath" : "\/source\/js\/media\/types\/VCO.Media.Image-min.js",
       "fileType" : 64
     },
-    "\/source\/js\/media\/types\/VCO.Media.Instagram.js" : {
-      "ignoreWasSetByUser" : 0,
+    "\/source\/js\/map\/leaflet\/leaflet-src\/layer\/LayerGroup.js" : {
+      "ignoreWasSetByUser" : 1,
       "ignore" : 1,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/media\/types\/VCO.Media.Instagram.js",
+      "inputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/layer\/LayerGroup.js",
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/media\/types\/VCO.Media.Instagram-min.js",
+      "outputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/layer\/LayerGroup-min.js",
       "fileType" : 64
     },
     "\/source\/jade\/population.jade" : {
@@ -1047,16 +1047,16 @@
       "outputAbbreviatedPath" : "\/compiled\/examples\/population.html",
       "fileType" : 512
     },
-    "\/source\/js\/map\/leaflet\/leaflet-src\/layer\/LayerGroup.js" : {
-      "ignoreWasSetByUser" : 1,
-      "ignore" : 1,
+    "\/source\/jade\/multiple_storymaps.jade" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 0,
       "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/layer\/LayerGroup.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/layer\/LayerGroup-min.js",
-      "fileType" : 64
+      "outputPathIsSetByUser" : 1,
+      "inputAbbreviatedPath" : "\/source\/jade\/multiple_storymaps.jade",
+      "outputStyle" : 0,
+      "compileDebug" : 1,
+      "outputAbbreviatedPath" : "\/compiled\/examples\/multiple_storymaps.html",
+      "fileType" : 512
     },
     "\/source\/js\/VCO.StoryMap.Min.js" : {
       "ignoreWasSetByUser" : 0,
@@ -1069,17 +1069,6 @@
       "outputAbbreviatedPath" : "\/compiled\/js\/storymap-min.js",
       "fileType" : 64
     },
-    "\/source\/jade\/multiple_storymaps.jade" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 0,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 1,
-      "inputAbbreviatedPath" : "\/source\/jade\/multiple_storymaps.jade",
-      "outputStyle" : 0,
-      "compileDebug" : 1,
-      "outputAbbreviatedPath" : "\/compiled\/examples\/multiple_storymaps.html",
-      "fileType" : 512
-    },
     "\/source\/js\/media\/types\/VCO.Media.YouTube.js" : {
       "ignoreWasSetByUser" : 0,
       "ignore" : 1,
@@ -1089,6 +1078,17 @@
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 0,
       "outputAbbreviatedPath" : "\/source\/js\/media\/types\/VCO.Media.YouTube-min.js",
+      "fileType" : 64
+    },
+    "\/source\/js\/media\/types\/VCO.Media.Instagram.js" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/js\/media\/types\/VCO.Media.Instagram.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/source\/js\/media\/types\/VCO.Media.Instagram-min.js",
       "fileType" : 64
     },
     "\/source\/js\/language\/locale\/it.js" : {
@@ -1169,17 +1169,6 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
-    "\/source\/js\/language\/locale\/pl.js" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 0,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 1,
-      "inputAbbreviatedPath" : "\/source\/js\/language\/locale\/pl.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/compiled\/js\/locale\/pl.js",
-      "fileType" : 64
-    },
     "\/source\/js\/map\/leaflet\/leaflet-src\/geo\/projection\/Projection.Mercator.js" : {
       "ignoreWasSetByUser" : 1,
       "ignore" : 1,
@@ -1191,6 +1180,17 @@
       "outputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/geo\/projection\/Projection.Mercator-min.js",
       "fileType" : 64
     },
+    "\/source\/js\/language\/locale\/pl.js" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 0,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 1,
+      "inputAbbreviatedPath" : "\/source\/js\/language\/locale\/pl.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/compiled\/js\/locale\/pl.js",
+      "fileType" : 64
+    },
     "\/source\/js\/map\/leaflet\/leaflet-src\/control\/Control.Layers.js" : {
       "ignoreWasSetByUser" : 1,
       "ignore" : 1,
@@ -1200,6 +1200,17 @@
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 0,
       "outputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/control\/Control.Layers-min.js",
+      "fileType" : 64
+    },
+    "\/source\/js\/map\/leaflet\/leaflet-src\/layer\/GeoJSON.js" : {
+      "ignoreWasSetByUser" : 1,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/layer\/GeoJSON.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/layer\/GeoJSON-min.js",
       "fileType" : 64
     },
     "\/source\/less\/fonts\/font.lustria-lato.less" : {
@@ -1218,17 +1229,6 @@
       "outputStyle" : 1,
       "fileType" : 1,
       "debugStyle" : 0
-    },
-    "\/source\/js\/map\/leaflet\/leaflet-src\/layer\/GeoJSON.js" : {
-      "ignoreWasSetByUser" : 1,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/layer\/GeoJSON.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/layer\/GeoJSON-min.js",
-      "fileType" : 64
     },
     "\/source\/js\/map\/leaflet\/leaflet-src\/layer\/vector\/Path.SVG.js" : {
       "ignoreWasSetByUser" : 1,
@@ -1302,17 +1302,6 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
-    "\/source\/js\/media\/types\/VCO.Media.Blockquote.js" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/media\/types\/VCO.Media.Blockquote.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/media\/types\/VCO.Media.Blockquote-min.js",
-      "fileType" : 64
-    },
     "\/source\/less\/slider\/VCO.StorySlider.less" : {
       "ieCompatibility" : 1,
       "inputAbbreviatedPath" : "\/source\/less\/slider\/VCO.StorySlider.less",
@@ -1329,6 +1318,17 @@
       "outputStyle" : 1,
       "fileType" : 1,
       "debugStyle" : 0
+    },
+    "\/source\/js\/media\/types\/VCO.Media.Blockquote.js" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/js\/media\/types\/VCO.Media.Blockquote.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/source\/js\/media\/types\/VCO.Media.Blockquote-min.js",
+      "fileType" : 64
     },
     "\/source\/js\/map\/leaflet\/leaflet-src\/geometry\/LineUtil.js" : {
       "ignoreWasSetByUser" : 1,
@@ -1503,17 +1503,6 @@
       "outputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/geo\/crs\/CRS-min.js",
       "fileType" : 64
     },
-    "\/source\/js\/data\/VCO.Data.js" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/data\/VCO.Data.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/data\/VCO.Data-min.js",
-      "fileType" : 64
-    },
     "\/source\/js\/map\/leaflet\/leaflet-src\/layer\/vector\/Circle.js" : {
       "ignoreWasSetByUser" : 1,
       "ignore" : 1,
@@ -1523,6 +1512,17 @@
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 0,
       "outputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/layer\/vector\/Circle-min.js",
+      "fileType" : 64
+    },
+    "\/source\/js\/data\/VCO.Data.js" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/js\/data\/VCO.Data.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/source\/js\/data\/VCO.Data-min.js",
       "fileType" : 64
     },
     "\/source\/less\/media\/VCO.Media.less" : {
@@ -1542,15 +1542,15 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
-    "\/source\/js\/core\/VCO.Browser.js" : {
+    "\/source\/js\/ui\/VCO.MenuBar.js" : {
       "ignoreWasSetByUser" : 0,
       "ignore" : 1,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/core\/VCO.Browser.js",
+      "inputAbbreviatedPath" : "\/source\/js\/ui\/VCO.MenuBar.js",
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/core\/VCO.Browser-min.js",
+      "outputAbbreviatedPath" : "\/source\/js\/ui\/VCO.MenuBar-min.js",
       "fileType" : 64
     },
     "\/source\/less\/core\/Reset.less" : {
@@ -1592,15 +1592,15 @@
       "outputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/dom\/DomUtil-min.js",
       "fileType" : 64
     },
-    "\/source\/js\/ui\/VCO.MenuBar.js" : {
+    "\/source\/js\/core\/VCO.Browser.js" : {
       "ignoreWasSetByUser" : 0,
       "ignore" : 1,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/ui\/VCO.MenuBar.js",
+      "inputAbbreviatedPath" : "\/source\/js\/core\/VCO.Browser.js",
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/ui\/VCO.MenuBar-min.js",
+      "outputAbbreviatedPath" : "\/source\/js\/core\/VCO.Browser-min.js",
       "fileType" : 64
     },
     "\/source\/js\/slider\/VCO.SlideNav.js" : {
@@ -1642,6 +1642,45 @@
       "outputAbbreviatedPath" : "\/source\/js\/media\/types\/VCO.Media.DailyMotion-min.js",
       "fileType" : 64
     },
+    "\/source\/js\/media\/types\/VCO.Media.GooglePlus.js" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/js\/media\/types\/VCO.Media.GooglePlus.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/source\/js\/media\/types\/VCO.Media.GooglePlus-min.js",
+      "fileType" : 64
+    },
+    "\/source\/js\/core\/VCO.Class.js" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/js\/core\/VCO.Class.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/source\/js\/core\/VCO.Class-min.js",
+      "fileType" : 64
+    },
+    "\/source\/less\/fonts\/font.opensans-gentiumbook.less" : {
+      "ieCompatibility" : 1,
+      "inputAbbreviatedPath" : "\/source\/less\/fonts\/font.opensans-gentiumbook.less",
+      "outputAbbreviatedPath" : "\/compiled\/css\/fonts\/font.opensans-gentiumbook.css",
+      "outputPathIsSetByUser" : 1,
+      "strictUnits" : 0,
+      "relativeURLS" : 0,
+      "ignore" : 0,
+      "strictImports" : 0,
+      "ignoreWasSetByUser" : 0,
+      "shouldRunBless" : 0,
+      "hidden" : 0,
+      "strictMath" : 0,
+      "outputStyle" : 1,
+      "fileType" : 1,
+      "debugStyle" : 0
+    },
     "\/source\/js\/map\/tile\/VCO.TileLayer.Mapbox.js" : {
       "ignoreWasSetByUser" : 0,
       "ignore" : 0,
@@ -1669,45 +1708,6 @@
       "outputStyle" : 1,
       "fileType" : 1,
       "debugStyle" : 0
-    },
-    "\/source\/js\/media\/types\/VCO.Media.GooglePlus.js" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/media\/types\/VCO.Media.GooglePlus.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/media\/types\/VCO.Media.GooglePlus-min.js",
-      "fileType" : 64
-    },
-    "\/source\/less\/fonts\/font.opensans-gentiumbook.less" : {
-      "ieCompatibility" : 1,
-      "inputAbbreviatedPath" : "\/source\/less\/fonts\/font.opensans-gentiumbook.less",
-      "outputAbbreviatedPath" : "\/compiled\/css\/fonts\/font.opensans-gentiumbook.css",
-      "outputPathIsSetByUser" : 1,
-      "strictUnits" : 0,
-      "relativeURLS" : 0,
-      "ignore" : 0,
-      "strictImports" : 0,
-      "ignoreWasSetByUser" : 0,
-      "shouldRunBless" : 0,
-      "hidden" : 0,
-      "strictMath" : 0,
-      "outputStyle" : 1,
-      "fileType" : 1,
-      "debugStyle" : 0
-    },
-    "\/source\/js\/core\/VCO.Class.js" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/core\/VCO.Class.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/core\/VCO.Class-min.js",
-      "fileType" : 64
     },
     "\/source\/js\/media\/types\/VCO.Media.GoogleDoc.js" : {
       "ignoreWasSetByUser" : 0,
@@ -1992,17 +1992,6 @@
       "outputAbbreviatedPath" : "\/compiled\/js\/locale\/es.js",
       "fileType" : 64
     },
-    "\/source\/jade\/zoomify_gameofthrones.jade" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 0,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 1,
-      "inputAbbreviatedPath" : "\/source\/jade\/zoomify_gameofthrones.jade",
-      "outputStyle" : 0,
-      "compileDebug" : 1,
-      "outputAbbreviatedPath" : "\/compiled\/examples\/zoomify_gameofthrones.html",
-      "fileType" : 512
-    },
     "\/source\/js\/map\/leaflet\/leaflet-src\/layer\/vector\/canvas\/Path.Canvas.js" : {
       "ignoreWasSetByUser" : 1,
       "ignore" : 1,
@@ -2013,6 +2002,17 @@
       "syntaxCheckerStyle" : 0,
       "outputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/layer\/vector\/canvas\/Path.Canvas-min.js",
       "fileType" : 64
+    },
+    "\/source\/jade\/zoomify_gameofthrones.jade" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 0,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 1,
+      "inputAbbreviatedPath" : "\/source\/jade\/zoomify_gameofthrones.jade",
+      "outputStyle" : 0,
+      "compileDebug" : 1,
+      "outputAbbreviatedPath" : "\/compiled\/examples\/zoomify_gameofthrones.html",
+      "fileType" : 512
     },
     "\/source\/js\/media\/types\/VCO.Media.IFrame.js" : {
       "ignoreWasSetByUser" : 0,
@@ -2164,16 +2164,16 @@
       "outputAbbreviatedPath" : "\/source\/js\/map\/leaflet\/leaflet-src\/map\/handler\/Map.Tap-min.js",
       "fileType" : 64
     },
-    "\/source\/js\/media\/VCO.Media.js" : {
+    "\/source\/jade\/usecase_test_01.jade" : {
       "ignoreWasSetByUser" : 0,
-      "ignore" : 1,
+      "ignore" : 0,
       "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/source\/js\/media\/VCO.Media.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 0,
-      "outputAbbreviatedPath" : "\/source\/js\/media\/VCO.Media-min.js",
-      "fileType" : 64
+      "outputPathIsSetByUser" : 1,
+      "inputAbbreviatedPath" : "\/source\/jade\/usecase_test_01.jade",
+      "outputStyle" : 0,
+      "compileDebug" : 1,
+      "outputAbbreviatedPath" : "\/compiled\/examples\/usecase_test_01.html",
+      "fileType" : 512
     },
     "\/source\/js\/media\/types\/VCO.Media.Vine.js" : {
       "ignoreWasSetByUser" : 0,
@@ -2186,16 +2186,16 @@
       "outputAbbreviatedPath" : "\/source\/js\/media\/types\/VCO.Media.Vine-min.js",
       "fileType" : 64
     },
-    "\/source\/jade\/usecase_test_01.jade" : {
+    "\/source\/js\/media\/VCO.Media.js" : {
       "ignoreWasSetByUser" : 0,
-      "ignore" : 0,
+      "ignore" : 1,
       "hidden" : 0,
-      "outputPathIsSetByUser" : 1,
-      "inputAbbreviatedPath" : "\/source\/jade\/usecase_test_01.jade",
-      "outputStyle" : 0,
-      "compileDebug" : 1,
-      "outputAbbreviatedPath" : "\/compiled\/examples\/usecase_test_01.html",
-      "fileType" : 512
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/source\/js\/media\/VCO.Media.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 0,
+      "outputAbbreviatedPath" : "\/source\/js\/media\/VCO.Media-min.js",
+      "fileType" : 64
     },
     "\/source\/gfx\/marker-icon.png" : {
       "ignoreWasSetByUser" : 0,
@@ -2537,8 +2537,8 @@
       "newcap" : 0,
       "forin" : 0,
       "regexdash" : 0,
-      "node" : 0,
       "browser" : 1,
+      "node" : 0,
       "eqnull" : 1,
       "mootools" : 0,
       "iterator" : 0,
