@@ -16144,6 +16144,13 @@ VCO.Map = VCO.Class.extend({
 		}
 	},
 	
+	initialMapLocation: function() {
+		if (this._loaded.data && this._loaded.map) {
+			this.goTo(this.options.start_at_slide, true);
+			this._initialMapLocation();
+		}
+	},
+	
 	/*	Adding, Hiding, Showing etc
 	================================================== */
 	show: function() {
@@ -16310,6 +16317,9 @@ VCO.Map = VCO.Class.extend({
 			
 		},
 	
+		_initialMapLocation: function() {
+			
+		},
 	/*	Events
 	================================================== */
 	_onMarkerChange: function(e) {
@@ -16324,7 +16334,7 @@ VCO.Map = VCO.Class.extend({
 	
 	_onMapLoaded: function(e) {
 		this._loaded.map = true;
-		this._initialMapLocation();
+		
 		
 		if (this.options.calculate_zoom) {
 			this.calculateMarkerZooms();
@@ -16336,15 +16346,11 @@ VCO.Map = VCO.Class.extend({
 			this.createMiniMap();
 		}
 		
-		
+		this.initialMapLocation();
 		this.fire("loaded", this.data);
 	},
 	
-	_initialMapLocation: function() {
-		if (this._loaded.data && this._loaded.map) {
-			this.goTo(this.options.start_at_slide, true);
-		}
-	},
+	
 	
 	/*	Private Methods
 	================================================== */
@@ -16511,6 +16517,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		this._map = new L.map(this._el.map, {scrollWheelZoom:false, zoomControl:!this.options.map_mini});
 		this._map.on("load", this._onMapLoaded, this);
 		
+		
 		this._map.on("moveend", this._onMapMoveEnd, this);
 			
 		var map_type_arr = this.options.map_type.split(':');		
@@ -16579,12 +16586,20 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	/*	Create Background Map
 	================================================== */
 	_createBackgroundMap: function(tiles) {
+		
+		// TODO Check width and height 
+		trace("CREATE BACKGROUND MAP")
 		if (!this._image_layer) {
 			// Make Image Layer a Group
 			this._image_layer = new L.layerGroup();
 			// Add Layer Group to Map
 			this._map.addLayer(this._image_layer);
 			
+		} else {
+			this._image_layer.clearLayers();
+		}
+		
+		if (tiles) {
 			// Create Image Overlay for each tile in the group
 			for (x in tiles) {
 				var target_tile = tiles[x],
@@ -16671,6 +16686,16 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	_onTilesLoaded: function(e) {
 		this._createBackgroundMap(e.target._tiles);
 		this._tile_layer.off("load", this._onTilesLoaded, this);
+	},
+	
+	_onMapZoomed:function(e) {
+		trace("FIRST ZOOM");
+		this._map.off("zoomend", this._onMapZoomed, this);
+		
+	},
+	
+	_onMapZoom:function(e) {
+		
 	},
 	
 	/*	Marker
@@ -16951,6 +16976,10 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	
 	_getZoomifyZoom: function() {
 
+	},
+	
+	_initialMapLocation: function() {
+		this._map.on("zoomend", this._onMapZoomed, this);
 	},
 	
 	/*	Display

@@ -315,6 +315,13 @@ VCO.Map = VCO.Class.extend({
 		}
 	},
 	
+	initialMapLocation: function() {
+		if (this._loaded.data && this._loaded.map) {
+			this.goTo(this.options.start_at_slide, true);
+			this._initialMapLocation();
+		}
+	},
+	
 	/*	Adding, Hiding, Showing etc
 	================================================== */
 	show: function() {
@@ -481,6 +488,9 @@ VCO.Map = VCO.Class.extend({
 			
 		},
 	
+		_initialMapLocation: function() {
+			
+		},
 	/*	Events
 	================================================== */
 	_onMarkerChange: function(e) {
@@ -495,7 +505,7 @@ VCO.Map = VCO.Class.extend({
 	
 	_onMapLoaded: function(e) {
 		this._loaded.map = true;
-		this._initialMapLocation();
+		
 		
 		if (this.options.calculate_zoom) {
 			this.calculateMarkerZooms();
@@ -507,15 +517,11 @@ VCO.Map = VCO.Class.extend({
 			this.createMiniMap();
 		}
 		
-		
+		this.initialMapLocation();
 		this.fire("loaded", this.data);
 	},
 	
-	_initialMapLocation: function() {
-		if (this._loaded.data && this._loaded.map) {
-			this.goTo(this.options.start_at_slide, true);
-		}
-	},
+	
 	
 	/*	Private Methods
 	================================================== */

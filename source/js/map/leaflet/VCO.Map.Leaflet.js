@@ -16,6 +16,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		this._map = new L.map(this._el.map, {scrollWheelZoom:false, zoomControl:!this.options.map_mini});
 		this._map.on("load", this._onMapLoaded, this);
 		
+		
 		this._map.on("moveend", this._onMapMoveEnd, this);
 			
 		var map_type_arr = this.options.map_type.split(':');		
@@ -84,12 +85,20 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	/*	Create Background Map
 	================================================== */
 	_createBackgroundMap: function(tiles) {
+		
+		// TODO Check width and height 
+		trace("CREATE BACKGROUND MAP")
 		if (!this._image_layer) {
 			// Make Image Layer a Group
 			this._image_layer = new L.layerGroup();
 			// Add Layer Group to Map
 			this._map.addLayer(this._image_layer);
 			
+		} else {
+			this._image_layer.clearLayers();
+		}
+		
+		if (tiles) {
 			// Create Image Overlay for each tile in the group
 			for (x in tiles) {
 				var target_tile = tiles[x],
@@ -176,6 +185,16 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	_onTilesLoaded: function(e) {
 		this._createBackgroundMap(e.target._tiles);
 		this._tile_layer.off("load", this._onTilesLoaded, this);
+	},
+	
+	_onMapZoomed:function(e) {
+		trace("FIRST ZOOM");
+		this._map.off("zoomend", this._onMapZoomed, this);
+		
+	},
+	
+	_onMapZoom:function(e) {
+		
 	},
 	
 	/*	Marker
@@ -456,6 +475,10 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	
 	_getZoomifyZoom: function() {
 
+	},
+	
+	_initialMapLocation: function() {
+		this._map.on("zoomend", this._onMapZoomed, this);
 	},
 	
 	/*	Display
