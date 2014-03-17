@@ -106,6 +106,7 @@ VCO.Map = VCO.Class.extend({
 			line_join: 			"miter",
 			show_lines: 		true,
 			show_history_line: 	true,
+			use_custom_markers: false,
 			map_center_offset:  null // takes object {top:0,left:0}
 		};
 		

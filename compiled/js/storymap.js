@@ -15935,6 +15935,7 @@ VCO.Map = VCO.Class.extend({
 			line_join: 			"miter",
 			show_lines: 		true,
 			show_history_line: 	true,
+			use_custom_markers: false,
 			map_center_offset:  null // takes object {top:0,left:0}
 		};
 		
@@ -16461,14 +16462,14 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 		if (this.data.real_marker) {
 			if (a) {
 				this._marker.setZIndexOffset(100);
-				this._icon = L.divIcon({className: 'vco-mapmarker-active ' + this.media_icon_class});
+				this._icon = new L.divIcon({className: 'vco-mapmarker-active ' + this.media_icon_class, iconAnchor:[10, 10]});
 				//this.timer = setTimeout(function() {self._openPopup();}, this.options.duration + 200);
 				this._setIcon();
 			} else {
 				//this._marker.closePopup();
 				clearTimeout(this.timer);
 				this._marker.setZIndexOffset(0);
-				this._icon = L.divIcon({className: 'vco-mapmarker ' + this.media_icon_class});
+				this._icon = new L.divIcon({className: 'vco-mapmarker ' + this.media_icon_class, iconAnchor:[10, 10]});
 				this._setIcon();
 			}
 		}

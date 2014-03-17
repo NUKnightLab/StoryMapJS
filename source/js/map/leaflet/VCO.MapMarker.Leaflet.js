@@ -60,14 +60,14 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 		if (this.data.real_marker) {
 			if (a) {
 				this._marker.setZIndexOffset(100);
-				this._icon = L.divIcon({className: 'vco-mapmarker-active ' + this.media_icon_class});
+				this._icon = new L.divIcon({className: 'vco-mapmarker-active ' + this.media_icon_class, iconAnchor:[10, 10]});
 				//this.timer = setTimeout(function() {self._openPopup();}, this.options.duration + 200);
 				this._setIcon();
 			} else {
 				//this._marker.closePopup();
 				clearTimeout(this.timer);
 				this._marker.setZIndexOffset(0);
-				this._icon = L.divIcon({className: 'vco-mapmarker ' + this.media_icon_class});
+				this._icon = new L.divIcon({className: 'vco-mapmarker ' + this.media_icon_class, iconAnchor:[10, 10]});
 				this._setIcon();
 			}
 		}
