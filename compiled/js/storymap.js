@@ -16415,14 +16415,13 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 		if (d.location && d.location.lat && d.location.lon) {
 			this.data.real_marker = true;
 			if (o.use_custom_markers && d.location.icon && d.location.icon != "") {
-				this._icon = L.icon({iconUrl: d.location.icon, iconSize: [41]});
+				this._icon = new L.icon({iconUrl: d.location.icon, iconSize: [41]});
 				//icon = L.icon({iconUrl: d.media.url, iconSize: [41]});
 			
-			};
+			} else {
+				this._icon = new L.divIcon({className: 'vco-mapmarker ' + this.media_icon_class, iconAnchor:[10, 10]});
+			}
 			
-			//icon = L.icon({iconUrl: "gfx/map-pin.png", iconSize: [28, 43], iconAnchor: [14, 33]});
-			this._icon = new L.divIcon({className: 'vco-mapmarker ' + this.media_icon_class, iconAnchor:[10, 10]});
-		
 			this._marker = new L.marker([d.location.lat, d.location.lon], {
 				title: 		d.text.headline,
 				icon: 		this._icon
@@ -16510,8 +16509,6 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	================================================== */
 	_createMap: function() {
 		
-		// Set Marker Path
-		//L.Icon.Default.imagePath = this.options.path_gfx;
 		
 		this._map = new L.map(this._el.map, {scrollWheelZoom:false, zoomControl:!this.options.map_mini});
 		this._map.on("load", this._onMapLoaded, this);

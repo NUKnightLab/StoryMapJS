@@ -10,8 +10,6 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	================================================== */
 	_createMap: function() {
 		
-		// Set Marker Path
-		//L.Icon.Default.imagePath = this.options.path_gfx;
 		
 		this._map = new L.map(this._el.map, {scrollWheelZoom:false, zoomControl:!this.options.map_mini});
 		this._map.on("load", this._onMapLoaded, this);
