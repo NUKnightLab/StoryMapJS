@@ -257,8 +257,8 @@ GoogleEditorMap.prototype.getDefaultView = function() {
     return {lat: 0, lng: 0, zoom: 1};
 }
 
-GoogleEditorMap.prototype.setMapType = function(map_type, map_subdomains) { 
-    if(map_type && map_type.match("http://")) {
+GoogleEditorMap.prototype.setMapType = function(map_type, map_subdomains) {     
+    if(map_type && map_type.match('^(http|https|//)')) {
         this.map.mapTypes.set("custom", new google.maps.ImageMapType({
             getTileUrl: function(coord, zoom) {
                 var index = (coord.x + coord.y) % map_subdomains.length;                        
@@ -273,6 +273,23 @@ GoogleEditorMap.prototype.setMapType = function(map_type, map_subdomains) {
             maxZoom: 18
         }));        
         this.map.setOptions({mapTypeId: 'custom'}); 
+    } else if(map_type && map_type.match('^mapbox:.+')) {
+        mapbox_name = map_type.split(':')[1];
+        
+        this.map.mapTypes.set("mapbox", new google.maps.ImageMapType({
+            getTileUrl: function(coord, zoom) {
+                var index = (coord.x + coord.y) % map_subdomains.length;                        
+                return ('https://{s}.tiles.mapbox.com/v2/'+mapbox_name+'/{z}/{x}/{y}.png')
+                    .replace('{s}', map_subdomains[index])
+                    .replace('{z}', zoom)
+                    .replace('{x}', coord.x)
+                    .replace('{y}', coord.y);
+            },
+            tileSize: new google.maps.Size(256, 256),
+            name: "Mapbox",
+            maxZoom: 18
+        }));  
+        this.map.setOptions({mapTypeId: 'mapbox'});               
     } else {
         switch(map_type) {
             case "stamen:toner-lite":

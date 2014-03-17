@@ -537,12 +537,23 @@ function map_init() {
             case "stamen:terrain":
                 $('#map_type').val(map_type).attr('disabled', true);
                 $('#map_subdomains').val('').attr('disabled', true).parent().hide();
+                $('#map_type_mapbox_note').hide();
                 break;
         
             default:
                 $('#map_type').val(map_type).removeAttr('disabled');
-                $('#map_subdomains').val(_storymap_data.storymap.map_subdomains || _storymap_data.storymap.map_subdomains)
-                    .removeAttr('disabled').parent().show();
+                
+                if(map_type.match('^mapbox:.+')) {
+                    $('#map_subdomains')    
+                        .val(_storymap_data.storymap.map_subdomains || _storymap_data.storymap.map_subdomains)
+                        .attr('disabled', true).parent().hide();
+                    $('#map_type_mapbox_note').show();
+                } else {
+                    $('#map_subdomains')
+                        .val(_storymap_data.storymap.map_subdomains || _storymap_data.storymap.map_subdomains)
+                        .removeAttr('disabled').parent().show();
+                    $('#map_type_mapbox_note').hide();
+                }
                 break;    
         }    
 
@@ -751,9 +762,16 @@ $(function() {
     $('#map_type_menu a').click(function(event) {
         var map_type = $(this).attr('storymap-data');
         
-        if(map_type) {
+        if(map_type == 'mapbox') {
+            $('#map_type').val('mapbox:').removeAttr('disabled').focus(); 
+            $('#map_subdomains').val('abcd').attr('disabled', true).parent().hide();
+            $('#map_type_mapbox_note').show();
+            _storymap_data.storymap.map_subdomains = 'abcd';
+        } else if(map_type) {
             $('#map_type').val(map_type).attr('disabled', true);
             $('#map_subdomains').val('').attr('disabled', true).parent().hide();
+            $('#map_type_mapbox_note').hide();
+            
             _storymap_data.storymap.map_type = map_type;
             _storymap_data.storymap.map_subdomains = '';
             storymap_dirty(1);
@@ -761,6 +779,7 @@ $(function() {
        } else {
             $('#map_type').val('').removeAttr('disabled').focus(); 
             $('#map_subdomains').val('').removeAttr('disabled').parent().show();
+            $('#map_type_mapbox_note').hide();
         }        
     });
  
