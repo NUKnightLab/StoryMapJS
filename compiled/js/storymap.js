@@ -15834,8 +15834,6 @@ VCO.MapMarker = VCO.Class.extend({
 	markerAdded
 	markerRemoved
 
-	TODO 	Revisit calculations to determine zoom for landscape mode 
-			since only half the map is visible but the map extends the full width
 
 ================================================== */
  
@@ -15922,6 +15920,7 @@ VCO.Map = VCO.Class.extend({
 				attribution: 	""
 			},
 			skinny_size: 		650,
+			less_bounce: 		true,
 			path_gfx: 			"gfx",
 			start_at_slide: 	0,
 			map_popup: 			false, 
@@ -16512,7 +16511,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	_createMap: function() {
 		
 		// Set Marker Path
-		L.Icon.Default.imagePath = this.options.path_gfx;
+		//L.Icon.Default.imagePath = this.options.path_gfx;
 		
 		this._map = new L.map(this._el.map, {scrollWheelZoom:false, zoomControl:!this.options.map_mini});
 		this._map.on("load", this._onMapLoaded, this);
@@ -16962,8 +16961,10 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	},
 	
 	_getBoundsZoom: function(origin, destination, correct_for_center) {
-		var _origin = origin;
-		
+		var _origin = origin,
+			_padding = [(Math.abs(this.options.map_center_offset.left)*3),(Math.abs(this.options.map_center_offset.top)*3)];
+			
+		//_padding = [0,0];
 		if (correct_for_center) {
 			var _lat = _origin.lat + (_origin.lat - destination.lat)/2,
 				_lng = _origin.lng + (_origin.lng - destination.lng)/2;
@@ -16971,7 +16972,11 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		}
 		
 		var bounds = new L.LatLngBounds([_origin, destination]);
-		return this._map.getBoundsZoom(bounds, false);
+		if (this.options.less_bounce) {
+			return this._map.getBoundsZoom(bounds, false);
+		} else {
+			return this._map.getBoundsZoom(bounds, true, _padding);
+		}
 	},
 	
 	_getZoomifyZoom: function() {
@@ -17400,6 +17405,7 @@ VCO.StoryMap = VCO.Class.extend({
 			base_class: 			"",
 			map_size_sticky: 		3, 				// Set as division 1/3 etc
 			map_center_offset:  	null, 			// takes object {top:0,left:0}
+			less_bounce: 			true, 			// Less map bounce when calculating zoom, false is good when there are clusters of tightly grouped markers
 			start_at_slide: 		0,
 			menubar_height: 		0,
 			skinny_size: 			650,

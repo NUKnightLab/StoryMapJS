@@ -91,6 +91,7 @@ VCO.Map = VCO.Class.extend({
 				attribution: 	""
 			},
 			skinny_size: 		650,
+			less_bounce: 		true,
 			path_gfx: 			"gfx",
 			start_at_slide: 	0,
 			map_popup: 			false, 
