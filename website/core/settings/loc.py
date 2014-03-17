@@ -5,10 +5,13 @@ from .base import *
 
 # Import secrets
 sys.path.append(
-    abspath(join(PROJECT_ROOT, '../secrets/buzz/stg'))
+    abspath(join(PROJECT_ROOT, '../secrets/storymapjs/stg'))
 )
 
-from secrets import *
+try:
+    from secrets import *
+except ImportError, e:
+    print 'WARNING: Could not import project secrets (%s).  You will not be able to deploy.' % (e)
 
 # Set static URL
 STATIC_URL = '/static'
