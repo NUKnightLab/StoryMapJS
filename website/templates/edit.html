@@ -526,37 +526,40 @@ function map_init() {
         _map = new LeafletEditorMap(_map_options);
     } else {
         $('.zoomify-control-group').hide();
+ 
+        if(map_type && map_type.match('^(http|https|//)')) {
+            $('#map_type').val(map_type).removeAttr('disabled');
+            $('#map_subdomains')
+                .val(_storymap_data.storymap.map_subdomains || _default_data.storymap.map_subdomains)
+                .removeAttr('disabled').parent().show();
+            $('#map_type_mapbox_note').hide();
+        } else if(map_type && map_type.match('^mapbox:.+')) {
+            $('#map_type').val(map_type.split(':')[1]).removeAttr('disabled');
+            $('#map_subdomains')    
+                .val(_storymap_data.storymap.map_subdomains || 'abcd')
+                .attr('disabled', true).parent().hide();
+            $('#map_type_mapbox_note').show();
+        } else {     
+            switch(map_type) {
+                case "stamen:toner-lite":
+                case "stamen:toner":
+                case "stamen:toner-lines":
+                case "stamen:toner-labels":
+                case "stamen:toner-background":
+                case "stamen:watercolor":
+                case "stamen:terrain":
+                    $('#map_type').val(map_type).attr('disabled', true);
+                    break;
+                   
+                default:               
+                    $('#map_type').val(_default_data.storymap.map_type).attr('disabled', true);
+                    break; 
+            }    
         
-        switch(map_type) {
-            case "stamen:toner-lite":
-            case "stamen:toner":
-            case "stamen:toner-lines":
-            case "stamen:toner-labels":
-            case "stamen:toner-background":
-            case "stamen:watercolor":
-            case "stamen:terrain":
-                $('#map_type').val(map_type).attr('disabled', true);
-                $('#map_subdomains').val('').attr('disabled', true).parent().hide();
-                $('#map_type_mapbox_note').hide();
-                break;
+            $('#map_subdomains').val('').attr('disabled', true).parent().hide();
+            $('#map_type_mapbox_note').hide();
+        }
         
-            default:
-                $('#map_type').val(map_type).removeAttr('disabled');
-                
-                if(map_type.match('^mapbox:.+')) {
-                    $('#map_subdomains')    
-                        .val(_storymap_data.storymap.map_subdomains || _storymap_data.storymap.map_subdomains)
-                        .attr('disabled', true).parent().hide();
-                    $('#map_type_mapbox_note').show();
-                } else {
-                    $('#map_subdomains')
-                        .val(_storymap_data.storymap.map_subdomains || _storymap_data.storymap.map_subdomains)
-                        .removeAttr('disabled').parent().show();
-                    $('#map_type_mapbox_note').hide();
-                }
-                break;    
-        }    
-
         _map = new GoogleEditorMap(_map_options);
     }
 
@@ -763,7 +766,9 @@ $(function() {
         var map_type = $(this).attr('storymap-data');
         
         if(map_type == 'mapbox') {
-            $('#map_type').val('mapbox:').removeAttr('disabled').focus(); 
+            $('#map_type').val('').attr('placeholder', 'mapbox map name')
+                .removeAttr('disabled').focus(); 
+            
             $('#map_subdomains').val('abcd').attr('disabled', true).parent().hide();
             $('#map_type_mapbox_note').show();
             _storymap_data.storymap.map_subdomains = 'abcd';
@@ -777,18 +782,23 @@ $(function() {
             storymap_dirty(1);
             map_set_type();
        } else {
-            $('#map_type').val('').removeAttr('disabled').focus(); 
+            $('#map_type').val('').attr('placeholder', 'http://{s}.domain.org/{z}/{x}/{y}.png')
+                .removeAttr('disabled').focus(); 
             $('#map_subdomains').val('').removeAttr('disabled').parent().show();
             $('#map_type_mapbox_note').hide();
         }        
     });
  
     $('#map_type').change(function(event) {
-        // normalize
         var map_type = $('#map_type').val().trim();
-        map_type = map_type.replace('{Z}','{z}').replace('{X}','{x}').replace('{Y}','{y}').replace('{S}','{s}');
-        $('#map_type').val(map_type);
-        _storymap_data.storymap.map_type = map_type;
+        
+        if(map_type.match('^(http|https|//)')) {
+            map_type = map_type.replace('{Z}','{z}').replace('{X}','{x}').replace('{Y}','{y}').replace('{S}','{s}');
+            $('#map_type').val(map_type);
+            _storymap_data.storymap.map_type = map_type;
+        } else {
+            _storymap_data.storymap.map_type = 'mapbox:'+map_type;
+        }
         storymap_dirty(1);
         map_set_type();        
     });
