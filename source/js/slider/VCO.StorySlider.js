@@ -250,7 +250,6 @@ VCO.StorySlider = VCO.Class.extend({
 	},
 	
 	_createSlide: function(d, title_slide) {
-		trace("create slide")
 		var slide = new VCO.Slide(d, this.options, title_slide);
 		this._addSlide(slide);
 		this._slides.push(slide);

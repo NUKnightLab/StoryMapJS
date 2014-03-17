@@ -7135,7 +7135,6 @@ VCO.StorySlider = VCO.Class.extend({
 	},
 	
 	_createSlide: function(d, title_slide) {
-		trace("create slide")
 		var slide = new VCO.Slide(d, this.options, title_slide);
 		this._addSlide(slide);
 		this._slides.push(slide);
@@ -10963,6 +10962,7 @@ L.TileLayer = L.Class.extend({
 	},
 
 	_addTile: function (tilePoint, container) {
+
 		var tilePos = this._getTilePos(tilePoint);
 
 		// get unused tile - or create a new tile
@@ -13316,6 +13316,161 @@ L.rectangle = function (latLngBounds, options) {
 
 
 /* **********************************************
+     Begin Circle.js
+********************************************** */
+
+/*
+ * L.Circle is a circle overlay (with a certain radius in meters).
+ */
+
+L.Circle = L.Path.extend({
+	initialize: function (latlng, radius, options) {
+		L.Path.prototype.initialize.call(this, options);
+
+		this._latlng = L.latLng(latlng);
+		this._mRadius = radius;
+	},
+
+	options: {
+		fill: true
+	},
+
+	setLatLng: function (latlng) {
+		this._latlng = L.latLng(latlng);
+		return this.redraw();
+	},
+
+	setRadius: function (radius) {
+		this._mRadius = radius;
+		return this.redraw();
+	},
+
+	projectLatlngs: function () {
+		var lngRadius = this._getLngRadius(),
+		    latlng = this._latlng,
+		    pointLeft = this._map.latLngToLayerPoint([latlng.lat, latlng.lng - lngRadius]);
+
+		this._point = this._map.latLngToLayerPoint(latlng);
+		this._radius = Math.max(this._point.x - pointLeft.x, 1);
+	},
+
+	getBounds: function () {
+		var lngRadius = this._getLngRadius(),
+		    latRadius = (this._mRadius / 40075017) * 360,
+		    latlng = this._latlng;
+
+		return new L.LatLngBounds(
+		        [latlng.lat - latRadius, latlng.lng - lngRadius],
+		        [latlng.lat + latRadius, latlng.lng + lngRadius]);
+	},
+
+	getLatLng: function () {
+		return this._latlng;
+	},
+
+	getPathString: function () {
+		var p = this._point,
+		    r = this._radius;
+
+		if (this._checkIfEmpty()) {
+			return '';
+		}
+
+		if (L.Browser.svg) {
+			return 'M' + p.x + ',' + (p.y - r) +
+			       'A' + r + ',' + r + ',0,1,1,' +
+			       (p.x - 0.1) + ',' + (p.y - r) + ' z';
+		} else {
+			p._round();
+			r = Math.round(r);
+			return 'AL ' + p.x + ',' + p.y + ' ' + r + ',' + r + ' 0,' + (65535 * 360);
+		}
+	},
+
+	getRadius: function () {
+		return this._mRadius;
+	},
+
+	// TODO Earth hardcoded, move into projection code!
+
+	_getLatRadius: function () {
+		return (this._mRadius / 40075017) * 360;
+	},
+
+	_getLngRadius: function () {
+		return this._getLatRadius() / Math.cos(L.LatLng.DEG_TO_RAD * this._latlng.lat);
+	},
+
+	_checkIfEmpty: function () {
+		if (!this._map) {
+			return false;
+		}
+		var vp = this._map._pathViewport,
+		    r = this._radius,
+		    p = this._point;
+
+		return p.x - r > vp.max.x || p.y - r > vp.max.y ||
+		       p.x + r < vp.min.x || p.y + r < vp.min.y;
+	}
+});
+
+L.circle = function (latlng, radius, options) {
+	return new L.Circle(latlng, radius, options);
+};
+
+
+/* **********************************************
+     Begin CircleMarker.js
+********************************************** */
+
+/*
+ * L.CircleMarker is a circle overlay with a permanent pixel radius.
+ */
+
+L.CircleMarker = L.Circle.extend({
+	options: {
+		radius: 10,
+		weight: 2
+	},
+
+	initialize: function (latlng, options) {
+		L.Circle.prototype.initialize.call(this, latlng, null, options);
+		this._radius = this.options.radius;
+	},
+
+	projectLatlngs: function () {
+		this._point = this._map.latLngToLayerPoint(this._latlng);
+	},
+
+	_updateStyle : function () {
+		L.Circle.prototype._updateStyle.call(this);
+		this.setRadius(this.options.radius);
+	},
+
+	setLatLng: function (latlng) {
+		L.Circle.prototype.setLatLng.call(this, latlng);
+		if (this._popup && this._popup._isOpen) {
+			this._popup.setLatLng(latlng);
+		}
+		return this;
+	},
+
+	setRadius: function (radius) {
+		this.options.radius = this._radius = radius;
+		return this.redraw();
+	},
+
+	getRadius: function () {
+		return this._radius;
+	}
+});
+
+L.circleMarker = function (latlng, options) {
+	return new L.CircleMarker(latlng, options);
+};
+
+
+/* **********************************************
      Begin Polyline.Canvas.js
 ********************************************** */
 
@@ -15020,12 +15175,14 @@ L.Control.MiniMap = L.Control.extend({
         zoomLevelFixed: false,
         zoomAnimation: false,
         autoToggleDisplay: false,
+		show_view: true,
         width: 150,
         height: 150,
         aimingRectOptions: {
-            color: "#ff7800",
+            color: "#da0000",
             weight: 1,
-            clickable: false
+            clickable: false,
+			stroke:true
         },
         shadowRectOptions: {
             color: "#000000",
@@ -15091,6 +15248,19 @@ L.Control.MiniMap = L.Control.extend({
         this._miniMap.whenReady(L.Util.bind(function() {
             this._aimingRect = L.rectangle(this._mainMap.getBounds(), this.options.aimingRectOptions).addTo(this._miniMap);
             this._shadowRect = L.rectangle(this._mainMap.getBounds(), this.options.shadowRectOptions).addTo(this._miniMap);
+			
+			this._locationCircle = L.circleMarker(this._mainMap.getCenter(), {
+				fillColor: "#da0000",
+				color: "#FFFFFF",
+				weight:2,
+				radius: 10,
+				fill:true,
+				fillOpacity: 1,
+				stroke:true,
+				clickable: false
+			}).addTo(this._miniMap);
+			this._locationCircle.setRadius(5);
+			
             this._mainMap.on('moveend', this._onMainMapMoved, this);
             this._mainMap.on('move', this._onMainMapMoving, this);
             //this._miniMap.on('movestart', this._onMiniMapMoveStarted, this);
@@ -15199,11 +15369,18 @@ L.Control.MiniMap = L.Control.extend({
         } else {
             this._miniMapMoving = false;
         }
-        this._aimingRect.setBounds(this._mainMap.getBounds());
+		if (this.options.show_view) {
+			this._aimingRect.setBounds(this._mainMap.getBounds());
+		}
+		this._locationCircle.setLatLng(this._mainMap.getCenter());
+        
     },
 
     _onMainMapMoving: function(e) {
-        this._aimingRect.setBounds(this._mainMap.getBounds());
+		if (this.options.show_view) {
+			this._aimingRect.setBounds(this._mainMap.getBounds());
+		}
+		this._locationCircle.setLatLng(this._mainMap.getCenter());
     },
 
     _onMiniMapMoveStarted: function(e) {
@@ -15440,18 +15617,24 @@ L.control.minimap = function(options) {
 	================================================== */
 	if (typeof L === "object") {
 	    L.StamenTileLayer = L.TileLayer.extend({
-	        initialize: function(name) {
+	        initialize: function(name, options) {
 	            var provider = getProvider(name),
 	                url = provider.url.replace(/({[A-Z]})/g, function(s) {
 	                    return s.toLowerCase();
-	                });
-	            L.TileLayer.prototype.initialize.call(this, url, {
-	                "minZoom":      provider.minZoom,
-	                "maxZoom":      provider.maxZoom,
-	                "subdomains":   provider.subdomains,
-	                "scheme":       "xyz",
-	                "attribution":  provider.attribution
-	            });
+	                }), 
+					_options = {
+						minZoom: 		provider.minZoom,
+						maxZoom: 		provider.maxZoom,
+						subdomains: 	provider.subdomains,
+						scheme: 		"xyz",
+						attribution: 	provider.attribution
+					};
+					
+				if (options) {
+					VCO.Util.mergeData(_options, options);
+				}
+				
+	            L.TileLayer.prototype.initialize.call(this, url, _options);
 	        }
 	    });
 	}
@@ -15651,8 +15834,6 @@ VCO.MapMarker = VCO.Class.extend({
 	markerAdded
 	markerRemoved
 
-	TODO 	Revisit calculations to determine zoom for landscape mode 
-			since only half the map is visible but the map extends the full width
 
 ================================================== */
  
@@ -15729,6 +15910,7 @@ VCO.Map = VCO.Class.extend({
 			map_type: 			"stamen:toner-lite",
 			map_as_image: 		false,
 			map_mini: 			false,
+			map_background_color: "#d9d9d9",
 			map_subdomains: 	"",
 			zoomify: {
 				path: 			"",
@@ -15738,6 +15920,7 @@ VCO.Map = VCO.Class.extend({
 				attribution: 	""
 			},
 			skinny_size: 		650,
+			less_bounce: 		true,
 			path_gfx: 			"gfx",
 			start_at_slide: 	0,
 			map_popup: 			false, 
@@ -15960,6 +16143,13 @@ VCO.Map = VCO.Class.extend({
 		}
 	},
 	
+	initialMapLocation: function() {
+		if (this._loaded.data && this._loaded.map) {
+			this.goTo(this.options.start_at_slide, true);
+			this._initialMapLocation();
+		}
+	},
+	
 	/*	Adding, Hiding, Showing etc
 	================================================== */
 	show: function() {
@@ -16126,6 +16316,9 @@ VCO.Map = VCO.Class.extend({
 			
 		},
 	
+		_initialMapLocation: function() {
+			
+		},
 	/*	Events
 	================================================== */
 	_onMarkerChange: function(e) {
@@ -16140,7 +16333,7 @@ VCO.Map = VCO.Class.extend({
 	
 	_onMapLoaded: function(e) {
 		this._loaded.map = true;
-		this._initialMapLocation();
+		
 		
 		if (this.options.calculate_zoom) {
 			this.calculateMarkerZooms();
@@ -16152,14 +16345,11 @@ VCO.Map = VCO.Class.extend({
 			this.createMiniMap();
 		}
 		
+		this.initialMapLocation();
 		this.fire("loaded", this.data);
 	},
 	
-	_initialMapLocation: function() {
-		if (this._loaded.data && this._loaded.map) {
-			this.goTo(this.options.start_at_slide, true);
-		}
-	},
+	
 	
 	/*	Private Methods
 	================================================== */
@@ -16225,15 +16415,14 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 		if (d.location && d.location.lat && d.location.lon) {
 			this.data.real_marker = true;
 			if (o.use_custom_markers && d.location.icon && d.location.icon != "") {
-				this._icon = L.icon({iconUrl: d.location.icon, iconSize: [41]});
+				this._icon = new L.icon({iconUrl: d.location.icon, iconSize: [41]});
 				//icon = L.icon({iconUrl: d.media.url, iconSize: [41]});
 			
-			};
+			} else {
+				this._icon = new L.divIcon({className: 'vco-mapmarker ' + this.media_icon_class, iconAnchor:[10, 10]});
+			}
 			
-			//icon = L.icon({iconUrl: "gfx/map-pin.png", iconSize: [28, 43], iconAnchor: [14, 33]});
-			this._icon = L.divIcon({className: 'vco-mapmarker ' + this.media_icon_class, iconAnchor:[10, 10]});
-		
-			this._marker = L.marker([d.location.lat, d.location.lon], {
+			this._marker = new L.marker([d.location.lat, d.location.lon], {
 				title: 		d.text.headline,
 				icon: 		this._icon
 			});
@@ -16320,18 +16509,18 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	================================================== */
 	_createMap: function() {
 		
-		// Set Marker Path
-		L.Icon.Default.imagePath = this.options.path_gfx;
 		
 		this._map = new L.map(this._el.map, {scrollWheelZoom:false, zoomControl:!this.options.map_mini});
 		this._map.on("load", this._onMapLoaded, this);
+		
 		
 		this._map.on("moveend", this._onMapMoveEnd, this);
 			
 		var map_type_arr = this.options.map_type.split(':');		
 
 		// Create Tile Layer
-		this._tile_layer = this._createTileLayer();
+		this._tile_layer = this._createTileLayer(this.options.map_type);
+		this._tile_layer.on("load", this._onTilesLoaded, this);
 		
 		// Add Tile Layer
 		this._map.addLayer(this._tile_layer);
@@ -16369,7 +16558,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 			this.bounds_array = this._getAllMarkersBounds(this._markers);
 		} 
 		
-		this._tile_layer_mini = this._createTileLayer();
+		this._tile_layer_mini = this._createTileLayer(this.options.map_type);
 		this._mini_map = new L.Control.MiniMap(this._tile_layer_mini, {
 			width: 				150,
 			height: 			100,
@@ -16379,67 +16568,129 @@ VCO.Map.Leaflet = VCO.Map.extend({
 			zoomAnimation: 		true,
 			aimingRectOptions: 	{
 				fillColor: 		"#FFFFFF",
-				color: 			"#da0000",
-				opacity: 		1,
-				weight: 		2
+				color: 			"#FFFFFF",
+				opacity: 		0.4,
+				weight: 		1,
+				stroke: 		true
 			}
 		}).addTo(this._map);
+		
+		this._mini_map.getContainer().style.backgroundColor = this.options.map_background_color;
+		
+	},
+	
+	/*	Create Background Map
+	================================================== */
+	_createBackgroundMap: function(tiles) {
+		
+		// TODO Check width and height 
+		trace("CREATE BACKGROUND MAP")
+		if (!this._image_layer) {
+			// Make Image Layer a Group
+			this._image_layer = new L.layerGroup();
+			// Add Layer Group to Map
+			this._map.addLayer(this._image_layer);
+			
+		} else {
+			this._image_layer.clearLayers();
+		}
+		
+		if (tiles) {
+			// Create Image Overlay for each tile in the group
+			for (x in tiles) {
+				var target_tile = tiles[x],
+					image = {},
+					tile = {
+						x: 			parseInt(target_tile.style.left.split("px")[0]),
+						y: 			parseInt(target_tile.style.top.split("px")[0]),
+						url: 		target_tile.src,
+						height: 	parseInt(target_tile.style.height.split("px")[0]),
+						width: 		parseInt(target_tile.style.width.split("px")[0]),
+						pos: {
+							start: 	0,
+							end: 	0
+						}
+					};
+				
+				tile.pos.start 	= this._map.containerPointToLatLng([tile.x, tile.y]);
+				tile.pos.end 	= this._map.containerPointToLatLng([tile.x + tile.width, tile.y + tile.height]);
+				
+				image = new L.imageOverlay(tile.url, [tile.pos.start, tile.pos.end]);
+				this._image_layer.addLayer(image);
+				
+			}
+		}
 		
 	},
 	
 	/*	Create Tile Layer
 	================================================== */
-	_createTileLayer: function() {
-		var _tilelayer,
-			_map_type_arr = this.options.map_type.split(':');		
+	_createTileLayer: function(map_type, options) {
+		var _tilelayer = null,
+			_map_type_arr = map_type.split(':'),
+			_options = {};	
 		
+		if (options) {
+			_options = options;
+		}
 		
-			// map_type: "http://{s}.tiles.mapbox.com/v3/milwaukeejournalsentinel.map-fy8dzs4n/{z}/{x}/{y}.png",
-			// map_subdomains: "ab"
 		// Set Tiles
 		switch(_map_type_arr[0]) {
 			case 'mapbox':
 				var mapbox_name = _map_type_arr[1] || 'zachwise.hgmmh8ho';
-				//_tilelayer = new L.TileLayer.Mapbox(_map_type_arr[1] || 'zachwise.hgn59jb1');
-				_tilelayer = new L.TileLayer("https://{s}.tiles.mapbox.com/v2/" + mapbox_name + "/{z}/{x}/{y}.png", {
-					subdomains: 'abcd',
-					attribution: "<div class='mapbox-maplogo'></div><a href='https://www.mapbox.com/about/maps/' target='_blank'>© Mapbox © OpenStreetMap</a> <a class='mapbox-improve-map' href='https://www.mapbox.com/map-feedback/#zachwise.hgmmh8ho/-81.80419921875/39.58875727696545/5' target='_blank'>Improve this map</a>"
-				});
-				// "http://{s}.tiles.mapbox.com/v3/milwaukeejournalsentinel.map-fy8dzs4n/{z}/{x}/{y}.png",
-				//https://d.tiles.mapbox.com/v3/zachwise.hgmmh8ho/5/8/11.png
+				_options.subdomains 	= 'abcd';
+				_options.attribution 	= "<div class='mapbox-maplogo'></div><a href='https://www.mapbox.com/about/maps/' target='_blank'>© Mapbox © OpenStreetMap</a> <a class='mapbox-improve-map' href='https://www.mapbox.com/map-feedback/#zachwise.hgmmh8ho/-81.80419921875/39.58875727696545/5' target='_blank'>Improve this map</a>";
+				_tilelayer = new L.TileLayer("https://{s}.tiles.mapbox.com/v2/" + mapbox_name + "/{z}/{x}/{y}.png", _options);
 				break;
 			case 'stamen':
-				_tilelayer = new L.StamenTileLayer(_map_type_arr[1] || 'toner-lite');
+				_tilelayer = new L.StamenTileLayer(_map_type_arr[1] || 'toner-lite', _options);
 				break;
 			case 'zoomify':
-				_tilelayer = new L.tileLayer.zoomify(this.options.zoomify.path, {
-					width: 			this.options.zoomify.width,
-					height: 		this.options.zoomify.height,
-					tolerance: 		this.options.zoomify.tolerance,
-					attribution: 	this.options.zoomify.attribution,
-				});
-				this._image_layer = new L.imageOverlay(this.options.zoomify.path + "TileGroup0/0-0-0.jpg", _tilelayer.getZoomifyBounds(this._map));
+				_options.width			= this.options.zoomify.width;
+				_options.height 		= this.options.zoomify.height;
+				_options.tolerance 		= this.options.zoomify.tolerance;
+				_options.attribution 	= this.options.zoomify.attribution;
+				
+				_tilelayer = new L.tileLayer.zoomify(this.options.zoomify.path, _options);
+				//this._image_layer = new L.imageOverlay(this.options.zoomify.path + "TileGroup0/0-0-0.jpg", _tilelayer.getZoomifyBounds(this._map));
 				break;
 			case 'osm':
-				_tilelayer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {subdomains: 'ab'});
+				_options.subdomains = 'ab';
+				_tilelayer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', _options);
 				break;
 		    
 			case 'http':
 			case 'https':
-				_tilelayer = new L.TileLayer(this.options.map_type, {subdomains: this.options.map_subdomains});
+				_options.subdomains = this.options.map_subdomains;
+				_tilelayer = new L.TileLayer(this.options.map_type, _options);
 				break;
 		        
 			default:
-				_tilelayer = new L.StamenTileLayer('toner');
+				_tilelayer = new L.StamenTileLayer('toner', _options);
 				break;		
 		}
 		
 		return _tilelayer;
 	},
 	
-	/*	Event
+	/*	Events
 	================================================== */
 	_onMapMoveEnd: function(e) {
+		
+	},
+	
+	_onTilesLoaded: function(e) {
+		this._createBackgroundMap(e.target._tiles);
+		this._tile_layer.off("load", this._onTilesLoaded, this);
+	},
+	
+	_onMapZoomed:function(e) {
+		trace("FIRST ZOOM");
+		this._map.off("zoomend", this._onMapZoomed, this);
+		
+	},
+	
+	_onMapZoom:function(e) {
 		
 	},
 	
@@ -16707,8 +16958,10 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	},
 	
 	_getBoundsZoom: function(origin, destination, correct_for_center) {
-		var _origin = origin;
-		
+		var _origin = origin,
+			_padding = [(Math.abs(this.options.map_center_offset.left)*3),(Math.abs(this.options.map_center_offset.top)*3)];
+			
+		//_padding = [0,0];
 		if (correct_for_center) {
 			var _lat = _origin.lat + (_origin.lat - destination.lat)/2,
 				_lng = _origin.lng + (_origin.lng - destination.lng)/2;
@@ -16716,11 +16969,19 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		}
 		
 		var bounds = new L.LatLngBounds([_origin, destination]);
-		return this._map.getBoundsZoom(bounds, false);
+		if (this.options.less_bounce) {
+			return this._map.getBoundsZoom(bounds, false);
+		} else {
+			return this._map.getBoundsZoom(bounds, true, _padding);
+		}
 	},
 	
 	_getZoomifyZoom: function() {
 
+	},
+	
+	_initialMapLocation: function() {
+		this._map.on("zoomend", this._onMapZoomed, this);
 	},
 	
 	/*	Display
@@ -16800,6 +17061,12 @@ L.Map.include({
 		this._animateZoom(center, zoom, origin, scale, null, true);
 
 		return true;
+	}
+});
+
+L.TileLayer.include({
+	getTiles: function() {
+		return this._tiles;
 	}
 });
 
@@ -16968,10 +17235,10 @@ L.Map.include({
 			// @codekit-prepend "map/leaflet/leaflet-src/layer/vector/Rectangle.js";
 
 		// Circle
-			// "map/leaflet/leaflet-src/layer/vector/Circle.js";
+			// @codekit-prepend "map/leaflet/leaflet-src/layer/vector/Circle.js";
 
 		// CircleMarker
-			// "map/leaflet/leaflet-src/layer/vector/CircleMarker.js";
+			// @codekit-prepend "map/leaflet/leaflet-src/layer/vector/CircleMarker.js";
 
 		// VectorsCanvas Canvas fallback for vector layers (polygons, polylines, circles, circlemarkers)
 			// @codekit-prepend "map/leaflet/leaflet-src/layer/vector/canvas/Polyline.Canvas.js";
@@ -17034,6 +17301,7 @@ L.Map.include({
 // TILES
 	// "map/tile/VCO.TileLayer.Mapbox.js"; NOT READY YET
 	// @codekit-prepend "map/tile/VCO.TileLayer.Stamen.js";
+	
 // MAP
 	// @codekit-prepend "map/VCO.MapMarker.js";
 	// @codekit-prepend "map/VCO.Map.js";
@@ -17134,6 +17402,7 @@ VCO.StoryMap = VCO.Class.extend({
 			base_class: 			"",
 			map_size_sticky: 		3, 				// Set as division 1/3 etc
 			map_center_offset:  	null, 			// takes object {top:0,left:0}
+			less_bounce: 			true, 			// Less map bounce when calculating zoom, false is good when there are clusters of tightly grouped markers
 			start_at_slide: 		0,
 			menubar_height: 		0,
 			skinny_size: 			650,

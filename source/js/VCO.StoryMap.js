@@ -159,10 +159,10 @@
 			// @codekit-prepend "map/leaflet/leaflet-src/layer/vector/Rectangle.js";
 
 		// Circle
-			// "map/leaflet/leaflet-src/layer/vector/Circle.js";
+			// @codekit-prepend "map/leaflet/leaflet-src/layer/vector/Circle.js";
 
 		// CircleMarker
-			// "map/leaflet/leaflet-src/layer/vector/CircleMarker.js";
+			// @codekit-prepend "map/leaflet/leaflet-src/layer/vector/CircleMarker.js";
 
 		// VectorsCanvas Canvas fallback for vector layers (polygons, polylines, circles, circlemarkers)
 			// @codekit-prepend "map/leaflet/leaflet-src/layer/vector/canvas/Polyline.Canvas.js";
@@ -225,6 +225,7 @@
 // TILES
 	// "map/tile/VCO.TileLayer.Mapbox.js"; NOT READY YET
 	// @codekit-prepend "map/tile/VCO.TileLayer.Stamen.js";
+	
 // MAP
 	// @codekit-prepend "map/VCO.MapMarker.js";
 	// @codekit-prepend "map/VCO.Map.js";
@@ -325,6 +326,7 @@ VCO.StoryMap = VCO.Class.extend({
 			base_class: 			"",
 			map_size_sticky: 		3, 				// Set as division 1/3 etc
 			map_center_offset:  	null, 			// takes object {top:0,left:0}
+			less_bounce: 			true, 			// Less map bounce when calculating zoom, false is good when there are clusters of tightly grouped markers
 			start_at_slide: 		0,
 			menubar_height: 		0,
 			skinny_size: 			650,

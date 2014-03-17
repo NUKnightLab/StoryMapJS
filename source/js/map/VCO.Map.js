@@ -5,8 +5,6 @@
 	markerAdded
 	markerRemoved
 
-	TODO 	Revisit calculations to determine zoom for landscape mode 
-			since only half the map is visible but the map extends the full width
 
 ================================================== */
  
@@ -83,6 +81,7 @@ VCO.Map = VCO.Class.extend({
 			map_type: 			"stamen:toner-lite",
 			map_as_image: 		false,
 			map_mini: 			false,
+			map_background_color: "#d9d9d9",
 			map_subdomains: 	"",
 			zoomify: {
 				path: 			"",
@@ -92,6 +91,7 @@ VCO.Map = VCO.Class.extend({
 				attribution: 	""
 			},
 			skinny_size: 		650,
+			less_bounce: 		true,
 			path_gfx: 			"gfx",
 			start_at_slide: 	0,
 			map_popup: 			false, 
@@ -314,6 +314,13 @@ VCO.Map = VCO.Class.extend({
 		}
 	},
 	
+	initialMapLocation: function() {
+		if (this._loaded.data && this._loaded.map) {
+			this.goTo(this.options.start_at_slide, true);
+			this._initialMapLocation();
+		}
+	},
+	
 	/*	Adding, Hiding, Showing etc
 	================================================== */
 	show: function() {
@@ -480,6 +487,9 @@ VCO.Map = VCO.Class.extend({
 			
 		},
 	
+		_initialMapLocation: function() {
+			
+		},
 	/*	Events
 	================================================== */
 	_onMarkerChange: function(e) {
@@ -494,7 +504,7 @@ VCO.Map = VCO.Class.extend({
 	
 	_onMapLoaded: function(e) {
 		this._loaded.map = true;
-		this._initialMapLocation();
+		
 		
 		if (this.options.calculate_zoom) {
 			this.calculateMarkerZooms();
@@ -506,14 +516,11 @@ VCO.Map = VCO.Class.extend({
 			this.createMiniMap();
 		}
 		
+		this.initialMapLocation();
 		this.fire("loaded", this.data);
 	},
 	
-	_initialMapLocation: function() {
-		if (this._loaded.data && this._loaded.map) {
-			this.goTo(this.options.start_at_slide, true);
-		}
-	},
+	
 	
 	/*	Private Methods
 	================================================== */

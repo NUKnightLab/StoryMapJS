@@ -11,12 +11,14 @@ L.Control.MiniMap = L.Control.extend({
         zoomLevelFixed: false,
         zoomAnimation: false,
         autoToggleDisplay: false,
+		show_view: true,
         width: 150,
         height: 150,
         aimingRectOptions: {
-            color: "#ff7800",
+            color: "#da0000",
             weight: 1,
-            clickable: false
+            clickable: false,
+			stroke:true
         },
         shadowRectOptions: {
             color: "#000000",
@@ -82,6 +84,19 @@ L.Control.MiniMap = L.Control.extend({
         this._miniMap.whenReady(L.Util.bind(function() {
             this._aimingRect = L.rectangle(this._mainMap.getBounds(), this.options.aimingRectOptions).addTo(this._miniMap);
             this._shadowRect = L.rectangle(this._mainMap.getBounds(), this.options.shadowRectOptions).addTo(this._miniMap);
+			
+			this._locationCircle = L.circleMarker(this._mainMap.getCenter(), {
+				fillColor: "#da0000",
+				color: "#FFFFFF",
+				weight:2,
+				radius: 10,
+				fill:true,
+				fillOpacity: 1,
+				stroke:true,
+				clickable: false
+			}).addTo(this._miniMap);
+			this._locationCircle.setRadius(5);
+			
             this._mainMap.on('moveend', this._onMainMapMoved, this);
             this._mainMap.on('move', this._onMainMapMoving, this);
             //this._miniMap.on('movestart', this._onMiniMapMoveStarted, this);
@@ -190,11 +205,18 @@ L.Control.MiniMap = L.Control.extend({
         } else {
             this._miniMapMoving = false;
         }
-        this._aimingRect.setBounds(this._mainMap.getBounds());
+		if (this.options.show_view) {
+			this._aimingRect.setBounds(this._mainMap.getBounds());
+		}
+		this._locationCircle.setLatLng(this._mainMap.getCenter());
+        
     },
 
     _onMainMapMoving: function(e) {
-        this._aimingRect.setBounds(this._mainMap.getBounds());
+		if (this.options.show_view) {
+			this._aimingRect.setBounds(this._mainMap.getBounds());
+		}
+		this._locationCircle.setLatLng(this._mainMap.getCenter());
     },
 
     _onMiniMapMoveStarted: function(e) {
