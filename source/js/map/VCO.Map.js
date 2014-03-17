@@ -5,8 +5,6 @@
 	markerAdded
 	markerRemoved
 
-	TODO 	Revisit calculations to determine zoom for landscape mode 
-			since only half the map is visible but the map extends the full width
 
 ================================================== */
  
