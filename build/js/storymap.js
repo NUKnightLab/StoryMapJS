@@ -1,4 +1,4 @@
-/* storymapjs - v2014-03-07-19-13-55 - 2014-03-07
+/* storymapjs - v2014-03-18-16-05-35 - 2014-03-18
  * Copyright (c) 2014 Northwestern University Knight Lab 
  */
 
@@ -5146,11 +5146,7 @@ VCO.Media = VCO.Class.extend({
 		if (this._state.loaded) {
 			this._updateMediaDisplay(layout);
 			
-			if (layout != "landscape") {
-				this._el.content_item.style.maxHeight = (this.options.height - this.options.credit_height - this.options.caption_height - 16) + "px";
-			}
-			
-			
+			this._el.content_item.style.maxHeight = (this.options.height/2) + "px";
 			
 			// Fix for max-width issues in Firefox
 			if (VCO.Browser.firefox) {
@@ -5464,7 +5460,6 @@ VCO.Media.Instagram = VCO.Media.extend({
 	/*	Load the media
 	================================================== */
 	_loadMedia: function() {
-		trace("Instagram")
 		var api_url,
 			self = this;
 		
@@ -5483,7 +5478,6 @@ VCO.Media.Instagram = VCO.Media.extend({
 	},
 	
 	sizes: function(s) {
-		trace("size " + s)
 		var _size = "";
 		if (s <= 150) {
 			_size = "t";
@@ -5667,11 +5661,7 @@ VCO.Media.Image = VCO.Media.extend({
 	},
 	
 	_updateMediaDisplay: function(layout) {
-		if (layout == "landscape") {
-			this._el.content_item.style.maxHeight = "50%";
-		} else {
-			this._el.content_item.style.maxHeight = (this.options.height - this.options.credit_height - this.options.caption_height - 16) + "px";
-		}
+		
 		
 		if(VCO.Browser.firefox) {
 			this._el.content_item.style.maxWidth = (this.options.width/2) - 40 + "px";
@@ -6541,10 +6531,11 @@ VCO.Slide = VCO.Class.extend({
 		this.options = {
 			// animation
 			duration: 			1000,
-			slide_padding_lr: 	100,
+			slide_padding_lr: 	40,
 			ease: 				VCO.Ease.easeInSpline,
 			width: 				600,
 			height: 			600,
+			skinny_size: 		650,
 			media_name: 		""
 		};
 		
@@ -6733,19 +6724,19 @@ VCO.Slide = VCO.Class.extend({
 			this.options.width 					= this._el.container.offsetWidth;
 		}
 		
-		if(VCO.Browser.mobile && (this.options.width <= 500)) {
+		if(VCO.Browser.mobile && (this.options.width <= this.options.skinny_size)) {
 			this._el.content.style.paddingLeft 	= 0 + "px";
 			this._el.content.style.paddingRight = 0 + "px";
 			this._el.content.style.width		= this.options.width - 0 + "px";
 		} else if (layout == "landscape") {
 			this._el.content.style.paddingLeft 	= 40 + "px";
-			this._el.content.style.paddingRight = this.options.slide_padding_lr + "px";
-			this._el.content.style.width		= this.options.width - (this.options.slide_padding_lr + 40) + "px";
+			this._el.content.style.paddingRight = 75 + "px";
+			this._el.content.style.width		= this.options.width - (75 + 40) + "px";
 		
-		} else if (this.options.width <= 500) {
-			this._el.content.style.paddingLeft 	= 10 + "px";
-			this._el.content.style.paddingRight = 10 + "px";
-			this._el.content.style.width		= this.options.width - (10 * 2) + "px";
+		} else if (this.options.width <= this.options.skinny_size) {
+			this._el.content.style.paddingLeft 	= this.options.slide_padding_lr + "px";
+			this._el.content.style.paddingRight = this.options.slide_padding_lr + "px";
+			this._el.content.style.width		= this.options.width - (this.options.slide_padding_lr * 2) + "px";
 		} else {
 			this._el.content.style.paddingLeft 	= this.options.slide_padding_lr + "px";
 			this._el.content.style.paddingRight = this.options.slide_padding_lr + "px";
@@ -7071,7 +7062,7 @@ VCO.StorySlider = VCO.Class.extend({
 			layout: 				"portrait",
 			width: 					600,
 			height: 				600,
-			slide_padding_lr: 		100, 			// padding on slide of slide
+			slide_padding_lr: 		40, 			// padding on slide of slide
 			start_at_slide: 		1,
 			slide_default_fade: 	"0%", 			// landscape fade
 			// animation
@@ -7152,7 +7143,6 @@ VCO.StorySlider = VCO.Class.extend({
 	},
 	
 	_createSlide: function(d, title_slide) {
-		trace("create slide")
 		var slide = new VCO.Slide(d, this.options, title_slide);
 		this._addSlide(slide);
 		this._slides.push(slide);
@@ -10980,6 +10970,7 @@ L.TileLayer = L.Class.extend({
 	},
 
 	_addTile: function (tilePoint, container) {
+
 		var tilePos = this._getTilePos(tilePoint);
 
 		// get unused tile - or create a new tile
@@ -13333,6 +13324,161 @@ L.rectangle = function (latLngBounds, options) {
 
 
 /* **********************************************
+     Begin Circle.js
+********************************************** */
+
+/*
+ * L.Circle is a circle overlay (with a certain radius in meters).
+ */
+
+L.Circle = L.Path.extend({
+	initialize: function (latlng, radius, options) {
+		L.Path.prototype.initialize.call(this, options);
+
+		this._latlng = L.latLng(latlng);
+		this._mRadius = radius;
+	},
+
+	options: {
+		fill: true
+	},
+
+	setLatLng: function (latlng) {
+		this._latlng = L.latLng(latlng);
+		return this.redraw();
+	},
+
+	setRadius: function (radius) {
+		this._mRadius = radius;
+		return this.redraw();
+	},
+
+	projectLatlngs: function () {
+		var lngRadius = this._getLngRadius(),
+		    latlng = this._latlng,
+		    pointLeft = this._map.latLngToLayerPoint([latlng.lat, latlng.lng - lngRadius]);
+
+		this._point = this._map.latLngToLayerPoint(latlng);
+		this._radius = Math.max(this._point.x - pointLeft.x, 1);
+	},
+
+	getBounds: function () {
+		var lngRadius = this._getLngRadius(),
+		    latRadius = (this._mRadius / 40075017) * 360,
+		    latlng = this._latlng;
+
+		return new L.LatLngBounds(
+		        [latlng.lat - latRadius, latlng.lng - lngRadius],
+		        [latlng.lat + latRadius, latlng.lng + lngRadius]);
+	},
+
+	getLatLng: function () {
+		return this._latlng;
+	},
+
+	getPathString: function () {
+		var p = this._point,
+		    r = this._radius;
+
+		if (this._checkIfEmpty()) {
+			return '';
+		}
+
+		if (L.Browser.svg) {
+			return 'M' + p.x + ',' + (p.y - r) +
+			       'A' + r + ',' + r + ',0,1,1,' +
+			       (p.x - 0.1) + ',' + (p.y - r) + ' z';
+		} else {
+			p._round();
+			r = Math.round(r);
+			return 'AL ' + p.x + ',' + p.y + ' ' + r + ',' + r + ' 0,' + (65535 * 360);
+		}
+	},
+
+	getRadius: function () {
+		return this._mRadius;
+	},
+
+	// TODO Earth hardcoded, move into projection code!
+
+	_getLatRadius: function () {
+		return (this._mRadius / 40075017) * 360;
+	},
+
+	_getLngRadius: function () {
+		return this._getLatRadius() / Math.cos(L.LatLng.DEG_TO_RAD * this._latlng.lat);
+	},
+
+	_checkIfEmpty: function () {
+		if (!this._map) {
+			return false;
+		}
+		var vp = this._map._pathViewport,
+		    r = this._radius,
+		    p = this._point;
+
+		return p.x - r > vp.max.x || p.y - r > vp.max.y ||
+		       p.x + r < vp.min.x || p.y + r < vp.min.y;
+	}
+});
+
+L.circle = function (latlng, radius, options) {
+	return new L.Circle(latlng, radius, options);
+};
+
+
+/* **********************************************
+     Begin CircleMarker.js
+********************************************** */
+
+/*
+ * L.CircleMarker is a circle overlay with a permanent pixel radius.
+ */
+
+L.CircleMarker = L.Circle.extend({
+	options: {
+		radius: 10,
+		weight: 2
+	},
+
+	initialize: function (latlng, options) {
+		L.Circle.prototype.initialize.call(this, latlng, null, options);
+		this._radius = this.options.radius;
+	},
+
+	projectLatlngs: function () {
+		this._point = this._map.latLngToLayerPoint(this._latlng);
+	},
+
+	_updateStyle : function () {
+		L.Circle.prototype._updateStyle.call(this);
+		this.setRadius(this.options.radius);
+	},
+
+	setLatLng: function (latlng) {
+		L.Circle.prototype.setLatLng.call(this, latlng);
+		if (this._popup && this._popup._isOpen) {
+			this._popup.setLatLng(latlng);
+		}
+		return this;
+	},
+
+	setRadius: function (radius) {
+		this.options.radius = this._radius = radius;
+		return this.redraw();
+	},
+
+	getRadius: function () {
+		return this._radius;
+	}
+});
+
+L.circleMarker = function (latlng, options) {
+	return new L.CircleMarker(latlng, options);
+};
+
+
+/* **********************************************
      Begin Polyline.Canvas.js
 ********************************************** */
 
@@ -15026,372 +15172,332 @@ L.tileLayer.zoomify = function (url, options) {
 
 /*
 	https://github.com/Norkart/Leaflet-MiniMap
-	TODO distinguish between user dragging minimap and main map asking minimap to move
+	
 */
+
 L.Control.MiniMap = L.Control.extend({
-	options: {
-		position: 'bottomright',
-		toggleDisplay: false,
-		zoomLevelOffset: -5,
-		zoomLevelFixed: false,
-		zoomAnimation: false,
-		autoToggleDisplay: false,
-		width: 150,
-		height: 150,
-		aimingRectOptions: {color: "#ff7800", weight: 1, clickable: false},
-		shadowRectOptions: {color: "#000000", weight: 1, clickable: false, opacity:0, fillOpacity:0}
-	},
-	
-	hideText: 'Hide MiniMap',
-	
-	showText: 'Show MiniMap',
-	
-	//layer is the map layer to be shown in the minimap
-	initialize: function (layer, options) {
-		L.Util.setOptions(this, options);
-		//Make sure the aiming rects are non-clickable even if the user tries to set them clickable (most likely by forgetting to specify them false)
-		this.options.aimingRectOptions.clickable = false;
-		this.options.shadowRectOptions.clickable = false;
-		this._layer = layer;
-		this.true_hide = false;
-	},
-	
-	onAdd: function (map) {
+    options: {
+        position: 'bottomright',
+        toggleDisplay: false,
+        zoomLevelOffset: -5,
+        zoomLevelFixed: false,
+        zoomAnimation: false,
+        autoToggleDisplay: false,
+		show_view: true,
+        width: 150,
+        height: 150,
+        aimingRectOptions: {
+            color: "#da0000",
+            weight: 1,
+            clickable: false,
+			stroke:true
+        },
+        shadowRectOptions: {
+            color: "#000000",
+            weight: 1,
+            clickable: false,
+            opacity: 0,
+            fillOpacity: 0
+        }
+    },
 
-		this._mainMap = map;
+    hideText: 'Hide MiniMap',
 
-		//Creating the container and stopping events from spilling through to the main map.
-		this._container = L.DomUtil.create('div', 'leaflet-control-minimap');
-		this._container.style.width = this.options.width + 'px';
-		this._container.style.height = this.options.height + 'px';
-		L.DomEvent.disableClickPropagation(this._container);
-		L.DomEvent.on(this._container, 'mousewheel', L.DomEvent.stopPropagation);
+    showText: 'Show MiniMap',
+
+    //layer is the map layer to be shown in the minimap
+    initialize: function(layer, options) {
+        L.Util.setOptions(this, options);
+        //Make sure the aiming rects are non-clickable even if the user tries to set them clickable (most likely by forgetting to specify them false)
+        this.options.aimingRectOptions.clickable = false;
+        this.options.shadowRectOptions.clickable = false;
+        this._layer = layer;
+    },
+
+    onAdd: function(map) {
+
+        this._mainMap = map;
+
+        //Creating the container and stopping events from spilling through to the main map.
+        this._container = L.DomUtil.create('div', 'leaflet-control-minimap');
+        this._container.style.width = this.options.width + 'px';
+        this._container.style.height = this.options.height + 'px';
+        L.DomEvent.disableClickPropagation(this._container);
+        L.DomEvent.on(this._container, 'mousewheel', L.DomEvent.stopPropagation);
 
 
-		this._miniMap = new L.Map(this._container,
-		{
-			attributionControl: false,
-			zoomControl: false,
-			zoomAnimation: this.options.zoomAnimation,
-			autoToggleDisplay: this.options.autoToggleDisplay,
-			touchZoom: !this.options.zoomLevelFixed,
-			scrollWheelZoom: !this.options.zoomLevelFixed,
-			doubleClickZoom: !this.options.zoomLevelFixed,
-			boxZoom: !this.options.zoomLevelFixed,
-			crs: map.options.crs
-		});
+        this._miniMap = new L.Map(this._container, {
+            attributionControl: false,
+            zoomControl: false,
+            zoomAnimation: this.options.zoomAnimation,
+            autoToggleDisplay: this.options.autoToggleDisplay,
+            touchZoom: false,
+            scrollWheelZoom: false,
+            doubleClickZoom: false,
+            boxZoom: false,
+			dragging:false,
+            crs: map.options.crs
+        });
 
-		this._miniMap.addLayer(this._layer);
+        this._miniMap.addLayer(this._layer);
 
-		//These bools are used to prevent infinite loops of the two maps notifying each other that they've moved.
-		this._mainMapMoving = false;
-		this._miniMapMoving = false;
+        //These bools are used to prevent infinite loops of the two maps notifying each other that they've moved.
+        this._mainMapMoving = false;
+        this._miniMapMoving = false;
 
-		//Keep a record of this to prevent auto toggling when the user explicitly doesn't want it.
-		this._userToggledDisplay = false;
-		this._minimized = false;
+        //Keep a record of this to prevent auto toggling when the user explicitly doesn't want it.
+        this._userToggledDisplay = false;
+        this._minimized = false;
 
-		if (this.options.toggleDisplay) {
-			this._addToggleButton();
-		}
+        if (this.options.toggleDisplay) {
+            this._addToggleButton();
+        }
 
-		this._miniMap.whenReady(L.Util.bind(function () {
-			this._aimingRect = L.rectangle(this._mainMap.getBounds(), this.options.aimingRectOptions).addTo(this._miniMap);
-			//this._shadowRect = L.rectangle(this._mainMap.getBounds(), this.options.shadowRectOptions).addTo(this._miniMap);
-			this._mainMap.on('moveend', this._onMainMapMoved, this);
-			this._mainMap.on('move', this._onMainMapMoving, this);
-			this._miniMap.on('movestart', this._onMiniMapMoveStarted, this);
-			this._miniMap.on('move', this._onMiniMapMoving, this);
-			this._miniMap.on('moveend', this._onMiniMapMoved, this);
-		}, this));
+        this._miniMap.whenReady(L.Util.bind(function() {
+            this._aimingRect = L.rectangle(this._mainMap.getBounds(), this.options.aimingRectOptions).addTo(this._miniMap);
+            this._shadowRect = L.rectangle(this._mainMap.getBounds(), this.options.shadowRectOptions).addTo(this._miniMap);
+			
+			this._locationCircle = L.circleMarker(this._mainMap.getCenter(), {
+				fillColor: "#da0000",
+				color: "#FFFFFF",
+				weight:2,
+				radius: 10,
+				fill:true,
+				fillOpacity: 1,
+				stroke:true,
+				clickable: false
+			}).addTo(this._miniMap);
+			this._locationCircle.setRadius(5);
+			
+            this._mainMap.on('moveend', this._onMainMapMoved, this);
+            this._mainMap.on('move', this._onMainMapMoving, this);
+            //this._miniMap.on('movestart', this._onMiniMapMoveStarted, this);
+            //this._miniMap.on('move', this._onMiniMapMoving, this);
+            //this._miniMap.on('moveend', this._onMiniMapMoved, this);
+			if (this.options.bounds_array) {
+				this._miniMap.fitBounds(this.options.bounds_array, {padding:[15,15]});
+			}
+        }, this));
 
-		return this._container;
-	},
+        return this._container;
+    },
 	
 	minimize: function(hide_completely) {
 		if (!this._minimized) {
 			this._minimize();
-			//this._toggleDisplayButton.title = this.showText;
 		}
 	},
 	
 	restore: function() {
 		if (this._minimized) {
 			this._restore();
-			//this._toggleDisplayButton.title = this.hideText;
-		}
-	},
-	
-	decideShow: function() {
-		return this._decideShow();
-	},
-	
-	addTo: function (map) {
-		L.Control.prototype.addTo.call(this, map);
-		this._miniMap.setView(this._mainMap.getCenter(), this._decideZoom(true));
-		this._setDisplay(this._decideMinimized());
-		return this;
-	},
-
-	onRemove: function (map) {
-		this._mainMap.off('moveend', this._onMainMapMoved, this);
-		this._mainMap.off('move', this._onMainMapMoving, this);
-		this._miniMap.off('moveend', this._onMiniMapMoved, this);
-
-		this._miniMap.removeLayer(this._layer);
-	},
-
-	_addToggleButton: function () {
-		this._toggleDisplayButton = this.options.toggleDisplay ? this._createButton(
-				'', this.hideText, 'leaflet-control-minimap-toggle-display', this._container, this._toggleDisplayButtonClicked, this) : undefined;
-	},
-
-	_createButton: function (html, title, className, container, fn, context) {
-		var link = L.DomUtil.create('a', className, container);
-		link.innerHTML = html;
-		link.href = '#';
-		link.title = title;
-
-		var stop = L.DomEvent.stopPropagation;
-
-		L.DomEvent
-			.on(link, 'click', stop)
-			.on(link, 'mousedown', stop)
-			.on(link, 'dblclick', stop)
-			.on(link, 'click', L.DomEvent.preventDefault)
-			.on(link, 'click', fn, context);
-
-		return link;
-	},
-
-	_toggleDisplayButtonClicked: function () {
-		this._userToggledDisplay = true;
-		if (!this._minimized) {
-			this._minimize();
-			this._toggleDisplayButton.title = this.showText;
-		} else {
-			this._restore();
-			this._toggleDisplayButton.title = this.hideText;
+			this._miniMap.fitBounds(this.options.bounds_array, {padding:[15,15]});
 		}
 	},
 
-	_setDisplay: function (minimize) {
-		if (minimize != this._minimized) {
-			if (!this._minimized) {
-				this._minimize();
+    addTo: function(map) {
+        L.Control.prototype.addTo.call(this, map);
+        this._miniMap.setView(this._mainMap.getCenter(), this._decideZoom(true));
+        this._setDisplay(this._decideMinimized());
+        return this;
+    },
+
+    onRemove: function(map) {
+        this._mainMap.off('moveend', this._onMainMapMoved, this);
+        this._mainMap.off('move', this._onMainMapMoving, this);
+        this._miniMap.off('moveend', this._onMiniMapMoved, this);
+
+        this._miniMap.removeLayer(this._layer);
+    },
+
+    _addToggleButton: function() {
+        this._toggleDisplayButton = this.options.toggleDisplay ? this._createButton('', this.hideText, 'leaflet-control-minimap-toggle-display', this._container, this._toggleDisplayButtonClicked, this) : undefined;
+    },
+
+    _createButton: function(html, title, className, container, fn, context) {
+        var link = L.DomUtil.create('a', className, container);
+        link.innerHTML = html;
+        link.href = '#';
+        link.title = title;
+
+        var stop = L.DomEvent.stopPropagation;
+
+        L.DomEvent.on(link, 'click', stop)
+            .on(link, 'mousedown', stop)
+            .on(link, 'dblclick', stop)
+            .on(link, 'click', L.DomEvent.preventDefault)
+            .on(link, 'click', fn, context);
+
+        return link;
+    },
+
+    _toggleDisplayButtonClicked: function() {
+        this._userToggledDisplay = true;
+        if (!this._minimized) {
+            this._minimize();
+            this._toggleDisplayButton.title = this.showText;
+        } else {
+            this._restore();
+            this._toggleDisplayButton.title = this.hideText;
+        }
+    },
+
+    _setDisplay: function(minimize) {
+        if (minimize != this._minimized) {
+            if (!this._minimized) {
+                this._minimize();
+            } else {
+                this._restore();
+            }
+        }
+    },
+
+    _minimize: function() {
+        this._container.style.width = '0px';
+        this._container.style.height = '0px';
+        this._minimized = true;
+    },
+
+    _restore: function() {
+        this._container.style.width = this.options.width + 'px';
+        this._container.style.height = this.options.height + 'px';
+        this._minimized = false;
+    },
+
+    _onMainMapMoved: function(e) {
+        if (!this._miniMapMoving) {
+			var zoom = this._decideZoom(true);
+			if (zoom != 0) {
+				//this._miniMap.setView(this._mainMap.getCenter(), this._decideZoom(true));
+				//this._miniMap.setView(this._mainMap.getCenter());
 			}
-			else {
-				this._restore();
-			}
-		}
-	},
+            this._mainMapMoving = true;
 
-	_minimize: function (hide_completely) {
-		// hide the minimap
-		if (this.options.toggleDisplay) {
-			this._container.style.width = '19px';
-			this._container.style.height = '19px';
-			this._toggleDisplayButton.className += ' minimized';
-		}
-		else {
-			this._container.style.width = '0px';
-			this._container.style.height = '0px';
-			//this._container.style.display = 'none';
-		}
-		this._minimized = true;
-	},
-
-	_restore: function () {
-		if (this.options.toggleDisplay) {
-			this._container.style.width = this.options.width + 'px';
-			this._container.style.height = this.options.height + 'px';
-			this._toggleDisplayButton.className = this._toggleDisplayButton.className
-					.replace(/(?:^|\s)minimized(?!\S)/g, '');
-		}
-		else {
-			this._container.style.width = this.options.width + 'px';
-			this._container.style.height = this.options.height + 'px';
-			this._container.style.display = 'block';
-		}
-		this._minimized = false;
-	},
-
-	_onMainMapMoved: function (e) {
-		if (!this._miniMapMoving) {
-			
-			if (!this._decideShow()) {
-				this._mainMapMoving = true;
-				this._miniMap.setView(this._mainMap.getCenter(), this._decideZoom(true));
-				this._setDisplay(this._decideMinimized());
-			} 
-			
-		} else {
-			this._miniMapMoving = false;
-		}
-		this._aimingRect.setBounds(this._mainMap.getBounds());
-	},
-	
-	_decideShow: function(zoom) {
-		var z = this._decideZoom(true);
-		if (zoom) {
-			z = zoom;
-		}
-		//trace("decideshow " + z);
-		if (z < 0) {
-			this.minimize();
-			return false;
-		} else if (this.true_hide){
-			return false;
-		} else {
-			this.restore();
-			return true;
-		}
-	},
-
-	_onMainMapMoving: function (e) {
-		this._aimingRect.setBounds(this._mainMap.getBounds());
-		
-	},
-
-	_onMiniMapMoveStarted:function (e) {
-		var lastAimingRect = this._aimingRect.getBounds();
-		var sw = this._miniMap.latLngToContainerPoint(lastAimingRect.getSouthWest());
-		var ne = this._miniMap.latLngToContainerPoint(lastAimingRect.getNorthEast());
-		this._lastAimingRectPosition = {sw:sw,ne:ne};
-	},
-
-	_onMiniMapMoving: function (e) {
-		if (!this._mainMapMoving && this._lastAimingRectPosition && this._decideShow()) {
-			/*
-			this._shadowRect.setBounds(new L.LatLngBounds(this._miniMap.containerPointToLatLng(this._lastAimingRectPosition.sw),this._miniMap.containerPointToLatLng(this._lastAimingRectPosition.ne)));
-			this._shadowRect.setStyle({opacity:1,fillOpacity:0.3});
-			this._aimingRect.setBounds(this._mainMap.getBounds());
-			*/
+            this._setDisplay(this._decideMinimized());
+        } else {
+            this._miniMapMoving = false;
+        }
+		if (this.options.show_view) {
 			this._aimingRect.setBounds(this._mainMap.getBounds());
 		}
-		
-	},
+		this._locationCircle.setLatLng(this._mainMap.getCenter());
+        
+    },
 
-	_onMiniMapMoved: function (e) {
-		if (!this._mainMapMoving) {
-			this._miniMapMoving = true;
-			//this._mainMap.setView(this._miniMap.getCenter(), this._decideZoom(false));
-			//this._shadowRect.setStyle({opacity:0,fillOpacity:0});
-		} else {
-			this._mainMapMoving = false;
-		}
-		
-		if (this._decideShow()) {
+    _onMainMapMoving: function(e) {
+		if (this.options.show_view) {
 			this._aimingRect.setBounds(this._mainMap.getBounds());
 		}
-		
-	},
+		this._locationCircle.setLatLng(this._mainMap.getCenter());
+    },
 
-	_decideZoom: function (fromMaintoMini, zoom) {
-		var z = this._mainMap.getZoom();
-		if (!this.options.zoomLevelFixed ) {
-			if (fromMaintoMini) {
-				if (zoom) {
-					z = zoom + this.options.zoomLevelOffset;
-				} else {
-					z = this._mainMap.getZoom() + this.options.zoomLevelOffset;
-				}
-				
-				return z;
+    _onMiniMapMoveStarted: function(e) {
+        var lastAimingRect = this._aimingRect.getBounds();
+        var sw = this._miniMap.latLngToContainerPoint(lastAimingRect.getSouthWest());
+        var ne = this._miniMap.latLngToContainerPoint(lastAimingRect.getNorthEast());
+        this._lastAimingRectPosition = {
+            sw: sw,
+            ne: ne
+        };
+    },
+
+    _onMiniMapMoving: function(e) {
+        if (!this._mainMapMoving && this._lastAimingRectPosition) {
+            this._shadowRect.setBounds(new L.LatLngBounds(this._miniMap.containerPointToLatLng(this._lastAimingRectPosition.sw), this._miniMap.containerPointToLatLng(this._lastAimingRectPosition.ne)));
+            this._shadowRect.setStyle({
+                opacity: 1,
+                fillOpacity: 0.3
+            });
+        }
+    },
+
+    _onMiniMapMoved: function(e) {
+        if (!this._mainMapMoving) {
+            this._miniMapMoving = true;
+            this._mainMap.setView(this._miniMap.getCenter(), this._decideZoom(false));
+            this._shadowRect.setStyle({
+                opacity: 0,
+                fillOpacity: 0
+            });
+        } else {
+            this._mainMapMoving = false;
+        }
+    },
+
+    _decideZoom: function(fromMaintoMini) {
+        if (!this.options.zoomLevelFixed && this.options.zoomLevelFixed != 0) {
+            if (fromMaintoMini) {
+				return this._mainMap.getZoom() + this.options.zoomLevelOffset;
 			} else {
-				if (zoom) {
-					z = zoom;
-				}
-				var currentDiff = this._miniMap.getZoom() - z;
+				var currentDiff = this._miniMap.getZoom() - this._mainMap.getZoom();
 				var proposedZoom = this._miniMap.getZoom() - this.options.zoomLevelOffset;
 				var toRet;
-				
-				if (currentDiff > this.options.zoomLevelOffset && z < this._miniMap.getMinZoom() - this.options.zoomLevelOffset) {
-					//This means the miniMap is zoomed out to the minimum zoom level and can't zoom any more.
-					if (this._miniMap.getZoom() > this._lastMiniMapZoom) {
-						//This means the user is trying to zoom in by using the minimap, zoom the main map.
-						toRet = z + 1;
-						//Also we cheat and zoom the minimap out again to keep it visually consistent.
-						this._miniMap.setZoom(this._miniMap.getZoom() -1);
-					} else {
-						//Either the user is trying to zoom out past the mini map's min zoom or has just panned using it, we can't tell the difference.
-						//Therefore, we ignore it!
-						toRet = z;
-					}
+
+				if (currentDiff > this.options.zoomLevelOffset && this._mainMap.getZoom() < this._miniMap.getMinZoom() - this.options.zoomLevelOffset) {
+				    //This means the miniMap is zoomed out to the minimum zoom level and can't zoom any more.
+				    if (this._miniMap.getZoom() > this._lastMiniMapZoom) {
+				        //This means the user is trying to zoom in by using the minimap, zoom the main map.
+				        toRet = this._mainMap.getZoom() + 1;
+				        //Also we cheat and zoom the minimap out again to keep it visually consistent.
+				        this._miniMap.setZoom(this._miniMap.getZoom() - 1);
+				    } else {
+				        //Either the user is trying to zoom out past the mini map's min zoom or has just panned using it, we can't tell the difference.
+				        //Therefore, we ignore it!
+				        toRet = this._mainMap.getZoom();
+				    }
 				} else {
-					//This is what happens in the majority of cases, and always if you configure the min levels + offset in a sane fashion.
-					toRet = proposedZoom;
+				    //This is what happens in the majority of cases, and always if you configure the min levels + offset in a sane fashion.
+				    toRet = proposedZoom;
 				}
 				this._lastMiniMapZoom = this._miniMap.getZoom();
 				return toRet;
-			}
-		} else {
-			
-			
-			if (fromMaintoMini) {
-				//return this.options.zoomLevelFixed;
+            }
+        } else {
+            if (fromMaintoMini) {
+				return this.options.zoomLevelFixed;
 			} else {
-				return z;
+				return this._mainMap.getZoom();
 			}
+             
+        }
+    },
 
-			
-		}
-	},
+    _decideMinimized: function() {
+        if (this._userToggledDisplay) {
+            return this._minimized;
+        }
 
-	_decideMinimized: function () {
-		if (this._userToggledDisplay) {
-			return this._minimized;
-		}
+        if (this.options.autoToggleDisplay) {
+            if (this._mainMap.getBounds().contains(this._miniMap.getBounds())) {
+                return true;
+            }
+            return false;
+        }
 
-		if (this.options.autoToggleDisplay) {
-			if (this._mainMap.getBounds().contains(this._miniMap.getBounds())) {
-				return true;
-			}
-			return false;
-		}
-
-		return this._minimized;
-	},
-	
-	updateDisplay: function(_location, _zoom, _duration) {
-		//this._miniMap.setView(_location, this._decideZoom(true));
-		if (this._decideShow(_zoom)) {
-			this._miniMap.setView(
-				_location, 
-				this._decideZoom(true),
-				{
-					pan:{animate: true, duration: _duration+0.2, easeLinearity:.10},
-					zoom:{animate: true, duration: _duration+0.2, easeLinearity:.10}
-				}
-			)
-		
-			this._aimingRect.setBounds(this._mainMap.getBounds());
-		}
-		
-	}
-	
+        return this._minimized;
+    }
 });
 
 L.Map.mergeOptions({
-	miniMapControl: false
+    miniMapControl: false
 });
 
-L.Map.addInitHook(function () {
-	if (this.options.miniMapControl) {
-		this.miniMapControl = (new L.Control.MiniMap()).addTo(this);
-	}
+L.Map.addInitHook(function() {
+    if (this.options.miniMapControl) {
+        this.miniMapControl = (new L.Control.MiniMap()).addTo(this);
+    }
 });
 
-L.control.minimap = function (options) {
-	return new L.Control.MiniMap(options);
+L.control.minimap = function(options) {
+    return new L.Control.MiniMap(options);
 };
 
 
 /* **********************************************
-     Begin VCO.StamenMaps.js
+     Begin VCO.TileLayer.Stamen.js
 ********************************************** */
 
-/*	VCO.StamenMaps
+/*	VCO.TyleLayer.Stamen
 	Makes Stamen Map tiles available
 	http://maps.stamen.com/
 ================================================== */
@@ -15519,18 +15625,24 @@ L.control.minimap = function (options) {
 	================================================== */
 	if (typeof L === "object") {
 	    L.StamenTileLayer = L.TileLayer.extend({
-	        initialize: function(name) {
+	        initialize: function(name, options) {
 	            var provider = getProvider(name),
 	                url = provider.url.replace(/({[A-Z]})/g, function(s) {
 	                    return s.toLowerCase();
-	                });
-	            L.TileLayer.prototype.initialize.call(this, url, {
-	                "minZoom":      provider.minZoom,
-	                "maxZoom":      provider.maxZoom,
-	                "subdomains":   provider.subdomains,
-	                "scheme":       "xyz",
-	                "attribution":  provider.attribution
-	            });
+	                }), 
+					_options = {
+						minZoom: 		provider.minZoom,
+						maxZoom: 		provider.maxZoom,
+						subdomains: 	provider.subdomains,
+						scheme: 		"xyz",
+						attribution: 	provider.attribution
+					};
+					
+				if (options) {
+					VCO.Util.mergeData(_options, options);
+				}
+				
+	            L.TileLayer.prototype.initialize.call(this, url, _options);
 	        }
 	    });
 	}
@@ -15730,8 +15842,6 @@ VCO.MapMarker = VCO.Class.extend({
 	markerAdded
 	markerRemoved
 
-	TODO 	Revisit calculations to determine zoom for landscape mode 
-			since only half the map is visible but the map extends the full width
 
 ================================================== */
  
@@ -15772,12 +15882,21 @@ VCO.Map = VCO.Class.extend({
 		// Markers
 		this._markers = [];
 		
+		// Marker Zoom Miniumum and Maximum
+		this.zoom_min_max = {
+			min: null,
+			max: null
+		};
+		
 		// Line
 		this._line = null;
 		this._line_active = null;
 		
 		// Current Marker
 		this.current_marker = 0;
+		
+		// Markers Bounds Array
+		this.bounds_array = null;
 		
 		// Map Tiles Layer
 		this._tile_layer = null;
@@ -15799,6 +15918,7 @@ VCO.Map = VCO.Class.extend({
 			map_type: 			"stamen:toner-lite",
 			map_as_image: 		false,
 			map_mini: 			false,
+			map_background_color: "#d9d9d9",
 			map_subdomains: 	"",
 			zoomify: {
 				path: 			"",
@@ -15808,6 +15928,7 @@ VCO.Map = VCO.Class.extend({
 				attribution: 	""
 			},
 			skinny_size: 		650,
+			less_bounce: 		true,
 			path_gfx: 			"gfx",
 			start_at_slide: 	0,
 			map_popup: 			false, 
@@ -15822,6 +15943,7 @@ VCO.Map = VCO.Class.extend({
 			line_join: 			"miter",
 			show_lines: 		true,
 			show_history_line: 	true,
+			use_custom_markers: false,
 			map_center_offset:  null // takes object {top:0,left:0}
 		};
 		
@@ -15890,7 +16012,7 @@ VCO.Map = VCO.Class.extend({
 						
 						// Calculate Zoom
 						zoom = this._calculateZoomChange(this._getMapCenter(true), marker.location());
-						trace(zoom);
+						
 						// Set Map View
 						this._viewTo(marker.data.location, {calculate_zoom: this.options.calculate_zoom, zoom:zoom});
 					
@@ -15988,6 +16110,10 @@ VCO.Map = VCO.Class.extend({
 		this._markerOverview();
 	},
 	
+	calculateMarkerZooms: function() {
+		this._calculateMarkerZooms();
+	},
+	
 	createMiniMap: function() {
 		this._createMiniMap();
 	},
@@ -15996,6 +16122,41 @@ VCO.Map = VCO.Class.extend({
 		// Update Component Displays
 		this.options.map_center_offset.left = left;
 		this.options.map_center_offset.top 	= top;
+	},
+	
+	calculateMinMaxZoom: function() {
+		for (var i = 0; i < this._markers.length; i++) {
+			
+			if (this._markers[i].data.location && this._markers[i].data.location.zoom) {
+				this.updateMinMaxZoom(this._markers[i].data.location.zoom);
+			}
+			
+		}
+		trace("MAX ZOOM: " + this.zoom_min_max.max + " MIN ZOOM: " + this.zoom_min_max.min);
+	},
+	
+	updateMinMaxZoom: function(zoom) {
+		if (!this.zoom_min_max.max) {
+			this.zoom_min_max.max = zoom;
+		}
+		
+		if (!this.zoom_min_max.min) {
+			this.zoom_min_max.min = zoom;
+		}
+		
+		if (this.zoom_min_max.max < zoom) {
+			this.zoom_min_max.max = zoom;
+		}
+		if (this.zoom_min_max.min > zoom) {
+			this.zoom_min_max.min = zoom;
+		}
+	},
+	
+	initialMapLocation: function() {
+		if (this._loaded.data && this._loaded.map) {
+			this.goTo(this.options.start_at_slide, true);
+			this._initialMapLocation();
+		}
 	},
 	
 	/*	Adding, Hiding, Showing etc
@@ -16045,6 +16206,7 @@ VCO.Map = VCO.Class.extend({
 				this._addToLine(this._line, array[i]);
 			}
 		};
+		
 	},
 	
 	_createLines: function(array) {
@@ -16095,7 +16257,11 @@ VCO.Map = VCO.Class.extend({
 				this._markers[i].active(false);
 			};
 		},
-	
+		
+		_calculateMarkerZooms: function() {
+			
+		},
+		
 		/*	Map Specific Line
 		================================================== */
 		
@@ -16159,6 +16325,9 @@ VCO.Map = VCO.Class.extend({
 			
 		},
 	
+		_initialMapLocation: function() {
+			
+		},
 	/*	Events
 	================================================== */
 	_onMarkerChange: function(e) {
@@ -16173,24 +16342,29 @@ VCO.Map = VCO.Class.extend({
 	
 	_onMapLoaded: function(e) {
 		this._loaded.map = true;
-		this._initialMapLocation();
+		
+		
+		if (this.options.calculate_zoom) {
+			this.calculateMarkerZooms();
+		}
+		
+		this.calculateMinMaxZoom();
+		
 		if (this.options.map_mini && !VCO.Browser.touch) {
 			this.createMiniMap();
 		}
+		
+		this.initialMapLocation();
 		this.fire("loaded", this.data);
 	},
 	
-	_initialMapLocation: function() {
-		if (this._loaded.data && this._loaded.map) {
-			this.goTo(this.options.start_at_slide, true);
-		}
-	},
+	
 	
 	/*	Private Methods
 	================================================== */
 	
-	_calculateZoomChange: function(origin, destination, padding) {
-		return this._getBoundsZoom(origin, destination, false);
+	_calculateZoomChange: function(origin, destination, correct_for_center) {
+		return this._getBoundsZoom(origin, destination, correct_for_center);
 	},
 	
 	_updateDisplay: function(w, h, animate, d) {
@@ -16250,15 +16424,14 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 		if (d.location && d.location.lat && d.location.lon) {
 			this.data.real_marker = true;
 			if (o.use_custom_markers && d.location.icon && d.location.icon != "") {
-				this._icon = L.icon({iconUrl: d.location.icon, iconSize: [41]});
+				this._icon = new L.icon({iconUrl: d.location.icon, iconSize: [41]});
 				//icon = L.icon({iconUrl: d.media.url, iconSize: [41]});
 			
-			};
+			} else {
+				this._icon = new L.divIcon({className: 'vco-mapmarker ' + this.media_icon_class, iconAnchor:[10, 10]});
+			}
 			
-			//icon = L.icon({iconUrl: "gfx/map-pin.png", iconSize: [28, 43], iconAnchor: [14, 33]});
-			this._icon = L.divIcon({className: 'vco-mapmarker ' + this.media_icon_class, iconAnchor:[10, 10]});
-		
-			this._marker = L.marker([d.location.lat, d.location.lon], {
+			this._marker = new L.marker([d.location.lat, d.location.lon], {
 				title: 		d.text.headline,
 				icon: 		this._icon
 			});
@@ -16297,14 +16470,14 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 		if (this.data.real_marker) {
 			if (a) {
 				this._marker.setZIndexOffset(100);
-				this._icon = L.divIcon({className: 'vco-mapmarker-active ' + this.media_icon_class});
+				this._icon = new L.divIcon({className: 'vco-mapmarker-active ' + this.media_icon_class, iconAnchor:[10, 10]});
 				//this.timer = setTimeout(function() {self._openPopup();}, this.options.duration + 200);
 				this._setIcon();
 			} else {
 				//this._marker.closePopup();
 				clearTimeout(this.timer);
 				this._marker.setZIndexOffset(0);
-				this._icon = L.divIcon({className: 'vco-mapmarker ' + this.media_icon_class});
+				this._icon = new L.divIcon({className: 'vco-mapmarker ' + this.media_icon_class, iconAnchor:[10, 10]});
 				this._setIcon();
 			}
 		}
@@ -16345,18 +16518,18 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	================================================== */
 	_createMap: function() {
 		
-		// Set Marker Path
-		L.Icon.Default.imagePath = this.options.path_gfx;
 		
 		this._map = new L.map(this._el.map, {scrollWheelZoom:false, zoomControl:!this.options.map_mini});
 		this._map.on("load", this._onMapLoaded, this);
+		
 		
 		this._map.on("moveend", this._onMapMoveEnd, this);
 			
 		var map_type_arr = this.options.map_type.split(':');		
 
 		// Create Tile Layer
-		this._tile_layer = this._createTileLayer();
+		this._tile_layer = this._createTileLayer(this.options.map_type);
+		this._tile_layer.on("load", this._onTilesLoaded, this);
 		
 		// Add Tile Layer
 		this._map.addLayer(this._tile_layer);
@@ -16386,65 +16559,147 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	/*	Create Mini Map
 	================================================== */
 	_createMiniMap: function() {
-		this._tile_layer_mini = this._createTileLayer();
+		if (this.options.map_as_image) {
+			this.zoom_min_max.min = 0;
+		}
+		
+		if (!this.bounds_array) {
+			this.bounds_array = this._getAllMarkersBounds(this._markers);
+		} 
+		
+		this._tile_layer_mini = this._createTileLayer(this.options.map_type);
 		this._mini_map = new L.Control.MiniMap(this._tile_layer_mini, {
 			width: 				150,
 			height: 			100,
 			position: 			"bottomleft",
-			zoomLevelFixed: 	false,
-			zoomLevelOffset: 	-5,
-			//toggleDisplay: 		false,
+			bounds_array: 		this.bounds_array,
+			zoomLevelFixed: 	this.zoom_min_max.min,
 			zoomAnimation: 		true,
 			aimingRectOptions: 	{
 				fillColor: 		"#FFFFFF",
-				color: 			"#da0000",
-				opacity: 		1,
-				weight: 		2
+				color: 			"#FFFFFF",
+				opacity: 		0.4,
+				weight: 		1,
+				stroke: 		true
 			}
 		}).addTo(this._map);
+		
+		this._mini_map.getContainer().style.backgroundColor = this.options.map_background_color;
+		
+	},
+	
+	/*	Create Background Map
+	================================================== */
+	_createBackgroundMap: function(tiles) {
+		
+		// TODO Check width and height 
+		trace("CREATE BACKGROUND MAP")
+		if (!this._image_layer) {
+			// Make Image Layer a Group
+			this._image_layer = new L.layerGroup();
+			// Add Layer Group to Map
+			this._map.addLayer(this._image_layer);
+			
+		} else {
+			this._image_layer.clearLayers();
+		}
+		
+		if (tiles) {
+			// Create Image Overlay for each tile in the group
+			for (x in tiles) {
+				var target_tile = tiles[x],
+					image = {},
+					tile = {
+						x: 			parseInt(target_tile.style.left.split("px")[0]),
+						y: 			parseInt(target_tile.style.top.split("px")[0]),
+						url: 		target_tile.src,
+						height: 	parseInt(target_tile.style.height.split("px")[0]),
+						width: 		parseInt(target_tile.style.width.split("px")[0]),
+						pos: {
+							start: 	0,
+							end: 	0
+						}
+					};
+				
+				tile.pos.start 	= this._map.containerPointToLatLng([tile.x, tile.y]);
+				tile.pos.end 	= this._map.containerPointToLatLng([tile.x + tile.width, tile.y + tile.height]);
+				
+				image = new L.imageOverlay(tile.url, [tile.pos.start, tile.pos.end]);
+				this._image_layer.addLayer(image);
+				
+			}
+		}
 		
 	},
 	
 	/*	Create Tile Layer
 	================================================== */
-	_createTileLayer: function() {
-		var _tilelayer,
-			_map_type_arr = this.options.map_type.split(':');		
-
+	_createTileLayer: function(map_type, options) {
+		var _tilelayer = null,
+			_map_type_arr = map_type.split(':'),
+			_options = {};	
+		
+		if (options) {
+			_options = options;
+		}
+		
 		// Set Tiles
 		switch(_map_type_arr[0]) {
+			case 'mapbox':
+				var mapbox_name = _map_type_arr[1] || 'zachwise.hgmmh8ho';
+				_options.subdomains 	= 'abcd';
+				_options.attribution 	= "<div class='mapbox-maplogo'></div><a href='https://www.mapbox.com/about/maps/' target='_blank'>© Mapbox © OpenStreetMap</a> <a class='mapbox-improve-map' href='https://www.mapbox.com/map-feedback/#zachwise.hgmmh8ho/-81.80419921875/39.58875727696545/5' target='_blank'>Improve this map</a>";
+				_tilelayer = new L.TileLayer("https://{s}.tiles.mapbox.com/v2/" + mapbox_name + "/{z}/{x}/{y}.png", _options);
+				break;
 			case 'stamen':
-				_tilelayer = new L.StamenTileLayer(_map_type_arr[1] || 'toner-lite');
+				_tilelayer = new L.StamenTileLayer(_map_type_arr[1] || 'toner-lite', _options);
 				break;
 			case 'zoomify':
-				_tilelayer = new L.tileLayer.zoomify(this.options.zoomify.path, {
-					width: 			this.options.zoomify.width,
-					height: 		this.options.zoomify.height,
-					tolerance: 		this.options.zoomify.tolerance,
-					attribution: 	this.options.zoomify.attribution,
-				});
-				this._image_layer = new L.imageOverlay(this.options.zoomify.path + "TileGroup0/0-0-0.jpg", _tilelayer.getZoomifyBounds(this._map));
+				_options.width			= this.options.zoomify.width;
+				_options.height 		= this.options.zoomify.height;
+				_options.tolerance 		= this.options.zoomify.tolerance;
+				_options.attribution 	= this.options.zoomify.attribution;
+				
+				_tilelayer = new L.tileLayer.zoomify(this.options.zoomify.path, _options);
+				//this._image_layer = new L.imageOverlay(this.options.zoomify.path + "TileGroup0/0-0-0.jpg", _tilelayer.getZoomifyBounds(this._map));
 				break;
 			case 'osm':
-				_tilelayer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {subdomains: 'ab'});
+				_options.subdomains = 'ab';
+				_tilelayer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', _options);
 				break;
 		    
 			case 'http':
 			case 'https':
-				_tilelayer = new L.TileLayer(this.options.map_type, {subdomains: this.options.map_subdomains});
+				_options.subdomains = this.options.map_subdomains;
+				_tilelayer = new L.TileLayer(this.options.map_type, _options);
 				break;
 		        
 			default:
-				_tilelayer = new L.StamenTileLayer('toner');
+				_tilelayer = new L.StamenTileLayer('toner', _options);
 				break;		
 		}
 		
 		return _tilelayer;
 	},
 	
-	/*	Event
+	/*	Events
 	================================================== */
 	_onMapMoveEnd: function(e) {
+		
+	},
+	
+	_onTilesLoaded: function(e) {
+		this._createBackgroundMap(e.target._tiles);
+		this._tile_layer.off("load", this._onTilesLoaded, this);
+	},
+	
+	_onMapZoomed:function(e) {
+		trace("FIRST ZOOM");
+		this._map.off("zoomend", this._onMapZoomed, this);
+		
+	},
+	
+	_onMapZoom:function(e) {
 		
 	},
 	
@@ -16492,16 +16747,10 @@ VCO.Map.Leaflet = VCO.Map.extend({
 			
 			
 		} else {
-			var bounds_array = [];
-		
-			for (var i = 0; i < this._markers.length; i++) {
-				if (this._markers[i].data.real_marker) {
-					bounds_array.push( [this._markers[i].data.location.lat, this._markers[i].data.location.lon]);
-				}
-			};
+			this.bounds_array = this._getAllMarkersBounds(this._markers);
 			
 			if (this.options.map_center_offset && this.options.map_center_offset.left != 0 || this.options.map_center_offset.top != 0) {
-				var the_bounds 	= new L.latLngBounds(bounds_array);
+				var the_bounds 	= new L.latLngBounds(this.bounds_array);
 				_location 		= the_bounds.getCenter();
 				_zoom 			= this._map.getBoundsZoom(the_bounds)
 				
@@ -16514,7 +16763,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 				
 				
 			} else {
-				this._map.fitBounds(bounds_array, {padding:[15,15]});
+				this._map.fitBounds(this.bounds_array, {padding:[15,15]});
 			}
 			
 		}
@@ -16524,6 +16773,76 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		}
 		
 	},
+	
+	_getAllMarkersBounds: function(markers_array) {
+		var bounds_array = [];
+		for (var i = 0; i < markers_array.length; i++) {
+			if (markers_array[i].data.real_marker) {
+				bounds_array.push( [markers_array[i].data.location.lat, markers_array[i].data.location.lon]);
+			}
+		};
+		return bounds_array;
+	},
+	
+	_calculateMarkerZooms: function() {
+		for (var i = 0; i < this._markers.length; i++) {
+			
+			if (this._markers[i].data.location) {
+				var marker = this._markers[i],
+					prev_marker,
+					next_marker,
+					marker_location,
+					prev_marker_zoom,
+					next_marker_zoom,
+					calculated_zoom;
+				
+				
+				// MARKER LOCATION
+				if (marker.data.type && marker.data.type == "overview") {
+					marker_location = this._getMapCenter(true);
+				} else {
+					marker_location = marker.location();
+				}
+				// PREVIOUS MARKER ZOOM
+				if (i > 0 ) {
+					prev_marker = this._markers[i-1].location();
+				} else {
+					prev_marker = this._getMapCenter(true);
+				}
+				prev_marker_zoom = this._calculateZoomChange(prev_marker, marker_location);
+			
+				// NEXT MARKER ZOOM
+				if (i < (this._markers.length - 1)) {
+					next_marker = this._markers[i+1].location();
+				} else {
+					next_marker = this._getMapCenter(true);
+				}
+				next_marker_zoom = this._calculateZoomChange(next_marker, marker_location);
+			
+			
+				if (prev_marker_zoom && prev_marker_zoom < next_marker_zoom) {
+					calculated_zoom = prev_marker_zoom;
+				} else if (next_marker_zoom){
+					calculated_zoom = next_marker_zoom;
+					
+				} else {
+					calculated_zoom = prev_marker_zoom;
+				}
+				
+				if (this.options.map_center_offset && this.options.map_center_offset.left != 0 || this.options.map_center_offset.top != 0) {
+					calculated_zoom = calculated_zoom -1;
+				}
+			
+				marker.data.location.zoom = calculated_zoom;
+			}
+			
+
+		};
+		
+		
+	},
+	
+	
 	
 	/*	Line
 	================================================== */
@@ -16587,10 +16906,12 @@ VCO.Map.Leaflet = VCO.Map.extend({
 					_duration = duration;
 				}
 			}
-		
-			if (opts.zoom && opts.calculate_zoom) {
+			
+			if (opts.zoom && this.options.calculate_zoom) {
 				_zoom = opts.zoom;
 			}
+			
+			
 			
 		}	
 		
@@ -16609,13 +16930,12 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		)
 		
 		if (this._mini_map && this.options.width > this.options.skinny_size) {
-			//this._mini_map.restore();
-			if ((_zoom - 5) < 0 ) {
+			if ((_zoom - 1) <= this.zoom_min_max.min ) {
 				this._mini_map.minimize();
 			} else {
-				this._mini_map.updateDisplay(_location, _zoom, _duration);
+				this._mini_map.restore();
+				//this._mini_map.updateDisplay(_location, _zoom, _duration);
 			}
-			//this._mini_map.updateDisplay(_location, _zoom, _duration);
 		} 
 		
 	},
@@ -16647,8 +16967,10 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	},
 	
 	_getBoundsZoom: function(origin, destination, correct_for_center) {
-		var _origin = origin;
-		
+		var _origin = origin,
+			_padding = [(Math.abs(this.options.map_center_offset.left)*3),(Math.abs(this.options.map_center_offset.top)*3)];
+			
+		//_padding = [0,0];
 		if (correct_for_center) {
 			var _lat = _origin.lat + (_origin.lat - destination.lat)/2,
 				_lng = _origin.lng + (_origin.lng - destination.lng)/2;
@@ -16656,11 +16978,19 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		}
 		
 		var bounds = new L.LatLngBounds([_origin, destination]);
-		return this._map.getBoundsZoom(bounds, false, this.padding);
+		if (this.options.less_bounce) {
+			return this._map.getBoundsZoom(bounds, false);
+		} else {
+			return this._map.getBoundsZoom(bounds, true, _padding);
+		}
 	},
 	
 	_getZoomifyZoom: function() {
 
+	},
+	
+	_initialMapLocation: function() {
+		this._map.on("zoomend", this._onMapZoomed, this);
 	},
 	
 	/*	Display
@@ -16685,7 +17015,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		
 		if (this._mini_map && this._el.container.offsetWidth < this.options.skinny_size ) {
 			this._mini_map.true_hide = true;
-			this._mini_map.minimize();
+			//this._mini_map.minimize();
 		} else if (this._mini_map) {
 			this._mini_map.true_hide = false;
 		}
@@ -16693,20 +17023,18 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	
 	_refreshMap: function() {
 		if (this._map) {
-			//this._viewTo(this._markers[this.current_marker].data.location, {zoom:this._getMapZoom(), calculate_zoom:true});
 			if (this.timer) {
 				clearTimeout(this.timer);
 				this.timer = null;
 			};
 			
 			this._map.invalidateSize();
-			//this._viewTo(this._markers[this.current_marker].data.location);
-			//this._viewTo(this._markers[this.current_marker].data.location, {zoom:this._getMapZoom(), calculate_zoom:true});
+			
 			// Check to see if it's an overview
 			if (this._markers[this.current_marker].data.type && this._markers[this.current_marker].data.type == "overview") {
 				this._markerOverview();
 			} else {
-				this._viewTo(this._markers[this.current_marker].data.location, {zoom:this._getMapZoom(), calculate_zoom:true});
+				this._viewTo(this._markers[this.current_marker].data.location, {zoom:this._getMapZoom()});
 			}
 		};
 	}
@@ -16742,6 +17070,12 @@ L.Map.include({
 		this._animateZoom(center, zoom, origin, scale, null, true);
 
 		return true;
+	}
+});
+
+L.TileLayer.include({
+	getTiles: function() {
+		return this._tiles;
 	}
 });
 
@@ -16910,10 +17244,10 @@ L.Map.include({
 			// @codekit-prepend "map/leaflet/leaflet-src/layer/vector/Rectangle.js";
 
 		// Circle
-			// "map/leaflet/leaflet-src/layer/vector/Circle.js";
+			// @codekit-prepend "map/leaflet/leaflet-src/layer/vector/Circle.js";
 
 		// CircleMarker
-			// "map/leaflet/leaflet-src/layer/vector/CircleMarker.js";
+			// @codekit-prepend "map/leaflet/leaflet-src/layer/vector/CircleMarker.js";
 
 		// VectorsCanvas Canvas fallback for vector layers (polygons, polylines, circles, circlemarkers)
 			// @codekit-prepend "map/leaflet/leaflet-src/layer/vector/canvas/Polyline.Canvas.js";
@@ -16972,9 +17306,12 @@ L.Map.include({
 // LEAFLET EXTENTIONS
 	// @codekit-prepend "map/leaflet/extentions/VCO.Leaflet.TileLayer.Zoomify.js";
 	// @codekit-prepend "map/leaflet/extentions/VCO.Leaflet.MiniMap.js";
-
+	
+// TILES
+	// "map/tile/VCO.TileLayer.Mapbox.js"; NOT READY YET
+	// @codekit-prepend "map/tile/VCO.TileLayer.Stamen.js";
+	
 // MAP
-	// @codekit-prepend "map/VCO.StamenMaps.js";
 	// @codekit-prepend "map/VCO.MapMarker.js";
 	// @codekit-prepend "map/VCO.Map.js";
 
@@ -16991,6 +17328,9 @@ VCO.StoryMap = VCO.Class.extend({
 	================================================== */
 	initialize: function (elem, data, options) {
 		var self = this;
+		
+		// Version
+		this.version = "0.1.16";
 		
 		// Ready
 		this.ready = false;
@@ -17074,6 +17414,7 @@ VCO.StoryMap = VCO.Class.extend({
 			base_class: 			"",
 			map_size_sticky: 		3, 				// Set as division 1/3 etc
 			map_center_offset:  	null, 			// takes object {top:0,left:0}
+			less_bounce: 			true, 			// Less map bounce when calculating zoom, false is good when there are clusters of tightly grouped markers
 			start_at_slide: 		0,
 			menubar_height: 		0,
 			skinny_size: 			650,
@@ -17097,7 +17438,7 @@ VCO.StoryMap = VCO.Class.extend({
 			},
 			map_height: 			300,
 			storyslider_height: 	600,
-			slide_padding_lr: 		100, 			// padding on slide of slide
+			slide_padding_lr: 		45, 			// padding on slide of slide
 			slide_default_fade: 	"0%", 			// landscape fade
 			menubar_default_y: 		0,
 			path_gfx: 				"gfx",

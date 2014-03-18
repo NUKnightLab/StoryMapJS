@@ -12,9 +12,6 @@
 <script src="http://cdn.knightlab.com/libs/blueline/latest/js/blueline.min.js"></script>
 <!-- === leaflet -->
 <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
-<!--
-<script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
--->
 <!-- === google maps -->
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places"></script>
 <!-- === maps.stamen.com -->
@@ -27,6 +24,8 @@
 <!-- build:js http://cdn.knightlab.com/libs/storymapjs/%(cdn)s/js/storymap.js -->
 <script type="text/javascript" src="/build/js/storymap.js"></script>
 <!-- endbuild -->
+<!-- === extra leaflet marker classes -->
+<script type="text/javascript" src="{{ STATIC_URL }}/js/leaflet-extras.js"></script>
 <!-- === bootstrap-wysihtml5 -->
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/bootstrap-wysihtml5/bootstrap-wysihtml5-0.0.2.css"></link>
 <script type="text/javascript" src="{{ STATIC_URL }}/bootstrap-wysihtml5/lib/js/wysihtml5-0.3.0.min.js"></script>
@@ -50,6 +49,8 @@
 {% include '_editor.html' %}
 
 <script type="text/javascript">
+
+L.Icon.Default.imagePath = ' http://cdn.leafletjs.com/leaflet-0.7.2/images';
 
 var _font_url = 'http://cdn.knightlab.com/libs/storymapjs/latest/css/fonts/';
 var _embed_url = 'http://cdn.knightlab.com/libs/storymapjs/latest/embed/';

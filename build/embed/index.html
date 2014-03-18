@@ -7,8 +7,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-touch-fullscreen" content="yes">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<link rel="stylesheet" href="//s3.amazonaws.com/cdn.knightlab.com/libs/storymapjs/latest/css/storymap.css">
-<script type="text/javascript" src="//s3.amazonaws.com/cdn.knightlab.com/libs/storymapjs/latest/js/storymap-min.js"></script>
+<link rel="stylesheet" href="../css/storymap.css">
+<script type="text/javascript" src="../js/storymap-min.js"></script>
 <style>
 html, body {
     width: 100%;
@@ -108,6 +108,9 @@ function storymap_onload(d) {
         }
         if(d.storymap.map_subdomains) {
             options.map_subdomains = d.storymap.map_subdomains;
+        }
+        if(d.storymap.map_as_image) {
+            options.map_as_image = d.storymap.map_as_image;       
         }
         if(d.storymap.language) {
             options.language = d.storymap.language;
