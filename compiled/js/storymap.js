@@ -6895,8 +6895,6 @@ VCO.SlideNav = VCO.Class.extend({
 	slideLoaded
 	slideRemoved
 
-	TODO
-	Fix overflow scoll in landscape view
 	
 ================================================== */
 
@@ -7316,7 +7314,7 @@ VCO.StorySlider = VCO.Class.extend({
 			bg_color_rgb,
 			bg_percent_start 	= this.options.slide_default_fade,
 			bg_percent_end 		= "15%",
-			bg_alpha_end 		= "0.90",
+			bg_alpha_end 		= "0.87",
 			bg_css 				= "";
 			
 		if (bg.color_value) {
@@ -16602,8 +16600,8 @@ VCO.Map.Leaflet = VCO.Map.extend({
 				var target_tile = tiles[x],
 					image = {},
 					tile = {
-						x: 			parseInt(target_tile.style.left.split("px")[0]),
-						y: 			parseInt(target_tile.style.top.split("px")[0]),
+						x: 			0,
+						y: 			0,
 						url: 		target_tile.src,
 						height: 	parseInt(target_tile.style.height.split("px")[0]),
 						width: 		parseInt(target_tile.style.width.split("px")[0]),
@@ -16613,13 +16611,36 @@ VCO.Map.Leaflet = VCO.Map.extend({
 						}
 					};
 					
+				if (target_tile.style.left || target_tile.style.top) {
+					if (target_tile.style.left) {
+						tile.x = parseInt(target_tile.style.left.split("px")[0]);
+					}
+					if (target_tile.style.top) {
+						tile.y = parseInt(target_tile.style.top.split("px")[0]);
+					}
+				} else if (target_tile.style["-webkit-transform"] || target_tile.style["transform"] || target_tile.style["-ms-transform"]) {
+					var t_array;
+					
+					if (target_tile.style["-webkit-transform"]) {
+						t_array = target_tile.style["-webkit-transform"].split("3d(")[1].split(", 0)")[0].split(", ");
+					} else if (target_tile.style["transform"]) {
+						t_array = target_tile.style["transform"].split("3d(")[1].split(", 0)")[0].split(", ");
+					} else if (target_tile.style["-ms-transform"]) {
+						t_array = target_tile.style["-ms-transform"].split("3d(")[1].split(", 0)")[0].split(", ");
+					}
+					
+					tile.x = parseInt(t_array[0].split("px")[0]);
+					tile.y = parseInt(t_array[1].split("px")[0]);
+				}
+				
+				
 				// If using toner, switch to toner lines
 				if (tile.url.match("toner")) {
-					tile.url = tile.url.replace("/toner-lite/","/toner-lines/");
+					//tile.url = tile.url.replace("/toner-lite/","/toner-lines/");
 					tile.url = tile.url.replace("/toner-hybrid/","/toner-lines/");
 					tile.url = tile.url.replace("/toner/","/toner-background/");
 				}
-				
+
 				tile.pos.start 	= this._map.containerPointToLatLng([tile.x, tile.y]);
 				tile.pos.end 	= this._map.containerPointToLatLng([tile.x + tile.width, tile.y + tile.height]);
 				
