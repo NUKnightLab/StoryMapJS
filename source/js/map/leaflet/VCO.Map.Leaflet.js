@@ -85,7 +85,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	_createBackgroundMap: function(tiles) {
 		
 		// TODO Check width and height 
-		trace("CREATE BACKGROUND MAP")
+		trace("CREATE BACKGROUND MAP");
 		if (!this._image_layer) {
 			// Make Image Layer a Group
 			this._image_layer = new L.layerGroup();
@@ -112,6 +112,13 @@ VCO.Map.Leaflet = VCO.Map.extend({
 							end: 	0
 						}
 					};
+					
+				// If using toner, switch to toner lines
+				if (tile.url.match("toner")) {
+					tile.url = tile.url.replace("/toner-lite/","/toner-lines/");
+					tile.url = tile.url.replace("/toner-hybrid/","/toner-lines/");
+					tile.url = tile.url.replace("/toner/","/toner-background/");
+				}
 				
 				tile.pos.start 	= this._map.containerPointToLatLng([tile.x, tile.y]);
 				tile.pos.end 	= this._map.containerPointToLatLng([tile.x + tile.width, tile.y + tile.height]);
@@ -145,6 +152,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 				break;
 			case 'stamen':
 				_tilelayer = new L.StamenTileLayer(_map_type_arr[1] || 'toner-lite', _options);
+				this._map.getContainer().style.backgroundColor = "#FFFFFF";
 				break;
 			case 'zoomify':
 				_options.width			= this.options.zoomify.width;
