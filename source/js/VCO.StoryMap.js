@@ -244,6 +244,9 @@ VCO.StoryMap = VCO.Class.extend({
 	initialize: function (elem, data, options) {
 		var self = this;
 		
+		// Version
+		this.version = "0.1.16";
+		
 		// Ready
 		this.ready = false;
 		
