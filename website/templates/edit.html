@@ -74,6 +74,7 @@ var _default_data = {
         language: "en",
         map_type: "stamen:toner-lite",
         map_subdomains: "",
+        map_background_color: '#ffffff',
         // just one...
         slide: {
             date: "",
@@ -413,6 +414,9 @@ function preview_load() {
     if(_storymap_data.storymap.hasOwnProperty('map_as_image')) {
         options.map_as_image = _storymap_data.storymap.map_as_image;
     }
+    if(_storymap_data.storymap.hasOwnProperty('map_background_color')) {
+        options.map_background_color = _storymap_data.storymap.map_background_color;
+    }
     if(_storymap_data.storymap.language) {
         options.language = _storymap_data.storymap.language;
     }
@@ -476,6 +480,25 @@ function slides_load() {
     $('#font_css').val(_storymap_data.font_css || _default_data.font_css);
         
     $('input:radio[name="map_as_image"][value="'+get_map_as_image()+'"]').prop('checked', true);
+ 
+    document.getElementById('map').style.backgroundColor = 
+        _storymap_data.storymap.map_background_color || _default_data.storymap.map_background_color;
+    
+    $('#map_background_color').minicolors({
+        control: 'hue',
+        opacity: false,
+        theme: 'bootstrap',
+        hide: function() {
+            var color = $(this).val();
+            if(color != _storymap_data.storymap.map_background_color) {
+                _storymap_data.storymap.map_background_color = color;
+                storymap_dirty(1);   
+                
+                document.getElementById('map').style.backgroundColor = 
+                    color || _default_data.storymap.map_background_color;         
+            }
+        }
+    });    
  
     font_update();
     
