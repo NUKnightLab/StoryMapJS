@@ -102,16 +102,6 @@ var _current_slide_index = -1;
 var _dirty = 0;
 
 
-function get_show_lines() {
-    if(_storymap_data.storymap.hasOwnProperty('show_lines')) {
-        if(!_storymap_data.storymap.show_lines) {
-            return false;
-        }
-    }
-    
-    return true;
-}
-
 function get_map_as_image() {
     if(_storymap_data.storymap.hasOwnProperty('map_as_image')) {
         return _storymap_data.storymap.map_as_image;
@@ -225,7 +215,7 @@ function slide_select(event) {
             
         _map.setDefaultView();
                     
-        if(get_show_lines()) {
+        if(!get_map_as_image()) {
             _map.addPolyLine();
         }
     } else {
@@ -426,9 +416,6 @@ function preview_load() {
     if(_storymap_data.storymap.language) {
         options.language = _storymap_data.storymap.language;
     }
-    if(_storymap_data.storymap.hasOwnProperty('show_lines')) {
-        options.show_lines = _storymap_data.storymap.show_lines;
-    }
     if(_storymap_data.storymap.zoomify) {
         options.zoomify = _storymap_data.storymap.zoomify;
     }
@@ -488,7 +475,6 @@ function slides_load() {
     $('#language').val(_storymap_data.storymap.language || _default_data.storymap.language);
     $('#font_css').val(_storymap_data.font_css || _default_data.font_css);
         
-    $('input:radio[name="show_lines"][value="'+get_show_lines()+'"]').prop('checked', true);
     $('input:radio[name="map_as_image"][value="'+get_map_as_image()+'"]').prop('checked', true);
  
     font_update();
@@ -712,30 +698,21 @@ $(function() {
         _storymap_data.storymap['language'] = $(this).val();
         storymap_dirty(1);
     });
-    
-    $("input[name='show_lines']").click(function() {
-        var value = ($(this).val() == "true");
         
-        if(value != get_show_lines()) {
-            _storymap_data.storymap.show_lines = value;
-            storymap_dirty(1);
-            
-            if(_current_slide_index == 0) {
-                if(value) {
-                    _map.addPolyLine();
-                } else {
-                    _map.removePolyLine();
-                }
-            }
-        }
-    });
-    
     $("input[name='map_as_image']").click(function() {
         var value = ($(this).val() == "true");
         
         if(value != get_map_as_image()) {
             _storymap_data.storymap.map_as_image = value;
-            storymap_dirty(1);        
+            storymap_dirty(1);   
+            
+            if(_current_slide_index == 0) {
+                if(value) {
+                    _map.removePolyLine();
+                } else {
+                    _map.addPolyLine();
+                }
+            }     
         }
     });
 
