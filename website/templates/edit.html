@@ -551,7 +551,6 @@ function map_init() {
  
         if(map_type && map_type.match('^(http|https|//)')) {
             $('#map_type_menu').val('');
-            $('#map_type_mapbox_note').hide();
             $('#map_type').val(map_type).attr('placeholder', 'http://{s}.domain.org/{z}/{x}/{y}.png')
                 .prev().html('URL')
                 .parent().show();
@@ -560,7 +559,6 @@ function map_init() {
                 .parent().show();
         } else if(map_type && map_type.match('^mapbox:.+')) {
             $('#map_type_menu').val('mapbox');
-            $('#map_type_mapbox_note').show();
             $('#map_type').val(map_type.split(':')[1]).attr('placeholder', 'username.mapid')
                 .prev().html('Map ID')
                 .parent().show();
@@ -584,7 +582,6 @@ function map_init() {
                     break; 
             }    
         
-            $('#map_type_mapbox_note').hide();
             $('#map_type').val('').parent().hide();
             $('#map_subdomains').val('').parent().hide();
         }
@@ -793,7 +790,6 @@ $(function() {
         var map_type = $(this).val();
         
         if(!map_type) {
-            $('#map_type_mapbox_note').hide();
             $('#map_type').val('').attr('placeholder', 'http://{s}.domain.org/{z}/{x}/{y}.png')
                 .prev().html('URL')
                 .parent().show();
@@ -803,7 +799,6 @@ $(function() {
             _storymap_data.storymap.map_type = '';
             _storymap_data.storymap.map_subdomains = '';
         } else if(map_type == 'mapbox') {
-            $('#map_type_mapbox_note').show();
             $('#map_type').val('').attr('placeholder', 'username.mapid')
                 .prev().html('Map ID')
                 .parent().show(); 
@@ -813,7 +808,6 @@ $(function() {
             _storymap_data.storymap.map_type = 'mapbox:';
             _storymap_data.storymap.map_subdomains = 'abcd';
         } else {
-            $('#map_type_mapbox_note').hide();
             $('#map_type').val('').parent().hide(); 
             $('#map_subdomains').val('').parent().hide();       
             
