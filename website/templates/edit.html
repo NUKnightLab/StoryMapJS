@@ -194,59 +194,61 @@ function slide_select(event) {
     $(this).addClass('selected');
             
     _current_slide_index = $('.slide').index(this);   
-    var data = $.extend(true, {}, _default_data.storymap.slide, _slides[_current_slide_index]);
 
-    _map.zoomEnable(false);
-    _map.clearOverlays();
-      
-    if(_current_slide_index == 0) {
-        // Show overview view
-        $('#map_info, #map_overlay').show();
-        $('#map_search_input').hide();   
-                               
-        for(var i = 1; i < _slides.length;i++) {                
-            if(_slides[i].hasOwnProperty('location')) {                    
-                var loc_data = _slides[i].location;
-                    
-                if(loc_data.lat && loc_data.lon) {
-                    _map.addMarker(loc_data.lat, loc_data.lon, false);         
-                 }
-            }
-        }
-            
-        _map.setDefaultView();
-                    
-        if(!get_map_as_image()) {
-            _map.addPolyLine();
-        }
+    if(preview_visible()) {
+        if(_storymap_object) {
+            _storymap_object.goTo(_current_slide_index);
+        } 
     } else {
-        // Show slide view
-        $('#map_info, #map_overlay').hide();
-
-        if(_storymap_data.storymap.zoomify) {
-            $('#map_search_input').hide();           
-        } else {
-            $('#map_search_input').val('').show();   
-        }
+        var data = $.extend(true, {}, _default_data.storymap.slide, _slides[_current_slide_index]);
         
-        _map.setView(data.location.lat, data.location.lon, data.location.zoom);
-        _map.zoomEnable(true);
-         
-        location_mark(data.location);       
-    }
+        _map.zoomEnable(false);
+        _map.clearOverlays();
       
-    $('#url').val(data.media.url);
-    $('#credit').val(data.media.credit);
-    $('#caption').val(data.media.caption);
-        
-    $('#headline').val(data.text.headline);
-    $('#text').val(data.text.text);    
-    $('iframe.wysihtml5-sandbox').contents().find('body').html(data.text.text);
+        if(_current_slide_index == 0) {
+            // Show overview view
+            $('#map_info, #map_overlay').show();
+            $('#map_search_input').hide();   
+                               
+            for(var i = 1; i < _slides.length;i++) {                
+                if(_slides[i].hasOwnProperty('location')) {                    
+                    var loc_data = _slides[i].location;
+                    
+                    if(loc_data.lat && loc_data.lon) {
+                        _map.addMarker(loc_data.lat, loc_data.lon, false);         
+                     }
+                }
+            }
+            
+            _map.setDefaultView();
+                    
+            if(!get_map_as_image()) {
+                _map.addPolyLine();
+            }
+        } else {
+            // Show slide view
+            $('#map_info, #map_overlay').hide();
 
-    // Handle preview
-    if($("#preview").is(":visible") && _storymap_object) {
-        _storymap_object.goTo(_current_slide_index);
-    } 
+            if(_storymap_data.storymap.zoomify) {
+                $('#map_search_input').hide();           
+            } else {
+                $('#map_search_input').val('').show();   
+            }
+        
+            _map.setView(data.location.lat, data.location.lon, data.location.zoom);
+            _map.zoomEnable(true);
+         
+            location_mark(data.location);       
+        }
+      
+        $('#url').val(data.media.url);
+        $('#credit').val(data.media.credit);
+        $('#caption').val(data.media.caption);
+        
+        $('#headline').val(data.text.headline);
+        $('#text').val(data.text.text);    
+        $('iframe.wysihtml5-sandbox').contents().find('body').html(data.text.text);
+    }
 }
 
 function slide_delete(event) {
@@ -292,10 +294,11 @@ function slide_delete(event) {
 
 function slide_add() {
     // If showing preview tab, switch to edit tab
-    if($("#preview").is(":visible")) {
+    /*
+    if(preview_visible()) {
         $('a[data-toggle="tab"][href="#edit"]').tab('show');   
     }
-    
+    */
     var data = $.extend(true, {}, _default_data.storymap.slide);
     var n = _slides.length; 
     
@@ -395,6 +398,10 @@ function storymap_auto_save() {
     }
 }
 
+function preview_visible() {
+    return $("#preview").is(":visible");
+}
+
 function preview_clear() {
     $('#preview').html('<div id="preview_embed"></div>');
     _storymap_object = null;
@@ -424,7 +431,8 @@ function preview_load() {
         options.zoomify = _storymap_data.storymap.zoomify;
     }
           
-    _storymap_object = new VCO.StoryMap('preview_embed', _storymap_data, options);
+    _storymap_object = new VCO.StoryMap('preview_embed', 
+        $.extend(true, {}, _storymap_data), options);
     
     _storymap_object.on('change', function(e) {
         $('.slide').eq(this.current_slide).click();
@@ -432,7 +440,7 @@ function preview_load() {
 }
 
 function preview_refresh() {
-    if($("#preview").is(":visible")) {
+    if(preview_visible()) {
         preview_clear();    
         preview_load();
     }
@@ -480,7 +488,7 @@ function slides_load() {
     $('#font_css').val(_storymap_data.font_css || _default_data.font_css);
         
     $('input:radio[name="map_as_image"][value="'+get_map_as_image()+'"]').prop('checked', true);
- 
+     
     document.getElementById('map').style.backgroundColor = 
         _storymap_data.storymap.map_background_color || _default_data.storymap.map_background_color;
     
@@ -495,7 +503,7 @@ function slides_load() {
                 storymap_dirty(1);   
                 
                 document.getElementById('map').style.backgroundColor = 
-                    color || _default_data.storymap.map_background_color;         
+                    color || _default_data.storymap.map_background_color;
             }
         }
     });    
@@ -701,7 +709,15 @@ $(function() {
     });   
 
     $('#storymap_add_slide').click(function(event) {
-        slide_add();    
+        if(preview_visible()) {                   
+            $('#edit').bind('edit-tab-shown', function(event) {
+                $(this).unbind('edit-tab-shown');
+                slide_add();
+            });           
+            $('a[data-toggle="tab"][href="#edit"]').tab('show');
+        } else {
+            slide_add();    
+        }
     });
     
     //------------------------------------------------------------
@@ -863,12 +879,22 @@ $(function() {
     });
       
     // ------------------------------------------------------------
-    // Preview
+    // Tab toggle
     // ------------------------------------------------------------
 
-    $('a[data-toggle="tab"][href="#edit"]').on('shown', preview_clear);   
-    $('a[data-toggle="tab"][href="#preview"]').on('shown', preview_refresh);
-        
+    $('a[data-toggle="tab"][href="#edit"]').on('shown', function(event) {
+        $('.slide.selected').click();   // reselect current slide
+        $('#storymap_options').removeAttr('disabled');
+        preview_clear();
+              
+        $('#edit').trigger('edit-tab-shown');
+    });   
+    
+    $('a[data-toggle="tab"][href="#preview"]').on('shown', function(event) {
+        $('#storymap_options').attr('disabled', true);    
+        preview_refresh();
+    });
+            
     // ------------------------------------------------------------
     // Slide sorting
     // ------------------------------------------------------------
@@ -1126,7 +1152,7 @@ window.onbeforeunload = function confirmExit() {
 }
 
 window.onresize = function(event) {
-    if(_storymap_object) {
+    if(preview_visible() && _storymap_object) {
         _storymap_object.updateDisplay();
     }
 }
