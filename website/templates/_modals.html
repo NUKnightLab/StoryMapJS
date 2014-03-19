@@ -158,43 +158,43 @@
             <div class="control-group map-control-group">
                 <label class="control-label">Map Type</label>
                 <div class="controls">
-                    <div class="input-prepend">
-                        <div class="btn-group dropup">
-                            <button class="btn dropdown-toggle" data-toggle="dropdown" tabindex="-1">
-                                <span class="caret"></span>
-                            </button>
-                            <ul id="map_type_menu" class="dropdown-menu dropup" role="menu">
-                                <li><a href="javascript:" storymap-data="stamen:toner-lite">Stamen Maps: Toner Lite</a></li>
-                                <li><a href="javascript:" storymap-data="stamen:toner">Stamen Maps: Toner</a></li>
-                                <li><a href="javascript:" storymap-data="stamen:toner-lines">Stamen Maps: Toner Lines</a></li>
-                                <li><a href="javascript:" storymap-data="stamen:toner-labels">Stamen Maps: Toner Labels</a></li>
-                                <li><a href="javascript:" storymap-data="stamen:toner-background">Stamen Maps: Toner Background</a></li>
-                                <li><a href="javascript:" storymap-data="stamen:watercolor">Stamen Maps: Watercolor</a></li>
-                                <li><a href="javascript:" storymap-data="stamen:terrain">Stamen Maps: Terrain</a></li>
-                                <li><a href="javascript:" storymap-data="osm:standard">Open Street Maps: Standard</a></li>
-                                <li><a href="javascript:" storymap-data="mapbox">Mapbox</a></li>
-                                <li><a href="javascript:" storymap-data="">custom URL...</a></li>
-                            </ul>
-                        </div>
-                        <input id="map_type" type="text" class="span5" placeholder="http://{s}.domain.org/{z}/{x}/{y}.png" disabled>
-                    </div>
+                    <select id="map_type_menu" class="span4">
+                        <option value="stamen:toner-lite">Stamen Maps: Toner Lite</option>
+                        <option value="stamen:toner">Stamen Maps: Toner</option>
+                        <option value="stamen:toner-lines">Stamen Maps: Toner Lines</option>
+                        <option value="stamen:toner-labels">Stamen Maps: Toner Labels</option>
+                        <option value="stamen:toner-background">Stamen Maps: Toner Background</option>
+                        <option value="stamen:watercolor">Stamen Maps: Watercolor</option>
+                        <option value="stamen:terrain">Stamen Maps: Terrain</option>
+                        <option value="osm:standard">Open Street Maps: Standard</option>
+                        <option value="mapbox">Mapbox</option>
+                        <option value="">custom</option>
+                    </select>
                     <a class="help" href="javascript:"
                         data-html="true"
                         data-placement="left"
                         data-content='
-                        <p>Select a predefined map type, or select "custom URL" to enter the URL for a tile server.</p>
-                        <p>If the tile server supports multiple subdomains, enter them as a single string in the 
-                        Subdomain field (e.g. subdomains "a", "b", and "c" should be entered as "abc").</p>
+                        <p>Select a predefined map type.</p>
+                        <P>Select "Mapbox" to enter the ID of your Mapbox map.</p>
+                        <p>Select "custom" to enter the URL for a tile server.  If the server supports multiple subdomains, 
+                        enter them as a single string in the Subdomain field (e.g. subdomains "a", "b", and "c" should 
+                        be entered as "abc").</p>
                         ' 
                     >&nbsp;<i class="icon-question-sign icon-large"></i>
                     </a>
                     <br />
-                    <span id="map_type_mapbox_note" class="note">Put extra Mapbox information here</p>
+                    <span id="map_type_mapbox_note" class="note">Put extra Mapbox information here</span></p>
                     <p>
-                    <div class="input-prepend">
-                        <span class="add-on">Subdomains</span>
-                        <input id="map_subdomains" type="text" class="input-small" placeholder="abc">                    
-                    </div>
+                        <div class="input-prepend">
+                            <span class="add-on">ID</span>
+                            <input id="map_type" type="text" class="span5" placeholder="http://{s}.domain.org/{z}/{x}/{y}.png">
+                        </div>
+                    </p>
+                    <p>
+                        <div class="input-prepend">
+                            <span class="add-on">Subdomains</span>
+                            <input id="map_subdomains" type="text" class="input-small" placeholder="abc">                    
+                        </div>
                     </p>
                 </div>
             </div>

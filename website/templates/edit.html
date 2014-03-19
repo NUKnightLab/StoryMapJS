@@ -550,17 +550,23 @@ function map_init() {
         $('.zoomify-control-group').hide();
  
         if(map_type && map_type.match('^(http|https|//)')) {
-            $('#map_type').val(map_type).removeAttr('disabled');
+            $('#map_type_menu').val('');
+            $('#map_type_mapbox_note').hide();
+            $('#map_type').val(map_type).attr('placeholder', 'http://{s}.domain.org/{z}/{x}/{y}.png')
+                .prev().html('URL')
+                .parent().show();
             $('#map_subdomains')
                 .val(_storymap_data.storymap.map_subdomains || _default_data.storymap.map_subdomains)
-                .removeAttr('disabled').parent().show();
-            $('#map_type_mapbox_note').hide();
+                .parent().show();
         } else if(map_type && map_type.match('^mapbox:.+')) {
-            $('#map_type').val(map_type.split(':')[1]).removeAttr('disabled');
+            $('#map_type_menu').val('mapbox');
+            $('#map_type_mapbox_note').show();
+            $('#map_type').val(map_type.split(':')[1]).attr('placeholder', 'username.mapid')
+                .prev().html('Map ID')
+                .parent().show();
             $('#map_subdomains')    
                 .val(_storymap_data.storymap.map_subdomains || 'abcd')
-                .attr('disabled', true).parent().hide();
-            $('#map_type_mapbox_note').show();
+                .parent().hide();
         } else {     
             switch(map_type) {
                 case "stamen:toner-lite":
@@ -570,16 +576,17 @@ function map_init() {
                 case "stamen:toner-background":
                 case "stamen:watercolor":
                 case "stamen:terrain":
-                    $('#map_type').val(map_type).attr('disabled', true);
+                    $('#map_type_menu').val(map_type);                    
                     break;
                    
                 default:               
-                    $('#map_type').val(_default_data.storymap.map_type).attr('disabled', true);
+                    $('#map_type_menu').val(_default_data.storymap.map_type);
                     break; 
             }    
         
-            $('#map_subdomains').val('').attr('disabled', true).parent().hide();
             $('#map_type_mapbox_note').hide();
+            $('#map_type').val('').parent().hide();
+            $('#map_subdomains').val('').parent().hide();
         }
         
         _map = new GoogleEditorMap(_map_options);
@@ -676,14 +683,13 @@ $(function() {
     $('.slide:first').click(slide_select); 
      
     //------------------------------------------------------------
-    // Menu
+    // Menu bar
     //------------------------------------------------------------
 
     $('#storymap_options').click(function(event) {
         $('#opt_modal').modal('show')
     });
 
-    
     $('#storymap_save').click(function(event) {
         storymap_save(function(error) {
             if(error) {
@@ -782,46 +788,61 @@ $(function() {
         storymap_dirty(1);
         map_set_type();   
     });
-
-    $('#map_type_menu a').click(function(event) {
-        var map_type = $(this).attr('storymap-data');
+ 
+    $('#map_type_menu').change(function(event) {
+        var map_type = $(this).val();
         
-        if(map_type == 'mapbox') {
-            $('#map_type').val('').attr('placeholder', 'mapbox map name')
-                .removeAttr('disabled').focus(); 
-            
-            $('#map_subdomains').val('abcd').attr('disabled', true).parent().hide();
-            $('#map_type_mapbox_note').show();
-            _storymap_data.storymap.map_subdomains = 'abcd';
-        } else if(map_type) {
-            $('#map_type').val(map_type).attr('disabled', true);
-            $('#map_subdomains').val('').attr('disabled', true).parent().hide();
+        if(!map_type) {
             $('#map_type_mapbox_note').hide();
+            $('#map_type').val('').attr('placeholder', 'http://{s}.domain.org/{z}/{x}/{y}.png')
+                .prev().html('URL')
+                .parent().show();
+            $('#map_type').focus(); 
+            $('#map_subdomains').val('').parent().show();       
+
+            _storymap_data.storymap.map_type = '';
+            _storymap_data.storymap.map_subdomains = '';
+        } else if(map_type == 'mapbox') {
+            $('#map_type_mapbox_note').show();
+            $('#map_type').val('').attr('placeholder', 'username.mapid')
+                .prev().html('Map ID')
+                .parent().show(); 
+            $('#map_type').focus(); 
+            $('#map_subdomains').val('').parent().hide();       
+
+            _storymap_data.storymap.map_type = 'mapbox:';
+            _storymap_data.storymap.map_subdomains = 'abcd';
+        } else {
+            $('#map_type_mapbox_note').hide();
+            $('#map_type').val('').parent().hide(); 
+            $('#map_subdomains').val('').parent().hide();       
             
             _storymap_data.storymap.map_type = map_type;
             _storymap_data.storymap.map_subdomains = '';
-            storymap_dirty(1);
+       
             map_set_type();
-       } else {
-            $('#map_type').val('').attr('placeholder', 'http://{s}.domain.org/{z}/{x}/{y}.png')
-                .removeAttr('disabled').focus(); 
-            $('#map_subdomains').val('').removeAttr('disabled').parent().show();
-            $('#map_type_mapbox_note').hide();
-        }        
+        }    
+        
+        storymap_dirty(1);
     });
- 
+  
     $('#map_type').change(function(event) {
         var map_type = $('#map_type').val().trim();
         
-        if(map_type.match('^(http|https|//)')) {
-            map_type = map_type.replace('{Z}','{z}').replace('{X}','{x}').replace('{Y}','{y}').replace('{S}','{s}');
-            $('#map_type').val(map_type);
-            _storymap_data.storymap.map_type = map_type;
-        } else {
-            _storymap_data.storymap.map_type = 'mapbox:'+map_type;
+        switch($('#map_type_menu').val()) {
+            case '':    // custom
+                map_type = map_type.replace('{Z}','{z}').replace('{X}','{x}').replace('{Y}','{y}').replace('{S}','{s}');
+                _storymap_data.storymap.map_type = map_type;
+                storymap_dirty(1);
+                map_set_type();        
+                break;
+            
+            case 'mapbox':
+                _storymap_data.storymap.map_type = 'mapbox:'+map_type;
+                storymap_dirty(1);
+                map_set_type();        
+                break;
         }
-        storymap_dirty(1);
-        map_set_type();        
     });
     
     $('#map_subdomains').change(function(event) {
