@@ -10,8 +10,6 @@
 	slideLoaded
 	slideRemoved
 
-	TODO
-	Fix overflow scoll in landscape view
 	
 ================================================== */
 
@@ -431,7 +429,7 @@ VCO.StorySlider = VCO.Class.extend({
 			bg_color_rgb,
 			bg_percent_start 	= this.options.slide_default_fade,
 			bg_percent_end 		= "15%",
-			bg_alpha_end 		= "0.90",
+			bg_alpha_end 		= "0.87",
 			bg_css 				= "";
 			
 		if (bg.color_value) {
