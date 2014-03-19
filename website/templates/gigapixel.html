@@ -52,10 +52,10 @@
             Once you have a large image, you need to export it as tiles. The easiest way to do this is with Photoshop's "Zoomify" export feature. <a href="#zoomify-export" data-toggle="modal">(show me how)</a>
         </p>
         <p>
-            When you have your image tiles, you need to put them on a web server. If you don't have a webserver, you can use <a href="http://dropbox.com/">Dropbox</a>. Unfortunately, you can't use Google Drive for this. You need the base url for your exported image tiles when you start making your gigapixel StoryMap. <a  href="#serving-with-dropbox" data-toggle="modal">(show me how)</a>
+            When you have your image tiles, you need to put them on a web server. If you don't have a webserver, you can use <a href="https://drive.google.com/">Google Drive</a> or <a href="http://dropbox.com/">Dropbox</a>. You need the base url for your exported image tiles when you start making your gigapixel StoryMap. <a  href="#serving-your-tiles" data-toggle="modal">(show me how)</a>
         </p>
         <p>
-            When you've got your image tiles up on a server, <a href="select.html">go to make a new StoryMap</a> and choose the "gigapixel" button. (<i class="vco-icon-image icon-button"></i>)
+            When you've got your image tiles up on a server, <a href="select.html">go to make a new StoryMap</a> and choose the "gigapixel" button. (<i class="vco-icon-image icon-button"></i>). Give your new project a name and enter the base url and image width and height mentioned above, and you're ready to tell your gigapixel story. 
         </p>
     </div>
 </div>    
@@ -84,13 +84,31 @@
     <a href="#" class="btn" data-dismiss="modal" aria-hidden="true">Close</a>
   </div>
 </div>
-<div id="serving-with-dropbox" class="modal hide fade" data-keyboard="true">
+<div id="serving-your-tiles" class="modal hide fade" data-keyboard="true">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    <h3>Dropbox help</h3>
+    <h3>Serving your tiles</h3>
   </div>
     <div class="modal-body">
-
+      <ul class="nav nav-tabs">
+        <li class="active">
+          <a data-toggle="tab" href="#serve-with-google-drive">Google Drive</a>
+        </li>
+        <li><a data-toggle="tab" href="#serve-with-dropbox">Dropbox</a></li>
+      </ul>
+      <div class="tab-content">
+        <div class="tab-pane active" id="serve-with-google-drive">
+        <img src="{{STATIC_URL}}/img/zoomify-tutorial-gdrive-show-details.png" style="float:right;">
+          <ol>
+            <li>Upload the entire folder (from step 4 above) to your Google Drive.</li>
+            <li>After selecting your uploaded folder, choose "Details and activity" from the "More" menu.</li>
+            <li>In the "Details" tab, click the pencil icon next to "sharing."</li>
+            <li>Under "Who has access," change the setting to "public on the web" and click "Done".</li>
+            <li>Now on the "Details" tab you'll see a section labeled "Hosting." (You may need to wait a moment or reload the page.) Copy the entire URL. You'll need it when you start your StoryMap. <strong>Note:</strong> some of the URL may not be visible. It may be easiest to click on it, and then copy the URL from your browser address bar.</li>
+          </ol>
+          <p><strong>Another note:</strong> once you've done this, you can move the folder around in your Google Drive. You won't need to repeat this step. The "hosting" URL will not change.</p>
+        </div>
+        <div class="tab-pane" id="serve-with-dropbox">
         <img src="{{STATIC_URL}}/img/zoomify-tutorial-db_copy_public_link.png" style="float:right;">
         <ol>
             <li>Upload the entire folder (from step 4 above) <strong>to your DropBox <em>public</em> folder</strong>.</li>
@@ -104,6 +122,8 @@
                 Make note of the edited URL. You'll need it when you start your StoryMap.
             </li>
         </ol>
+        </div>
+      </div>
     </div>
     <div class="modal-footer">
         <a href="#" class="btn" data-dismiss="modal" aria-hidden="true">Close</a>
