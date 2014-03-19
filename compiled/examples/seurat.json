@@ -240,7 +240,7 @@
         "zoomify": {
             "attribution": "",
             "height": 19970,
-            "path": "http://cdn.verite.co/maps/zoomify/seurat/",
+            "path": "http://gigapixel.knightlab.com/seurat/",
             "tolerance": 0.9,
             "width": 30000
         }
