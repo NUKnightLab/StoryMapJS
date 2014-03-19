@@ -10,7 +10,7 @@
                     "line": true
                 },
 				"background": {			
-					"url": 				"http://cdn.verite.co/maps/zoomify/seurat/seurat_portrait.jpg",
+					"url": 				"http://gigapixel.knightlab.com/seurat/seurat_portrait.jpg",
 					"color": 			"#000",
 					"opacity": 			50
 				},
