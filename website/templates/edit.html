@@ -53,6 +53,7 @@
 L.Icon.Default.imagePath = ' http://cdn.leafletjs.com/leaflet-0.7.2/images';
 
 var _font_url = 'http://cdn.knightlab.com/libs/storymapjs/latest/css/fonts/';
+var _link_url = 'http://cdn.knightlab.com/libs/storymapjs/latest/embed/';
 var _embed_url = '//s3.amazonaws.com/cdn.knightlab.com/libs/storymapjs/latest/embed/index.html';
 
 // If under local development...
@@ -1082,9 +1083,9 @@ $(function() {
         .on('progress_hide', modal_progress_hide)
         .on('reset', modal_reset)
         ////// custom
-        .on('modal_show', function(event, error_msg) {
-            var url = _embed_url+'?url=';
-                        
+        .on('modal_show', function(event, error_msg) {                        
+            var url = '';
+            
             if(_storymap_info.draft_on > _storymap_info.published_on) {
                 url += gdrive_storymap_draft_url(_storymap_info);
                 $('#share_publish_panel').show();   
@@ -1093,12 +1094,15 @@ $(function() {
                 $('#share_publish_panel').hide();
             }
 
-            var html = '<iframe src="'+url+'" frameborder="0"'
+            var link_url = _link_url+'?url='+url;
+            var enc_url = encodeURIComponent(link_url);
+
+            var html = '<iframe src="'+_embed_url+'?url='+url+'" frameborder="0"'
                 + ' width="'+$('#share_width').val()+'"'
                 + ' height="'+$('#share_height').val()+'"'
                 + '></iframe>';
- 
-            var enc_url = encodeURIComponent(url);
+
+            $('#share_url').val(link_url);
             
             $(this).find('.share-link-twitter').attr('href',
                 'http://twitter.com/intent/tweet?url='+enc_url);
@@ -1109,7 +1113,6 @@ $(function() {
             $(this).find('.share-link-reddit').attr('href', 
                 'http://www.reddit.com/submit?url='+enc_url);
                 
-            $('#share_url').val(url);
             $('#share_embed').html(html);
  
             $(this).trigger('reset', error_msg)
