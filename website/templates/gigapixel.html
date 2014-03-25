@@ -52,7 +52,7 @@
             Once you have a large image, you need to export it as tiles. The easiest way to do this is with Photoshop's "Zoomify" export feature. <a href="#zoomify-export" data-toggle="modal">(show me how)</a>
         </p>
         <p>
-            When you have your image tiles, you need to put them on a web server. If you don't have a webserver, you can use <a href="https://drive.google.com/">Google Drive</a> or <a href="http://dropbox.com/">Dropbox</a>. You need the base url for your exported image tiles when you start making your gigapixel StoryMap. <a  href="#serving-your-tiles" data-toggle="modal">(show me how)</a>
+            When you have your image tiles, you need to put them on a web server. If you don't have a webserver, you can use <a href="https://drive.google.com/">Google Drive</a> or <a href="http://dropbox.com/">Dropbox</a>. You need the base url for your exported image tiles when you start making your gigapixel StoryMap. <a href="#serving-your-tiles" data-toggle="modal">(show me how)</a>
         </p>
         <p>
             When you've got your image tiles up on a server, <a href="select.html">go to make a new StoryMap</a> and choose the "gigapixel" button. (<i class="vco-icon-image icon-button"></i>). Give your new project a name and enter the base url and image width and height mentioned above, and you're ready to tell your gigapixel story. 
@@ -76,7 +76,7 @@
           </ol>
         </li>
         <li>From the <strong>File</strong> menu choose <strong>Export > Zoomify.</strong></li>
-        <li>Set the output folder and click OK. You can ignore the other settings.</li>
+        <li>Set the output folder and click OK. Take note of (or edit) the "Base Name". Photoshop will create a folder with that name in your output folder. Later, you'll need to put that "Base Name" folder on a <a href="#serving-your-tiles" data-toggle="modal">web server</a>.</li>
         <li>After you click OK, Photoshop will open a page in your browser showing your Zoomify export. You can ignore this.</li>
     </ol>
   </div>
@@ -112,14 +112,13 @@
         <img src="{{STATIC_URL}}/img/zoomify-tutorial-db_copy_public_link.png" style="float:right;">
         <ol>
             <li>Upload the entire folder (from step 4 above) <strong>to your DropBox <em>public</em> folder</strong>.</li>
-            <li>In the folder you uploaded is another folder, which should have a name like the original file name, except without an extension. Open that folder.</li>
-            <li>Locate a file named <strong><code>ImageProperties.xml</code></strong> and copy its public link.</li>
-            <li>Paste it somewhere for a minute, and delete the "ImageProperties.xml" part of the URL. For example:
-                    <br>copied: <code>https://dl.dropboxusercontent.com/u/2653407/folder_name/image_name/ImageProperties.xml</code>
-                    <br>edited: <code>https://dl.dropboxusercontent.com/u/2653407/folder_name/image_name/</code>
+            <li>In the folder you uploaded, there should be a file named <strong><code>ImageProperties.xml</code></strong>. Right-click on it to copy its public link.</li>
+            <li>Paste that link somewhere for a minute, and delete the "ImageProperties.xml" part of the URL. For example:
+                    <br>copied: <code>https://dl.dropboxusercontent.com/u/2653407/folder_name/ImageProperties.xml</code>
+                    <br>edited: <code>https://dl.dropboxusercontent.com/u/2653407/folder_name/</code>
             </li>
             <li>
-                Make note of the edited URL. You'll need it when you start your StoryMap.
+                Keep track of the edited URL. You'll need it when you start your StoryMap.
             </li>
         </ol>
         </div>
