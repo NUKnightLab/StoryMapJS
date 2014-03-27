@@ -10,7 +10,8 @@ modal_error_show = function(event, msg) {
     $(this).find('.modal-error').show();    
 }
 modal_error_hide = function(event, msg) {
-    $(this).find('.modal-error').hide();  
+    $(this).find('.modal-error .modal-msg').html('');
+    $(this).find('.modal-error').hide();         
 }
 
 modal_progress_show = function(event, msg) {

@@ -207,6 +207,19 @@ function gdrive_file_save(storymapFolder, title, data, callback) {
 // File-system related
 ////////////////////////////////////////////////////////////
 
+// callback = function(error, <file resource> || null)
+function gdrive_rename(id, title, callback) {
+    var request = gapi.client.request({
+        'path': '/drive/v2/files/'+id,
+        'method': 'PUT',
+        'headers': {
+            'Content-Type': 'application/json'
+        },
+        'body': {'title': title}
+    });
+    gdrive_exec(request, callback);
+}
+
 // callback(error, <permissions resource>)
 function gdrive_perm_public(id, callback) {
     var request = gapi.client.drive.permissions.insert({
