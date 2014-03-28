@@ -12,4 +12,4 @@ VCO.Language = {
     collapse_toggle: "Göm kartan",
     uncollapse_toggle: "Visa kartan"
   }
-}
+};
