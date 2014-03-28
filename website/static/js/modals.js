@@ -22,10 +22,7 @@ modal_progress_hide = function(event) {
     $(this).find('.modal-progress').hide(); 
 }
 
-modal_confirm_show = function(event, msg, callback) {
-    console.log(msg);
-    console.log(callback);
-    
+modal_confirm_show = function(event, msg, callback) {    
     var $panel = $(this).find('.modal-confirm');
     
     $panel.find('.modal-msg').html(msg);

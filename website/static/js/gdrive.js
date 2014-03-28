@@ -40,6 +40,9 @@ var BOUNDARY = '-------314159265358979323846';
 var MULTIPART_DELIMITER = "\r\n--" + BOUNDARY + "\r\n";
 var MULTIPART_CLOSE = "\r\n--" + BOUNDARY + "--";
 
+// Other
+var GDRIVE_FOLDER_MIME_TYPE = 'application/vnd.google-apps.folder';
+
 var STORYMAP_INFO = {};
 
 
@@ -188,6 +191,14 @@ function gdrive_file_delete(id, callback) {
     gdrive_exec(request, callback);
 }
 
+function gdrive_file_copy(id, dstName, dstParents, callback) {
+    var request = gapi.client.drive.files.copy({
+        'fileId': id,
+        'resource': {'title': dstName, 'parents': dstParents}
+    });
+    gdrive_exec(request, callback);
+}
+
 function gdrive_file_save(storymapFolder, title, data, callback) {
     var query = "title='"+title+"' and trashed=false"
         + " and '"+storymapFolder.id+"' in parents";
@@ -202,6 +213,7 @@ function gdrive_file_save(storymapFolder, title, data, callback) {
         }
     });
 }
+
 
 ////////////////////////////////////////////////////////////
 // File-system related
@@ -243,15 +255,14 @@ function gdrive_list(query, callback) {
 
 // callback(error, <file resource>)
 function gdrive_folder_create(name, parents, callback) {
-    var contentType = 'application/vnd.google-apps.folder';
     var metadata = { 
         'title': name,
-        'mimeType': contentType
+        'mimeType': GDRIVE_FOLDER_MIME_TYPE
     };
     if (parents) {
         metadata['parents'] = parents;
     }
-    var request = gapiRequest('POST', metadata, contentType);
+    var request = gapiRequest('POST', metadata, GDRIVE_FOLDER_MIME_TYPE);
     gdrive_exec(request, function(error, resource) {
         if(error) {
             callback(error);
@@ -280,6 +291,71 @@ function gdrive_folder_getcreate(name, parents, callback) {
         } else {
             gdrive_folder_create(name, parents, callback);
         }    
+    });
+}
+
+// copy items in item_list from srcFolder to dstFolder
+// callback = function(error)
+function _gdrive_copy_process(item_list, srcFolder, dstFolder, callback) {
+    if(!(item_list && item_list.length)) {
+        callback(); // done
+    } else {
+        var re = new RegExp('/'+srcFolder.id+'/', 'g');        
+        var item = item_list.shift();
+        
+        if(item.mimeType == GDRIVE_FOLDER_MIME_TYPE) {
+            gdrive_folder_copy(item, item.title, dstFolder, function(error, res) {
+                if(error) {
+                    callback(error);
+                } else {
+                    _gdrive_copy_process(item_list, srcFolder, dstFolder, callback);
+                }
+            }); 
+        } else if(item.title.match('.+\\.json$')) {
+            $.getJSON(srcFolder.webViewLink + item.title)
+                .done(function(data) {
+                    var content = JSON.stringify(data).replace(re, '/'+dstFolder.id+'/');
+
+                    gdrive_file_create(item.title, content, [dstFolder], function(error, response) {
+                        if(error) {
+                            callback(error);
+                        } else {
+                            _gdrive_copy_process(item_list, srcFolder, dstFolder, callback);
+                        }
+                    });
+                })
+                .fail(function(xhr, textStatus, error) {
+                    callback(textStatus+', '+error);
+                });
+        } else {           
+            gdrive_file_copy(item.id, item.title, [dstFolder], function(error, res) {
+                if(error) {
+                    callback(error);
+                } else {
+                    _gdrive_copy_process(item_list, srcFolder, dstFolder, callback);
+                }             
+            });
+        }      
+    }
+}
+
+// callback = function(error, <folder resource>)
+function gdrive_folder_copy(srcFolder, dstName, dstParent, callback) {
+    gdrive_folder_create(dstName, [dstParent], function(error, dstFolder) {
+        if(error) {
+            callback(error);
+        } else {
+            var query = "trashed=false and '"+srcFolder.id+"' in parents";            
+            gdrive_list(query, function(error, item_list) {                
+                if(error) {
+                    callback(error, dstFolder);            
+                } else {
+                    _gdrive_copy_process(item_list, srcFolder, dstFolder, function(error) {
+                        callback(error, dstFolder);
+                    });
+                }            
+            });
+        }
     });
 }
 

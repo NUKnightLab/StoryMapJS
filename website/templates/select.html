@@ -119,6 +119,13 @@
                 <input type="text" class="entry-rename-title stretch" />
             </p>
         </div>         
+<!-- copy panel -->
+        <div class="entry-panel entry-copy hide">
+            <p>
+                <label>Enter a name for your copy of <strong class="entry-copy-title-old"></strong> StoryMap:</label>
+                <input type="text" class="entry-copy-title stretch" />
+            </p>
+        </div>         
     </div>
 <!-- FOOTER -->
     <div class="modal-footer">
@@ -127,7 +134,7 @@
             <span id="entry_user_name"></span> | <a href="http://www.google.com/accounts/Logout">Logout</a>
         </div>
         <span>&nbsp;</span>
-        <a id="entry_create_cancel" class="entry-panel entry-create entry-rename hide btn" onclick="$('#entry_modal').trigger('show_list');">
+        <a id="entry_create_cancel" class="entry-panel entry-create entry-rename entry-copy hide btn" onclick="$('#entry_modal').trigger('show_list');">
             Cancel</a>
         <a id="entry_create" class="entry-panel entry-create hide btn btn-success" href="javascript:;">
             Create</a>
@@ -136,6 +143,8 @@
 		</a>    
         <a id="entry_rename" class="entry-panel entry-rename hide btn btn-success" href="javascript:;">
             Rename</a>
+        <a id="entry_copy" class="entry-panel entry-copy hide btn btn-success" href="javascript:;">
+            Copy</a>
     </div>
     <!-- progress -->
     <div class="modal-progress hide">
@@ -234,6 +243,35 @@ $(function() {
         gdrive_rename(id, name, function(error, resource) {
             if(error) {
                 $modal.trigger('error_show', format_error('Error renaming StoryMap', error));
+            } else {
+                $modal.trigger('show_list', true); 
+            }
+        });
+    });
+
+    $('#entry_copy').click(function(event) {
+        var $modal = $('#entry_modal');
+        var $panel = $('.entry-copy');
+     
+        var name = $panel.find('.entry-copy-title').val().trim();    
+        if(!name.length) {
+            $modal.trigger('error_show', 'You must enter a name');
+            return false;
+        }
+        if(_storymap_names.indexOf(name.toLowerCase()) >= 0) {
+            var idx = _storymap_names.indexOf(name.toLowerCase());
+            $modal.trigger('error_show', 'You already have a StoryMap named "'+name+'".');
+            return false;
+        }
+        
+        var id = $(this).attr('storymap-data');
+        var item = _storymap_map[id];
+ 
+        $modal.trigger('progress_show', 'Copying StoryMap');
+         
+        gdrive_folder_copy(item, name, item.parents[0], function(error, resource) {
+            if(error) {
+                $modal.trigger('error_show', format_error('Error copying StoryMap', error));
             } else {
                 $modal.trigger('show_list', true); 
             }
@@ -445,6 +483,7 @@ $(function() {
                     html += ''
                         + '<div style="display: inline;float: right">'
                         + '<a class="list-item-rename" href="javascript:" title="Rename"><i class="icon-keyboard icon-large"></i></a>'
+                        + '<a class="list-item-copy" href="javascript:" title="Copy"><i class="icon-copy icon-large"></i></a>'
                         + '<a class="list-item-delete" href="javascript:" title="Delete"><i class="icon-trash icon-large"></i></a>'
                         + '</div>'
                         + '<a class="title" href="'+href+'">'+item.title+'</a>';
@@ -469,7 +508,11 @@ $(function() {
             $table.find('.list-item-rename').click(function(event) {
                 $modal.trigger('show_rename', this);
             }); 
-            
+ 
+            $table.find('.list-item-copy').click(function(event) {
+                $modal.trigger('show_copy', this);
+            }); 
+           
             $table.find('.list-item-delete').click(function(event) {
                 $modal.trigger('delete_storymap', this);
             }); 
@@ -486,7 +529,21 @@ $(function() {
             $('#entry_rename').attr('storymap-data', id);
         
             $(this).find('.entry-panel').hide();
-            $(this).find('.entry-rename').show();        
+            $(this).find('.entry-rename').show();       
+            $('.entry-rename-title').focus();
+        })
+        .on('show_copy', function(event, obj) {
+            var $tr = $(obj).closest('tr');
+            var id = $tr.attr('id');
+            var item = _storymap_map[id];
+
+            $('.entry-copy-title-old').html(item.title);            
+            $('.entry-copy input[type="text"]').val('');        
+            $('#entry_copy').attr('storymap-data', id);
+        
+            $(this).find('.entry-panel').hide();
+            $(this).find('.entry-copy').show();       
+            $('.entry-copy-title').focus();
         })
         .on('delete_storymap', function(event, obj) {
             var $modal = $(this);

@@ -336,6 +336,7 @@ a.help:hover {text-decoration: none;}
 
 .entry-list .list-item-delete {margin-left: 10px;}
 .entry-list .list-item-rename {margin-left: 10px;}
+.entry-list .list-item-copy {margin-left: 10px;}
 
 #entry_user_info, .entry-list .modded {
 	font-family: "Apres RE","Helvetica Neue",Helvetica,Arial,sans-serif;
@@ -346,11 +347,11 @@ a.help:hover {text-decoration: none;}
 	font-size:18px;
 }
 
-a.list-item-delete, a.list-item-rename {
+a.list-item-delete, a.list-item-rename, a.list-item-copy {
 	color:#999;
 }
 
-a.list-item-delete:hover, a.list-item-rename:hover {
+a.list-item-delete:hover, a.list-item-rename:hover, a.list-item-copy:hover {
 	text-decoration:none;
     color: #1dacd6;
 }
