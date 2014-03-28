@@ -456,12 +456,13 @@
                 },
                 "a":  {
                     check_attributes: {
-                        'href': "url", // important to avoid XSS
+                        //'href': "url", // important to avoid XSS
+                        'href': 'href',
                         'target': 'alt',
                         'rel': 'alt'
                     }
                 },
-                "span": {},
+                "span": 1,
                 "div": 1,
                 // to allow save and edit files with code tag hacks
                 "code": 1,
