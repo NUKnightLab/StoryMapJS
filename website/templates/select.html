@@ -396,14 +396,13 @@ $(function() {
                  if(item.error) {
                     html += ''
                         + '<div style="display: inline-block;float: right">'
-                        + '<a class="storymap-delete" href="javascript:" title="Delete"><i class="icon-trash icon-large"></i></a>'
+                        + '<a class="list-item-delete" href="javascript:" title="Delete"><i class="icon-trash icon-large"></i></a>'
                         + '</div>'
                         + item.title
                         + '<p class="modded"><i class="icon-warning-sign" title="Error"></i>'+item.error+'</p>';
                 } else {
                     html += ''
                         + '<div style="display: inline-block;float: right">'
-                        //+ '<a class="list-item-edit" href="'+href+'" title="Edit"><i class="icon-edit icon-large"></i></a>'
                         + '<a class="list-item-delete" href="javascript:" title="Delete"><i class="icon-trash icon-large"></i></a>'
                         + '</div>'
                         + '<a class="title" href="'+href+'">'+item.title+'</a>';
