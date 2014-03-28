@@ -491,6 +491,7 @@ VCO.Map = VCO.Class.extend({
 		_initialMapLocation: function() {
 			
 		},
+	
 	/*	Events
 	================================================== */
 	_onMarkerChange: function(e) {

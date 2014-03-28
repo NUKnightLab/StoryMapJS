@@ -410,7 +410,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 			_duration 	= this.options.duration/1000,
 			_zoom 		= this._getMapZoom(),
 			_location 	= {lat:loc.lat, lon:loc.lon};
-		
+			
 		// Show Active Line
 		if (!this.options.map_as_image) {
 			this._line_active.setStyle({opacity:1});
@@ -433,9 +433,6 @@ VCO.Map.Leaflet = VCO.Map.extend({
 			if (opts.zoom && this.options.calculate_zoom) {
 				_zoom = opts.zoom;
 			}
-			
-			
-			
 		}	
 		
 		// OFFSET
