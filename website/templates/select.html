@@ -267,7 +267,7 @@ $(function() {
  
         $modal.trigger('progress_show', 'Copying StoryMap');
          
-        gdrive_folder_copy(item, name, item.parents[0], function(error, resource) {
+        gdrive_storymap_copy(item, name, function(error, resource) {
             if(error) {
                 $modal.trigger('error_show', format_error('Error copying StoryMap', error));
             } else {

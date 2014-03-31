@@ -278,10 +278,10 @@ function gdrive_file_update(id, content, callback) {
     gdrive_exec(request, callback);
 }
 
-function gdrive_file_copy(id, dstName, dstParents, callback) {
+function gdrive_file_copy(id, dstName, dstParent, callback) {
     var request = gapi.client.drive.files.copy({
         'fileId': id,
-        'resource': {'title': dstName, 'parents': dstParents}
+        'resource': {'title': dstName, 'parents': [dstParent]}
     });
     gdrive_exec(request, callback);
 }
@@ -361,7 +361,7 @@ function _gdrive_copy_process(item_list, srcFolder, dstFolder, callback) {
                 .done(function(data) {
                     var content = JSON.stringify(data).replace(re, '/'+dstFolder.id+'/');
 
-                    gdrive_file_create(item.title, content, [dstFolder], function(error, response) {
+                    gdrive_file_create(dstFolder, item.title, content, function(error, response) {
                         if(error) {
                             callback(error);
                         } else {
@@ -373,7 +373,7 @@ function _gdrive_copy_process(item_list, srcFolder, dstFolder, callback) {
                     callback(textStatus+', '+error);
                 });
         } else {           
-            gdrive_file_copy(item.id, item.title, [dstFolder], function(error, res) {
+            gdrive_file_copy(dstFolder, item.id, item.title, dstFolder, function(error, res) {
                 if(error) {
                     callback(error);
                 } else {
@@ -384,14 +384,13 @@ function _gdrive_copy_process(item_list, srcFolder, dstFolder, callback) {
     }
 }
 
-// callback = function(error, <folder resource>)
+// callback(error, <folder resource>)
 function gdrive_folder_copy(srcFolder, dstName, dstParent, callback) {
-    gdrive_folder_create(dstName, [dstParent], function(error, dstFolder) {
+    gdrive_folder_create(dstName, dstParent, function(error, dstFolder) {
         if(error) {
             callback(error);
         } else {
-            var query = "trashed=false and '"+srcFolder.id+"' in parents";            
-            gdrive_list(query, function(error, item_list) {                
+            gdrive_folder_list(srcFolder.id, function(error, item_list) {                
                 if(error) {
                     callback(error, dstFolder);            
                 } else {
@@ -630,6 +629,23 @@ function gdrive_storymap_create(title, data, parentFolder, callback) {
         }
     });
 }
+
+//
+// Make a copy the storymap @ srcFolder
+// callback(error, <folder resource>)
+//
+function gdrive_storymap_copy(srcFolder, dstName, callback) {
+    gdrive_folder_copy(srcFolder, dstName, srcFolder.parents[0], function(error, dstFolder) {
+        if(error) {
+            callback(error);
+        } else {
+            gdrive_perm_public(dstFolder.id, function(error, p) {
+                callback(error, dstFolder);
+            });
+        }
+    });
+}
+
 
 //
 // Load storymap (info only)
