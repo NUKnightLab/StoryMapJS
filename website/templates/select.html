@@ -305,12 +305,12 @@ $(function() {
                             return;
                         } 
                         
-                        gdrive_storymap_init(true, function(error, publicFolder) {
+                        gdrive_storymap_init(function(error, storymapFolder) {
                             if(error) {
                                 $modal.trigger('error_show', format_error('Error initializing StoryMap', error));
                                 $modal.trigger('progress_hide');
                             } else {
-                                _storymap_folder = publicFolder;     
+                                _storymap_folder = storymapFolder;     
                                 $modal.trigger('show_list');
                              }         
                         });    
@@ -438,7 +438,7 @@ $(function() {
                 if(yes) {
                     $modal.trigger('progress_show', 'Deleting StoryMap');
                     
-                    gdrive_file_delete(item.id, function(error, response) {
+                    gdrive_delete(item.id, function(error, response) {
                         if(error) {
                             $modal.trigger('error_show', format_error('Error deleting StoryMap', error));
                         } else {
