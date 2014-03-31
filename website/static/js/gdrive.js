@@ -465,7 +465,9 @@ function gdrive_storymap_init(callback) {
                             });                
                         }
                     });
-                } 
+                } else {
+                    callback(null, storymapFolder);
+                }
             });
         }
     });
