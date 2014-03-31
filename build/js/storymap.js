@@ -1,4 +1,4 @@
-/* storymapjs - v0.2.0 - 2014-03-25
+/* storymapjs - v0.2.1 - 2014-03-28
  * Copyright (c) 2014 Northwestern University Knight Lab 
  */
 
@@ -16326,6 +16326,7 @@ VCO.Map = VCO.Class.extend({
 		_initialMapLocation: function() {
 			
 		},
+	
 	/*	Events
 	================================================== */
 	_onMarkerChange: function(e) {
@@ -16916,7 +16917,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 			_duration 	= this.options.duration/1000,
 			_zoom 		= this._getMapZoom(),
 			_location 	= {lat:loc.lat, lon:loc.lon};
-		
+			
 		// Show Active Line
 		if (!this.options.map_as_image) {
 			this._line_active.setStyle({opacity:1});
@@ -16939,9 +16940,6 @@ VCO.Map.Leaflet = VCO.Map.extend({
 			if (opts.zoom && this.options.calculate_zoom) {
 				_zoom = opts.zoom;
 			}
-			
-			
-			
 		}	
 		
 		// OFFSET
@@ -17508,6 +17506,10 @@ VCO.StoryMap = VCO.Class.extend({
 			
 		}
 		
+		// Map as Image 
+		if (this.options.map_as_image) {
+			this.options.calculate_zoom = false;
+		}
 		// Load language
 		if(this.options.language == 'en') {
 		    this.options.language = VCO.Language;

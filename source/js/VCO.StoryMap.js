@@ -394,6 +394,10 @@ VCO.StoryMap = VCO.Class.extend({
 			
 		}
 		
+		// Map as Image 
+		if (this.options.map_as_image) {
+			this.options.calculate_zoom = false;
+		}
 		// Load language
 		if(this.options.language == 'en') {
 		    this.options.language = VCO.Language;
