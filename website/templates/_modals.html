@@ -34,6 +34,11 @@
 
 <div id="change_modal" class="modal hide fade" data-backdrop="static">
     <div class="modal-body">
+        <!-- error -->
+        <div class="modal-error hide">    
+            <span class="modal-msg error"></span>
+        </div>    
+        <!-- main -->
         <p class="modal-msg"></p>
         <p>
             <label class="radio">
@@ -43,18 +48,29 @@
         </p>
         <p>
             <label class="radio">
-                <input type="radio" name="change_modal_conflict" value="discard" checked>
+                <input type="radio" name="change_modal_conflict" value="discard">
                 Load newer revision and discard your changes
             </label>  
-        </p>              
-        <label class="radio">
-            <input type="radio" name="change_modal_conflict" value="save" checked>
-            Save your changes as a new StoryMap:
-            <input class="change-modal-save" type="text" size="40">
-        </label>                
+        </p>     
+        <p>         
+            <label class="radio change-conflict-save">
+                <input type="radio" name="change_modal_conflict" value="save">
+                Save your changes as a new StoryMap:
+                <input id="change_save_as" type="text" size="40">
+            </label>  
+        </p>            
     </div>
     <div class="modal-footer">
         <button class="btn btn-primary" data-dismiss="modal">OK</button>
+    </div>
+    <!-- progress -->
+    <div class="modal-progress hide">
+        <div>
+            <div>
+                <i class="icon-spinner icon-4x icon-spin"></i>
+                <p><span class="modal-msg"></span>...</p>
+            </div>
+        </div>
     </div>
 </div>
 

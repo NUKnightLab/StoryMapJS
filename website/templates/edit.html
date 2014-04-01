@@ -33,6 +33,10 @@
 <!-- === jquery-minicolors -->
 <link rel="stylesheet" href="{{ STATIC_URL }}/jquery-minicolors/jquery.minicolors.css">
 <script type="text/javascript" src="{{ STATIC_URL }}/jquery-minicolors/jquery.minicolors.min.js"></script>
+<!-- === Moment.js -->
+<script src="{{ STATIC_URL }}/js/moment.min.js"></script>
+<script src="{{ STATIC_URL }}/js/moment-timezone.min.js"></script>
+<script src="{{ STATIC_URL }}/js/moment-timezone-data.js"></script>
 <!-- === editor -->
 <script type="text/javascript" src="{{ STATIC_URL }}/js/editor.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}/js/gdrive.js"></script>
@@ -208,12 +212,14 @@ function slide_select(event) {
             $('#map_info, #map_overlay').show();
             $('#map_search_input').hide();   
                                
-            for(var i = 1; i < _slides.length;i++) {                
+            for(var i = 1; i < _slides.length;i++) {  
+                console.log(_slides[i]);              
                 if(_slides[i].hasOwnProperty('location')) {                    
                     var loc_data = _slides[i].location;
                     
                     if(loc_data.lat && loc_data.lon) {
-                        _map.addMarker(loc_data.lat, loc_data.lon, false);         
+                        _map.addMarker(loc_data.lat, loc_data.lon, false);  
+                        console.log(loc_data);       
                      }
                 }
             }
@@ -354,24 +360,19 @@ function storymap_save(callback) {
             var draft = _storymap_info.draft_file;
             if(draft.modifiedDate > draft.modifiedByMeDate) {
                 $('#change_modal').modal('show');
-                //alert('this file has been modified by someone else');
-            } else {
-                $('#change_modal').modal('show');
-               // alert('this file is A-OK');
+            } else {       
+                gdrive_storymap_save_draft(_storymap_info, _storymap_data, function(error, file) {
+                    if(error) {
+                        save_button.removeClass('disabled').addClass('btn-primary');
+                    } else {           
+                        storymap_dirty(0);
+                    }    
+                    save_button.html('<i class="icon-save"></i> Save');
+                    callback(error);
+                });
             }
-       
-            gdrive_storymap_save_draft(_storymap_info, _storymap_data, function(error, file) {
-                if(error) {
-                    save_button.removeClass('disabled').addClass('btn-primary');
-                } else {           
-                    storymap_dirty(0);
-                }    
-                save_button.html('<i class="icon-save"></i> Save');
-                callback(error);
-            });
         }
-    });
-        
+    });     
 }
 
 // callback(error || null)
@@ -964,9 +965,77 @@ $(function() {
     });
 
     // ------------------------------------------------------------
+    // Change conflict
+    // ------------------------------------------------------------
+
+    $('#change_modal input[type="radio"][value="save"]').click(function(event) {
+        $('#change_save_as').focus(); 
+    });
+
+    $('#change_save_as').click(function(event) {
+        $('#change_modal input[type="radio"][value="save"]').prop('checked', true);
+    });
+
+    $('#change_modal .btn-primary').click(function(event) {
+        var $modal = $('#change_modal');   
+        
+        if($modal.find('input[type="radio"][value="overwrite"]').is(':checked')) {
+            // go ahead and save
+        
+        
+        } else if($modal.find('input[type="radio"][value="discard"]').is(':checked')) {
+            // reload page
+            window.location.reload(true);
+        } else if($modal.find('input[type="radio"][value="save"]').is(':checked')) {
+            var name = $('#change_save_as').val().trim();
+            
+            if(!name) {
+                $modal.trigger('error_show', 'You must enter a name.');
+                $('#change_save_as').focus();
+                return;
+            }
+            /// DOUBLE CHECK NAME
+            
+            $modal.trigger('error_hide');
+            $modal.trigger('progress_show', 'Copying StoryMap');
+        
+            // DOIT        
+        }            
+    });
+    
+    $('#change_modal')
+        .on('error_show', modal_error_show)
+        .on('error_hide', modal_error_hide)
+        .on('progress_show', modal_progress_show)
+        .on('progress_hide', modal_progress_hide)
+        .on('show', function(event, error_msg) {
+            $(this).trigger('reset', error_msg);  
+            
+            var draft = _storymap_info.draft_file;
+            
+            var msg = 'This StoryMap has modified by <strong>'+draft.lastModifyingUserName+'</strong>'
+                + ' on '+format_dt(draft.modifiedDate)+'.  What do you want to do?';
+            
+            $(this).find('.modal-msg').html(msg);           
+        })
+        .on('modal_show', function(event, error_msg) {  
+            var $modal = $(this);
+            
+            $modal.find('input[type="radio"]').prop('checked', false);
+            $modal.find('input[type="radio"][value="overwrite"]').prop('checked', true);
+            $('#change_save_as').val('');
+                       
+            $(this).trigger('reset', error_msg);
+        })
+        .on('show', function() {  
+            $(this).trigger('modal_show');
+        });    
+
+        
+    // ------------------------------------------------------------
     // Uploads
     // ------------------------------------------------------------ 
- 
+    
     $('#upload_media').click(function(event) {
         $('#upload_modal').modal('show');
     });
