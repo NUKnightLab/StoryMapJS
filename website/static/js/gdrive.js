@@ -43,21 +43,27 @@ id: "0B71wddT5Cwf-d3g3Q0I5SzBHYW8"
 kind: "drive#file"
 labels: Object
 lastModifyingUser: Object
+    displayName: "J Wilson"
+    isAuthenticatedUser: true
+    kind: "drive#user"
+    permissionId: "02037372822736866994"
 displayName: "J Wilson"
 isAuthenticatedUser: true
 kind: "drive#user"
 permissionId: "02037372822736866994"
-__proto__: Object
 lastModifyingUserName: "J Wilson"
 lastViewedByMeDate: "2014-04-01T15:03:29.796Z"
 md5Checksum: "d93b3db67fed021933c6e2076f20f040"
 mimeType: "application/json"
-modifiedByMeDate: "2014-04-01T15:03:29.796Z"
+modifiedByMeDate: "2014-04-01T15:03:29.796Z"        <------
 modifiedDate: "2014-04-01T15:03:29.796Z"
 originalFilename: "draft.json"
 ownerNames: Array[1]
 owners: Array[1]
 parents: Array[1]
+    id: "0B71wddT5Cwf-bmtHZy1jQnVvMkU"
+    isRoot: false
+    kind: "drive#parentReference"
 quotaBytesUsed: "258"
 shared: true
 title: "draft.json"
@@ -336,6 +342,30 @@ function gdrive_file_save(storymapFolder, title, data, callback) {
     });
 }
 
+// callback(error, <revisions resource> || null)
+function gdrive_file_revised(storymapFolder, title, callback) {
+    gdrive_find(title, storymapFolder, function(error, file) {
+        if(error) {
+            callback(error);
+        } else if(file) {
+            var request = gapi.client.drive.revisions.list({
+                'fileId': file.id
+            });
+            gdrive_exec(request, function(error, response) {
+                if(error) {
+                    callback(error);
+                } else if(!response.items || !response.items.length) {
+                    callback(error, null);                
+                } else {
+                    callback(error, response.items.pop());
+                }
+            });
+        } else {
+            callback(error, null);
+        }
+    });
+}
+
 
 ////////////////////////////////////////////////////////////
 // Folder handling
@@ -588,21 +618,25 @@ function gdrive_storymap_init(callback) {
 
 //
 // Process storymap folder by adding draft_on and published_on datetime strings
+// ALSO: ADD draft_file and published_file 
 // callback(error)
 //
 function _gdrive_storymap_process(folder, callback) {
     folder['draft_on'] = '';
     folder['published_on'] = '';
+    folder['draft_file'] = null;
+    folder['published_file'] = null;
 
     gdrive_folder_list(folder.id, function(error, file_list) {
         if(!error && file_list) {
             for(var i = 0; i < file_list.length; i++) {
                 var file = file_list[i];        
                 if(file.title == 'draft.json') {
-console.log(file);
                     folder['draft_on'] = file.modifiedDate;
+                    folder['draft_file'] = file_list[i];
                 } else if(file.title == 'published.json') {
-                    folder['published_on'] = file.modifiedDate;             
+                    folder['published_on'] = file.modifiedDate;   
+                    folder['published_file'] = file_list[i];          
                 }
             }            
         }        
@@ -689,6 +723,13 @@ function gdrive_storymap_copy(srcFolder, dstName, callback) {
     });
 }
 
+//
+// Just reloads draft and published information
+// callback(error)
+//
+function gdrive_storymap_reload(storymapFolder, callback) {
+    _gdrive_storymap_process(storymapFolder, callback);
+}   
 
 //
 // Load storymap (info only)
@@ -728,12 +769,25 @@ function gdrive_storymap_load_draft(storymapFolder, callback) {
 //
 function gdrive_storymap_save_draft(storymapFolder, data, callback) {
     var content = JSON.stringify(data);
-    gdrive_file_save(storymapFolder, 'draft.json', content, function(error, file) {
-        if(file) {
-            storymapFolder['draft_on'] = file.modifiedDate;
-        }
-        callback(error, file);
-    });
+
+    if(storymapFolder.draft_file) {
+console.log('saving by id');
+        gdrive_file_update(storymapFolder.draft_file.id, content, function(error, file) {
+            if(file) {
+                storymapFolder['draft_on'] = file.modifiedDate;
+                storymapFolder['draft_file'] = file;
+            }
+            callback(error, file);
+        });
+    } else {
+        gdrive_file_save(storymapFolder, 'draft.json', content, function(error, file) {
+            if(file) {
+                storymapFolder['draft_on'] = file.modifiedDate;
+                storymapFolder['draft_file'] = file;
+            }
+            callback(error, file);
+        });
+    }
 }
 
 //
@@ -747,12 +801,24 @@ function gdrive_storymap_publish(storymapFolder, callback) {
             callback(error);
         } else {
             var content = JSON.stringify(data);
-            gdrive_file_save(storymapFolder, 'published.json', content, function(error, file) {
-                if(file) {
-                    storymapFolder['published_on'] = file.modifiedDate;
-                }
-                callback(error, file);
-            });            
+            
+            if(storymapFolder.published_file) {
+                gdrive_file_update(storymapFolder.published_file.id, content, function(error, file) {
+                    if(file) {
+                        storymapFolder['published_on'] = file.modifiedDate;
+                        storymapFolder['published_file'] = file;
+                    }
+                    callback(error, file);
+                });
+            } else {
+                gdrive_file_save(storymapFolder, 'published.json', content, function(error, file) {
+                    if(file) {
+                        storymapFolder['published_on'] = file.modifiedDate;
+                        storymapFolder['published_file'] = file;
+                    }
+                    callback(error, file);
+                });  
+            }          
         }
     });
 }

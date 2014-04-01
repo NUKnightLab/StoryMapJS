@@ -342,25 +342,36 @@ function storymap_dirty(is_dirty) {
 
 // callback(error || null)
 function storymap_save(callback) {
-    $('#storymap_save')
-        .addClass('disabled')
-        .removeClass('btn-primary')
+    var save_button = $('#storymap_save')
+        .addClass('disabled').removeClass('btn-primary')
         .html('<i class="icon-spinner icon-spin"></i> Saving...');   
         
-    gdrive_storymap_save_draft(_storymap_info, _storymap_data, function(error, file) {
+// Check latest info
+    gdrive_storymap_reload(_storymap_info, function(error) {
         if(error) {
-            $('#storymap_save')
-                .removeClass('disabled')
-                .addClass('btn-primary')
-                .html('<i class="icon-save"></i> Save');
+            callback(error);      
         } else {
-            $('#storymap_save')
-                .html('<i class="icon-save"></i> Save');
-            storymap_dirty(0);
-        }    
-        
-        callback(error);
+            var draft = _storymap_info.draft_file;
+            if(draft.modifiedDate > draft.modifiedByMeDate) {
+                $('#change_modal').modal('show');
+                //alert('this file has been modified by someone else');
+            } else {
+                $('#change_modal').modal('show');
+               // alert('this file is A-OK');
+            }
+       
+            gdrive_storymap_save_draft(_storymap_info, _storymap_data, function(error, file) {
+                if(error) {
+                    save_button.removeClass('disabled').addClass('btn-primary');
+                } else {           
+                    storymap_dirty(0);
+                }    
+                save_button.html('<i class="icon-save"></i> Save');
+                callback(error);
+            });
+        }
     });
+        
 }
 
 // callback(error || null)
@@ -386,7 +397,7 @@ function storymap_publish(callback) {
 
 function storymap_auto_save() {
     if(_dirty) {
-        $('#storymap_save').click();
+// TEMP        $('#storymap_save').click();
     }
 }
 
@@ -601,10 +612,10 @@ function storymap_init() {
                 show_error('Error loading StoryMap', error);
             } else {
                 _storymap_info = storymapFolder;
-                                
+                               
                 document.title = document.title.replace("TITLE", _storymap_info.title);
                                 
-                if(_storymap_info.published_on 
+                if(_storymap_info.published_on
                 && (_storymap_info.draft_on > _storymap_info.published_on)) {
                     $('#storymap_publish').show();
                 }
@@ -676,7 +687,23 @@ $(function() {
     //------------------------------------------------------------
 
     $('#storymap_options').click(function(event) {
-        $('#opt_modal').modal('show')
+        // TEMP$('#opt_modal').modal('show');
+        
+        gdrive_storymap_reload(_storymap_info, function(error) {
+            if(error) {
+                callback(error);      
+            } else {
+                var draft = _storymap_info.draft_file;
+                if(draft.modifiedDate > draft.modifiedByMeDate) {
+                    $('#change_modal').modal('show');
+                    //alert('this file has been modified by someone else');
+                } else {
+                    $('#change_modal').modal('show');
+                   // alert('this file is A-OK');
+                }
+
+            $('#change_modal').modal('show');
+        });
     });
 
     $('#storymap_save').click(function(event) {
@@ -1147,7 +1174,6 @@ $(function() {
                 $modal.trigger('modal_show');
             }        
         });  
-
 });
 
 //

@@ -32,6 +32,28 @@
     </div>
 </div>
 
+<div id="change_modal" class="modal hide fade" data-backdrop="static">
+    <div class="modal-body">
+        <p class="modal-msg"></p>
+        <label class="radio">
+            <input type="radio" name="change_modal_conflict" value="overwrite" checked>
+            Overwrite newer revision with your changes
+        </label>        
+        <label class="radio">
+            <input type="radio" name="change_modal_conflict" value="discard" checked>
+            Load newer revision and discard your changes
+        </label>                
+        <label class="radio">
+            <input type="radio" name="change_modal_conflict" value="save" checked>
+            Save your changes as a new StoryMap:
+            <input class="change-modal-save" type="text" size="40">
+        </label>                
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary">OK</button>
+    </div>
+</div>
+
 <div id="opt_modal" class="modal hide fade">
     <div class="modal-header">
         <h5>Options</h5>
