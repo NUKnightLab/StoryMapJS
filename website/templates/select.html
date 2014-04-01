@@ -479,9 +479,19 @@ $(function() {
                 } else {
                     html += ''
                         + '<div style="display: inline;float: right">'
+                        + '<div class="dropdown">'
+                        + '<a class="list-item-options dropdown-toggle" data-toggle="dropdown" href="javascript:" title="Options"><i class="icon-cog icon-large"></i></a>'
+                        + '<ul class="dropdown-menu pull-right" role="menu">'
+                        + '<li><a href="javascript:" class="list-item-rename">Rename</a></li>'
+                        + '<li><a href="javascript:" class="list-item-copy">Copy</a></li>'
+                        + '<li><a href="javascript:" class="list-item-delete">Delete</a></li>'
+                        + '</ul>'
+                        + '</div>'
+                        /*
                         + '<a class="list-item-rename" href="javascript:" title="Rename"><i class="icon-keyboard icon-large"></i></a>'
                         + '<a class="list-item-copy" href="javascript:" title="Copy"><i class="icon-copy icon-large"></i></a>'
                         + '<a class="list-item-delete" href="javascript:" title="Delete"><i class="icon-trash icon-large"></i></a>'
+                        */
                         + '</div>'
                         + '<a class="title" href="'+href+'">'+item.title+'</a>';
 
