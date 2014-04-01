@@ -1,5 +1,5 @@
 /*
-file/folder resource object
+folder resource object
 ---------------------------
 alternateLink: "https://docs.google.com/folderview?id=0B71wddT5Cwf-cXBDa0FHNk9qRE0&usp=drivesdk"
 appDataContents: false
@@ -25,6 +25,45 @@ title: "Population"
 userPermission: Object
 webViewLink: "https://www.googledrive.com/host/0B71wddT5Cwf-cXBDa0FHNk9qRE0/"
 writersCanShare: true
+=============================================================================
+file resource object
+---------------------------
+alternateLink: "https://drive.google.com/file/d/0B71wddT5Cwf-d3g3Q0I5SzBHYW8/edit?usp=drivesdk"
+appDataContents: false
+copyable: true
+createdDate: "2014-04-01T15:03:25.860Z"
+downloadUrl: "https://doc-10-bc-docs.googleusercontent.com/docs/securesc/cpj9lpeehsbrr3ab71626i3j6vmvbk8c/ophql50virn4ha6do95oeahsgba5qei6/1396360800000/02037372822736866994/02037372822736866994/0B71wddT5Cwf-d3g3Q0I5SzBHYW8?h=16653014193614665626&e=download&gd=true"
+editable: true
+etag: ""a6_EkMpZVptPLZVx1NMw9XbNB-I/MTM5NjM2NDYwOTc5Ng""
+fileExtension: "json"
+fileSize: "258"
+headRevisionId: "0B71wddT5Cwf-eGhtYXpsTVlSaFZSQjlVQUdKQmhrU0NHL3dRPQ"
+iconLink: "https://ssl.gstatic.com/docs/doclist/images/icon_10_generic_list.png"
+id: "0B71wddT5Cwf-d3g3Q0I5SzBHYW8"
+kind: "drive#file"
+labels: Object
+lastModifyingUser: Object
+displayName: "J Wilson"
+isAuthenticatedUser: true
+kind: "drive#user"
+permissionId: "02037372822736866994"
+__proto__: Object
+lastModifyingUserName: "J Wilson"
+lastViewedByMeDate: "2014-04-01T15:03:29.796Z"
+md5Checksum: "d93b3db67fed021933c6e2076f20f040"
+mimeType: "application/json"
+modifiedByMeDate: "2014-04-01T15:03:29.796Z"
+modifiedDate: "2014-04-01T15:03:29.796Z"
+originalFilename: "draft.json"
+ownerNames: Array[1]
+owners: Array[1]
+parents: Array[1]
+quotaBytesUsed: "258"
+shared: true
+title: "draft.json"
+userPermission: Object
+webContentLink: "https://docs.google.com/uc?id=0B71wddT5Cwf-d3g3Q0I5SzBHYW8&export=download"
+writersCanShare: true
 */
 /*
 permission resource object
@@ -42,8 +81,8 @@ var CLIENT_ID = '1087881665848.apps.googleusercontent.com';
 var SCOPES = 'https://www.googleapis.com/auth/drive';
 
 // Folders
-var STORYMAP_ROOT_FOLDER = 'KnightLabTools';    // new
-var STORYMAP_FOLDER = 'storymaps';      
+var STORYMAP_ROOT_FOLDER = 'KnightLabStoryMap'; // 'KnightLabTools';    // new
+var STORYMAP_FOLDER = 'public'; //'storymaps';      
 
 var OLD_STORYMAP_ROOT_FOLDER = 'KnightLabStoryMap'; // old
 var OLD_STORYMAP_FOLDER = 'public';        
@@ -151,7 +190,6 @@ function gdrive_perm_public(id, callback) {
     var request = gapi.client.drive.permissions.insert({
         'fileId': id,
         'resource': {
-            //'value': '',
             'type': 'anyone',
             'role': 'reader'
         }
@@ -497,6 +535,9 @@ function gdrive_move_list(oldParent, newParent, callback) {
 
 function gdrive_storymap_init(callback) {
     // Get/create new folder path
+    gdrive_path_create([STORYMAP_ROOT_FOLDER, STORYMAP_FOLDER], null, callback);
+    
+/* commented out new folder migration code --->
     gdrive_path_create([STORYMAP_ROOT_FOLDER, STORYMAP_FOLDER], null, function(error, storymapFolder) {
         if(error) {
             callback(error);
@@ -542,6 +583,7 @@ function gdrive_storymap_init(callback) {
             });
         }
     });
+<---- folder migration code */
 }
 
 //
@@ -557,6 +599,7 @@ function _gdrive_storymap_process(folder, callback) {
             for(var i = 0; i < file_list.length; i++) {
                 var file = file_list[i];        
                 if(file.title == 'draft.json') {
+console.log(file);
                     folder['draft_on'] = file.modifiedDate;
                 } else if(file.title == 'published.json') {
                     folder['published_on'] = file.modifiedDate;             
