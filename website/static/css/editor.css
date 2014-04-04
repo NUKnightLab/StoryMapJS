@@ -140,12 +140,6 @@ a.help:hover {text-decoration: none;}
 .upload-conflict-rename input[type="radio"] {margin-top: 8px;}
 .upload-conflict-rename input[type="text"] {margin-left: 4px;margin-bottom: 4px;}
 
-/*  change modal
-*/
-.change-conflict-save {vertical-align: text-bottom;} 
-.change-conflict-save input[type="radio"] {margin-top: 8px;}
-.change-conflict-save input[type="text"] {margin-left: 4px;margin-bottom: 4px;}
-
 #error_modal {background-color: #f2dede;color: #b94a48;border-color: #eed3d7;}
 
 #progress_modal i {margin-right: 10px;}

@@ -327,7 +327,7 @@ $(function() {
                     
         $modal.trigger('progress_show', 'Creating StoryMap');
          
-        gdrive_storymap_create(name, data, _storymap_folder, function(error, folder) {
+        gdrive_storymap_create(_storymap_folder, name, data, function(error, folder) {
             if(error) {
                 $modal.trigger('error_show', format_error('Error creating StoryMap', error));
             } else {
@@ -487,14 +487,9 @@ $(function() {
                         + '<li><a href="javascript:" class="list-item-delete">Delete</a></li>'
                         + '</ul>'
                         + '</div>'
-                        /*
-                        + '<a class="list-item-rename" href="javascript:" title="Rename"><i class="icon-keyboard icon-large"></i></a>'
-                        + '<a class="list-item-copy" href="javascript:" title="Copy"><i class="icon-copy icon-large"></i></a>'
-                        + '<a class="list-item-delete" href="javascript:" title="Delete"><i class="icon-trash icon-large"></i></a>'
-                        */
                         + '</div>'
                         + '<a class="title" href="'+href+'">'+item.title+'</a>';
-
+                        
                     if(item.published_on) {
                         html += '<p class="modded">Published on '+format_dt(item.published_on)+'</p>';
                     } 
