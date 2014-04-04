@@ -93,7 +93,7 @@ function show_error(msg, err) {
             message += '<p><a class="report" href="'+link+'">Report this error to the Knight Lab</a></p>';
         }
     }
-       
+    
     hide_progress();
     $('#error_modal .modal-msg').html(message);
     $('#error_modal').modal('show');
@@ -115,8 +115,7 @@ function hide_progress() {
 
 function show_confirm(msg, callback) {
     $('#confirm_modal .modal-msg').html(msg);
-    $('#confirm_modal .btn-primary').bind('click.confirm', function(event) {
-        $(this).unbind('click.confirm');
+    $('#confirm_modal .btn-primary').one('click.confirm', function(event) {
         $('#confirm_modal').modal('hide');
         if(callback) {
             callback();
