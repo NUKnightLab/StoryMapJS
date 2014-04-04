@@ -473,13 +473,14 @@ $(function() {
             var html = '';
             
             for(var i = 0; i < _storymap_list.length; i++) {
-                var item = _storymap_list[i];                
+                var item = _storymap_list[i];    
+                var locked = storymap_is_locked(item);        
                 var href = '/edit.html?id='+item.id;
             
                 html += '<tr id="'+item.id+'"><td>';
                     
-                // If owner, show actions        
-                if(item.userPermission.role == 'owner') {
+                // If owner and unlocked, show actions        
+                if(item.userPermission.role == 'owner' && !locked) {
                     html += '<div style="display: inline;float: right">';
                     
                     if(item.error) {
@@ -515,8 +516,12 @@ $(function() {
                     
                     html += '<p class="modded"><i class="icon-warning-sign" title="Error"></i>'+item.error+'</p>';
                 } else {
-                    html += '<a class="title" href="'+href+'">'+item.title+'</a>';
-
+                    if(locked) {
+                        html += item.title;                  
+                    } else {
+                        html += '<a class="title" href="'+href+'">'+item.title+'</a>';
+                    }
+                    
                     if(item.userPermission.role == 'owner') {
                         if(item.permissions.length) {
                             html += '<a data-toggle="tooltip" data-placement="right" data-trigger="hover"'
@@ -539,7 +544,7 @@ $(function() {
                         } 
                         html += 'Edited on '+format_dt(item.draft_on)+'</p>';
                     }                       
-                    if(storymap_is_locked(item)) {
+                    if(locked) {
                         html += '<p class="locked"><i class="icon-lock"></i> Currently being edited by '+item.lock_file.lastModifyingUserName+'</p>';                   
                     }              
                 }
