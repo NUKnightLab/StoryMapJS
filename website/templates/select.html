@@ -473,9 +473,7 @@ $(function() {
             var html = '';
             
             for(var i = 0; i < _storymap_list.length; i++) {
-                var item = _storymap_list[i];  
-console.log(item.title, item);
-              
+                var item = _storymap_list[i];                
                 var href = '/edit.html?id='+item.id;
             
                 html += '<tr id="'+item.id+'"><td>';
@@ -540,7 +538,10 @@ console.log(item.title, item);
                             html += '<i class="icon-warning-sign" title="This draft is newer than the most recently published version."></i>';
                         } 
                         html += 'Edited on '+format_dt(item.draft_on)+'</p>';
-                    }                 
+                    }                       
+                    if(storymap_is_locked(item)) {
+                        html += '<p class="locked"><i class="icon-lock"></i> Currently being edited by '+item.lock_file.lastModifyingUserName+'</p>';                   
+                    }              
                 }
 
                 html += '</td></tr>';             

@@ -325,12 +325,16 @@ a.help:hover {text-decoration: none;}
 }
 .entry-list .table-toggles {display: inline-block;float: right;}
 .entry-list .title {display: inline;margin-bottom: 6px;}
-.entry-list .modded {
+.entry-list .modded, .entry-list .locked {
 	font-size: .8em;
 	margin: 0 0 0px;
 	line-height: 1.6em;
 	color:#999;
 }
+.entry-list .locked {
+    color: #e35a25;
+}
+
 .entry-list i.icon-warning-sign { margin-right: 0.5em; }
 
 .entry-list .list-item-delete {margin-left: 10px;}
@@ -341,7 +345,7 @@ a.help:hover {text-decoration: none;}
 .entry-list .list-item-shared {margin-left: 10px;color: #999;}
 
 
-#entry_user_info, .entry-list .modded {
+#entry_user_info, .entry-list .modded, .entry-list .locked {
 	font-family: "Apres RE","Helvetica Neue",Helvetica,Arial,sans-serif;
 }
 

@@ -33,6 +33,10 @@
 <!-- === jquery-minicolors -->
 <link rel="stylesheet" href="{{ STATIC_URL }}/jquery-minicolors/jquery.minicolors.css">
 <script type="text/javascript" src="{{ STATIC_URL }}/jquery-minicolors/jquery.minicolors.min.js"></script>
+<!-- === Moment.js -->
+<script src="{{ STATIC_URL }}/js/moment.min.js"></script>
+<script src="{{ STATIC_URL }}/js/moment-timezone.min.js"></script>
+<script src="{{ STATIC_URL }}/js/moment-timezone-data.js"></script>
 <!-- === editor -->
 <script type="text/javascript" src="{{ STATIC_URL }}/js/editor.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}/js/gdrive.js"></script>
@@ -580,54 +584,72 @@ function map_init() {
     slides_load();
 }
 
+function storymap_abort(message) {
+    show_message(message, function() { document.location.href = 'select.html'; });
+}
+
 function storymap_init() {
     show_progress('Loading StoryMap');
       
     var params = parseQueryString();
     if(!params.id) {
-        show_message('Could not load StoryMap.  Expected "id" parameter.', function() {
-            document.location.href = 'select.html';           
-        });
+        storymap_abort('Could not load StoryMap.  Expected "id" parameter.');
     } else {
         // Load storymap folder
         gdrive_storymap_load(params.id, function(error, storymapFolder) {
             if(error) {
-                show_error('Error loading StoryMap', error);
+                storymap_abort(format_error('Error loading StoryMap', error));
+            } else if(storymap_is_locked(storymapFolder)) {
+                storymap_abort('This StoryMap is currently being edited by <strong>'+storymapFolder.lock_file.ownerNames[0]+'</strong>');
             } else {
-                _storymap_info = storymapFolder;
-                               
-                document.title = document.title.replace("TITLE", _storymap_info.title);
-                                
-                if(_storymap_info.published_on
-                && (_storymap_info.draft_on > _storymap_info.published_on)) {
-                    $('#storymap_publish').show();
-                }
-                
-                // List image files in folder
-                gdrive_storymap_list(storymapFolder, function(error, d) {
+                gdrive_storymap_lock(storymapFolder, function(error) {
                     if(error) {
-                        show_error('Error listing StoryMap files', error);
-                    } else {
-                        for(var key in d) {
-                            if(d[key].title.match(/(.jpg|.gif|.png)$/i)) {
-                                _storymap_files.push(d[key].title);                           
-                            }
+                        storymap_abort(format_error('Could not lock StoryMap', error));                   
+                    } else {  
+                        setInterval(function() {
+                            gdrive_storymap_lock(_storymap_info, function(error) {
+// TEMP
+                                if(error) {
+                                    console.log('ERROR LOCKING FILE', error);
+                                } else {
+                                    console.log('FILE LOCKED');
+                                }          
+                            });
+                        }, 60000);     
+                        
+                         _storymap_info = storymapFolder;                              
+                        document.title = document.title.replace("TITLE", _storymap_info.title);
+                                
+                        if(_storymap_info.published_on && (_storymap_info.draft_on > _storymap_info.published_on)) {
+                            $('#storymap_publish').show();
                         }
-                        _storymap_files.sort();
-                         
-                        // Load draft
-                        gdrive_storymap_load_draft(storymapFolder, function(error, data) {
+                
+                        // List image files in folder
+                        gdrive_storymap_list(storymapFolder, function(error, d) {
                             if(error) {
-                                show_error('Error loading StoryMap data', error);
+                                show_error('Error listing StoryMap files', error);
                             } else {
-                                _storymap_data = data;
-                                _slides = _storymap_data.storymap.slides;
-                    
-                                map_init();
-                            }
+                                for(var key in d) {
+                                    if(d[key].title.match(/(.jpg|.gif|.png)$/i)) {
+                                        _storymap_files.push(d[key].title);                           
+                                    }
+                                }
+                                _storymap_files.sort();
+                         
+                                // Load draft
+                                gdrive_storymap_load_draft(storymapFolder, function(error, data) {
+                                    if(error) {
+                                        show_error('Error loading StoryMap data', error);
+                                    } else {
+                                        _storymap_data = data;
+                                        _slides = _storymap_data.storymap.slides;                   
+                                        map_init();
+                                    }
+                                });   
+                            }            
                         });   
-                    }            
-                });                
+                    }
+                }); // end gdrive_storymap_lock            
             }
         });
     }
@@ -668,7 +690,20 @@ $(function() {
     //------------------------------------------------------------
     // Menu bar
     //------------------------------------------------------------
-
+    
+    $('#storymap_list').click(function(event) {
+        $('#storymap_list')
+            .addClass('disabled')
+            .html('<i class="icon-spinner icon-spin"></i> My Maps');   
+ 
+        // Delete lock file
+        if(_storymap_info && _storymap_info.lock_file) {
+            gdrive_storymap_unlock(_storymap_info, function(error) {
+                document.location.href = '/select.html';
+            });
+        }
+    });
+    
     $('#storymap_options').click(function(event) {
         $('#opt_modal').modal('show');
     });

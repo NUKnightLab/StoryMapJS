@@ -97,7 +97,7 @@ var MULTIPART_CLOSE = "\r\n--" + BOUNDARY + "--";
 
 // Other
 var GDRIVE_FOLDER_MIME_TYPE = 'application/vnd.google-apps.folder';
-
+var STORYMAP_LOCK_FILE = 'editor.lock';
 
 function utf8_to_b64(str) {
     return window.btoa(unescape(encodeURIComponent(str)));
@@ -473,9 +473,52 @@ function gdrive_path_create(path_list, parent, callback) {
     });
 }
 
+
 //////////////////////////////////////////////////////////////////////
 // StoryMap stuff
 //////////////////////////////////////////////////////////////////////
+
+//
+// lock storymap
+// callback(error)
+//
+function gdrive_storymap_lock(folder, callback) {
+    if(folder.lock_file) {
+        var request = gapi.client.drive.files.touch({
+            'fileId': folder.lock_file.id
+        });
+        gdrive_exec(request, function(error, f) {
+            if(!error) {
+                folder['lock_file'] = f;
+            }
+            callback(error);
+        });            
+    } else {
+        gdrive_file_create(folder, STORYMAP_LOCK_FILE, 'edit', function(error, f) {
+            if(!error) {
+                folder['lock_file'] = f;
+            }
+            callback(error);            
+        });    
+    }
+ }
+ 
+ // 
+ // unlock storymap
+ // callback(error)
+ //
+function gdrive_storymap_unlock(folder, callback) {
+    if(folder.lock_file) {
+        gdrive_delete(folder.lock_file.id, function(error) {
+            if(!error) {
+                folder.lock_file = null;
+            }
+            callback(error);
+        });
+    } else {
+        callback(null);
+    } 
+}
 
 //
 // Get/create StoryMap folders on google drive
@@ -521,6 +564,8 @@ function _gdrive_storymap_process(folder, callback) {
     folder['published_on'] = '';
     folder['published_file'] = null;
     
+    folder['lock_file'] = null;
+    
     gdrive_folder_list(folder.id, function(error, file_list) {
         if(!error && file_list) {
             for(var i = 0; i < file_list.length; i++) {
@@ -531,6 +576,8 @@ function _gdrive_storymap_process(folder, callback) {
                 } else if(file.title == 'published.json') {
                     folder['published_on'] = file.modifiedDate;   
                     folder['published_file'] = file_list[i];          
+                } else if(file.title == STORYMAP_LOCK_FILE) {
+                    folder['lock_file'] = file_list[i];
                 }
             }            
         }        
@@ -563,7 +610,7 @@ function gdrive_storymap_list(parentFolder, callback) {
                         if(error) {
                             callback(error);
                         } else {
-                            folder_map[folder.id] = folder;          
+                            folder_map[folder.id] = folder;   
                             _process_folders(folder_list);
                         }
                     });

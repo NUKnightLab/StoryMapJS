@@ -137,3 +137,15 @@ function show_message(msg, callback) {
     });
     $('#message_modal').modal('show');
 }
+
+function storymap_is_locked(storymapFolder) {
+    if(storymapFolder.lock_file) {
+        var lock = storymapFolder.lock_file;
+        if(!lock.lastModifyingUser.isAuthenticatedUser) {
+            var now = moment().unix();
+            var then = moment(lock.modifiedDate).unix();           
+            return((now - then) < 360);
+         }
+    } 
+    return false;
+}
