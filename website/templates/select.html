@@ -379,7 +379,7 @@ $(function() {
                             return;
                         } 
                         
-                        gdrive_storymap_init(true, function(error, publicFolder) {
+                        gdrive_storymap_init(function(error, publicFolder) {
                             if(error) {
                                 $modal.trigger('error_show', format_error('Error initializing StoryMap', error));
                                 $modal.trigger('progress_hide');
@@ -557,7 +557,7 @@ $(function() {
                 if(yes) {
                     $modal.trigger('progress_show', 'Deleting StoryMap');
                     
-                    gdrive_file_delete(item.id, function(error, response) {
+                    gdrive_delete(item.id, function(error) {
                         if(error) {
                             $modal.trigger('error_show', format_error('Error deleting StoryMap', error));
                         } else {
