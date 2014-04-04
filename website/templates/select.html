@@ -378,7 +378,7 @@ $(function() {
                             $modal.trigger('progress_hide');
                             return;
                         } 
-                        
+                         
                         gdrive_storymap_init(function(error, publicFolder) {
                             if(error) {
                                 $modal.trigger('error_show', format_error('Error initializing StoryMap', error));
@@ -426,27 +426,36 @@ $(function() {
             if(!force_reload && _storymap_list && _storymap_list.length > 0) {
                 $modal.find('.entry-list').show();
                 $modal.trigger('display_list', 'title');               
-            } else {                            
+            } else {       
+                // List all in storymap folder                     
                 gdrive_storymap_list(_storymap_folder, function(error, storymap_map) {                
                     if(error) {
                         $modal.trigger('error_show', format_error('Error getting StoryMap list', error));
                         $modal.trigger('progress_hide');
                     } else {
-                        _storymap_map = storymap_map;
-                        _storymap_list = [];
-                        _storymap_names = [];
+                        // List all 'shared with me'
+                        gdrive_storymap_list_shared(storymap_map, function(error) {
+                            if(error) {
+                                $modal.trigger('error_show', format_error('Error getting StoryMap list', error));
+                                $modal.trigger('progress_hide');                               
+                            } else {
+                                _storymap_map = storymap_map;
+                                _storymap_list = [];
+                                _storymap_names = [];
                         
-                        for(var id in _storymap_map) {
-                            _storymap_list.push(_storymap_map[id]);
-                            _storymap_names.push(_storymap_map[id].title.toLowerCase());
-                        }
+                                for(var id in _storymap_map) {
+                                    _storymap_list.push(_storymap_map[id]);
+                                    _storymap_names.push(_storymap_map[id].title.toLowerCase());
+                                }
                         
-                        if(_storymap_list.length) {
-                            $modal.find('.entry-list').show();
-                            $modal.trigger('display_list', 'title');               
-                        } else {
-                            $modal.trigger('show_type');
-                        }                    
+                                if(_storymap_list.length) {
+                                    $modal.find('.entry-list').show();
+                                    $modal.trigger('display_list', 'title');               
+                                } else {
+                                    $modal.trigger('show_type');
+                                }   
+                            }
+                        });                 
                     }
                 });       
 
@@ -464,44 +473,76 @@ $(function() {
             var html = '';
             
             for(var i = 0; i < _storymap_list.length; i++) {
-                var item = _storymap_list[i];                
+                var item = _storymap_list[i];  
+console.log(item.title, item);
+              
                 var href = '/edit.html?id='+item.id;
             
                 html += '<tr id="'+item.id+'"><td>';
-            
-                 if(item.error) {
-                    html += ''
-                        + '<div style="display: inline;float: right">'
-                        + '<a class="list-item-menu list-item-delete" href="javascript:" title="Delete"><i class="icon-trash icon-large"></i></a>'
-                        + '</div>'
-                        + item.title
-                        + '<p class="modded"><i class="icon-warning-sign" title="Error"></i>'+item.error+'</p>';
+                    
+                // If owner, show actions        
+                if(item.userPermission.role == 'owner') {
+                    html += '<div style="display: inline;float: right">';
+                    
+                    if(item.error) {
+                        html += '<a class="list-item-menu list-item-delete" href="javascript:" title="Delete"><i class="icon-trash icon-large"></i></a>';                
+                    } else {
+                        html += '<div class="dropdown">'
+                            + '<a class="list-item-options dropdown-toggle" data-toggle="dropdown" href="javascript:" title="Options"><i class="icon-cog icon-large"></i></a>'
+                            + '<ul class="dropdown-menu pull-right" role="menu">'
+                            + '<li><a href="javascript:" class="list-item-rename">Rename</a></li>'
+                            + '<li><a href="javascript:" class="list-item-copy">Copy</a></li>'
+                            + '<li><a href="javascript:" class="list-item-delete">Delete</a></li>'
+                            + '</ul>'
+                            + '</div>';
+                    }  
+                    
+                    html += '</div>';              
+                } 
+                
+                if(item.error) {
+                    html += item.title;
+                    
+                    if(item.userPermission.role == 'owner') {
+                        if(item.permissions.length) {
+                            html += '<a data-toggle="tooltip" data-placement="right" data-trigger="hover"'
+                                + ' data-title="Shared with '+item.permissions.length+' user(s)">'
+                                + '<i class="list-item-shared icon-link"></i></a>';
+                        }
+                    } else {
+                        html += '<a data-toggle="tooltip" data-placement="right" data-trigger="hover"'
+                            + ' data-title="Shared by '+item.ownerNames[0]+'">'
+                            + '<i class="list-item-shared icon-link"></i></a>';
+                    }
+                    
+                    html += '<p class="modded"><i class="icon-warning-sign" title="Error"></i>'+item.error+'</p>';
                 } else {
-                    html += ''
-                        + '<div style="display: inline;float: right">'
-                        + '<div class="dropdown">'
-                        + '<a class="list-item-options dropdown-toggle" data-toggle="dropdown" href="javascript:" title="Options"><i class="icon-cog icon-large"></i></a>'
-                        + '<ul class="dropdown-menu pull-right" role="menu">'
-                        + '<li><a href="javascript:" class="list-item-rename">Rename</a></li>'
-                        + '<li><a href="javascript:" class="list-item-copy">Copy</a></li>'
-                        + '<li><a href="javascript:" class="list-item-delete">Delete</a></li>'
-                        + '</ul>'
-                        + '</div>'
-                        + '</div>'
-                        + '<a class="title" href="'+href+'">'+item.title+'</a>';
-                        
+                    html += '<a class="title" href="'+href+'">'+item.title+'</a>';
+
+                    if(item.userPermission.role == 'owner') {
+                        if(item.permissions.length) {
+                            html += '<a data-toggle="tooltip" data-placement="right" data-trigger="hover"'
+                                + ' data-title="Shared with '+item.permissions.length+' user(s)">'
+                                + '<i class="list-item-shared icon-link"></i></a>';
+                         }
+                    } else {
+                        html += '<a data-toggle="tooltip" data-placement="right" data-trigger="hover"'
+                            + ' data-title="Shared by '+item.ownerNames[0]+'">'
+                            + '<i class="list-item-shared icon-link"></i></a>';
+                    }
+
                     if(item.published_on) {
                         html += '<p class="modded">Published on '+format_dt(item.published_on)+'</p>';
-                    } 
+                    }                    
                     if(item.draft_on > item.published_on) {
                         html += '<p class="modded">';
                         if (item.published_on) {
                             html += '<i class="icon-warning-sign" title="This draft is newer than the most recently published version."></i>';
                         } 
                         html += 'Edited on '+format_dt(item.draft_on)+'</p>';
-                    } 
-                }     
-            
+                    }                 
+                }
+
                 html += '</td></tr>';             
             }
         
@@ -518,6 +559,8 @@ $(function() {
             $table.find('.list-item-delete').click(function(event) {
                 $modal.trigger('delete_storymap', this);
             }); 
+            
+            $('a[data-toggle="tooltip"]').tooltip(); 
             
             $modal.trigger('progress_hide');
         })
@@ -558,6 +601,8 @@ $(function() {
                     $modal.trigger('progress_show', 'Deleting StoryMap');
                     
                     gdrive_delete(item.id, function(error) {
+                    console.log(item.id, error);
+                    
                         if(error) {
                             $modal.trigger('error_show', format_error('Error deleting StoryMap', error));
                         } else {

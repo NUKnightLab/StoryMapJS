@@ -255,6 +255,24 @@ function gdrive_delete(id, callback) {
     gdrive_exec(gapi.client.drive.files.delete({'fileId': id}), callback);
 }
 
+// callback(error, <parent resource>)
+function gdrive_parent_add(id, parentId, callback) {
+    var request = gapi.client.drive.parents.insert({
+        'fileId': id,
+        'resource': {'id': parentId}
+    });
+    gdrive_exec(request, callback);
+}
+
+// callback(error)
+function gdrive_parent_remove(id, parentId) {
+    var request = gapi.client.drive.parents.delete({
+        'fileId': id,
+        'parentId': parentId,
+    });
+    gdrive_exec(request, callback);
+}
+
 //////////////////////////////////////////////////////////////////////
 // File handling
 //
@@ -468,7 +486,32 @@ function gdrive_storymap_init(callback) {
 }
 
 //
-// Process storymap folder by adding draft+published information
+// Process storymap folder - add permissions for other writers
+// callback(error)
+//
+function _gdrive_storymap_perms(folder, callback) {
+    folder['permissions'] = [];
+    
+    if(folder.userPermission.role == 'owner') {
+        gdrive_perm_list(folder.id, function(error, perm_list) {
+            if(!error && perm_list) {
+                for(var i = 0; i < perm_list.length; i++) {
+                    var perm = perm_list[i];
+                    if(perm.role == 'writer') {
+                        folder['permissions'].push(perm);
+                    }                
+                }
+            }  
+              
+            callback(error);
+        });
+    } else {
+        callback(null);
+    }
+}
+
+//
+// Process storymap folder -- add draft+published information
 // callback(error)
 //
 function _gdrive_storymap_process(folder, callback) {
@@ -477,7 +520,7 @@ function _gdrive_storymap_process(folder, callback) {
 
     folder['published_on'] = '';
     folder['published_file'] = null;
-
+    
     gdrive_folder_list(folder.id, function(error, file_list) {
         if(!error && file_list) {
             for(var i = 0; i < file_list.length; i++) {
@@ -512,24 +555,68 @@ function gdrive_storymap_list(parentFolder, callback) {
         if(folder_list && folder_list.length) {
             folder = folder_list.shift();
             
-            _gdrive_storymap_process(folder, function(error) {
+            _gdrive_storymap_perms(folder, function(error) {
                 if(error) {
                     callback(error);
                 } else {
-                    folder_map[folder.id] = folder;          
-                    _process_folders(folder_list);
+                    _gdrive_storymap_process(folder, function(error) {
+                        if(error) {
+                            callback(error);
+                        } else {
+                            folder_map[folder.id] = folder;          
+                            _process_folders(folder_list);
+                        }
+                    });
                 }
             });
         } else {
             callback(null, folder_map);
         }
     };
-        
+    
+    // List all storymaps in parentFolder (public)
     gdrive_folder_list(parentFolder.id, function(error, folder_list) {
         if(error) {
             callback(error);
         } else {
             _process_folders(folder_list);
+        }
+    });
+}
+
+//
+// Add storymaps that are 'shared with me' to folder_map
+// callback(error)
+//
+function gdrive_storymap_list_shared(folder_map, callback) {    
+    var _process_folders = function(folder_list) {
+        if(folder_list && folder_list.length) {
+            folder = folder_list.shift();     
+        
+            _gdrive_storymap_process(folder, function(error) {
+                if(error) {
+                    callback(error);
+                } else if(!folder.error) {
+                    folder_map[folder.id] = folder;          
+                    _process_folders(folder_list);
+                }
+            });     
+        } else {
+            callback(null);
+        }
+    };
+    
+    var request = gapi.client.drive.files.list({
+        //q: "trashed=false and sharedWithMe=true and title='draft.json'"
+        q: "trashed=false and sharedWithMe=true and mimeType='"+GDRIVE_FOLDER_MIME_TYPE+"'"       
+    });
+    gdrive_exec(request, function(error, response) {
+        if(error) {
+            callback(error);
+        } else if(!response) {
+            callback('expected response');
+        } else {
+            _process_folders(response.items);        
         }
     });
 }
