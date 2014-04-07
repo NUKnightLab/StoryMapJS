@@ -140,7 +140,6 @@ a.help:hover {text-decoration: none;}
 .upload-conflict-rename input[type="radio"] {margin-top: 8px;}
 .upload-conflict-rename input[type="text"] {margin-left: 4px;margin-bottom: 4px;}
 
-
 #error_modal {background-color: #f2dede;color: #b94a48;border-color: #eed3d7;}
 
 #progress_modal i {margin-right: 10px;}
@@ -334,8 +333,10 @@ a.help:hover {text-decoration: none;}
 }
 .entry-list i.icon-warning-sign { margin-right: 0.5em; }
 
-.entry-list .list-item-edit {margin-left: 10px;}
 .entry-list .list-item-delete {margin-left: 10px;}
+.entry-list .list-item-rename {margin-left: 10px;}
+.entry-list .list-item-copy {margin-left: 10px;}
+.entry-list .list-item-options {margin-left: 10px;}
 
 #entry_user_info, .entry-list .modded {
 	font-family: "Apres RE","Helvetica Neue",Helvetica,Arial,sans-serif;
@@ -345,13 +346,19 @@ a.help:hover {text-decoration: none;}
 	color:#333;
 	font-size:18px;
 }
-a.list-item-delete {
+
+/*a.list-item-delete, a.list-item-rename, a.list-item-copy,*/
+a.list-item-options {
 	color:#999;
 }
-a.list-item-delete:hover {
+
+/*a.list-item-delete:hover, a.list-item-rename:hover, a.list-item-copy:hover*/
+a.list-item-options:hover {
 	text-decoration:none;
-	color:#DA0000;
+    color: #1dacd6;
 }
+
+
 /*	EDIT PAGE
 ----------------------------------------------------- */
 
