@@ -336,12 +336,7 @@ a.help:hover {text-decoration: none;}
 }
 
 .entry-list i.icon-warning-sign { margin-right: 0.5em; }
-
-.entry-list .list-item-delete {margin-left: 10px;}
-.entry-list .list-item-rename {margin-left: 10px;}
-.entry-list .list-item-copy {margin-left: 10px;}
 .entry-list .list-item-options {margin-left: 10px;}
-
 .entry-list .list-item-shared {margin-left: 10px;color: #999;}
 
 

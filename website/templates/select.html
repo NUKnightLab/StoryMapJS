@@ -18,10 +18,18 @@
 <script src="{{ STATIC_URL }}/js/moment.min.js"></script>
 <script src="{{ STATIC_URL }}/js/moment-timezone.min.js"></script>
 <script src="{{ STATIC_URL }}/js/moment-timezone-data.js"></script>
+<!-- === auth/sharing -->
+{% include '_credentials.html' %}
+<script type="text/javascript">
+window.onload = function() { gapi.load('drive-share', function() { /* noop */ }); }
+</script>
+<script type="text/javascript" src="https://apis.google.com/js/api.js"></script>
 <!-- === editor -->
 <script type="text/javascript" src="{{ STATIC_URL }}/js/gdrive.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}/js/editor.js"></script>
 <link rel="stylesheet" type="text/css" href="{{ static_url }}/css/editor.css">
+</head>
+<body>
 
 {% include '_editor.html' %}
 
@@ -491,6 +499,7 @@ $(function() {
                             + '<ul class="dropdown-menu pull-right" role="menu">'
                             + '<li><a href="javascript:" class="list-item-rename">Rename</a></li>'
                             + '<li><a href="javascript:" class="list-item-copy">Copy</a></li>'
+                            + '<li><a href="javascript:" class="list-item-share">Share</a></li>'
                             + '<li><a href="javascript:" class="list-item-delete">Delete</a></li>'
                             + '</ul>'
                             + '</div>';
@@ -566,6 +575,10 @@ $(function() {
                 $modal.trigger('delete_storymap', this);
             }); 
             
+            $table.find('.list-item-share').click(function(event) {
+                $modal.trigger('share_storymap', this);
+            }); 
+            
             $('a[data-toggle="tooltip"]').tooltip(); 
             
             $modal.trigger('progress_hide');
@@ -584,8 +597,7 @@ $(function() {
             $('.entry-rename-title').focus();
         })
         .on('show_copy', function(event, obj) {
-            var $tr = $(obj).closest('tr');
-            var id = $tr.attr('id');
+            var id = $(obj).closest('tr').attr('id');
             var item = _storymap_map[id];
 
             $('.entry-copy-title-old').html(item.title);            
@@ -595,6 +607,13 @@ $(function() {
             $(this).find('.entry-panel').hide();
             $(this).find('.entry-copy').show();       
             $('.entry-copy-title').focus();
+        })
+        .on('share_storymap', function(event, obj) {
+            var id = $(obj).closest('tr').attr('id');
+         
+            var sc = new gapi.drive.share.ShareClient(_GDRIVE_APP_ID);
+            sc.setItemIds([id]);            
+            sc.showSettingsDialog();         
         })
         .on('delete_storymap', function(event, obj) {
             var $modal = $(this);
@@ -606,9 +625,7 @@ $(function() {
                 if(yes) {
                     $modal.trigger('progress_show', 'Deleting StoryMap');
                     
-                    gdrive_delete(item.id, function(error) {
-                    console.log(item.id, error);
-                    
+                    gdrive_delete(item.id, function(error) {                    
                         if(error) {
                             $modal.trigger('error_show', format_error('Error deleting StoryMap', error));
                         } else {

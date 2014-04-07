@@ -81,10 +81,14 @@ role: "reader",
 type: "anyone"
 */
 
-
 // Auth
-var CLIENT_ID = '1087881665848.apps.googleusercontent.com';
-var SCOPES = 'https://www.googleapis.com/auth/drive';
+var CLIENT_ID = _GDRIVE_CLIENT_ID;
+
+var SCOPES = [
+    'https://www.googleapis.com/auth/drive',        // original
+    'https://www.googleapis.com/auth/drive.install',
+    'https://www.googleapis.com/auth/userinfo.profile'
+];
 
 // Folders
 var STORYMAP_ROOT_FOLDER = 'KnightLabStoryMap';
@@ -98,6 +102,13 @@ var MULTIPART_CLOSE = "\r\n--" + BOUNDARY + "--";
 // Other
 var GDRIVE_FOLDER_MIME_TYPE = 'application/vnd.google-apps.folder';
 var STORYMAP_LOCK_FILE = 'editor.lock';
+
+var STORYMAP_TYPE_PROP = {
+    'key': 'knightlab_type', 
+    'value': 'storymap', 
+    'visibility': 'PUBLIC'
+};
+
 
 function utf8_to_b64(str) {
     return window.btoa(unescape(encodeURIComponent(str)));
@@ -479,6 +490,60 @@ function gdrive_path_create(path_list, parent, callback) {
 //////////////////////////////////////////////////////////////////////
 
 //
+// get type of resource with id
+// callback(error, <string> || null)
+//
+function _gdrive_get_type(id, callback) {
+    var request = gapi.client.drive.properties.list({'fileId': id});    
+    gdrive_exec(request, function(error, resp) {
+        if(error) {
+            callback(error);
+        } else if(!resp) {
+            callback('expected properties response');
+        } else {
+            var value = null;
+            
+            for(var i = 0, items = resp.items || []; i < items.length; i++) {
+                if(items[i].key == STORYMAP_TYPE_PROP.key) {
+                    value = items[i].value;
+                    break;
+                }
+            }
+            
+            callback(null, value);            
+        }
+    });    
+}
+
+//
+// add type property to resource with id
+// callback(error)
+//
+function _gdrive_add_type(id, callback) {
+    var request = gapi.client.drive.properties.insert({
+        'fileId': id,
+        'resource': STORYMAP_TYPE_PROP
+    });
+    gdrive_exec(request, callback);
+}
+
+//
+// ensure resource with id has a type property
+// callback(error)
+//
+function _gdrive_ensure_type(id, callback) {
+    _gdrive_get_type(id, function(error, type) {
+        if(error) {
+            callback(error);
+        } else if(type == null) {
+            _gdrive_add_type(id, callback);        
+        } else {
+            callback(null);
+        }
+    });
+}
+
+//
 // lock storymap
 // callback(error)
 //
@@ -595,6 +660,7 @@ function _gdrive_storymap_process(folder, callback) {
 // List items in parentFolder
 // callback(error, { storymap info by id })
 //
+
 function gdrive_storymap_list(parentFolder, callback) {
     var folder_map = {};
 
@@ -602,16 +668,25 @@ function gdrive_storymap_list(parentFolder, callback) {
         if(folder_list && folder_list.length) {
             folder = folder_list.shift();
             
-            _gdrive_storymap_perms(folder, function(error) {
+            // Ensure type property
+            _gdrive_ensure_type(folder.id, function(error) {
                 if(error) {
                     callback(error);
                 } else {
-                    _gdrive_storymap_process(folder, function(error) {
+                    // Add permissions info
+                    _gdrive_storymap_perms(folder, function(error) {
                         if(error) {
                             callback(error);
                         } else {
-                            folder_map[folder.id] = folder;   
-                            _process_folders(folder_list);
+                            // Process contained files
+                            _gdrive_storymap_process(folder, function(error) {
+                                if(error) {
+                                    callback(error);
+                                } else {
+                                    folder_map[folder.id] = folder;                               
+                                    _process_folders(folder_list);
+                                }
+                            });
                         }
                     });
                 }
@@ -633,28 +708,39 @@ function gdrive_storymap_list(parentFolder, callback) {
 
 //
 // Add storymaps that are 'shared with me' to folder_map
+// Must have correct type property and contain draft.json
 // callback(error)
 //
-function gdrive_storymap_list_shared(folder_map, callback) {    
+function gdrive_storymap_list_shared(folder_map, callback) {
+    
     var _process_folders = function(folder_list) {
         if(folder_list && folder_list.length) {
             folder = folder_list.shift();     
         
-            _gdrive_storymap_process(folder, function(error) {
+            _gdrive_get_type(folder.id, function(error, type) {
                 if(error) {
                     callback(error);
-                } else if(!folder.error) {
-                    folder_map[folder.id] = folder;          
-                    _process_folders(folder_list);
+                } else if(type != STORYMAP_TYPE_PROP.value) {
+                    _process_folders(folder_list);  // skip it                
+                } else {
+                    _gdrive_storymap_process(folder, function(error) {
+                        if(error) {
+                            callback(error);
+                        } else {
+                            if(!folder.error) {
+                                folder_map[folder.id] = folder;   
+                            }       
+                            _process_folders(folder_list);
+                        }
+                    });   
                 }
-            });     
+             });                 
         } else {
             callback(null);
         }
     };
     
     var request = gapi.client.drive.files.list({
-        //q: "trashed=false and sharedWithMe=true and title='draft.json'"
         q: "trashed=false and sharedWithMe=true and mimeType='"+GDRIVE_FOLDER_MIME_TYPE+"'"       
     });
     gdrive_exec(request, function(error, response) {
