@@ -776,9 +776,15 @@ function gdrive_storymap_create(parentFolder, title, data, callback) {
                         if(error) {
                             callback(error);
                         } else {
-                            gdrive_file_create(storymapFolder, 'draft.json', data, function(error, response) {
-                                callback(error, storymapFolder);
-                            });                
+                            _gdrive_add_type(storymapFolder.id, function(error) {
+                                if(error) {
+                                    callback(error);
+                                } else {
+                                    gdrive_file_create(storymapFolder, 'draft.json', data, function(error, response) {
+                                        callback(error, storymapFolder);
+                                    });                
+                                }
+                            });                            
                         }
                     });
                 }
@@ -797,7 +803,13 @@ function gdrive_storymap_copy(srcFolder, dstName, callback) {
             callback(error);
         } else {
             gdrive_perm_public(dstFolder.id, function(error, p) {
-                callback(error, dstFolder);
+                if(error) {
+                    callback(error, dstFolder);
+                } else {
+                    _gdrive_ensure_type(dstFolder.id, function(error) {
+                        callback(error, dstFolder);
+                    });
+                }
             });
         }
     });
