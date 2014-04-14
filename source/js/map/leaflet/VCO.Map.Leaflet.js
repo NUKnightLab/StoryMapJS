@@ -159,7 +159,8 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	_createTileLayer: function(map_type, options) {
 		var _tilelayer = null,
 			_map_type_arr = map_type.split(':'),
-			_options = {};	
+			_options = {},
+			_attribution_knightlab = "<a href='http://storymap.knightlab.com/' target='_blank'>Knight Lab StoryMapJS</a> | "
 		
 		if (options) {
 			_options = options;
@@ -168,9 +169,9 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		// Set Tiles
 		switch(_map_type_arr[0]) {
 			case 'mapbox':
-				var mapbox_name = _map_type_arr[1] || 'zachwise.hgmmh8ho';
+				var mapbox_name = _map_type_arr[1] || 'nuknightlab.hif6ioi4';
 				_options.subdomains 	= 'abcd';
-				_options.attribution 	= "<div class='mapbox-maplogo'></div><a href='https://www.mapbox.com/about/maps/' target='_blank'>© Mapbox © OpenStreetMap</a> <a class='mapbox-improve-map' href='https://www.mapbox.com/map-feedback/#zachwise.hgmmh8ho/-81.80419921875/39.58875727696545/5' target='_blank'>Improve this map</a>";
+				_options.attribution 	= _attribution_knightlab + "<div class='mapbox-maplogo'></div><a href='https://www.mapbox.com/about/maps/' target='_blank'>© Mapbox © OpenStreetMap</a> <a class='mapbox-improve-map' href='https://www.mapbox.com/map-feedback/#zachwise.hgmmh8ho/-81.80419921875/39.58875727696545/5' target='_blank'>Improve this map</a>";
 				_tilelayer = new L.TileLayer("https://{s}.tiles.mapbox.com/v2/" + mapbox_name + "/{z}/{x}/{y}.png", _options);
 				break;
 			case 'stamen':
@@ -181,7 +182,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 				_options.width			= this.options.zoomify.width;
 				_options.height 		= this.options.zoomify.height;
 				_options.tolerance 		= this.options.zoomify.tolerance;
-				_options.attribution 	= this.options.zoomify.attribution;
+				_options.attribution 	= _attribution_knightlab + this.options.zoomify.attribution;
 				
 				_tilelayer = new L.tileLayer.zoomify(this.options.zoomify.path, _options);
 				//this._image_layer = new L.imageOverlay(this.options.zoomify.path + "TileGroup0/0-0-0.jpg", _tilelayer.getZoomifyBounds(this._map));

@@ -10,7 +10,8 @@ html(lang="en")
 		// CSS
 		link(rel='stylesheet', href='../css/storymap.css?v1')
 		//FONT
-		link(rel='stylesheet', href='../css/fonts/font.knightlab.css?v1')
+		//link(rel='stylesheet', href='../css/fonts/font.knightlab.css?v1')
+		link(rel='stylesheet', href='../css/fonts/font.default.css?v1')
 		
 		// Style
 		style
@@ -31,10 +32,10 @@ html(lang="en")
 
 		
 		// JavaScript
-		script(src='../js/storymap-min.js')
+		script(src='../js/storymap.js')
 		script
 			var storymap = new VCO.StoryMap('storymap', 'population.json', {
-				//map_type:"mapbox:zachwise.hgmmh8ho"
+				map_type:"mapbox:nuknightlab.hif6ioi4"
 				//map_type:"stamen:toner"
 			});
 			window.onresize = function(event) {
