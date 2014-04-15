@@ -14,7 +14,7 @@ For each language, we need a simple file with a name like `*xx*.js`, where *xx* 
 
 ## Setting up a development environment
 
-In order to stay consistent with other kinds of deployment tools, we use python and Fabric to build and deploy StoryMapJS. However, if you are comfortable using [CodeKit](http://incident57.com/codekit/), you can use it also: the rules for assembling the various files into a single final timeline.js are specified using CodeKit's syntax.
+In order to stay consistent with other kinds of deployment tools, we use python and Fabric to build and deploy StoryMapJS. However, if you are comfortable using [CodeKit](http://incident57.com/codekit/), you can use it also: the rules for assembling the various files into a single final storymap.js are specified using CodeKit's syntax.
 
 If you don't use CodeKit, you must have Python installed. We use python 2.7.
 
