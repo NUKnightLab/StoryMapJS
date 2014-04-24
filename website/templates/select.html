@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="http://cdn.knightlab.com/libs/blueline/latest/css/blueline.min.css">
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script type="text/javascript" src="//code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
 <script src="http://cdn.knightlab.com/libs/blueline/latest/js/blueline.min.js"></script>
 <!-- === storymap -->
 <!-- build:css http://cdn.knightlab.com/libs/storymapjs/%(cdn)s/css/storymap.css -->
@@ -175,7 +176,36 @@ window.onload = function() { gapi.load('drive-share', function() { /* noop */ })
     </div>
 </div>
 
+<!-- START TEMPLATES -->
+<script id="shared_with" type="text/template">
+    <p class="modded"><i class="list-item-shared icon-link"></i>Shared with
+    <% _.each(permissions, function(p) { %>
+        <% if(p.photoLink) { %>
+            <img class="shared" src="<%= p.photoLink %>" title="<%= p.name %>" />
+        <% } else { %>
+            <a class="shared" href="javascript:" title="<%= p.name %>"><i class="icon-user icon-large"></i></a>
+        <% } %>
+    <% }); %>
+    </p>
+</script>
+
+<script id="shared_by" type="text.template">
+    <p class="modded"><i class="list-item-shared icon-link"></i>Shared by 
+    <% if(owner.picture && owner.picture.url) { %>
+        <img class="shared" src="<%= owner.picture.url %>" title="<%= owner.displayName %>" />
+    <% } else { %>
+        <a class="shared" href="javascript:" title="<%= owner.displayName %>"><i class="icon-user icon-large"></i></a>
+    <% } %>
+    </p>
+</script>
+
+<!-- END TEMPLATES -->
+
 <script type="text/javascript">
+
+var shared_with_template = _.template($('#shared_with').html().trim());
+var shared_by_template = _.template($('#shared_by').html().trim());
+
 
 var _storymap_folder = null;    // public folder
 
@@ -511,16 +541,13 @@ $(function() {
                 if(item.error) {
                     html += item.title;
                     
+                    // Share info
                     if(item.userPermission.role == 'owner') {
                         if(item.permissions.length) {
-                            html += '<a data-toggle="tooltip" data-placement="right" data-trigger="hover"'
-                                + ' data-title="Shared with '+item.permissions.length+' user(s)">'
-                                + '<i class="list-item-shared icon-link"></i></a>';
+                            html += shared_with_template({permissions: item.permissions});
                         }
                     } else {
-                        html += '<a data-toggle="tooltip" data-placement="right" data-trigger="hover"'
-                            + ' data-title="Shared by '+item.ownerNames[0]+'">'
-                            + '<i class="list-item-shared icon-link"></i></a>';
+                        html += shared_by_template({owner: item.owners[0]});
                     }
                     
                     html += '<p class="modded"><i class="icon-warning-sign" title="Error"></i>'+item.error+'</p>';
@@ -531,18 +558,15 @@ $(function() {
                         html += '<a class="title" href="'+href+'">'+item.title+'</a>';
                     }
                     
+                    // Share info
                     if(item.userPermission.role == 'owner') {
                         if(item.permissions.length) {
-                            html += '<a data-toggle="tooltip" data-placement="right" data-trigger="hover"'
-                                + ' data-title="Shared with '+item.permissions.length+' user(s)">'
-                                + '<i class="list-item-shared icon-link"></i></a>';
-                         }
+                            html += shared_with_template({permissions: item.permissions});
+                        }                   
                     } else {
-                        html += '<a data-toggle="tooltip" data-placement="right" data-trigger="hover"'
-                            + ' data-title="Shared by '+item.ownerNames[0]+'">'
-                            + '<i class="list-item-shared icon-link"></i></a>';
+                        html += shared_by_template({owner: item.owners[0]});
                     }
-
+                    
                     if(item.published_on) {
                         html += '<p class="modded">Published on '+format_dt(item.published_on)+'</p>';
                     }                    

@@ -576,25 +576,23 @@ function gdrive_storymap_init(callback) {
 // Process storymap folder permissions => folder.permissions
 // callback(error)
 //
+// role = owner | writer | reader
 function _gdrive_storymap_process_perms(folder, callback) {
     folder['permissions'] = [];
-    
-    if(folder.userPermission.role == 'owner') {
-        gdrive_perm_list(folder.id, function(error, perm_list) {
-            if(!error && perm_list) {
-                for(var i = 0; i < perm_list.length; i++) {
-                    var perm = perm_list[i];
-                    if(perm.role == 'writer') {
-                        folder['permissions'].push(perm);
-                    }                
-                }
-            }  
-              
-            callback(error);
-        });
-    } else {
-        callback(null);
-    }
+ 
+    //if(folder.userPermission.role == 'owner') {
+    gdrive_perm_list(folder.id, function(error, perm_list) {
+        if(!error && perm_list) {
+            for(var i = 0; i < perm_list.length; i++) {
+                var perm = perm_list[i];
+                if(perm.role == 'writer') {
+                    folder['permissions'].push(perm);
+                }                
+            }
+        }  
+          
+        callback(error);
+    });
 }
 
 //
@@ -696,16 +694,19 @@ function gdrive_storymap_list_shared(folder_map, callback) {
                 } else if(type != STORYMAP_TYPE_PROP.value) {
                     _process_folders(folder_list);  // skip it                
                 } else {
-                    _gdrive_storymap_process_files(folder, function(error) {
-                        if(error) {
-                            callback(error);
-                        } else {
-                            if(!folder.error) {
-                                folder_map[folder.id] = folder;   
-                            }       
-                            _process_folders(folder_list);
+                    _gdrive_call_chain(folder, 
+                        [_gdrive_storymap_process_perms, _gdrive_storymap_process_files],
+                        function(error) {
+                            if(error) {
+                                callback(error);
+                            } else {
+                                if(!folder.error) {
+                                    folder_map[folder.id] = folder;   
+                                }
+                                _process_folders(folder_list);
+                            }
                         }
-                    });   
+                    );                                        
                 }
              });                 
         } else {
