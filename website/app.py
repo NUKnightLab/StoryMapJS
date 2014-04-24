@@ -90,20 +90,23 @@ if __name__ == "__main__":
     import getopt
     
     ssl_context = None
+    port = 5000
     
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "s", [])
+        opts, args = getopt.getopt(sys.argv[1:], "sp:", ["port="])
         for opt, arg in opts:
             if opt == '-s':
                 from OpenSSL import SSL
                 ssl_context = SSL.Context(SSL.SSLv23_METHOD)
                 ssl_context.use_privatekey_file(os.path.join(site_dir, 'website.key'))
                 ssl_context.use_certificate_file(os.path.join(site_dir, 'website.crt'))
+            elif opt in ('-p', '--port'):
+                port = int(arg)
             else:
                 print 'Usage: app.py [-s]'
                 sys.exit(1)   
     except getopt.GetoptError:
-        print 'Usage: app.py [-s]'
+        print 'Usage: app.py [-s] [-p port]'
         sys.exit(1)
         
-    app.run(host='0.0.0.0', port=5000, debug=True, ssl_context=ssl_context)
+    app.run(host='0.0.0.0', port=port, debug=True, ssl_context=ssl_context)
