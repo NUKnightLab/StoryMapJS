@@ -602,7 +602,7 @@ function storymap_init() {
             if(error) {
                 storymap_abort(format_error('Error loading StoryMap', error));
             } else if(storymap_is_locked(storymapFolder)) {
-                storymap_abort('This StoryMap is currently being edited by <strong>'+storymapFolder.lock_file.ownerNames[0]+'</strong>');
+                storymap_abort('This StoryMap is currently being edited by <strong>'+storymapFolder.lock_file.lastModifyingUserName+'</strong>');
             } else {
                 gdrive_storymap_lock(storymapFolder, function(error) {
                     if(error) {
