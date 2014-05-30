@@ -1,5 +1,5 @@
 VCO.Language = {
-  name: "英語",
+  name: "日本語",
   lang: "jp",
   messages: {
     loading: "ローディング",
