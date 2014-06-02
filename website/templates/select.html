@@ -253,10 +253,9 @@ $(function() {
         event.preventDefault();
     });
 
-    // enter to submit
-    $('input[type="text"]').keyup(function(event){
+    $('input.entry-rename-title[type="text"]').keyup(function(event){
         if(event.keyCode == 13) {
-            $('#entry_create').click();
+            $('#entry_rename').click();
     }});
                                
     $('#entry_rename').click(function(event) {
@@ -286,6 +285,11 @@ $(function() {
         });
     });
 
+    $('input.entry-copy-title[type="text"]').keyup(function(event){
+        if(event.keyCode == 13) {
+            $('#entry_copy').click();
+    }});
+
     $('#entry_copy').click(function(event) {
         var $modal = $('#entry_modal');
         var $panel = $('.entry-copy');
@@ -313,6 +317,11 @@ $(function() {
             }
         });
     });
+
+    $('input.entry-create-title[type="text"]').keyup(function(event){
+        if(event.keyCode == 13) {
+            $('#entry_create').click();
+    }});
     
     $('#entry_create').click(function() {
         var $modal = $('#entry_modal');
