@@ -109,8 +109,4 @@ if __name__ == "__main__":
         print 'Usage: app.py [-s] [-p port]'
         sys.exit(1)
         
-<<<<<<< HEAD
     app.run(host='0.0.0.0', port=port, debug=True, ssl_context=ssl_context)
-=======
-    app.run(host='0.0.0.0', port=port, debug=True, ssl_context=ssl_context)
->>>>>>> 1d1c3d84ad590e2664d89242f38a4db13dd37cbd
