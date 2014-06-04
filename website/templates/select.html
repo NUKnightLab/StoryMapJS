@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="http://cdn.knightlab.com/libs/blueline/latest/css/blueline.min.css">
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script type="text/javascript" src="//code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
 <script src="http://cdn.knightlab.com/libs/blueline/latest/js/blueline.min.js"></script>
 <!-- === storymap -->
 <!-- build:css http://cdn.knightlab.com/libs/storymapjs/%(cdn)s/css/storymap.css -->
@@ -18,10 +19,18 @@
 <script src="{{ STATIC_URL }}/js/moment.min.js"></script>
 <script src="{{ STATIC_URL }}/js/moment-timezone.min.js"></script>
 <script src="{{ STATIC_URL }}/js/moment-timezone-data.js"></script>
+<!-- === auth/sharing -->
+{% include '_credentials.html' %}
+<script type="text/javascript">
+window.onload = function() { gapi.load('drive-share', function() { /* noop */ }); }
+</script>
+<script type="text/javascript" src="https://apis.google.com/js/api.js"></script>
 <!-- === editor -->
 <script type="text/javascript" src="{{ STATIC_URL }}/js/gdrive.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}/js/editor.js"></script>
 <link rel="stylesheet" type="text/css" href="{{ static_url }}/css/editor.css">
+</head>
+<body>
 
 {% include '_editor.html' %}
 
@@ -167,7 +176,36 @@
     </div>
 </div>
 
+<!-- START TEMPLATES -->
+<script id="shared_with" type="text/template">
+    <p class="modded"><i class="list-item-shared icon-link"></i>Shared with
+    <% _.each(permissions, function(p) { %>
+        <% if(p.photoLink) { %>
+            <img class="shared" src="<%= p.photoLink %>" title="<%= p.name %>" />
+        <% } else { %>
+            <a class="shared" href="javascript:" title="<%= p.name %>"><i class="icon-user icon-large"></i></a>
+        <% } %>
+    <% }); %>
+    </p>
+</script>
+
+<script id="shared_by" type="text.template">
+    <p class="modded"><i class="list-item-shared icon-link"></i>Shared by 
+    <% if(owner.picture && owner.picture.url) { %>
+        <img class="shared" src="<%= owner.picture.url %>" title="<%= owner.displayName %>" />
+    <% } else { %>
+        <a class="shared" href="javascript:" title="<%= owner.displayName %>"><i class="icon-user icon-large"></i></a>
+    <% } %>
+    </p>
+</script>
+
+<!-- END TEMPLATES -->
+
 <script type="text/javascript">
+
+var shared_with_template = _.template($('#shared_with').html().trim());
+var shared_by_template = _.template($('#shared_by').html().trim());
+
 
 var _storymap_folder = null;    // public folder
 
@@ -215,10 +253,9 @@ $(function() {
         event.preventDefault();
     });
 
-    // enter to submit
-    $('input[type="text"]').keyup(function(event){
+    $('input.entry-rename-title[type="text"]').keyup(function(event){
         if(event.keyCode == 13) {
-            $('#entry_create').click();
+            $('#entry_rename').click();
     }});
                                
     $('#entry_rename').click(function(event) {
@@ -248,6 +285,11 @@ $(function() {
         });
     });
 
+    $('input.entry-copy-title[type="text"]').keyup(function(event){
+        if(event.keyCode == 13) {
+            $('#entry_copy').click();
+    }});
+
     $('#entry_copy').click(function(event) {
         var $modal = $('#entry_modal');
         var $panel = $('.entry-copy');
@@ -275,6 +317,11 @@ $(function() {
             }
         });
     });
+
+    $('input.entry-create-title[type="text"]').keyup(function(event){
+        if(event.keyCode == 13) {
+            $('#entry_create').click();
+    }});
     
     $('#entry_create').click(function() {
         var $modal = $('#entry_modal');
@@ -378,7 +425,7 @@ $(function() {
                             $modal.trigger('progress_hide');
                             return;
                         } 
-                        
+                         
                         gdrive_storymap_init(function(error, publicFolder) {
                             if(error) {
                                 $modal.trigger('error_show', format_error('Error initializing StoryMap', error));
@@ -426,27 +473,36 @@ $(function() {
             if(!force_reload && _storymap_list && _storymap_list.length > 0) {
                 $modal.find('.entry-list').show();
                 $modal.trigger('display_list', 'title');               
-            } else {                            
+            } else {       
+                // List all in storymap folder                     
                 gdrive_storymap_list(_storymap_folder, function(error, storymap_map) {                
                     if(error) {
                         $modal.trigger('error_show', format_error('Error getting StoryMap list', error));
                         $modal.trigger('progress_hide');
                     } else {
-                        _storymap_map = storymap_map;
-                        _storymap_list = [];
-                        _storymap_names = [];
+                        // List all 'shared with me'
+                        gdrive_storymap_list_shared(storymap_map, function(error) {
+                            if(error) {
+                                $modal.trigger('error_show', format_error('Error getting StoryMap list', error));
+                                $modal.trigger('progress_hide');                               
+                            } else {
+                                _storymap_map = storymap_map;
+                                _storymap_list = [];
+                                _storymap_names = [];
                         
-                        for(var id in _storymap_map) {
-                            _storymap_list.push(_storymap_map[id]);
-                            _storymap_names.push(_storymap_map[id].title.toLowerCase());
-                        }
+                                for(var id in _storymap_map) {
+                                    _storymap_list.push(_storymap_map[id]);
+                                    _storymap_names.push(_storymap_map[id].title.toLowerCase());
+                                }
                         
-                        if(_storymap_list.length) {
-                            $modal.find('.entry-list').show();
-                            $modal.trigger('display_list', 'title');               
-                        } else {
-                            $modal.trigger('show_type');
-                        }                    
+                                if(_storymap_list.length) {
+                                    $modal.find('.entry-list').show();
+                                    $modal.trigger('display_list', 'title');               
+                                } else {
+                                    $modal.trigger('show_type');
+                                }   
+                            }
+                        });                 
                     }
                 });       
 
@@ -464,44 +520,77 @@ $(function() {
             var html = '';
             
             for(var i = 0; i < _storymap_list.length; i++) {
-                var item = _storymap_list[i];                
+                var item = _storymap_list[i];    
+                var locked = storymap_is_locked(item);        
                 var href = '/edit.html?id='+item.id;
             
                 html += '<tr id="'+item.id+'"><td>';
-            
-                 if(item.error) {
-                    html += ''
-                        + '<div style="display: inline;float: right">'
-                        + '<a class="list-item-menu list-item-delete" href="javascript:" title="Delete"><i class="icon-trash icon-large"></i></a>'
-                        + '</div>'
-                        + item.title
-                        + '<p class="modded"><i class="icon-warning-sign" title="Error"></i>'+item.error+'</p>';
+                    
+                // If owner and unlocked, show actions        
+                if(item.userPermission.role == 'owner' && !locked) {
+                    html += '<div style="display: inline;float: right">';
+                    
+                    if(item.error) {
+                        html += '<a class="list-item-menu list-item-delete" href="javascript:" title="Delete"><i class="icon-trash icon-large"></i></a>';                
+                    } else {
+                        html += '<div class="dropdown">'
+                            + '<a class="list-item-options dropdown-toggle" data-toggle="dropdown" href="javascript:" title="Options"><i class="icon-cog icon-large"></i></a>'
+                            + '<ul class="dropdown-menu pull-right" role="menu">'
+                            + '<li><a href="javascript:" class="list-item-rename">Rename</a></li>'
+                            + '<li><a href="javascript:" class="list-item-copy">Copy</a></li>'
+                            + '<li><a href="javascript:" class="list-item-share">Collaborate</a></li>'
+                            + '<li><a href="javascript:" class="list-item-delete">Delete</a></li>'
+                            + '</ul>'
+                            + '</div>';
+                    }  
+                    
+                    html += '</div>';              
+                } 
+                
+                if(item.error) {
+                    html += item.title;
+                    
+                    // Share info
+                    if(item.userPermission.role == 'owner') {
+                        if(item.permissions.length) {
+                            html += shared_with_template({permissions: item.permissions});
+                        }
+                    } else {
+                        html += shared_by_template({owner: item.owners[0]});
+                    }
+                    
+                    html += '<p class="modded"><i class="icon-warning-sign" title="Error"></i>'+item.error+'</p>';
                 } else {
-                    html += ''
-                        + '<div style="display: inline;float: right">'
-                        + '<div class="dropdown">'
-                        + '<a class="list-item-options dropdown-toggle" data-toggle="dropdown" href="javascript:" title="Options"><i class="icon-cog icon-large"></i></a>'
-                        + '<ul class="dropdown-menu pull-right" role="menu">'
-                        + '<li><a href="javascript:" class="list-item-rename">Rename</a></li>'
-                        + '<li><a href="javascript:" class="list-item-copy">Copy</a></li>'
-                        + '<li><a href="javascript:" class="list-item-delete">Delete</a></li>'
-                        + '</ul>'
-                        + '</div>'
-                        + '</div>'
-                        + '<a class="title" href="'+href+'">'+item.title+'</a>';
-                        
+                    if(locked) {
+                        html += item.title;                  
+                    } else {
+                        html += '<a class="title" href="'+href+'">'+item.title+'</a>';
+                    }
+                    
+                    // Share info
+                    if(item.userPermission.role == 'owner') {
+                        if(item.permissions.length) {
+                            html += shared_with_template({permissions: item.permissions});
+                        }                   
+                    } else {
+                        html += shared_by_template({owner: item.owners[0]});
+                    }
+                    
                     if(item.published_on) {
                         html += '<p class="modded">Published on '+format_dt(item.published_on)+'</p>';
-                    } 
+                    }                    
                     if(item.draft_on > item.published_on) {
                         html += '<p class="modded">';
                         if (item.published_on) {
                             html += '<i class="icon-warning-sign" title="This draft is newer than the most recently published version."></i>';
                         } 
                         html += 'Edited on '+format_dt(item.draft_on)+'</p>';
-                    } 
-                }     
-            
+                    }                       
+                    if(locked) {
+                        html += '<p class="locked"><i class="icon-lock"></i> Currently being edited by '+item.lock_file.lastModifyingUserName+'</p>';                   
+                    }              
+                }
+
                 html += '</td></tr>';             
             }
         
@@ -519,6 +608,12 @@ $(function() {
                 $modal.trigger('delete_storymap', this);
             }); 
             
+            $table.find('.list-item-share').click(function(event) {
+                $modal.trigger('share_storymap', this);
+            }); 
+            
+            $('a[data-toggle="tooltip"]').tooltip(); 
+            
             $modal.trigger('progress_hide');
         })
         .on('show_rename', function(event, obj) {
@@ -535,8 +630,7 @@ $(function() {
             $('.entry-rename-title').focus();
         })
         .on('show_copy', function(event, obj) {
-            var $tr = $(obj).closest('tr');
-            var id = $tr.attr('id');
+            var id = $(obj).closest('tr').attr('id');
             var item = _storymap_map[id];
 
             $('.entry-copy-title-old').html(item.title);            
@@ -546,6 +640,13 @@ $(function() {
             $(this).find('.entry-panel').hide();
             $(this).find('.entry-copy').show();       
             $('.entry-copy-title').focus();
+        })
+        .on('share_storymap', function(event, obj) {
+            var id = $(obj).closest('tr').attr('id');
+         
+            var sc = new gapi.drive.share.ShareClient(_GDRIVE_APP_ID);
+            sc.setItemIds([id]);            
+            sc.showSettingsDialog();         
         })
         .on('delete_storymap', function(event, obj) {
             var $modal = $(this);
@@ -557,7 +658,7 @@ $(function() {
                 if(yes) {
                     $modal.trigger('progress_show', 'Deleting StoryMap');
                     
-                    gdrive_delete(item.id, function(error) {
+                    gdrive_delete(item.id, function(error) {                    
                         if(error) {
                             $modal.trigger('error_show', format_error('Error deleting StoryMap', error));
                         } else {
