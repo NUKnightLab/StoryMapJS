@@ -34,8 +34,8 @@
 // storymap_data can be an URL or a Javascript object
 var storymap_data = 'http://storymap.knightlab.com/static/demo/demo.json'; 
 
-// certain settings must be passed within a separate options parameter
-var storymap_options = {...};
+// certain settings must be passed within a separate options object
+var storymap_options = {};
 
 var storymap = new VCO.StoryMap('mapdiv', storymap_data, storymap_options);
 window.onresize = function(event) {
@@ -43,14 +43,15 @@ window.onresize = function(event) {
 }          
 &lt;/script&gt;</pre>
     </p>
-    <p>When creating a StoryMap object, certain settings must be passed within the separate options parameter:  
+    <p>When creating a StoryMap object, certain settings, if you wish to override the defaults, must be passed within the separate options parameter:  
         <ul>
             <li>map_type</li>
             <li>map_subdomains</li>
             <li>map_as_image</li>
             <li>map_background_color</li>
             <li>language</li>
-            <li>zoomify</li>    
+            <li>zoomify</li>
+            <li>calculate_zoom</li>
         </ul>
     </p>
     <p>Also, any specified fonts must be loaded by the embedding page.  View the <a href="https://github.com/NUKnightLab/StoryMapJS/blob/master/source/embed/index.html">StoryMap embed tool source code</a> for details.
@@ -67,6 +68,7 @@ window.onresize = function(event) {
     width: <em>integer</em>,                // required for embed tool; width of StoryMap                    
     height: <em>integer</em>,               // required for embed tool; width of StoryMap
     font_css: <em>string</em>,              // optional; font set
+    calculate_zoom: <em>true</em>,              // optional; defaults to true.
     storymap: {
         language: <em>string</em>,          // required; two-letter ISO language code
         map_type: <em>string</em>,          // required
@@ -94,12 +96,15 @@ window.onresize = function(event) {
         <code>map_subdomains</code> is only relevant if you specify a custom URL tile template.  If needed, it should be specified as a single string, where each character is a valid subdomain substitution (e.g. "abc").    
     </p>
 
+    <p><code>calculate_zoom</code> is optional. StoryMapJS will compute the optimal zoom level for each of your slides so as to keep both the previous and the next map point visible. If you'd rather control the zoom level for each slide, set the <code>calculate_zoom</code> option to <code>true</code> and then be sure to set the <code>zoom</code> property for each slide.</p>
+
     <p><strong>Gigapixel StoryMaps</strong> tell stories using large, high-resolution images.  The JSON for these StoryMaps have the following structure:
     <pre class="prettyprint">
 {
     width: <em>integer</em>,                    // required for embed tool; width of StoryMap                 
     height: <em>integer</em>,                   // required for embed tool; height of StoryMap
     font_css: <em>string</em>,                  // optional; font set for UI controls/messages
+    calculate_zoom: <em>true</em>,              // optional; defaults to true *unless* map_as_image is true.
     storymap: {
         language: <em>string</em>,              // required; two-letter ISO language code
         map_type: "zoomify",           // required
@@ -115,6 +120,7 @@ window.onresize = function(event) {
     }
 }</pre>
     </p>
+    <p><code>map_as_image</code> gives StoryMap a hint about whether your gigapixel image is a map (such as a historic map) or a non-geographic image. When <code>map_as_image</code> is set to <code>true</code>, StoryMap understands that you are using a non-geographic image. It suppresses the line that connects markers, and it implicitly sets the <code>calculate_zoom</code> option to <code>false</code>, which means that you must make sure to set the <code>zoom</code> property for each of your slides.</p>
 
     <p>For either type of StoryMap:
     <p>The <code>language</code> setting specifies the language for user-interface controls and messages.  Supported codes can be viewed <a href="https://github.com/NUKnightLab/StoryMapJS/tree/master/source/js/language/locale">here</a>.
