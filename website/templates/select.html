@@ -420,7 +420,7 @@ $(function() {
                         $('#entry_user_name').html(info.name);
                         $('#entry_user_info').show();                          
                         
-                        if(info.domainSharingPolicy != 'allowed') {
+                        if(info.domainSharingPolicy && info.domainSharingPolicy != 'allowed') {
                             $modal.trigger('error_show',  'This Google Account does not support public Google Drive sharing.  Please sign in with a different Google account.');                                
                             $modal.trigger('progress_hide');
                             return;
