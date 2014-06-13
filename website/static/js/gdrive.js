@@ -108,9 +108,6 @@ var STORYMAP_TYPE_PROP = {
     'visibility': 'PUBLIC'
 };
 
-// Proxy URL
-var STORYMAP_PROXY = 'http://proxy.knightlab.com/';
-
 
 function utf8_to_b64(str) {
     return window.btoa(unescape(encodeURIComponent(str)));
@@ -806,9 +803,8 @@ function gdrive_storymap_load(storymap_id, callback) {
 // callback(error, data)
 //
 function gdrive_storymap_load_draft(storymapFolder, callback) {
-    var url = gdrive_storymap_draft_url(storymapFolder);   
-    url = STORYMAP_PROXY + url.split('://')[1];
-        
+    var url = gdrive_storymap_draft_url(storymapFolder);
+    
     $.getJSON(url)
         .done(function(data) {
             callback(null, data);
