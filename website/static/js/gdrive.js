@@ -108,6 +108,12 @@ var STORYMAP_TYPE_PROP = {
     'visibility': 'PUBLIC'
 };
 
+// properties has ....
+var STORYMAP_TYPE_FILTER = ""
+    + "{key='"+STORYMAP_TYPE_PROP.key+"'"
+    + " and value='"+STORYMAP_TYPE_PROP.value+"'"
+    + " and visibility='"+STORYMAP_TYPE_PROP.visibility+"'}";
+    
 
 function utf8_to_b64(str) {
     return window.btoa(unescape(encodeURIComponent(str)));
@@ -296,12 +302,12 @@ function gdrive_type_ensure(id, callback) {
 //////////////////////////////////////////////////////////////////////
 
 // callback(error, resource || null)
-function gdrive_find(parentFolder, title, callback) {
+function gdrive_find(parentFolder, title, filter, callback) {
     var query = "title='"+title+"' and trashed=false";
     if(parentFolder) {
         query += " and '"+parentFolder.id+"' in parents";
     }
-
+    
     gdrive_exec(
         gapi.client.drive.files.list({q: query}),
         function(error, response) {
@@ -309,11 +315,16 @@ function gdrive_find(parentFolder, title, callback) {
                 callback(error);
             } else if(!response.items || response.items.length < 1) {
                 callback(null);
-            } else if(response.items.length > 1) {
-                callback('Multiple items found');
             } else {
-                callback(null, response.items[0]);
-            }        
+                var f = filter || function(x) { return true; };
+                var items = response.items.filter(f);
+
+                if(items.length > 1) {
+                    callback('Multiple items found');
+                } else {
+                    callback(null, items[0]);
+                }  
+            }      
         }
     );
 }
@@ -387,7 +398,7 @@ function gdrive_file_copy(id, dstParent, dstTitle, callback) {
 }
 
 function gdrive_file_save(parentFolder, title, data, callback) {
-    gdrive_find(parentFolder, title, function(error, file) {
+    gdrive_find(parentFolder, title, null, function(error, file) {
         if(error) {
             callback(error);
         } else if(file) {
@@ -402,16 +413,6 @@ function gdrive_file_save(parentFolder, title, data, callback) {
 // Folder handling
 ////////////////////////////////////////////////////////////
 
-// callback(error, [<file resource>])
-function gdrive_folder_list(id, callback) {
-    var request = gapi.client.drive.files.list({
-        q: "trashed=false and '"+id+"' in parents"
-    });
-    gdrive_exec(request, function(error, response) {
-        callback(error, (response) ? response.items : null);
-    });
-}
-
 // callback(error, <file resource>)
 function gdrive_folder_create(parent, title, callback) {
     var metadata = { 
@@ -425,9 +426,10 @@ function gdrive_folder_create(parent, title, callback) {
     gdrive_exec(request, callback);
 }
 
+// filter = response items filter function || null
 // callback(error, <file resource>)
-function gdrive_folder_getcreate(parentFolder, title, callback) {
-    gdrive_find(parentFolder, title, function(error, folder) {
+function gdrive_folder_getcreate(parentFolder, title, filter, callback) {
+    gdrive_find(parentFolder, title, filter, function(error, folder) {
         if(error) {
             callback(error);
         } else if(folder) {
@@ -435,6 +437,31 @@ function gdrive_folder_getcreate(parentFolder, title, callback) {
         } else {
             gdrive_folder_create(parentFolder, title, callback);        
         }
+    });
+}
+
+// filter = response items filter function || null
+// callback(error, <file resource>)
+function gdrive_path_create(parent, path_list, filter, callback) {    
+    gdrive_folder_getcreate(parent, path_list.shift(), filter, function(error, folder) {
+        if(error) {
+            callback(error);
+        } else if(!path_list.length) {
+            callback(null, folder);
+        } else {
+            gdrive_path_create(folder, path_list, filter, callback);
+        }    
+    });
+}
+
+
+// callback(error, [<file resource>])
+function gdrive_folder_list(id, callback) {
+    var request = gapi.client.drive.files.list({
+        q: "trashed=false and '"+id+"' in parents"
+    });
+    gdrive_exec(request, function(error, response) {
+        callback(error, (response) ? response.items : null);
     });
 }
 
@@ -504,20 +531,6 @@ function gdrive_folder_copy(srcFolder, dstName, dstParent, callback) {
     });
 }
 
-// callback(error, <file resource>)
-function gdrive_path_create(parent, path_list, callback) {    
-    gdrive_folder_getcreate(parent, path_list.shift(), function(error, folder) {
-        if(error) {
-            callback(error);
-        } else if(!path_list.length) {
-            callback(null, folder);
-        } else {
-            gdrive_path_create(folder, path_list, callback);
-        }    
-    });
-}
-
-
 //////////////////////////////////////////////////////////////////////
 // StoryMap stuff
 //////////////////////////////////////////////////////////////////////
@@ -568,8 +581,13 @@ function gdrive_storymap_unlock(folder, callback) {
 // Get/create StoryMap folders on google drive
 // callback(error, <public folder resource>)
 //
+
+function _gdrive_filter_shared(file_resource) {
+    return !('sharedWithMeDate' in file_resource);  
+}
+
 function gdrive_storymap_init(callback) {
-    gdrive_path_create(null, [STORYMAP_ROOT_FOLDER, STORYMAP_FOLDER], callback);
+    gdrive_path_create(null, [STORYMAP_ROOT_FOLDER, STORYMAP_FOLDER], _gdrive_filter_shared, callback);
 }
 
 //
@@ -691,8 +709,8 @@ function gdrive_storymap_list_shared(folder_map, callback) {
             gdrive_type_get(folder.id, function(error, type) {
                 if(error) {
                     callback(error);
-                } else if(type != STORYMAP_TYPE_PROP.value) {
-                    _process_folders(folder_list);  // skip it                
+//                } else if(type != STORYMAP_TYPE_PROP.value) {
+//                    _process_folders(folder_list);             
                 } else {
                     _gdrive_call_chain(folder, 
                         [_gdrive_storymap_process_perms, _gdrive_storymap_process_files],
@@ -713,10 +731,12 @@ function gdrive_storymap_list_shared(folder_map, callback) {
             callback(null);
         }
     };
-    
+             
     var request = gapi.client.drive.files.list({
-        q: "trashed=false and sharedWithMe=true and mimeType='"+GDRIVE_FOLDER_MIME_TYPE+"'"       
+        q: "trashed=false and sharedWithMe=true and mimeType='"+GDRIVE_FOLDER_MIME_TYPE+"'"
+         + " and properties has "+STORYMAP_TYPE_FILTER     
     });
+    
     gdrive_exec(request, function(error, response) {
         if(error) {
             callback(error);
@@ -737,7 +757,7 @@ function gdrive_storymap_list_shared(folder_map, callback) {
 function gdrive_storymap_create(parentFolder, title, data, callback) {
     var data = JSON.stringify(data);
  
-    gdrive_find(parentFolder, title, function(error, folderResource) {
+    gdrive_find(parentFolder, title, null, function(error, folderResource) {
         if(error) {
             callback(error);
         } else if(folderResource) {
