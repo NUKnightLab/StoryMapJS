@@ -320,7 +320,7 @@ function gdrive_find(parentFolder, title, filter, callback) {
                 var items = response.items.filter(f);
 
                 if(items.length > 1) {
-                    callback('Multiple items found');
+                    callback('Multiple items named "'+title+'" found');
                 } else {
                     callback(null, items[0]);
                 }  
