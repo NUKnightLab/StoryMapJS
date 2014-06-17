@@ -124,7 +124,8 @@ function utf8_to_b64(str) {
 }
 
 function _gdrive_getjson(g_url) {
-    return $.getJSON(STORYMAP_PROXY+g_url.split('://')[1]);
+    return $.getJSON(g_url);
+//    return $.getJSON(STORYMAP_PROXY+g_url.split('://')[1]);
 }
 
 //

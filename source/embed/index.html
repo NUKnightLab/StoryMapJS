@@ -94,10 +94,11 @@ var params = parseQuerystring();
 var storymap_url = decodeURIComponent(params['url']);
 
 // proxy?
+/*
 if(storymap_url.match(/www\.googledrive\.com\/host\//)) {
     storymap_url = 'http://proxy.knightlab.com/'+storymap_url.split('://')[1];
 }
-
+*/
 var options = {
     script_path: getScriptPath(/storymap(-min)?\.js/),
     start_at_slide: 0,
