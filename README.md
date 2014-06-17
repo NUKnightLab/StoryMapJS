@@ -18,6 +18,8 @@ In order to stay consistent with other kinds of deployment tools, we use python 
 
 If you don't use CodeKit, you must have Python installed. We use python 2.7.
 
+Clone our [fabfile](https://github.com/NUKnightLab/fablib) repository and place it in the same parent directory as your StoryMapJS respository.
+
 Install [virtualenv](https://pypi.python.org/pypi/virtualenv) and [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/)
 
     # Create a virtual environment

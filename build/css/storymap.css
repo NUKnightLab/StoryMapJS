@@ -1,4 +1,4 @@
-/* storymapjs - v2014-06-17-17-01-56 - 2014-06-17
+/* storymapjs - v2014-06-17-17-03-06 - 2014-06-17
  * Copyright (c) 2014 Northwestern University Knight Lab 
  */
 
