@@ -89,6 +89,11 @@ var storymap = null;
 var params = parseQuerystring();
 var storymap_url = decodeURIComponent(params['url']);
 
+// proxy?
+if(storymap_url.match(/www\.googledrive\.com\/host\//)) {
+    storymap_url = 'http://proxy.knightlab.com/'+storymap_url.split('://')[1];
+}
+
 var options = {
     script_path: getScriptPath(/storymap(-min)?\.js/),
     start_at_slide: 0,
@@ -146,7 +151,7 @@ function storymap_getjson() {
         // Supports cross-domain requests
         trace('embed: loading data via XMLHttpRequest');
         VCO.getJSON(storymap_url, storymap_onload);
-    } else if(typeof XDomainRequest !== "undefined")     {
+    } else if(typeof XDomainRequest !== "undefined") {
         // Use IE-specific "CORS" code with XDR
         trace('embed: loading data via XDomainRequest');
         var xdr = new XDomainRequest();
