@@ -115,8 +115,16 @@ var STORYMAP_TYPE_FILTER = ""
     + " and visibility='"+STORYMAP_TYPE_PROP.visibility+"'}";
     
 
+// proxy
+var STORYMAP_PROXY = 'http://proxy.knightlab.com/';
+
+
 function utf8_to_b64(str) {
     return window.btoa(unescape(encodeURIComponent(str)));
+}
+
+function _gdrive_getjson(g_url) {
+    return $.getJSON(STORYMAP_PROXY+g_url.split('://')[1]);
 }
 
 //
@@ -483,7 +491,7 @@ function _gdrive_copy_process(item_list, srcFolder, dstFolder, callback) {
                 }
             }); 
         } else if(item.title.match('.+\\.json$')) {
-            $.getJSON(srcFolder.webViewLink + item.title)
+            _gdrive_getjson(srcFolder.webViewLink + item.title)
                 .done(function(data) {
                     var content = JSON.stringify(data).replace(re, '/'+dstFolder.id+'/');
 
@@ -825,7 +833,7 @@ function gdrive_storymap_load(storymap_id, callback) {
 function gdrive_storymap_load_draft(storymapFolder, callback) {
     var url = gdrive_storymap_draft_url(storymapFolder);
     
-    $.getJSON(url)
+    _gdrive_getjson(url)
         .done(function(data) {
             callback(null, data);
         })
