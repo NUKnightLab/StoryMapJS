@@ -1,4 +1,4 @@
-/* storymapjs - v2014-06-10-16-59-05 - 2014-06-10
+/* storymapjs - v2014-06-17-17-01-56 - 2014-06-17
  * Copyright (c) 2014 Northwestern University Knight Lab 
  */
 
@@ -2841,7 +2841,7 @@ VCO.Animate = function(el, options) {
 		/*
 		// POSSIBLE ISSUE WITH WEBKIT FUTURE BUILDS
 	var onWebKitTimeout = function() {
-		
+
 		animation.stop(true);
 	}
 	if (VCO.Browser.webkit) {
@@ -2856,15 +2856,7 @@ VCO.Animate = function(el, options) {
 	https://github.com/ded/morpheus - (c) Dustin Diaz 2011
 	License MIT
 ================================================== */
-!function (name, definition) {
-  if (typeof define == 'function') {
-	  define(definition)
-  } else if (typeof module != 'undefined') {
-	  module.exports = definition()
-  } else {
-	  this[name] = definition()
-  }
-}('vcoanimate', function () {
+window.vcoanimate = (function() {
 
 	var doc = document,
 		win = window,
@@ -2889,7 +2881,7 @@ VCO.Animate = function(el, options) {
 		var styles = doc.createElement('a').style,
 			props = ['webkitTransform', 'MozTransform', 'OTransform', 'msTransform', 'Transform'],
 			i;
-			
+
 		for (i = 0; i < props.length; i++) {
 			if (props[i] in styles) return props[i]
 		};
@@ -2907,7 +2899,7 @@ VCO.Animate = function(el, options) {
 		property = camelize(property)
 		var value = null,
 			computed = doc.defaultView.getComputedStyle(el, '');
-		
+
 		computed && (value = computed[property]);
 		return el.style[property] || value;
 	} : html.currentStyle ?
@@ -2923,7 +2915,7 @@ VCO.Animate = function(el, options) {
 				try {
 					val = el.filters('alpha').opacity
 				} catch (e2) {
-					
+
 				}
 			}
 			return val / 100
@@ -2931,7 +2923,7 @@ VCO.Animate = function(el, options) {
 		var value = el.currentStyle ? el.currentStyle[property] : null
 		return el.style[property] || value
 	} :
-	
+
     function (el, property) {
 		return el.style[camelize(property)]
     }
@@ -2953,13 +2945,13 @@ VCO.Animate = function(el, options) {
   }()
 
   var children = []
-  
+
 	frame(function(timestamp) {
 	  	// feature-detect if rAF and now() are of the same scale (epoch or high-res),
 		// if not, we have to do a timestamp fix on each frame
 		fixTs = timestamp > 1e12 != now() > 1e12
 	})
-	
+
   function has(array, elem, i) {
     if (Array.prototype.indexOf) return array.indexOf(elem)
     for (i = 0; i < array.length; ++i) {
@@ -3268,11 +3260,7 @@ VCO.Animate = function(el, options) {
   morpheus.easings = {}
 
   return morpheus
-
-});
-
-
-
+})();
 
 
 /* **********************************************
