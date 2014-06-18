@@ -115,17 +115,29 @@ var STORYMAP_TYPE_FILTER = ""
     + " and visibility='"+STORYMAP_TYPE_PROP.visibility+"'}";
     
 
-// proxy
-var STORYMAP_PROXY = 'http://proxy.knightlab.com/';
-
 
 function utf8_to_b64(str) {
     return window.btoa(unescape(encodeURIComponent(str)));
 }
 
-function _gdrive_getjson(g_url) {
-    return $.getJSON(g_url);
-//    return $.getJSON(STORYMAP_PROXY+g_url.split('://')[1]);
+// @callback = function(error, object)
+function _gdrive_load_json(file, callback) {
+    if(file.downloadUrl) {
+        var access_token = gapi.auth.getToken().access_token;
+        
+        $.ajax({
+            url: file.downloadUrl,
+            headers: {'Authorization': 'Bearer ' + access_token},
+            error: function(xhr, status, error) {
+                callback(status + ((error) ? ' ('+error+')' : ''));
+            },
+            success: function(data) {
+                callback(null, data);
+            }
+        });         
+    } else {
+        callback('File has no downloadUrl');
+    }    
 }
 
 //
@@ -492,21 +504,21 @@ function _gdrive_copy_process(item_list, srcFolder, dstFolder, callback) {
                 }
             }); 
         } else if(item.title.match('.+\\.json$')) {
-            _gdrive_getjson(srcFolder.webViewLink + item.title)
-                .done(function(data) {
+            _gdrive_load_json(item, function(error, data) {            
+                if(error) {
+                    callback(error);
+                } else {
                     var content = JSON.stringify(data).replace(re, '/'+dstFolder.id+'/');
-
+                    
                     gdrive_file_create(dstFolder, item.title, content, function(error, response) {
                         if(error) {
                             callback(error);
                         } else {
                             _gdrive_copy_process(item_list, srcFolder, dstFolder, callback);
                         }
-                    });
-                })
-                .fail(function(xhr, textStatus, error) {
-                    callback(textStatus+', '+error);
-                });
+                    });                
+                }
+            });
         } else if(item.title != STORYMAP_LOCK_FILE) { // don't copy lock file   
             gdrive_file_copy(item.id, dstFolder, item.title, function(error, res) {
                 if(error) {
@@ -832,15 +844,7 @@ function gdrive_storymap_load(storymap_id, callback) {
 // callback(error, data)
 //
 function gdrive_storymap_load_draft(storymapFolder, callback) {
-    var url = gdrive_storymap_draft_url(storymapFolder);
-    
-    _gdrive_getjson(url)
-        .done(function(data) {
-            callback(null, data);
-        })
-        .fail(function(xhr, textStatus, error) {
-            callback(textStatus+', '+error);
-        });
+    _gdrive_load_json(storymapFolder['draft_file'], callback);
 }
 
 //
