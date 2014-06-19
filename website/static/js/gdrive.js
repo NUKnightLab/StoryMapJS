@@ -124,7 +124,7 @@ function utf8_to_b64(str) {
 function _gdrive_load_json(file, callback) {
     if(file.downloadUrl) {
         var access_token = gapi.auth.getToken().access_token;
-        
+
         $.ajax({
             url: file.downloadUrl,
             headers: {'Authorization': 'Bearer ' + access_token},
@@ -134,7 +134,7 @@ function _gdrive_load_json(file, callback) {
             success: function(data) {
                 callback(null, data);
             }
-        });         
+        });   
     } else {
         callback('File has no downloadUrl');
     }    
@@ -730,7 +730,7 @@ function gdrive_storymap_list_shared(folder_map, callback) {
             gdrive_type_get(folder.id, function(error, type) {
                 if(error) {
                     callback(error);
-//                } else if(type != STORYMAP_TYPE_PROP.value) {
+//              } else if(type != STORYMAP_TYPE_PROP.value) {
 //                    _process_folders(folder_list);             
                 } else {
                     _gdrive_call_chain(folder, 
