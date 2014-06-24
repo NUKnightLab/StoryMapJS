@@ -39,6 +39,10 @@
                 "src": "source",
                 "dst": "build",
                 "regex": "(css/.*|img/.*|.*\\.(ico|html)|gfx/.*\\.(png|jpg|gif))$"
+            },
+            {  
+                "src": "libs/json2.min.js",
+                "dst": "build/js/json2.min.js"
             }
         ],
         // compile less files

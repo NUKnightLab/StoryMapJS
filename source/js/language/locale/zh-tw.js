@@ -3,7 +3,7 @@ VCO.Language = {
 	lang: 					"zh-tw",
 	messages: {
 		loading: 			"載入中",
-		wikipedia: 			"來自維基百科，自由的百科全書",
+		wikipedia: 			"來自維基百科，自由的百科全書"
 	},
 	buttons: {
 	    map_overview: 		"地圖總覽",

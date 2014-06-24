@@ -3,7 +3,7 @@ VCO.Language = {
   lang: "jp",
   messages: {
     loading: "ローディング",
-    wikipedia: "フリー百科事典ウィキペディア（Wikipedia）から",
+    wikipedia: "フリー百科事典ウィキペディア（Wikipedia）から"
   },
   buttons: {
     map_overview: "概観地図",

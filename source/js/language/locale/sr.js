@@ -3,7 +3,7 @@
     lang: "sr",
     messages: {
         loading: "Učitavanje",
-        wikipedia: "Wikipedia",
+        wikipedia: "Wikipedia"
     },
     buttons: {
         map_overview: "Pregled mapę",
