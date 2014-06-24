@@ -9,6 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <link rel="stylesheet" href="../css/storymap.css">
 <script type="text/javascript" src="../js/storymap-min.js"></script>
+<script type="text/javascript" src="../js/json2.min.js"></script>
 <style>
 html, body {
     width: 100%;
@@ -89,12 +90,19 @@ var storymap = null;
 var params = parseQuerystring();
 var storymap_url = decodeURIComponent(params['url']);
 
-// proxy?
-/*
-if(storymap_url.match(/www\.googledrive\.com\/host\//)) {
-    storymap_url = 'http://proxy.knightlab.com/'+storymap_url.split('://')[1];
+// proxy safari and IE9
+trace(navigator.userAgent);
+trace(!!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/));
+trace(!!navigator.userAgent.toLowerCase().match(/msie [789]/));
+
+if(!!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/)
+|| !!navigator.userAgent.toLowerCase().match(/msie [789]/)) {    
+    if(storymap_url.match(/^https?:\/\/www\.googledrive\.com\/host\//)) {
+        storymap_url = location.protocol+'//proxy.knightlab.com/'+storymap_url.split('://')[1];
+        trace('proxy, '+storymap_url);
+    }
 }
-*/
+
 var options = {
     script_path: getScriptPath(/storymap(-min)?\.js/),
     start_at_slide: 0,
@@ -159,7 +167,9 @@ function storymap_getjson() {
         xdr.onload = function() {
             storymap_onload(JSON.parse(xdr.responseText));
         };
-        xdr.onerror = function() { /* doit */ };
+        xdr.onerror = function() { 
+            trace('embed: error loading data via XDomainRequest'); 
+        };
         xdr.onprogress = function() {};
         xdr.open("get", storymap_url);
         xdr.send();

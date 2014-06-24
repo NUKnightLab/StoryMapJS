@@ -1,4 +1,4 @@
-/* storymapjs - v0.2.5 - 2014-06-17
+/* storymapjs - v0.2.6 - 2014-06-24
  * Copyright (c) 2014 Northwestern University Knight Lab 
  */
 
@@ -2570,7 +2570,7 @@ VCO.Language = {
 	lang: 					"en",
 	messages: {
 		loading: 			"Loading",
-		wikipedia: 			"From Wikipedia, the free encyclopedia",
+		wikipedia: 			"From Wikipedia, the free encyclopedia"
 	},
 	buttons: {
 	    map_overview: 		"Map Overview",
