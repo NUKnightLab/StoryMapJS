@@ -96,6 +96,8 @@ var _re_slide_cls = /^slide-icon-\w+$/;
 
 var _map;                   // EditorMap
 
+var _storymap_locker;       // touch lock 
+
 var _storymap_object;       // VCO.StoryMap, for preview
 
 var _storymap_info;          // folder 
@@ -611,11 +613,11 @@ function storymap_init() {
                          _storymap_info = storymapFolder;                              
 
                         // Start periodic touch locking
-                        setInterval(function() {
+                        _storymap_locker = setInterval(function() {
                             gdrive_storymap_lock(_storymap_info, function(error) {
                                 if(error) {
                                     console.log('ERROR LOCKING FILE', error);
-                                }          
+                                }      
                             });
                         }, 60000);     
                         
@@ -697,6 +699,11 @@ $(function() {
             .addClass('disabled')
             .html('<i class="icon-spinner icon-spin"></i> My Maps');   
  
+        // Stop touching
+        if(_storymap_locker) {
+            clearInterval(_storymap_locker);
+        }
+        
         // Delete lock file
         if(_storymap_info && _storymap_info.lock_file) {
             gdrive_storymap_unlock(_storymap_info, function(error) {

@@ -34,6 +34,12 @@ window.onload = function() { gapi.load('drive-share', function() { /* noop */ })
 
 {% include '_editor.html' %}
 
+<div id="ie_modal" class="modal hide fade" data-backdrop="static">
+    <div class="modal-body">   
+    The StoryMapJS authoring tool is not compatible with Internet Explorer.  Please use a different browser.
+    </div>
+</div>
+
 <div id="entry_modal" class="modal hide fade" data-backdrop="static">
     <div class="modal-body">   
         <!-- error -->
@@ -225,7 +231,13 @@ function sortby_title(a, b) {
 }
 
 function handle_onload() {    
-    $('#entry_modal').modal('show');
+    var isIE = !!navigator.userAgent.toLowerCase().match(/msie 9/);
+    
+    if(isIE) {
+        $('#ie_modal').modal('show');
+    } else {
+        $('#entry_modal').modal('show');
+    }
 }
 
 //
