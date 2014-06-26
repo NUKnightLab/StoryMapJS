@@ -231,8 +231,7 @@ function sortby_title(a, b) {
 }
 
 function handle_onload() {    
-    var isIE = !!navigator.userAgent.toLowerCase().match(/msie 9/);
-    
+    var isIE = !!(window.ActiveXObject || "ActiveXObject" in window);    
     if(isIE) {
         $('#ie_modal').modal('show');
     } else {
