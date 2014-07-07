@@ -96,12 +96,11 @@ var storymap = null;
 var params = parseQuerystring();
 var storymap_url = decodeURIComponent(params['url']);
 
-// proxy safari and IE9
+// proxy
 trace(navigator.userAgent);
-trace(!!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/));
-trace(!!navigator.userAgent.toLowerCase().match(/msie [789]/));
 
-if(!!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/)
+if(!!navigator.userAgent.match(/AppleWebKit\/.* Mobile\//)
+|| !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/)
 || !!navigator.userAgent.toLowerCase().match(/msie [789]/)) {    
     if(storymap_url.match(/^https?:\/\/www\.googledrive\.com\/host\//)) {
         storymap_url = location.protocol+'//proxy.knightlab.com/'+storymap_url.split('://')[1];
