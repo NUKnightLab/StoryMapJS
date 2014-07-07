@@ -869,7 +869,14 @@ $(function() {
     // slide-level media options
     $('#url, #credit, #caption').change(function(event) { 
         var id = $(this).attr('id');
-        _slides[_current_slide_index].media[id] = $(this).val().trim();
+        var val = $(this).val().trim();
+        
+        if(id == 'url' && val.match('^https://www.dropbox.com/')) {
+            val = val.replace(/^https:\/\/www.dropbox.com\//i, 'https://dl.dropboxusercontent.com/');
+            $(this).val(val);
+        }
+        
+        _slides[_current_slide_index].media[id] = val;
         storymap_dirty(1);
         
         if(id == 'url') {
