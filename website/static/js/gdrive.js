@@ -128,6 +128,7 @@ function _gdrive_load_json(file, callback) {
         $.ajax({
             url: file.downloadUrl,
             headers: {'Authorization': 'Bearer ' + access_token},
+            dataType: 'json',
             error: function(xhr, status, error) {
                 callback(status + ((error) ? ' ('+error+')' : ''));
             },
