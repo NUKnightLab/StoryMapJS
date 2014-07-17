@@ -26,6 +26,7 @@ window.onload = function() { gapi.load('drive-share', function() { /* noop */ })
 </script>
 <script type="text/javascript" src="https://apis.google.com/js/api.js"></script>
 <!-- === editor -->
+<script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.history.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}/js/gdrive.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}/js/editor.js"></script>
 <link rel="stylesheet" type="text/css" href="{{ static_url }}/css/editor.css">
@@ -404,7 +405,13 @@ $(function() {
                 $modal.trigger('reset', format_error('Error loading storymap', error));
             },
             function(data) {
-                gdrive_storymap_create(_storymap_folder, name, data, function(error, folder) {
+                gdrive_storymap_create(_storymap_folder, name, data, function(error, folder) {                
+                    // Replace history state
+                    var url = document.location.href;
+                    url = url.substring(0, url.indexOf("?"));
+                    History.replaceState(null, document.title, url);
+                    
+                    // Redirect
                     document.location.href = 'edit.html?id='+folder.id;                
                 });            
             }
