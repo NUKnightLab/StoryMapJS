@@ -2562,7 +2562,7 @@ VCO.Language = {
 	lang: 					"en",
 	messages: {
 		loading: 			"Loading",
-		wikipedia: 			"From Wikipedia, the free encyclopedia",
+		wikipedia: 			"From Wikipedia, the free encyclopedia"
 	},
 	buttons: {
 	    map_overview: 		"Map Overview",
@@ -2833,7 +2833,7 @@ VCO.Animate = function(el, options) {
 		/*
 		// POSSIBLE ISSUE WITH WEBKIT FUTURE BUILDS
 	var onWebKitTimeout = function() {
-		
+
 		animation.stop(true);
 	}
 	if (VCO.Browser.webkit) {
@@ -2848,15 +2848,7 @@ VCO.Animate = function(el, options) {
 	https://github.com/ded/morpheus - (c) Dustin Diaz 2011
 	License MIT
 ================================================== */
-!function (name, definition) {
-  if (typeof define == 'function') {
-	  define(definition)
-  } else if (typeof module != 'undefined') {
-	  module.exports = definition()
-  } else {
-	  this[name] = definition()
-  }
-}('vcoanimate', function () {
+window.vcoanimate = (function() {
 
 	var doc = document,
 		win = window,
@@ -2881,7 +2873,7 @@ VCO.Animate = function(el, options) {
 		var styles = doc.createElement('a').style,
 			props = ['webkitTransform', 'MozTransform', 'OTransform', 'msTransform', 'Transform'],
 			i;
-			
+
 		for (i = 0; i < props.length; i++) {
 			if (props[i] in styles) return props[i]
 		};
@@ -2899,7 +2891,7 @@ VCO.Animate = function(el, options) {
 		property = camelize(property)
 		var value = null,
 			computed = doc.defaultView.getComputedStyle(el, '');
-		
+
 		computed && (value = computed[property]);
 		return el.style[property] || value;
 	} : html.currentStyle ?
@@ -2915,7 +2907,7 @@ VCO.Animate = function(el, options) {
 				try {
 					val = el.filters('alpha').opacity
 				} catch (e2) {
-					
+
 				}
 			}
 			return val / 100
@@ -2923,7 +2915,7 @@ VCO.Animate = function(el, options) {
 		var value = el.currentStyle ? el.currentStyle[property] : null
 		return el.style[property] || value
 	} :
-	
+
     function (el, property) {
 		return el.style[camelize(property)]
     }
@@ -2945,13 +2937,13 @@ VCO.Animate = function(el, options) {
   }()
 
   var children = []
-  
+
 	frame(function(timestamp) {
 	  	// feature-detect if rAF and now() are of the same scale (epoch or high-res),
 		// if not, we have to do a timestamp fix on each frame
 		fixTs = timestamp > 1e12 != now() > 1e12
 	})
-	
+
   function has(array, elem, i) {
     if (Array.prototype.indexOf) return array.indexOf(elem)
     for (i = 0; i < array.length; ++i) {
@@ -3260,11 +3252,7 @@ VCO.Animate = function(el, options) {
   morpheus.easings = {}
 
   return morpheus
-
-});
-
-
-
+})();
 
 
 /* **********************************************
@@ -4956,8 +4944,14 @@ VCO.MediaType = function(m) {
 			{
 				type: 		"instagram",
 				name: 		"Instagram", 
-				match_str: 	/(instagr.am|instagram.com)\/p/,
+				match_str: 	/(instagr.am|instagram.com)\/p\//,
 				cls: 		VCO.Media.Instagram
+			},
+			{
+				type: 		"instagramprofile",
+				name: 		"InstagramProfile", 
+				match_str: 	/(instagr.am|instagram.com)\/profiles\//,
+				cls: 		VCO.Media.InstagramProfile
 			},
 			{
 				type: 		"image",
@@ -5441,7 +5435,7 @@ VCO.Media.Flickr = VCO.Media.extend({
      Begin VCO.Media.Instagram.js
 ********************************************** */
 
-/*	VCO.Media.Flickr
+/*	VCO.Media.Instagram
 
 ================================================== */
 
@@ -5486,6 +5480,40 @@ VCO.Media.Instagram = VCO.Media.extend({
 	
 });
 
+
+/* **********************************************
+     Begin VCO.Media.InstagramProfile.js
+********************************************** */
+
+/*	VCO.Media.InstagramProfile
+
+================================================== */
+
+VCO.Media.InstagramProfile = VCO.Media.extend({
+	
+	includes: [VCO.Events],
+	
+	/*	Load the media
+	================================================== */
+	_loadMedia: function() {
+		// Loading Message
+		this.message.updateMessage(VCO.Language.messages.loading + " " + this.options.media_name);
+		
+		this._el.content_item				= VCO.Dom.create("img", "vco-media-item vco-media-image vco-media-instagram-profile vco-media-shadow", this._el.content);
+		this._el.content_item.src			= this.data.url;
+		
+		this.onLoaded();
+	},
+	
+	_updateMediaDisplay: function(layout) {
+		
+		
+		if(VCO.Browser.firefox) {
+			this._el.content_item.style.maxWidth = (this.options.width/2) - 40 + "px";
+		}
+	}
+	
+});
 
 /* **********************************************
      Begin VCO.Media.GoogleDoc.js
@@ -17159,6 +17187,7 @@ L.TileLayer.include({
 	// @codekit-prepend "media/types/VCO.Media.Blockquote.js";
 	// @codekit-prepend "media/types/VCO.Media.Flickr.js";
 	// @codekit-prepend "media/types/VCO.Media.Instagram.js";
+	// @codekit-prepend "media/types/VCO.Media.InstagramProfile.js";
 	// @codekit-prepend "media/types/VCO.Media.GoogleDoc.js";
 	// @codekit-prepend "media/types/VCO.Media.GooglePlus.js";
 	// @codekit-prepend "media/types/VCO.Media.IFrame.js";

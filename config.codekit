@@ -182,6 +182,15 @@
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0
 		},
+	"\/compiled\/examples\/instagram_test.html": {
+		"fileType": 8192,
+		"ignore": 1,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/compiled\/examples\/instagram_test.html",
+		"outputAbbreviatedPath": "No Output Path",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0
+		},
 	"\/compiled\/examples\/ironmaiden.html": {
 		"fileType": 8192,
 		"ignore": 0,
@@ -594,6 +603,17 @@
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0,
 		"processed": 0
+		},
+	"\/source\/jade\/instagram_test.jade": {
+		"compileDebug": 1,
+		"fileType": 512,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/source\/jade\/instagram_test.jade",
+		"outputAbbreviatedPath": "\/compiled\/examples\/instagram_test.html",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 1,
+		"outputStyle": 0
 		},
 	"\/source\/jade\/multiple_storymaps.jade": {
 		"compileDebug": 1,
@@ -2025,6 +2045,17 @@
 		"outputStyle": 1,
 		"syntaxCheckerStyle": 1
 		},
+	"\/source\/js\/media\/types\/VCO.Media.InstagramProfile.js": {
+		"fileType": 64,
+		"ignore": 1,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/source\/js\/media\/types\/VCO.Media.InstagramProfile.js",
+		"outputAbbreviatedPath": "\/source\/js\/media\/types\/min\/VCO.Media.InstagramProfile-min.js",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"outputStyle": 1,
+		"syntaxCheckerStyle": 1
+		},
 	"\/source\/js\/media\/types\/VCO.Media.Slider.js": {
 		"fileType": 64,
 		"ignore": 1,
@@ -2936,6 +2967,26 @@
 		"strictMath": 0,
 		"strictUnits": 0
 		},
+	"\/source\/less\/media\/types\/VCO.Media.InstagramProfile.less": {
+		"allowInsecureImports": 0,
+		"createSourceMap": 0,
+		"disableJavascript": 0,
+		"fileType": 1,
+		"ieCompatibility": 1,
+		"ignore": 1,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/source\/less\/media\/types\/VCO.Media.InstagramProfile.less",
+		"outputAbbreviatedPath": "\/source\/less\/media\/css\/VCO.Media.InstagramProfile.css",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"outputStyle": 0,
+		"relativeURLS": 0,
+		"shouldRunAutoprefixer": 0,
+		"shouldRunBless": 0,
+		"strictImports": 0,
+		"strictMath": 0,
+		"strictUnits": 0
+		},
 	"\/source\/less\/media\/types\/VCO.Media.Twitter.less": {
 		"allowInsecureImports": 0,
 		"createSourceMap": 0,
@@ -3086,6 +3137,26 @@
 		"ignoreWasSetByUser": 0,
 		"inputAbbreviatedPath": "\/source\/less\/slider\/VCO.StorySlider.less",
 		"outputAbbreviatedPath": "\/source\/less\/css\/VCO.StorySlider.css",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"outputStyle": 0,
+		"relativeURLS": 0,
+		"shouldRunAutoprefixer": 0,
+		"shouldRunBless": 0,
+		"strictImports": 0,
+		"strictMath": 0,
+		"strictUnits": 0
+		},
+	"\/source\/less\/snapmap\/VCO.SnapMap.less": {
+		"allowInsecureImports": 0,
+		"createSourceMap": 0,
+		"disableJavascript": 0,
+		"fileType": 1,
+		"ieCompatibility": 1,
+		"ignore": 1,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/source\/less\/snapmap\/VCO.SnapMap.less",
+		"outputAbbreviatedPath": "\/source\/less\/css\/VCO.SnapMap.css",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0,
 		"outputStyle": 0,
