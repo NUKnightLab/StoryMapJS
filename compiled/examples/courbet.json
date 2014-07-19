@@ -1,0 +1,32 @@
+{
+    "storymap": {
+        "map_as_image": true,
+        "map_type": "zoomify",
+        "slides": [
+            {
+                "date": "",
+                "location": {
+                    "icon": "http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
+                    "line": true
+                },
+                "media": {
+                    "caption": "",
+                    "credit": "",
+                    "url": ""
+                },
+                "text": {
+                    "headline": "Gustave COurbet, \"A Burial at Ornans,\" 1849-50",
+                    "text": ""
+                },
+                "type": "overview"
+            }
+        ],
+        "zoomify": {
+            "attribution": "",
+            "height": 2777,
+            "path": "https://googledrive.com/host/0B5JZVWrKDoqjeGxyU2dGOGdGZHM/Courbet_Burial__Ornan_img/",
+            "tolerance": 0.9,
+            "width": 6042
+        }
+    }
+}
