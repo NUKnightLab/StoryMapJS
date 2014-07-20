@@ -15,7 +15,7 @@ L.Control.MiniMap = L.Control.extend({
         width: 150,
         height: 150,
         aimingRectOptions: {
-            color: "#da0000",
+            color: "#c34528",
             weight: 1,
             clickable: false,
 			stroke:true
@@ -86,7 +86,7 @@ L.Control.MiniMap = L.Control.extend({
             this._shadowRect = L.rectangle(this._mainMap.getBounds(), this.options.shadowRectOptions).addTo(this._miniMap);
 			
 			this._locationCircle = L.circleMarker(this._mainMap.getCenter(), {
-				fillColor: "#da0000",
+				fillColor: "#c34528",
 				color: "#FFFFFF",
 				weight:2,
 				radius: 10,

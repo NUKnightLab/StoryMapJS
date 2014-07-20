@@ -15205,7 +15205,7 @@ L.Control.MiniMap = L.Control.extend({
         width: 150,
         height: 150,
         aimingRectOptions: {
-            color: "#da0000",
+            color: "#c34528",
             weight: 1,
             clickable: false,
 			stroke:true
@@ -15276,7 +15276,7 @@ L.Control.MiniMap = L.Control.extend({
             this._shadowRect = L.rectangle(this._mainMap.getBounds(), this.options.shadowRectOptions).addTo(this._miniMap);
 			
 			this._locationCircle = L.circleMarker(this._mainMap.getCenter(), {
-				fillColor: "#da0000",
+				fillColor: "#c34528",
 				color: "#FFFFFF",
 				weight:2,
 				radius: 10,
@@ -15724,10 +15724,13 @@ VCO.MapMarker = VCO.Class.extend({
 		};
 	
 		// Components
-		this._marker 				= {};
+		this._marker = {};
 		
 		// Icon
 		this._icon = {};
+		this._custom_icon = false;
+		this._custom_icon_url = "";
+		this._custom_image_icon = false;
 		
 		// Marker Number
 		this.marker_number = 0;
@@ -16444,9 +16447,14 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 		if (d.location && d.location.lat && d.location.lon) {
 			this.data.real_marker = true;
 			if (o.use_custom_markers && d.location.icon && d.location.icon != "") {
-				this._icon = new L.icon({iconUrl: d.location.icon, iconSize: [41]});
-				//icon = L.icon({iconUrl: d.media.url, iconSize: [41]});
+				this._custom_icon = true;
+				this._custom_icon_url = d.location.icon;
+				this._icon = new L.icon({iconUrl: this._custom_icon_url, iconSize: [48], iconAnchor:[24, 48]});
 			
+			} else if (o.use_custom_markers && d.location.image && d.location.image != "") {
+				this._custom_image_icon = true;
+				this._custom_icon_url = d.location.image;
+				this._icon = new L.icon({iconUrl: this._custom_icon_url, iconSize: [48], iconAnchor:[24, 48], shadowSize: [68, 95], shadowAnchor: [22, 94], className:"vco-mapmarker-image-icon"});
 			} else {
 				this._icon = new L.divIcon({className: 'vco-mapmarker ' + this.media_icon_class, iconAnchor:[10, 10]});
 			}
@@ -16490,14 +16498,24 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 		if (this.data.real_marker) {
 			if (a) {
 				this._marker.setZIndexOffset(100);
-				this._icon = new L.divIcon({className: 'vco-mapmarker-active ' + this.media_icon_class, iconAnchor:[10, 10]});
+				if (this._custom_image_icon) {
+					this._icon = new L.icon({iconUrl: this._custom_icon_url, iconSize: [48], iconAnchor:[24, 48], shadowSize: [68, 95], shadowAnchor: [22, 94], className:"vco-mapmarker-image-icon-active"});
+				} else {
+					this._icon = new L.divIcon({className: 'vco-mapmarker-active ' + this.media_icon_class, iconAnchor:[10, 10]});
+				}
+				
 				//this.timer = setTimeout(function() {self._openPopup();}, this.options.duration + 200);
 				this._setIcon();
 			} else {
 				//this._marker.closePopup();
 				clearTimeout(this.timer);
 				this._marker.setZIndexOffset(0);
-				this._icon = new L.divIcon({className: 'vco-mapmarker ' + this.media_icon_class, iconAnchor:[10, 10]});
+				if (this._custom_image_icon) {
+					this._icon = new L.icon({iconUrl: this._custom_icon_url, iconSize: [48], iconAnchor:[24, 48], shadowSize: [68, 95], shadowAnchor: [22, 94], className:"vco-mapmarker-image-icon"});
+				} else {
+					this._icon = new L.divIcon({className: 'vco-mapmarker ' + this.media_icon_class, iconAnchor:[10, 10]});
+				}
+				
 				this._setIcon();
 			}
 		}
@@ -17497,7 +17515,7 @@ VCO.StoryMap = VCO.Class.extend({
 			calculate_zoom: 		true,   		// Allow map to determine best zoom level between markers (recommended)
 			use_custom_markers: 	false,  		// Allow use of custom map marker icons
 			line_follows_path: 		true,   		// Map history path follows default line, if false it will connect previous and current only
-			line_color: 			"#DA0000",
+			line_color: 			"#c34528", //"#DA0000",
 			line_color_inactive: 	"#CCC",
 			line_join: 				"miter",
 			line_weight: 			3,

@@ -19,10 +19,13 @@ VCO.MapMarker = VCO.Class.extend({
 		};
 	
 		// Components
-		this._marker 				= {};
+		this._marker = {};
 		
 		// Icon
 		this._icon = {};
+		this._custom_icon = false;
+		this._custom_icon_url = "";
+		this._custom_image_icon = false;
 		
 		// Marker Number
 		this.marker_number = 0;

@@ -363,7 +363,7 @@ VCO.StoryMap = VCO.Class.extend({
 			calculate_zoom: 		true,   		// Allow map to determine best zoom level between markers (recommended)
 			use_custom_markers: 	false,  		// Allow use of custom map marker icons
 			line_follows_path: 		true,   		// Map history path follows default line, if false it will connect previous and current only
-			line_color: 			"#DA0000",
+			line_color: 			"#c34528", //"#DA0000",
 			line_color_inactive: 	"#CCC",
 			line_join: 				"miter",
 			line_weight: 			3,
