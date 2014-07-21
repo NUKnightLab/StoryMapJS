@@ -15533,7 +15533,8 @@ L.control.minimap = function(options) {
 				"minZoom":      minZoom,
 	            "maxZoom":      maxZoom,
 	            "attribution":  [
-					"<a href='http://storymap.knightlab.com/' target='_blank'>Knight Lab StoryMapJS</a> | ",
+					"<a href='http://storymap.knightlab.com/' target='_blank' class='vco-knightlab-brand'><span>&FilledSmallSquare;</span> StoryMapJS</a> | ",
+					"<a href='http://leafletjs.com' title='A JS library for interactive maps'>Leaflet</a> | ",
 	                'Map tiles by <a href="http://stamen.com">Stamen Design</a>, ',
 	                'under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. ',
 	                'Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, ',
@@ -16562,6 +16563,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		
 		
 		this._map.on("moveend", this._onMapMoveEnd, this);
+		this._map.attributionControl.setPrefix("");
 			
 		var map_type_arr = this.options.map_type.split(':');		
 
@@ -16706,7 +16708,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		var _tilelayer = null,
 			_map_type_arr = map_type.split(':'),
 			_options = {},
-			_attribution_knightlab = "<a href='http://storymap.knightlab.com/' target='_blank'>Knight Lab StoryMapJS</a> | "
+			_attribution_knightlab = "<a href='http://storymap.knightlab.com/' target='_blank' class='vco-knightlab-brand'><span>&FilledSmallSquare;</span> StoryMapJS</a> | <a href='http://leafletjs.com' title='A JS library for interactive maps'>Leaflet</a> | "
 		
 		if (options) {
 			_options = options;

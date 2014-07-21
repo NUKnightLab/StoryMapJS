@@ -24,6 +24,25 @@
 			a {
 				color: #666;
 			}
+			.vco-knightlab-brand, a.vco-knightlab-brand {
+				margin-left:5px;
+				//color:@color-theme;
+				text-shadow: 0px 0px 1px #FFF, 0px 0px 1px #FFF, 0px 0px 5px #FFF;
+				font-size: 14px;
+				font-weight:bold;
+				span {
+					color:@color-theme;
+					display:inline-block;
+					transform:rotate(45deg);
+					-ms-transform:rotate(45deg); /* IE 9 */
+					-webkit-transform:rotate(45deg); /* Opera, Chrome, and Safari */
+				}
+				&:hover {
+					text-decoration:none;
+					color:lighten(@color-theme, 15);
+					//text-shadow: 0px 0px 0px #000;
+				}
+			}
 		}
 		img.leaflet-image-layer {
 		    max-width: none !important;
