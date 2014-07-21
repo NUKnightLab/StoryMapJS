@@ -16,10 +16,21 @@ html(lang="en")
 		// Style
 		style.
 			html, body {
-				height:100%;
+				
 				width:100%;
-				padding:0px;
-				margin:0px;
+				padding: 0px;
+				
+				margin: 0px;
+				
+			}
+			.vco-storymap {
+				margin-bottom:25px;
+			}
+			#storymap1, #storymap2, #storymap3, #storymap4, #storymap5, #storymap6 {
+				width:100%;
+				height:900px;
+				border-top: 1px solid #999;
+				border-bottom: 1px solid #999;
 			}
 
 		// HTML5 shim, for IE6-8 support of HTML elements
@@ -40,4 +51,34 @@ html(lang="en")
 			});
 			window.onresize = function(event) {
 				storymap.updateDisplay();
+			}
+
+	body
+
+		div#storymap1
+		div#storymap2
+		div#storymap3
+		div#storymap4
+		div#storymap5
+		div#storymap6
+		div#storymap7
+		div#storymap8
+		div#storymap9
+		div#storymap10
+		// JavaScript
+		script(src='../js/storymap.js')
+		script.
+			var storymap1 = new VCO.StoryMap('storymap1', 'instagram_test.json');
+			var storymap2 = new VCO.StoryMap('storymap2', 'instagram_brentfoster.json');
+			var storymap3 = new VCO.StoryMap('storymap3', 'instagram_couch.json');
+			var storymap4 = new VCO.StoryMap('storymap4', 'instagram_matteich.json', {map_type:"stamen:terrain"});
+			var storymap5 = new VCO.StoryMap('storymap5', 'instagram_raymondmccrea.json');
+			var storymap6 = new VCO.StoryMap('storymap6', 'instagram_mirandamulligan.json');
+			window.onresize = function(event) {
+				storymap1.updateDisplay();
+				storymap2.updateDisplay();
+				storymap3.updateDisplay();
+				storymap4.updateDisplay();
+				storymap5.updateDisplay();
+				storymap6.updateDisplay();
 			}

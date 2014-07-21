@@ -330,7 +330,7 @@ VCO.StoryMap = VCO.Class.extend({
 			base_class: 			"",
 			map_size_sticky: 		3, 				// Set as division 1/3 etc
 			map_center_offset:  	null, 			// takes object {top:0,left:0}
-			less_bounce: 			true, 			// Less map bounce when calculating zoom, false is good when there are clusters of tightly grouped markers
+			less_bounce: 			false, 			// Less map bounce when calculating zoom, false is good when there are clusters of tightly grouped markers
 			start_at_slide: 		0,
 			menubar_height: 		0,
 			skinny_size: 			650,

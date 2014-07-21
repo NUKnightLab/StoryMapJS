@@ -491,6 +491,8 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		var _origin = origin,
 			_padding = [(Math.abs(this.options.map_center_offset.left)*3),(Math.abs(this.options.map_center_offset.top)*3)];
 			
+		trace('padding ' + _padding)
+		//_padding = [0,0];
 		//_padding = [0,0];
 		if (correct_for_center) {
 			var _lat = _origin.lat + (_origin.lat - destination.lat)/2,
@@ -500,7 +502,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		
 		var bounds = new L.LatLngBounds([_origin, destination]);
 		if (this.options.less_bounce) {
-			return this._map.getBoundsZoom(bounds, false);
+			return this._map.getBoundsZoom(bounds, false, _padding);
 		} else {
 			return this._map.getBoundsZoom(bounds, true, _padding);
 		}
@@ -591,7 +593,125 @@ L.Map.include({
 		this._animateZoom(center, zoom, origin, scale, null, true);
 
 		return true;
+	},
+	/*
+	getBoundsZoom: function (bounds, inside, padding) { // (LatLngBounds[, Boolean, Point]) -> Number
+		bounds = L.latLngBounds(bounds);
+
+		var zoom = this.getMinZoom() - (inside ? 1 : 0),
+		    maxZoom = this.getMaxZoom(),
+		    size = this.getSize(),
+
+		    nw = bounds.getNorthWest(),
+		    se = bounds.getSouthEast(),
+
+		    zoomNotFound = true,
+		    boundsSize;
+
+		padding = L.point(padding || [0, 0]);
+
+		do {
+			zoom++;
+			boundsSize = this.project(se, zoom).subtract(this.project(nw, zoom)).add(padding);
+			zoomNotFound = !inside ? size.contains(boundsSize) : boundsSize.x < size.x || boundsSize.y < size.y;
+
+		} while (zoomNotFound && zoom <= maxZoom);
+
+		if (zoomNotFound && inside) {
+			return null;
+		}
+
+		return inside ? zoom : zoom - 1;
 	}
+	*/
+	getBoundsZoom: function (bounds, inside, padding) { // (LatLngBounds[, Boolean, Point]) -> Number
+		bounds = L.latLngBounds(bounds);
+
+		var zoom = this.getMinZoom() - (inside ? 1 : 0),
+		    minZoom = this.getMinZoom(),
+			maxZoom = this.getMaxZoom(),
+		    size = this.getSize(),
+
+		    nw = bounds.getNorthWest(),
+		    se = bounds.getSouthEast(),
+
+		    zoomNotFound = true,
+		    boundsSize,
+			zoom_array = [],
+			best_zoom = {x:0,y:0},
+			smallest_zoom = {},
+			final_zoom = 0;
+
+		padding = L.point(padding || [0, 0]);
+		size = this.getSize();
+		
+		
+		// Calculate Zoom Level Differences
+		for (var i = 0; i < maxZoom; i++) {
+			zoom++;
+			boundsSize = this.project(se, zoom).subtract(this.project(nw, zoom)).add(padding);
+			zoom_array.push({
+				x:Math.abs(size.x - boundsSize.x),
+				y:Math.abs(size.y - boundsSize.y)
+			})
+		}
+		
+		// Determine closest match
+		smallest_zoom = zoom_array[0];
+		for (var j = 0; j < zoom_array.length; j++) {
+			if (zoom_array[j].y <= smallest_zoom.y) {
+				smallest_zoom.y = zoom_array[j].y;
+				best_zoom.y = j;
+			}
+			if (zoom_array[j].x <= smallest_zoom.x) {
+				smallest_zoom.x = zoom_array[j].x;
+				best_zoom.x = j; 
+			}
+			
+		}
+		final_zoom = Math.round((best_zoom.y + best_zoom.x) / 2)
+		trace(final_zoom);
+		return final_zoom;
+		/*
+		do {
+			zoom++;
+			trace("do zoom " + zoom)
+			boundsSize = this.project(se, zoom).subtract(this.project(nw, zoom)).add(padding);
+			//boundsSize = this.project(se, zoom).subtract(this.project(nw, zoom));
+			//zoomNotFound = !inside ? size.contains(boundsSize) : boundsSize.x < size.x || boundsSize.y < size.y;
+			
+			if (!inside) {
+				zoomNotFound = size.contains(boundsSize);
+				
+			} else {
+				//trace("size, boundsSize")
+				//trace(size);
+				//trace(boundsSize);
+				zoomNotFound = boundsSize.x < size.x || boundsSize.y < size.y;
+				trace(Math.abs(boundsSize.x - size.x));
+				trace(Math.abs(boundsSize.y - size.y));
+			}
+			
+			trace("zoomNotFound " + zoomNotFound)
+
+		} while (zoomNotFound && zoom <= maxZoom);
+
+		if (zoomNotFound && inside) {
+			return null;
+		}
+		
+		trace("FINAL ZOOM " + zoom);
+		
+		if (inside) {
+			return zoom;
+		} else {
+			trace("zoom -1")
+			return zoom;
+		}
+		//return inside ? zoom : zoom - 1;
+		*/
+	}
+	
 });
 
 L.TileLayer.include({
