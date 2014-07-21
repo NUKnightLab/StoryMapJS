@@ -16,7 +16,6 @@
 				"minZoom":      minZoom,
 	            "maxZoom":      maxZoom,
 	            "attribution":  [
-					"<a href='http://storymap.knightlab.com/' target='_blank' class='vco-knightlab-brand'><span>&FilledSmallSquare;</span> StoryMapJS</a> | ",
 					"<a href='http://leafletjs.com' title='A JS library for interactive maps'>Leaflet</a> | ",
 	                'Map tiles by <a href="http://stamen.com">Stamen Design</a>, ',
 	                'under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. ',
