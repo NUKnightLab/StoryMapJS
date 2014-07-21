@@ -594,36 +594,7 @@ L.Map.include({
 
 		return true;
 	},
-	/*
-	getBoundsZoom: function (bounds, inside, padding) { // (LatLngBounds[, Boolean, Point]) -> Number
-		bounds = L.latLngBounds(bounds);
 
-		var zoom = this.getMinZoom() - (inside ? 1 : 0),
-		    maxZoom = this.getMaxZoom(),
-		    size = this.getSize(),
-
-		    nw = bounds.getNorthWest(),
-		    se = bounds.getSouthEast(),
-
-		    zoomNotFound = true,
-		    boundsSize;
-
-		padding = L.point(padding || [0, 0]);
-
-		do {
-			zoom++;
-			boundsSize = this.project(se, zoom).subtract(this.project(nw, zoom)).add(padding);
-			zoomNotFound = !inside ? size.contains(boundsSize) : boundsSize.x < size.x || boundsSize.y < size.y;
-
-		} while (zoomNotFound && zoom <= maxZoom);
-
-		if (zoomNotFound && inside) {
-			return null;
-		}
-
-		return inside ? zoom : zoom - 1;
-	}
-	*/
 	getBoundsZoom: function (bounds, inside, padding) { // (LatLngBounds[, Boolean, Point]) -> Number
 		bounds = L.latLngBounds(bounds);
 
@@ -670,46 +641,8 @@ L.Map.include({
 			
 		}
 		final_zoom = Math.round((best_zoom.y + best_zoom.x) / 2)
-		trace(final_zoom);
 		return final_zoom;
-		/*
-		do {
-			zoom++;
-			trace("do zoom " + zoom)
-			boundsSize = this.project(se, zoom).subtract(this.project(nw, zoom)).add(padding);
-			//boundsSize = this.project(se, zoom).subtract(this.project(nw, zoom));
-			//zoomNotFound = !inside ? size.contains(boundsSize) : boundsSize.x < size.x || boundsSize.y < size.y;
-			
-			if (!inside) {
-				zoomNotFound = size.contains(boundsSize);
-				
-			} else {
-				//trace("size, boundsSize")
-				//trace(size);
-				//trace(boundsSize);
-				zoomNotFound = boundsSize.x < size.x || boundsSize.y < size.y;
-				trace(Math.abs(boundsSize.x - size.x));
-				trace(Math.abs(boundsSize.y - size.y));
-			}
-			
-			trace("zoomNotFound " + zoomNotFound)
 
-		} while (zoomNotFound && zoom <= maxZoom);
-
-		if (zoomNotFound && inside) {
-			return null;
-		}
-		
-		trace("FINAL ZOOM " + zoom);
-		
-		if (inside) {
-			return zoom;
-		} else {
-			trace("zoom -1")
-			return zoom;
-		}
-		//return inside ? zoom : zoom - 1;
-		*/
 	}
 	
 });
