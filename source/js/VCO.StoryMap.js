@@ -271,6 +271,7 @@ VCO.StoryMap = VCO.Class.extend({
 		
 		// Map
 		this._map = {};
+		this.map = {}; // For direct access to Leaflet Map
 		
 		// Menu Bar
 		this._menubar = {};
@@ -474,6 +475,7 @@ VCO.StoryMap = VCO.Class.extend({
 		
 		// Create Map using preferred Map API
 		this._map = new VCO.Map.Leaflet(this._el.map, this.data, this.options);
+		this.map = this._map._map; // For access to Leaflet Map.
 		this._map.on('loaded', this._onMapLoaded, this);
 		
 		// Map Background Color
