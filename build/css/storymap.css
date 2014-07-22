@@ -1,4 +1,4 @@
-/* storymapjs - v0.2.8 - 2014-07-22
+/* storymapjs - v0.2.9 - 2014-07-22
  * Copyright (c) 2014 Northwestern University Knight Lab 
  */
 
@@ -206,7 +206,7 @@
 .vco-media .vco-media-blockquote blockquote p:after{content:close-quote;display:inline-block;margin-left:3px}
 .vco-slide-media-only .vco-media .vco-media-blockquote{width:80%;margin-left:auto;margin-right:auto}
 @media only screen and (max-width:800px),only screen and (max-device-width:800px){.vco-media .vco-media-blockquote blockquote p{font-size:24px;line-height:26px}}@media only screen and (max-width:500px),only screen and (max-device-width:500px){.vco-media .vco-media-blockquote blockquote p{font-size:15px;line-height:21px}}
-@media only screen and (max-width:500px),only screen and (max-device-width:500px){}.vco-media .vco-media-instagram-profile{border-radius:50%}
+@media only screen and (max-width:500px),only screen and (max-device-width:500px){}.vco-media .vco-media-profile{border-radius:50%}
 @media only screen and (max-width:500px),only screen and (max-device-width:500px){}
 @media only screen and (max-width:500px),only screen and (max-device-width:500px){}.vco-media .vco-media-iframe{width:100%;height:100%}.vco-media .vco-media-iframe iframe{width:100%;height:100%}
 @media only screen and (max-width:500px),only screen and (max-device-width:500px){}.vco-media .vco-media-wikipedia{text-align:left;margin-left:auto;margin-right:auto;clear:both}.vco-media .vco-media-wikipedia .wiki-source{font-size:13px;line-height:19px;font-style:italic}
@@ -369,6 +369,8 @@
 .vco-storymap h2.vco-headline-title .vco-snapmap-instagram,.vco-storymap h2.vco-headline-title .vco-snapmap-flickr{text-align:center;display:block;text-transform:none !important}.vco-storymap h2.vco-headline-title .vco-snapmap-instagram a,.vco-storymap h2.vco-headline-title .vco-snapmap-flickr a{color:#666}
 .vco-storymap .vco-media-instagram-likes{display:block;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-weight:bold;margin-top:10px;font-size:12px}.vco-storymap .vco-media-instagram-likes:before{content:'\2665';margin-right:3px;font-weight:normal;font-size:14px}
 .vco-storymap .vco-media-instagram-likes:after{content:'Likes';margin-left:3px;color:#999;font-weight:normal}
+.vco-storymap .vco-snapmap-user-description,.vco-storymap .vco-snapmap-user-location{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;display:block;text-align:center}
+.vco-storymap .vco-snapmap-user-location{font-weight:bold;font-size:12px}
 .vco-storymap .vco-snapmap-flickr-views{display:block;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-weight:bold;margin-top:10px;font-size:12px}
 .vco-storymap .vco-snapmap-flickr-views:after{content:'Views';margin-left:3px;color:#999;font-weight:normal}
 .vco-storymap{width:100%;height:100%;font-size:16px;line-height:normal;overflow:hidden;position:relative;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;-o-user-select:none;user-select:none}
