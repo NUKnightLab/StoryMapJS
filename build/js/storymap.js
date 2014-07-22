@@ -1,4 +1,4 @@
-/* storymapjs - v0.2.7 - 2014-07-07
+/* storymapjs - v0.2.8 - 2014-07-22
  * Copyright (c) 2014 Northwestern University Knight Lab 
  */
 
@@ -4952,8 +4952,14 @@ VCO.MediaType = function(m) {
 			{
 				type: 		"instagram",
 				name: 		"Instagram", 
-				match_str: 	/(instagr.am|instagram.com)\/p/,
+				match_str: 	/(instagr.am|instagram.com)\/p\//,
 				cls: 		VCO.Media.Instagram
+			},
+			{
+				type: 		"instagramprofile",
+				name: 		"InstagramProfile", 
+				match_str: 	/(instagr.am|instagram.com)(\/profiles\/|[-a-zA-Z0-9@:%_\+.~#?&//=]+instagramprofile)/,
+				cls: 		VCO.Media.InstagramProfile
 			},
 			{
 				type: 		"image",
@@ -5437,7 +5443,7 @@ VCO.Media.Flickr = VCO.Media.extend({
      Begin VCO.Media.Instagram.js
 ********************************************** */
 
-/*	VCO.Media.Flickr
+/*	VCO.Media.Instagram
 
 ================================================== */
 
@@ -5482,6 +5488,40 @@ VCO.Media.Instagram = VCO.Media.extend({
 	
 });
 
+
+/* **********************************************
+     Begin VCO.Media.InstagramProfile.js
+********************************************** */
+
+/*	VCO.Media.InstagramProfile
+
+================================================== */
+
+VCO.Media.InstagramProfile = VCO.Media.extend({
+	
+	includes: [VCO.Events],
+	
+	/*	Load the media
+	================================================== */
+	_loadMedia: function() {
+		// Loading Message
+		this.message.updateMessage(VCO.Language.messages.loading + " " + this.options.media_name);
+		
+		this._el.content_item				= VCO.Dom.create("img", "vco-media-item vco-media-image vco-media-instagram-profile vco-media-shadow", this._el.content);
+		this._el.content_item.src			= this.data.url;
+		
+		this.onLoaded();
+	},
+	
+	_updateMediaDisplay: function(layout) {
+		
+		
+		if(VCO.Browser.firefox) {
+			this._el.content_item.style.maxWidth = (this.options.width/2) - 40 + "px";
+		}
+	}
+	
+});
 
 /* **********************************************
      Begin VCO.Media.GoogleDoc.js
@@ -15173,7 +15213,7 @@ L.Control.MiniMap = L.Control.extend({
         width: 150,
         height: 150,
         aimingRectOptions: {
-            color: "#da0000",
+            color: "#c34528",
             weight: 1,
             clickable: false,
 			stroke:true
@@ -15244,7 +15284,7 @@ L.Control.MiniMap = L.Control.extend({
             this._shadowRect = L.rectangle(this._mainMap.getBounds(), this.options.shadowRectOptions).addTo(this._miniMap);
 			
 			this._locationCircle = L.circleMarker(this._mainMap.getCenter(), {
-				fillColor: "#da0000",
+				fillColor: "#c34528",
 				color: "#FFFFFF",
 				weight:2,
 				radius: 10,
@@ -15501,7 +15541,7 @@ L.control.minimap = function(options) {
 				"minZoom":      minZoom,
 	            "maxZoom":      maxZoom,
 	            "attribution":  [
-					"<a href='http://storymap.knightlab.com/' target='_blank'>Knight Lab StoryMapJS</a> | ",
+					"<a href='http://leafletjs.com' title='A JS library for interactive maps'>Leaflet</a> | ",
 	                'Map tiles by <a href="http://stamen.com">Stamen Design</a>, ',
 	                'under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. ',
 	                'Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, ',
@@ -15692,10 +15732,13 @@ VCO.MapMarker = VCO.Class.extend({
 		};
 	
 		// Components
-		this._marker 				= {};
+		this._marker = {};
 		
 		// Icon
 		this._icon = {};
+		this._custom_icon = false;
+		this._custom_icon_url = "";
+		this._custom_image_icon = false;
 		
 		// Marker Number
 		this.marker_number = 0;
@@ -16412,9 +16455,14 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 		if (d.location && d.location.lat && d.location.lon) {
 			this.data.real_marker = true;
 			if (o.use_custom_markers && d.location.icon && d.location.icon != "") {
-				this._icon = new L.icon({iconUrl: d.location.icon, iconSize: [41]});
-				//icon = L.icon({iconUrl: d.media.url, iconSize: [41]});
+				this._custom_icon = true;
+				this._custom_icon_url = d.location.icon;
+				this._icon = new L.icon({iconUrl: this._custom_icon_url, iconSize: [48], iconAnchor:[24, 48]});
 			
+			} else if (o.use_custom_markers && d.location.image && d.location.image != "") {
+				this._custom_image_icon = true;
+				this._custom_icon_url = d.location.image;
+				this._icon = new L.icon({iconUrl: this._custom_icon_url, iconSize: [48], iconAnchor:[24, 48], shadowSize: [68, 95], shadowAnchor: [22, 94], className:"vco-mapmarker-image-icon"});
 			} else {
 				this._icon = new L.divIcon({className: 'vco-mapmarker ' + this.media_icon_class, iconAnchor:[10, 10]});
 			}
@@ -16458,14 +16506,24 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 		if (this.data.real_marker) {
 			if (a) {
 				this._marker.setZIndexOffset(100);
-				this._icon = new L.divIcon({className: 'vco-mapmarker-active ' + this.media_icon_class, iconAnchor:[10, 10]});
+				if (this._custom_image_icon) {
+					this._icon = new L.icon({iconUrl: this._custom_icon_url, iconSize: [48], iconAnchor:[24, 48], shadowSize: [68, 95], shadowAnchor: [22, 94], className:"vco-mapmarker-image-icon-active"});
+				} else {
+					this._icon = new L.divIcon({className: 'vco-mapmarker-active ' + this.media_icon_class, iconAnchor:[10, 10]});
+				}
+				
 				//this.timer = setTimeout(function() {self._openPopup();}, this.options.duration + 200);
 				this._setIcon();
 			} else {
 				//this._marker.closePopup();
 				clearTimeout(this.timer);
 				this._marker.setZIndexOffset(0);
-				this._icon = new L.divIcon({className: 'vco-mapmarker ' + this.media_icon_class, iconAnchor:[10, 10]});
+				if (this._custom_image_icon) {
+					this._icon = new L.icon({iconUrl: this._custom_icon_url, iconSize: [48], iconAnchor:[24, 48], shadowSize: [68, 95], shadowAnchor: [22, 94], className:"vco-mapmarker-image-icon"});
+				} else {
+					this._icon = new L.divIcon({className: 'vco-mapmarker ' + this.media_icon_class, iconAnchor:[10, 10]});
+				}
+				
 				this._setIcon();
 			}
 		}
@@ -16512,6 +16570,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		
 		
 		this._map.on("moveend", this._onMapMoveEnd, this);
+		this._map.attributionControl.setPrefix("<a href='http://storymap.knightlab.com/' target='_blank' class='vco-knightlab-brand'><span>&FilledSmallSquare;</span> StoryMapJS</a>");
 			
 		var map_type_arr = this.options.map_type.split(':');		
 
@@ -16656,7 +16715,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		var _tilelayer = null,
 			_map_type_arr = map_type.split(':'),
 			_options = {},
-			_attribution_knightlab = "<a href='http://storymap.knightlab.com/' target='_blank'>Knight Lab StoryMapJS</a> | "
+			_attribution_knightlab = "<a href='http://leafletjs.com' title='A JS library for interactive maps'>Leaflet</a> | "
 		
 		if (options) {
 			_options = options;
@@ -16987,6 +17046,8 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		var _origin = origin,
 			_padding = [(Math.abs(this.options.map_center_offset.left)*3),(Math.abs(this.options.map_center_offset.top)*3)];
 			
+		
+		//_padding = [0,0];
 		//_padding = [0,0];
 		if (correct_for_center) {
 			var _lat = _origin.lat + (_origin.lat - destination.lat)/2,
@@ -16996,7 +17057,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		
 		var bounds = new L.LatLngBounds([_origin, destination]);
 		if (this.options.less_bounce) {
-			return this._map.getBoundsZoom(bounds, false);
+			return this._map.getBoundsZoom(bounds, false, _padding);
 		} else {
 			return this._map.getBoundsZoom(bounds, true, _padding);
 		}
@@ -17087,7 +17148,58 @@ L.Map.include({
 		this._animateZoom(center, zoom, origin, scale, null, true);
 
 		return true;
+	},
+
+	getBoundsZoom: function (bounds, inside, padding) { // (LatLngBounds[, Boolean, Point]) -> Number
+		bounds = L.latLngBounds(bounds);
+
+		var zoom = this.getMinZoom() - (inside ? 1 : 0),
+		    minZoom = this.getMinZoom(),
+			maxZoom = this.getMaxZoom(),
+		    size = this.getSize(),
+
+		    nw = bounds.getNorthWest(),
+		    se = bounds.getSouthEast(),
+
+		    zoomNotFound = true,
+		    boundsSize,
+			zoom_array = [],
+			best_zoom = {x:0,y:0},
+			smallest_zoom = {},
+			final_zoom = 0;
+
+		padding = L.point(padding || [0, 0]);
+		size = this.getSize();
+		
+		
+		// Calculate Zoom Level Differences
+		for (var i = 0; i < maxZoom; i++) {
+			zoom++;
+			boundsSize = this.project(se, zoom).subtract(this.project(nw, zoom)).add(padding);
+			zoom_array.push({
+				x:Math.abs(size.x - boundsSize.x),
+				y:Math.abs(size.y - boundsSize.y)
+			})
+		}
+		
+		// Determine closest match
+		smallest_zoom = zoom_array[0];
+		for (var j = 0; j < zoom_array.length; j++) {
+			if (zoom_array[j].y <= smallest_zoom.y) {
+				smallest_zoom.y = zoom_array[j].y;
+				best_zoom.y = j;
+			}
+			if (zoom_array[j].x <= smallest_zoom.x) {
+				smallest_zoom.x = zoom_array[j].x;
+				best_zoom.x = j; 
+			}
+			
+		}
+		final_zoom = Math.round((best_zoom.y + best_zoom.x) / 2)
+		return final_zoom;
+
 	}
+	
 });
 
 L.TileLayer.include({
@@ -17155,6 +17267,7 @@ L.TileLayer.include({
 	// @codekit-prepend "media/types/VCO.Media.Blockquote.js";
 	// @codekit-prepend "media/types/VCO.Media.Flickr.js";
 	// @codekit-prepend "media/types/VCO.Media.Instagram.js";
+	// @codekit-prepend "media/types/VCO.Media.InstagramProfile.js";
 	// @codekit-prepend "media/types/VCO.Media.GoogleDoc.js";
 	// @codekit-prepend "media/types/VCO.Media.GooglePlus.js";
 	// @codekit-prepend "media/types/VCO.Media.IFrame.js";
@@ -17372,6 +17485,7 @@ VCO.StoryMap = VCO.Class.extend({
 		
 		// Map
 		this._map = {};
+		this.map = {}; // For direct access to Leaflet Map
 		
 		// Menu Bar
 		this._menubar = {};
@@ -17431,7 +17545,7 @@ VCO.StoryMap = VCO.Class.extend({
 			base_class: 			"",
 			map_size_sticky: 		3, 				// Set as division 1/3 etc
 			map_center_offset:  	null, 			// takes object {top:0,left:0}
-			less_bounce: 			true, 			// Less map bounce when calculating zoom, false is good when there are clusters of tightly grouped markers
+			less_bounce: 			false, 			// Less map bounce when calculating zoom, false is good when there are clusters of tightly grouped markers
 			start_at_slide: 		0,
 			menubar_height: 		0,
 			skinny_size: 			650,
@@ -17464,7 +17578,7 @@ VCO.StoryMap = VCO.Class.extend({
 			calculate_zoom: 		true,   		// Allow map to determine best zoom level between markers (recommended)
 			use_custom_markers: 	false,  		// Allow use of custom map marker icons
 			line_follows_path: 		true,   		// Map history path follows default line, if false it will connect previous and current only
-			line_color: 			"#DA0000",
+			line_color: 			"#c34528", //"#DA0000",
 			line_color_inactive: 	"#CCC",
 			line_join: 				"miter",
 			line_weight: 			3,
@@ -17575,6 +17689,7 @@ VCO.StoryMap = VCO.Class.extend({
 		
 		// Create Map using preferred Map API
 		this._map = new VCO.Map.Leaflet(this._el.map, this.data, this.options);
+		this.map = this._map._map; // For access to Leaflet Map.
 		this._map.on('loaded', this._onMapLoaded, this);
 		
 		// Map Background Color
