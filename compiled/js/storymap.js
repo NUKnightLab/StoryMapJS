@@ -4948,10 +4948,10 @@ VCO.MediaType = function(m) {
 				cls: 		VCO.Media.Instagram
 			},
 			{
-				type: 		"instagramprofile",
-				name: 		"InstagramProfile", 
-				match_str: 	/(instagr.am|instagram.com)(\/profiles\/|[-a-zA-Z0-9@:%_\+.~#?&//=]+instagramprofile)/,
-				cls: 		VCO.Media.InstagramProfile
+				type: 		"profile",
+				name: 		"Profile", 
+				match_str: 	/((instagr.am|instagram.com)(\/profiles\/|[-a-zA-Z0-9@:%_\+.~#?&//=]+instagramprofile))|[-a-zA-Z0-9@:%_\+.~#?&//=]+\?profile/,
+				cls: 		VCO.Media.Profile
 			},
 			{
 				type: 		"image",
@@ -5482,14 +5482,14 @@ VCO.Media.Instagram = VCO.Media.extend({
 
 
 /* **********************************************
-     Begin VCO.Media.InstagramProfile.js
+     Begin VCO.Media.Profile.js
 ********************************************** */
 
-/*	VCO.Media.InstagramProfile
+/*	VCO.Media.Profile
 
 ================================================== */
 
-VCO.Media.InstagramProfile = VCO.Media.extend({
+VCO.Media.Profile = VCO.Media.extend({
 	
 	includes: [VCO.Events],
 	
@@ -5499,7 +5499,7 @@ VCO.Media.InstagramProfile = VCO.Media.extend({
 		// Loading Message
 		this.message.updateMessage(VCO.Language.messages.loading + " " + this.options.media_name);
 		
-		this._el.content_item				= VCO.Dom.create("img", "vco-media-item vco-media-image vco-media-instagram-profile vco-media-shadow", this._el.content);
+		this._el.content_item				= VCO.Dom.create("img", "vco-media-item vco-media-image vco-media-profile vco-media-shadow", this._el.content);
 		this._el.content_item.src			= this.data.url;
 		
 		this.onLoaded();
@@ -17259,7 +17259,7 @@ L.TileLayer.include({
 	// @codekit-prepend "media/types/VCO.Media.Blockquote.js";
 	// @codekit-prepend "media/types/VCO.Media.Flickr.js";
 	// @codekit-prepend "media/types/VCO.Media.Instagram.js";
-	// @codekit-prepend "media/types/VCO.Media.InstagramProfile.js";
+	// @codekit-prepend "media/types/VCO.Media.Profile.js";
 	// @codekit-prepend "media/types/VCO.Media.GoogleDoc.js";
 	// @codekit-prepend "media/types/VCO.Media.GooglePlus.js";
 	// @codekit-prepend "media/types/VCO.Media.IFrame.js";
