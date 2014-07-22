@@ -74,7 +74,7 @@ VCO.MediaType = function(m) {
 			{
 				type: 		"instagramprofile",
 				name: 		"InstagramProfile", 
-				match_str: 	/(instagr.am|instagram.com)\/profiles\//,
+				match_str: 	/(instagr.am|instagram.com)(\/profiles\/|[-a-zA-Z0-9@:%_\+.~#?&//=]+instagramprofile)/,
 				cls: 		VCO.Media.InstagramProfile
 			},
 			{

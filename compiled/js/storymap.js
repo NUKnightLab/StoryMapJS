@@ -4950,7 +4950,7 @@ VCO.MediaType = function(m) {
 			{
 				type: 		"instagramprofile",
 				name: 		"InstagramProfile", 
-				match_str: 	/(instagr.am|instagram.com)\/profiles\//,
+				match_str: 	/(instagr.am|instagram.com)(\/profiles\/|[-a-zA-Z0-9@:%_\+.~#?&//=]+instagramprofile)/,
 				cls: 		VCO.Media.InstagramProfile
 			},
 			{
@@ -17038,7 +17038,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		var _origin = origin,
 			_padding = [(Math.abs(this.options.map_center_offset.left)*3),(Math.abs(this.options.map_center_offset.top)*3)];
 			
-		trace('padding ' + _padding)
+		
 		//_padding = [0,0];
 		//_padding = [0,0];
 		if (correct_for_center) {

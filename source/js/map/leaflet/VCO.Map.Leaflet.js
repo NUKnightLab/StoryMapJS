@@ -492,7 +492,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		var _origin = origin,
 			_padding = [(Math.abs(this.options.map_center_offset.left)*3),(Math.abs(this.options.map_center_offset.top)*3)];
 			
-		trace('padding ' + _padding)
+		
 		//_padding = [0,0];
 		//_padding = [0,0];
 		if (correct_for_center) {
