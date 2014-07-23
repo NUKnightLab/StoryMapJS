@@ -1016,6 +1016,8 @@ $(function() {
         theme: 'bootstrap',
         hide: function() {
             var color = $(this).val();
+            console.log('color', color);
+            
             if(color) {
                 var rgb = $(this).minicolors('rgbObject');
                 var opacity = parseInt(rgb.a * 100, 10);
