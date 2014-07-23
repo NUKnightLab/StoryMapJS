@@ -1024,8 +1024,10 @@ $(function() {
                         _slides[_current_slide_index].background, 
                         {color: color, opacity: opacity}
                     );                
-                storymap_dirty(1);
+            } else {
+                _slides[_current_slide_index].background = {};
             }
+            storymap_dirty(1);
         }
     }); 
     
