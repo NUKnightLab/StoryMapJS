@@ -48,11 +48,62 @@
 		//font-size:12px;
 		//width:50%;
 		display:block;
-		text-align:center;
+		
 	}
+	
+	.vco-snapmap-instagram-text {
+		text-align:center;
+		display:none;
+		a {
+			color:#000;
+		}
+		.vco-snapmap-instagram-posts,
+		.vco-snapmap-instagram-followed_by,
+		.vco-snapmap-instagram-follows,
+		 .vco-snapmap-instagram-website {
+			display:inline-block;
+			font-family:@font-main;
+			font-weight:bold;
+			margin-top:10px;
+			font-size:12px;
+			margin-left:20px;
+			&:after {
+				margin-left:3px;
+				color:#999;
+				font-weight:normal;
+			}
+		}
+		.vco-snapmap-instagram-posts:after {
+			content:'Posts';
+		}
+		
+		.vco-snapmap-instagram-followed_by:after {
+			content:'Followers';
+		}
+		
+		.vco-snapmap-instagram-follows:after {
+			content:'Following';
+		}
+		
+		.vco-snapmap-instagram-website {
+			font-weight:normal;
+			display:block;
+			margin:0;
+			&:after {
+				margin-left:0;
+				color:#999;
+				font-weight:normal;
+			}
+		}
+		
+		.vco-snapmap-instagram-bio {
+		}
+	}
+	
 	.vco-snapmap-user-location {
 		font-weight:bold;
 		font-size:12px;
+		text-align:center;
 	}
 	.vco-snapmap-flickr-views {
 		display:block;
