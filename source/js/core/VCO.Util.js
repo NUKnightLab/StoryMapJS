@@ -25,7 +25,6 @@ VCO.Util = {
 	},
 	
 	convertUnixTime: function(str) {
-		trace("DATE " + str);
 		var _date, _months, _year, _month, _day, _time;
 		
 		_date = new Date(str);
