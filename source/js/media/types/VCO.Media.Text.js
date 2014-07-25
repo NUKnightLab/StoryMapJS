@@ -109,7 +109,6 @@ VCO.Media.Text = VCO.Class.extend({
 					//"created_time": "2014-03-14 10:19:57"
 					
 				} else {
-					trace("MOMENT NOT DEFINED")
 					text_content 	+= "<div class='vco-text-date'>" + VCO.Util.convertUnixTime(this.data.date.created_time) + "</div>";
 					
 				}
