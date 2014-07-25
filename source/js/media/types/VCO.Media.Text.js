@@ -98,9 +98,30 @@ VCO.Media.Text = VCO.Class.extend({
 		
 		// Text
 		if (this.data.text != "") {
+			var text_content = "";
+			
+			text_content 					+= VCO.Util.htmlify(this.data.text);
+			
+			// Date
+			if (this.data.date && this.data.date.created_time && this.data.date.created_time != "") {
+				if (typeof(moment) !== 'undefined') {
+					text_content 	+= "<div class='vco-text-date'>" + moment(this.data.date.created_time, 'YYYY-MM-DD h:mm:ss').fromNow() + "</div>";
+					//"created_time": "2014-03-14 10:19:57"
+					
+				} else {
+					trace("MOMENT NOT DEFINED")
+					text_content 	+= "<div class='vco-text-date'>" + VCO.Util.convertUnixTime(this.data.date.created_time) + "</div>";
+					
+				}
+				
+			
+			}
+			
+			
 			this._el.content				= VCO.Dom.create("div", "vco-text-content", this._el.content_container);
-			this._el.content.innerHTML		= VCO.Util.htmlify(this.data.text);
+			this._el.content.innerHTML		= text_content;
 		}
+		
 		
 		// Fire event that the slide is loaded
 		this.onLoaded();

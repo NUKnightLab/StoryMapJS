@@ -24,6 +24,20 @@ VCO.Util = {
 		}
 	},
 	
+	convertUnixTime: function(str) {
+		trace("DATE " + str);
+		var _date, _months, _year, _month, _day, _time;
+		
+		_date = new Date(str);
+		_months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+		_year = _date.getFullYear();
+		_month = _months[_date.getMonth()];
+		_day = _date.getDate();
+		_time = _month + ', ' + _day + ' ' + _year;
+		
+		return _time;
+	},
+	
 	setData: function (obj, data) {
 		obj.data = VCO.Util.extend({}, obj.data, data);
 		if (obj.data.uniqueid === "") {
@@ -94,7 +108,9 @@ VCO.Util = {
 	},
 	
 	htmlify: function(str) {
-		if (str.match(/<\s*p[^>]*>([^<]*)<\s*\/\s*p\s*>/)) {
+		//if (str.match(/<\s*p[^>]*>([^<]*)<\s*\/\s*p\s*>/)) {
+		if (str.match(/<p>[\s\S]*?<\/p>/)) {
+			
 			return str;
 		} else {
 			return "<p>" + str + "</p>";
