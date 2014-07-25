@@ -407,7 +407,7 @@ VCO.StoryMap = VCO.Class.extend({
 			if (typeof(moment) !== 'undefined') {
 				self._loadLanguage(data);
 			} else {
-				VCO.Load.js(this.options.script_path + "library/moment.js", function() {
+				VCO.Load.js(this.options.script_path + "/library/moment.js", function() {
 					self._loadLanguage(data);
 					trace("LOAD MOMENTJS")
 				});
