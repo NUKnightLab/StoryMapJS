@@ -1,4 +1,4 @@
-/* storymapjs - v0.3.2 - 2014-07-25
+/* storymapjs - v0.3.3 - 2014-07-25
  * Copyright (c) 2014 Northwestern University Knight Lab 
  */
 
@@ -79,7 +79,6 @@ VCO.Util = {
 	},
 	
 	convertUnixTime: function(str) {
-		trace("DATE " + str);
 		var _date, _months, _year, _month, _day, _time;
 		
 		_date = new Date(str);
@@ -5915,16 +5914,14 @@ VCO.Media.Text = VCO.Class.extend({
 			
 			// Date
 			if (this.data.date && this.data.date.created_time && this.data.date.created_time != "") {
-				if (typeof(moment) !== 'undefined') {
-					text_content 	+= "<div class='vco-text-date'>" + moment(this.data.date.created_time, 'YYYY-MM-DD h:mm:ss').fromNow() + "</div>";
-					//"created_time": "2014-03-14 10:19:57"
+				if (this.data.date.created_time.length > 10) {
+					if (typeof(moment) !== 'undefined') {
+						text_content 	+= "<div class='vco-text-date'>" + moment(this.data.date.created_time, 'YYYY-MM-DD h:mm:ss').fromNow() + "</div>";
 					
-				} else {
-					text_content 	+= "<div class='vco-text-date'>" + VCO.Util.convertUnixTime(this.data.date.created_time) + "</div>";
-					
+					} else {
+						text_content 	+= "<div class='vco-text-date'>" + VCO.Util.convertUnixTime(this.data.date.created_time) + "</div>";
+					}
 				}
-				
-			
 			}
 			
 			
@@ -17657,7 +17654,7 @@ VCO.StoryMap = VCO.Class.extend({
 			if (typeof(moment) !== 'undefined') {
 				self._loadLanguage(data);
 			} else {
-				VCO.Load.js(this.options.script_path + "library/moment.js", function() {
+				VCO.Load.js(this.options.script_path + "/library/moment.js", function() {
 					self._loadLanguage(data);
 					trace("LOAD MOMENTJS")
 				});
