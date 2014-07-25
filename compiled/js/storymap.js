@@ -71,9 +71,26 @@ VCO.Util = {
 	},
 	
 	convertUnixTime: function(str) {
-		var _date, _months, _year, _month, _day, _time;
+		var _date, _months, _year, _month, _day, _time, _date_array = [],
+			_date_str = {
+				ymd:"",
+				time:"",
+				time_array:[],
+				date_array:[],
+				full_array:[]
+			};
+			
+		_date_str.ymd = str.split(" ")[0];
+		_date_str.time = str.split(" ")[1];
+		_date_str.date_array = _date_str.ymd.split("-");
+		_date_str.time_array = _date_str.time.split(":");
+		_date_str.full_array = _date_str.date_array.concat(_date_str.time_array)
 		
-		_date = new Date(str);
+		for(var i = 0; i < _date_str.full_array.length; i++) {
+			_date_array.push( parseInt(_date_str.full_array[i]) )
+		}
+
+		_date = new Date(_date_array[0], _date_array[1], _date_array[2], _date_array[3], _date_array[4], _date_array[5]);
 		_months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 		_year = _date.getFullYear();
 		_month = _months[_date.getMonth()];
