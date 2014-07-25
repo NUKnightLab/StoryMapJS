@@ -119,7 +119,7 @@
 		    trace('embed: storymap data loaded');
 
 		    if (d && d.storymap) {
-                PROPERTIES_TO_COPY = ['map_type', 'map_subdomains', 'map_as_image', 'use_custom_markers', 'map_background_color', 'language', 'zoomify']
+                PROPERTIES_TO_COPY = ['map_type', 'map_subdomains', 'map_as_image', 'use_custom_markers', 'map_background_color', 'language', 'zoomify', 'relative_date']
                 for (var i = 0; i < PROPERTIES_TO_COPY.length; i++) {
                     if (d.storymap[PROPERTIES_TO_COPY[i]]) {
                         options[PROPERTIES_TO_COPY[i]] = d.storymap[PROPERTIES_TO_COPY[i]];
