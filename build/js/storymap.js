@@ -1,4 +1,4 @@
-/* storymapjs - v0.3.1 - 2014-07-25
+/* storymapjs - v0.3.2 - 2014-07-25
  * Copyright (c) 2014 Northwestern University Knight Lab 
  */
 
@@ -5920,7 +5920,6 @@ VCO.Media.Text = VCO.Class.extend({
 					//"created_time": "2014-03-14 10:19:57"
 					
 				} else {
-					trace("MOMENT NOT DEFINED")
 					text_content 	+= "<div class='vco-text-date'>" + VCO.Util.convertUnixTime(this.data.date.created_time) + "</div>";
 					
 				}
