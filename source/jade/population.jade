@@ -1,4 +1,4 @@
-!!! 5
+doctype html
 html(lang="en")
 	head
 		title StoryMapJS
@@ -14,7 +14,7 @@ html(lang="en")
 		link(rel='stylesheet', href='../css/fonts/font.default.css?v1')
 		
 		// Style
-		style
+		style.
 			html, body {
 				height:100%;
 				width:100%;
@@ -33,10 +33,17 @@ html(lang="en")
 		
 		// JavaScript
 		script(src='../js/storymap.js')
-		script
+		script.
+			/*
 			var storymap = new VCO.StoryMap('storymap', 'population.json', {
 				map_type:"mapbox:nuknightlab.hif6ioi4"
 				//map_type:"stamen:toner"
+			});
+			*/
+			var storymap = new VCO.StoryMap('storymap', 'https://03f9ddaa7783632c3051682fda25749a09502a30.googledrive.com/host/0B8DGtsbMnabNdGtOOFNmWUM4SU0/published.json', {
+				language: "es",
+				map_type: "stamen:toner-lite",
+				map_subdomains: ""
 			});
 			window.onresize = function(event) {
 				storymap.updateDisplay();

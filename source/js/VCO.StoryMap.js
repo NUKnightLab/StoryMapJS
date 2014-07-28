@@ -436,6 +436,7 @@ VCO.StoryMap = VCO.Class.extend({
 	/*	Load Language
 	================================================== */
 	_loadLanguage: function(data) {
+		var self = this;
 		if(this.options.language == 'en') {
 		    this.options.language = VCO.Language;
 		    this._initData(data);
