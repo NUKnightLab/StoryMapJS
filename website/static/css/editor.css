@@ -149,7 +149,13 @@ a.help:hover {text-decoration: none;}
 
 #slide_opt_modal {max-height: none;height: auto;}
 #slide_opt_modal .modal-body {max-height: none;height: auto;overflow-y: visible;}
-#background_color {width: 50%;}
+#background_color {width: 50%;padding-right: 44px;}
+#background_color_clear { 
+    float: none;
+    height: 32px;
+    margin-top: -10px;
+    margin-left: -20px;
+} 
 #background_url {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;

@@ -1033,13 +1033,32 @@ $(function() {
                         _slides[_current_slide_index].background, 
                         {color: color, opacity: opacity}
                     );                
+                $('#background_color_clear').show();                
             } else {
                 _slides[_current_slide_index].background = {};
+                $('#background_color_clear').hide();
             }
             storymap_dirty(1);
+        },
+        change: function(hex, opacity) {
+            if(hex) {
+                $('#background_color_clear').show();
+            } else {
+                $('#background_color_clear').hide();
+            }
         }
-    }); 
-    
+    });
+
+    $('<button id="background_color_clear" type="button" class="close">&times;</button>')
+        .insertAfter('#background_color')
+        .click(function(event) {
+            $('#background_color').minicolors('value', '');
+            $('#background_color').minicolors('opacity', 1);        
+            _slides[_current_slide_index].background = {};
+            $('#background_color_clear').hide();
+            storymap_dirty(1);
+        });
+
     $('#background_url').change(function(event) {
         _slides[_current_slide_index].background = $.extend(true, 
                 _slides[_current_slide_index].background, 
@@ -1082,7 +1101,13 @@ $(function() {
             
             $('#background_color').minicolors('value', color);
             $('#background_color').minicolors('opacity', opacity);
-                        
+            
+            if(color) {
+                $('#background_color_clear').show(); 
+            } else {
+                $('#background_color_clear').hide(); 
+            }
+
             $(this).trigger('refresh_background_select');
 
             $('#background_image_select a').click(function(event) {
