@@ -39,10 +39,11 @@
        //map_type:"stamen:toner"
       });
       */
-      var storymap = new VCO.StoryMap('storymap', 'https://03f9ddaa7783632c3051682fda25749a09502a30.googledrive.com/host/0B8DGtsbMnabNdGtOOFNmWUM4SU0/published.json', {
-       language: "es",
-       map_type: "stamen:toner-lite",
-       map_subdomains: ""
+      var storymap = new VCO.StoryMap('storymap', 'https://099f89e3e066758af6075ef020f842e2a0f3946d.googledrive.com/host/0B2KSB_LPwqK5VzAxdU1keU9hMHc/published.json', {
+       map_as_image: true,
+       language: "fr",
+       map_type: "mapbox:examples.map-20v6611k",
+       map_subdomains: "abcd"
       });
       window.onresize = function(event) {
        storymap.updateDisplay();
