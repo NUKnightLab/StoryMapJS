@@ -27,8 +27,9 @@ window.onload = function() { gapi.load('drive-share', function() { /* noop */ })
 <script type="text/javascript" src="https://apis.google.com/js/api.js"></script>
 <!-- === editor -->
 <script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.history.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}/js/gdrive.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}/js/json2.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}/js/editor.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}/js/gdrive.js"></script>
 <link rel="stylesheet" type="text/css" href="{{ static_url }}/css/editor.css">
 </head>
 <body>
@@ -225,13 +226,16 @@ var shared_by_template = _.template($('#shared_by').html().trim());
 
 var _storymap_folder = null;    // public folder
 
-var _storymap_names = [];       // lowercase list of storymap names
 var _storymap_map = {};         // id => object
+var _storymap_names = [];       // lowercase list of storymap names
 var _storymap_list = [];        // [object]
 
 var _params = parseQueryString();
 
 
+//
+// sort
+//
 function sortby_date(a, b) {
     adt = (a.draft_on > a.published_on) ? a.draft_on : a.published_on;
     bdt = (b.draft_on > b.published_on) ? b.draft_on : b.published_on;                
@@ -242,32 +246,46 @@ function sortby_title(a, b) {
     return (a.title.toUpperCase() < b.title.toUpperCase()) ? -1 : 1;
 }
 
+
 //
 // (Re)initialize _storymap_map / _storymap_list / _storymap_names
 // @callback(error | null)
+//
+function process_storymap_map(storymap_map, callback) {
+    _storymap_map = storymap_map;
+    _storymap_list = [];
+    _storymap_names = [];
+
+   for(var id in _storymap_map) {
+        _storymap_list.push(_storymap_map[id]);
+        _storymap_names.push(_storymap_map[id].title.toLowerCase());
+    }            
+}
+
 function init_storymap_list(callback) {
-    gdrive_storymap_list(_storymap_folder, function(error, storymap_map) {                
-        if(error) {
-            callback(error);
-        } else {
-            // List all 'shared with me'
-            gdrive_storymap_list_shared(storymap_map, function(error) {
-                if(error) {
-                    callback(error);
-                 } else {
-                    _storymap_map = storymap_map;
-                    _storymap_list = [];
-                    _storymap_names = [];
-            
-                    for(var id in _storymap_map) {
-                        _storymap_list.push(_storymap_map[id]);
-                        _storymap_names.push(_storymap_map[id].title.toLowerCase());
-                    }            
-                    callback(null);
-                }
-            });                 
-        }
-    });       
+    var storymap_map = storymap_cache_get();
+    
+    if(storymap_map) {
+        process_storymap_map(storymap_map);
+        callback(null);
+    } else {
+        gdrive_storymap_list(_storymap_folder, function(error, storymap_map) {                
+            if(error) {
+                callback(error);
+            } else {
+                // List all 'shared with me'
+                gdrive_storymap_list_shared(storymap_map, function(error) {
+                    if(error) {
+                        callback(error);
+                     } else {
+                        process_storymap_map(storymap_map);
+                        storymap_cache_set(storymap_map);
+                        callback(null);
+                    }
+                });                 
+            }
+        });   
+    }    
 }
 
 function validate_storymap_name($modal, name) {
@@ -342,6 +360,10 @@ $(function() {
             if(error) {
                 $modal.trigger('reset', format_error('Error renaming StoryMap', error));               
             } else {
+                // Update cache
+                _storymap_map[id]['title'] = name;
+                storymap_cache_set(_storymap_map);
+                       
                 $modal.trigger('show_list', true); 
             }
         });
@@ -370,10 +392,14 @@ $(function() {
  
         $modal.trigger('progress_show', 'Copying StoryMap');
          
-        gdrive_storymap_copy(item, name, function(error, resource) {
+        gdrive_storymap_copy(item, name, function(error, folder) {
             if(error) {
                 $modal.trigger('reset', format_error('Error copying StoryMap', error));               
             } else {
+                // Update cache
+                _storymap_map[folder.id] = folder;
+                storymap_cache_set(_storymap_map);
+
                 $modal.trigger('show_list', true); 
             }
         });
@@ -410,6 +436,10 @@ $(function() {
                     var url = document.location.href;
                     url = url.substring(0, url.indexOf("?"));
                     History.replaceState(null, document.title, url);
+
+                    // Update cache
+                    _storymap_map[folder.id] = folder;
+                    storymap_cache_set(_storymap_map);
                     
                     // Redirect
                     document.location.href = 'edit.html?id='+folder.id;                
@@ -478,6 +508,11 @@ $(function() {
             if(error) {
                 $modal.trigger('reset', format_error('Error creating StoryMap', error));
             } else {
+                // Update cache
+                _storymap_map[folder.id] = folder;
+                storymap_cache_set(_storymap_map);
+                
+                // Goto edit page
                 document.location.href = 'edit.html?id='+folder.id;
             }  
         });    
@@ -762,6 +797,9 @@ $(function() {
                             _storymap_names.remove(item.title.toLowerCase());
                             _storymap_list.remove(item);
                             delete _storymap_map[id];
+                            
+                            // Update cache
+                            storymap_cache_set(_storymap_map);
                                 
                             $tr.remove();
                         }   

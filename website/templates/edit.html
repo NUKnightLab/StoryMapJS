@@ -40,6 +40,7 @@
 <!-- === auth/sharing -->
 {% include '_credentials.html' %}
 <!-- === editor -->
+<script type="text/javascript" src="{{ STATIC_URL }}/js/json2.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}/js/editor.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}/js/gdrive.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}/js/EditorMap.js"></script>
@@ -360,6 +361,9 @@ function storymap_save(callback) {
             save_button.removeClass('disabled').addClass('btn-primary');
         } else {        
             storymap_dirty(0);
+                        
+            // Update cache
+            storymap_cache_update(_storymap_info.id, {'draft_on': _storymap_info['draft_on']});
         }    
         save_button.html('<i class="icon-save"></i> Save');
         callback(error);
@@ -379,7 +383,10 @@ function storymap_publish(callback) {
     } else {
         gdrive_storymap_publish(_storymap_info, function(error, file) {
             if(!error) {
-                $('#storymap_publish').hide();                
+                $('#storymap_publish').hide(); 
+                
+                // Update cache
+                storymap_cache_update(_storymap_info.id, {'published_on': _storymap_info['published_on']});               
             }
             callback(error);
         });
