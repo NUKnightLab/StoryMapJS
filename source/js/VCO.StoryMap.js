@@ -329,12 +329,13 @@ VCO.StoryMap = VCO.Class.extend({
 			width: 					this._el.container.offsetWidth,
 			layout: 				"landscape", 	// portrait or landscape
 			base_class: 			"",
-			map_size_sticky: 		3, 				// Set as division 1/3 etc
+			map_size_sticky: 		2, 				// Set as division 1/3 etc
 			map_center_offset:  	null, 			// takes object {top:0,left:0}
 			less_bounce: 			false, 			// Less map bounce when calculating zoom, false is good when there are clusters of tightly grouped markers
 			start_at_slide: 		0,
 			menubar_height: 		0,
 			skinny_size: 			650,
+			relative_date: 			false, 			// Use momentjs to show a relative date from the slide.text.date.created_time field
 			// animation
 			duration: 				1000,
 			ease: 					VCO.Ease.easeInOutQuint,
@@ -400,7 +401,24 @@ VCO.StoryMap = VCO.Class.extend({
 		if (this.options.map_as_image) {
 			this.options.calculate_zoom = false;
 		}
+		
+		// Use Relative Date Calculations
+		if(this.options.relative_date) {
+			if (typeof(moment) !== 'undefined') {
+				self._loadLanguage(data);
+			} else {
+				VCO.Load.js(this.options.script_path + "/library/moment.js", function() {
+					self._loadLanguage(data);
+					trace("LOAD MOMENTJS")
+				});
+			}
+			
+		} else {
+			self._loadLanguage(data);
+		}
+		
 		// Load language
+		/*
 		if(this.options.language == 'en') {
 		    this.options.language = VCO.Language;
 		    this._initData(data);
@@ -409,9 +427,26 @@ VCO.StoryMap = VCO.Class.extend({
 				self._initData(data);
 			});
 		}
+		*/
+		
+		
 		return this;
 	},
-
+	
+	/*	Load Language
+	================================================== */
+	_loadLanguage: function(data) {
+		var self = this;
+		if(this.options.language == 'en') {
+		    this.options.language = VCO.Language;
+		    this._initData(data);
+		} else {
+			VCO.Load.js(this.options.script_path + "/locale/" + this.options.language + ".js", function() {
+				self._initData(data);
+			});
+		}
+	},
+	
 	/*	Navigation
 	================================================== */
 	goTo: function(n) {

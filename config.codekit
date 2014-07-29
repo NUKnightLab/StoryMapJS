@@ -335,6 +335,17 @@
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0
 		},
+	"\/compiled\/js\/library\/moment.js": {
+		"fileType": 64,
+		"ignore": 1,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/compiled\/js\/library\/moment.js",
+		"outputAbbreviatedPath": "\/compiled\/js\/library\/min\/moment-min.js",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"outputStyle": 1,
+		"syntaxCheckerStyle": 1
+		},
 	"\/compiled\/js\/locale\/de.js": {
 		"fileType": 64,
 		"ignore": 1,
@@ -1063,6 +1074,17 @@
 		"outputPathIsSetByUser": 0,
 		"outputStyle": 1,
 		"syntaxCheckerStyle": 1
+		},
+	"\/source\/js\/library\/moment.js": {
+		"fileType": 64,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/source\/js\/library\/moment.js",
+		"outputAbbreviatedPath": "\/compiled\/js\/library\/moment.js",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 1,
+		"outputStyle": 1,
+		"syntaxCheckerStyle": 0
 		},
 	"\/source\/js\/map\/leaflet\/extentions\/VCO.Leaflet.MiniMap.js": {
 		"fileType": 64,
@@ -2977,6 +2999,26 @@
 		"ignoreWasSetByUser": 0,
 		"inputAbbreviatedPath": "\/source\/less\/media\/types\/VCO.Media.Image.less",
 		"outputAbbreviatedPath": "\/source\/less\/media\/css\/VCO.Media.Image.css",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"outputStyle": 0,
+		"relativeURLS": 0,
+		"shouldRunAutoprefixer": 0,
+		"shouldRunBless": 0,
+		"strictImports": 0,
+		"strictMath": 0,
+		"strictUnits": 0
+		},
+	"\/source\/less\/media\/types\/VCO.Media.Instagram.less": {
+		"allowInsecureImports": 0,
+		"createSourceMap": 0,
+		"disableJavascript": 0,
+		"fileType": 1,
+		"ieCompatibility": 1,
+		"ignore": 1,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/source\/less\/media\/types\/VCO.Media.Instagram.less",
+		"outputAbbreviatedPath": "\/source\/less\/media\/css\/VCO.Media.Instagram.css",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0,
 		"outputStyle": 0,

@@ -22,7 +22,7 @@
       .vco-storymap {
        margin-bottom:25px;
       }
-      #storymap1, #storymap2, #storymap3, #storymap4, #storymap5, #storymap6 {
+      #storymap1, #storymap2, #storymap3, #storymap4, #storymap5, #storymap6, #storymap7 {
        width:100%;
        height:900px;
        border-top: 1px solid #999;
@@ -37,10 +37,12 @@
     -->
   </head>
   <body>
-    <div id="storymap1"></div>
-    <div id="storymap2"></div>
-    <div id="storymap3"></div>
-    <div id="storymap4"></div>
+    <!--
+    div#storymap1
+    div#storymap2
+    div#storymap3
+    div#storymap4
+    -->
     <div id="storymap5"></div>
     <div id="storymap6"></div>
     <div id="storymap7"></div>
@@ -50,19 +52,27 @@
     <!-- JavaScript-->
     <script src="../js/storymap.js"></script>
     <script>
+      /*
       var storymap1 = new VCO.StoryMap('storymap1', 'instagram_test.json', {use_custom_markers:true});
       var storymap2 = new VCO.StoryMap('storymap2', 'instagram_brentfoster.json', {use_custom_markers:true});
       var storymap3 = new VCO.StoryMap('storymap3', 'instagram_couch.json', {use_custom_markers:true});
       var storymap4 = new VCO.StoryMap('storymap4', 'instagram_matteich.json', {map_type:"stamen:terrain",use_custom_markers:true});
+      */
       var storymap5 = new VCO.StoryMap('storymap5', 'instagram_raymondmccrea.json', {use_custom_markers:true});
-      var storymap6 = new VCO.StoryMap('storymap6', 'instagram_mirandamulligan.json', {use_custom_markers:true});
+      var storymap6 = new VCO.StoryMap('storymap6', 'instagram-chenpamela.json', {use_custom_markers:true, relative_date:true, script_path:"../js/"});
+      var storymap7 = new VCO.StoryMap('storymap7', 'instagram-chenpamela.json', {use_custom_markers:true, relative_date:true, script_path:"../js/"});
       window.onresize = function(event) {
+       /*
        storymap1.updateDisplay();
        storymap2.updateDisplay();
        storymap3.updateDisplay();
        storymap4.updateDisplay();
+       */
+       
        storymap5.updateDisplay();
+       
        storymap6.updateDisplay();
+       storymap7.updateDisplay();
       }
     </script>
   </body>

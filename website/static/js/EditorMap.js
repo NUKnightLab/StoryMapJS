@@ -267,7 +267,9 @@ GoogleEditorMap.prototype.zoomEnable = function(enable) {
 // Set center and zoom
 GoogleEditorMap.prototype.setView = function(lat, lng, zoom) {
     this.panTo(lat, lng);
-    this.setZoom(zoom);
+    if(zoom) {
+        this.setZoom(zoom);
+    }
 }
 
 // Default view (bound all markers)
@@ -469,8 +471,12 @@ LeafletEditorMap.prototype.zoomEnable = function(enable) {
 
 // Set center and zoom
 LeafletEditorMap.prototype.setView = function(lat, lng, zoom) {
-    // Need to use reset option, else map doesn't update properly   
-    this.map.setView(L.latLng(lat, lng), zoom, {reset: true});
+    // Need to use reset option, else map doesn't update properly  
+    if(zoom) { 
+        this.map.setView(L.latLng(lat, lng), zoom, {reset: true});
+    } else {
+        this.map.setView(L.latLng(lat, lng), {reset: true});
+    }
 }
 
 // Default view (center zoom)

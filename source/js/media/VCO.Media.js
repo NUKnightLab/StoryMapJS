@@ -104,7 +104,10 @@ VCO.Media = VCO.Class.extend({
 		if (this._state.loaded) {
 			this._updateMediaDisplay(layout);
 			
-			this._el.content_item.style.maxHeight = (this.options.height/2) + "px";
+			if (!VCO.Browser.mobile) {
+				this._el.content_item.style.maxHeight = (this.options.height/2) + "px";
+			}
+			
 			
 			// Fix for max-width issues in Firefox
 			if (VCO.Browser.firefox) {

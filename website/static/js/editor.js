@@ -149,3 +149,37 @@ function storymap_is_locked(storymapFolder) {
     } 
     return false;
 }
+
+//
+// cache
+// id => object (see gdrive_storymap_list)
+// 
+
+function storymap_cache_get() {
+    if(typeof(Storage) !== "undefined") {
+        var data = sessionStorage.getItem('storymap_cache');
+        if(data) {
+            return JSON.parse(data);
+        }
+    } else {
+        return null;
+    }
+}
+
+function storymap_cache_set(data) {
+    if(typeof(Storage) !== "undefined") {
+        return sessionStorage.setItem('storymap_cache', JSON.stringify(data))
+    } 
+}
+
+function storymap_cache_update(id, data) {
+    var cache_data = storymap_cache_get();
+    if(cache_data) {
+        if(id in cache_data) {
+            for(key in data) {
+                cache_data[id][key] = data[key];
+            }
+            storymap_cache_set(cache_data);
+        }
+    }
+}

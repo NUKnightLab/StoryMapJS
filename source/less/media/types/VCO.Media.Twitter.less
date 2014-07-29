@@ -53,28 +53,30 @@
 		}
 	}
 }
-// Skinnier
-@media only screen and (max-width: 800px), only screen and (max-device-width: 800px) {
+.vco-mobile.vco-skinny {
 	.vco-media {
 		.vco-media-twitter {
+			
 			blockquote {
 				p {
-					font-size: 		@base-font-size-large;
-					line-height:	floor(@base-font-size-large * 1.1);
+					font-size: 		@base-font-size;
+					line-height:	floor(@base-font-size * @base-line-height);
 				}
 			}
 		}
 
 	}
 }
-// Mobile, iPhone and skinny
-@media only screen and (max-width: 500px), only screen and (max-device-width: 500px) {
+.vco-skinny {
+	
 	.vco-media {
 		.vco-media-twitter {
+			margin-left:10px;
+			margin-right:10px;
 			blockquote {
 				p {
-					font-size: 		@base-font-size;
-					line-height:	floor(@base-font-size * @base-line-height);
+					font-size: 		@base-font-size-large;
+					line-height:	floor(@base-font-size-large * 1.1);
 				}
 			}
 		}

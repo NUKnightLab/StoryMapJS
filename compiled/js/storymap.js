@@ -70,6 +70,36 @@ VCO.Util = {
 		}
 	},
 	
+	convertUnixTime: function(str) {
+		var _date, _months, _year, _month, _day, _time, _date_array = [],
+			_date_str = {
+				ymd:"",
+				time:"",
+				time_array:[],
+				date_array:[],
+				full_array:[]
+			};
+			
+		_date_str.ymd = str.split(" ")[0];
+		_date_str.time = str.split(" ")[1];
+		_date_str.date_array = _date_str.ymd.split("-");
+		_date_str.time_array = _date_str.time.split(":");
+		_date_str.full_array = _date_str.date_array.concat(_date_str.time_array)
+		
+		for(var i = 0; i < _date_str.full_array.length; i++) {
+			_date_array.push( parseInt(_date_str.full_array[i]) )
+		}
+
+		_date = new Date(_date_array[0], _date_array[1], _date_array[2], _date_array[3], _date_array[4], _date_array[5]);
+		_months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+		_year = _date.getFullYear();
+		_month = _months[_date.getMonth()];
+		_day = _date.getDate();
+		_time = _month + ', ' + _day + ' ' + _year;
+		
+		return _time;
+	},
+	
 	setData: function (obj, data) {
 		obj.data = VCO.Util.extend({}, obj.data, data);
 		if (obj.data.uniqueid === "") {
@@ -140,7 +170,9 @@ VCO.Util = {
 	},
 	
 	htmlify: function(str) {
-		if (str.match(/<\s*p[^>]*>([^<]*)<\s*\/\s*p\s*>/)) {
+		//if (str.match(/<\s*p[^>]*>([^<]*)<\s*\/\s*p\s*>/)) {
+		if (str.match(/<p>[\s\S]*?<\/p>/)) {
+			
 			return str;
 		} else {
 			return "<p>" + str + "</p>";
@@ -5132,7 +5164,10 @@ VCO.Media = VCO.Class.extend({
 		if (this._state.loaded) {
 			this._updateMediaDisplay(layout);
 			
-			this._el.content_item.style.maxHeight = (this.options.height/2) + "px";
+			if (!VCO.Browser.mobile) {
+				this._el.content_item.style.maxHeight = (this.options.height/2) + "px";
+			}
+			
 			
 			// Fix for max-width issues in Firefox
 			if (VCO.Browser.firefox) {
@@ -5885,9 +5920,27 @@ VCO.Media.Text = VCO.Class.extend({
 		
 		// Text
 		if (this.data.text != "") {
+			var text_content = "";
+			
+			text_content 					+= VCO.Util.htmlify(this.data.text);
+			
+			// Date
+			if (this.data.date && this.data.date.created_time && this.data.date.created_time != "") {
+				if (this.data.date.created_time.length > 10) {
+					if (typeof(moment) !== 'undefined') {
+						text_content 	+= "<div class='vco-text-date'>" + moment(this.data.date.created_time, 'YYYY-MM-DD h:mm:ss').fromNow() + "</div>";
+					
+					} else {
+						text_content 	+= "<div class='vco-text-date'>" + VCO.Util.convertUnixTime(this.data.date.created_time) + "</div>";
+					}
+				}
+			}
+			
+			
 			this._el.content				= VCO.Dom.create("div", "vco-text-content", this._el.content_container);
-			this._el.content.innerHTML		= VCO.Util.htmlify(this.data.text);
+			this._el.content.innerHTML		= text_content;
 		}
+		
 		
 		// Fire event that the slide is loaded
 		this.onLoaded();
@@ -17535,12 +17588,13 @@ VCO.StoryMap = VCO.Class.extend({
 			width: 					this._el.container.offsetWidth,
 			layout: 				"landscape", 	// portrait or landscape
 			base_class: 			"",
-			map_size_sticky: 		3, 				// Set as division 1/3 etc
+			map_size_sticky: 		2, 				// Set as division 1/3 etc
 			map_center_offset:  	null, 			// takes object {top:0,left:0}
 			less_bounce: 			false, 			// Less map bounce when calculating zoom, false is good when there are clusters of tightly grouped markers
 			start_at_slide: 		0,
 			menubar_height: 		0,
 			skinny_size: 			650,
+			relative_date: 			false, 			// Use momentjs to show a relative date from the slide.text.date.created_time field
 			// animation
 			duration: 				1000,
 			ease: 					VCO.Ease.easeInOutQuint,
@@ -17606,7 +17660,24 @@ VCO.StoryMap = VCO.Class.extend({
 		if (this.options.map_as_image) {
 			this.options.calculate_zoom = false;
 		}
+		
+		// Use Relative Date Calculations
+		if(this.options.relative_date) {
+			if (typeof(moment) !== 'undefined') {
+				self._loadLanguage(data);
+			} else {
+				VCO.Load.js(this.options.script_path + "/library/moment.js", function() {
+					self._loadLanguage(data);
+					trace("LOAD MOMENTJS")
+				});
+			}
+			
+		} else {
+			self._loadLanguage(data);
+		}
+		
 		// Load language
+		/*
 		if(this.options.language == 'en') {
 		    this.options.language = VCO.Language;
 		    this._initData(data);
@@ -17615,9 +17686,26 @@ VCO.StoryMap = VCO.Class.extend({
 				self._initData(data);
 			});
 		}
+		*/
+		
+		
 		return this;
 	},
-
+	
+	/*	Load Language
+	================================================== */
+	_loadLanguage: function(data) {
+		var self = this;
+		if(this.options.language == 'en') {
+		    this.options.language = VCO.Language;
+		    this._initData(data);
+		} else {
+			VCO.Load.js(this.options.script_path + "/locale/" + this.options.language + ".js", function() {
+				self._initData(data);
+			});
+		}
+	},
+	
 	/*	Navigation
 	================================================== */
 	goTo: function(n) {
