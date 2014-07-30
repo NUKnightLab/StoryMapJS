@@ -504,10 +504,37 @@ function slides_load() {
                 storymap_dirty(1);   
                 
                 document.getElementById('map').style.backgroundColor = 
-                    color || _default_data.storymap.map_background_color;
+                    color || _default_data.storymap.map_background_color;              
             }
+            if(color) {
+                $('#map_background_color_clear').show();
+            } else {
+                $('#map_background_color_clear').hide();                
+            }
+        },
+        change: function(hex, opacity) {
+            if(hex) {
+                $('#map_background_color_clear').show();            
+            } else {
+                $('#map_background_color_clear').hide();                            
+            }        
         }
     });    
+    
+    $('<button id="map_background_color_clear" type="button" class="close text-input-clear">&times;</button>')
+        .insertAfter('#map_background_color')
+        .click(function(event) {
+            $('#map_background_color').minicolors('value', '');
+            $('#map_background_color_clear').hide();
+
+            _storymap_data.storymap.map_background_color = '';
+            storymap_dirty(1);
+            
+            if($(this).siblings('.minicolors-panel').is(':hidden')) {
+                document.getElementById('map').style.backgroundColor = _default_data.storymap.map_background_color;
+            }
+        });
+
     $('#map_background_color').minicolors('value', _storymap_data.storymap.map_background_color || '');
  
     font_update();
@@ -697,9 +724,9 @@ $(function() {
 
     $('.slide:first').click(slide_select); 
      
-    //------------------------------------------------------------
-    // Menu bar
-    //------------------------------------------------------------
+//------------------------------------------------------------
+// Menu bar
+//------------------------------------------------------------
     
     $('#storymap_list').click(function(event) {
         $('#storymap_list')
@@ -758,9 +785,9 @@ $(function() {
         }
     });
     
-    //------------------------------------------------------------
-    // StoryMap Options
-    //------------------------------------------------------------
+//------------------------------------------------------------
+// StoryMap Options
+//------------------------------------------------------------
     
     $('#width, #height, #font_css').change(function(event) {
         var id = $(this).attr('id');
@@ -935,9 +962,9 @@ $(function() {
         }
     });
       
-    // ------------------------------------------------------------
-    // Tab toggle
-    // ------------------------------------------------------------
+// ------------------------------------------------------------
+// Tab toggle
+// ------------------------------------------------------------
 
     $('a[data-toggle="tab"][href="#edit"]').on('shown', function(event) {
         $('.slide.selected').click();   // reselect current slide
@@ -952,9 +979,9 @@ $(function() {
         preview_refresh();
     });
             
-    // ------------------------------------------------------------
-    // Slide sorting
-    // ------------------------------------------------------------
+// ------------------------------------------------------------
+// Slide sorting
+// ------------------------------------------------------------
     
     var sortable_i = 0;
     var sortable_j = 0;
@@ -985,9 +1012,9 @@ $(function() {
         }
     });
 
-    // ------------------------------------------------------------
-    // Uploads
-    // ------------------------------------------------------------ 
+// ------------------------------------------------------------
+// Uploads
+// ------------------------------------------------------------ 
     
     $('#upload_media').click(function(event) {
         $('#upload_modal').modal('show');
@@ -1013,9 +1040,9 @@ $(function() {
             $(this).trigger('modal_show');
         });    
 
-    // ------------------------------------------------------------
-    // Slide options
-    // ------------------------------------------------------------
+// ------------------------------------------------------------
+// Slide options
+// ------------------------------------------------------------
     
     $('#background_color').minicolors({
         control: 'hue',
@@ -1023,7 +1050,6 @@ $(function() {
         theme: 'bootstrap',
         hide: function() {
             var color = $(this).val();
-            console.log('color', color);
             
             if(color) {
                 var rgb = $(this).minicolors('rgbObject');
@@ -1049,7 +1075,7 @@ $(function() {
         }
     });
 
-    $('<button id="background_color_clear" type="button" class="close">&times;</button>')
+    $('<button id="background_color_clear" type="button" class="close text-input-clear">&times;</button>')
         .insertAfter('#background_color')
         .click(function(event) {
             $('#background_color').minicolors('value', '');
@@ -1125,9 +1151,9 @@ $(function() {
             $(this).trigger('modal_show');
         });    
             
-    // ------------------------------------------------------------
-    // Sharing
-    // ------------------------------------------------------------
+// ------------------------------------------------------------
+// Sharing
+// ------------------------------------------------------------
     
     $('#share_publish').click(function(event) {       
         $('#share_modal').trigger('progress_show', 'Publishing StoryMap');
