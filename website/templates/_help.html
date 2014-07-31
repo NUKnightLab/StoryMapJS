@@ -4,74 +4,81 @@
    <p>Have a question? Look for it in the FAQ below. No luck there? Try the <a href="https://knightlab.zendesk.com/forums/22615078-StoryMapJS" target="_blank">support forum</a>.</p> 
      <div class="row"> 
        <div class="span12"> 
-         <div id="accordion-faq" class="accordion"> 
-      <div class="accordion-group"> 
-          <div class="accordion-heading"><a data-toggle="collapse" data-parent="#accordion-faq" href="#faq-01" class="accordion-toggle collapsed"> 
-                 What CMS does StoryMapJS work on?</a> 
-              </div> 
-                  <div id="faq-01" style="height: 0px;" class="accordion-body collapse"> 
-                  <div class="accordion-inner"><ul><li>Custom sites</li><li>Wordpress</li><li>Squarespace</li><li>Wix</li></ul><p>Please let us know if you have tried it on others and it works, so that we can add to the list.</p></div> 
-              </div> 
-          </div> 
-      <div class="accordion-group"> 
-          <div class="accordion-heading"><a data-toggle="collapse" data-parent="#accordion-faq" href="#faq-01" class="accordion-toggle collapsed"> 
-                 What if I am getting an error message from Google?</a> 
-              </div> 
-                 <div id="faq-01" style="height: 0px;" class="accordion-body collapse"> 
-                 <div class="accordion-inner"><p>If you receive the message: "This Google Account does not support public Google Drive sharing. Please sign in with a different Google account."</p> 
-                 <p>The message should only appear for people using private Google Apps accounts. If you are using a private Google Apps account, do you have administrative control over the private Apps domain?</p>
-                 <p>You need to enable "allow users to publish documents on the web." This would, of course, allow users to publish any documents, so you'd have to choose whether that's acceptable, or whether you just want people to use public Google Drive for this.</p></div> 
-              </div> 
-          </div> 
-      <div class="accordion-group"> 
-          <div class="accordion-heading"><a data-toggle="collapse" data-parent="#accordion-faq" href="#faq-01" class="accordion-toggle collapsed"> 
-                 Why are my DropBox images not showing?</a> 
-              </div> 
+         <div id="accordion-faq" class="accordion">         
+            <div class="accordion-group"> 
+                <div class="accordion-heading">
+                    <a data-toggle="collapse" data-parent="#accordion-faq" href="#faq-01" class="accordion-toggle collapsed"> 
+                     What CMS does StoryMapJS work on?</a> 
+                </div> 
                 <div id="faq-01" style="height: 0px;" class="accordion-body collapse"> 
-                <div class="accordion-inner"><p>First the image must be in the public folder.</p><p>To get the image URL change the domain name from the link that dropbox creates.</p>
-                <p>Incorrect: https://www.dropbox.com/s/38053034/GOT%20Storymap%20images/jon-weirwood-tree.jpg</p>
-                <p>Correct: https://dl.dropboxusercontent.com/u/38053034/GOT%20Storymap%20images/jon-weirwood-tree.jpg</p></div> 
-              </div> 
-          </div> 
-       <div class="accordion-group"> 
-          <div class="accordion-heading"><a data-toggle="collapse" data-parent="#accordion-faq" href="#faq-01" class="accordion-toggle collapsed"> 
-                 How can I have a map without the lines between points?</a> 
-              </div> 
-                <div id="faq-01" style="height: 0px;" class="accordion-body collapse"> 
-                <div class="accordion-inner"><p>To disable connecting lines on maps use the StoryMap options: "Treat as Image" (as opposed to the default, "Treat as Cartography")</p></div> 
-              </div> 
-          </div> 
-       <div class="accordion-group"> 
-          <div class="accordion-heading"><a data-toggle="collapse" data-parent="#accordion-faq" href="#faq-01" class="accordion-toggle collapsed"> 
-                 How can I link to a specific slide?</a> 
-             </div> 
-                 <div id="faq-01" style="height: 0px;" class="accordion-body collapse"> 
-                 <div class="accordion-inner"><p>You can add a parameter to the URL that is the value of the iframe src attribute, 'start_at_slide'.</p><p>Its value should be a number from 0 to one less than the total number of slides in the storymap.</p>
-                 <p>For example: http://s3.amazonaws.com/cdn.knightlab.com/libs/storymapjs/latest/embed/index.html?url=https://ab502fd19d893baee8e6e03e90fbd145f0c62c68.googledrive.com/host/0B1d8oNIpMx53anVuVUFOTXlOVXc/published.json&start_at_slide=5</p>
-                 <p>This should load "Descent of the Divine: Panel 2"</p></div> 
-              </div> 
-          </div> 
-       <div class="accordion-group"> 
-          <div class="accordion-heading"><a data-toggle="collapse" data-parent="#accordion-faq" href="#faq-01" class="accordion-toggle collapsed"> 
-                 How can I use a custom map?</a> 
-             </div> 
-                 <div id="faq-01" style="height: 0px;" class="accordion-body collapse"> 
-                 <div class="accordion-inner"><p>Choose "options" from the top left of the StoryMap window, then from the "map type" menu choose the type you like.</p>
-                 <p>Select "Mapbox" to enter the ID of your Mapbox map.</p>
-                 <p>Select "custom" to enter the URL for a tile server. If the server supports multiple subdomains, enter them as a single string in the Subdomain field (e.g. subdomains "a", "b", and "c" should be entered as "abc").</p></div> 
-             </div> 
-          </div> 
-       <div class="accordion-group"> 
-          <div class="accordion-heading"><a data-toggle="collapse" data-parent="#accordion-faq" href="#faq-01" class="accordion-toggle collapsed"> 
-                 How can I adjust the zoom?</a> 
-             </div> 
-                 <div id="faq-01" style="height: 0px;" class="accordion-body collapse"> 
-                 <div class="accordion-inner"><p>To keep it simple for most users, we've made some assumptions in the authoring tool which may not universally apply. For example, the first screen is always an "overview" slide. Also, the zoom is affected by the overall size of the map and the relationship between the current and previous points on the map.</p>
-                 <p>It's possible to download the configuration (a JSON file) that the authoring tool makes and edit the JSON yourself. You could then change the first slide to not be an "overview" and manually set a starting lat/lon/zoom.</p>
-                 <p>If that isn't too daunting, you can find the JSON on your Google Drive in the "KnightLabStoryMap/public" folder. Be sure to make a copy when you edit it. We've tried to make the authoring tool gentle so that it doesn't fool around with stuff that might be edited outside of it (although that's not a formal feature) -- but I kind of think that the "overview" setting for the first slide might be something which would get messed up going back and forth between using our authoring tool and editing it outside.</p>
-                 <p>A little more about going outside the authoring tool can be found at <a href="http://storymap.knightlab.com/advanced.html">http://storymap.knightlab.com/advanced.html</a></p></div> 
+                      <div class="accordion-inner"><ul><li>Custom sites</li><li>Wordpress</li><li>Squarespace</li><li>Wix</li></ul><p>Please let us know if you have tried it on others and it works, so that we can add to the list.</p></div> 
+                </div> 
+            </div>           
+            <div class="accordion-group"> 
+                <div class="accordion-heading">
+                    <a data-toggle="collapse" data-parent="#accordion-faq" href="#faq-02" class="accordion-toggle collapsed"> 
+                     What if I am getting an error message from Google?</a> 
+                </div> 
+                <div id="faq-02" style="height: 0px;" class="accordion-body collapse"> 
+                     <div class="accordion-inner"><p>If you receive the message: "This Google Account does not support public Google Drive sharing. Please sign in with a different Google account."</p> 
+                     <p>The message should only appear for people using private Google Apps accounts. If you are using a private Google Apps account, do you have administrative control over the private Apps domain?</p>
+                     <p>You need to enable "allow users to publish documents on the web." This would, of course, allow users to publish any documents, so you'd have to choose whether that's acceptable, or whether you just want people to use public Google Drive for this.</p></div> 
+                </div> 
+            </div>        
+            <div class="accordion-group"> 
+                <div class="accordion-heading">
+                    <a data-toggle="collapse" data-parent="#accordion-faq" href="#faq-03" class="accordion-toggle collapsed"> 
+                     Why are my DropBox images not showing?</a> 
+                </div> 
+                <div id="faq-03" style="height: 0px;" class="accordion-body collapse"> 
+                    <div class="accordion-inner"><p>First the image must be in the public folder.</p><p>To get the image URL change the domain name from the link that dropbox creates.</p>
+                    <p>Incorrect: https://www.dropbox.com/s/38053034/GOT%20Storymap%20images/jon-weirwood-tree.jpg</p>
+                    <p>Correct: https://dl.dropboxusercontent.com/u/38053034/GOT%20Storymap%20images/jon-weirwood-tree.jpg</p></div> 
+                </div> 
             </div> 
-          </div> 
+            <div class="accordion-group"> 
+                <div class="accordion-heading">
+                    <a data-toggle="collapse" data-parent="#accordion-faq" href="#faq-04" class="accordion-toggle collapsed"> 
+                     How can I have a map without the lines between points?</a> 
+                </div> 
+                <div id="faq-04" style="height: 0px;" class="accordion-body collapse"> 
+                    <div class="accordion-inner"><p>To disable connecting lines on maps, use the StoryMap option: "Treat as Image" (as opposed to the default, "Treat as Cartography")</p></div> 
+                </div> 
+            </div> 
+            <div class="accordion-group"> 
+                <div class="accordion-heading">
+                    <a data-toggle="collapse" data-parent="#accordion-faq" href="#faq-05" class="accordion-toggle collapsed"> 
+                     How can I link to a specific slide?</a> 
+                </div> 
+                <div id="faq-05" style="height: 0px;" class="accordion-body collapse"> 
+                     <div class="accordion-inner"><p>You can add a parameter to the URL that is the value of the iframe src attribute, 'start_at_slide'.</p><p>Its value should be a number from 0 to one less than the total number of slides in the storymap.</p>
+                     <p>For example: http://s3.amazonaws.com/cdn.knightlab.com/libs/storymapjs/latest/embed/index.html?url=https://ab502fd19d893baee8e6e03e90fbd145f0c62c68.googledrive.com/host/0B1d8oNIpMx53anVuVUFOTXlOVXc/published.json&start_at_slide=5</p>
+                     <p>This should load "Descent of the Divine: Panel 2"</p></div> 
+                </div> 
+            </div> 
+            <div class="accordion-group"> 
+                <div class="accordion-heading">
+                    <a data-toggle="collapse" data-parent="#accordion-faq" href="#faq-06" class="accordion-toggle collapsed"> 
+                     How can I use a custom map?</a> 
+                </div> 
+                <div id="faq-06" style="height: 0px;" class="accordion-body collapse"> 
+                     <div class="accordion-inner"><p>Choose "options" from the top left of the StoryMap window, then from the "map type" menu choose the type you like.</p>
+                     <p>Select "Mapbox" to enter the ID of your Mapbox map.</p>
+                     <p>Select "custom" to enter the URL for a tile server. If the server supports multiple subdomains, enter them as a single string in the Subdomain field (e.g. subdomains "a", "b", and "c" should be entered as "abc").</p></div> 
+                </div> 
+            </div> 
+            <div class="accordion-group"> 
+                <div class="accordion-heading">
+                    <a data-toggle="collapse" data-parent="#accordion-faq" href="#faq-07" class="accordion-toggle collapsed"> 
+                     How can I adjust the zoom?</a> 
+                </div> 
+                <div id="faq-07" style="height: 0px;" class="accordion-body collapse"> 
+                     <div class="accordion-inner"><p>To keep it simple for most users, we've made some assumptions in the authoring tool which may not universally apply. For example, the first screen is always an "overview" slide. Also, the zoom is affected by the overall size of the map and the relationship between the current and previous points on the map.</p>
+                     <p>It's possible to download the configuration (a JSON file) that the authoring tool makes and edit the JSON yourself. You could then change the first slide to not be an "overview" and manually set a starting lat/lon/zoom.</p>
+                     <p>If that isn't too daunting, you can find the JSON on your Google Drive in the "KnightLabStoryMap/public" folder. Be sure to make a copy when you edit it. We've tried to make the authoring tool gentle so that it doesn't fool around with stuff that might be edited outside of it (although that's not a formal feature) -- but I kind of think that the "overview" setting for the first slide might be something which would get messed up going back and forth between using our authoring tool and editing it outside.</p>
+                     <p>A little more about going outside the authoring tool can be found at <a href="http://storymap.knightlab.com/advanced.html">http://storymap.knightlab.com/advanced.html</a></p></div> 
+                </div> 
+            </div> 
          </div> 
        </div>   
      </div>   
