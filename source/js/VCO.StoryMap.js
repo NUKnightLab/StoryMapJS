@@ -289,6 +289,7 @@ VCO.StoryMap = VCO.Class.extend({
 			width: 					this._el.container.offsetWidth,
 			layout: 				"landscape", 	// portrait or landscape
 			base_class: 			"",
+			default_bg_color: 		{r:256, g:256, b:256},
 			map_size_sticky: 		2.5, 				// Set as division 1/3 etc
 			map_center_offset:  	null, 			// takes object {top:0,left:0}
 			less_bounce: 			false, 			// Less map bounce when calculating zoom, false is good when there are clusters of tightly grouped markers

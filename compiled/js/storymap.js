@@ -6599,7 +6599,7 @@ VCO.Slide = VCO.Class.extend({
 			background: {
 				image: false,
 				color: false,
-				color_value :"#FFF"
+				color_value :""
 			}
 		}
 		
@@ -7043,6 +7043,7 @@ VCO.StorySlider = VCO.Class.extend({
 			layout: 				"portrait",
 			width: 					600,
 			height: 				600,
+			default_bg_color: 		{r:256, g:256, b:256},
 			slide_padding_lr: 		40, 			// padding on slide of slide
 			start_at_slide: 		1,
 			slide_default_fade: 	"0%", 			// landscape fade
@@ -7168,7 +7169,7 @@ VCO.StorySlider = VCO.Class.extend({
 	goTo: function(n, fast, displayupdate) {
 		var self = this;
 		
-		this.changeBackground({color_value:"#FFF", image:false});
+		this.changeBackground({color_value:"", image:false});
 		
 		// Clear Preloader Timer
 		if (this.preloadTimer) {
@@ -7316,10 +7317,13 @@ VCO.StorySlider = VCO.Class.extend({
 			bg_percent_end 		= "15%",
 			bg_alpha_end 		= "0.87",
 			bg_css 				= "";
-			
+		
 		if (bg.color_value) {
 			bg_color		= VCO.Util.hexToRgb(bg.color_value);
+		} else {
+			bg_color = this.options.default_bg_color;
 		}
+		
 		
 		bg_color_rgb 	= bg_color.r + "," + bg_color.g + "," + bg_color.b;
 		this._el.background.style.backgroundImage = "none";
@@ -17451,6 +17455,7 @@ VCO.StoryMap = VCO.Class.extend({
 			width: 					this._el.container.offsetWidth,
 			layout: 				"landscape", 	// portrait or landscape
 			base_class: 			"",
+			default_bg_color: 		{r:256, g:256, b:256},
 			map_size_sticky: 		2.5, 				// Set as division 1/3 etc
 			map_center_offset:  	null, 			// takes object {top:0,left:0}
 			less_bounce: 			false, 			// Less map bounce when calculating zoom, false is good when there are clusters of tightly grouped markers
