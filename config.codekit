@@ -308,15 +308,6 @@
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0
 		},
-	"\/compiled\/examples\/zoomify_gameofthrones.html": {
-		"fileType": 8192,
-		"ignore": 1,
-		"ignoreWasSetByUser": 0,
-		"inputAbbreviatedPath": "\/compiled\/examples\/zoomify_gameofthrones.html",
-		"outputAbbreviatedPath": "No Output Path",
-		"outputPathIsOutsideProject": 0,
-		"outputPathIsSetByUser": 0
-		},
 	"\/compiled\/examples\/zoomify_jansteen.html": {
 		"fileType": 8192,
 		"ignore": 1,

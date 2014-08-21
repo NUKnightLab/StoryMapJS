@@ -352,13 +352,11 @@ VCO.StorySlider = VCO.Class.extend({
 			
 			// If background is not white, less fade is better
 			if (bg_color.r < 255 && bg_color.g < 255 && bg_color.b < 255) {
-				bg_percent_start = "0%";
+				bg_percent_start = "15%";
 			}
 			
 			if (bg.image) {
-				//bg_alpha_end = "0.85";
-				//bg_percent_start = "0%";
-				//bg_percent_end = "0%";
+				bg_percent_start = "0%";
 				
 			} 
 			
