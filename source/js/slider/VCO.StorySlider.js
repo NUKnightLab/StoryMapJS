@@ -475,7 +475,6 @@ VCO.StorySlider = VCO.Class.extend({
 			this._message.updateMessage("Swipe to Navigate<br><span class='vco-button'>OK</span>");
 			this._message.addTo(this._el.container);
 		}
-		
 	},
 	
 	_initEvents: function () {
