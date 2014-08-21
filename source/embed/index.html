@@ -147,8 +147,7 @@
 		            font = url_join(options.script_path, font);
 		        }
 		        VCO.Load.css(font,function(){ trace('font loaded: ' + font);});
-		        storymap = new VCO.StoryMap('storymap-embed', d, options);
-				storymap.on('title', on_storymap_title);
+		        storymap = new VCO.StoryMap('storymap-embed', d, options, {title: on_storymap_title});
 		    }
 		}
 		

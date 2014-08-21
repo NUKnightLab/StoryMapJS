@@ -242,9 +242,18 @@ VCO.StoryMap = VCO.Class.extend({
 	
 	/*	Private Methods
 	================================================== */
-	initialize: function (elem, data, options) {
+	initialize: function (elem, data, options,listeners) {
+		for (key in listeners) {
+			var callbacks = listeners[key];
+			if (typeof(callbacks) == 'function') {
+				this.on(key,callbacks);
+			} else {
+				for (var idx in callbacks) {
+					this.on(key,callbacks[idx]);
+				}
+			}
+		}
 		var self = this;
-		
 		// Version
 		this.version = "0.1.16";
 		
