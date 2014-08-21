@@ -148,9 +148,14 @@
 		        }
 		        VCO.Load.css(font,function(){ trace('font loaded: ' + font);});
 		        storymap = new VCO.StoryMap('storymap-embed', d, options);
+				storymap.on('title', on_storymap_title);
 		    }
 		}
-
+		
+		function on_storymap_title(e) {
+			document.title = "StoryMapJS: " + e.title;
+		};
+		
 		function storymap_getjson() {
 		    if('withCredentials' in new XMLHttpRequest()) {
 		        // Supports cross-domain requests
