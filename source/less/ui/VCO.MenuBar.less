@@ -7,16 +7,21 @@
 	//height:	1px;
 	z-index:11;
 	text-align:right;
-	color:#333;
+	//color:#333;
 	//height:26px;
 	//background-color:#FFF;
 	//.box-shadow(0px -3px 6px rgba(0,0,0,.20));
 	overflow:hidden;
 	//margin-top:-25px;
 	border-bottom: 1px solid darken(@color-background,10);
+	border-left: 1px solid darken(@color-background,10);
+	border-bottom-left-radius: 10px;
 	right:0px;
 	//.border-radius(7px);
 	//border-bottom-left-radius: 7px;
+	.vco-menubar-button:first-child {
+		border-left:0;
+	}
 }
 .vco-mobile {
 

@@ -53,114 +53,7 @@ VCO.StorySlider = VCO.Class.extend({
 		this.current_slide = 0;
 		
 		// Data Object
-		this.data = {
-			uniqueid: 				"",
-			slides: 				[
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null,
-						color: 				null,
-						opacity: 			50
-					},
-					date: 					null,
-					location: {
-						lat: 				-9.143962,
-						lon: 				38.731094,
-						zoom: 				13,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-					},
-					text: {
-						headline: 			"Slideshow Example",
-						text: 				"Example slideshow slide "
-					},
-					media: [
-						{
-							uniqueid: 				"",
-							text: {
-								headline: 			"Slideshow Example",
-								text: 				""
-							},
-							media: {
-								url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-								credit:				"",
-								caption:			"",
-								link: 				null,
-								link_target: 		null
-							}
-						},
-						{
-							uniqueid: 				"",
-							text: {
-								headline: 			"Slideshow Example",
-								text: 				""
-							},
-							media: {
-								url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-								credit:				"",
-								caption:			"",
-								link: 				null,
-								link_target: 		null
-							}
-						},
-						{
-							uniqueid: 				"",
-							text: {
-								headline: 			"Slideshow Example",
-								text: 				""
-							},
-							media: {
-								url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-								credit:				"",
-								caption:			"",
-								link: 				null,
-								link_target: 		null
-							}
-						},
-						{
-							uniqueid: 				"",
-							text: {
-								headline: 			"Slideshow Example",
-								text: 				""
-							},
-							media: {
-								url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-								credit:				"",
-								caption:			"",
-								link: 				null,
-								link_target: 		null
-							}
-						}
-					]
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null,
-						color: 				null,
-						opacity: 			50
-					},
-					date: 					null,
-					location: {
-						lat: 				-9.143962,
-						lon: 				38.731094,
-						zoom: 				13,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-					},
-					text: {
-						headline: 			"YouTube",
-						text: 				"Just add a link to the video in the media field."
-					},
-					media: {
-						url: 				"http://www.youtube.com/watch?v=lIvftGgps24",
-						credit:				"",
-						caption:			"",
-						link: 				null,
-						link_target: 		null
-					}
-				}
-			]
-		};
+		this.data = {};
 		
 		this.options = {
 			id: 					"",
@@ -279,6 +172,15 @@ VCO.StorySlider = VCO.Class.extend({
 	
 	/*	Navigation
 	================================================== */
+	goToId: function(n, fast, displayupdate) {
+		if (typeof n == 'string' || n instanceof String) {
+			_n = VCO.Util.findArrayNumberByUniqueID(n, this._slides, "uniqueid");
+		} else {
+			_n = n;
+		}
+		this.goTo(_n, fast, displayupdate);
+		
+	},
 	
 	goTo: function(n, fast, displayupdate) {
 		var self = this;
@@ -536,7 +438,7 @@ VCO.StorySlider = VCO.Class.extend({
 		
 		// Create Layout
 		this._el.slider_container_mask		= VCO.Dom.create('div', 'vco-slider-container-mask', this._el.container);
-		this._el.background 				= VCO.Dom.create('div', 'vco-slider-background', this._el.container); 
+		this._el.background 				= VCO.Dom.create('div', 'vco-slider-background vco-animate', this._el.container); 
 		this._el.slider_container			= VCO.Dom.create('div', 'vco-slider-container vcoanimate', this._el.slider_container_mask);
 		this._el.slider_item_container		= VCO.Dom.create('div', 'vco-slider-item-container', this._el.slider_container);
 		
@@ -601,25 +503,9 @@ VCO.StorySlider = VCO.Class.extend({
 	/*	Events
 	================================================== */
 	_onBackgroundChange: function(e) {
-		var slide_background;
-		
-		slide_background = this._slides[this.current_slide].getBackground();
+		var slide_background = this._slides[this.current_slide].getBackground();
 		this.changeBackground(e);
-		
 		this.fire("colorchange", slide_background);
-		/*
-		if (slide_background.color || slide_background.image) {
-			if (this.options.layout != "landscape") {
-				this._nav.next.setColor(true);
-				this._nav.previous.setColor(true);
-			}
-		} else {
-			if (this.options.layout != "landscape") {
-				this._nav.next.setColor(false);
-				this._nav.previous.setColor(false);
-			}
-		}
-		*/
 	},
 	
 	_onMessageClick: function(e) {
@@ -652,7 +538,7 @@ VCO.StorySlider = VCO.Class.extend({
 	_onSlideChange: function(displayupdate) {
 		
 		if (!displayupdate) {
-			this.fire("change", {current_slide:this.current_slide});
+			this.fire("change", {current_slide:this.current_slide, uniqueid:this._slides[this.current_slide].data.uniqueid});
 		}
 	},
 	
@@ -684,6 +570,7 @@ VCO.StorySlider = VCO.Class.extend({
 	
 	_onLoaded: function() {
 		this.fire("loaded", this.data);
+		this.fire("title", {title:this._slides[0].title});
 	}
 	
 	

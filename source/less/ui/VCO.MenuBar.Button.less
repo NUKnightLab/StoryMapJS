@@ -7,9 +7,11 @@
 	padding: 6px 12px 6px 12px;
 	//position:relative;
 	//top:-24px;
-	background-color:#FFF;
+	background-color:fadeout(@ui-background-color, 10%);
+	background-color:@color-background;
 	cursor:pointer;
 	font-weight: bold;
+	color:@color-text;
 	.vco-icon-arrow-up, .vco-icon-arrow-down {
 		display:inline-block;
 		height:14px;
@@ -18,22 +20,28 @@
 		position:relative;
 		top:-2px;
 	}
-}
-.vco-menubar-button:hover {
-	background:@color-theme;
-	color:@color-background;
-}
-.vco-mobile {
-	.vco-menubar-button:hover {
-		//background:transparent;
-		background-color:#FFF;
-		color:inherit;
-	}
-	.vco-menubar-button:active {
+	
+	&:hover {
 		background:@color-theme;
 		color:@color-background;
 	}
+	
 }
+
+
+.vco-mobile {
+	.vco-menubar-button {
+		&:hover {
+			background-color:fadeout(@ui-background-color, 33%);
+			color:@color-text;
+		}
+		&:active {
+			background:@color-theme;
+			color:@color-background;
+		}
+	}
+}
+
 
 
 @keyframes invertToBlack {

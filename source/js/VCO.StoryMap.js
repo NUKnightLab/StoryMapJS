@@ -281,47 +281,7 @@ VCO.StoryMap = VCO.Class.extend({
 		
 		// Data Object
 		// Test Data compiled from http://www.pbs.org/marktwain/learnmore/chronology.html
-		this.data = {
-			uniqueid: 				"",
-			slides: 				[
-				{
-					uniqueid: 				"",
-					type: 					"overview", // Optional
-					background: {			// OPTIONAL
-						url: 				"http://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Mark_Twain_by_Abdullah_Fr%C3%A8res%2C_1867.jpg/418px-Mark_Twain_by_Abdullah_Fr%C3%A8res%2C_1867.jpg",
-						color: 				"",
-						opacity: 			50
-					},
-					date: 					"1835",
-					text: {
-						headline: 			"Mark Twain",
-						text: 				"Samuel Langhorne Clemens (November 30, 1835 – April 21, 1910), better known by his pen name Mark Twain, was an American author and humorist. He wrote The Adventures of Tom Sawyer (1876) and its sequel, Adventures of Huckleberry Finn (1885), the latter often called \"the Great American Novel.\""
-					},
-					media: null
-				},
-				{
-					uniqueid: 				"",
-					date: 					"1835",
-					location: {
-						lat: 				39.491711,
-						lon: 				-91.793260,
-						name: 				"Florida, Missouri",
-						zoom: 				12,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
-						line: 				true
-					},
-					text: {
-						headline: 			"Florida, Missouri",
-						text: 				"Born in Florida, Missouri. Halley’s comet visible from earth."
-					},
-					media: {
-						url: 				"http://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Mark_Twain_birthplace.jpg/800px-Mark_Twain_birthplace.jpg",
-						credit:				"",
-						caption:			"Mark Twain's birthplace, Florida, Missouri"
-					}
-				}
-			]
-		};
+		this.data = {};
 	
 		this.options = {
 			script_path:            "",
@@ -417,19 +377,6 @@ VCO.StoryMap = VCO.Class.extend({
 			self._loadLanguage(data);
 		}
 		
-		// Load language
-		/*
-		if(this.options.language == 'en') {
-		    this.options.language = VCO.Language;
-		    this._initData(data);
-		} else {
-			VCO.Load.js(this.options.script_path + "/locale/" + this.options.language + ".js", function() {
-				self._initData(data);
-			});
-		}
-		*/
-		
-		
 		return this;
 	},
 	
@@ -522,6 +469,7 @@ VCO.StoryMap = VCO.Class.extend({
 		// Create StorySlider
 		this._storyslider = new VCO.StorySlider(this._el.storyslider, this.data, this.options);
 		this._storyslider.on('loaded', this._onStorySliderLoaded, this);
+		this._storyslider.on('title', this._onTitle, this);
 		this._storyslider.init();
 		
 		// LAYOUT
@@ -610,8 +558,6 @@ VCO.StoryMap = VCO.Class.extend({
 			// Portrait
 			display_class += " vco-layout-portrait";
 			
-			
-			
 			if (animate) {
 			
 				// Animate Map
@@ -657,25 +603,19 @@ VCO.StoryMap = VCO.Class.extend({
 			display_class += " vco-layout-landscape";
 			
 			this.options.menubar_height = this._el.menubar.offsetHeight;
+			
 			// Set Default Component Sizes
 			this.options.map_height 		= this.options.height;
 			this.options.storyslider_height = this.options.height;
 			this._menubar.setSticky(this.options.menubar_height);
 			
-			// Map Padding
-			//this._map.padding = [0,this.options.width/2];
-			
 			// Set Sticky state of MenuBar
 			this._menubar.setSticky(this.options.menubar_height);
 			
 			this._el.map.style.height = this.options.height + "px";
-			//this._el.menubar.style.top =  this.options.menubar_height + "px";
 			
 			// Update Component Displays
-			//this._map.options.map_center_offset.left = -(this.options.width/4);
-			//this._map.options.map_center_offset.top = 0;
 			this._map.setMapOffset(-(this.options.width/4), 0);
-			//this._map.options.map_center_offset.top = this.options.menubar_height;
 			
 			// StorySlider
 			this._el.storyslider.style.top = 0;
@@ -699,12 +639,15 @@ VCO.StoryMap = VCO.Class.extend({
 	================================================== */
 	
 	_onDataLoaded: function(e) {
-		trace("dataloaded");
 		this.fire("dataloaded");
 		this._initLayout();
 		this._initEvents();
 		this.ready = true;
 		
+	},
+	
+	_onTitle: function(e) {
+		this.fire("title", e);
 	},
 	
 	_onColorChange: function(e) {

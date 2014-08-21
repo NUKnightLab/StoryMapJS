@@ -7,7 +7,8 @@ VCO.Media.Text = VCO.Class.extend({
 		container: {},
 		content_container: {},
 		content: {},
-		headline: {}
+		headline: {},
+		date: {}
 	},
 	
 	// Data
@@ -65,6 +66,10 @@ VCO.Media.Text = VCO.Class.extend({
 		return this._el.headline.offsetHeight + 40;
 	},
 	
+	addDateText: function(str) {
+		this._el.date.innerHTML = str;
+	},
+	
 	/*	Events
 	================================================== */
 	onLoaded: function() {
@@ -85,6 +90,9 @@ VCO.Media.Text = VCO.Class.extend({
 		
 		// Create Layout
 		this._el.content_container			= VCO.Dom.create("div", "vco-text-content-container", this._el.container);
+		
+		// Date
+		this._el.date 				= VCO.Dom.create("h3", "vco-headline-date", this._el.content_container);
 		
 		// Headline
 		if (this.data.headline != "") {
