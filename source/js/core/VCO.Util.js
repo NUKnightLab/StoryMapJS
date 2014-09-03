@@ -37,34 +37,29 @@ VCO.Util = {
 		return _n;
 	},
 	
-	convertUnixTime: function(str) {
-		var _date, _months, _year, _month, _day, _time, _date_array = [],
-			_date_str = {
-				ymd:"",
-				time:"",
-				time_array:[],
-				date_array:[],
-				full_array:[]
-			};
+	convertUnixTime: function(str) { // created for Instagram. It's ISO8601-ish
+		// 2013-12-09 01:56:28
+		var pattern = /^(\d{4})-(\d{2})-(\d{2})[T\s](\d{2}):(\d{2}):(\d{2})/;
+		if (str.match(pattern)) {
+			var date_parts = str.match(pattern).slice(1);
+		}
 			
-		_date_str.ymd = str.split(" ")[0];
-		_date_str.time = str.split(" ")[1];
-		_date_str.date_array = _date_str.ymd.split("-");
-		_date_str.time_array = _date_str.time.split(":");
-		_date_str.full_array = _date_str.date_array.concat(_date_str.time_array)
-		
-		for(var i = 0; i < _date_str.full_array.length; i++) {
-			_date_array.push( parseInt(_date_str.full_array[i]) )
+		var date_array = [];
+
+		for(var i = 0; i < date_parts.length; i++) {
+			var val = parseInt(date_parts[i]);
+			if (i == 1) { val = val - 1 } // stupid javascript months
+		 	date_array.push( val )
 		}
 
-		_date = new Date(_date_array[0], _date_array[1], _date_array[2], _date_array[3], _date_array[4], _date_array[5]);
-		_months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-		_year = _date.getFullYear();
-		_month = _months[_date.getMonth()];
-		_day = _date.getDate();
-		_time = _month + ', ' + _day + ' ' + _year;
+	 	date = new Date(date_array[0], date_array[1], date_array[2], date_array[3], date_array[4], date_array[5]);
+	 	months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+	 	year = date.getFullYear();
+	 	month = months[date.getMonth()];
+	 	day = date.getDate();
+	 	time = month + ', ' + day + ' ' + year;
 		
-		return _time;
+		return time;
 	},
 	
 	setData: function (obj, data) {

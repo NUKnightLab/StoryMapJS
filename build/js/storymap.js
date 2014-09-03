@@ -1,4 +1,4 @@
-/* storymapjs - v0.3.5 - 2014-07-28
+/* storymapjs - v2014-09-03-23-00-30 - 2014-09-03
  * Copyright (c) 2014 Northwestern University Knight Lab 
  */
 
@@ -78,34 +78,42 @@ VCO.Util = {
 		}
 	},
 	
-	convertUnixTime: function(str) {
-		var _date, _months, _year, _month, _day, _time, _date_array = [],
-			_date_str = {
-				ymd:"",
-				time:"",
-				time_array:[],
-				date_array:[],
-				full_array:[]
-			};
-			
-		_date_str.ymd = str.split(" ")[0];
-		_date_str.time = str.split(" ")[1];
-		_date_str.date_array = _date_str.ymd.split("-");
-		_date_str.time_array = _date_str.time.split(":");
-		_date_str.full_array = _date_str.date_array.concat(_date_str.time_array)
+	findArrayNumberByUniqueID: function(id, array, prop) {
+		var _n = 0;
 		
-		for(var i = 0; i < _date_str.full_array.length; i++) {
-			_date_array.push( parseInt(_date_str.full_array[i]) )
+		for (var i = 0; i < array.length; i++) {
+			if (array[i].data[prop] == id) {
+				trace(array[i].data[prop]);
+				_n = i;
+			}
+		};
+		
+		return _n;
+	},
+	
+	convertUnixTime: function(str) { // created for Instagram. It's ISO8601-ish
+		// 2013-12-09 01:56:28
+		var pattern = /^(\d{4})-(\d{2})-(\d{2})[T\s](\d{2}):(\d{2}):(\d{2})/;
+		if (str.match(pattern)) {
+			var date_parts = str.match(pattern).slice(1);
+		}
+			
+		var date_array = [];
+
+		for(var i = 0; i < date_parts.length; i++) {
+			var val = parseInt(date_parts[i]);
+			if (i == 1) { val = val - 1 } // stupid javascript months
+		 	date_array.push( val )
 		}
 
-		_date = new Date(_date_array[0], _date_array[1], _date_array[2], _date_array[3], _date_array[4], _date_array[5]);
-		_months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-		_year = _date.getFullYear();
-		_month = _months[_date.getMonth()];
-		_day = _date.getDate();
-		_time = _month + ', ' + _day + ' ' + _year;
+	 	date = new Date(date_array[0], date_array[1], date_array[2], date_array[3], date_array[4], date_array[5]);
+	 	months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+	 	year = date.getFullYear();
+	 	month = months[date.getMonth()];
+	 	day = date.getDate();
+	 	time = month + ', ' + day + ' ' + year;
 		
-		return _time;
+		return time;
 	},
 	
 	setData: function (obj, data) {
@@ -5172,7 +5180,10 @@ VCO.Media = VCO.Class.extend({
 		if (this._state.loaded) {
 			this._updateMediaDisplay(layout);
 			
-			this._el.content_item.style.maxHeight = (this.options.height/2) + "px";
+			if (!VCO.Browser.mobile) {
+				this._el.content_item.style.maxHeight = (this.options.height/2) + "px";
+			}
+			
 			
 			// Fix for max-width issues in Firefox
 			if (VCO.Browser.firefox) {
@@ -5227,21 +5238,23 @@ VCO.Media = VCO.Class.extend({
 	loadErrorDisplay: function(message) {
 		this._el.content.removeChild(this._el.content_item);
 		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-loaderror", this._el.content);
-		this._el.content_item.innerHTML = message + "<br/><span class='vco-icon-" + this.options.media_type + "'></span>";
-		if (this.message) {
-			this.message.hide();
-		}
+		this._el.content_item.innerHTML = "<div class='vco-icon-" + this.options.media_type + "'></div><p>" + message + "</p>";
+		
+		// After Loaded
+		this.onLoaded(true);
 	},
 
 	/*	Events
 	================================================== */
-	onLoaded: function() {
+	onLoaded: function(error) {
 		this._state.loaded = true;
 		this.fire("loaded", this.data);
 		if (this.message) {
 			this.message.hide();
 		}
-		this.showMeta();
+		if (!error) {
+			this.showMeta();
+		}
 		this.updateDisplay();
 	},
 	
@@ -5834,7 +5847,8 @@ VCO.Media.Text = VCO.Class.extend({
 		container: {},
 		content_container: {},
 		content: {},
-		headline: {}
+		headline: {},
+		date: {}
 	},
 	
 	// Data
@@ -5892,6 +5906,10 @@ VCO.Media.Text = VCO.Class.extend({
 		return this._el.headline.offsetHeight + 40;
 	},
 	
+	addDateText: function(str) {
+		this._el.date.innerHTML = str;
+	},
+	
 	/*	Events
 	================================================== */
 	onLoaded: function() {
@@ -5912,6 +5930,9 @@ VCO.Media.Text = VCO.Class.extend({
 		
 		// Create Layout
 		this._el.content_container			= VCO.Dom.create("div", "vco-text-content-container", this._el.container);
+		
+		// Date
+		this._el.date 				= VCO.Dom.create("h3", "vco-headline-date", this._el.content_container);
 		
 		// Headline
 		if (this.data.headline != "") {
@@ -5993,13 +6014,24 @@ VCO.Media.Twitter = VCO.Media.extend({
 		api_url = "https://api.twitter.com/1/statuses/oembed.json?id=" + this.media_id + "&omit_script=true&include_entities=true&callback=?";
 		
 		// API Call
-		VCO.getJSON(api_url, function(d) {
-			self.createMedia(d);
+		VCO.ajax({
+			type: 'GET',
+			url: api_url,
+			dataType: 'json', //json data type
+			success: function(d){
+				self.createMedia(d);
+			},
+			error:function(xhr, type){
+				var error_text = "";
+				error_text += "Unable to load Tweet. <br/>" + self.media_id + "<br/>" + type;
+				self.loadErrorDisplay(error_text);
+			}
 		});
 		 
 	},
 	
-	createMedia: function(d) {		
+	createMedia: function(d) {	
+		trace("create_media")	
 		var tweet				= "",
 			tweet_text			= "",
 			tweetuser			= "",
@@ -6268,11 +6300,24 @@ VCO.Media.Wikipedia = VCO.Media.extend({
 		api_url = "http://" + api_language + ".wikipedia.org/w/api.php?action=query&prop=extracts&redirects=&titles=" + this.media_id + "&exintro=1&format=json&callback=?";
 		
 		// API Call
-		VCO.getJSON(api_url, function(d) {
-			self.createMedia(d);
+		
+		VCO.ajax({
+			type: 'GET',
+			url: api_url,
+			dataType: 'json', //json data type
+			
+			success: function(d){
+				self.createMedia(d);
+			},
+			error:function(xhr, type){
+				var error_text = "";
+				error_text += "Unable to load Wikipedia entry. <br/>" + self.media_id + "<br/>" + type;
+				self.loadErrorDisplay(error_text);
+			}
 		});
 		
 	},
+	
 	createMedia: function(d) {
 		var wiki = "";
 		
@@ -6518,38 +6563,6 @@ VCO.Media.Slider = VCO.Media.extend({
 /*	VCO.Slide
 	Creates a slide. Takes a data object and
 	populates the slide with content.
-
-	Object Model
-	this.data = {
-		uniqueid: 				"",
-		background: {			// OPTIONAL
-			url: 				null,
-			color: 				null,
-			text_background: 	null,
-			opacity: 			50
-		},
-		date: 					null,
-		location: {
-			lat: 				-9.143962,
-			lon: 				38.731094,
-			zoom: 				13,
-			icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-		},
-		text: {
-			headline: 			"Le portrait mystérieux",
-			text: 				"Lorem ipsum dolor sit amet, consectetuer adipiscing elit."
-		},
-		media: {
-			url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-			credit:				"Georges Méliès",
-			caption:			"Le portrait mystérieux"
-		}
-	
-	};
-
-	TODO
-	Active state and memory management
-	video play state
 ================================================== */
 
 VCO.Slide = VCO.Class.extend({
@@ -6589,11 +6602,13 @@ VCO.Slide = VCO.Class.extend({
 			background: {
 				image: false,
 				color: false,
-				color_value :"#FFF"
+				color_value :""
 			}
 		}
 		
 		this.has.title = title_slide;
+		
+		this.title = "";
 		
 		// Data
 		this.data = {
@@ -6636,7 +6651,6 @@ VCO.Slide = VCO.Class.extend({
 	/*	Adding, Hiding, Showing etc
 	================================================== */
 	show: function() {
-		trace("show")
 		this.animator = VCO.Animate(this._el.slider_container, {
 			left: 		-(this._el.container.offsetWidth * n) + "px",
 			duration: 	this.options.duration,
@@ -6748,6 +6762,7 @@ VCO.Slide = VCO.Class.extend({
 		}
 		if (this.data.text && this.data.text.headline) {
 			this.has.headline = true;
+			this.title = this.data.text.headline;
 		}
 		
 		// Create Media
@@ -7024,120 +7039,14 @@ VCO.StorySlider = VCO.Class.extend({
 		this.current_slide = 0;
 		
 		// Data Object
-		this.data = {
-			uniqueid: 				"",
-			slides: 				[
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null,
-						color: 				null,
-						opacity: 			50
-					},
-					date: 					null,
-					location: {
-						lat: 				-9.143962,
-						lon: 				38.731094,
-						zoom: 				13,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-					},
-					text: {
-						headline: 			"Slideshow Example",
-						text: 				"Example slideshow slide "
-					},
-					media: [
-						{
-							uniqueid: 				"",
-							text: {
-								headline: 			"Slideshow Example",
-								text: 				""
-							},
-							media: {
-								url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-								credit:				"",
-								caption:			"",
-								link: 				null,
-								link_target: 		null
-							}
-						},
-						{
-							uniqueid: 				"",
-							text: {
-								headline: 			"Slideshow Example",
-								text: 				""
-							},
-							media: {
-								url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-								credit:				"",
-								caption:			"",
-								link: 				null,
-								link_target: 		null
-							}
-						},
-						{
-							uniqueid: 				"",
-							text: {
-								headline: 			"Slideshow Example",
-								text: 				""
-							},
-							media: {
-								url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-								credit:				"",
-								caption:			"",
-								link: 				null,
-								link_target: 		null
-							}
-						},
-						{
-							uniqueid: 				"",
-							text: {
-								headline: 			"Slideshow Example",
-								text: 				""
-							},
-							media: {
-								url: 				"http://2.bp.blogspot.com/-dxJbW0CG8Zs/TmkoMA5-cPI/AAAAAAAAAqw/fQpsz9GpFdo/s1600/voyage-dans-la-lune-1902-02-g.jpg",
-								credit:				"",
-								caption:			"",
-								link: 				null,
-								link_target: 		null
-							}
-						}
-					]
-				},
-				{
-					uniqueid: 				"",
-					background: {			// OPTIONAL
-						url: 				null,
-						color: 				null,
-						opacity: 			50
-					},
-					date: 					null,
-					location: {
-						lat: 				-9.143962,
-						lon: 				38.731094,
-						zoom: 				13,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png"
-					},
-					text: {
-						headline: 			"YouTube",
-						text: 				"Just add a link to the video in the media field."
-					},
-					media: {
-						url: 				"http://www.youtube.com/watch?v=lIvftGgps24",
-						credit:				"",
-						caption:			"",
-						link: 				null,
-						link_target: 		null
-					}
-				}
-			]
-		};
+		this.data = {};
 		
 		this.options = {
 			id: 					"",
 			layout: 				"portrait",
 			width: 					600,
 			height: 				600,
+			default_bg_color: 		{r:256, g:256, b:256},
 			slide_padding_lr: 		40, 			// padding on slide of slide
 			start_at_slide: 		1,
 			slide_default_fade: 	"0%", 			// landscape fade
@@ -7250,11 +7159,20 @@ VCO.StorySlider = VCO.Class.extend({
 	
 	/*	Navigation
 	================================================== */
+	goToId: function(n, fast, displayupdate) {
+		if (typeof n == 'string' || n instanceof String) {
+			_n = VCO.Util.findArrayNumberByUniqueID(n, this._slides, "uniqueid");
+		} else {
+			_n = n;
+		}
+		this.goTo(_n, fast, displayupdate);
+		
+	},
 	
 	goTo: function(n, fast, displayupdate) {
 		var self = this;
 		
-		this.changeBackground({color_value:"#FFF", image:false});
+		this.changeBackground({color_value:"", image:false});
 		
 		// Clear Preloader Timer
 		if (this.preloadTimer) {
@@ -7402,10 +7320,13 @@ VCO.StorySlider = VCO.Class.extend({
 			bg_percent_end 		= "15%",
 			bg_alpha_end 		= "0.87",
 			bg_css 				= "";
-			
+		
 		if (bg.color_value) {
 			bg_color		= VCO.Util.hexToRgb(bg.color_value);
+		} else {
+			bg_color = this.options.default_bg_color;
 		}
+		
 		
 		bg_color_rgb 	= bg_color.r + "," + bg_color.g + "," + bg_color.b;
 		this._el.background.style.backgroundImage = "none";
@@ -7417,13 +7338,11 @@ VCO.StorySlider = VCO.Class.extend({
 			
 			// If background is not white, less fade is better
 			if (bg_color.r < 255 && bg_color.g < 255 && bg_color.b < 255) {
-				bg_percent_start = "0%";
+				bg_percent_start = "15%";
 			}
 			
 			if (bg.image) {
-				//bg_alpha_end = "0.85";
-				//bg_percent_start = "0%";
-				//bg_percent_end = "0%";
+				bg_percent_start = "0%";
 				
 			} 
 			
@@ -7507,7 +7426,7 @@ VCO.StorySlider = VCO.Class.extend({
 		
 		// Create Layout
 		this._el.slider_container_mask		= VCO.Dom.create('div', 'vco-slider-container-mask', this._el.container);
-		this._el.background 				= VCO.Dom.create('div', 'vco-slider-background', this._el.container); 
+		this._el.background 				= VCO.Dom.create('div', 'vco-slider-background vco-animate', this._el.container); 
 		this._el.slider_container			= VCO.Dom.create('div', 'vco-slider-container vcoanimate', this._el.slider_container_mask);
 		this._el.slider_item_container		= VCO.Dom.create('div', 'vco-slider-item-container', this._el.slider_container);
 		
@@ -7544,7 +7463,6 @@ VCO.StorySlider = VCO.Class.extend({
 			this._message.updateMessage("Swipe to Navigate<br><span class='vco-button'>OK</span>");
 			this._message.addTo(this._el.container);
 		}
-		
 	},
 	
 	_initEvents: function () {
@@ -7572,25 +7490,9 @@ VCO.StorySlider = VCO.Class.extend({
 	/*	Events
 	================================================== */
 	_onBackgroundChange: function(e) {
-		var slide_background;
-		
-		slide_background = this._slides[this.current_slide].getBackground();
+		var slide_background = this._slides[this.current_slide].getBackground();
 		this.changeBackground(e);
-		
 		this.fire("colorchange", slide_background);
-		/*
-		if (slide_background.color || slide_background.image) {
-			if (this.options.layout != "landscape") {
-				this._nav.next.setColor(true);
-				this._nav.previous.setColor(true);
-			}
-		} else {
-			if (this.options.layout != "landscape") {
-				this._nav.next.setColor(false);
-				this._nav.previous.setColor(false);
-			}
-		}
-		*/
 	},
 	
 	_onMessageClick: function(e) {
@@ -7623,7 +7525,7 @@ VCO.StorySlider = VCO.Class.extend({
 	_onSlideChange: function(displayupdate) {
 		
 		if (!displayupdate) {
-			this.fire("change", {current_slide:this.current_slide});
+			this.fire("change", {current_slide:this.current_slide, uniqueid:this._slides[this.current_slide].data.uniqueid});
 		}
 	},
 	
@@ -7655,6 +7557,7 @@ VCO.StorySlider = VCO.Class.extend({
 	
 	_onLoaded: function() {
 		this.fire("loaded", this.data);
+		this.fire("title", {title:this._slides[0].title});
 	}
 	
 	
@@ -17506,9 +17409,18 @@ VCO.StoryMap = VCO.Class.extend({
 	
 	/*	Private Methods
 	================================================== */
-	initialize: function (elem, data, options) {
+	initialize: function (elem, data, options,listeners) {
+		for (key in listeners) {
+			var callbacks = listeners[key];
+			if (typeof(callbacks) == 'function') {
+				this.on(key,callbacks);
+			} else {
+				for (var idx in callbacks) {
+					this.on(key,callbacks[idx]);
+				}
+			}
+		}
 		var self = this;
-		
 		// Version
 		this.version = "0.1.16";
 		
@@ -17545,47 +17457,7 @@ VCO.StoryMap = VCO.Class.extend({
 		
 		// Data Object
 		// Test Data compiled from http://www.pbs.org/marktwain/learnmore/chronology.html
-		this.data = {
-			uniqueid: 				"",
-			slides: 				[
-				{
-					uniqueid: 				"",
-					type: 					"overview", // Optional
-					background: {			// OPTIONAL
-						url: 				"http://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Mark_Twain_by_Abdullah_Fr%C3%A8res%2C_1867.jpg/418px-Mark_Twain_by_Abdullah_Fr%C3%A8res%2C_1867.jpg",
-						color: 				"",
-						opacity: 			50
-					},
-					date: 					"1835",
-					text: {
-						headline: 			"Mark Twain",
-						text: 				"Samuel Langhorne Clemens (November 30, 1835 – April 21, 1910), better known by his pen name Mark Twain, was an American author and humorist. He wrote The Adventures of Tom Sawyer (1876) and its sequel, Adventures of Huckleberry Finn (1885), the latter often called \"the Great American Novel.\""
-					},
-					media: null
-				},
-				{
-					uniqueid: 				"",
-					date: 					"1835",
-					location: {
-						lat: 				39.491711,
-						lon: 				-91.793260,
-						name: 				"Florida, Missouri",
-						zoom: 				12,
-						icon: 				"http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png",
-						line: 				true
-					},
-					text: {
-						headline: 			"Florida, Missouri",
-						text: 				"Born in Florida, Missouri. Halley’s comet visible from earth."
-					},
-					media: {
-						url: 				"http://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Mark_Twain_birthplace.jpg/800px-Mark_Twain_birthplace.jpg",
-						credit:				"",
-						caption:			"Mark Twain's birthplace, Florida, Missouri"
-					}
-				}
-			]
-		};
+		this.data = {};
 	
 		this.options = {
 			script_path:            "",
@@ -17593,7 +17465,8 @@ VCO.StoryMap = VCO.Class.extend({
 			width: 					this._el.container.offsetWidth,
 			layout: 				"landscape", 	// portrait or landscape
 			base_class: 			"",
-			map_size_sticky: 		2, 				// Set as division 1/3 etc
+			default_bg_color: 		{r:256, g:256, b:256},
+			map_size_sticky: 		2.5, 				// Set as division 1/3 etc
 			map_center_offset:  	null, 			// takes object {top:0,left:0}
 			less_bounce: 			false, 			// Less map bounce when calculating zoom, false is good when there are clusters of tightly grouped markers
 			start_at_slide: 		0,
@@ -17680,19 +17553,6 @@ VCO.StoryMap = VCO.Class.extend({
 		} else {
 			self._loadLanguage(data);
 		}
-		
-		// Load language
-		/*
-		if(this.options.language == 'en') {
-		    this.options.language = VCO.Language;
-		    this._initData(data);
-		} else {
-			VCO.Load.js(this.options.script_path + "/locale/" + this.options.language + ".js", function() {
-				self._initData(data);
-			});
-		}
-		*/
-		
 		
 		return this;
 	},
@@ -17786,6 +17646,7 @@ VCO.StoryMap = VCO.Class.extend({
 		// Create StorySlider
 		this._storyslider = new VCO.StorySlider(this._el.storyslider, this.data, this.options);
 		this._storyslider.on('loaded', this._onStorySliderLoaded, this);
+		this._storyslider.on('title', this._onTitle, this);
 		this._storyslider.init();
 		
 		// LAYOUT
@@ -17874,8 +17735,6 @@ VCO.StoryMap = VCO.Class.extend({
 			// Portrait
 			display_class += " vco-layout-portrait";
 			
-			
-			
 			if (animate) {
 			
 				// Animate Map
@@ -17921,25 +17780,19 @@ VCO.StoryMap = VCO.Class.extend({
 			display_class += " vco-layout-landscape";
 			
 			this.options.menubar_height = this._el.menubar.offsetHeight;
+			
 			// Set Default Component Sizes
 			this.options.map_height 		= this.options.height;
 			this.options.storyslider_height = this.options.height;
 			this._menubar.setSticky(this.options.menubar_height);
 			
-			// Map Padding
-			//this._map.padding = [0,this.options.width/2];
-			
 			// Set Sticky state of MenuBar
 			this._menubar.setSticky(this.options.menubar_height);
 			
 			this._el.map.style.height = this.options.height + "px";
-			//this._el.menubar.style.top =  this.options.menubar_height + "px";
 			
 			// Update Component Displays
-			//this._map.options.map_center_offset.left = -(this.options.width/4);
-			//this._map.options.map_center_offset.top = 0;
 			this._map.setMapOffset(-(this.options.width/4), 0);
-			//this._map.options.map_center_offset.top = this.options.menubar_height;
 			
 			// StorySlider
 			this._el.storyslider.style.top = 0;
@@ -17963,12 +17816,15 @@ VCO.StoryMap = VCO.Class.extend({
 	================================================== */
 	
 	_onDataLoaded: function(e) {
-		trace("dataloaded");
 		this.fire("dataloaded");
 		this._initLayout();
 		this._initEvents();
 		this.ready = true;
 		
+	},
+	
+	_onTitle: function(e) {
+		this.fire("title", e);
 	},
 	
 	_onColorChange: function(e) {
