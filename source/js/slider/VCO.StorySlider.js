@@ -52,6 +52,9 @@ VCO.StorySlider = VCO.Class.extend({
 		// Current Slide
 		this.current_slide = 0;
 		
+		// Current Background Color
+		this.current_bg_color = null;
+		
 		// Data Object
 		this.data = {};
 		
@@ -87,6 +90,7 @@ VCO.StorySlider = VCO.Class.extend({
 		
 		// Animation Object
 		this.animator = null;
+		this.animator_background = null;
 		
 		// Merge Data and Options
 		VCO.Util.mergeData(this.options, options);
@@ -325,63 +329,107 @@ VCO.StorySlider = VCO.Class.extend({
 	},
 	
 	changeBackground: function(bg) {
-		
-		// TODO Add opacity fade out/in transition
+		var self = this,
+			do_animation = false;
 		
 		var bg_color = {r:256, g:256, b:256},
 			bg_color_rgb,
 			bg_percent_start 	= this.options.slide_default_fade,
 			bg_percent_end 		= "15%",
 			bg_alpha_end 		= "0.87",
-			bg_css 				= "";
+			bg_css 				= "",
+			bg_old 				= this._el.background.getAttribute('style');
 		
 		if (bg.color_value) {
-			bg_color		= VCO.Util.hexToRgb(bg.color_value);
+			bg_color = VCO.Util.hexToRgb(bg.color_value);
 		} else {
 			bg_color = this.options.default_bg_color;
 		}
 		
 		
-		bg_color_rgb 	= bg_color.r + "," + bg_color.g + "," + bg_color.b;
-		this._el.background.style.backgroundImage = "none";
+		// Stop animation
+		if (this.animator_background) {
+			this.animator_background.stop();
+		}
 		
-		if (this.options.layout == "landscape") {
+		bg_color_rgb 	= bg_color.r + "," + bg_color.g + "," + bg_color.b;
+		
+		if (!this.current_bg_color || this.current_bg_color != bg_color_rgb) {
+			this.current_bg_color = bg_color_rgb;
+			do_animation = true;
+		} 
+		
+		
+		
+		if (do_animation) {
+
+			// Figure out CSS
+			if (this.options.layout == "landscape") {
 			
-			this._nav.next.setColor(false);
-			this._nav.previous.setColor(false);
-			
-			// If background is not white, less fade is better
-			if (bg_color.r < 255 && bg_color.g < 255 && bg_color.b < 255) {
-				bg_percent_start = "15%";
-			}
-			
-			if (bg.image) {
-				bg_percent_start = "0%";
-				
-			} 
-			
-			bg_css 	+= "background-image: -webkit-linear-gradient(left, color-stop(rgba(" + bg_color_rgb + ",0.0001 ) " + bg_percent_start + "), color-stop(rgba(" + bg_color_rgb + "," + bg_alpha_end + ") " + bg_percent_end + "));";
-			bg_css 	+= "background-image: linear-gradient(to right, rgba(" + bg_color_rgb + ",0.0001 ) "+ bg_percent_start + ", rgba(" + bg_color_rgb + "," + bg_alpha_end + ") " + bg_percent_end + ");";
-			bg_css 	+= "background-repeat: repeat-x;";
-			bg_css 	+= "filter: e(%('progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=1)',argb(" + bg_color_rgb + ", 0.0001),argb(" + bg_color_rgb + ",0.80)));";
-			
-			this._el.background.setAttribute("style", bg_css);
-			
-		} else {
-			if (bg.color_value) {
-				this._el.background.style.backgroundColor = bg.color_value;
-			} else {
-				this._el.background.style.backgroundColor = "#FFF";
-			}
-			
-			if (bg_color.r < 255 && bg_color.g < 255 && bg_color.b < 255 || bg.image) {
-				this._nav.next.setColor(true);
-				this._nav.previous.setColor(true);
-			} else {
 				this._nav.next.setColor(false);
 				this._nav.previous.setColor(false);
+			
+				// If background is not white, less fade is better
+				if (bg_color.r < 255 && bg_color.g < 255 && bg_color.b < 255) {
+					bg_percent_start = "15%";
+				}
+			
+				if (bg.image) {
+					bg_percent_start = "0%";
+				
+				} 
+				bg_css 	+= "opacity:0;"
+				bg_css 	+= "background-image: -webkit-linear-gradient(left, color-stop(rgba(" + bg_color_rgb + ",0.0001 ) " + bg_percent_start + "), color-stop(rgba(" + bg_color_rgb + "," + bg_alpha_end + ") " + bg_percent_end + "));";
+				bg_css 	+= "background-image: linear-gradient(to right, rgba(" + bg_color_rgb + ",0.0001 ) "+ bg_percent_start + ", rgba(" + bg_color_rgb + "," + bg_alpha_end + ") " + bg_percent_end + ");";
+				bg_css 	+= "background-repeat: repeat-x;";
+				bg_css 	+= "filter: e(%('progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=1)',argb(" + bg_color_rgb + ", 0.0001),argb(" + bg_color_rgb + ",0.80)));";
+			
+			
+			} else {
+				if (bg.color_value) {
+					bg_css 	+= 'background-color:' + bg.color_value + ";";
+				} else {
+					bg_css 	+= "background-color:#FFF;";
+				}
+			
+				if (bg_color.r < 255 && bg_color.g < 255 && bg_color.b < 255 || bg.image) {
+					this._nav.next.setColor(true);
+					this._nav.previous.setColor(true);
+				} else {
+					this._nav.next.setColor(false);
+					this._nav.previous.setColor(false);
+				}
 			}
+		
+			// FADE OUT IN
+			this.animator_background = VCO.Animate(this._el.background, {
+				opacity: 	0,
+				duration: 	this.options.duration/2,
+				easing: 	this.options.ease,
+				complete: 	function() {
+					self.fadeInBackground(bg_css);
+				}
+			});
 		}
+		
+		
+	},
+	
+	fadeInBackground: function(bg_css) {
+		if (this.animator_background) {
+			this.animator_background.stop();
+		}
+		
+		if (bg_css) {
+			this._el.background.setAttribute("style", bg_css);
+		}
+		
+		this.animator_background = VCO.Animate(this._el.background, {
+			opacity: 	1,
+			duration: 	this.options.duration/2,
+			easing: 	this.options.ease
+		});
+		
 	},
 	
 	/*	Private Methods
@@ -440,7 +488,7 @@ VCO.StorySlider = VCO.Class.extend({
 		
 		// Create Layout
 		this._el.slider_container_mask		= VCO.Dom.create('div', 'vco-slider-container-mask', this._el.container);
-		this._el.background 				= VCO.Dom.create('div', 'vco-slider-background vco-animate', this._el.container); 
+		this._el.background 				= VCO.Dom.create('div', 'vco-slider-background', this._el.container); 
 		this._el.slider_container			= VCO.Dom.create('div', 'vco-slider-container vcoanimate', this._el.slider_container_mask);
 		this._el.slider_item_container		= VCO.Dom.create('div', 'vco-slider-item-container', this._el.slider_container);
 		
