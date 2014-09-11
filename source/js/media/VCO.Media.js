@@ -19,6 +19,7 @@ VCO.Media = VCO.Class.extend({
 			content_container: {},
 			content: {},
 			content_item: {},
+			content_link: {},
 			caption: null,
 			credit: null,
 			parent: {},
@@ -40,7 +41,9 @@ VCO.Media = VCO.Class.extend({
 		
 		// State
 		this._state = {
-			loaded: false
+			loaded: false,
+			show_meta: false,
+			media_loaded: false
 		};
 	
 		// Data
@@ -95,9 +98,10 @@ VCO.Media = VCO.Class.extend({
 			
 			//this._state.loaded = true;
 		}
-		
-		
-		
+	},
+	
+	loadingMessage: function() {
+		this.message.updateMessage(this._('loading') + " " + this.options.media_name);
 	},
 	
 	updateMediaDisplay: function(layout) {
@@ -116,6 +120,14 @@ VCO.Media = VCO.Class.extend({
 				}
 			}
 			
+			if (this._state.media_loaded) {
+				if (this._el.credit) {
+					this._el.credit.style.width		= this._el.content_item.offsetWidth + "px";
+				}
+				if (this._el.caption) {
+					this._el.caption.style.width		= this._el.content_item.offsetWidth + "px";
+				}
+			}
 			
 		}
 	},
@@ -182,8 +194,20 @@ VCO.Media = VCO.Class.extend({
 		this.updateDisplay();
 	},
 	
-	showMeta: function() {
-		
+	onMediaLoaded: function(e) {
+		trace("onMediaLoaded");
+		this._state.media_loaded = true;
+		this.fire("media_loaded", this.data);
+		if (this._el.credit) {
+			this._el.credit.style.width		= this._el.content_item.offsetWidth + "px";
+		}
+		if (this._el.caption) {
+			this._el.caption.style.width		= this._el.content_item.offsetWidth + "px";
+		}
+	},
+	
+	showMeta: function(credit, caption) {
+		this._state.show_meta = true;
 		// Credit
 		if (this.data.credit && this.data.credit != "") {
 			this._el.credit					= VCO.Dom.create("div", "vco-credit", this._el.content_container);
