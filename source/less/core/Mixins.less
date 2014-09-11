@@ -2,6 +2,23 @@
 	Snippets of reusable CSS to develop faster and keep code readable
  * ----------------------------------------------------------------- */
 
+// Cubic Bezier 
+.animation-timing-cubic-bezier() {
+	
+	-webkit-transition-timing-function: cubic-bezier(0.770, 0.000, 0.175, 1.000); 
+	   -moz-transition-timing-function: cubic-bezier(0.770, 0.000, 0.175, 1.000); 
+	     -o-transition-timing-function: cubic-bezier(0.770, 0.000, 0.175, 1.000); 
+	        transition-timing-function: cubic-bezier(0.770, 0.000, 0.175, 1.000);
+}
+
+// Property Animation
+.property-animation(@prop:height, @time:1000ms, @ease:cubic-bezier(0.770, 0.000, 0.175, 1.000)) {
+	-webkit-transition+: @prop @time cubic-bezier(0.770, 0.000, 0.175, 1.000); 
+	   -moz-transition+: @prop @time cubic-bezier(0.770, 0.000, 0.175, 1.000); 
+	     -o-transition+: @prop @time cubic-bezier(0.770, 0.000, 0.175, 1.000); 
+	        transition+: @prop @time cubic-bezier(0.770, 0.000, 0.175, 1.000);
+}
+
 // Opacity
 .opacity(@opacity: 100) {
  	filter: e(%("alpha(opacity=%d)", @opacity));
