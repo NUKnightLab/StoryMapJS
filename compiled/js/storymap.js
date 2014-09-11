@@ -7320,8 +7320,8 @@ VCO.StorySlider = VCO.Class.extend({
 		//this._slides[0].
 		trace("_introInterface");
 		
-		this._nav.next.updatePosition({right:"130"}, false, this.options.duration, this.options.ease*3, -100);
-		this._nav.previous.updatePosition({left:"-100"}, true, this.options.duration, this.options.ease*3, "100");
+		//this._nav.next.updatePosition({right:"130"}, false, this.options.duration, this.options.ease*3, -100);
+		//this._nav.previous.updatePosition({left:"-100"}, true, this.options.duration, this.options.ease*3, "100");
 	},
 	
 	/*	Init
