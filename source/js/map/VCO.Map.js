@@ -116,6 +116,12 @@ VCO.Map = VCO.Class.extend({
 		// Timer
 		this.timer = null;
 		
+		// Touchpad Events
+		this.touch_scale = 1;
+		this.scroll = {
+			start_time: null
+		};
+		
 		// Merge Data and Options
 		VCO.Util.mergeData(this.options, options);
 		VCO.Util.mergeData(this.data, data);
@@ -522,7 +528,50 @@ VCO.Map = VCO.Class.extend({
 		this.fire("loaded", this.data);
 	},
 	
+	_onWheel: function(e) {
+		var self = this;
+		
+		if (e.ctrlKey) {
+			var s = Math.exp(-e.deltaY/100);
+			this.touch_scale *= s;
+		} 
+		
+		if (!this.scroll.start_time) {
+			this.scroll.start_time = +new Date();
+		};
+		
+		var time_left = Math.max(40 - (+new Date() - this.scroll.start_time), 0);
+		
+		clearTimeout(this.scroll.timer);
+		
+		this.scroll.timer = setTimeout(function() {
+			self._scollZoom();
+		}, time_left);
+		
+		e.preventDefault();
+		e.stopPropagation(e);
+	},
 	
+	_scollZoom: function(e) {
+		var self = this,
+			current_zoom = this._getMapZoom();
+			
+		this.scroll.start_time = null;
+		//VCO.DomUtil.addClass(this._el.container, 'vco-map-touch-zoom');
+		clearTimeout(this.scroll.timer);
+		clearTimeout(this.scroll.timer_done);
+		
+		this.scroll.timer_done = setTimeout(function() {
+			self._scollZoomDone();
+		}, 1000);
+		
+		this.zoomTo(Math.round(current_zoom * this.touch_scale));
+	},
+	
+	_scollZoomDone: function(e) {
+		//VCO.DomUtil.removeClass(this._el.container, 'vco-map-touch-zoom');
+		this.touch_scale = 1;
+	},
 	
 	/*	Private Methods
 	================================================== */
@@ -563,7 +612,13 @@ VCO.Map = VCO.Class.extend({
 	},
 	
 	_initEvents: function() {
+		var self = this;
 		
+		this._el.map.addEventListener('wheel', function(e) {
+			self._onWheel(e);
+		});
+		
+		//this.on("wheel", this._onWheel, this);
 	}
 	
 });

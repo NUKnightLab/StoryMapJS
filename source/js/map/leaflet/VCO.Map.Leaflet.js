@@ -47,6 +47,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		}
 
 		
+		
 	},
 	
 	/*	Create Mini Map
