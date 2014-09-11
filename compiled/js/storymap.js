@@ -38,13 +38,7 @@ trace = function( msg ) {
 			//alert(msg);
 		}
 	}
-}
-
-/* **********************************************
-     Begin VCO.Util.js
-********************************************** */
-
-/*	VCO.Util
+}/*	VCO.Util
 	Class of utilities
 ================================================== */
 
@@ -339,13 +333,7 @@ VCO.Util = {
 		
 		return vars;
 	}
-};
-
-/* **********************************************
-     Begin VCO.Data.js
-********************************************** */
-
-// Expects VCO to be visible in scope
+};// Expects VCO to be visible in scope
 
 ;(function(VCO){
     /* Zepto v1.1.2-15-g59d3fe5 - zepto event ajax form ie - zeptojs.com/license */
@@ -1930,12 +1918,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
 SOFTWARE.
 */
-
-
-/* **********************************************
-     Begin VCO.Class.js
-********************************************** */
-
 /*	VCO.Class
 	Class powers the OOP facilities of the library.
 ================================================== */
@@ -2001,12 +1983,6 @@ VCO.Class.extend = function (/*Object*/ props) /*-> Class*/ {
 
 	return NewClass;
 };
-
-
-/* **********************************************
-     Begin VCO.Events.js
-********************************************** */
-
 /*	VCO.Events
 	adds custom events functionality to VCO classes
 ================================================== */
@@ -2065,13 +2041,7 @@ VCO.Events = {
 
 VCO.Events.on	= VCO.Events.addEventListener;
 VCO.Events.off	= VCO.Events.removeEventListener;
-VCO.Events.fire = VCO.Events.fireEvent;
-
-/* **********************************************
-     Begin VCO.Browser.js
-********************************************** */
-
-/*
+VCO.Events.fire = VCO.Events.fireEvent;/*
 	Based on Leaflet Browser
 	VCO.Browser handles different browser and feature detections for internal  use.
 */
@@ -2150,13 +2120,7 @@ VCO.Events.fire = VCO.Events.fireEvent;
 		}
 	};
 
-}()); 
-
-/* **********************************************
-     Begin VCO.Load.js
-********************************************** */
-
-/*	VCO.Load
+}()); /*	VCO.Load
 	Loads External Javascript and CSS
 ================================================== */
 
@@ -2596,12 +2560,6 @@ VCO.LoadIt = (function (doc) {
 
   };
 })(this.document);
-
-
-/* **********************************************
-     Begin VCO.Language.js
-********************************************** */
-
 VCO.Language = {
 	name: 					"English",
 	lang: 					"en",
@@ -2616,13 +2574,7 @@ VCO.Language = {
 	    collapse_toggle: 	"Hide Map",
 	    uncollapse_toggle: 	"Show Map"
 	}
-}
-
-/* **********************************************
-     Begin VCO.Ease.js
-********************************************** */
-
-/* The equations defined here are open source under BSD License.
+}/* The equations defined here are open source under BSD License.
  * http://www.robertpenner.com/easing_terms_of_use.html (c) 2003 Robert Penner
  * Adapted to single time-based by
  * Brian Crescimanno <brian.crescimanno@gmail.com>
@@ -2862,13 +2814,7 @@ Math.easeInOutExpo = function (t, b, c, d) {
 	t--;
 	return c/2 * ( -Math.pow( 2, -10 * t) + 2 ) + b;
 };
-*/
-
-/* **********************************************
-     Begin VCO.Animate.js
-********************************************** */
-
-/*	VCO.Animate
+*//*	VCO.Animate
 	Basic animation
 ================================================== */
 
@@ -3298,12 +3244,6 @@ window.vcoanimate = (function() {
 
   return morpheus
 })();
-
-
-/* **********************************************
-     Begin VCO.Point.js
-********************************************** */
-
 /*	VCO.Point
 	Inspired by Leaflet
 	VCO.Point represents a point with x and y coordinates.
@@ -3370,13 +3310,7 @@ VCO.Point.prototype = {
 				VCO.Util.formatNum(this.x) + ', ' +
 				VCO.Util.formatNum(this.y) + ')';
 	}
-};
-
-/* **********************************************
-     Begin VCO.DomMixins.js
-********************************************** */
-
-/*	VCO.DomMixins
+};/*	VCO.DomMixins
 	DOM methods used regularly
 	Assumes there is a _el.container and animator
 ================================================== */
@@ -3465,12 +3399,6 @@ VCO.DomMixins = {
 	}
 	
 };
-
-
-/* **********************************************
-     Begin VCO.Dom.js
-********************************************** */
-
 /*	VCO.Dom
 	Utilities for working with the DOM
 ================================================== */
@@ -3558,12 +3486,6 @@ VCO.Util.extend(VCO.Dom, {
 	TRANSLATE_OPEN: 'translate' + (VCO.Browser.webkit3d ? '3d(' : '('),
 	TRANSLATE_CLOSE: VCO.Browser.webkit3d ? ',0)' : ')'
 });
-
-
-/* **********************************************
-     Begin VCO.DomUtil.js
-********************************************** */
-
 /*	VCO.DomUtil
 	Inspired by Leaflet
 	VCO.DomUtil contains various utility functions for working with DOM
@@ -3717,13 +3639,7 @@ VCO.DomUtil = {
 	getPosition: function (el) {
 		return el._vco_pos;
 	}
-};
-
-/* **********************************************
-     Begin VCO.DomEvent.js
-********************************************** */
-
-/*	VCO.DomEvent
+};/*	VCO.DomEvent
 	Inspired by Leaflet 
 	DomEvent contains functions for working with DOM events.
 ================================================== */
@@ -3871,12 +3787,6 @@ VCO.DomEvent = {
 	}
 };
 
-
-
-
-/* **********************************************
-     Begin VCO.Draggable.js
-********************************************** */
 
 /*	VCO.Draggable
 	VCO.Draggable allows you to add dragging capabilities to any element. Supports mobile devices too.
@@ -4203,12 +4113,6 @@ VCO.Draggable = VCO.Class.extend({
 		this.fire("momentum", this.data);
 	}
 });
-
-
-/* **********************************************
-     Begin VCO.Swipable.js
-********************************************** */
-
 /*	VCO.Swipable
 	VCO.Draggable allows you to add dragging capabilities to any element. Supports mobile devices too.
 	TODO Enable constraints
@@ -4599,12 +4503,6 @@ VCO.Swipable = VCO.Class.extend({
 		this.fire("momentum", this.data);
 	}
 });
-
-
-/* **********************************************
-     Begin VCO.MenuBar.js
-********************************************** */
-
 /*	VCO.MenuBar
 	Draggable component to control size
 ================================================== */
@@ -4800,13 +4698,7 @@ VCO.MenuBar = VCO.Class.extend({
 		}
 	}
 	
-});
-
-/* **********************************************
-     Begin VCO.Message.js
-********************************************** */
-
-/*	VCO.SizeBar
+});/*	VCO.SizeBar
 	Draggable component to control size
 ================================================== */
  
@@ -4913,13 +4805,7 @@ VCO.Message = VCO.Class.extend({
 		
 	}
 	
-});
-
-/* **********************************************
-     Begin VCO.MediaType.js
-********************************************** */
-
-/*	VCO.MediaType
+});/*	VCO.MediaType
 	Determines the type of media the url string is.
 	returns an object with .type and .id
 	You can add new media types by adding a regex 
@@ -5065,12 +4951,6 @@ VCO.MediaType = function(m) {
 	return false;
 	
 }
-
-
-/* **********************************************
-     Begin VCO.Media.js
-********************************************** */
-
 /*	VCO.Media
 	Main media template for media assets.
 	Takes a data object and populates a dom object
@@ -5092,6 +4972,7 @@ VCO.Media = VCO.Class.extend({
 			content_container: {},
 			content: {},
 			content_item: {},
+			content_link: {},
 			caption: null,
 			credit: null,
 			parent: {},
@@ -5113,7 +4994,9 @@ VCO.Media = VCO.Class.extend({
 		
 		// State
 		this._state = {
-			loaded: false
+			loaded: false,
+			show_meta: false,
+			media_loaded: false
 		};
 	
 		// Data
@@ -5168,9 +5051,10 @@ VCO.Media = VCO.Class.extend({
 			
 			//this._state.loaded = true;
 		}
-		
-		
-		
+	},
+	
+	loadingMessage: function() {
+		this.message.updateMessage(this._('loading') + " " + this.options.media_name);
 	},
 	
 	updateMediaDisplay: function(layout) {
@@ -5189,6 +5073,14 @@ VCO.Media = VCO.Class.extend({
 				}
 			}
 			
+			if (this._state.media_loaded) {
+				if (this._el.credit) {
+					this._el.credit.style.width		= this._el.content_item.offsetWidth + "px";
+				}
+				if (this._el.caption) {
+					this._el.caption.style.width		= this._el.content_item.offsetWidth + "px";
+				}
+			}
 			
 		}
 	},
@@ -5255,8 +5147,20 @@ VCO.Media = VCO.Class.extend({
 		this.updateDisplay();
 	},
 	
-	showMeta: function() {
-		
+	onMediaLoaded: function(e) {
+		trace("onMediaLoaded");
+		this._state.media_loaded = true;
+		this.fire("media_loaded", this.data);
+		if (this._el.credit) {
+			this._el.credit.style.width		= this._el.content_item.offsetWidth + "px";
+		}
+		if (this._el.caption) {
+			this._el.caption.style.width		= this._el.content_item.offsetWidth + "px";
+		}
+	},
+	
+	showMeta: function(credit, caption) {
+		this._state.show_meta = true;
 		// Credit
 		if (this.data.credit && this.data.credit != "") {
 			this._el.credit					= VCO.Dom.create("div", "vco-credit", this._el.content_container);
@@ -5339,13 +5243,7 @@ VCO.Media = VCO.Class.extend({
 		
 	}
 	
-});
-
-/* **********************************************
-     Begin VCO.Media.Blockquote.js
-********************************************** */
-
-/*	VCO.Media.Blockquote
+});/*	VCO.Media.Blockquote
 ================================================== */
 
 VCO.Media.Blockquote = VCO.Media.extend({
@@ -5382,12 +5280,6 @@ VCO.Media.Blockquote = VCO.Media.extend({
 
 	
 });
-
-
-/* **********************************************
-     Begin VCO.Media.Flickr.js
-********************************************** */
-
 /*	VCO.Media.Flickr
 
 ================================================== */
@@ -5408,11 +5300,16 @@ VCO.Media.Flickr = VCO.Media.extend({
 		// Create Dom element
 		this._el.content_item	= VCO.Dom.create("img", "vco-media-item vco-media-image vco-media-flickr vco-media-shadow", this._el.content);
 		
+		// Media Loaded Event
+		this._el.content_item.addEventListener('load', function(e) {
+			self.onMediaLoaded();
+		});
+		
 		// Get Media ID
 		this.establishMediaID();
 		
 		// API URL
-		api_url = "http://api.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key=" + this.options.api_key_flickr + "&photo_id=" + this.media_id + "&format=json&jsoncallback=?";
+		api_url = "https://api.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key=" + this.options.api_key_flickr + "&photo_id=" + this.media_id + "&format=json&jsoncallback=?";
 		
 		// API Call
 		VCO.getJSON(api_url, function(d) {
@@ -5479,12 +5376,6 @@ VCO.Media.Flickr = VCO.Media.extend({
 	
 	
 });
-
-
-/* **********************************************
-     Begin VCO.Media.Instagram.js
-********************************************** */
-
 /*	VCO.Media.Instagram
 
 ================================================== */
@@ -5505,9 +5396,21 @@ VCO.Media.Instagram = VCO.Media.extend({
 		// Get Media ID
 		this.media_id = this.data.url.split("\/p\/")[1].split("/")[0];
 		
-		this._el.content_item				= VCO.Dom.create("img", "vco-media-item vco-media-image vco-media-instagram vco-media-shadow", this._el.content);
-		this._el.content_item.src			= "http://instagr.am/p/" + this.media_id + "/media/?size=" + this.sizes(this._el.content.offsetWidth);
+		// Link
+		this._el.content_link 				= VCO.Dom.create("a", "", this._el.content);
+		this._el.content_link.href 			= this.data.url;
+		this._el.content_link.target 		= "_blank";
 		
+		// Photo
+		this._el.content_item				= VCO.Dom.create("img", "vco-media-item vco-media-image vco-media-instagram vco-media-shadow", this._el.content_link);
+		
+		// Media Loaded Event
+		this._el.content_item.addEventListener('load', function(e) {
+			self.onMediaLoaded();
+		});
+		
+		// Set source
+		this._el.content_item.src			= "http://instagr.am/p/" + this.media_id + "/media/?size=" + this.sizes(this._el.content.offsetWidth);
 		
 		this.onLoaded();
 		
@@ -5529,12 +5432,6 @@ VCO.Media.Instagram = VCO.Media.extend({
 	
 	
 });
-
-
-/* **********************************************
-     Begin VCO.Media.Profile.js
-********************************************** */
-
 /*	VCO.Media.Profile
 
 ================================================== */
@@ -5563,13 +5460,7 @@ VCO.Media.Profile = VCO.Media.extend({
 		}
 	}
 	
-});
-
-/* **********************************************
-     Begin VCO.Media.GoogleDoc.js
-********************************************** */
-
-/*	VCO.Media.GoogleDoc
+});/*	VCO.Media.GoogleDoc
 
 ================================================== */
 
@@ -5613,12 +5504,6 @@ VCO.Media.GoogleDoc = VCO.Media.extend({
 
 	
 });
-
-
-/* **********************************************
-     Begin VCO.Media.GooglePlus.js
-********************************************** */
-
 /*	VCO.Media.GooglePlus
 ================================================== */
 
@@ -5658,12 +5543,6 @@ VCO.Media.GooglePlus = VCO.Media.extend({
 
 	
 });
-
-
-/* **********************************************
-     Begin VCO.Media.IFrame.js
-********************************************** */
-
 /*	VCO.Media.IFrame
 ================================================== */
 
@@ -5702,17 +5581,10 @@ VCO.Media.IFrame = VCO.Media.extend({
 	}
 	
 });
-
-
-/* **********************************************
-     Begin VCO.Media.Image.js
-********************************************** */
-
 /*	VCO.Media.Image
 	Produces image assets.
 	Takes a data object and populates a dom object
 ================================================== */
-// TODO Add link
 
 VCO.Media.Image = VCO.Media.extend({
 	
@@ -5721,10 +5593,25 @@ VCO.Media.Image = VCO.Media.extend({
 	/*	Load the media
 	================================================== */
 	_loadMedia: function() {
+		var self = this;
 		// Loading Message
 		this.message.updateMessage(VCO.Language.messages.loading + " " + this.options.media_name);
 		
-		this._el.content_item				= VCO.Dom.create("img", "vco-media-item vco-media-image vco-media-shadow", this._el.content);
+		// Link
+		if (this.data.link) {
+			this._el.content_link 				= VCO.Dom.create("a", "", this._el.content);
+			this._el.content_link.href 			= this.data.link;
+			this._el.content_link.target 		= "_blank";
+			this._el.content_item				= VCO.Dom.create("img", "vco-media-item vco-media-image vco-media-shadow", this._el.content_link);
+		} else {
+			this._el.content_item				= VCO.Dom.create("img", "vco-media-item vco-media-image vco-media-shadow", this._el.content);
+		}
+		
+		// Media Loaded Event
+		this._el.content_item.addEventListener('load', function(e) {
+			self.onMediaLoaded();
+		});
+		
 		this._el.content_item.src			= this.data.url;
 		
 		this.onLoaded();
@@ -5735,16 +5622,11 @@ VCO.Media.Image = VCO.Media.extend({
 		
 		if(VCO.Browser.firefox) {
 			this._el.content_item.style.maxWidth = (this.options.width/2) - 40 + "px";
+			this._el.content_item.style.width = "auto";
 		}
 	}
 	
-});
-
-/* **********************************************
-     Begin VCO.Media.SoundCloud.js
-********************************************** */
-
-/*	VCO.Media.SoundCloud
+});/*	VCO.Media.SoundCloud
 ================================================== */
 
 VCO.Media.SoundCloud = VCO.Media.extend({
@@ -5784,12 +5666,6 @@ VCO.Media.SoundCloud = VCO.Media.extend({
 	}
 	
 });
-
-
-/* **********************************************
-     Begin VCO.Media.Storify.js
-********************************************** */
-
 /*	VCO.Media.Storify
 ================================================== */
 
@@ -5829,12 +5705,6 @@ VCO.Media.Storify = VCO.Media.extend({
 	
 	
 });
-
-
-/* **********************************************
-     Begin VCO.Media.Text.js
-********************************************** */
-
 VCO.Media.Text = VCO.Class.extend({
 	
 	includes: [VCO.Events],
@@ -5972,13 +5842,7 @@ VCO.Media.Text = VCO.Class.extend({
 		
 	}
 	
-});
-
-/* **********************************************
-     Begin VCO.Media.Twitter.js
-********************************************** */
-
-/*	VCO.Media.Twitter
+});/*	VCO.Media.Twitter
 	Produces Twitter Display
 ================================================== */
 
@@ -6078,12 +5942,6 @@ VCO.Media.Twitter = VCO.Media.extend({
 	
 	
 });
-
-
-/* **********************************************
-     Begin VCO.Media.Vimeo.js
-********************************************** */
-
 /*	VCO.Media.Vimeo
 ================================================== */
 
@@ -6137,12 +5995,6 @@ VCO.Media.Vimeo = VCO.Media.extend({
 	}
 	
 });
-
-
-/* **********************************************
-     Begin VCO.Media.DailyMotion.js
-********************************************** */
-
 /*	VCO.Media.DailyMotion
 ================================================== */
 
@@ -6185,12 +6037,6 @@ VCO.Media.DailyMotion = VCO.Media.extend({
 	}
 	
 });
-
-
-/* **********************************************
-     Begin VCO.Media.Vine.js
-********************************************** */
-
 /*	VCO.Media.Vine
 
 ================================================== */
@@ -6231,12 +6077,6 @@ VCO.Media.Vine = VCO.Media.extend({
 	}
 	
 });
-
-
-/* **********************************************
-     Begin VCO.Media.Website.js
-********************************************** */
-
 /*	VCO.Media.Website
 ================================================== */
 
@@ -6262,12 +6102,6 @@ VCO.Media.Website = VCO.Media.extend({
 	
 	
 });
-
-
-/* **********************************************
-     Begin VCO.Media.Wikipedia.js
-********************************************** */
-
 /*	VCO.Media.Wikipedia
 ================================================== */
 
@@ -6372,12 +6206,6 @@ VCO.Media.Wikipedia = VCO.Media.extend({
 	}
 	
 });
-
-
-/* **********************************************
-     Begin VCO.Media.YouTube.js
-********************************************** */
-
 /*	VCO.Media.YouTube
 ================================================== */
 
@@ -6488,9 +6316,11 @@ VCO.Media.YouTube = VCO.Media.extend({
 				playerVars: {
 					enablejsapi:		1,
 					color: 				'white',
+					autohide: 			1,
 					showinfo:			0,
 					theme:				'light',
 					start:				this.media_id.start,
+					fs: 				0,
 					rel:				0
 				},
 				videoId: this.media_id.id,
@@ -6515,7 +6345,8 @@ VCO.Media.YouTube = VCO.Media.extend({
 	================================================== */
 	onPlayerReady: function(e) {
 		this.youtube_loaded = true;
-		
+		this._el.content_item = document.getElementById(this._el.content_item.id);
+		this.onMediaLoaded();
 	},
 	
 	onStateChange: function(e) {
@@ -6524,12 +6355,6 @@ VCO.Media.YouTube = VCO.Media.extend({
 
 	
 });
-
-
-/* **********************************************
-     Begin VCO.Media.Slider.js
-********************************************** */
-
 /*	VCO.Media.SLider
 	Produces a Slider
 	Takes a data object and populates a dom object
@@ -6551,13 +6376,7 @@ VCO.Media.Slider = VCO.Media.extend({
 		this.onLoaded();
 	}
 	
-});
-
-/* **********************************************
-     Begin VCO.Slide.js
-********************************************** */
-
-/*	VCO.Slide
+});/*	VCO.Slide
 	Creates a slide. Takes a data object and
 	populates the slide with content.
 ================================================== */
@@ -6853,12 +6672,6 @@ VCO.Slide = VCO.Class.extend({
 	}
 	
 });
-
-
-/* **********************************************
-     Begin VCO.SlideNav.js
-********************************************** */
-
 /*	VCO.SlideNav
 	Navigation for Slideshows
 ================================================== */
@@ -6975,13 +6788,7 @@ VCO.SlideNav = VCO.Class.extend({
 	}
 	
 	
-});
-
-/* **********************************************
-     Begin VCO.StorySlider.js
-********************************************** */
-
-/*	StorySlider
+});/*	StorySlider
 	is the central class of the API - it is used to create a StorySlider
 
 	Events:
@@ -7035,6 +6842,9 @@ VCO.StorySlider = VCO.Class.extend({
 		// Current Slide
 		this.current_slide = 0;
 		
+		// Current Background Color
+		this.current_bg_color = null;
+		
 		// Data Object
 		this.data = {};
 		
@@ -7070,6 +6880,7 @@ VCO.StorySlider = VCO.Class.extend({
 		
 		// Animation Object
 		this.animator = null;
+		this.animator_background = null;
 		
 		// Merge Data and Options
 		VCO.Util.mergeData(this.options, options);
@@ -7308,63 +7119,107 @@ VCO.StorySlider = VCO.Class.extend({
 	},
 	
 	changeBackground: function(bg) {
-		
-		// TODO Add opacity fade out/in transition
+		var self = this,
+			do_animation = false;
 		
 		var bg_color = {r:256, g:256, b:256},
 			bg_color_rgb,
 			bg_percent_start 	= this.options.slide_default_fade,
 			bg_percent_end 		= "15%",
 			bg_alpha_end 		= "0.87",
-			bg_css 				= "";
+			bg_css 				= "",
+			bg_old 				= this._el.background.getAttribute('style');
 		
 		if (bg.color_value) {
-			bg_color		= VCO.Util.hexToRgb(bg.color_value);
+			bg_color = VCO.Util.hexToRgb(bg.color_value);
 		} else {
 			bg_color = this.options.default_bg_color;
 		}
 		
 		
-		bg_color_rgb 	= bg_color.r + "," + bg_color.g + "," + bg_color.b;
-		this._el.background.style.backgroundImage = "none";
+		// Stop animation
+		if (this.animator_background) {
+			this.animator_background.stop();
+		}
 		
-		if (this.options.layout == "landscape") {
+		bg_color_rgb 	= bg_color.r + "," + bg_color.g + "," + bg_color.b;
+		
+		if (!this.current_bg_color || this.current_bg_color != bg_color_rgb) {
+			this.current_bg_color = bg_color_rgb;
+			do_animation = true;
+		} 
+		
+		
+		
+		if (do_animation) {
+
+			// Figure out CSS
+			if (this.options.layout == "landscape") {
 			
-			this._nav.next.setColor(false);
-			this._nav.previous.setColor(false);
-			
-			// If background is not white, less fade is better
-			if (bg_color.r < 255 && bg_color.g < 255 && bg_color.b < 255) {
-				bg_percent_start = "15%";
-			}
-			
-			if (bg.image) {
-				bg_percent_start = "0%";
-				
-			} 
-			
-			bg_css 	+= "background-image: -webkit-linear-gradient(left, color-stop(rgba(" + bg_color_rgb + ",0.0001 ) " + bg_percent_start + "), color-stop(rgba(" + bg_color_rgb + "," + bg_alpha_end + ") " + bg_percent_end + "));";
-			bg_css 	+= "background-image: linear-gradient(to right, rgba(" + bg_color_rgb + ",0.0001 ) "+ bg_percent_start + ", rgba(" + bg_color_rgb + "," + bg_alpha_end + ") " + bg_percent_end + ");";
-			bg_css 	+= "background-repeat: repeat-x;";
-			bg_css 	+= "filter: e(%('progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=1)',argb(" + bg_color_rgb + ", 0.0001),argb(" + bg_color_rgb + ",0.80)));";
-			
-			this._el.background.setAttribute("style", bg_css);
-			
-		} else {
-			if (bg.color_value) {
-				this._el.background.style.backgroundColor = bg.color_value;
-			} else {
-				this._el.background.style.backgroundColor = "#FFF";
-			}
-			
-			if (bg_color.r < 255 && bg_color.g < 255 && bg_color.b < 255 || bg.image) {
-				this._nav.next.setColor(true);
-				this._nav.previous.setColor(true);
-			} else {
 				this._nav.next.setColor(false);
 				this._nav.previous.setColor(false);
+			
+				// If background is not white, less fade is better
+				if (bg_color.r < 255 && bg_color.g < 255 && bg_color.b < 255) {
+					bg_percent_start = "15%";
+				}
+			
+				if (bg.image) {
+					bg_percent_start = "0%";
+				
+				} 
+				bg_css 	+= "opacity:0;"
+				bg_css 	+= "background-image: -webkit-linear-gradient(left, color-stop(rgba(" + bg_color_rgb + ",0.0001 ) " + bg_percent_start + "), color-stop(rgba(" + bg_color_rgb + "," + bg_alpha_end + ") " + bg_percent_end + "));";
+				bg_css 	+= "background-image: linear-gradient(to right, rgba(" + bg_color_rgb + ",0.0001 ) "+ bg_percent_start + ", rgba(" + bg_color_rgb + "," + bg_alpha_end + ") " + bg_percent_end + ");";
+				bg_css 	+= "background-repeat: repeat-x;";
+				bg_css 	+= "filter: e(%('progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=1)',argb(" + bg_color_rgb + ", 0.0001),argb(" + bg_color_rgb + ",0.80)));";
+			
+			
+			} else {
+				if (bg.color_value) {
+					bg_css 	+= 'background-color:' + bg.color_value + ";";
+				} else {
+					bg_css 	+= "background-color:#FFF;";
+				}
+			
+				if (bg_color.r < 255 && bg_color.g < 255 && bg_color.b < 255 || bg.image) {
+					this._nav.next.setColor(true);
+					this._nav.previous.setColor(true);
+				} else {
+					this._nav.next.setColor(false);
+					this._nav.previous.setColor(false);
+				}
 			}
+		
+			// FADE OUT IN
+			this.animator_background = VCO.Animate(this._el.background, {
+				opacity: 	0,
+				duration: 	this.options.duration/2,
+				easing: 	this.options.ease,
+				complete: 	function() {
+					self.fadeInBackground(bg_css);
+				}
+			});
 		}
+		
+		
+	},
+	
+	fadeInBackground: function(bg_css) {
+		if (this.animator_background) {
+			this.animator_background.stop();
+		}
+		
+		if (bg_css) {
+			this._el.background.setAttribute("style", bg_css);
+		}
+		
+		this.animator_background = VCO.Animate(this._el.background, {
+			opacity: 	1,
+			duration: 	this.options.duration/2,
+			easing: 	this.options.ease
+		});
+		
 	},
 	
 	/*	Private Methods
@@ -7423,7 +7278,7 @@ VCO.StorySlider = VCO.Class.extend({
 		
 		// Create Layout
 		this._el.slider_container_mask		= VCO.Dom.create('div', 'vco-slider-container-mask', this._el.container);
-		this._el.background 				= VCO.Dom.create('div', 'vco-slider-background vco-animate', this._el.container); 
+		this._el.background 				= VCO.Dom.create('div', 'vco-slider-background', this._el.container); 
 		this._el.slider_container			= VCO.Dom.create('div', 'vco-slider-container vcoanimate', this._el.slider_container_mask);
 		this._el.slider_item_container		= VCO.Dom.create('div', 'vco-slider-item-container', this._el.slider_container);
 		
@@ -7561,12 +7416,6 @@ VCO.StorySlider = VCO.Class.extend({
 });
 
 
-
-
-/* **********************************************
-     Begin Leaflet.js
-********************************************** */
-
 var oldL = window.L,
     L = {};
 
@@ -7589,12 +7438,6 @@ L.noConflict = function () {
 };
 
 window.L = L;
-
-
-/* **********************************************
-     Begin Util.js
-********************************************** */
-
 /*
  * L.Util contains various utility functions used throughout Leaflet code.
  */
@@ -7777,12 +7620,6 @@ L.extend = L.Util.extend;
 L.bind = L.Util.bind;
 L.stamp = L.Util.stamp;
 L.setOptions = L.Util.setOptions;
-
-
-/* **********************************************
-     Begin Class.js
-********************************************** */
-
 /*
  * L.Class powers the OOP facilities of the library.
  * Thanks to John Resig and Dean Edwards for inspiration!
@@ -7889,12 +7726,6 @@ L.Class.addInitHook = function (fn) { // (Function) || (String, args...)
 	this.prototype._initHooks = this.prototype._initHooks || [];
 	this.prototype._initHooks.push(init);
 };
-
-
-/* **********************************************
-     Begin Events.js
-********************************************** */
-
 /*
  * L.Mixin.Events is used to add custom events functionality to Leaflet classes.
  */
@@ -8073,12 +7904,6 @@ L.Mixin.Events.on = L.Mixin.Events.addEventListener;
 L.Mixin.Events.off = L.Mixin.Events.removeEventListener;
 L.Mixin.Events.once = L.Mixin.Events.addOneTimeEventListener;
 L.Mixin.Events.fire = L.Mixin.Events.fireEvent;
-
-
-/* **********************************************
-     Begin Browser.js
-********************************************** */
-
 /*
  * L.Browser handles different browser and feature detections for internal Leaflet use.
  */
@@ -8176,12 +8001,6 @@ L.Mixin.Events.fire = L.Mixin.Events.fireEvent;
 	};
 
 }());
-
-
-/* **********************************************
-     Begin Point.js
-********************************************** */
-
 /*
  * L.Point represents a point with x and y coordinates.
  */
@@ -8301,12 +8120,6 @@ L.point = function (x, y, round) {
 	}
 	return new L.Point(x, y, round);
 };
-
-
-/* **********************************************
-     Begin Bounds.js
-********************************************** */
-
 /*
  * L.Bounds represents a rectangular area on the screen in pixel coordinates.
  */
@@ -8402,12 +8215,6 @@ L.bounds = function (a, b) { // (Bounds) or (Point, Point) or (Point[])
 	}
 	return new L.Bounds(a, b);
 };
-
-
-/* **********************************************
-     Begin Transformation.js
-********************************************** */
-
 /*
  * L.Transformation is an utility class to perform simple point transformations through a 2d-matrix.
  */
@@ -8439,12 +8246,6 @@ L.Transformation.prototype = {
 		        (point.y / scale - this._d) / this._c);
 	}
 };
-
-
-/* **********************************************
-     Begin DomUtil.js
-********************************************** */
-
 /*
  * L.DomUtil contains various utility functions for working with DOM.
  */
@@ -8734,12 +8535,6 @@ L.DomUtil.TRANSITION_END =
 		}
 	});
 })();
-
-
-/* **********************************************
-     Begin LatLng.js
-********************************************** */
-
 /*
  * L.LatLng represents a geographical point with latitude and longitude coordinates.
  */
@@ -8838,12 +8633,6 @@ L.latLng = function (a, b) { // (LatLng) or ([Number, Number]) or (Number, Numbe
 	}
 	return new L.LatLng(a, b);
 };
-
-
-
-/* **********************************************
-     Begin LatLngBounds.js
-********************************************** */
 
 /*
  * L.LatLngBounds represents a rectangular area on the map in geographical coordinates.
@@ -9001,23 +8790,11 @@ L.latLngBounds = function (a, b) { // (LatLngBounds) or (LatLng, LatLng)
 	}
 	return new L.LatLngBounds(a, b);
 };
-
-
-/* **********************************************
-     Begin Projection.js
-********************************************** */
-
 /*
  * L.Projection contains various geographical projections used by CRS classes.
  */
 
 L.Projection = {};
-
-
-/* **********************************************
-     Begin Projection.SphericalMercator.js
-********************************************** */
-
 /*
  * Spherical Mercator is the most popular map projection, used by EPSG:3857 CRS used by default.
  */
@@ -9045,12 +8822,6 @@ L.Projection.SphericalMercator = {
 		return new L.LatLng(lat, lng);
 	}
 };
-
-
-/* **********************************************
-     Begin Projection.LonLat.js
-********************************************** */
-
 /*
  * Simple equirectangular (Plate Carree) projection, used by CRS like EPSG:4326 and Simple.
  */
@@ -9064,12 +8835,6 @@ L.Projection.LonLat = {
 		return new L.LatLng(point.y, point.x);
 	}
 };
-
-
-/* **********************************************
-     Begin CRS.js
-********************************************** */
-
 /*
  * L.CRS is a base object for all defined CRS (Coordinate Reference Systems) in Leaflet.
  */
@@ -9102,12 +8867,6 @@ L.CRS = {
 		return L.point(s, s);
 	}
 };
-
-
-/* **********************************************
-     Begin CRS.Simple.js
-********************************************** */
-
 /*
  * A simple CRS that can be used for flat non-Earth maps like panoramas or game maps.
  */
@@ -9120,12 +8879,6 @@ L.CRS.Simple = L.extend({}, L.CRS, {
 		return Math.pow(2, zoom);
 	}
 });
-
-
-/* **********************************************
-     Begin CRS.EPSG3857.js
-********************************************** */
-
 /*
  * L.CRS.EPSG3857 (Spherical Mercator) is the most common CRS for web mapping
  * and is used by Leaflet by default.
@@ -9147,12 +8900,6 @@ L.CRS.EPSG3857 = L.extend({}, L.CRS, {
 L.CRS.EPSG900913 = L.extend({}, L.CRS.EPSG3857, {
 	code: 'EPSG:900913'
 });
-
-
-/* **********************************************
-     Begin CRS.EPSG4326.js
-********************************************** */
-
 /*
  * L.CRS.EPSG4326 is a CRS popular among advanced GIS specialists.
  */
@@ -9163,12 +8910,6 @@ L.CRS.EPSG4326 = L.extend({}, L.CRS, {
 	projection: L.Projection.LonLat,
 	transformation: new L.Transformation(1 / 360, 0.5, -1 / 360, 0.5)
 });
-
-
-/* **********************************************
-     Begin Map.js
-********************************************** */
-
 /*
  * L.Map is the central class of the API - it is used to create a map.
  */
@@ -9979,12 +9720,6 @@ L.Map = L.Class.extend({
 L.map = function (id, options) {
 	return new L.Map(id, options);
 };
-
-
-/* **********************************************
-     Begin DomEvent.js
-********************************************** */
-
 /*
  * L.DomEvent contains functions for working with DOM events.
  */
@@ -10223,12 +9958,6 @@ L.DomEvent = {
 
 L.DomEvent.on = L.DomEvent.addListener;
 L.DomEvent.off = L.DomEvent.removeListener;
-
-
-/* **********************************************
-     Begin Draggable.js
-********************************************** */
-
 /*
  * L.Draggable allows you to add dragging capabilities to any element. Supports mobile devices too.
  */
@@ -10364,12 +10093,6 @@ L.Draggable = L.Class.extend({
 		this._moving = false;
 	}
 });
-
-
-/* **********************************************
-     Begin Handler.js
-********************************************** */
-
 /*
 	L.Handler is a base class for handler classes that are used internally to inject
 	interaction features like dragging to classes like Map and Marker.
@@ -10398,12 +10121,6 @@ L.Handler = L.Class.extend({
 		return !!this._enabled;
 	}
 });
-
-
-/* **********************************************
-     Begin Control.js
-********************************************** */
-
 /*
  * L.Control is a base class for implementing map controls. Handles positioning.
  * All other controls extend from this class.
@@ -10521,12 +10238,6 @@ L.Map.include({
 		this._container.removeChild(this._controlContainer);
 	}
 });
-
-
-/* **********************************************
-     Begin TileLayer.js
-********************************************** */
-
 /*
  * L.TileLayer is used for standard xyz-numbered tile layers.
  */
@@ -11125,12 +10836,6 @@ L.TileLayer = L.Class.extend({
 L.tileLayer = function (url, options) {
 	return new L.TileLayer(url, options);
 };
-
-
-/* **********************************************
-     Begin TileLayer.Canvas.js
-********************************************** */
-
 /*
  * L.TileLayer.Canvas is a class that you can use as a base for creating
  * dynamically drawn Canvas-based tile layers.
@@ -11192,12 +10897,6 @@ L.TileLayer.Canvas = L.TileLayer.extend({
 L.tileLayer.canvas = function (options) {
 	return new L.TileLayer.Canvas(options);
 };
-
-
-/* **********************************************
-     Begin ImageOverlay.js
-********************************************** */
-
 /*
  * L.ImageOverlay is used to overlay images over the map (to specific geographical bounds).
  */
@@ -11339,12 +11038,6 @@ L.ImageOverlay = L.Class.extend({
 L.imageOverlay = function (url, bounds, options) {
 	return new L.ImageOverlay(url, bounds, options);
 };
-
-
-/* **********************************************
-     Begin Icon.js
-********************************************** */
-
 /*
  * L.Icon is an image-based icon class that you can use with L.Marker for custom markers.
  */
@@ -11443,12 +11136,6 @@ L.Icon = L.Class.extend({
 L.icon = function (options) {
 	return new L.Icon(options);
 };
-
-
-/* **********************************************
-     Begin Icon.Default.js
-********************************************** */
-
 /*
  * L.Icon.Default is the blue marker icon used by default in Leaflet.
  */
@@ -11500,12 +11187,6 @@ L.Icon.Default.imagePath = (function () {
 		}
 	}
 }());
-
-
-/* **********************************************
-     Begin Marker.js
-********************************************** */
-
 /*
  * L.Marker is used to display clickable/draggable icons on the map.
  */
@@ -11824,12 +11505,6 @@ L.Marker = L.Class.extend({
 L.marker = function (latlng, options) {
 	return new L.Marker(latlng, options);
 };
-
-
-/* **********************************************
-     Begin DivIcon.js
-********************************************** */
-
 /*
  * L.DivIcon is a lightweight HTML-based icon class (as opposed to the image-based L.Icon)
  * to use with L.Marker.
@@ -11875,12 +11550,6 @@ L.DivIcon = L.Icon.extend({
 L.divIcon = function (options) {
 	return new L.DivIcon(options);
 };
-
-
-/* **********************************************
-     Begin LayerGroup.js
-********************************************** */
-
 /*
  * L.LayerGroup is a class to combine several layers into one so that
  * you can manipulate the group (e.g. add/remove it) as one layer.
@@ -11996,12 +11665,6 @@ L.LayerGroup = L.Class.extend({
 L.layerGroup = function (layers) {
 	return new L.LayerGroup(layers);
 };
-
-
-/* **********************************************
-     Begin FeatureGroup.js
-********************************************** */
-
 /*
  * L.FeatureGroup extends L.LayerGroup by introducing mouse events and additional methods
  * shared between a group of interactive layers (like vectors or markers).
@@ -12100,12 +11763,6 @@ L.FeatureGroup = L.LayerGroup.extend({
 L.featureGroup = function (layers) {
 	return new L.FeatureGroup(layers);
 };
-
-
-/* **********************************************
-     Begin Path.js
-********************************************** */
-
 /*
  * L.Path is a base class for rendering vector paths on a map. Inherited by Polyline, Circle, etc.
  */
@@ -12225,12 +11882,6 @@ L.Map.include({
 		this._pathViewport = new L.Bounds(min, max);
 	}
 });
-
-
-/* **********************************************
-     Begin Path.SVG.js
-********************************************** */
-
 /*
  * Extends L.Path with SVG-specific rendering code.
  */
@@ -12461,12 +12112,6 @@ L.Map.include({
 		}
 	}
 });
-
-
-/* **********************************************
-     Begin Path.Canvas.js
-********************************************** */
-
 /*
  * Vector rendering for all browsers that support canvas.
  */
@@ -12664,12 +12309,6 @@ L.Map.include((L.Path.SVG && !window.L_PREFER_CANVAS) || !L.Browser.canvas ? {} 
 		root.getContext('2d').translate(-min.x, -min.y);
 	}
 });
-
-
-/* **********************************************
-     Begin LineUtil.js
-********************************************** */
-
 /*
  * L.LineUtil contains different utility functions for line segments
  * and polylines (clipping, simplification, distances, etc.)
@@ -12872,12 +12511,6 @@ L.LineUtil = {
 		return sqDist ? dx * dx + dy * dy : new L.Point(x, y);
 	}
 };
-
-
-/* **********************************************
-     Begin Polyline.js
-********************************************** */
-
 /*
  * L.Polyline is used to display polylines on a map.
  */
@@ -13042,12 +12675,6 @@ L.Polyline = L.Path.extend({
 L.polyline = function (latlngs, options) {
 	return new L.Polyline(latlngs, options);
 };
-
-
-/* **********************************************
-     Begin PolyUtil.js
-********************************************** */
-
 /*
  * L.PolyUtil contains utility functions for polygons (clipping, etc.).
  */
@@ -13103,12 +12730,6 @@ L.PolyUtil.clipPolygon = function (points, bounds) {
 
 	return points;
 };
-
-
-/* **********************************************
-     Begin Polygon.js
-********************************************** */
-
 /*
  * L.Polygon is used to display polygons on a map.
  */
@@ -13201,12 +12822,6 @@ L.Polygon = L.Polyline.extend({
 L.polygon = function (latlngs, options) {
 	return new L.Polygon(latlngs, options);
 };
-
-
-/* **********************************************
-     Begin MultiPoly.js
-********************************************** */
-
 /*
  * Contains L.MultiPolyline and L.MultiPolygon layers.
  */
@@ -13264,12 +12879,6 @@ L.polygon = function (latlngs, options) {
 		return new L.MultiPolygon(latlngs, options);
 	};
 }());
-
-
-/* **********************************************
-     Begin Rectangle.js
-********************************************** */
-
 /*
  * L.Rectangle extends Polygon and creates a rectangle when passed a LatLngBounds object.
  */
@@ -13297,12 +12906,6 @@ L.Rectangle = L.Polygon.extend({
 L.rectangle = function (latLngBounds, options) {
 	return new L.Rectangle(latLngBounds, options);
 };
-
-
-/* **********************************************
-     Begin Circle.js
-********************************************** */
-
 /*
  * L.Circle is a circle overlay (with a certain radius in meters).
  */
@@ -13401,12 +13004,6 @@ L.Circle = L.Path.extend({
 L.circle = function (latlng, radius, options) {
 	return new L.Circle(latlng, radius, options);
 };
-
-
-/* **********************************************
-     Begin CircleMarker.js
-********************************************** */
-
 /*
  * L.CircleMarker is a circle overlay with a permanent pixel radius.
  */
@@ -13452,12 +13049,6 @@ L.CircleMarker = L.Circle.extend({
 L.circleMarker = function (latlng, options) {
 	return new L.CircleMarker(latlng, options);
 };
-
-
-/* **********************************************
-     Begin Polyline.Canvas.js
-********************************************** */
-
 /*
  * Extends L.Polyline to be able to manually detect clicks on Canvas-rendered polylines.
  */
@@ -13488,12 +13079,6 @@ L.Polyline.include(!L.Path.CANVAS ? {} : {
 		return false;
 	}
 });
-
-
-/* **********************************************
-     Begin Map.Drag.js
-********************************************** */
-
 /*
  * L.Handler.MapDrag is used to make the map draggable (with panning inertia), enabled by default.
  */
@@ -13646,12 +13231,6 @@ L.Map.Drag = L.Handler.extend({
 });
 
 L.Map.addInitHook('addHandler', 'dragging', L.Map.Drag);
-
-
-/* **********************************************
-     Begin Map.DoubleClickZoom.js
-********************************************** */
-
 /*
  * L.Handler.DoubleClickZoom is used to handle double-click zoom on the map, enabled by default.
  */
@@ -13682,12 +13261,6 @@ L.Map.DoubleClickZoom = L.Handler.extend({
 });
 
 L.Map.addInitHook('addHandler', 'doubleClickZoom', L.Map.DoubleClickZoom);
-
-
-/* **********************************************
-     Begin Map.ScrollWheelZoom.js
-********************************************** */
-
 /*
  * L.Handler.ScrollWheelZoom is used by L.Map to enable mouse scroll wheel zoom on the map.
  */
@@ -13750,12 +13323,6 @@ L.Map.ScrollWheelZoom = L.Handler.extend({
 });
 
 L.Map.addInitHook('addHandler', 'scrollWheelZoom', L.Map.ScrollWheelZoom);
-
-
-/* **********************************************
-     Begin DomEvent.DoubleTap.js
-********************************************** */
-
 /*
  * Extends the event handling code with double tap support for mobile browsers.
  */
@@ -13860,12 +13427,6 @@ L.extend(L.DomEvent, {
 		return this;
 	}
 });
-
-
-/* **********************************************
-     Begin DomEvent.Pointer.js
-********************************************** */
-
 /*
  * Extends L.DomEvent to provide touch support for Internet Explorer and Windows-based devices.
  */
@@ -14021,12 +13582,6 @@ L.extend(L.DomEvent, {
 		return this;
 	}
 });
-
-
-/* **********************************************
-     Begin Map.TouchZoom.js
-********************************************** */
-
 /*
  * L.Handler.TouchZoom is used by L.Map to add pinch zoom on supported mobile browsers.
  */
@@ -14154,12 +13709,6 @@ L.Map.TouchZoom = L.Handler.extend({
 });
 
 L.Map.addInitHook('addHandler', 'touchZoom', L.Map.TouchZoom);
-
-
-/* **********************************************
-     Begin Map.Tap.js
-********************************************** */
-
 /*
  * L.Map.Tap is used to enable mobile hacks like quick taps and long hold.
  */
@@ -14267,12 +13816,6 @@ L.Map.Tap = L.Handler.extend({
 if (L.Browser.touch && !L.Browser.pointer) {
 	L.Map.addInitHook('addHandler', 'tap', L.Map.Tap);
 }
-
-
-/* **********************************************
-     Begin Control.Zoom.js
-********************************************** */
-
 /*
  * L.Control.Zoom is used for the default zoom buttons on the map.
  */
@@ -14366,12 +13909,6 @@ L.Map.addInitHook(function () {
 L.control.zoom = function (options) {
 	return new L.Control.Zoom(options);
 };
-
-
-
-/* **********************************************
-     Begin Control.Attribution.js
-********************************************** */
 
 /*
  * L.Control.Attribution is used for displaying attribution on the map (added by default).
@@ -14494,12 +14031,6 @@ L.Map.addInitHook(function () {
 L.control.attribution = function (options) {
 	return new L.Control.Attribution(options);
 };
-
-
-/* **********************************************
-     Begin PosAnimation.js
-********************************************** */
-
 /*
  * L.PosAnimation is used by Leaflet internally for pan animations.
  */
@@ -14594,12 +14125,6 @@ L.PosAnimation = L.Class.extend({
 	}
 
 });
-
-
-/* **********************************************
-     Begin Map.PanAnimation.js
-********************************************** */
-
 /*
  * Extends L.Map to handle panning animations.
  */
@@ -14698,12 +14223,6 @@ L.Map.include({
 		return true;
 	}
 });
-
-
-/* **********************************************
-     Begin PosAnimation.Timer.js
-********************************************** */
-
 /*
  * L.PosAnimation fallback implementation that powers Leaflet pan animations
  * in browsers that don't support CSS3 Transitions.
@@ -14771,12 +14290,6 @@ L.PosAnimation = L.DomUtil.TRANSITION ? L.PosAnimation : L.PosAnimation.extend({
 		return 1 - Math.pow(1 - t, this._easeOutPower);
 	}
 });
-
-
-/* **********************************************
-     Begin Map.ZoomAnimation.js
-********************************************** */
-
 /*
  * Extends L.Map to handle zoom animations.
  */
@@ -14879,12 +14392,6 @@ L.Map.include(!L.DomUtil.TRANSITION ? {} : {
 		}
 	}
 });
-
-
-/* **********************************************
-     Begin TileLayer.Anim.js
-********************************************** */
-
 /*
 	Zoom animation logic for L.TileLayer.
 */
@@ -14990,12 +14497,6 @@ L.TileLayer.include({
 		}
 	}
 });
-
-
-/* **********************************************
-     Begin VCO.Leaflet.TileLayer.Zoomify.js
-********************************************** */
-
 /*
  * L.TileLayer.Zoomify display Zoomify tiles with Leaflet
  * Modified from https://github.com/turban/Leaflet.Zoomify
@@ -15140,13 +14641,7 @@ L.TileLayer.Zoomify = L.TileLayer.extend({
 
 L.tileLayer.zoomify = function (url, options) {
 	return new L.TileLayer.Zoomify(url, options);
-};
-
-/* **********************************************
-     Begin VCO.Leaflet.MiniMap.js
-********************************************** */
-
-/*
+};/*
 	https://github.com/Norkart/Leaflet-MiniMap
 	
 */
@@ -15467,12 +14962,6 @@ L.Map.addInitHook(function() {
 L.control.minimap = function(options) {
     return new L.Control.MiniMap(options);
 };
-
-
-/* **********************************************
-     Begin VCO.TileLayer.Stamen.js
-********************************************** */
-
 /*	VCO.TyleLayer.Stamen
 	Makes Stamen Map tiles available
 	http://maps.stamen.com/
@@ -15655,12 +15144,6 @@ L.control.minimap = function(options) {
 	}
 
 })(typeof exports === "undefined" ? this : exports);
-
-
-/* **********************************************
-     Begin VCO.MapMarker.js
-********************************************** */
-
 /*	VCO.MapMarker
 	Creates a marker. Takes a data object and
 	populates the marker with content.
@@ -15809,12 +15292,6 @@ VCO.MapMarker = VCO.Class.extend({
 	}
 	
 });
-
-
-/* **********************************************
-     Begin VCO.Map.js
-********************************************** */
-
 /*	VCO.Map
 	Makes a Map
 
@@ -15932,6 +15409,12 @@ VCO.Map = VCO.Class.extend({
 		
 		// Timer
 		this.timer = null;
+		
+		// Touchpad Events
+		this.touch_scale = 1;
+		this.scroll = {
+			start_time: null
+		};
 		
 		// Merge Data and Options
 		VCO.Util.mergeData(this.options, options);
@@ -16339,7 +15822,50 @@ VCO.Map = VCO.Class.extend({
 		this.fire("loaded", this.data);
 	},
 	
+	_onWheel: function(e) {
+		var self = this;
+		
+		if (e.ctrlKey) {
+			var s = Math.exp(-e.deltaY/100);
+			this.touch_scale *= s;
+		} 
+		
+		if (!this.scroll.start_time) {
+			this.scroll.start_time = +new Date();
+		};
+		
+		var time_left = Math.max(40 - (+new Date() - this.scroll.start_time), 0);
+		
+		clearTimeout(this.scroll.timer);
+		
+		this.scroll.timer = setTimeout(function() {
+			self._scollZoom();
+		}, time_left);
+		
+		e.preventDefault();
+		e.stopPropagation(e);
+	},
 	
+	_scollZoom: function(e) {
+		var self = this,
+			current_zoom = this._getMapZoom();
+			
+		this.scroll.start_time = null;
+		//VCO.DomUtil.addClass(this._el.container, 'vco-map-touch-zoom');
+		clearTimeout(this.scroll.timer);
+		clearTimeout(this.scroll.timer_done);
+		
+		this.scroll.timer_done = setTimeout(function() {
+			self._scollZoomDone();
+		}, 1000);
+		
+		this.zoomTo(Math.round(current_zoom * this.touch_scale));
+	},
+	
+	_scollZoomDone: function(e) {
+		//VCO.DomUtil.removeClass(this._el.container, 'vco-map-touch-zoom');
+		this.touch_scale = 1;
+	},
 	
 	/*	Private Methods
 	================================================== */
@@ -16380,16 +15906,16 @@ VCO.Map = VCO.Class.extend({
 	},
 	
 	_initEvents: function() {
+		var self = this;
 		
+		this._el.map.addEventListener('wheel', function(e) {
+			self._onWheel(e);
+		});
+		
+		//this.on("wheel", this._onWheel, this);
 	}
 	
-});
-
-/* **********************************************
-     Begin VCO.MapMarker.Leaflet.js
-********************************************** */
-
-/*	VCO.MapMarker.Leaflet
+});/*	VCO.MapMarker.Leaflet
 	Produces a marker for Leaflet Maps
 ================================================== */
 
@@ -16496,12 +16022,6 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 	}
 	
 });
-
-
-/* **********************************************
-     Begin VCO.Map.Leaflet.js
-********************************************** */
-
 /*	VCO.Map.Leaflet
 	Creates a Map using Leaflet
 ================================================== */
@@ -16550,6 +16070,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 			this._line.setStyle({opacity:0});
 		}
 
+		
 		
 	},
 	
@@ -17156,13 +16677,7 @@ L.TileLayer.include({
 	getTiles: function() {
 		return this._tiles;
 	}
-});
-
-/* **********************************************
-     Begin VCO.StoryMap.js
-********************************************** */
-
-/*	StoryMap
+});/*	StoryMap
 	Designed and built by Zach Wise at VéritéCo
 
 	This Source Code Form is subject to the terms of the Mozilla Public
@@ -17406,9 +16921,18 @@ VCO.StoryMap = VCO.Class.extend({
 	
 	/*	Private Methods
 	================================================== */
-	initialize: function (elem, data, options) {
+	initialize: function (elem, data, options,listeners) {
+		for (key in listeners) {
+			var callbacks = listeners[key];
+			if (typeof(callbacks) == 'function') {
+				this.on(key,callbacks);
+			} else {
+				for (var idx in callbacks) {
+					this.on(key,callbacks[idx]);
+				}
+			}
+		}
 		var self = this;
-		
 		// Version
 		this.version = "0.1.16";
 		
