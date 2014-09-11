@@ -108,9 +108,11 @@ VCO.Media.YouTube = VCO.Media.extend({
 				playerVars: {
 					enablejsapi:		1,
 					color: 				'white',
+					autohide: 			1,
 					showinfo:			0,
 					theme:				'light',
 					start:				this.media_id.start,
+					fs: 				0,
 					rel:				0
 				},
 				videoId: this.media_id.id,
@@ -135,7 +137,8 @@ VCO.Media.YouTube = VCO.Media.extend({
 	================================================== */
 	onPlayerReady: function(e) {
 		this.youtube_loaded = true;
-		
+		this._el.content_item = document.getElementById(this._el.content_item.id);
+		this.onMediaLoaded();
 	},
 	
 	onStateChange: function(e) {
