@@ -444,7 +444,7 @@ function gdrive_folder_create(parent, title, callback) {
     if (parent) {
         metadata['parents'] = [parent];
     }
-    var request = gapiRequest('POST', metadata, GDRIVE_FOLDER_MIME_TYPE);
+    var request = gapiRequest('POST', metadata, "application/json");
     gdrive_exec(request, callback);
 }
 
