@@ -2,7 +2,6 @@
 	Produces image assets.
 	Takes a data object and populates a dom object
 ================================================== */
-// TODO Add link
 
 VCO.Media.Image = VCO.Media.extend({
 	
@@ -11,10 +10,25 @@ VCO.Media.Image = VCO.Media.extend({
 	/*	Load the media
 	================================================== */
 	_loadMedia: function() {
+		var self = this;
 		// Loading Message
 		this.message.updateMessage(VCO.Language.messages.loading + " " + this.options.media_name);
 		
-		this._el.content_item				= VCO.Dom.create("img", "vco-media-item vco-media-image vco-media-shadow", this._el.content);
+		// Link
+		if (this.data.link) {
+			this._el.content_link 				= VCO.Dom.create("a", "", this._el.content);
+			this._el.content_link.href 			= this.data.link;
+			this._el.content_link.target 		= "_blank";
+			this._el.content_item				= VCO.Dom.create("img", "vco-media-item vco-media-image vco-media-shadow", this._el.content_link);
+		} else {
+			this._el.content_item				= VCO.Dom.create("img", "vco-media-item vco-media-image vco-media-shadow", this._el.content);
+		}
+		
+		// Media Loaded Event
+		this._el.content_item.addEventListener('load', function(e) {
+			self.onMediaLoaded();
+		});
+		
 		this._el.content_item.src			= this.data.url;
 		
 		this.onLoaded();
@@ -25,6 +39,7 @@ VCO.Media.Image = VCO.Media.extend({
 		
 		if(VCO.Browser.firefox) {
 			this._el.content_item.style.maxWidth = (this.options.width/2) - 40 + "px";
+			this._el.content_item.style.width = "auto";
 		}
 	}
 	
