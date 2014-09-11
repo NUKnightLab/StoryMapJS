@@ -3,7 +3,8 @@ VCO.Language = {
     lang: "fr",
     messages: {
         loading: "Chargement",
-        wikipedia: "Extrait de Wikipédia, l'encyclopédie libre"
+        wikipedia: "Extrait de Wikipédia, l'encyclopédie libre",
+		start: 				"Explore"
     },
     buttons: {
         map_overview:      "Vue d'ensemble de la carte",

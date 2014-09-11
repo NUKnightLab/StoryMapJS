@@ -3,7 +3,8 @@ VCO.Language = {
   lang: "sv",
   messages: {
     loading: "Laddar",
-    wikipedia: "Från Wikipedia, den fria encyklopedin"
+    wikipedia: "Från Wikipedia, den fria encyklopedin",
+	start: 				"Explore"
   },
   buttons: {
     map_overview: "Översiktskarta",

@@ -2560,7 +2560,8 @@ VCO.Language = {
 	lang: 					"en",
 	messages: {
 		loading: 			"Loading",
-		wikipedia: 			"From Wikipedia, the free encyclopedia"
+		wikipedia: 			"From Wikipedia, the free encyclopedia",
+		start: 				"Explore"
 	},
 	buttons: {
 	    map_overview: 		"Map Overview",
@@ -3343,14 +3344,19 @@ VCO.DomMixins = {
 	
 	/*	Animate to Position
 	================================================== */
-	animatePosition: function(pos, el) {
+	animatePosition: function(pos, el, use_percent) {
 		var ani = {
 			duration: 	this.options.duration,
 			easing: 	this.options.ease
 		};
 		for (var name in pos) {
 			if (pos.hasOwnProperty(name)) {
-				ani[name] = pos[name] + "px";
+				if (use_percent) {
+					ani[name] = pos[name] + "%";
+				} else {
+					ani[name] = pos[name] + "px";
+				}
+				
 			}
 		}
 		
@@ -5709,7 +5715,8 @@ VCO.Media.Text = VCO.Class.extend({
 		content_container: {},
 		content: {},
 		headline: {},
-		date: {}
+		date: {},
+		start_btn: {}
 	},
 	
 	// Data
@@ -6704,6 +6711,7 @@ VCO.SlideNav = VCO.Class.extend({
 		};
 	
 		this.animator = null;
+		this.animator_position = null;
 		
 		// Merge Data and Options
 		VCO.Util.mergeData(this.options, options);
@@ -6739,6 +6747,49 @@ VCO.SlideNav = VCO.Class.extend({
 		} else {
 			this._el.content_container.className = 'vco-slidenav-content-container';
 		}
+	},
+	
+	/*	Position
+	================================================== */
+	updatePosition: function(pos, use_percent, duration, ease, start_value) {
+		trace("updatePosition")
+		var ani = {
+			duration: 	duration,
+			easing: 	ease
+		};
+		var _start_value = start_value;
+		
+		for (var name in pos) {
+			if (pos.hasOwnProperty(name)) {
+				if (use_percent) {
+					ani[name] = pos[name] + "%";
+				} else {
+					ani[name] = pos[name] + "px";
+				}
+			
+			}
+		}
+		
+		trace(ani)
+		//this.animatePosition(pos, this._el.container, use_percent);
+		if (this.animator_position) {
+			this.animator_position.stop();
+		}
+		
+		var prop_to_set;
+		if (ani.right) {
+			prop_to_set = "right";
+		} else {
+			prop_to_set = "left";
+		}
+		if (use_percent) {
+			this._el.container.style[prop_to_set] = _start_value + "%";
+		} else {
+			this._el.container.style[prop_to_set] = _start_value + "px";
+		}
+		trace("start_value " + _start_value)
+		this.animator_position = VCO.Animate(this._el.container, ani);
+
 	},
 	
 	/*	Events
@@ -6895,6 +6946,7 @@ VCO.StorySlider = VCO.Class.extend({
 		this.goTo(this.options.start_at_slide);
 		
 		this._onLoaded();
+		this._introInterface();
 	},
 	
 	/*	Public
@@ -7264,6 +7316,14 @@ VCO.StorySlider = VCO.Class.extend({
 		this.goTo(this.current_slide, true, true);
 	},
 	
+	_introInterface: function() {
+		//this._slides[0].
+		trace("_introInterface");
+		
+		this._nav.next.updatePosition({right:"130"}, false, this.options.duration, this.options.ease*3, -100);
+		this._nav.previous.updatePosition({left:"-100"}, true, this.options.duration, this.options.ease*3, "100");
+	},
+	
 	/*	Init
 	================================================== */
 	_initLayout: function () {
@@ -7404,6 +7464,7 @@ VCO.StorySlider = VCO.Class.extend({
 	_onLoaded: function() {
 		this.fire("loaded", this.data);
 		this.fire("title", {title:this._slides[0].title});
+		
 	}
 	
 	

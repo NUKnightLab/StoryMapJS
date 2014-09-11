@@ -8,7 +8,8 @@ VCO.Media.Text = VCO.Class.extend({
 		content_container: {},
 		content: {},
 		headline: {},
-		date: {}
+		date: {},
+		start_btn: {}
 	},
 	
 	// Data

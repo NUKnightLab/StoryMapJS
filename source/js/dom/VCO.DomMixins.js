@@ -36,14 +36,19 @@ VCO.DomMixins = {
 	
 	/*	Animate to Position
 	================================================== */
-	animatePosition: function(pos, el) {
+	animatePosition: function(pos, el, use_percent) {
 		var ani = {
 			duration: 	this.options.duration,
 			easing: 	this.options.ease
 		};
 		for (var name in pos) {
 			if (pos.hasOwnProperty(name)) {
-				ani[name] = pos[name] + "px";
+				if (use_percent) {
+					ani[name] = pos[name] + "%";
+				} else {
+					ani[name] = pos[name] + "px";
+				}
+				
 			}
 		}
 		

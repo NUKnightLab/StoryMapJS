@@ -111,6 +111,7 @@ VCO.StorySlider = VCO.Class.extend({
 		this.goTo(this.options.start_at_slide);
 		
 		this._onLoaded();
+		this._introInterface();
 	},
 	
 	/*	Public
@@ -480,6 +481,14 @@ VCO.StorySlider = VCO.Class.extend({
 		this.goTo(this.current_slide, true, true);
 	},
 	
+	_introInterface: function() {
+		//this._slides[0].
+		trace("_introInterface");
+		
+		this._nav.next.updatePosition({right:"130"}, false, this.options.duration, this.options.ease*3, -100);
+		this._nav.previous.updatePosition({left:"-100"}, true, this.options.duration, this.options.ease*3, "100");
+	},
+	
 	/*	Init
 	================================================== */
 	_initLayout: function () {
@@ -620,6 +629,7 @@ VCO.StorySlider = VCO.Class.extend({
 	_onLoaded: function() {
 		this.fire("loaded", this.data);
 		this.fire("title", {title:this._slides[0].title});
+		
 	}
 	
 	

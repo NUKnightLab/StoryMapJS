@@ -3,7 +3,8 @@ VCO.Language = {
     lang: "no",
     messages: {
         loading: "Laster inn",
-        wikipedia: "fra Wikipedia, den frie encyklopedi"
+        wikipedia: "fra Wikipedia, den frie encyklopedi",
+		start: 				"Explore"
     },
     buttons: {
         map_overview:      "Se oversiktskart",
