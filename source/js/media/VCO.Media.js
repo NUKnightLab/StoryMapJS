@@ -70,7 +70,11 @@ VCO.Media = VCO.Class.extend({
 		VCO.Util.mergeData(this.data, data);
 		
 		this._el.container = VCO.Dom.create("div", "vco-media");
-		this._el.container.id = this.data.uniqueid;
+		
+		if (this.data.uniqueid) {
+			this._el.container.id = this.data.uniqueid;
+		}
+		
 		
 		this._initLayout();
 		
@@ -108,7 +112,7 @@ VCO.Media = VCO.Class.extend({
 		if (this._state.loaded) {
 			this._updateMediaDisplay(layout);
 			
-			if (!VCO.Browser.mobile) {
+			if (!VCO.Browser.mobile && layout != "portrait") {
 				this._el.content_item.style.maxHeight = (this.options.height/2) + "px";
 			}
 			
@@ -117,7 +121,10 @@ VCO.Media = VCO.Class.extend({
 			if (VCO.Browser.firefox) {
 				if (this._el.content_item.offsetWidth > this._el.content_item.offsetHeight) {
 					this._el.content_item.style.width = "100%";
+					this._el.content_item.style.maxWidth = "100%";
+					
 				}
+				this._el.content_item.style.maxHeight = "none"; 
 			}
 			
 			if (this._state.media_loaded) {

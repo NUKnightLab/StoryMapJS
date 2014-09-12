@@ -37,8 +37,8 @@ VCO.Media.Image = VCO.Media.extend({
 	_updateMediaDisplay: function(layout) {
 		
 		
-		if(VCO.Browser.firefox) {
-			this._el.content_item.style.maxWidth = (this.options.width/2) - 40 + "px";
+		if(VCO.Browser.firefox) { 
+			//this._el.content_item.style.maxWidth = (this.options.width/2) - 40 + "px";
 			this._el.content_item.style.width = "auto";
 		}
 	}
