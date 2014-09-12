@@ -1,4 +1,4 @@
-/* storymapjs - v0.3.7 - 2014-09-04
+/* storymapjs - v2014-09-12-20-24-30 - 2014-09-12
  * Copyright (c) 2014 Northwestern University Knight Lab 
  */
 
@@ -2610,7 +2610,8 @@ VCO.Language = {
 	lang: 					"en",
 	messages: {
 		loading: 			"Loading",
-		wikipedia: 			"From Wikipedia, the free encyclopedia"
+		wikipedia: 			"From Wikipedia, the free encyclopedia",
+		start: 				"Start Exploring"
 	},
 	buttons: {
 	    map_overview: 		"Map Overview",
@@ -3417,14 +3418,19 @@ VCO.DomMixins = {
 	
 	/*	Animate to Position
 	================================================== */
-	animatePosition: function(pos, el) {
+	animatePosition: function(pos, el, use_percent) {
 		var ani = {
 			duration: 	this.options.duration,
 			easing: 	this.options.ease
 		};
 		for (var name in pos) {
 			if (pos.hasOwnProperty(name)) {
-				ani[name] = pos[name] + "px";
+				if (use_percent) {
+					ani[name] = pos[name] + "%";
+				} else {
+					ani[name] = pos[name] + "px";
+				}
+				
 			}
 		}
 		
@@ -5095,6 +5101,7 @@ VCO.Media = VCO.Class.extend({
 			content_container: {},
 			content: {},
 			content_item: {},
+			content_link: {},
 			caption: null,
 			credit: null,
 			parent: {},
@@ -5116,7 +5123,9 @@ VCO.Media = VCO.Class.extend({
 		
 		// State
 		this._state = {
-			loaded: false
+			loaded: false,
+			show_meta: false,
+			media_loaded: false
 		};
 	
 		// Data
@@ -5143,7 +5152,11 @@ VCO.Media = VCO.Class.extend({
 		VCO.Util.mergeData(this.data, data);
 		
 		this._el.container = VCO.Dom.create("div", "vco-media");
-		this._el.container.id = this.data.uniqueid;
+		
+		if (this.data.uniqueid) {
+			this._el.container.id = this.data.uniqueid;
+		}
+		
 		
 		this._initLayout();
 		
@@ -5171,16 +5184,17 @@ VCO.Media = VCO.Class.extend({
 			
 			//this._state.loaded = true;
 		}
-		
-		
-		
+	},
+	
+	loadingMessage: function() {
+		this.message.updateMessage(this._('loading') + " " + this.options.media_name);
 	},
 	
 	updateMediaDisplay: function(layout) {
 		if (this._state.loaded) {
 			this._updateMediaDisplay(layout);
 			
-			if (!VCO.Browser.mobile) {
+			if (!VCO.Browser.mobile && layout != "portrait") {
 				this._el.content_item.style.maxHeight = (this.options.height/2) + "px";
 			}
 			
@@ -5189,9 +5203,23 @@ VCO.Media = VCO.Class.extend({
 			if (VCO.Browser.firefox) {
 				if (this._el.content_item.offsetWidth > this._el.content_item.offsetHeight) {
 					this._el.content_item.style.width = "100%";
+					this._el.content_item.style.maxWidth = "100%";
+					
+				}
+				
+				if (layout == "portrait") {
+					this._el.content_item.style.maxHeight = "none"; 
 				}
 			}
 			
+			if (this._state.media_loaded) {
+				if (this._el.credit) {
+					this._el.credit.style.width		= this._el.content_item.offsetWidth + "px";
+				}
+				if (this._el.caption) {
+					this._el.caption.style.width		= this._el.content_item.offsetWidth + "px";
+				}
+			}
 			
 		}
 	},
@@ -5258,17 +5286,28 @@ VCO.Media = VCO.Class.extend({
 		this.updateDisplay();
 	},
 	
-	showMeta: function() {
-		
+	onMediaLoaded: function(e) {
+		this._state.media_loaded = true;
+		this.fire("media_loaded", this.data);
+		if (this._el.credit) {
+			this._el.credit.style.width		= this._el.content_item.offsetWidth + "px";
+		}
+		if (this._el.caption) {
+			this._el.caption.style.width		= this._el.content_item.offsetWidth + "px";
+		}
+	},
+	
+	showMeta: function(credit, caption) {
+		this._state.show_meta = true;
 		// Credit
-		if (this.data.credit && this.data.credit != "") {
+		if (this.data.credit && this.data.credit != "" && !this._el.credit) {
 			this._el.credit					= VCO.Dom.create("div", "vco-credit", this._el.content_container);
 			this._el.credit.innerHTML		= this.data.credit;
 			this.options.credit_height 		= this._el.credit.offsetHeight;
 		}
 		
 		// Caption
-		if (this.data.caption && this.data.caption != "") {
+		if (this.data.caption && this.data.caption != "" && !this._el.caption) {
 			this._el.caption				= VCO.Dom.create("div", "vco-caption", this._el.content_container);
 			this._el.caption.innerHTML		= this.data.caption;
 			this.options.caption_height 	= this._el.caption.offsetHeight;
@@ -5411,11 +5450,16 @@ VCO.Media.Flickr = VCO.Media.extend({
 		// Create Dom element
 		this._el.content_item	= VCO.Dom.create("img", "vco-media-item vco-media-image vco-media-flickr vco-media-shadow", this._el.content);
 		
+		// Media Loaded Event
+		this._el.content_item.addEventListener('load', function(e) {
+			self.onMediaLoaded();
+		});
+		
 		// Get Media ID
 		this.establishMediaID();
 		
 		// API URL
-		api_url = "http://api.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key=" + this.options.api_key_flickr + "&photo_id=" + this.media_id + "&format=json&jsoncallback=?";
+		api_url = "https://api.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key=" + this.options.api_key_flickr + "&photo_id=" + this.media_id + "&format=json&jsoncallback=?";
 		
 		// API Call
 		VCO.getJSON(api_url, function(d) {
@@ -5508,9 +5552,21 @@ VCO.Media.Instagram = VCO.Media.extend({
 		// Get Media ID
 		this.media_id = this.data.url.split("\/p\/")[1].split("/")[0];
 		
-		this._el.content_item				= VCO.Dom.create("img", "vco-media-item vco-media-image vco-media-instagram vco-media-shadow", this._el.content);
-		this._el.content_item.src			= "http://instagr.am/p/" + this.media_id + "/media/?size=" + this.sizes(this._el.content.offsetWidth);
+		// Link
+		this._el.content_link 				= VCO.Dom.create("a", "", this._el.content);
+		this._el.content_link.href 			= this.data.url;
+		this._el.content_link.target 		= "_blank";
 		
+		// Photo
+		this._el.content_item				= VCO.Dom.create("img", "vco-media-item vco-media-image vco-media-instagram vco-media-shadow", this._el.content_link);
+		
+		// Media Loaded Event
+		this._el.content_item.addEventListener('load', function(e) {
+			self.onMediaLoaded();
+		});
+		
+		// Set source
+		this._el.content_item.src			= "http://instagr.am/p/" + this.media_id + "/media/?size=" + this.sizes(this._el.content.offsetWidth);
 		
 		this.onLoaded();
 		
@@ -5715,7 +5771,6 @@ VCO.Media.IFrame = VCO.Media.extend({
 	Produces image assets.
 	Takes a data object and populates a dom object
 ================================================== */
-// TODO Add link
 
 VCO.Media.Image = VCO.Media.extend({
 	
@@ -5724,10 +5779,25 @@ VCO.Media.Image = VCO.Media.extend({
 	/*	Load the media
 	================================================== */
 	_loadMedia: function() {
+		var self = this;
 		// Loading Message
 		this.message.updateMessage(VCO.Language.messages.loading + " " + this.options.media_name);
 		
-		this._el.content_item				= VCO.Dom.create("img", "vco-media-item vco-media-image vco-media-shadow", this._el.content);
+		// Link
+		if (this.data.link) {
+			this._el.content_link 				= VCO.Dom.create("a", "", this._el.content);
+			this._el.content_link.href 			= this.data.link;
+			this._el.content_link.target 		= "_blank";
+			this._el.content_item				= VCO.Dom.create("img", "vco-media-item vco-media-image vco-media-shadow", this._el.content_link);
+		} else {
+			this._el.content_item				= VCO.Dom.create("img", "vco-media-item vco-media-image vco-media-shadow", this._el.content);
+		}
+		
+		// Media Loaded Event
+		this._el.content_item.addEventListener('load', function(e) {
+			self.onMediaLoaded();
+		});
+		
 		this._el.content_item.src			= this.data.url;
 		
 		this.onLoaded();
@@ -5736,8 +5806,9 @@ VCO.Media.Image = VCO.Media.extend({
 	_updateMediaDisplay: function(layout) {
 		
 		
-		if(VCO.Browser.firefox) {
-			this._el.content_item.style.maxWidth = (this.options.width/2) - 40 + "px";
+		if(VCO.Browser.firefox) { 
+			//this._el.content_item.style.maxWidth = (this.options.width/2) - 40 + "px";
+			this._el.content_item.style.width = "auto";
 		}
 	}
 	
@@ -5848,7 +5919,8 @@ VCO.Media.Text = VCO.Class.extend({
 		content_container: {},
 		content: {},
 		headline: {},
-		date: {}
+		date: {},
+		start_btn: {}
 	},
 	
 	// Data
@@ -5965,6 +6037,7 @@ VCO.Media.Text = VCO.Class.extend({
 			
 			this._el.content				= VCO.Dom.create("div", "vco-text-content", this._el.content_container);
 			this._el.content.innerHTML		= text_content;
+			
 		}
 		
 		
@@ -6491,9 +6564,11 @@ VCO.Media.YouTube = VCO.Media.extend({
 				playerVars: {
 					enablejsapi:		1,
 					color: 				'white',
+					autohide: 			1,
 					showinfo:			0,
 					theme:				'light',
 					start:				this.media_id.start,
+					fs: 				0,
 					rel:				0
 				},
 				videoId: this.media_id.id,
@@ -6501,7 +6576,7 @@ VCO.Media.YouTube = VCO.Media.extend({
 					onReady: 			function() {
 						self.onPlayerReady();
 						// After Loaded
-						self.onLoaded();
+						//self.onLoaded();
 					},
 					'onStateChange': 	self.onStateChange
 				}
@@ -6512,13 +6587,18 @@ VCO.Media.YouTube = VCO.Media.extend({
 			}, 1000);
 		}
 		
+		this.onLoaded();
+		
 	},
 	
 	/*	Events
 	================================================== */
 	onPlayerReady: function(e) {
-		this.youtube_loaded = true;
 		
+		this.youtube_loaded = true;
+		this._el.content_item = document.getElementById(this._el.content_item.id);
+		this.onMediaLoaded();
+		this.onLoaded();
 	},
 	
 	onStateChange: function(e) {
@@ -6581,7 +6661,8 @@ VCO.Slide = VCO.Class.extend({
 			scroll_container: {},
 			background: {},
 			content_container: {},
-			content: {}
+			content: {},
+			call_to_action: null
 		};
 	
 		// Components
@@ -6710,9 +6791,17 @@ VCO.Slide = VCO.Class.extend({
 		this._el.container.scrollTop = 0;
 	},
 	
+	addCallToAction: function(str) {
+		this._el.call_to_action = VCO.Dom.create("div", "vco-slide-calltoaction", this._el.content_container);
+		this._el.call_to_action.innerHTML = "<span class='vco-slide-calltoaction-button-text'>" + str + "</span>";
+		VCO.DomEvent.addListener(this._el.call_to_action, 'click', this._onCallToAction, this);
+	},
+	
 	/*	Events
 	================================================== */
-
+	_onCallToAction: function(e) {
+		this.fire("call_to_action", e);
+	},
 	
 	/*	Private Methods
 	================================================== */
@@ -6810,6 +6899,7 @@ VCO.Slide = VCO.Class.extend({
 	
 	// Update Display
 	_updateDisplay: function(width, height, layout) {
+		var pad_left, pad_right, new_width;
 		
 		if (width) {
 			this.options.width 					= width;
@@ -6818,24 +6908,33 @@ VCO.Slide = VCO.Class.extend({
 		}
 		
 		if(VCO.Browser.mobile && (this.options.width <= this.options.skinny_size)) {
-			this._el.content.style.paddingLeft 	= 0 + "px";
-			this._el.content.style.paddingRight = 0 + "px";
-			this._el.content.style.width		= this.options.width - 0 + "px";
+			pad_left 	= 0 + "px";
+			pad_right 	= 0 + "px";
+			new_width	= this.options.width - 0 + "px";
 		} else if (layout == "landscape") {
-			this._el.content.style.paddingLeft 	= 40 + "px";
-			this._el.content.style.paddingRight = 75 + "px";
-			this._el.content.style.width		= this.options.width - (75 + 40) + "px";
+			pad_left 	= 40 + "px";
+			pad_right	= 75 + "px";
+			new_width	= this.options.width - (75 + 40) + "px";
 		
 		} else if (this.options.width <= this.options.skinny_size) {
-			this._el.content.style.paddingLeft 	= this.options.slide_padding_lr + "px";
-			this._el.content.style.paddingRight = this.options.slide_padding_lr + "px";
-			this._el.content.style.width		= this.options.width - (this.options.slide_padding_lr * 2) + "px";
+			pad_left 	= this.options.slide_padding_lr + "px";
+			pad_right 	= this.options.slide_padding_lr + "px";
+			new_width	= this.options.width - (this.options.slide_padding_lr * 2) + "px";
 		} else {
-			this._el.content.style.paddingLeft 	= this.options.slide_padding_lr + "px";
-			this._el.content.style.paddingRight = this.options.slide_padding_lr + "px";
-			this._el.content.style.width		= this.options.width - (this.options.slide_padding_lr * 2) + "px";
+			pad_left	= this.options.slide_padding_lr + "px";
+			pad_right 	= this.options.slide_padding_lr + "px";
+			new_width	= this.options.width - (this.options.slide_padding_lr * 2) + "px";
 		}
 		
+		this._el.content.style.paddingLeft 	= pad_left;
+		this._el.content.style.paddingRight = pad_right;
+		this._el.content.style.width		= new_width;
+		
+		if (this._el.call_to_action) {
+			this._el.call_to_action.style.paddingLeft 	= pad_left;
+			this._el.call_to_action.style.paddingRight = pad_right;
+			this._el.call_to_action.style.width		= new_width;
+		}
 		
 		if (height) {
 			this.options.height = height;
@@ -6900,6 +6999,7 @@ VCO.SlideNav = VCO.Class.extend({
 		};
 	
 		this.animator = null;
+		this.animator_position = null;
 		
 		// Merge Data and Options
 		VCO.Util.mergeData(this.options, options);
@@ -6934,6 +7034,57 @@ VCO.SlideNav = VCO.Class.extend({
 			this._el.content_container.className = 'vco-slidenav-content-container vco-slidenav-inverted';
 		} else {
 			this._el.content_container.className = 'vco-slidenav-content-container';
+		}
+	},
+	
+	/*	Position
+	================================================== */
+	updatePosition: function(pos, use_percent, duration, ease, start_value, return_to_default) {
+		var self = this,
+			ani = {
+				duration: 	duration,
+				easing: 	ease,
+				complete: function() {
+					self._onUpdatePositionComplete(return_to_default);
+				}
+			};
+		var _start_value = start_value;
+		
+		for (var name in pos) {
+			if (pos.hasOwnProperty(name)) {
+				if (use_percent) {
+					ani[name] = pos[name] + "%";
+				} else {
+					ani[name] = pos[name] + "px";
+				}
+			
+			}
+		}
+		
+		if (this.animator_position) {
+			this.animator_position.stop();
+		}
+		
+		var prop_to_set;
+		if (ani.right) {
+			prop_to_set = "right";
+		} else {
+			prop_to_set = "left";
+		}
+		if (use_percent) {
+			this._el.container.style[prop_to_set] = _start_value + "%";
+		} else {
+			this._el.container.style[prop_to_set] = _start_value + "px";
+		}
+		
+		this.animator_position = VCO.Animate(this._el.container, ani);
+
+	},
+	
+	_onUpdatePositionComplete: function(return_to_default) {
+		if (return_to_default) {
+			this._el.container.style.left = "";
+			this._el.container.style.right = "";
 		}
 	},
 	
@@ -7038,6 +7189,9 @@ VCO.StorySlider = VCO.Class.extend({
 		// Current Slide
 		this.current_slide = 0;
 		
+		// Current Background Color
+		this.current_bg_color = null;
+		
 		// Data Object
 		this.data = {};
 		
@@ -7073,6 +7227,7 @@ VCO.StorySlider = VCO.Class.extend({
 		
 		// Animation Object
 		this.animator = null;
+		this.animator_background = null;
 		
 		// Merge Data and Options
 		VCO.Util.mergeData(this.options, options);
@@ -7093,6 +7248,7 @@ VCO.StorySlider = VCO.Class.extend({
 		this.goTo(this.options.start_at_slide);
 		
 		this._onLoaded();
+		this._introInterface();
 	},
 	
 	/*	Public
@@ -7311,63 +7467,107 @@ VCO.StorySlider = VCO.Class.extend({
 	},
 	
 	changeBackground: function(bg) {
-		
-		// TODO Add opacity fade out/in transition
+		var self = this,
+			do_animation = false;
 		
 		var bg_color = {r:256, g:256, b:256},
 			bg_color_rgb,
 			bg_percent_start 	= this.options.slide_default_fade,
 			bg_percent_end 		= "15%",
 			bg_alpha_end 		= "0.87",
-			bg_css 				= "";
+			bg_css 				= "",
+			bg_old 				= this._el.background.getAttribute('style');
 		
 		if (bg.color_value) {
-			bg_color		= VCO.Util.hexToRgb(bg.color_value);
+			bg_color = VCO.Util.hexToRgb(bg.color_value);
 		} else {
 			bg_color = this.options.default_bg_color;
 		}
 		
 		
-		bg_color_rgb 	= bg_color.r + "," + bg_color.g + "," + bg_color.b;
-		this._el.background.style.backgroundImage = "none";
+		// Stop animation
+		if (this.animator_background) {
+			this.animator_background.stop();
+		}
 		
-		if (this.options.layout == "landscape") {
+		bg_color_rgb 	= bg_color.r + "," + bg_color.g + "," + bg_color.b;
+		
+		if (!this.current_bg_color || this.current_bg_color != bg_color_rgb) {
+			this.current_bg_color = bg_color_rgb;
+			do_animation = true;
+		} 
+		
+		
+		
+		if (do_animation) {
+
+			// Figure out CSS
+			if (this.options.layout == "landscape") {
 			
-			this._nav.next.setColor(false);
-			this._nav.previous.setColor(false);
-			
-			// If background is not white, less fade is better
-			if (bg_color.r < 255 && bg_color.g < 255 && bg_color.b < 255) {
-				bg_percent_start = "15%";
-			}
-			
-			if (bg.image) {
-				bg_percent_start = "0%";
-				
-			} 
-			
-			bg_css 	+= "background-image: -webkit-linear-gradient(left, color-stop(rgba(" + bg_color_rgb + ",0.0001 ) " + bg_percent_start + "), color-stop(rgba(" + bg_color_rgb + "," + bg_alpha_end + ") " + bg_percent_end + "));";
-			bg_css 	+= "background-image: linear-gradient(to right, rgba(" + bg_color_rgb + ",0.0001 ) "+ bg_percent_start + ", rgba(" + bg_color_rgb + "," + bg_alpha_end + ") " + bg_percent_end + ");";
-			bg_css 	+= "background-repeat: repeat-x;";
-			bg_css 	+= "filter: e(%('progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=1)',argb(" + bg_color_rgb + ", 0.0001),argb(" + bg_color_rgb + ",0.80)));";
-			
-			this._el.background.setAttribute("style", bg_css);
-			
-		} else {
-			if (bg.color_value) {
-				this._el.background.style.backgroundColor = bg.color_value;
-			} else {
-				this._el.background.style.backgroundColor = "#FFF";
-			}
-			
-			if (bg_color.r < 255 && bg_color.g < 255 && bg_color.b < 255 || bg.image) {
-				this._nav.next.setColor(true);
-				this._nav.previous.setColor(true);
-			} else {
 				this._nav.next.setColor(false);
 				this._nav.previous.setColor(false);
+			
+				// If background is not white, less fade is better
+				if (bg_color.r < 255 && bg_color.g < 255 && bg_color.b < 255) {
+					bg_percent_start = "15%";
+				}
+			
+				if (bg.image) {
+					bg_percent_start = "0%";
+				
+				} 
+				bg_css 	+= "opacity:0;"
+				bg_css 	+= "background-image: -webkit-linear-gradient(left, color-stop(rgba(" + bg_color_rgb + ",0.0001 ) " + bg_percent_start + "), color-stop(rgba(" + bg_color_rgb + "," + bg_alpha_end + ") " + bg_percent_end + "));";
+				bg_css 	+= "background-image: linear-gradient(to right, rgba(" + bg_color_rgb + ",0.0001 ) "+ bg_percent_start + ", rgba(" + bg_color_rgb + "," + bg_alpha_end + ") " + bg_percent_end + ");";
+				bg_css 	+= "background-repeat: repeat-x;";
+				bg_css 	+= "filter: e(%('progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=1)',argb(" + bg_color_rgb + ", 0.0001),argb(" + bg_color_rgb + ",0.80)));";
+			
+			
+			} else {
+				if (bg.color_value) {
+					bg_css 	+= 'background-color:' + bg.color_value + ";";
+				} else {
+					bg_css 	+= "background-color:#FFF;";
+				}
+			
+				if (bg_color.r < 255 && bg_color.g < 255 && bg_color.b < 255 || bg.image) {
+					this._nav.next.setColor(true);
+					this._nav.previous.setColor(true);
+				} else {
+					this._nav.next.setColor(false);
+					this._nav.previous.setColor(false);
+				}
 			}
+		
+			// FADE OUT IN
+			this.animator_background = VCO.Animate(this._el.background, {
+				opacity: 	0,
+				duration: 	this.options.duration/2,
+				easing: 	this.options.ease,
+				complete: 	function() {
+					self.fadeInBackground(bg_css);
+				}
+			});
 		}
+		
+		
+	},
+	
+	fadeInBackground: function(bg_css) {
+		if (this.animator_background) {
+			this.animator_background.stop();
+		}
+		
+		if (bg_css) {
+			this._el.background.setAttribute("style", bg_css);
+		}
+		
+		this.animator_background = VCO.Animate(this._el.background, {
+			opacity: 	1,
+			duration: 	this.options.duration/2,
+			easing: 	this.options.ease
+		});
+		
 	},
 	
 	/*	Private Methods
@@ -7411,11 +7611,29 @@ VCO.StorySlider = VCO.Class.extend({
 		for (var i = 0; i < this._slides.length; i++) {
 			this._slides[i].updateDisplay(this.options.width, this.options.height, _layout);
 			this._slides[i].setPosition({left:(this.slide_spacing * i), top:0});
-			
 		};
 		
 		// Go to the current slide
 		this.goTo(this.current_slide, true, true);
+	},
+	
+	_introInterface: function() {
+		
+		if (this.options.call_to_action) {
+			var _str = VCO.Language.messages.start;
+			if (this.options.call_to_action_text != "") {
+				_str = this.options.call_to_action_text;
+			}
+			this._slides[0].addCallToAction(_str);
+			this._slides[0].on('call_to_action', this.next, this);
+		}
+		
+		if (this.options.width <= this.options.skinny_size) {
+			
+		} else {
+			this._nav.next.updatePosition({right:"130"}, false, this.options.duration*3, this.options.ease, -100, true);
+			this._nav.previous.updatePosition({left:"-100"}, true, this.options.duration*3, this.options.ease, -200, true);
+		}
 	},
 	
 	/*	Init
@@ -7426,7 +7644,7 @@ VCO.StorySlider = VCO.Class.extend({
 		
 		// Create Layout
 		this._el.slider_container_mask		= VCO.Dom.create('div', 'vco-slider-container-mask', this._el.container);
-		this._el.background 				= VCO.Dom.create('div', 'vco-slider-background vco-animate', this._el.container); 
+		this._el.background 				= VCO.Dom.create('div', 'vco-slider-background', this._el.container); 
 		this._el.slider_container			= VCO.Dom.create('div', 'vco-slider-container vcoanimate', this._el.slider_container_mask);
 		this._el.slider_item_container		= VCO.Dom.create('div', 'vco-slider-item-container', this._el.slider_container);
 		
@@ -7558,6 +7776,7 @@ VCO.StorySlider = VCO.Class.extend({
 	_onLoaded: function() {
 		this.fire("loaded", this.data);
 		this.fire("title", {title:this._slides[0].title});
+		
 	}
 	
 	
@@ -15936,6 +16155,12 @@ VCO.Map = VCO.Class.extend({
 		// Timer
 		this.timer = null;
 		
+		// Touchpad Events
+		this.touch_scale = 1;
+		this.scroll = {
+			start_time: null
+		};
+		
 		// Merge Data and Options
 		VCO.Util.mergeData(this.options, options);
 		VCO.Util.mergeData(this.data, data);
@@ -16342,7 +16567,51 @@ VCO.Map = VCO.Class.extend({
 		this.fire("loaded", this.data);
 	},
 	
+	_onWheel: function(e) {
+		// borrowed from http://jsbin.com/qiyaseza/5/edit
+		var self = this;
+		
+		if (e.ctrlKey) {
+			var s = Math.exp(-e.deltaY/100);
+			this.touch_scale *= s;
+		} 
+		
+		if (!this.scroll.start_time) {
+			this.scroll.start_time = +new Date();
+		};
+		
+		var time_left = Math.max(40 - (+new Date() - this.scroll.start_time), 0);
+		
+		clearTimeout(this.scroll.timer);
+		
+		this.scroll.timer = setTimeout(function() {
+			self._scollZoom();
+		}, time_left);
+		
+		e.preventDefault();
+		e.stopPropagation(e);
+	},
 	
+	_scollZoom: function(e) {
+		var self = this,
+			current_zoom = this._getMapZoom();
+			
+		this.scroll.start_time = null;
+		//VCO.DomUtil.addClass(this._el.container, 'vco-map-touch-zoom');
+		clearTimeout(this.scroll.timer);
+		clearTimeout(this.scroll.timer_done);
+		
+		this.scroll.timer_done = setTimeout(function() {
+			self._scollZoomDone();
+		}, 1000);
+		
+		this.zoomTo(Math.round(current_zoom * this.touch_scale));
+	},
+	
+	_scollZoomDone: function(e) {
+		//VCO.DomUtil.removeClass(this._el.container, 'vco-map-touch-zoom');
+		this.touch_scale = 1;
+	},
 	
 	/*	Private Methods
 	================================================== */
@@ -16383,7 +16652,13 @@ VCO.Map = VCO.Class.extend({
 	},
 	
 	_initEvents: function() {
+		var self = this;
 		
+		this._el.map.addEventListener('wheel', function(e) {
+			self._onWheel(e);
+		});
+		
+		//this.on("wheel", this._onWheel, this);
 	}
 	
 });
@@ -16553,6 +16828,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 			this._line.setStyle({opacity:0});
 		}
 
+		
 		
 	},
 	
@@ -17470,6 +17746,8 @@ VCO.StoryMap = VCO.Class.extend({
 			map_center_offset:  	null, 			// takes object {top:0,left:0}
 			less_bounce: 			false, 			// Less map bounce when calculating zoom, false is good when there are clusters of tightly grouped markers
 			start_at_slide: 		0,
+			call_to_action: 		true,
+			call_to_action_text: 	"",
 			menubar_height: 		0,
 			skinny_size: 			650,
 			relative_date: 			false, 			// Use momentjs to show a relative date from the slide.text.date.created_time field
