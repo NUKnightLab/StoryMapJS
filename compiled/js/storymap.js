@@ -2561,7 +2561,7 @@ VCO.Language = {
 	messages: {
 		loading: 			"Loading",
 		wikipedia: 			"From Wikipedia, the free encyclopedia",
-		start: 				"Explore"
+		start: 				"Start Exploring"
 	},
 	buttons: {
 	    map_overview: 		"Map Overview",
@@ -5024,7 +5024,11 @@ VCO.Media = VCO.Class.extend({
 		VCO.Util.mergeData(this.data, data);
 		
 		this._el.container = VCO.Dom.create("div", "vco-media");
-		this._el.container.id = this.data.uniqueid;
+		
+		if (this.data.uniqueid) {
+			this._el.container.id = this.data.uniqueid;
+		}
+		
 		
 		this._initLayout();
 		
@@ -5062,7 +5066,7 @@ VCO.Media = VCO.Class.extend({
 		if (this._state.loaded) {
 			this._updateMediaDisplay(layout);
 			
-			if (!VCO.Browser.mobile) {
+			if (!VCO.Browser.mobile && layout != "portrait") {
 				this._el.content_item.style.maxHeight = (this.options.height/2) + "px";
 			}
 			
@@ -5071,7 +5075,10 @@ VCO.Media = VCO.Class.extend({
 			if (VCO.Browser.firefox) {
 				if (this._el.content_item.offsetWidth > this._el.content_item.offsetHeight) {
 					this._el.content_item.style.width = "100%";
+					this._el.content_item.style.maxWidth = "100%";
+					
 				}
+				this._el.content_item.style.maxHeight = "none"; 
 			}
 			
 			if (this._state.media_loaded) {
@@ -5620,8 +5627,8 @@ VCO.Media.Image = VCO.Media.extend({
 	_updateMediaDisplay: function(layout) {
 		
 		
-		if(VCO.Browser.firefox) {
-			this._el.content_item.style.maxWidth = (this.options.width/2) - 40 + "px";
+		if(VCO.Browser.firefox) { 
+			//this._el.content_item.style.maxWidth = (this.options.width/2) - 40 + "px";
 			this._el.content_item.style.width = "auto";
 		}
 	}
@@ -5833,6 +5840,7 @@ VCO.Media.Text = VCO.Class.extend({
 			
 			this._el.content				= VCO.Dom.create("div", "vco-text-content", this._el.content_container);
 			this._el.content.innerHTML		= text_content;
+			
 		}
 		
 		
@@ -6329,7 +6337,7 @@ VCO.Media.YouTube = VCO.Media.extend({
 					onReady: 			function() {
 						self.onPlayerReady();
 						// After Loaded
-						self.onLoaded();
+						//self.onLoaded();
 					},
 					'onStateChange': 	self.onStateChange
 				}
@@ -6340,14 +6348,18 @@ VCO.Media.YouTube = VCO.Media.extend({
 			}, 1000);
 		}
 		
+		this.onLoaded();
+		
 	},
 	
 	/*	Events
 	================================================== */
 	onPlayerReady: function(e) {
+		
 		this.youtube_loaded = true;
 		this._el.content_item = document.getElementById(this._el.content_item.id);
 		this.onMediaLoaded();
+		this.onLoaded();
 	},
 	
 	onStateChange: function(e) {
@@ -6398,7 +6410,8 @@ VCO.Slide = VCO.Class.extend({
 			scroll_container: {},
 			background: {},
 			content_container: {},
-			content: {}
+			content: {},
+			call_to_action: null
 		};
 	
 		// Components
@@ -6527,9 +6540,17 @@ VCO.Slide = VCO.Class.extend({
 		this._el.container.scrollTop = 0;
 	},
 	
+	addCallToAction: function(str) {
+		this._el.call_to_action = VCO.Dom.create("div", "vco-slide-calltoaction", this._el.content_container);
+		this._el.call_to_action.innerHTML = "<span class='vco-slide-calltoaction-button-text'>" + str + "</span>";
+		VCO.DomEvent.addListener(this._el.call_to_action, 'click', this._onCallToAction, this);
+	},
+	
 	/*	Events
 	================================================== */
-
+	_onCallToAction: function(e) {
+		this.fire("call_to_action", e);
+	},
 	
 	/*	Private Methods
 	================================================== */
@@ -6627,6 +6648,7 @@ VCO.Slide = VCO.Class.extend({
 	
 	// Update Display
 	_updateDisplay: function(width, height, layout) {
+		var pad_left, pad_right, new_width;
 		
 		if (width) {
 			this.options.width 					= width;
@@ -6635,24 +6657,33 @@ VCO.Slide = VCO.Class.extend({
 		}
 		
 		if(VCO.Browser.mobile && (this.options.width <= this.options.skinny_size)) {
-			this._el.content.style.paddingLeft 	= 0 + "px";
-			this._el.content.style.paddingRight = 0 + "px";
-			this._el.content.style.width		= this.options.width - 0 + "px";
+			pad_left 	= 0 + "px";
+			pad_right 	= 0 + "px";
+			new_width	= this.options.width - 0 + "px";
 		} else if (layout == "landscape") {
-			this._el.content.style.paddingLeft 	= 40 + "px";
-			this._el.content.style.paddingRight = 75 + "px";
-			this._el.content.style.width		= this.options.width - (75 + 40) + "px";
+			pad_left 	= 40 + "px";
+			pad_right	= 75 + "px";
+			new_width	= this.options.width - (75 + 40) + "px";
 		
 		} else if (this.options.width <= this.options.skinny_size) {
-			this._el.content.style.paddingLeft 	= this.options.slide_padding_lr + "px";
-			this._el.content.style.paddingRight = this.options.slide_padding_lr + "px";
-			this._el.content.style.width		= this.options.width - (this.options.slide_padding_lr * 2) + "px";
+			pad_left 	= this.options.slide_padding_lr + "px";
+			pad_right 	= this.options.slide_padding_lr + "px";
+			new_width	= this.options.width - (this.options.slide_padding_lr * 2) + "px";
 		} else {
-			this._el.content.style.paddingLeft 	= this.options.slide_padding_lr + "px";
-			this._el.content.style.paddingRight = this.options.slide_padding_lr + "px";
-			this._el.content.style.width		= this.options.width - (this.options.slide_padding_lr * 2) + "px";
+			pad_left	= this.options.slide_padding_lr + "px";
+			pad_right 	= this.options.slide_padding_lr + "px";
+			new_width	= this.options.width - (this.options.slide_padding_lr * 2) + "px";
 		}
 		
+		this._el.content.style.paddingLeft 	= pad_left;
+		this._el.content.style.paddingRight = pad_right;
+		this._el.content.style.width		= new_width;
+		
+		if (this._el.call_to_action) {
+			this._el.call_to_action.style.paddingLeft 	= pad_left;
+			this._el.call_to_action.style.paddingRight = pad_right;
+			this._el.call_to_action.style.width		= new_width;
+		}
 		
 		if (height) {
 			this.options.height = height;
@@ -6751,12 +6782,15 @@ VCO.SlideNav = VCO.Class.extend({
 	
 	/*	Position
 	================================================== */
-	updatePosition: function(pos, use_percent, duration, ease, start_value) {
-		trace("updatePosition")
-		var ani = {
-			duration: 	duration,
-			easing: 	ease
-		};
+	updatePosition: function(pos, use_percent, duration, ease, start_value, return_to_default) {
+		var self = this,
+			ani = {
+				duration: 	duration,
+				easing: 	ease,
+				complete: function() {
+					self._onUpdatePositionComplete(return_to_default);
+				}
+			};
 		var _start_value = start_value;
 		
 		for (var name in pos) {
@@ -6770,8 +6804,6 @@ VCO.SlideNav = VCO.Class.extend({
 			}
 		}
 		
-		trace(ani)
-		//this.animatePosition(pos, this._el.container, use_percent);
 		if (this.animator_position) {
 			this.animator_position.stop();
 		}
@@ -6787,9 +6819,16 @@ VCO.SlideNav = VCO.Class.extend({
 		} else {
 			this._el.container.style[prop_to_set] = _start_value + "px";
 		}
-		trace("start_value " + _start_value)
+		
 		this.animator_position = VCO.Animate(this._el.container, ani);
 
+	},
+	
+	_onUpdatePositionComplete: function(return_to_default) {
+		if (return_to_default) {
+			this._el.container.style.left = "";
+			this._el.container.style.right = "";
+		}
 	},
 	
 	/*	Events
@@ -7309,7 +7348,6 @@ VCO.StorySlider = VCO.Class.extend({
 		for (var i = 0; i < this._slides.length; i++) {
 			this._slides[i].updateDisplay(this.options.width, this.options.height, _layout);
 			this._slides[i].setPosition({left:(this.slide_spacing * i), top:0});
-			
 		};
 		
 		// Go to the current slide
@@ -7317,11 +7355,22 @@ VCO.StorySlider = VCO.Class.extend({
 	},
 	
 	_introInterface: function() {
-		//this._slides[0].
-		trace("_introInterface");
 		
-		//this._nav.next.updatePosition({right:"130"}, false, this.options.duration, this.options.ease*3, -100);
-		//this._nav.previous.updatePosition({left:"-100"}, true, this.options.duration, this.options.ease*3, "100");
+		if (this.options.call_to_action) {
+			var _str = VCO.Language.messages.start;
+			if (this.options.call_to_action_text != "") {
+				_str = this.options.call_to_action_text;
+			}
+			this._slides[0].addCallToAction(_str);
+			this._slides[0].on('call_to_action', this.next, this);
+		}
+		
+		if (this.options.width <= this.options.skinny_size) {
+			
+		} else {
+			this._nav.next.updatePosition({right:"130"}, false, this.options.duration*3, this.options.ease, -100, true);
+			this._nav.previous.updatePosition({left:"-100"}, true, this.options.duration*3, this.options.ease, -200, true);
+		}
 	},
 	
 	/*	Init
@@ -15878,6 +15927,7 @@ VCO.Map = VCO.Class.extend({
 	},
 	
 	_onWheel: function(e) {
+		// borrowed from http://jsbin.com/qiyaseza/5/edit
 		var self = this;
 		
 		if (e.ctrlKey) {
@@ -17037,6 +17087,8 @@ VCO.StoryMap = VCO.Class.extend({
 			map_center_offset:  	null, 			// takes object {top:0,left:0}
 			less_bounce: 			false, 			// Less map bounce when calculating zoom, false is good when there are clusters of tightly grouped markers
 			start_at_slide: 		0,
+			call_to_action: 		true,
+			call_to_action_text: 	"",
 			menubar_height: 		0,
 			skinny_size: 			650,
 			relative_date: 			false, 			// Use momentjs to show a relative date from the slide.text.date.created_time field
