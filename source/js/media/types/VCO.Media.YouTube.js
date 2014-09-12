@@ -120,7 +120,7 @@ VCO.Media.YouTube = VCO.Media.extend({
 					onReady: 			function() {
 						self.onPlayerReady();
 						// After Loaded
-						self.onLoaded();
+						//self.onLoaded();
 					},
 					'onStateChange': 	self.onStateChange
 				}
@@ -131,14 +131,18 @@ VCO.Media.YouTube = VCO.Media.extend({
 			}, 1000);
 		}
 		
+		this.onLoaded();
+		
 	},
 	
 	/*	Events
 	================================================== */
 	onPlayerReady: function(e) {
+		
 		this.youtube_loaded = true;
 		this._el.content_item = document.getElementById(this._el.content_item.id);
 		this.onMediaLoaded();
+		this.onLoaded();
 	},
 	
 	onStateChange: function(e) {
