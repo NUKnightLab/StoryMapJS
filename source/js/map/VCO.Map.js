@@ -529,6 +529,7 @@ VCO.Map = VCO.Class.extend({
 	},
 	
 	_onWheel: function(e) {
+		// borrowed from http://jsbin.com/qiyaseza/5/edit
 		var self = this;
 		
 		if (e.ctrlKey) {
