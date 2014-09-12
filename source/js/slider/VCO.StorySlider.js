@@ -474,7 +474,6 @@ VCO.StorySlider = VCO.Class.extend({
 		for (var i = 0; i < this._slides.length; i++) {
 			this._slides[i].updateDisplay(this.options.width, this.options.height, _layout);
 			this._slides[i].setPosition({left:(this.slide_spacing * i), top:0});
-			
 		};
 		
 		// Go to the current slide
@@ -482,11 +481,22 @@ VCO.StorySlider = VCO.Class.extend({
 	},
 	
 	_introInterface: function() {
-		//this._slides[0].
-		trace("_introInterface");
 		
-		//this._nav.next.updatePosition({right:"130"}, false, this.options.duration, this.options.ease*3, -100);
-		//this._nav.previous.updatePosition({left:"-100"}, true, this.options.duration, this.options.ease*3, "100");
+		if (this.options.call_to_action) {
+			var _str = VCO.Language.messages.start;
+			if (this.options.call_to_action_text != "") {
+				_str = this.options.call_to_action_text;
+			}
+			this._slides[0].addCallToAction(_str);
+			this._slides[0].on('call_to_action', this.next, this);
+		}
+		
+		if (this.options.width <= this.options.skinny_size) {
+			
+		} else {
+			this._nav.next.updatePosition({right:"130"}, false, this.options.duration*3, this.options.ease, -100, true);
+			this._nav.previous.updatePosition({left:"-100"}, true, this.options.duration*3, this.options.ease, -200, true);
+		}
 	},
 	
 	/*	Init

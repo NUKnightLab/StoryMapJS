@@ -303,6 +303,8 @@ VCO.StoryMap = VCO.Class.extend({
 			map_center_offset:  	null, 			// takes object {top:0,left:0}
 			less_bounce: 			false, 			// Less map bounce when calculating zoom, false is good when there are clusters of tightly grouped markers
 			start_at_slide: 		0,
+			call_to_action: 		true,
+			call_to_action_text: 	"",
 			menubar_height: 		0,
 			skinny_size: 			650,
 			relative_date: 			false, 			// Use momentjs to show a relative date from the slide.text.date.created_time field

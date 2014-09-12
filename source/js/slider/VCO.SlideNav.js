@@ -76,12 +76,15 @@ VCO.SlideNav = VCO.Class.extend({
 	
 	/*	Position
 	================================================== */
-	updatePosition: function(pos, use_percent, duration, ease, start_value) {
-		trace("updatePosition")
-		var ani = {
-			duration: 	duration,
-			easing: 	ease
-		};
+	updatePosition: function(pos, use_percent, duration, ease, start_value, return_to_default) {
+		var self = this,
+			ani = {
+				duration: 	duration,
+				easing: 	ease,
+				complete: function() {
+					self._onUpdatePositionComplete(return_to_default);
+				}
+			};
 		var _start_value = start_value;
 		
 		for (var name in pos) {
@@ -95,8 +98,6 @@ VCO.SlideNav = VCO.Class.extend({
 			}
 		}
 		
-		trace(ani)
-		//this.animatePosition(pos, this._el.container, use_percent);
 		if (this.animator_position) {
 			this.animator_position.stop();
 		}
@@ -112,9 +113,16 @@ VCO.SlideNav = VCO.Class.extend({
 		} else {
 			this._el.container.style[prop_to_set] = _start_value + "px";
 		}
-		trace("start_value " + _start_value)
+		
 		this.animator_position = VCO.Animate(this._el.container, ani);
 
+	},
+	
+	_onUpdatePositionComplete: function(return_to_default) {
+		if (return_to_default) {
+			this._el.container.style.left = "";
+			this._el.container.style.right = "";
+		}
 	},
 	
 	/*	Events

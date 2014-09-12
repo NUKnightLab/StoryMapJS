@@ -19,7 +19,8 @@ VCO.Slide = VCO.Class.extend({
 			scroll_container: {},
 			background: {},
 			content_container: {},
-			content: {}
+			content: {},
+			call_to_action: null
 		};
 	
 		// Components
@@ -148,9 +149,17 @@ VCO.Slide = VCO.Class.extend({
 		this._el.container.scrollTop = 0;
 	},
 	
+	addCallToAction: function(str) {
+		this._el.call_to_action = VCO.Dom.create("div", "vco-slide-calltoaction", this._el.content_container);
+		this._el.call_to_action.innerHTML = "<span class='vco-slide-calltoaction-button-text'>" + str + "</span>";
+		VCO.DomEvent.addListener(this._el.call_to_action, 'click', this._onCallToAction, this);
+	},
+	
 	/*	Events
 	================================================== */
-
+	_onCallToAction: function(e) {
+		this.fire("call_to_action", e);
+	},
 	
 	/*	Private Methods
 	================================================== */
@@ -248,6 +257,7 @@ VCO.Slide = VCO.Class.extend({
 	
 	// Update Display
 	_updateDisplay: function(width, height, layout) {
+		var pad_left, pad_right, new_width;
 		
 		if (width) {
 			this.options.width 					= width;
@@ -256,24 +266,33 @@ VCO.Slide = VCO.Class.extend({
 		}
 		
 		if(VCO.Browser.mobile && (this.options.width <= this.options.skinny_size)) {
-			this._el.content.style.paddingLeft 	= 0 + "px";
-			this._el.content.style.paddingRight = 0 + "px";
-			this._el.content.style.width		= this.options.width - 0 + "px";
+			pad_left 	= 0 + "px";
+			pad_right 	= 0 + "px";
+			new_width	= this.options.width - 0 + "px";
 		} else if (layout == "landscape") {
-			this._el.content.style.paddingLeft 	= 40 + "px";
-			this._el.content.style.paddingRight = 75 + "px";
-			this._el.content.style.width		= this.options.width - (75 + 40) + "px";
+			pad_left 	= 40 + "px";
+			pad_right	= 75 + "px";
+			new_width	= this.options.width - (75 + 40) + "px";
 		
 		} else if (this.options.width <= this.options.skinny_size) {
-			this._el.content.style.paddingLeft 	= this.options.slide_padding_lr + "px";
-			this._el.content.style.paddingRight = this.options.slide_padding_lr + "px";
-			this._el.content.style.width		= this.options.width - (this.options.slide_padding_lr * 2) + "px";
+			pad_left 	= this.options.slide_padding_lr + "px";
+			pad_right 	= this.options.slide_padding_lr + "px";
+			new_width	= this.options.width - (this.options.slide_padding_lr * 2) + "px";
 		} else {
-			this._el.content.style.paddingLeft 	= this.options.slide_padding_lr + "px";
-			this._el.content.style.paddingRight = this.options.slide_padding_lr + "px";
-			this._el.content.style.width		= this.options.width - (this.options.slide_padding_lr * 2) + "px";
+			pad_left	= this.options.slide_padding_lr + "px";
+			pad_right 	= this.options.slide_padding_lr + "px";
+			new_width	= this.options.width - (this.options.slide_padding_lr * 2) + "px";
 		}
 		
+		this._el.content.style.paddingLeft 	= pad_left;
+		this._el.content.style.paddingRight = pad_right;
+		this._el.content.style.width		= new_width;
+		
+		if (this._el.call_to_action) {
+			this._el.call_to_action.style.paddingLeft 	= pad_left;
+			this._el.call_to_action.style.paddingRight = pad_right;
+			this._el.call_to_action.style.width		= new_width;
+		}
 		
 		if (height) {
 			this.options.height = height;
