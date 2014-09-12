@@ -126,6 +126,7 @@ VCO.Media.Text = VCO.Class.extend({
 			
 			this._el.content				= VCO.Dom.create("div", "vco-text-content", this._el.content_container);
 			this._el.content.innerHTML		= text_content;
+			
 		}
 		
 		

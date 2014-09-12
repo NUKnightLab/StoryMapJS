@@ -41,7 +41,8 @@ html(lang="en")
 		script(src='js/storymap.js')
 		script.
 			var storymap = new VCO.StoryMap('storymap', 'examples/marktwain.json', {
-				
+				//start_at_slide:2
+				//call_to_action_text: "Just go"
 			});
 			window.onresize = function(event) {
 				storymap.updateDisplay();
