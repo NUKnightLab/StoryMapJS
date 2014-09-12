@@ -5078,7 +5078,10 @@ VCO.Media = VCO.Class.extend({
 					this._el.content_item.style.maxWidth = "100%";
 					
 				}
-				this._el.content_item.style.maxHeight = "none"; 
+				
+				if (layout == "portrait") {
+					this._el.content_item.style.maxHeight = "none"; 
+				}
 			}
 			
 			if (this._state.media_loaded) {
@@ -5169,14 +5172,14 @@ VCO.Media = VCO.Class.extend({
 	showMeta: function(credit, caption) {
 		this._state.show_meta = true;
 		// Credit
-		if (this.data.credit && this.data.credit != "") {
+		if (this.data.credit && this.data.credit != "" && !this._el.credit) {
 			this._el.credit					= VCO.Dom.create("div", "vco-credit", this._el.content_container);
 			this._el.credit.innerHTML		= this.data.credit;
 			this.options.credit_height 		= this._el.credit.offsetHeight;
 		}
 		
 		// Caption
-		if (this.data.caption && this.data.caption != "") {
+		if (this.data.caption && this.data.caption != "" && !this._el.caption) {
 			this._el.caption				= VCO.Dom.create("div", "vco-caption", this._el.content_container);
 			this._el.caption.innerHTML		= this.data.caption;
 			this.options.caption_height 	= this._el.caption.offsetHeight;
