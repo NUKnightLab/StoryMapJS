@@ -15936,6 +15936,8 @@ VCO.Map = VCO.Class.extend({
 		if (e.ctrlKey) {
 			var s = Math.exp(-e.deltaY/100);
 			this.touch_scale *= s;
+			e.preventDefault();
+			e.stopPropagation(e);
 		} 
 		
 		if (!this.scroll.start_time) {
@@ -15948,10 +15950,11 @@ VCO.Map = VCO.Class.extend({
 		
 		this.scroll.timer = setTimeout(function() {
 			self._scollZoom();
+			//e.preventDefault();
+			//e.stopPropagation(e);
 		}, time_left);
 		
-		e.preventDefault();
-		e.stopPropagation(e);
+		
 	},
 	
 	_scollZoom: function(e) {
