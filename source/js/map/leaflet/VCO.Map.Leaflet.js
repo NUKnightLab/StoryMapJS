@@ -65,7 +65,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		this._mini_map = new L.Control.MiniMap(this._tile_layer_mini, {
 			width: 				150,
 			height: 			100,
-			position: 			"bottomleft",
+			position: 			"topleft",
 			bounds_array: 		this.bounds_array,
 			zoomLevelFixed: 	this.zoom_min_max.min,
 			zoomAnimation: 		true,
