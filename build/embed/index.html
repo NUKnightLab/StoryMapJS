@@ -93,9 +93,6 @@
 		var params = parseQuerystring();
 		var storymap_url = decodeURIComponent(params['url']);
 
-		// proxy
-		trace(navigator.userAgent);
-
 		if(!!navigator.userAgent.match(/AppleWebKit\/.* Mobile\//)
 		|| !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/)
 		|| !!navigator.userAgent.toLowerCase().match(/msie [789]/)) {    
@@ -119,7 +116,7 @@
 		    trace('embed: storymap data loaded');
 
 		    if (d && d.storymap) {
-                PROPERTIES_TO_COPY = ['map_type', 'map_subdomains', 'map_as_image', 'use_custom_markers', 'map_background_color', 'language', 'zoomify', 'relative_date']
+                PROPERTIES_TO_COPY = ['map_type', 'map_subdomains', 'map_as_image', 'use_custom_markers', 'map_background_color', 'language', 'zoomify', 'relative_date', 'call_to_action_text']
                 for (var i = 0; i < PROPERTIES_TO_COPY.length; i++) {
                     if (d.storymap[PROPERTIES_TO_COPY[i]]) {
                         options[PROPERTIES_TO_COPY[i]] = d.storymap[PROPERTIES_TO_COPY[i]];
