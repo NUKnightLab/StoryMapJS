@@ -31,13 +31,14 @@
 		margin-top:10px;
 		font-size:12px;
 		color: lighten(@color-dark, 40%);
-		
+		/*
 		&:before {
 			content:'\2665';
 			margin-right:3px;
 			font-weight:normal;
 			font-size:14px;
 		}
+		*/
 		&:after {
 			content:'Likes';
 			margin-left:3px;
@@ -63,7 +64,8 @@
 		.vco-snapmap-instagram-posts,
 		.vco-snapmap-instagram-followed_by,
 		.vco-snapmap-instagram-follows,
-		 .vco-snapmap-instagram-website {
+		.vco-snapmap-instagram-website,
+		.vco-snapmap-instagram-website a {
 			display:inline-block;
 			font-family:@font-main;
 			font-weight:bold;
@@ -88,10 +90,12 @@
 			content:'Following';
 		}
 		
-		.vco-snapmap-instagram-website {
+		.vco-snapmap-instagram-website,
+		.vco-snapmap-instagram-website a {
 			font-weight:normal;
 			display:block;
 			margin:0;
+			color:#999;
 			&:after {
 				margin-left:0;
 				color:#999;
