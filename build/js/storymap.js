@@ -1,4 +1,4 @@
-/* storymapjs - v2014-09-12-20-24-30 - 2014-09-12
+/* storymapjs - v0.4.0 - 2014-09-16
  * Copyright (c) 2014 Northwestern University Knight Lab 
  */
 
@@ -5198,6 +5198,14 @@ VCO.Media = VCO.Class.extend({
 				this._el.content_item.style.maxHeight = (this.options.height/2) + "px";
 			}
 			
+			if (this._state.media_loaded) {
+				if (this._el.credit) {
+					this._el.credit.style.width		= "auto";
+				}
+				if (this._el.caption) {
+					this._el.caption.style.width	= "auto";
+				}
+			}
 			
 			// Fix for max-width issues in Firefox
 			if (VCO.Browser.firefox) {
@@ -5211,15 +5219,15 @@ VCO.Media = VCO.Class.extend({
 					this._el.content_item.style.maxHeight = "none"; 
 				}
 			}
-			
 			if (this._state.media_loaded) {
 				if (this._el.credit) {
 					this._el.credit.style.width		= this._el.content_item.offsetWidth + "px";
 				}
 				if (this._el.caption) {
-					this._el.caption.style.width		= this._el.content_item.offsetWidth + "px";
+					this._el.caption.style.width	= this._el.content_item.offsetWidth + "px";
 				}
 			}
+			
 			
 		}
 	},
@@ -16574,6 +16582,8 @@ VCO.Map = VCO.Class.extend({
 		if (e.ctrlKey) {
 			var s = Math.exp(-e.deltaY/100);
 			this.touch_scale *= s;
+			e.preventDefault();
+			e.stopPropagation(e);
 		} 
 		
 		if (!this.scroll.start_time) {
@@ -16586,10 +16596,11 @@ VCO.Map = VCO.Class.extend({
 		
 		this.scroll.timer = setTimeout(function() {
 			self._scollZoom();
+			//e.preventDefault();
+			//e.stopPropagation(e);
 		}, time_left);
 		
-		e.preventDefault();
-		e.stopPropagation(e);
+		
 	},
 	
 	_scollZoom: function(e) {
@@ -16847,7 +16858,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		this._mini_map = new L.Control.MiniMap(this._tile_layer_mini, {
 			width: 				150,
 			height: 			100,
-			position: 			"bottomleft",
+			position: 			"topleft",
 			bounds_array: 		this.bounds_array,
 			zoomLevelFixed: 	this.zoom_min_max.min,
 			zoomAnimation: 		true,
@@ -17746,7 +17757,7 @@ VCO.StoryMap = VCO.Class.extend({
 			map_center_offset:  	null, 			// takes object {top:0,left:0}
 			less_bounce: 			false, 			// Less map bounce when calculating zoom, false is good when there are clusters of tightly grouped markers
 			start_at_slide: 		0,
-			call_to_action: 		true,
+			call_to_action: 		false,
 			call_to_action_text: 	"",
 			menubar_height: 		0,
 			skinny_size: 			650,
