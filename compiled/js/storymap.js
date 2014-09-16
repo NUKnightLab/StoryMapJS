@@ -5070,6 +5070,14 @@ VCO.Media = VCO.Class.extend({
 				this._el.content_item.style.maxHeight = (this.options.height/2) + "px";
 			}
 			
+			if (this._state.media_loaded) {
+				if (this._el.credit) {
+					this._el.credit.style.width		= "auto";
+				}
+				if (this._el.caption) {
+					this._el.caption.style.width	= "auto";
+				}
+			}
 			
 			// Fix for max-width issues in Firefox
 			if (VCO.Browser.firefox) {
@@ -5083,15 +5091,15 @@ VCO.Media = VCO.Class.extend({
 					this._el.content_item.style.maxHeight = "none"; 
 				}
 			}
-			
 			if (this._state.media_loaded) {
 				if (this._el.credit) {
 					this._el.credit.style.width		= this._el.content_item.offsetWidth + "px";
 				}
 				if (this._el.caption) {
-					this._el.caption.style.width		= this._el.content_item.offsetWidth + "px";
+					this._el.caption.style.width	= this._el.content_item.offsetWidth + "px";
 				}
 			}
+			
 			
 		}
 	},
