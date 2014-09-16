@@ -64,7 +64,7 @@
             {
                 "src": "source/less/fonts",
                 "dst": "build/css/fonts",
-                "regex": ".*.less"
+                "regex": "(?!font\\.base\\.).*.less"
             },
             {
                 "src": "website/less/site.less",
