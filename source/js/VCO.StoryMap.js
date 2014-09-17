@@ -27,6 +27,9 @@
 
 // LANGUAGE
 	// @codekit-prepend "language/VCO.Language.js";
+	
+// LIBRARY
+	// @codekit-prepend "library/VCO.Emoji.js";
 
 // ANIMATION
 	// @codekit-prepend "animation/VCO.Ease.js";
@@ -387,6 +390,13 @@ VCO.StoryMap = VCO.Class.extend({
 			
 		} else {
 			self._loadLanguage(data);
+		}
+		
+		// Emoji Support to Chrome
+		if (VCO.Browser.chrome) {
+			VCO.Load.css(this.options.script_path + "../css/fonts/font.emoji.css", function() {
+				trace("LOADED EMOJI CSS FOR CHROME")
+			});
 		}
 		
 		return this;

@@ -56,6 +56,15 @@
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0
 		},
+	"\/compiled\/css\/fonts\/font.emoji.css": {
+		"fileType": 16,
+		"ignore": 1,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/compiled\/css\/fonts\/font.emoji.css",
+		"outputAbbreviatedPath": "No Output Path",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0
+		},
 	"\/compiled\/css\/fonts\/font.fjalla-average.css": {
 		"fileType": 16,
 		"ignore": 1,
@@ -181,6 +190,28 @@
 		"outputAbbreviatedPath": "No Output Path",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0
+		},
+	"\/compiled\/css\/icons\/emoji.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 527865,
+		"inputAbbreviatedPath": "\/compiled\/css\/icons\/emoji.png",
+		"outputAbbreviatedPath": "\/compiled\/css\/icons\/emoji.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/compiled\/css\/icons\/emoji@2x.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 1.58162e+06,
+		"inputAbbreviatedPath": "\/compiled\/css\/icons\/emoji@2x.png",
+		"outputAbbreviatedPath": "\/compiled\/css\/icons\/emoji@2x.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
 		},
 	"\/compiled\/css\/icons\/icons.html": {
 		"fileType": 8192,
@@ -556,6 +587,15 @@
 		"outputStyle": 1,
 		"syntaxCheckerStyle": 1
 		},
+	"\/compiled\/storymap.html": {
+		"fileType": 8192,
+		"ignore": 1,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/compiled\/storymap.html",
+		"outputAbbreviatedPath": "No Output Path",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0
+		},
 	"\/compiled\/test\/index.html": {
 		"fileType": 8192,
 		"ignore": 0,
@@ -597,6 +637,28 @@
 		"outputAbbreviatedPath": "\/README.html",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0
+		},
+	"\/source\/css\/icons\/emoji.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 527865,
+		"inputAbbreviatedPath": "\/source\/css\/icons\/emoji.png",
+		"outputAbbreviatedPath": "\/source\/css\/icons\/emoji.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/source\/css\/icons\/emoji@2x.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 1.58162e+06,
+		"inputAbbreviatedPath": "\/source\/css\/icons\/emoji@2x.png",
+		"outputAbbreviatedPath": "\/source\/css\/icons\/emoji@2x.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
 		},
 	"\/source\/css\/icons\/icons.html": {
 		"fileType": 8192,
@@ -1165,6 +1227,17 @@
 		"outputPathIsSetByUser": 1,
 		"outputStyle": 1,
 		"syntaxCheckerStyle": 0
+		},
+	"\/source\/js\/library\/VCO.Emoji.js": {
+		"fileType": 64,
+		"ignore": 1,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/source\/js\/library\/VCO.Emoji.js",
+		"outputAbbreviatedPath": "\/source\/js\/library\/min\/VCO.Emoji-min.js",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"outputStyle": 1,
+		"syntaxCheckerStyle": 1
 		},
 	"\/source\/js\/map\/leaflet\/extentions\/VCO.Leaflet.MiniMap.js": {
 		"fileType": 64,
@@ -2629,6 +2702,26 @@
 		"strictMath": 0,
 		"strictUnits": 0
 		},
+	"\/source\/less\/fonts\/font.emoji.less": {
+		"allowInsecureImports": 0,
+		"createSourceMap": 0,
+		"disableJavascript": 0,
+		"fileType": 1,
+		"ieCompatibility": 1,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/source\/less\/fonts\/font.emoji.less",
+		"outputAbbreviatedPath": "\/compiled\/css\/fonts\/font.emoji.css",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 1,
+		"outputStyle": 2,
+		"relativeURLS": 0,
+		"shouldRunAutoprefixer": 0,
+		"shouldRunBless": 0,
+		"strictImports": 0,
+		"strictMath": 0,
+		"strictUnits": 0
+		},
 	"\/source\/less\/fonts\/font.fjalla-average.less": {
 		"allowInsecureImports": 0,
 		"createSourceMap": 0,
@@ -2815,7 +2908,7 @@
 		"disableJavascript": 0,
 		"fileType": 1,
 		"ieCompatibility": 1,
-		"ignore": 0,
+		"ignore": 1,
 		"ignoreWasSetByUser": 0,
 		"inputAbbreviatedPath": "\/source\/less\/fonts\/font.pt.less",
 		"outputAbbreviatedPath": "\/compiled\/css\/fonts\/font.pt.css",
