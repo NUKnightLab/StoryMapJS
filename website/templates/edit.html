@@ -418,7 +418,8 @@ function preview_clear() {
 
 function preview_load() {
     var options = {
-       start_at_slide: _current_slide_index,
+        script_path: getScriptPath(/storymap(-min)?\.js/)+'/',
+        start_at_slide: _current_slide_index,
     };
     
     if(_storymap_data.storymap.map_type) {
@@ -439,7 +440,12 @@ function preview_load() {
     if(_storymap_data.storymap.zoomify) {
         options.zoomify = _storymap_data.storymap.zoomify;
     }
-          
+    if(_storymap_data.storymap.call_to_action) {
+        options.call_to_action = _storymap_data.storymap.call_to_action;
+    }          
+    if(_storymap_data.storymap.call_to_action_text) {
+        options.call_to_action_text = _storymap_data.storymap.call_to_action_text;
+    }          
     _storymap_object = new VCO.StoryMap('preview_embed', 
         $.extend(true, {}, _storymap_data), options);
     

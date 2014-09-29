@@ -26,6 +26,18 @@ function parseQueryString() {
     return nvpair;
 }
 
+function getScriptPath(scriptname) {
+    var scriptTags = document.getElementsByTagName('script');
+
+    for(var i = 0; i < scriptTags.length; i++) {
+        if(scriptTags[i].src.match(scriptname)) {
+            script_path = scriptTags[i].src;          
+            return script_path.split('?')[0].split('/').slice(0, -1).join('/');
+        }
+    }
+    return '';
+}
+
 function format_dt(dt_string) {
     var m = moment(dt_string);
     return m.format('ll')+' at '+m.format('LT');
