@@ -464,7 +464,14 @@ $(function() {
         var is_map_type = $('.entry-create-map').is(":visible");        
         var $panel = (is_map_type) ? $('.entry-create-map') : $('.entry-create-zoomify');
            
-        var data = {storymap: {map_as_image: false, slides: []}};
+        var data = {
+            storymap: {
+                map_as_image: false, 
+                call_to_action: true, 
+                call_to_action_text: "", 
+                slides: []
+            }
+        };
    
         var name = $panel.find('.entry-create-title').val().trim();    
         if(!validate_storymap_name($modal, name)) {

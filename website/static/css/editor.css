@@ -74,6 +74,12 @@ a.help:hover {text-decoration: none;}
 
 /*	MODALS
 ----------------------------------------------------- */
+
+input[type="radio"] {margin: 0;}
+.radio.inline {line-height: 16px;}
+
+#call_to_action_text {margin-left: 6px;}
+
 .modal-backdrop {background-color: #F8F8F8;}
 .modal .error {color: #cc0000;font-style: italic;}
 .modal {
