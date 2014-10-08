@@ -91,7 +91,12 @@ L.TileLayer.Zoomify = L.TileLayer.extend({
 
 	_tileShouldBeLoaded: function (tilePoint) {
 		var gridSize = this._gridSize[this._map.getZoom()];
-		return (tilePoint.x >= 0 && tilePoint.x < gridSize.x && tilePoint.y >= 0 && tilePoint.y < gridSize.y);
+		if (gridSize) {
+			return (tilePoint.x >= 0 && tilePoint.x < gridSize.x && tilePoint.y >= 0 && tilePoint.y < gridSize.y);
+		} else {
+			console.log("_tileShouldBeLoaded: No gridSize for " + this._map.getZoom());
+			return false;
+		}
 	},
 
 	_addTile: function (tilePoint, container) {
