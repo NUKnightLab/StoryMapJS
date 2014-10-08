@@ -1,4 +1,4 @@
-/* storymapjs - v0.4.1 - 2014-09-18
+/* storymapjs - v2014-10-08-22-31-57 - 2014-10-08
  * Copyright (c) 2014 Northwestern University Knight Lab 
  */
 
@@ -11097,6 +11097,11 @@ L.TileLayer = L.Class.extend({
 		    zoom = map.getZoom(),
 		    tileSize = this._getTileSize();
 
+		if (isNaN(map.getZoom())) {
+			zoom = this.options.minZoom || 1;
+			map.setZoom(zoom);
+		}
+
 		if (zoom > this.options.maxZoom || zoom < this.options.minZoom) {
 			return;
 		}
@@ -11122,7 +11127,7 @@ L.TileLayer = L.Class.extend({
 			for (i = bounds.min.x; i <= bounds.max.x; i++) {
 				point = new L.Point(i, j);
 
-				if (this._tileShouldBeLoaded(point)) {
+				if (!(this._tilePointIsCached()) && this._tileShouldBeLoaded(point)) {
 					queue.push(point);
 				}
 			}
@@ -11152,11 +11157,11 @@ L.TileLayer = L.Class.extend({
 
 		this._tileContainer.appendChild(fragment);
 	},
-
+	_tilePointIsCached: function (tilePoint) {
+		if (typeof(tilePoint) == "undefined") return false;
+		return ((tilePoint.x + ':' + tilePoint.y) in this._tiles);
+	},
 	_tileShouldBeLoaded: function (tilePoint) {
-		if ((tilePoint.x + ':' + tilePoint.y) in this._tiles) {
-			return false; // already loaded
-		}
 
 		var options = this.options;
 
@@ -15369,7 +15374,12 @@ L.TileLayer.Zoomify = L.TileLayer.extend({
 
 	_tileShouldBeLoaded: function (tilePoint) {
 		var gridSize = this._gridSize[this._map.getZoom()];
-		return (tilePoint.x >= 0 && tilePoint.x < gridSize.x && tilePoint.y >= 0 && tilePoint.y < gridSize.y);
+		if (gridSize) {
+			return (tilePoint.x >= 0 && tilePoint.x < gridSize.x && tilePoint.y >= 0 && tilePoint.y < gridSize.y);
+		} else {
+			console.log("_tileShouldBeLoaded: No gridSize for " + this._map.getZoom());
+			return false;
+		}
 	},
 
 	_addTile: function (tilePoint, container) {
