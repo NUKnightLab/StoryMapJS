@@ -587,7 +587,7 @@ function gdrive_storymap_lock(folder, callback) {
  // callback(error)
  //
 function gdrive_storymap_unlock(folder, callback) {
-    if(folder.lock_file) {
+    if(folder && folder.lock_file && folder.lock_file.userPermission.role == 'owner') {
         gdrive_delete(folder.lock_file.id, function(error) {
             if(!error) {
                 folder.lock_file = null;

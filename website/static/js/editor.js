@@ -156,7 +156,7 @@ function storymap_is_locked(storymapFolder) {
         if(!lock.lastModifyingUser.isAuthenticatedUser) {
             var now = moment().unix();
             var then = moment(lock.modifiedDate).unix();           
-            return((now - then) < 360);
+            return((now - then) < 120);
          }
     } 
     return false;

@@ -761,11 +761,9 @@ $(function() {
         }
         
         // Delete lock file
-        if(_storymap_info && _storymap_info.lock_file) {
-            gdrive_storymap_unlock(_storymap_info, function(error) {
-                document.location.href = '/select.html';
-            });
-        }
+        gdrive_storymap_unlock(_storymap_info, function(error) {
+            document.location.href = '/select.html';
+        });
     });
     
     $('#storymap_options').click(function(event) {
