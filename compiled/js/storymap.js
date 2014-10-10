@@ -38,7 +38,9 @@ trace = function( msg ) {
 			//alert(msg);
 		}
 	}
-}/*	VCO.Util
+}
+
+/*	VCO.Util
 	Class of utilities
 ================================================== */
 
@@ -331,7 +333,9 @@ VCO.Util = {
 		
 		return vars;
 	}
-};// Expects VCO to be visible in scope
+};
+
+// Expects VCO to be visible in scope
 
 ;(function(VCO){
     /* Zepto v1.1.2-15-g59d3fe5 - zepto event ajax form ie - zeptojs.com/license */
@@ -1916,6 +1920,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
 SOFTWARE.
 */
+
+
 /*	VCO.Class
 	Class powers the OOP facilities of the library.
 ================================================== */
@@ -1981,6 +1987,8 @@ VCO.Class.extend = function (/*Object*/ props) /*-> Class*/ {
 
 	return NewClass;
 };
+
+
 /*	VCO.Events
 	adds custom events functionality to VCO classes
 ================================================== */
@@ -2039,7 +2047,9 @@ VCO.Events = {
 
 VCO.Events.on	= VCO.Events.addEventListener;
 VCO.Events.off	= VCO.Events.removeEventListener;
-VCO.Events.fire = VCO.Events.fireEvent;/*
+VCO.Events.fire = VCO.Events.fireEvent;
+
+/*
 	Based on Leaflet Browser
 	VCO.Browser handles different browser and feature detections for internal  use.
 */
@@ -2118,7 +2128,9 @@ VCO.Events.fire = VCO.Events.fireEvent;/*
 		}
 	};
 
-}()); /*	VCO.Load
+}()); 
+
+/*	VCO.Load
 	Loads External Javascript and CSS
 ================================================== */
 
@@ -2558,6 +2570,8 @@ VCO.LoadIt = (function (doc) {
 
   };
 })(this.document);
+
+
 VCO.Language = {
 	name: 					"English",
 	lang: 					"en",
@@ -2573,7 +2587,9 @@ VCO.Language = {
 	    collapse_toggle: 	"Hide Map",
 	    uncollapse_toggle: 	"Show Map"
 	}
-}/*
+}
+
+/*
 Borrowed from:
 https://github.com/rodrigopolo/minEmoji
 
@@ -2614,7 +2630,9 @@ VCO.Emoji = function(str) {
 	return str.replace(regx, function (a, b) {
 		return '<span class="vco-emoji emj'+emoji[b]+'"></span>';
 	});
-}/* The equations defined here are open source under BSD License.
+}
+
+/* The equations defined here are open source under BSD License.
  * http://www.robertpenner.com/easing_terms_of_use.html (c) 2003 Robert Penner
  * Adapted to single time-based by
  * Brian Crescimanno <brian.crescimanno@gmail.com>
@@ -2854,7 +2872,9 @@ Math.easeInOutExpo = function (t, b, c, d) {
 	t--;
 	return c/2 * ( -Math.pow( 2, -10 * t) + 2 ) + b;
 };
-*//*	VCO.Animate
+*/
+
+/*	VCO.Animate
 	Basic animation
 ================================================== */
 
@@ -3284,6 +3304,8 @@ window.vcoanimate = (function() {
 
   return morpheus
 })();
+
+
 /*	VCO.Point
 	Inspired by Leaflet
 	VCO.Point represents a point with x and y coordinates.
@@ -3350,7 +3372,9 @@ VCO.Point.prototype = {
 				VCO.Util.formatNum(this.x) + ', ' +
 				VCO.Util.formatNum(this.y) + ')';
 	}
-};/*	VCO.DomMixins
+};
+
+/*	VCO.DomMixins
 	DOM methods used regularly
 	Assumes there is a _el.container and animator
 ================================================== */
@@ -3444,6 +3468,8 @@ VCO.DomMixins = {
 	}
 	
 };
+
+
 /*	VCO.Dom
 	Utilities for working with the DOM
 ================================================== */
@@ -3531,6 +3557,8 @@ VCO.Util.extend(VCO.Dom, {
 	TRANSLATE_OPEN: 'translate' + (VCO.Browser.webkit3d ? '3d(' : '('),
 	TRANSLATE_CLOSE: VCO.Browser.webkit3d ? ',0)' : ')'
 });
+
+
 /*	VCO.DomUtil
 	Inspired by Leaflet
 	VCO.DomUtil contains various utility functions for working with DOM
@@ -3684,7 +3712,9 @@ VCO.DomUtil = {
 	getPosition: function (el) {
 		return el._vco_pos;
 	}
-};/*	VCO.DomEvent
+};
+
+/*	VCO.DomEvent
 	Inspired by Leaflet 
 	DomEvent contains functions for working with DOM events.
 ================================================== */
@@ -3831,6 +3861,8 @@ VCO.DomEvent = {
 		return delta;
 	}
 };
+
+
 
 
 /*	VCO.Draggable
@@ -4158,6 +4190,8 @@ VCO.Draggable = VCO.Class.extend({
 		this.fire("momentum", this.data);
 	}
 });
+
+
 /*	VCO.Swipable
 	VCO.Draggable allows you to add dragging capabilities to any element. Supports mobile devices too.
 	TODO Enable constraints
@@ -4548,6 +4582,8 @@ VCO.Swipable = VCO.Class.extend({
 		this.fire("momentum", this.data);
 	}
 });
+
+
 /*	VCO.MenuBar
 	Draggable component to control size
 ================================================== */
@@ -4743,7 +4779,9 @@ VCO.MenuBar = VCO.Class.extend({
 		}
 	}
 	
-});/*	VCO.SizeBar
+});
+
+/*	VCO.SizeBar
 	Draggable component to control size
 ================================================== */
  
@@ -4850,7 +4888,9 @@ VCO.Message = VCO.Class.extend({
 		
 	}
 	
-});/*	VCO.MediaType
+});
+
+/*	VCO.MediaType
 	Determines the type of media the url string is.
 	returns an object with .type and .id
 	You can add new media types by adding a regex 
@@ -4996,6 +5036,8 @@ VCO.MediaType = function(m) {
 	return false;
 	
 }
+
+
 /*	VCO.Media
 	Main media template for media assets.
 	Takes a data object and populates a dom object
@@ -5305,7 +5347,9 @@ VCO.Media = VCO.Class.extend({
 		
 	}
 	
-});/*	VCO.Media.Blockquote
+});
+
+/*	VCO.Media.Blockquote
 ================================================== */
 
 VCO.Media.Blockquote = VCO.Media.extend({
@@ -5342,6 +5386,8 @@ VCO.Media.Blockquote = VCO.Media.extend({
 
 	
 });
+
+
 /*	VCO.Media.Flickr
 
 ================================================== */
@@ -5438,6 +5484,8 @@ VCO.Media.Flickr = VCO.Media.extend({
 	
 	
 });
+
+
 /*	VCO.Media.Instagram
 
 ================================================== */
@@ -5494,6 +5542,8 @@ VCO.Media.Instagram = VCO.Media.extend({
 	
 	
 });
+
+
 /*	VCO.Media.Profile
 
 ================================================== */
@@ -5522,7 +5572,9 @@ VCO.Media.Profile = VCO.Media.extend({
 		}
 	}
 	
-});/*	VCO.Media.GoogleDoc
+});
+
+/*	VCO.Media.GoogleDoc
 
 ================================================== */
 
@@ -5566,6 +5618,8 @@ VCO.Media.GoogleDoc = VCO.Media.extend({
 
 	
 });
+
+
 /*	VCO.Media.GooglePlus
 ================================================== */
 
@@ -5605,6 +5659,8 @@ VCO.Media.GooglePlus = VCO.Media.extend({
 
 	
 });
+
+
 /*	VCO.Media.IFrame
 ================================================== */
 
@@ -5643,6 +5699,8 @@ VCO.Media.IFrame = VCO.Media.extend({
 	}
 	
 });
+
+
 /*	VCO.Media.Image
 	Produces image assets.
 	Takes a data object and populates a dom object
@@ -5688,7 +5746,9 @@ VCO.Media.Image = VCO.Media.extend({
 		}
 	}
 	
-});/*	VCO.Media.SoundCloud
+});
+
+/*	VCO.Media.SoundCloud
 ================================================== */
 
 VCO.Media.SoundCloud = VCO.Media.extend({
@@ -5728,6 +5788,8 @@ VCO.Media.SoundCloud = VCO.Media.extend({
 	}
 	
 });
+
+
 /*	VCO.Media.Storify
 ================================================== */
 
@@ -5767,6 +5829,8 @@ VCO.Media.Storify = VCO.Media.extend({
 	
 	
 });
+
+
 VCO.Media.Text = VCO.Class.extend({
 	
 	includes: [VCO.Events],
@@ -5906,7 +5970,9 @@ VCO.Media.Text = VCO.Class.extend({
 		
 	}
 	
-});/*	VCO.Media.Twitter
+});
+
+/*	VCO.Media.Twitter
 	Produces Twitter Display
 ================================================== */
 
@@ -6006,6 +6072,8 @@ VCO.Media.Twitter = VCO.Media.extend({
 	
 	
 });
+
+
 /*	VCO.Media.Vimeo
 ================================================== */
 
@@ -6059,6 +6127,8 @@ VCO.Media.Vimeo = VCO.Media.extend({
 	}
 	
 });
+
+
 /*	VCO.Media.DailyMotion
 ================================================== */
 
@@ -6101,6 +6171,8 @@ VCO.Media.DailyMotion = VCO.Media.extend({
 	}
 	
 });
+
+
 /*	VCO.Media.Vine
 
 ================================================== */
@@ -6141,6 +6213,8 @@ VCO.Media.Vine = VCO.Media.extend({
 	}
 	
 });
+
+
 /*	VCO.Media.Website
 ================================================== */
 
@@ -6166,6 +6240,8 @@ VCO.Media.Website = VCO.Media.extend({
 	
 	
 });
+
+
 /*	VCO.Media.Wikipedia
 ================================================== */
 
@@ -6270,6 +6346,8 @@ VCO.Media.Wikipedia = VCO.Media.extend({
 	}
 	
 });
+
+
 /*	VCO.Media.YouTube
 ================================================== */
 
@@ -6423,6 +6501,8 @@ VCO.Media.YouTube = VCO.Media.extend({
 
 	
 });
+
+
 /*	VCO.Media.SLider
 	Produces a Slider
 	Takes a data object and populates a dom object
@@ -6444,7 +6524,9 @@ VCO.Media.Slider = VCO.Media.extend({
 		this.onLoaded();
 	}
 	
-});/*	VCO.Slide
+});
+
+/*	VCO.Slide
 	Creates a slide. Takes a data object and
 	populates the slide with content.
 ================================================== */
@@ -6759,6 +6841,8 @@ VCO.Slide = VCO.Class.extend({
 	}
 	
 });
+
+
 /*	VCO.SlideNav
 	Navigation for Slideshows
 ================================================== */
@@ -6927,7 +7011,9 @@ VCO.SlideNav = VCO.Class.extend({
 	}
 	
 	
-});/*	StorySlider
+});
+
+/*	StorySlider
 	is the central class of the API - it is used to create a StorySlider
 
 	Events:
@@ -7575,6 +7661,8 @@ VCO.StorySlider = VCO.Class.extend({
 });
 
 
+
+
 var oldL = window.L,
     L = {};
 
@@ -7597,6 +7685,8 @@ L.noConflict = function () {
 };
 
 window.L = L;
+
+
 /*
  * L.Util contains various utility functions used throughout Leaflet code.
  */
@@ -7779,6 +7869,8 @@ L.extend = L.Util.extend;
 L.bind = L.Util.bind;
 L.stamp = L.Util.stamp;
 L.setOptions = L.Util.setOptions;
+
+
 /*
  * L.Class powers the OOP facilities of the library.
  * Thanks to John Resig and Dean Edwards for inspiration!
@@ -7885,6 +7977,8 @@ L.Class.addInitHook = function (fn) { // (Function) || (String, args...)
 	this.prototype._initHooks = this.prototype._initHooks || [];
 	this.prototype._initHooks.push(init);
 };
+
+
 /*
  * L.Mixin.Events is used to add custom events functionality to Leaflet classes.
  */
@@ -8063,6 +8157,8 @@ L.Mixin.Events.on = L.Mixin.Events.addEventListener;
 L.Mixin.Events.off = L.Mixin.Events.removeEventListener;
 L.Mixin.Events.once = L.Mixin.Events.addOneTimeEventListener;
 L.Mixin.Events.fire = L.Mixin.Events.fireEvent;
+
+
 /*
  * L.Browser handles different browser and feature detections for internal Leaflet use.
  */
@@ -8160,6 +8256,8 @@ L.Mixin.Events.fire = L.Mixin.Events.fireEvent;
 	};
 
 }());
+
+
 /*
  * L.Point represents a point with x and y coordinates.
  */
@@ -8279,6 +8377,8 @@ L.point = function (x, y, round) {
 	}
 	return new L.Point(x, y, round);
 };
+
+
 /*
  * L.Bounds represents a rectangular area on the screen in pixel coordinates.
  */
@@ -8374,6 +8474,8 @@ L.bounds = function (a, b) { // (Bounds) or (Point, Point) or (Point[])
 	}
 	return new L.Bounds(a, b);
 };
+
+
 /*
  * L.Transformation is an utility class to perform simple point transformations through a 2d-matrix.
  */
@@ -8405,6 +8507,8 @@ L.Transformation.prototype = {
 		        (point.y / scale - this._d) / this._c);
 	}
 };
+
+
 /*
  * L.DomUtil contains various utility functions for working with DOM.
  */
@@ -8694,6 +8798,8 @@ L.DomUtil.TRANSITION_END =
 		}
 	});
 })();
+
+
 /*
  * L.LatLng represents a geographical point with latitude and longitude coordinates.
  */
@@ -8792,6 +8898,8 @@ L.latLng = function (a, b) { // (LatLng) or ([Number, Number]) or (Number, Numbe
 	}
 	return new L.LatLng(a, b);
 };
+
+
 
 /*
  * L.LatLngBounds represents a rectangular area on the map in geographical coordinates.
@@ -8949,11 +9057,15 @@ L.latLngBounds = function (a, b) { // (LatLngBounds) or (LatLng, LatLng)
 	}
 	return new L.LatLngBounds(a, b);
 };
+
+
 /*
  * L.Projection contains various geographical projections used by CRS classes.
  */
 
 L.Projection = {};
+
+
 /*
  * Spherical Mercator is the most popular map projection, used by EPSG:3857 CRS used by default.
  */
@@ -8981,6 +9093,8 @@ L.Projection.SphericalMercator = {
 		return new L.LatLng(lat, lng);
 	}
 };
+
+
 /*
  * Simple equirectangular (Plate Carree) projection, used by CRS like EPSG:4326 and Simple.
  */
@@ -8994,6 +9108,8 @@ L.Projection.LonLat = {
 		return new L.LatLng(point.y, point.x);
 	}
 };
+
+
 /*
  * L.CRS is a base object for all defined CRS (Coordinate Reference Systems) in Leaflet.
  */
@@ -9026,6 +9142,8 @@ L.CRS = {
 		return L.point(s, s);
 	}
 };
+
+
 /*
  * A simple CRS that can be used for flat non-Earth maps like panoramas or game maps.
  */
@@ -9038,6 +9156,8 @@ L.CRS.Simple = L.extend({}, L.CRS, {
 		return Math.pow(2, zoom);
 	}
 });
+
+
 /*
  * L.CRS.EPSG3857 (Spherical Mercator) is the most common CRS for web mapping
  * and is used by Leaflet by default.
@@ -9059,6 +9179,8 @@ L.CRS.EPSG3857 = L.extend({}, L.CRS, {
 L.CRS.EPSG900913 = L.extend({}, L.CRS.EPSG3857, {
 	code: 'EPSG:900913'
 });
+
+
 /*
  * L.CRS.EPSG4326 is a CRS popular among advanced GIS specialists.
  */
@@ -9069,6 +9191,8 @@ L.CRS.EPSG4326 = L.extend({}, L.CRS, {
 	projection: L.Projection.LonLat,
 	transformation: new L.Transformation(1 / 360, 0.5, -1 / 360, 0.5)
 });
+
+
 /*
  * L.Map is the central class of the API - it is used to create a map.
  */
@@ -9879,6 +10003,8 @@ L.Map = L.Class.extend({
 L.map = function (id, options) {
 	return new L.Map(id, options);
 };
+
+
 /*
  * L.DomEvent contains functions for working with DOM events.
  */
@@ -10117,6 +10243,8 @@ L.DomEvent = {
 
 L.DomEvent.on = L.DomEvent.addListener;
 L.DomEvent.off = L.DomEvent.removeListener;
+
+
 /*
  * L.Draggable allows you to add dragging capabilities to any element. Supports mobile devices too.
  */
@@ -10252,6 +10380,8 @@ L.Draggable = L.Class.extend({
 		this._moving = false;
 	}
 });
+
+
 /*
 	L.Handler is a base class for handler classes that are used internally to inject
 	interaction features like dragging to classes like Map and Marker.
@@ -10280,6 +10410,8 @@ L.Handler = L.Class.extend({
 		return !!this._enabled;
 	}
 });
+
+
 /*
  * L.Control is a base class for implementing map controls. Handles positioning.
  * All other controls extend from this class.
@@ -10397,6 +10529,8 @@ L.Map.include({
 		this._container.removeChild(this._controlContainer);
 	}
 });
+
+
 /*
  * L.TileLayer is used for standard xyz-numbered tile layers.
  */
@@ -10687,6 +10821,11 @@ L.TileLayer = L.Class.extend({
 		    zoom = map.getZoom(),
 		    tileSize = this._getTileSize();
 
+		if (isNaN(map.getZoom())) {
+			zoom = this.options.minZoom || 1;
+			map.setZoom(zoom);
+		}
+
 		if (zoom > this.options.maxZoom || zoom < this.options.minZoom) {
 			return;
 		}
@@ -10712,7 +10851,7 @@ L.TileLayer = L.Class.extend({
 			for (i = bounds.min.x; i <= bounds.max.x; i++) {
 				point = new L.Point(i, j);
 
-				if (this._tileShouldBeLoaded(point)) {
+				if (!(this._tilePointIsCached()) && this._tileShouldBeLoaded(point)) {
 					queue.push(point);
 				}
 			}
@@ -10742,11 +10881,11 @@ L.TileLayer = L.Class.extend({
 
 		this._tileContainer.appendChild(fragment);
 	},
-
+	_tilePointIsCached: function (tilePoint) {
+		if (typeof(tilePoint) == "undefined") return false;
+		return ((tilePoint.x + ':' + tilePoint.y) in this._tiles);
+	},
 	_tileShouldBeLoaded: function (tilePoint) {
-		if ((tilePoint.x + ':' + tilePoint.y) in this._tiles) {
-			return false; // already loaded
-		}
 
 		var options = this.options;
 
@@ -10995,6 +11134,8 @@ L.TileLayer = L.Class.extend({
 L.tileLayer = function (url, options) {
 	return new L.TileLayer(url, options);
 };
+
+
 /*
  * L.TileLayer.Canvas is a class that you can use as a base for creating
  * dynamically drawn Canvas-based tile layers.
@@ -11056,6 +11197,8 @@ L.TileLayer.Canvas = L.TileLayer.extend({
 L.tileLayer.canvas = function (options) {
 	return new L.TileLayer.Canvas(options);
 };
+
+
 /*
  * L.ImageOverlay is used to overlay images over the map (to specific geographical bounds).
  */
@@ -11197,6 +11340,8 @@ L.ImageOverlay = L.Class.extend({
 L.imageOverlay = function (url, bounds, options) {
 	return new L.ImageOverlay(url, bounds, options);
 };
+
+
 /*
  * L.Icon is an image-based icon class that you can use with L.Marker for custom markers.
  */
@@ -11295,6 +11440,8 @@ L.Icon = L.Class.extend({
 L.icon = function (options) {
 	return new L.Icon(options);
 };
+
+
 /*
  * L.Icon.Default is the blue marker icon used by default in Leaflet.
  */
@@ -11346,6 +11493,8 @@ L.Icon.Default.imagePath = (function () {
 		}
 	}
 }());
+
+
 /*
  * L.Marker is used to display clickable/draggable icons on the map.
  */
@@ -11664,6 +11813,8 @@ L.Marker = L.Class.extend({
 L.marker = function (latlng, options) {
 	return new L.Marker(latlng, options);
 };
+
+
 /*
  * L.DivIcon is a lightweight HTML-based icon class (as opposed to the image-based L.Icon)
  * to use with L.Marker.
@@ -11709,6 +11860,8 @@ L.DivIcon = L.Icon.extend({
 L.divIcon = function (options) {
 	return new L.DivIcon(options);
 };
+
+
 /*
  * L.LayerGroup is a class to combine several layers into one so that
  * you can manipulate the group (e.g. add/remove it) as one layer.
@@ -11824,6 +11977,8 @@ L.LayerGroup = L.Class.extend({
 L.layerGroup = function (layers) {
 	return new L.LayerGroup(layers);
 };
+
+
 /*
  * L.FeatureGroup extends L.LayerGroup by introducing mouse events and additional methods
  * shared between a group of interactive layers (like vectors or markers).
@@ -11922,6 +12077,8 @@ L.FeatureGroup = L.LayerGroup.extend({
 L.featureGroup = function (layers) {
 	return new L.FeatureGroup(layers);
 };
+
+
 /*
  * L.Path is a base class for rendering vector paths on a map. Inherited by Polyline, Circle, etc.
  */
@@ -12041,6 +12198,8 @@ L.Map.include({
 		this._pathViewport = new L.Bounds(min, max);
 	}
 });
+
+
 /*
  * Extends L.Path with SVG-specific rendering code.
  */
@@ -12271,6 +12430,8 @@ L.Map.include({
 		}
 	}
 });
+
+
 /*
  * Vector rendering for all browsers that support canvas.
  */
@@ -12468,6 +12629,8 @@ L.Map.include((L.Path.SVG && !window.L_PREFER_CANVAS) || !L.Browser.canvas ? {} 
 		root.getContext('2d').translate(-min.x, -min.y);
 	}
 });
+
+
 /*
  * L.LineUtil contains different utility functions for line segments
  * and polylines (clipping, simplification, distances, etc.)
@@ -12670,6 +12833,8 @@ L.LineUtil = {
 		return sqDist ? dx * dx + dy * dy : new L.Point(x, y);
 	}
 };
+
+
 /*
  * L.Polyline is used to display polylines on a map.
  */
@@ -12834,6 +12999,8 @@ L.Polyline = L.Path.extend({
 L.polyline = function (latlngs, options) {
 	return new L.Polyline(latlngs, options);
 };
+
+
 /*
  * L.PolyUtil contains utility functions for polygons (clipping, etc.).
  */
@@ -12889,6 +13056,8 @@ L.PolyUtil.clipPolygon = function (points, bounds) {
 
 	return points;
 };
+
+
 /*
  * L.Polygon is used to display polygons on a map.
  */
@@ -12981,6 +13150,8 @@ L.Polygon = L.Polyline.extend({
 L.polygon = function (latlngs, options) {
 	return new L.Polygon(latlngs, options);
 };
+
+
 /*
  * Contains L.MultiPolyline and L.MultiPolygon layers.
  */
@@ -13038,6 +13209,8 @@ L.polygon = function (latlngs, options) {
 		return new L.MultiPolygon(latlngs, options);
 	};
 }());
+
+
 /*
  * L.Rectangle extends Polygon and creates a rectangle when passed a LatLngBounds object.
  */
@@ -13065,6 +13238,8 @@ L.Rectangle = L.Polygon.extend({
 L.rectangle = function (latLngBounds, options) {
 	return new L.Rectangle(latLngBounds, options);
 };
+
+
 /*
  * L.Circle is a circle overlay (with a certain radius in meters).
  */
@@ -13163,6 +13338,8 @@ L.Circle = L.Path.extend({
 L.circle = function (latlng, radius, options) {
 	return new L.Circle(latlng, radius, options);
 };
+
+
 /*
  * L.CircleMarker is a circle overlay with a permanent pixel radius.
  */
@@ -13208,6 +13385,8 @@ L.CircleMarker = L.Circle.extend({
 L.circleMarker = function (latlng, options) {
 	return new L.CircleMarker(latlng, options);
 };
+
+
 /*
  * Extends L.Polyline to be able to manually detect clicks on Canvas-rendered polylines.
  */
@@ -13238,6 +13417,8 @@ L.Polyline.include(!L.Path.CANVAS ? {} : {
 		return false;
 	}
 });
+
+
 /*
  * L.Handler.MapDrag is used to make the map draggable (with panning inertia), enabled by default.
  */
@@ -13390,6 +13571,8 @@ L.Map.Drag = L.Handler.extend({
 });
 
 L.Map.addInitHook('addHandler', 'dragging', L.Map.Drag);
+
+
 /*
  * L.Handler.DoubleClickZoom is used to handle double-click zoom on the map, enabled by default.
  */
@@ -13420,6 +13603,8 @@ L.Map.DoubleClickZoom = L.Handler.extend({
 });
 
 L.Map.addInitHook('addHandler', 'doubleClickZoom', L.Map.DoubleClickZoom);
+
+
 /*
  * L.Handler.ScrollWheelZoom is used by L.Map to enable mouse scroll wheel zoom on the map.
  */
@@ -13482,6 +13667,8 @@ L.Map.ScrollWheelZoom = L.Handler.extend({
 });
 
 L.Map.addInitHook('addHandler', 'scrollWheelZoom', L.Map.ScrollWheelZoom);
+
+
 /*
  * Extends the event handling code with double tap support for mobile browsers.
  */
@@ -13586,6 +13773,8 @@ L.extend(L.DomEvent, {
 		return this;
 	}
 });
+
+
 /*
  * Extends L.DomEvent to provide touch support for Internet Explorer and Windows-based devices.
  */
@@ -13741,6 +13930,8 @@ L.extend(L.DomEvent, {
 		return this;
 	}
 });
+
+
 /*
  * L.Handler.TouchZoom is used by L.Map to add pinch zoom on supported mobile browsers.
  */
@@ -13868,6 +14059,8 @@ L.Map.TouchZoom = L.Handler.extend({
 });
 
 L.Map.addInitHook('addHandler', 'touchZoom', L.Map.TouchZoom);
+
+
 /*
  * L.Map.Tap is used to enable mobile hacks like quick taps and long hold.
  */
@@ -13975,6 +14168,8 @@ L.Map.Tap = L.Handler.extend({
 if (L.Browser.touch && !L.Browser.pointer) {
 	L.Map.addInitHook('addHandler', 'tap', L.Map.Tap);
 }
+
+
 /*
  * L.Control.Zoom is used for the default zoom buttons on the map.
  */
@@ -14068,6 +14263,8 @@ L.Map.addInitHook(function () {
 L.control.zoom = function (options) {
 	return new L.Control.Zoom(options);
 };
+
+
 
 /*
  * L.Control.Attribution is used for displaying attribution on the map (added by default).
@@ -14190,6 +14387,8 @@ L.Map.addInitHook(function () {
 L.control.attribution = function (options) {
 	return new L.Control.Attribution(options);
 };
+
+
 /*
  * L.PosAnimation is used by Leaflet internally for pan animations.
  */
@@ -14284,6 +14483,8 @@ L.PosAnimation = L.Class.extend({
 	}
 
 });
+
+
 /*
  * Extends L.Map to handle panning animations.
  */
@@ -14382,6 +14583,8 @@ L.Map.include({
 		return true;
 	}
 });
+
+
 /*
  * L.PosAnimation fallback implementation that powers Leaflet pan animations
  * in browsers that don't support CSS3 Transitions.
@@ -14449,6 +14652,8 @@ L.PosAnimation = L.DomUtil.TRANSITION ? L.PosAnimation : L.PosAnimation.extend({
 		return 1 - Math.pow(1 - t, this._easeOutPower);
 	}
 });
+
+
 /*
  * Extends L.Map to handle zoom animations.
  */
@@ -14551,6 +14756,8 @@ L.Map.include(!L.DomUtil.TRANSITION ? {} : {
 		}
 	}
 });
+
+
 /*
 	Zoom animation logic for L.TileLayer.
 */
@@ -14656,6 +14863,8 @@ L.TileLayer.include({
 		}
 	}
 });
+
+
 /*
  * L.TileLayer.Zoomify display Zoomify tiles with Leaflet
  * Modified from https://github.com/turban/Leaflet.Zoomify
@@ -14749,7 +14958,12 @@ L.TileLayer.Zoomify = L.TileLayer.extend({
 
 	_tileShouldBeLoaded: function (tilePoint) {
 		var gridSize = this._gridSize[this._map.getZoom()];
-		return (tilePoint.x >= 0 && tilePoint.x < gridSize.x && tilePoint.y >= 0 && tilePoint.y < gridSize.y);
+		if (gridSize) {
+			return (tilePoint.x >= 0 && tilePoint.x < gridSize.x && tilePoint.y >= 0 && tilePoint.y < gridSize.y);
+		} else {
+			console.log("_tileShouldBeLoaded: No gridSize for " + this._map.getZoom());
+			return false;
+		}
 	},
 
 	_addTile: function (tilePoint, container) {
@@ -14800,7 +15014,9 @@ L.TileLayer.Zoomify = L.TileLayer.extend({
 
 L.tileLayer.zoomify = function (url, options) {
 	return new L.TileLayer.Zoomify(url, options);
-};/*
+};
+
+/*
 	https://github.com/Norkart/Leaflet-MiniMap
 	
 */
@@ -15121,6 +15337,8 @@ L.Map.addInitHook(function() {
 L.control.minimap = function(options) {
     return new L.Control.MiniMap(options);
 };
+
+
 /*	VCO.TyleLayer.Stamen
 	Makes Stamen Map tiles available
 	http://maps.stamen.com/
@@ -15303,6 +15521,8 @@ L.control.minimap = function(options) {
 	}
 
 })(typeof exports === "undefined" ? this : exports);
+
+
 /*	VCO.MapMarker
 	Creates a marker. Takes a data object and
 	populates the marker with content.
@@ -15451,6 +15671,8 @@ VCO.MapMarker = VCO.Class.extend({
 	}
 	
 });
+
+
 /*	VCO.Map
 	Makes a Map
 
@@ -16078,7 +16300,9 @@ VCO.Map = VCO.Class.extend({
 		//this.on("wheel", this._onWheel, this);
 	}
 	
-});/*	VCO.MapMarker.Leaflet
+});
+
+/*	VCO.MapMarker.Leaflet
 	Produces a marker for Leaflet Maps
 ================================================== */
 
@@ -16185,6 +16409,8 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 	}
 	
 });
+
+
 /*	VCO.Map.Leaflet
 	Creates a Map using Leaflet
 ================================================== */
@@ -16379,6 +16605,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 			case 'osm':
 				_options.subdomains = 'ab';
 				_tilelayer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', _options);
+				_options.attribution = _attribution_knightlab + "© <a target='_blank' href='http://www.openstreetmap.org'>OpenStreetMap</a> and contributors, under an <a target='_blank' href='http://www.openstreetmap.org/copyright'>open license</a>";
 				break;
 		    
 			case 'http':
@@ -16840,7 +17067,9 @@ L.TileLayer.include({
 	getTiles: function() {
 		return this._tiles;
 	}
-});/*	StoryMap
+});
+
+/*	StoryMap
 	Designed and built by Zach Wise at VéritéCo
 
 	This Source Code Form is subject to the terms of the Mozilla Public
@@ -17597,5 +17826,7 @@ VCO.StoryMap = VCO.Class.extend({
 	
 	
 });
+
+
 
 
