@@ -1,4 +1,4 @@
-/* storymapjs - v0.4.2 - 2014-10-09
+/* storymapjs - v0.4.3 - 2014-10-10
  * Copyright (c) 2014 Northwestern University Knight Lab 
  */
 
@@ -17045,6 +17045,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 			case 'osm':
 				_options.subdomains = 'ab';
 				_tilelayer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', _options);
+				_options.attribution = _attribution_knightlab + "© <a target='_blank' href='http://www.openstreetmap.org'>OpenStreetMap</a> and contributors, under an <a target='_blank' href='http://www.openstreetmap.org/copyright'>open license</a>";
 				break;
 		    
 			case 'http':
