@@ -117,12 +117,8 @@ function get_storymap_property(name, default_value) {
     return default_value;    
 }
 
-
 function get_map_as_image() {
-    if(_storymap_data.storymap.hasOwnProperty('map_as_image')) {
-        return _storymap_data.storymap.map_as_image;
-    }    
-    return false;    
+    return get_storymap_property('map_as_image', false);
 }
 
 function map_set_type() {    
