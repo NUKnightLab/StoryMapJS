@@ -717,11 +717,14 @@ function storymap_init() {
 function handle_onload() {   
     show_progress('Checking authorization');
         
-    gdrive_check_auth(function(authorized) {
+    gdrive_check_auth(function(authorized, result) {
         if(authorized) {
             gapi.client.load('drive', 'v2', storymap_init);
         } else {
-            show_message('Could not load StoryMap.  You must (re)authorize this application.', function() {
+            var message = 'Could not load StoryMap.  You must (re)authorize this application.'
+                + format_report_link('authorization', '', JSON.stringify(result, null, 2));
+                            
+            show_message(message, function() {
                 document.location.href = 'select.html';           
             });
         }

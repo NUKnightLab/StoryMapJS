@@ -953,7 +953,7 @@ function gdrive_check_auth(callback) {
     gapi.auth.authorize(
         {'client_id': CLIENT_ID, 'scope': SCOPES, 'immediate': true},
         function(authResult) {
-            callback(authResult != null && !authResult.error);
+            callback(authResult != null && !authResult.error, authResult);
         }
     );
 }

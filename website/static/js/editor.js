@@ -74,6 +74,32 @@ function format_error(msg, err) {
     return message;
 }
 
+function format_navigator_info() {
+    return ''
+        + 'appCodeName: '+navigator.appCodeName+'\n'
+        + 'appName: '+navigator.appName+'\n'
+        + 'appVersion: '+navigator.appVersion+'\n'
+        + 'platform: '+navigator.platform+'\n'
+        + 'userAgent: '+navigator.userAgent+'\n';
+}
+
+function format_report_link(subject, error_msg, error_stack) {
+    var subject = 'StoryMapJS Editor Report ('+subject+')';
+    var body = 'Please describe what you were doing when this error occurred:\n\n\n'
+            + '---DIAGNOSTICS---\n'
+            + error_msg+'\n'
+            + '\n'
+            + format_navigator_info()
+            + '\n'
+            + error_stack+'\n';
+    
+    var link = 'mailto:support@knightlab.zendesk.com?'
+        + 'subject='+encodeURIComponent(subject)
+        + '&body='+encodeURIComponent(body);
+
+    return '<p><a class="report" href="'+link+'">Report this error to the Knight Lab</a></p>';
+}
+
 function show_error(msg, err) { 
     var message = msg;
     
@@ -85,24 +111,7 @@ function show_error(msg, err) {
         }
         
         if(err.hasOwnProperty('stack')) {
-            var subject = 'StoryMapJS Editor Report ('+msg+')';
-            var body = 'Please describe what you were doing when this error occurred:\n\n\n'
-                    + '---DIAGNOSTICS---\n'
-                    + message+'\n'
-                    + '\n'
-                    + 'appCodeName: '+navigator.appCodeName+'\n'
-                    + 'appName: '+navigator.appName+'\n'
-                    + 'appVersion: '+navigator.appVersion+'\n'
-                    + 'platform: '+navigator.platform+'\n'
-                    + 'userAgent: '+navigator.userAgent+'\n'
-                    + '\n'
-                    + err.stack+'\n';
-            
-            var link = 'mailto:support@knightlab.zendesk.com?'
-                + 'subject='+encodeURIComponent(subject)
-                + '&body='+encodeURIComponent(body);
-
-            message += '<p><a class="report" href="'+link+'">Report this error to the Knight Lab</a></p>';
+            message += format_report_link(msg, message, err.stack);
         }
     }
     
