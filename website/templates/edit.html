@@ -765,10 +765,6 @@ $(function() {
             document.location.href = '/select.html';
         });
     });
-    
-    $('#storymap_options').click(function(event) {
-        $('#opt_modal').modal('show');
-    });
 
     $('#storymap_save').click(function(event) {
         storymap_save(function(error) {
@@ -789,10 +785,6 @@ $(function() {
             }
         });
     });
-
-    $('#storymap_share').click(function(event) {
-        $('#share_modal').modal('show');
-    });   
 
     $('#storymap_add_slide').click(function(event) {
         if(preview_visible()) {                   
@@ -1054,11 +1046,7 @@ $(function() {
 // ------------------------------------------------------------
 // Uploads
 // ------------------------------------------------------------ 
-    
-    $('#upload_media').click(function(event) {
-        $('#upload_modal').modal('show');
-    });
-         
+        
     $('#upload_modal')
         .on('error_show', modal_error_show)
         .on('error_hide', modal_error_hide)
@@ -1131,11 +1119,7 @@ $(function() {
             );
         storymap_dirty(1);
     });   
-    
-    $('#slide_options').click(function(event) {
-        $('#slide_opt_modal').modal('show');
-    });
-    
+
     $('#slide_opt_modal')
         .on('error_show', modal_error_show)
         .on('error_hide', modal_error_hide)

@@ -1,7 +1,7 @@
 <div class="menu-bar">
     <div class="menu-bar-left">
         <button id="storymap_list" class="btn"><i class="icon-chevron-left"></i> My Maps</button>
-        <button id="storymap_options" class="btn"><i class="icon-cog"></i> Options</button>
+        <button id="storymap_options" class="btn" href="#opt_modal" data-toggle="modal"><i class="icon-cog"></i> Options</button>
         <button id="storymap_save" class="btn disabled"><i class="icon-save"></i> Save</button>    
         <button id="storymap_publish" class="btn hide"><i class="icon-repeat"></i> Publish Changes</button>    
     </div>
@@ -14,7 +14,7 @@
                 <li><a href="https://github.com/NUKnightLab/StoryMapJS" target="_blank">GitHub Repository</a></li>
             </ul>       
         </div>     
-        <button id="storymap_share" class="btn"><i class="icon-share"></i> Share</button>
+        <button id="storymap_share" class="btn" href="#share_modal" data-toggle="modal"><i class="icon-share"></i> Share</button>
     </div>
 </div>
 
@@ -71,7 +71,7 @@
                     <input id="url" type="text" placeholder="URL to your media">
                                     
                     <div class="data-media-upload">
-                    or  <button id="upload_media" class="btn" title="Upload image"><i class="icon-cloud-upload icon-large"></i> Upload an Image </button> 
+                    or  <button id="upload_media" class="btn" title="Upload image" href="#upload_modal" data-toggle="modal"><i class="icon-cloud-upload icon-large"></i> Upload an Image </button> 
 					
                     </div>
                     <input id="credit" type="text" placeholder="Credit">
@@ -83,7 +83,7 @@
                 <div class="data-section">
                     <input id="headline" type="text" placeholder="Headline" class="editor-headline">
                     <textarea id="text" rows="5"></textarea>
-                    <button id="slide_options" class="btn"><i class="icon-cog icon-medium"></i> Slide Options</button>
+                    <button id="slide_options" class="btn" href="#slide_opt_modal" data-toggle="modal"><i class="icon-cog icon-medium"></i> Slide Options</button>
                </div>    
             </div>
 
