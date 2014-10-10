@@ -263,7 +263,7 @@ function process_storymap_map(storymap_map, callback) {
 }
 
 function init_storymap_list(callback) {
-    var storymap_map = storymap_cache_get();
+    var storymap_map = storymap_cache_get(true);
     
     if(storymap_map) {
         process_storymap_map(storymap_map);
@@ -279,7 +279,7 @@ function init_storymap_list(callback) {
                         callback(error);
                      } else {
                         process_storymap_map(storymap_map);
-                        storymap_cache_set(storymap_map);
+                        storymap_cache_set(storymap_map, true);
                         callback(null);
                     }
                 });                 

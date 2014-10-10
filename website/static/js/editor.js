@@ -176,19 +176,31 @@ function storymap_is_locked(storymapFolder) {
 // id => object (see gdrive_storymap_list)
 // 
 
-function storymap_cache_get() {
-    if(typeof(Storage) !== "undefined") {
+function storymap_cache_get(check_ts) {
+    if(typeof(Storage) !== "undefined") {        
+        if(check_ts) {
+            var now = new Date().getTime();
+            var ts = sessionStorage.getItem('storymap_cache_ts');
+        
+            if(!ts || (now - ts) > 900000) {
+                storymap_cache_clear();  
+            }
+        }
+        
         var data = sessionStorage.getItem('storymap_cache');
         if(data) {
             return JSON.parse(data);
         }
-    } else {
-        return null;
-    }
+    } 
+    
+    return null;
 }
 
-function storymap_cache_set(data) {
+function storymap_cache_set(data, set_ts) {
     if(typeof(Storage) !== "undefined") {
+        if(set_ts) {
+            sessionStorage.setItem('storymap_cache_ts', new Date().getTime());
+        }
         return sessionStorage.setItem('storymap_cache', JSON.stringify(data))
     } 
 }
@@ -202,5 +214,11 @@ function storymap_cache_update(id, data) {
             }
             storymap_cache_set(cache_data);
         }
+    }
+}
+
+function storymap_cache_clear() {
+    if(typeof(Storage) !== "undefined") {
+        sessionStorage.clear();
     }
 }
