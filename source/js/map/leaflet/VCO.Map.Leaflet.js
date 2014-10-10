@@ -192,7 +192,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 			case 'osm':
 				_options.subdomains = 'ab';
 				_options.attribution = _attribution_knightlab + "© <a target='_blank' href='http://www.openstreetmap.org'>OpenStreetMap</a> and contributors, under an <a target='_blank' href='http://www.openstreetmap.org/copyright'>open license</a>";
-				_tilelayer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', _options);
+				_tilelayer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', _options); 
 				break;
 		    
 			case 'http':
