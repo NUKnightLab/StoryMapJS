@@ -15,10 +15,29 @@
 <div class="container">
 <div class="row-fluid">
     <div class="span12">
-    <h3>StoryMap for Images</h3>
-    <p>
-        You can use StoryMap to tell stories about photography or art, or to show a journey on a historic map. Learn more <a href="#how-to-gigapixel">below the example</a>.
-    </p>
+      <h3>StoryMap for Gigapixels</h3>
+      <h3>Is a gigapixel StoryMap the right option for me?</h3>
+      <p> 
+        When you create your first StoryMap (by clicking the green button, "Make a StoryMap Now"), you will be asked if you would like to create a "map" or a "gigapixel". Which option you choose depends on how you want your audience to interact with your story.
+      </p>
+      <img id="firstprompt" src= "{{ static_url }}/img/StoryMap-FirstPromptP.png">
+      <p>
+        Choosing "map" will enable you to use a "slippy map" that allows the audience to explore the map by dragging through the map (Google Maps is a type of slippy map). Gigapixels (named such because they ideally are pixel-dense files) are images.
+      </p>
+      <p> 
+        If you are telling a story with a slippy map, create a map. If you are telling a story with an image of a map, photographs, works of art or other images, create a gigapixel StoryMap. 
+      </p>
+
+      <img id="options" src= "{{ static_url }}/img/StoryMap_Options.jpg">
+
+      <p> 
+        You can also control whether or not you want pins to be visible automatically on your gigapixels or map.  Click "Options" in the top left corner of your StoryMap dashboard and select either "Cartography" or "Image." </p>
+
+      <p>
+        The cartography option will allow pins to be visible automatically, while the image option will allow pins to be visible only when the audience hovers over the image.
+      </p>
+      </p> 
+    </div>
     <div id="storymap"></div>
     <!-- JavaScript-->
     <script>
@@ -43,6 +62,8 @@
 
     </div>
     <div class="span12" id="how-to-gigapixel">
+        
+
         <h3>How do I make one?</h3>
         <p>
             To begin, you need a large image. It doesn't actually need to be a <a href="http://en.wikipedia.org/wiki/Gigapixel_image">gigapixel</a> image, but images you take with your phone won't be big enough to be interesting. You need to know the image width and height in pixels as part of starting a gigapixel StoryMap.

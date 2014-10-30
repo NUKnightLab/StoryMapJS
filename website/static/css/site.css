@@ -20,3 +20,23 @@
 #examples > .row {
 	margin-top: 20px;
 }
+
+#firstprompt{
+	position: relative;
+	width: 40%;
+	margin: 0 auto;
+	display: inline block;
+	float: right;
+	padding: 50px;
+}
+
+#options{
+	position: relative;
+	width: 40%;
+	margin: 0 auto;
+	display: inline block;
+	float: left;
+	padding: 50px;
+}
+
+}
