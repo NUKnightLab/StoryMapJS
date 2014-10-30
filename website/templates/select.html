@@ -155,7 +155,7 @@ window.onload = function() { gapi.load('drive-share', function() { /* noop */ })
     <div class="modal-footer">
     <!-- <a href="javascript:;" id="entry_user"><i class="icon-user icon-2x"></i></a> -->
         <div id="entry_user_info" class="hide">
-            <span id="entry_user_name"></span> | <a href="http://www.google.com/accounts/Logout">Logout</a>
+            <span id="entry_user_name"></span> | <a id="entry_logout" href="javascript:">Logout</a>
         </div>
         <span>&nbsp;</span>
         <a id="entry_create_cancel" class="entry-panel entry-create entry-import entry-rename entry-copy hide btn" onclick="$('#entry_modal').trigger('show_list');">
@@ -321,6 +321,11 @@ $(function() {
             $('#entry_modal').trigger('handle_auth', authorized);     
         });
     }); 
+    
+    $('#entry_logout').click(function(event) {
+        storymap_cache_clear();
+        document.location.href = 'http://www.google.com/accounts/Logout';    
+    });
 
     // popovers
     $('a.help').popover({
@@ -565,7 +570,7 @@ $(function() {
                         $('#entry_user_name').html(info.name);
                         $('#entry_user_info').show();                          
                         
-                        if(info.domainSharingPolicy && info.domainSharingPolicy != 'allowed') {
+                        if(info.domainSharingPolicy && info.domainSharingPolicy.indexOf('allowed') != 0) {
                             $modal.trigger('reset',  'This Google Account does not support public Google Drive sharing.  Please sign in with a different Google account.');                                
                             return;
                         } 
