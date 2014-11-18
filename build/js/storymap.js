@@ -1,4 +1,4 @@
-/* storymapjs - v0.4.4 - 2014-10-10
+/* storymapjs - v2014-11-18-17-08-20 - 2014-11-18
  * Copyright (c) 2014 Northwestern University Knight Lab 
  */
 
@@ -16869,7 +16869,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		
 		
 		this._map.on("moveend", this._onMapMoveEnd, this);
-		this._map.attributionControl.setPrefix("<a href='http://storymap.knightlab.com/' target='_blank' class='vco-knightlab-brand'><span>&FilledSmallSquare;</span> StoryMapJS</a>");
+		this._map.attributionControl.setPrefix("<a href='http://storymap.knightlab.com/' target='_blank' class='vco-knightlab-brand'><span>&#x25a0;</span> StoryMapJS</a>");
 			
 		var map_type_arr = this.options.map_type.split(':');		
 
@@ -17433,6 +17433,9 @@ L.Map.include({
 	},
 	
 	_tryAnimatedZoom: function (center, zoom, options) {
+		if (typeof this._animateZoom == "undefined") {
+			return false;
+		}
 		if (this._animatingZoom) { return true; }
 
 		options = options || {};
