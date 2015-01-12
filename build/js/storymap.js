@@ -1,5 +1,5 @@
-/* storymapjs - v2014-11-18-17-08-20 - 2014-11-18
- * Copyright (c) 2014 Northwestern University Knight Lab 
+/* storymapjs - v2015-01-12-19-16-43 - 2015-01-12
+ * Copyright (c) 2015 Northwestern University Knight Lab 
  */
 
 /* **********************************************
@@ -6176,6 +6176,9 @@ VCO.Media.Twitter = VCO.Media.extend({
 		tweet_status_temp 	= d.html.split("<\/p>\&mdash;")[1].split("<a href=\"")[1];
 		tweet_status_url 	= tweet_status_temp.split("\"\>")[0];
 		tweet_status_date 	= tweet_status_temp.split("\"\>")[1].split("<\/a>")[0];
+		
+		// Open links in new window
+		tweet_text = tweet_text.replace(/<a href/ig, '<a target="_blank" href');
 		
 		// 	TWEET CONTENT
 		tweet += tweet_text;
