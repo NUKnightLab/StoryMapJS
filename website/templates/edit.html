@@ -862,14 +862,12 @@ $(function() {
         var re2 = /&authuser=0/; 
         var subst2 = '/'; 
         var value = value.replace(re2, subst2);
-
+        
         if(!value.match(/\/$/)) {
             value += '/';
             $(this).val(value);
         }
         _storymap_data.storymap.zoomify.path = value;
-
-        console.log(_storymap_data.storymap.zoomify.path);
         
         storymap_dirty(1);
         map_set_type();   
