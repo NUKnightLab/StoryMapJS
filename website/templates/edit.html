@@ -859,6 +859,9 @@ $(function() {
         var subst = 'www.googledrive.com\/host\/';
         var value = value.replace(re, subst);
 
+        var re3 = /drive.google.com\/folderview\?id=/; 
+        var value = value.replace(re3, subst);
+
         var re2 = /&authuser=0/; 
         var subst2 = '/'; 
         var value = value.replace(re2, subst2);
