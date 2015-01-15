@@ -855,16 +855,17 @@ $(function() {
     $('#zoomify_path').change(function(event) {
         var value = $(this).val().trim(); 
 
-        var re = /drive.google.com\/open\?id=/; 
-        var subst = 'www.googledrive.com\/host\/';
+        var re = /drive.google.com\/open\?id=/
+        var re2 = /drive.google.com\/folderview\?id=/; 
+        var subst = 'www.googledrive.com\/host\/'; 
         var value = value.replace(re, subst);
+        var value = value.replace(re2, subst);
 
-        var re3 = /drive.google.com\/folderview\?id=/; 
-        var value = value.replace(re3, subst);
-
-        var re2 = /&authuser=0/; 
-        var subst2 = '/'; 
-        var value = value.replace(re2, subst2);
+        var re3 = /&authuser=0/;
+        var re4 = /&usp=sharing/
+        var subst2 = '/';
+        var value = value.replace(re3, subst2);
+        var value = value.replace(re4, subst2);
         
         if(!value.match(/\/$/)) {
             value += '/';
