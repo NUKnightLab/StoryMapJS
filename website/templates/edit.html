@@ -718,7 +718,7 @@ function handle_onload() {
         if(authorized) {
             gapi.client.load('drive', 'v2', storymap_init);
         } else {
-            var message = 'Could not load StoryMap.  You must (re)authorize this application.'
+            var message = 'Opps! We couldn\'t load your StoryMap.  You need to (re)authorize this application.</p> <p>Follow the directions on this <a target="_blank" href="https://support.mozilla.org/en-US/kb/enable-and-disable-cookies-website-preferences">Firefox support page</a> and allow third-party cookie access. Then reload your page and you should be golden!</p> <p>Did that not fix it?'
                 + format_report_link('authorization', '', JSON.stringify(result, null, 2));
                             
             show_message(message, function() {
