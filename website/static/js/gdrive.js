@@ -791,7 +791,8 @@ function gdrive_storymap_create(parentFolder, title, data, callback) {
                 } else {                
                     _gdrive_call_chain(storymapFolder.id, [gdrive_perm_public, gdrive_type_add],
                         function(error) {
-                            if(error) {
+                            if(error && error.code != "404") { 
+                                // maybe it shouldn't be fatal if "Property not found: key = knightlab_type and visibility = PUBLIC"?
                                 callback(error);
                             } else {
                                 gdrive_file_create(storymapFolder, 'draft.json', data, function(error, response) {
