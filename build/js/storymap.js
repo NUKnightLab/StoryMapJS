@@ -1,5 +1,5 @@
-/* storymapjs - v2014-11-25-22-51-53 - 2014-11-25
- * Copyright (c) 2014 Northwestern University Knight Lab 
+/* storymapjs - v2015-01-26-16-25-23 - 2015-01-26
+ * Copyright (c) 2015 Northwestern University Knight Lab 
  */
 
 /* **********************************************
@@ -7649,7 +7649,6 @@ VCO.StorySlider = VCO.Class.extend({
 			this.options.width = width;
 		} else {
 			this.options.width = this._el.container.offsetWidth;
-      console.log("line 457: ", this.options.width);
 		}
 		
 		if (height) {

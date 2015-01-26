@@ -401,7 +401,9 @@ function gdrive_file_create(parentFolder, title, content, callback) {
 
 function gdrive_file_update(id, content, callback) {
     var request = null;
-    
+    if (content == null) {
+        throw("Invalid update request: null content.")
+    }
     var m = content.match('^data:(.+);base64,(.+)');
     if(m) {
         request = gapiPUTRequest(id, m[1], m[2]);          
@@ -686,9 +688,12 @@ function gdrive_storymap_list(parentFolder, callback) {
                                              
             // Ensure type property
             gdrive_type_ensure(folder.id, function(error) {
-                if(error) {
+                if(error && error.code != 404) {
                     callback(error);
                 } else {
+                    if (error && error.code == 404) {
+                        console.log("Skipped a 404 error: " + error.message)
+                    }
                     _gdrive_call_chain(folder, 
                         [_gdrive_storymap_process_perms, _gdrive_storymap_process_files],
                         function(error) {
@@ -791,11 +796,12 @@ function gdrive_storymap_create(parentFolder, title, data, callback) {
                 } else {                
                     _gdrive_call_chain(storymapFolder.id, [gdrive_perm_public, gdrive_type_add],
                         function(error) {
-                            if(error) {
+                            if(error && error.code != "404") { 
+                                // maybe it shouldn't be fatal if "Property not found: key = knightlab_type and visibility = PUBLIC"?
                                 callback(error);
                             } else {
                                 gdrive_file_create(storymapFolder, 'draft.json', data, function(error, response) {
-                                    if(!error) {
+                                    if(!error || error.code == "404") {
                                         storymapFolder['draft_on'] = storymapFolder.modifiedDate;
                                         storymapFolder['published_on'] = '';
                                         storymapFolder['lock_file'] = null; 
