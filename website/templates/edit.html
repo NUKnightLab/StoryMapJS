@@ -718,7 +718,7 @@ function handle_onload() {
         if(authorized) {
             gapi.client.load('drive', 'v2', storymap_init);
         } else {
-            var message = 'Could not load StoryMap.  You must (re)authorize this application.'
+            var message = 'Could not load StoryMap. You need to (re)authorize this application.</p> <p>Please see this <a target="_blank" href="https://knightlab.zendesk.com/entries/76870909-Error-Could-not-load-StoryMap-You-must-re-authorize-this-application-">support page</a> for more infomation.</p>'
                 + format_report_link('authorization', '', JSON.stringify(result, null, 2));
                             
             show_message(message, function() {
