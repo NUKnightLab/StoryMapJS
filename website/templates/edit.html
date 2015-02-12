@@ -658,6 +658,9 @@ function storymap_init() {
             } else if(storymap_is_locked(storymapFolder)) {
                 storymap_cache_update(storymapFolder.id, {'lock_file': storymapFolder.lock_file});                
                 storymap_abort('This StoryMap is currently being edited by <strong>'+storymapFolder.lock_file.lastModifyingUserName+'</strong>');
+            } else if(!(storymapFolder.userPermission.role == 'owner'
+                     || storymapFolder.userPermission.role == 'writer')) {                     
+                storymap_abort('You do not have permission to edit this StoryMap');                     
             } else {
                 gdrive_storymap_lock(storymapFolder, function(error) {
                     if(error) {
