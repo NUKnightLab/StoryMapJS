@@ -417,31 +417,7 @@ function preview_load() {
         script_path: getScriptPath(/storymap(-min)?\.js/)+'/',
         start_at_slide: _current_slide_index,
     };
-    
-    if(_storymap_data.storymap.map_type) {
-        options.map_type = _storymap_data.storymap.map_type;
-    }
-    if(_storymap_data.storymap.map_subdomains) {
-        options.map_subdomains = _storymap_data.storymap.map_subdomains;
-    }
-    if(_storymap_data.storymap.hasOwnProperty('map_as_image')) {
-        options.map_as_image = _storymap_data.storymap.map_as_image;
-    }
-    if(_storymap_data.storymap.hasOwnProperty('map_background_color')) {
-        options.map_background_color = _storymap_data.storymap.map_background_color;
-    }
-    if(_storymap_data.storymap.language) {
-        options.language = _storymap_data.storymap.language;
-    }
-    if(_storymap_data.storymap.zoomify) {
-        options.zoomify = _storymap_data.storymap.zoomify;
-    }
-    if(_storymap_data.storymap.call_to_action) {
-        options.call_to_action = _storymap_data.storymap.call_to_action;
-    }          
-    if(_storymap_data.storymap.call_to_action_text) {
-        options.call_to_action_text = _storymap_data.storymap.call_to_action_text;
-    }          
+        
     _storymap_object = new VCO.StoryMap('preview_embed', 
         $.extend(true, {}, _storymap_data), options);
     

@@ -79,6 +79,19 @@ VCO.Util = {
 		return data_main;
 	},
 	
+	/*  Like mergeData, except will only try to copy data that already exists
+	    in data_main
+	*/
+	updateData: function(data_main, data_to_merge) {
+	    var x;
+	    for (x in data_main) {
+			if (Object.prototype.hasOwnProperty.call(data_to_merge, x)) {
+				data_main[x] = data_to_merge[x];
+			}
+		}
+		return data_main;
+    },
+    	
 	stamp: (function () {
 		var lastId = 0, key = '_vco_id';
 		
