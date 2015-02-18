@@ -49,6 +49,19 @@ modal_reset = function(event, error_msg) {
     $(this).trigger('progress_hide');
 }
 
+// Initialize modal for common events
+function modal_init($modal) {
+    return $modal
+        .on('error_show', modal_error_show)
+        .on('error_hide', modal_error_hide)
+        .on('progress_show', modal_progress_show)
+        .on('progress_hide', modal_progress_hide)
+        .on('confirm_show', modal_confirm_show)
+        .on('confirm_hide', modal_confirm_hide)
+        .on('reset', modal_reset);
+        //.on('enable', modal_enable);
+}
+
 // ------------------------------------------------------------
 // generic upload control handling, assumes globals:
 //      _storymap_info      folder info
