@@ -16,9 +16,9 @@
 <link rel="stylesheet" href="/build/css/storymap.css?v1">
 <!-- endbuild -->
 <!-- === Moment.js -->
-<script src="{{ STATIC_URL }}/js/moment.min.js"></script>
-<script src="{{ STATIC_URL }}/js/moment-timezone.min.js"></script>
-<script src="{{ STATIC_URL }}/js/moment-timezone-data.js"></script>
+<script src="{{ STATIC_URL }}js/moment.min.js"></script>
+<script src="{{ STATIC_URL }}js/moment-timezone.min.js"></script>
+<script src="{{ STATIC_URL }}js/moment-timezone-data.js"></script>
 <!-- === auth/sharing -->
 {% include '_credentials.html' %}
 <script type="text/javascript">
@@ -26,11 +26,11 @@ window.onload = function() { gapi.load('drive-share', function() { /* noop */ })
 </script>
 <script type="text/javascript" src="https://apis.google.com/js/api.js"></script>
 <!-- === editor -->
-<script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.history.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}/js/json2.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}/js/editor.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}/js/gdrive.js"></script>
-<link rel="stylesheet" type="text/css" href="{{ static_url }}/css/editor.css">
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.history.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/json2.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/editor.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/gdrive.js"></script>
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/editor.css">
 </head>
 <body>
 
@@ -102,14 +102,14 @@ window.onload = function() { gapi.load('drive-share', function() { /* noop */ })
         <div class="entry-panel entry-create-map hide">
             <p>
                 <label>Great!  Let's create your StoryMap.  What do you want to call it?</label>
-                <input type="text" class="entry-create-title stretch" />
+                <input type="text" class="entry-create-title stretch" data-onsubmit="entry_create" />
             </p>
         </div>         
 <!-- create zoomify panel -->
         <div class="entry-panel entry-create-zoomify hide">
             <p>
                 <label>Great!  Let's create your StoryMap.  What do you want to call it?</label>
-                <input type="text" class="entry-create-title stretch" />
+                <input type="text" class="entry-create-title stretch" data-onsubmit="entry_create" />
             </p>
             <p>
                 <label>URL path for your image directory:</label>
@@ -133,21 +133,21 @@ window.onload = function() { gapi.load('drive-share', function() { /* noop */ })
         <div class="entry-panel entry-import hide">
             <p>
                 <label>Let's import your StoryMap.  What do you want to call it?</label>
-                <input type="text" class="entry-import-title stretch" />
+                <input type="text" class="entry-import-title stretch" data-onsubmit="entry_import" />
             </p>
         </div>         
 <!-- rename panel -->
         <div class="entry-panel entry-rename hide">
             <p>
                 <label>Enter a new name for your <strong class="entry-rename-title-old"></strong> StoryMap:</label>
-                <input type="text" class="entry-rename-title stretch" />
+                <input type="text" class="entry-rename-title stretch" data-onsubmit="entry_rename" />
             </p>
         </div>         
 <!-- copy panel -->
         <div class="entry-panel entry-copy hide">
             <p>
                 <label>Enter a name for your copy of <strong class="entry-copy-title-old"></strong> StoryMap:</label>
-                <input type="text" class="entry-copy-title stretch" />
+                <input type="text" class="entry-copy-title stretch" data-onsubmit="entry_copy" />
             </p>
         </div>         
     </div>
@@ -193,49 +193,56 @@ window.onload = function() { gapi.load('drive-share', function() { /* noop */ })
     </div>
 </div>
 
-<!-- START TEMPLATES -->
-<script id="shared_with" type="text/template">
-    <p class="modded"><i class="list-item-shared icon-link"></i>Shared with
-    <% _.each(permissions, function(p) { %>
-        <% if(p.photoLink) { %>
-            <img class="shared" src="<%= p.photoLink %>" title="<%= p.name %>" />
-        <% } else { %>
-            <a class="shared" href="javascript:" title="<%= p.name %>"><i class="icon-user icon-large"></i></a>
-        <% } %>
-    <% }); %>
-    </p>
+<!-- TEMPLATES START  -->
+
+<script id="storymap_row_template" type="text/template">
+<tr id="<%= id %>">
+<td>
+<div style="display: inline;float: right">
+    <div class="dropdown">
+    <a class="list-item-options dropdown-toggle" data-toggle="dropdown" href="javascript:" title="Options"><i class="icon-cog icon-large"></i></a>
+    <ul class="dropdown-menu pull-right" role="menu">
+    <li><a href="javascript:" class="list-item-rename">Rename</a></li>
+    <li><a href="javascript:" class="list-item-copy">Copy</a></li>
+    <li><a href="javascript:" class="list-item-delete">Delete</a></li>
+    </ul>
+    </div>
+</div>
+<a class="title" href="{{ url_for('edit') }}?id=<%= id %>"><%= title %></a>
+<% if(published_on) { %>
+<p class="modded">Published on <%= format_dt(published_on) %></p>
+<% } %>
+<% if(draft_on > published_on) { %>
+<p class="modded">
+<% if(published_on) { %>
+<i class="icon-warning-sign" title="This draft is newer than the most recently published version."></i>
+<% } %>
+Edited on <%= format_dt(draft_on) %>
+<% } %>
+</p>
+</td>
+</tr>
 </script>
 
-<script id="shared_by" type="text.template">
-    <p class="modded"><i class="list-item-shared icon-link"></i>Shared by 
-    <% if(owner.picture && owner.picture.url) { %>
-        <img class="shared" src="<%= owner.picture.url %>" title="<%= owner.displayName %>" />
-    <% } else { %>
-        <a class="shared" href="javascript:" title="<%= owner.displayName %>"><i class="icon-user icon-large"></i></a>
-    <% } %>
-    </p>
-</script>
-
-<!-- END TEMPLATES -->
+<!-- TEMPLATES END -->
 
 <script type="text/javascript">
 
-var shared_with_template = _.template($('#shared_with').html().trim());
-var shared_by_template = _.template($('#shared_by').html().trim());
+var _user = {};
+{% if user %}
+    _user = {{ user|tojson }};
+{% endif %}
 
+var storymap_row_template = _.template($('#storymap_row_template').html().trim());
 
-var _storymap_folder = null;    // public folder
-
-var _storymap_map = {};         // id => object
-var _storymap_names = [];       // lowercase list of storymap names
 var _storymap_list = [];        // [object]
 
 var _params = parseQueryString();
 
-
 //
 // sort
 //
+
 function sortby_date(a, b) {
     adt = (a.draft_on > a.published_on) ? a.draft_on : a.published_on;
     bdt = (b.draft_on > b.published_on) ? b.draft_on : b.published_on;                
@@ -246,46 +253,16 @@ function sortby_title(a, b) {
     return (a.title.toUpperCase() < b.title.toUpperCase()) ? -1 : 1;
 }
 
+//
+// misc 
+//
 
-//
-// (Re)initialize _storymap_map / _storymap_list / _storymap_names
-// @callback(error | null)
-//
-function process_storymap_map(storymap_map, callback) {
-    _storymap_map = storymap_map;
+function make_storymap_list() {
     _storymap_list = [];
-    _storymap_names = [];
+    for(var id in _user.storymaps) {
+        _storymap_list.push(_user.storymaps[id]);                          
+    }
 
-   for(var id in _storymap_map) {
-        _storymap_list.push(_storymap_map[id]);
-        _storymap_names.push(_storymap_map[id].title.toLowerCase());
-    }            
-}
-
-function init_storymap_list(callback) {
-    var storymap_map = storymap_cache_get(true);
-    
-    if(storymap_map) {
-        process_storymap_map(storymap_map);
-        callback(null);
-    } else {
-        gdrive_storymap_list(_storymap_folder, function(error, storymap_map) {                
-            if(error) {
-                callback(error);
-            } else {
-                // List all 'shared with me'
-                gdrive_storymap_list_shared(storymap_map, function(error) {
-                    if(error) {
-                        callback(error);
-                     } else {
-                        process_storymap_map(storymap_map);
-                        storymap_cache_set(storymap_map, true);
-                        callback(null);
-                    }
-                });                 
-            }
-        });   
-    }    
 }
 
 function validate_storymap_name($modal, name) {
@@ -293,9 +270,11 @@ function validate_storymap_name($modal, name) {
         $modal.trigger('error_show', 'You must enter a name');
         return false;
     }
-    if(_storymap_names.indexOf(name.toLowerCase()) >= 0) {
-        $modal.trigger('error_show', 'You already have a StoryMap named "'+name+'".');
-        return false;
+    for(var i = 0; i < _user.storymaps.length; i++) {
+        if(name.toLowerCase() == _user.storymaps[i].title.toLowerCase()) {
+            $modal.trigger('error_show', 'You already have a StoryMap named "'+name+'".');
+            return false;    
+        }
     }
     return true;
 }
@@ -314,6 +293,18 @@ function handle_onload() {
 //
 
 $(function() {
+
+    // bind input.text return key events to button clicks
+    $('input[type="text"][data-onsubmit]').each(function(i, val) {
+        var $el = $(this);
+        $el.keyup(function(event) {
+            if(event.keyCode == 13) {
+                $('#'+$el.attr('data-onsubmit')).click();
+            }        
+        });
+    });
+
+
     $('#entry_login').click(function() {
         var $modal = $('#entry_modal').trigger('progress_show', 'Logging in');
 
@@ -323,7 +314,6 @@ $(function() {
     }); 
     
     $('#entry_logout').click(function(event) {
-        storymap_cache_clear();
         document.location.href = 'http://www.google.com/accounts/Logout';    
     });
 
@@ -343,12 +333,6 @@ $(function() {
 // rename
 // ------------------------------------------------------------
     
-    $('input.entry-rename-title[type="text"]').keyup(function(event){
-        if(event.keyCode == 13) {
-            $('#entry_rename').click();
-        }
-    });
-                              
     $('#entry_rename').click(function(event) {
         var $modal = $('#entry_modal');
         var $panel = $('.entry-rename');
@@ -358,31 +342,22 @@ $(function() {
             return false;
         }
         var id = $(this).attr('storymap-data');
- 
-        $modal.trigger('progress_show', 'Renaming StoryMap');
-         
-        gdrive_rename(id, name, function(error, resource) {
-            if(error) {
-                $modal.trigger('reset', format_error('Error renaming StoryMap', error));               
-            } else {
-                // Update cache
-                _storymap_map[id]['title'] = name;
-                storymap_cache_set(_storymap_map);
-                       
-                $modal.trigger('show_list', true); 
+                   
+        ajax_post("{{ url_for('storymap_rename') }}",
+            {id: id, title: name},
+            function(error) {
+                $modal.trigger('reset', format_error('Error renaming StoryMap', error));   
+            },
+            function(data) {
+                _user.storymaps[id].title = name;
+                $modal.trigger('show_list'); 
             }
-        });
+        );
     });
 
 // ------------------------------------------------------------
 // copy
 // ------------------------------------------------------------
-
-    $('input.entry-copy-title[type="text"]').keyup(function(event){
-        if(event.keyCode == 13) {
-            $('#entry_copy').click();
-        }
-    });
 
     $('#entry_copy').click(function(event) {
         var $modal = $('#entry_modal');
@@ -393,32 +368,26 @@ $(function() {
             return false;
         }        
         var id = $(this).attr('storymap-data');
-        var item = _storymap_map[id];
  
+        alert('TO DO');
+/*
+        var item = _storymap_map[id];
+
         $modal.trigger('progress_show', 'Copying StoryMap');
          
         gdrive_storymap_copy(item, name, function(error, folder) {
             if(error) {
                 $modal.trigger('reset', format_error('Error copying StoryMap', error));               
             } else {
-                // Update cache
-                _storymap_map[folder.id] = folder;
-                storymap_cache_set(_storymap_map);
-
-                $modal.trigger('show_list', true); 
+                 $modal.trigger('show_list', true); 
             }
         });
+*/
     });
 
 // ------------------------------------------------------------
 // import
 // ------------------------------------------------------------
-
-    $('input.entry-import-title[type="text"]').keyup(function(event){
-        if(event.keyCode == 13) {
-            $('#entry_import').click();
-        }
-    });
 
     $('#entry_import').click(function() {
         var $modal = $('#entry_modal');
@@ -441,10 +410,6 @@ $(function() {
                     var url = document.location.href;
                     url = url.substring(0, url.indexOf("?"));
                     History.replaceState(null, document.title, url);
-
-                    // Update cache
-                    _storymap_map[folder.id] = folder;
-                    storymap_cache_set(_storymap_map);
                     
                     // Redirect
                     document.location.href = 'edit.html?id='+folder.id;                
@@ -456,12 +421,6 @@ $(function() {
 // ------------------------------------------------------------
 // create
 // ------------------------------------------------------------
-
-    $('input.entry-create-title[type="text"]').keyup(function(event){
-        if(event.keyCode == 13) {
-            $('#entry_create').click();
-        }
-    });
     
     $('#entry_create').click(function() {
         var $modal = $('#entry_modal');
@@ -515,39 +474,33 @@ $(function() {
         }
                     
         $modal.trigger('progress_show', 'Creating StoryMap');
-         
-        gdrive_storymap_create(_storymap_folder, name, data, function(error, folder) {
-            if(error) {
-                $modal.trigger('reset', format_error('Error creating StoryMap', error));
-            } else {
-                // Update cache
-                _storymap_map[folder.id] = folder;
-                storymap_cache_set(_storymap_map);
-                
-                // Goto edit page
-                document.location.href = 'edit.html?id='+folder.id;
-            }  
-        });    
+        
+        ajax_post("{{ url_for('storymap_create') }}",
+            {
+                title: name,
+                d: JSON.stringify(data)
+            },
+            function(error) {
+                $modal.trigger('reset', format_error('Error creating StoryMap', error));            
+            },
+            function(data) {
+                document.location.href = "{{ url_for('edit') }}?id="+data.id;
+            }
+        );
     });
 
 // ------------------------------------------------------------
 // main
 // ------------------------------------------------------------
  
-    $('#entry_modal')
-        .on('error_show', modal_error_show)
-        .on('error_hide', modal_error_hide)
-        .on('progress_show', modal_progress_show)
-        .on('progress_hide', modal_progress_hide)
-        .on('confirm_show', modal_confirm_show)
-        .on('confirm_hide', modal_confirm_hide)
-        .on('reset', modal_reset)    
+    modal_init($('#entry_modal'))
         ////// custom
         .on('show', function(event) {
             if (event.target.id == 'entry_modal') {
                 var $modal = $(this).trigger('progress_show', 'Checking authorization');   
                 
-                gdrive_check_auth(function(authorized) {
+                gdrive_check_auth(function(authorized, authResult) {
+                    console.log('authResult', authResult);               
                     $modal.trigger('handle_auth', authorized); 
                 });           
             }
@@ -557,46 +510,52 @@ $(function() {
             
             $modal.find('.entry-panel').hide();
             
-            if(authorized) {
-                var $modal = $(this).trigger('progress_show', 'Handling authorization');   
-                
-                gapi.client.load('drive', 'v2', function() {
-                    gdrive_about(function(error, info) {
-                        if(error) {
-                            $modal.trigger('reset',  format_error('Error getting user info', error)); 
-                            return;                             
-                        } 
-                        
-                        $('#entry_user_name').html(info.name);
-                        $('#entry_user_info').show();                          
-                        
-                        if(info.domainSharingPolicy && info.domainSharingPolicy.indexOf('allowed') != 0) {
-                            $modal.trigger('reset',  'This Google Account does not support public Google Drive sharing.  Please sign in with a different Google account.');                                
-                            return;
-                        } 
-                         
-                        gdrive_storymap_init(function(error, publicFolder) {
-                            _storymap_folder = publicFolder;  
-                               
-                            if(error) {
-                                $modal.trigger('reset', format_error('Error initializing StoryMap', error));
-                            } else if(_params.import_url) {
-                                init_storymap_list(function(error) {
-                                    if(error) {
-                                        $modal.trigger('reset', format_error('Error getting StoryMap list', error));
-                                    } else {
-                                        $modal.trigger('show_import');
-                                    }
-                                });
-                            } else {
-                                $modal.trigger('show_list');
-                            }         
-                        });    
-                    });
-                }); 
-            } else {
+            if(!authorized) {
                 $modal.trigger('show_login');
-            }           
+                return;
+            }
+            
+            $modal.trigger('progress_show', 'Handling authorization');   
+                           
+            gapi.client.load('drive', 'v2', function() {
+                gdrive_about(function(error, info) {
+                    if(error) {
+                        $modal.trigger('reset',  format_error('Error getting user info', error)); 
+                        return;                             
+                    }      
+                    if(info.domainSharingPolicy && info.domainSharingPolicy.indexOf('allowed') != 0) {
+                        $modal.trigger('reset',  'This Google Account does not support public Google Drive sharing.  Please sign in with a different Google account.');                                
+                        return;
+                    } 
+               
+                    ajax_get("{{ url_for('google_auth') }}", 
+                        {
+                            id: info.user.emailAddress, 
+                            name: info.user.displayName
+                        },
+                        function(error) {
+                            console.log('google_auth', error);
+                            $modal.trigger('reset',  format_error('Error getting user storage', error)); 
+                         }, 
+                        function(data) {
+                            console.log('google_auth', data);
+                            
+                            // Store user information
+                            _user = data.user;
+                            make_storymap_list();
+                            
+                            // Show user information
+                            $('#entry_user_name').html(_user.uname);
+                            $('#entry_user_info').show(); 
+                                                                   
+                            // Show storymaps
+                            $modal.trigger('show_list');
+                            
+                        }
+                    );    
+                });
+            }); 
+          
         })
         .on('show_login', function(event) {
             $(this).find('.entry-panel').hide();
@@ -626,25 +585,16 @@ $(function() {
             var $modal = $(this)
                 .trigger('error_hide')
                 .trigger('progress_show', 'Getting StoryMap list');
-                
-            if(!force_reload && _storymap_list && _storymap_list.length > 0) {
+ 
+            if(_storymap_list.length > 0) {
                 $modal.find('.entry-list').show();
-                $modal.trigger('display_list', 'title');               
-            } else {       
-                init_storymap_list(function(error) {
-                    if(error) {
-                        $modal.trigger('reset', format_error('Error getting StoryMap list', error));
-                    } else if(_storymap_list.length) {
-                        $modal.find('.entry-list').show();
-                        $modal.trigger('display_list', 'title');               
-                    } else {
-                        $modal.trigger('show_type');                    
-                    }
-                });
+                $modal.trigger('display_list', 'title');  
+            } else {
+                $modal.trigger('show_type');
             }
         })
         .on('display_list', function(event, sortby) {
-            if(sortby == 'date') {        
+            if(sortby == 'date') {                    
                 _storymap_list = _storymap_list.sort(sortby_date);
             } else {
                 _storymap_list = _storymap_list.sort(sortby_title);
@@ -653,80 +603,9 @@ $(function() {
             var $modal = $(this);
             var $table = $('.entry-list tbody').html('');
             var html = '';
-            
+          
             for(var i = 0; i < _storymap_list.length; i++) {
-                var item = _storymap_list[i];    
-                var locked = storymap_is_locked(item);        
-                var href = '/edit.html?id='+item.id;
-            
-                html += '<tr id="'+item.id+'"><td>';
-                    
-                // If owner and unlocked, show actions        
-                if(item.userPermission.role == 'owner' && !locked) {
-                    html += '<div style="display: inline;float: right">';
-                    
-                    if(item.error) {
-                        html += '<a class="list-item-menu list-item-delete" href="javascript:" title="Delete"><i class="icon-trash icon-large"></i></a>';                
-                    } else {
-                        html += '<div class="dropdown">'
-                            + '<a class="list-item-options dropdown-toggle" data-toggle="dropdown" href="javascript:" title="Options"><i class="icon-cog icon-large"></i></a>'
-                            + '<ul class="dropdown-menu pull-right" role="menu">'
-                            + '<li><a href="javascript:" class="list-item-rename">Rename</a></li>'
-                            + '<li><a href="javascript:" class="list-item-copy">Copy</a></li>'
-                            + '<li><a href="javascript:" class="list-item-share">Collaborate</a></li>'
-                            + '<li><a href="javascript:" class="list-item-delete">Delete</a></li>'
-                            + '</ul>'
-                            + '</div>';
-                    }  
-                    
-                    html += '</div>';              
-                } 
-                
-                if(item.error) {
-                    html += item.title;
-                    
-                    // Share info
-                    if(item.userPermission.role == 'owner') {
-                        if(item.permissions.length) {
-                            html += shared_with_template({permissions: item.permissions});
-                        }
-                    } else {
-                        html += shared_by_template({owner: item.owners[0]});
-                    }
-                    
-                    html += '<p class="modded"><i class="icon-warning-sign" title="Error"></i>'+item.error+'</p>';
-                } else {
-                    if(locked) {
-                        html += item.title;                  
-                    } else {
-                        html += '<a class="title" href="'+href+'">'+item.title+'</a>';
-                    }
-                    
-                    // Share info
-                    if(item.userPermission.role == 'owner') {
-                        if(item.permissions.length) {
-                            html += shared_with_template({permissions: item.permissions});
-                        }                   
-                    } else {
-                        html += shared_by_template({owner: item.owners[0]});
-                    }
-                    
-                    if(item.published_on) {
-                        html += '<p class="modded">Published on '+format_dt(item.published_on)+'</p>';
-                    }                    
-                    if(item.draft_on > item.published_on) {
-                        html += '<p class="modded">';
-                        if (item.published_on) {
-                            html += '<i class="icon-warning-sign" title="This draft is newer than the most recently published version."></i>';
-                        } 
-                        html += 'Edited on '+format_dt(item.draft_on)+'</p>';
-                    }                       
-                    if(locked) {
-                        html += '<p class="locked"><i class="icon-lock"></i> Currently being edited by '+item.lock_file.lastModifyingUserName+'</p>';                   
-                    }              
-                }
-
-                html += '</td></tr>';             
+                html += storymap_row_template(_storymap_list[i]);                
             }
         
             $table.append(html);
@@ -754,7 +633,7 @@ $(function() {
         .on('show_rename', function(event, obj) {
             var $tr = $(obj).closest('tr');
             var id = $tr.attr('id');
-            var item = _storymap_map[id];
+            var item = _user.storymaps[id];
 
             $('.entry-rename-title-old').html(item.title);            
             $('.entry-rename input[type="text"]').val('');        
@@ -766,7 +645,7 @@ $(function() {
         })
         .on('show_copy', function(event, obj) {
             var id = $(obj).closest('tr').attr('id');
-            var item = _storymap_map[id];
+            var item = _user.storymaps[id];
 
             $('.entry-copy-title-old').html(item.title);            
             $('.entry-copy input[type="text"]').val('');        
@@ -785,6 +664,7 @@ $(function() {
             $modal.find('.entry-import').show();     
             $('entry-import-title').focus();          
         })
+/*
         .on('share_storymap', function(event, obj) {
             var id = $(obj).closest('tr').attr('id');
          
@@ -792,40 +672,40 @@ $(function() {
             sc.setItemIds([id]);            
             sc.showSettingsDialog();         
         })
+*/
         .on('delete_storymap', function(event, obj) {
             var $modal = $(this);
             var $tr = $(obj).closest('tr');
             var id = $tr.attr('id');
-            var item = _storymap_map[id];
+            var item = _user.storymaps[id];
                         
             $modal.trigger('confirm_show', ['Delete <strong>'+item.title+'</strong> StoryMap?', function(yes) {
                 if(yes) {
                     $modal.trigger('progress_show', 'Deleting StoryMap');
                     
-                    gdrive_delete(item.id, function(error) {                    
-                        if(error) {
+                    ajax_get("{{ url_for('storymap_delete') }}", 
+                        {id: id},
+                        function(error) {
                             $modal.trigger('error_show', format_error('Error deleting StoryMap', error));
-                        } else {
-                            _storymap_names.remove(item.title.toLowerCase());
-                            _storymap_list.remove(item);
-                            delete _storymap_map[id];
-                            
-                            // Update cache
-                            storymap_cache_set(_storymap_map);
-                                
+                        },
+                        function(data) {
+                            _storymap_list.remove(item);                            
+                            delete _user.storymaps[id];                              
                             $tr.remove();
-                        }   
-                        
-                        $modal.trigger('progress_hide');    
-                    });               
+                        },
+                        function(error) {
+                            $modal.trigger('progress_hide'); 
+                        }
+                    );
                 }          
             }]);
         });    
 });
 
+
 </script>
 <!-- LEAVE THIS HERE -->
-<script type="text/javascript" src="{{ STATIC_URL }}/js/modals.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/modals.js"></script>
 <script type="text/javascript" src="https://apis.google.com/js/client.js?onload=handle_onload"></script>
 </body>
 </html>

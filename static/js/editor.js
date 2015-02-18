@@ -14,6 +14,16 @@ Array.prototype.move = function(from, to) {
     this.splice(to, 0, this.splice(from, 1)[0]);
 };
 
+
+function debug() {
+    if(console && console.log) {
+        // converts arguments to real array
+        var args = Array.prototype.slice.call(arguments);
+        args.unshift('**');
+        console.log.apply(console, args); // call the function
+    }
+}
+
 function parseQueryString() {
     var nvpair = {};
     var qs = window.location.search.replace('?', '');
@@ -43,24 +53,49 @@ function format_dt(dt_string) {
     return m.format('ll')+' at '+m.format('LT');
 }
 
-function do_ajax(url, data, on_error, on_success) {
+//
+// ajax
+//
+
+function noop() {}
+
+function _ajax(url, type, data, on_error, on_success, on_complete) {
+    var _error = '';
+    
     $.ajax({
         url: url,
+        type: type,
         data: data,
         dataType: 'json',
         timeout: 45000, // ms
-        error: function(xhr, status, err) {
-            on_error(err || status);
+        error: function(xhr, status, err) { 
+            _error = err || status;
+            debug('ajax error', _error)           
+            on_error(_error);
         },
         success: function(data) {
+            debug('ajax data', data);
             if(data.error) {
-                on_error(data.error);
+                _error = data.error;
+                on_error(_error);
             } else {
                 on_success(data);
             }
+        },
+        complete: function() {
+            on_complete(_error);
         }
     });
 }
+
+function ajax_get(url, data, on_error, on_success, on_complete) {
+    _ajax(url, 'GET', data, on_error, on_success, on_complete || noop);
+}
+
+function ajax_post(url, data, on_error, on_success, on_complete) {
+    _ajax(url, 'POST', data, on_error, on_success, on_complete || noop);
+}
+
 
 function format_error(msg, err) {
     var message = msg;
@@ -159,66 +194,19 @@ function show_message(msg, callback) {
     $('#message_modal').modal('show');
 }
 
-function storymap_is_locked(storymapFolder) {
-    if(storymapFolder.lock_file) {
-        var lock = storymapFolder.lock_file;
-        if(!lock.lastModifyingUser.isAuthenticatedUser) {
-            var now = moment().unix();
-            var then = moment(lock.modifiedDate).unix();           
-            return((now - then) < 120);
-         }
-    } 
-    return false;
-}
-
 //
-// cache
-// id => object (see gdrive_storymap_list)
-// 
+// urls
+//
 
-function storymap_cache_get(check_ts) {
-    if(typeof(Storage) !== "undefined") {        
-        if(check_ts) {
-            var now = new Date().getTime();
-            var ts = sessionStorage.getItem('storymap_cache_ts');
-        
-            if(!ts || (now - ts) > 900000) {
-                storymap_cache_clear();  
-            }
-        }
-        
-        var data = sessionStorage.getItem('storymap_cache');
-        if(data) {
-            return JSON.parse(data);
-        }
-    } 
-    
-    return null;
+function storymap_url(uid, id, filename) {
+    return ['//s3.amazonaws.com/uploads.knilab.com/storymap', uid, id, filename]
+        .join('/');
 }
 
-function storymap_cache_set(data, set_ts) {
-    if(typeof(Storage) !== "undefined") {
-        if(set_ts) {
-            sessionStorage.setItem('storymap_cache_ts', new Date().getTime());
-        }
-        return sessionStorage.setItem('storymap_cache', JSON.stringify(data))
-    } 
+function storymap_draft_url(uid, id) {
+    return storymap_url(uid, id, 'draft.json');
 }
 
-function storymap_cache_update(id, data) {
-    var cache_data = storymap_cache_get();
-    if(cache_data) {
-        if(id in cache_data) {
-            for(key in data) {
-                cache_data[id][key] = data[key];
-            }
-            storymap_cache_set(cache_data);
-        }
-    }
-}
-
-function storymap_cache_clear() {
-    if(typeof(Storage) !== "undefined") {
-        sessionStorage.clear();
-    }
+function storymap_published_url(uid, id) {
+    return storymap_url(uid, id, 'published.json');
 }
