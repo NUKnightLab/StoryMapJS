@@ -133,10 +133,5 @@
     // input: {
     //   env: {bucket: name of the S3 bucket that will host the website}
     // }
-    //
-    //"deploy": {
-    //    "stg": {"bucket": "storymap.knilab.com", "usemin_context": {"cdn": "dev"}},
-    //    "prd": {"bucket": "storymap.knightlab.com", "usemin_context": {"cdn": "latest"}}
-    //}
     // DYNAMIC WEBSITE, NO DEPLOY ENTRY
 }
