@@ -64,8 +64,9 @@ function modal_init($modal) {
 
 // ------------------------------------------------------------
 // generic upload control handling, assumes globals:
-//      _storymap_info      folder info
-//      _storymap_files     list of file name
+//      _storymap_upload_url    upload api url
+//      _storymap_meta          storymap meta information
+//      _storymap_files         list of file names
 //
 // uploads will trigger an 'upload' event at the modal level
 // with the file url as the argument
@@ -148,20 +149,25 @@ $('.btn.upload').click(function(event) {
     
         reader.onload = function() {
             $modal.trigger('progress_show', 'Uploading file');
-        
-            gdrive_file_save(_storymap_info, name, reader.result, function(error, file_resource) {
-                if(error || !file_resource) {
-                    $modal.trigger('reset', 'Error uploading file' + ((error) ? ' ('+error+')' : ''));    
-               } else {
+
+            ajax_post(_storymap_upload_url,
+                {
+                    id: _storymap_meta.id,
+                    name: name,
+                    content: reader.result,
+                },
+                function(error) {
+                    $modal.trigger('reset', 'Error uploading file' + ((error) ? ' ('+error+')' : '')); 
+                },
+                function(data) {
                     if(_storymap_files.indexOf(name) < 0) {      
                         _storymap_files.push(name);
                         _storymap_files.sort();
                     }     
-                           
                     $modal.trigger('progress_hide');
-                    $modal.trigger('upload', gdrive_storymap_url(_storymap_info, name));                           
-                }     
-            });
+                    $modal.trigger('upload', data.url);                                           
+                }
+            );
         }
     
         $modal.trigger('progress_show', 'Loading file');

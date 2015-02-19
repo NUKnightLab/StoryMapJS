@@ -92,7 +92,7 @@ window.onload = function() { gapi.load('drive-share', function() { /* noop */ })
                 <label><span onclick="$('#entry_modal').trigger('show_create_zoomify');">Gigapixel</span> <a class="help" href="javascript:;"
                         data-placement="top"
                         data-html="true"
-                        data-content="Tell a story using a large photograph, a piece of art, or a historic map. <a href='gigapixel.html' target='_blank'>Learn more</a>"
+                        data-content="Tell a story using a large photograph, a piece of art, or a historic map. <a href="{{ url_for('gigapixel') }}" target='_blank'>Learn more</a>"
                     >&nbsp;<i class="icon-question-sign icon-large"></i></a>
                 </label>    
 
@@ -368,21 +368,20 @@ $(function() {
             return false;
         }        
         var id = $(this).attr('storymap-data');
- 
-        alert('TO DO');
-/*
-        var item = _storymap_map[id];
 
         $modal.trigger('progress_show', 'Copying StoryMap');
-         
-        gdrive_storymap_copy(item, name, function(error, folder) {
-            if(error) {
-                $modal.trigger('reset', format_error('Error copying StoryMap', error));               
-            } else {
-                 $modal.trigger('show_list', true); 
+ 
+        ajax_get("{{ url_for('storymap_copy') }}",
+            {id: id, name: name},
+            function(error) {
+                $modal.trigger('reset', format_error('Error copying StoryMap', error));
+            },
+            function(data) {
+                _user.storymaps[data.id] = data;
+                _storymap_list.push(data);
+                $modal.trigger('show_list', true); 
             }
-        });
-*/
+        );
     });
 
 // ------------------------------------------------------------
@@ -400,20 +399,28 @@ $(function() {
             
         $modal.trigger('progress_show', 'Importing StoryMap');
         
-        do_ajax(_params.import_url, {}, 
+        ajax_get(_params.import_url, {}, 
             function(error) {
                 $modal.trigger('reset', format_error('Error loading storymap', error));
             },
-            function(data) {
-                gdrive_storymap_create(_storymap_folder, name, data, function(error, folder) {                
-                    // Replace history state
-                    var url = document.location.href;
-                    url = url.substring(0, url.indexOf("?"));
-                    History.replaceState(null, document.title, url);
-                    
-                    // Redirect
-                    document.location.href = 'edit.html?id='+folder.id;                
-                });            
+            function(data) {          
+                ajax_post("{{ url_for('storymap_create') }}",
+                    {
+                        title: name,
+                        d: JSON.stringify(data)
+                    },
+                    function(error) {
+                        $modal.trigger('reset', format_error('Error creating StoryMap', error));            
+                    },
+                    function(data) {
+                        // Replace history state
+                        var url = document.location.href;
+                        url = url.substring(0, url.indexOf("?"));
+                        History.replaceState(null, document.title, url);
+                        
+                        document.location.href = "{{ url_for('edit') }}?id="+data.id;
+                    }
+                );
             }
         );  
     });
@@ -523,6 +530,7 @@ $(function() {
                         $modal.trigger('reset',  format_error('Error getting user info', error)); 
                         return;                             
                     }      
+                    // TODO: DO WE STILL NEED THIS?
                     if(info.domainSharingPolicy && info.domainSharingPolicy.indexOf('allowed') != 0) {
                         $modal.trigger('reset',  'This Google Account does not support public Google Drive sharing.  Please sign in with a different Google account.');                                
                         return;
@@ -547,10 +555,12 @@ $(function() {
                             // Show user information
                             $('#entry_user_name').html(_user.uname);
                             $('#entry_user_info').show(); 
-                                                                   
-                            // Show storymaps
-                            $modal.trigger('show_list');
-                            
+                                              
+                            if(_params.import_url) {
+                                $modal.trigger('show_import');
+                            } else {                     
+                                $modal.trigger('show_list');
+                            }
                         }
                     );    
                 });

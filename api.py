@@ -93,16 +93,6 @@ def _get_uid(user_string):
     """Generate a unique identifer for user string"""
     return hashlib.md5(user_string).hexdigest()
 
-def _get_user():
-    """Get user record for session['uid']"""
-    uid = session.get('uid')
-    if not uid:
-        raise Exception('Expected "uid" in session')       
-    user = _user.find_one({'uid': uid})
-    if not user:
-        raise Exception('Could not find user record for "%s"' % uid)
-    return user
-
 def _utc_now():
     return datetime.datetime.utcnow().isoformat()+'Z'
 
@@ -121,7 +111,7 @@ def _request_get(key):
 
 def _request_get_list(*keys):
     """Verify existence of request data and return values"""
-    
+    # DEBUG
     print request.method
     print request.form
     
@@ -163,48 +153,6 @@ def _session_pop(*keys):
             session.pop(k)
 
 #
-# Utility
-#
-
-def _list_storymaps(uid):
-    """
-    List user storymaps
-    """
-    key_name = "storymap/%s/" % uid  
-    json_re = re.compile('%s(.+)/draft.json' % key_name)
-
-    print 'LISTING STORYMAPS', key_name
-    
-
-    key_name_list, more = storage.list_key_names(key_name, 999)
-    pitcha_list = []
-    
-    # Look for json files
-    for key_name in key_name_list:
-        print key_name
-        m = json_re.match(key_name)
-        if m:
-            print 'STORYMAP', m.group(1)
-        continue
-        
-        m = json_re.match(key_name)
-        if m:
-            pitcha_id = m.group(1)
-            
-            # Check for thumbnail
-            thumb_name = storage.pitcha_thumb_name(uid, pitcha_id)
-            if thumb_name in key_name_list:
-                pitcha_list.append({
-                    'id': pitcha_id, 
-                    'thumb': settings.AWS_STORAGE_BUCKET_URL+thumb_name
-                })
-            else:
-                pitcha_list.append({
-                    'id': pitcha_id
-                })
-
-
-#
 # Auth
 #    
 
@@ -236,153 +184,60 @@ def google_auth():
         
         # Update session
         session['uid'] = uid
-    
-        _list_storymaps(uid)
-        
+            
         return _jsonify({'error': '', 'user': user})          
     except Exception, e:
         traceback.print_exc()
         return jsonify({'error': str(e)})          
-           
+
+def _get_user():
+    """Get user record for session['uid']"""
+    uid = session.get('uid')
+    if not uid:
+        raise Exception('Expected "uid" in session')       
+    user = _user.find_one({'uid': uid})
+    if not user:
+        raise Exception('Could not find user record for "%s"' % uid)
+    return user
+
+def _get_user_verify(id):
+    """
+    Get user record and verify access to storymap with id
+    """
+    user = _get_user()
+    if id not in user['storymaps']:
+        raise Exception('You do not have permission to access to this StoryMap')
+    return user           
+
+def _make_storymap_id(user, title):
+    """
+    Get unique storymap id from slugified title
+    """
+    id_base = slugify.slugify(title, only_ascii=True)
+    id = id_base        
+    n = 0
+    while id in user['storymaps']:
+        n += 1
+        id = '%s-$d' % (id_base, n)
+    
+    return id
 
 #
 # API views
 #
-
-   
-@app.route('/image/list/', methods=['GET', 'POST'])
-def image_list():
-    """
-    List next 20 user images in S3
-    @marker = marker for pagination (if applicable)
-    """
-    try:
-        uid = _session_get('uid')
         
-        marker = request.form.get('marker') or ''
-        
-        key_name = "pitcha/%s/_images/" % uid     
-        key_list, more = storage.list_keys(key_name, 20, marker)  
-        image_list = []
-        
-        for key in key_list:
-            image_list.append(
-                {'url': settings.AWS_STORAGE_BUCKET_URL+key.name})
-        
-        if more:
-            marker = key_list[-1].name
-        else:
-            marker = ''
-            
-        return jsonify({'image_list': image_list, 'marker': marker})    
-    except Exception, e:
-        traceback.print_exc()
-        return jsonify({'error': str(e)})
-        
-@app.route('/image/delete/', methods=['GET', 'POST'])
-def image_delete():
-    """
-    Delete image from S3
-    @url = url of the image
-    """
-    try:
-        uid = _session_get('uid')
-        url = request.form.get('url')
-        if not url:
-            raise Exception('Expected "url" parameter')
-        
-        m = re.match('.*%s(pitcha/%s/_images/.+)' \
-            % (settings.AWS_STORAGE_BUCKET_URL, uid), url)
-        if not m:
-            raise Exception('Invalid image url')
-        
-        key_name = m.group(1)
-        storage.delete(key_name);       
-        return jsonify({'error': ''})
-    except Exception, e:
-        traceback.print_exc()
-        return jsonify({'error': str(e)})
-
-@app.route('/image/save/', methods=['GET', 'POST'])
-def image_save():
-    """
-    Save image to S3
-    @ext = file extension
-    @content = data:URL representing the file's data as base64 encoded string
-    """
-    try:
-        uid = _session_get('uid')
-        
-        ext = request.form.get('ext')
-        content = request.form.get('content')
-        if not ext:
-            raise Exception('Expected "ext" parameter')
-        if not content:
-            raise Exception('Expected "content" parameter')
-    
-        m = re.match('data:(.+);base64,(.+)', content)
-        if m:
-            content_type = m.group(1)
-            content = m.group(2).decode('base64')
-        else:
-            raise Exception('Expected content as data-url')
-                    
-        key_name = storage.image_key_name(uid, ext)  
-        storage.save_from_data(key_name, content_type, content)
-        return jsonify({'url': settings.AWS_STORAGE_BUCKET_URL+key_name})
-    except Exception, e:
-        traceback.print_exc()
-        return jsonify({'error': str(e)})
-     
-@app.route('/image/import/', methods=['GET', 'POST'])
-def image_import():
-    """
-    Import user image to S3
-    @url = the url of the image
-    """
-    try:
-        uid = _session_get('uid')
-
-        url = request.form.get('url')
-        if not url:
-            raise Exception('Expected "url" parameter')
-            
-        path = urlparse.urlparse(url).path        
-        key_name = storage.image_key_name(uid, path.split('.')[-1])  
-        storage.save_from_url(key_name, url)                
-        return jsonify({'url': settings.AWS_STORAGE_BUCKET_URL+key_name})
-    except Exception, e:
-        traceback.print_exc()
-        return jsonify({'error': str(e)})
-
-
-#
-#
-#
-
 @app.route('/storymap/create/', methods=['POST'])
 def storymap_create():
     """
     Create a storymap in S3
     """
     try:
-        uid = _session_get('uid')
+        user = _get_user()  
         title, data = _request_get_list('title', 'd')
-        
-        user = _user.find_one({'uid': uid})
-        if not user:   
-            raise Exception('Could not find user record')
-        
-        # Get unique id from slugified name
-        id_base = slugify.slugify(title, only_ascii=True)
-        id = id_base        
-        n = 0
-        while id in user['storymaps']:
-            n += 1
-            id = '%s-$d' % (id_base, n)
-              
+                         
         # Save storymap to S3
-        key_name = 'storymap/%s/%s/draft.json' % (uid, id)
+        id = _make_storymap_id(user, title)
+        key_name = 'storymap/%s/%s/draft.json' % (user['uid'], id)
         print 'key_name', key_name
         
         content = json.loads(data)           
@@ -405,19 +260,13 @@ def storymap_create():
 @app.route('/storymap/')
 def storymap_get():
     """
-    Get storymap with <id> from S3        
+    Get storymap from S3        
     """
     try:
-        uid = _session_get('uid')
         id = _request_get('id')
-        
-        user = _user.find_one({'uid': uid})
-        if not user:   
-            raise Exception('Could not find user record')
-        if id not in user['storymaps']:
-            raise Exception('You do not have permission to access to this StoryMap')
-        
-        key_name = 'storymap/%s/%s/draft.json' % (uid, id)
+        user = _get_user_verify(id)
+                
+        key_name = 'storymap/%s/%s/draft.json' % (user['uid'], id)
         print 'key_name', key_name
         
         data = storage.load_json(key_name)                
@@ -435,14 +284,8 @@ def storymap_rename():
     Rename a storymap
     """
     try:
-        uid = _session_get('uid')
         id, title = _request_get_list('id', 'title')
-
-        user = _user.find_one({'uid': uid})
-        if not user:   
-            raise Exception('Could not find user record')
-        if id not in user['storymaps']:
-            raise Exception('You do not have permission to access to this StoryMap')
+        user = _get_user_verify(id)
         
         user['storymaps'][id]['title'] = title
         _user.save(user)
@@ -458,17 +301,10 @@ def storymap_save():
     Save draft storymap to to S3
     """
     try:
-        uid = _session_get('uid')
         id, data = _request_get_list('id', 'd')
-
-        user = _user.find_one({'uid': uid})
-        if not user:   
-            raise Exception('Could not find user record')
-        if id not in user['storymaps']:
-            raise Exception('You do not have permission to access to this StoryMap')
-
-        key_name = 'storymap/%s/%s/draft.json' % (uid, id)
-        #DEBUG
+        user = _get_user_verify(id)
+        
+        key_name = 'storymap/%s/%s/draft.json' % (user['uid'], id)
         print 'key_name', key_name
         
         content = json.loads(data)          
@@ -488,17 +324,10 @@ def storymap_publish():
     Save published storymap to to S3
     """
     try:
-        uid = _session_get('uid')
         id, data = _request_get_list('id', 'd')
+        user = _get_user_verify(id)
 
-        user = _user.find_one({'uid': uid})
-        if not user:   
-            raise Exception('Could not find user record')
-        if id not in user['storymaps']:
-            raise Exception('You do not have permission to access to this StoryMap')
-
-        key_name = 'storymap/%s/%s/published.json' % (uid, id)
-        #DEBUG
+        key_name = 'storymap/%s/%s/published.json' % (user['uid'], id)
         print 'key_name', key_name
         
         content = json.loads(data)          
@@ -518,16 +347,10 @@ def storymap_delete():
     Delete storymap from S3
     """
     try:
-        uid = _session_get('uid')
         id = _request_get('id')
-
-        user = _user.find_one({'uid': uid})
-        if not user:   
-            raise Exception('Could not find user record')
-        if id not in user['storymaps']:
-            raise Exception('You do not have permission to access to this StoryMap')
+        user = _get_user_verify(id)
         
-        key_prefix = 'storymap/%s/%s' % (uid, id)
+        key_prefix = 'storymap/%s/%s' % (user['uid'], id)
         print 'key_prefix', key_prefix
         
         key_list, marker = storage.list_keys(key_prefix, 50)        
@@ -542,25 +365,152 @@ def storymap_delete():
     except Exception, e:
         traceback.print_exc()
         return jsonify({'error': str(e)})
-                        
+
+@app.route('/storymap/copy/', methods=['GET', 'POST'])
+def storymap_copy():
+    """
+    Copy storymap
+    @id = storymap to copy
+    @name = name of new copy
+    """
+    try:
+        id, name = _request_get_list('id', 'name')
+        user = _get_user_verify(id)
+        dst_id = _make_storymap_id(user, name)
+              
+        src_key_prefix = "storymap/%s/%s/" % (user['uid'], id)        
+        dst_key_prefix = "storymap/%s/%s/" % (user['uid'], dst_id)
+        
+        src_re = re.compile(r'/%s/%s/' % (user['uid'], id))
+        dst_rep = '/%s/%s/' % (user['uid'], dst_id)
+
+        has_published = False
+        
+        src_key_list, more = storage.list_keys(src_key_prefix, 999, '') 
+        for src_key in src_key_list:
+            fname = src_key.name.split(src_key_prefix)[-1]
+            dst_key_name = "%s%s" % (dst_key_prefix, fname)
+            
+            if dst_key_name.endswith('.json'):
+                json_string = src_key.get_contents_as_string()
+                storage.save_json(dst_key_name, src_re.sub(dst_rep, json_string))
+                
+                if fname == 'published.json':
+                    has_published = True
+            else:
+                storage.copy_key(src_key.name, dst_key_name)
+    
+        dt = _utc_now()
+        user['storymaps'][dst_id] = {         
+            'id': dst_id,
+            'title': name,
+            'draft_on': dt,
+            'published_on': (has_published and dt) or ''
+        }
+        _user.save(user)
+                    
+        return jsonify(user['storymaps'][dst_id])
+    except Exception, e:
+        traceback.print_exc()
+        return jsonify({'error': str(e)})
+        
+    
+@app.route('/storymap/image/list/', methods=['GET', 'POST'])
+def storymap_image_list():
+    """
+    List storymap images in S3
+    """
+    try:
+        id = _request_get('id')
+        user = _get_user_verify(id)
+                
+        key_name = "storymap/%s/%s/_images/" % (user['uid'], id)  
+        print key_name  
+        key_list, more = storage.list_key_names(key_name, 999, '') 
+        
+        image_list = [n.split('/')[-1] for n in key_list]
+        print image_list
+        return jsonify({'image_list': image_list})    
+    except Exception, e:
+        traceback.print_exc()
+        return jsonify({'error': str(e)})
+
+
+@app.route('/storymap/image/save/', methods=['POST'])
+def storymap_image_save():
+    """
+    Save image to S3
+    @id = storymap id
+    @name = file name
+    @content = data:URL representing the file's data as base64 encoded string
+    """
+    try:
+        id, name, content = _request_get_list('id', 'name', 'content')
+        user = _get_user_verify(id)
+       
+        m = re.match('data:(.+);base64,(.+)', content)
+        if m:
+            content_type = m.group(1)
+            content = m.group(2).decode('base64')
+        else:
+            raise Exception('Expected content as data-url')
+
+        key_name = 'storymap/%s/%s/_images/%s' % (user['uid'], id, name)
+        storage.save_from_data(key_name, content_type, content)
+        
+        return jsonify({'url': settings.AWS_STORAGE_BUCKET_URL+key_name})    
+    except Exception, e:
+        traceback.print_exc()
+        return jsonify({'error': str(e)})
+
+@app.route('/storymap/image/import/', methods=['GET', 'POST'])
+def storymap_image_import():
+    """
+    Import image to S3
+    @id = storymap id
+    @url = the url of the image
+    """
+    try:
+        id, url = _request_get_list('id', 'url')
+        user = _get_user_verify(id)
+           
+        path = urlparse.urlparse(url).path        
+        key_name = 'storymap/%s/%s/_images/%s' % (user['uid'], id, path.split('.')[-1])
+        storage.save_from_url(key_name, url)   
+                     
+        return jsonify({'url': settings.AWS_STORAGE_BUCKET_URL+key_name})
+    except Exception, e:
+        traceback.print_exc()
+        return jsonify({'error': str(e)})
+                               
 #
-# Primary views
+# Views
 #
+
+@app.route("/")
+def index():
+    return render_template('index.html')
+
+@app.route("/gigapixel/")
+def gigapixel():
+    return render_template('gigapixel.html')
+
+@app.route("/advanced/")
+def advanced():
+    return render_template('advanced.html')
+
+@app.route("/examples/<name>/")
+def examples(name):
+    return render_template('examples/%s.html' % name)
 
 @app.route("/logout/")
 def logout():
-    """Logout"""
     _session_pop('uid')    
     return redirect(url_for('index'))
         
-@app.route("/")
-def index():
-    """Main website page"""
-    return render_template('index.html')
-
+@app.route("/select.html/", methods=['GET', 'POST']) # legacy
 @app.route("/select/", methods=['GET', 'POST'])
 def select():
-    """Storymap select"""
     try:
         uid = session.get('uid')       
         if not uid:
@@ -579,7 +529,6 @@ def select():
 
 @app.route("/edit/", methods=['GET', 'POST'])
 def edit():
-    """Storymap edit"""  
     try:
         uid = session.get('uid') 
         if not uid:
@@ -629,12 +578,7 @@ def catch_compiled(path):
 
 @app.route('/editor/templates/<path:path>')
 def catch_compiled_templates(path):
-    return send_from_directory(templates_dir, path)    
-
-
-#
-# Doit
-#   
+    return send_from_directory(templates_dir, path)      
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

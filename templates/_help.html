@@ -76,7 +76,7 @@
                      <div class="accordion-inner"><p>To keep it simple for most users, we've made some assumptions in the authoring tool which may not universally apply. For example, the first screen is always an "overview" slide. Also, the zoom is affected by the overall size of the map and the relationship between the current and previous points on the map.</p>
                      <p>It's possible to download the configuration (a JSON file) that the authoring tool makes and edit the JSON yourself. You could then change the first slide to not be an "overview" and manually set a starting lat/lon/zoom.</p>
                      <p>If that isn't too daunting, you can find the JSON on your Google Drive in the "KnightLabStoryMap/public" folder. Be sure to make a copy when you edit it. We've tried to make the authoring tool gentle so that it doesn't fool around with stuff that might be edited outside of it (although that's not a formal feature) -- but I kind of think that the "overview" setting for the first slide might be something which would get messed up going back and forth between using our authoring tool and editing it outside.</p>
-                     <p>A little more about going outside the authoring tool can be found at <a href="http://storymap.knightlab.com/advanced.html">http://storymap.knightlab.com/advanced.html</a></p></div> 
+                     <p>A little more about going outside the authoring tool can be found at <a href="{{ url_for('advanced') }}">{{ url_for('advanced') }}</a></p></div> 
                 </div> 
             </div> 
          </div> 

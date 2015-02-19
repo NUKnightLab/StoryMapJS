@@ -22,7 +22,7 @@
     <div id="storymap"></div>
     <!-- JavaScript-->
     <script>
-      var storymap = new VCO.StoryMap('storymap', 'seurat.json', {
+      var storymap = new VCO.StoryMap('storymap', '{{ STATIC_URL }}demo/seurat.json', {
        map_type:                "zoomify",
        map_background_color:    "#333",
        map_as_image:            true,
@@ -55,7 +55,7 @@
             When you have your image tiles, you need to put them on a web server. If you don't have a webserver, you can use <a href="https://drive.google.com/">Google Drive</a> or <a href="http://dropbox.com/">Dropbox</a>. You need the base url for your exported image tiles when you start making your gigapixel StoryMap. <a href="#serving-your-tiles" data-toggle="modal">(show me how)</a>
         </p>
         <p>
-            When you've got your image tiles up on a server, <a href="select.html">go to make a new StoryMap</a> and choose the "gigapixel" button. (<i class="vco-icon-image icon-button"></i>). Give your new project a name and enter the base url and image width and height mentioned above, and you're ready to tell your gigapixel story. 
+            When you've got your image tiles up on a server, <a href="{{ url_for('select') }}">go to make a new StoryMap</a> and choose the "gigapixel" button. (<i class="vco-icon-image icon-button"></i>). Give your new project a name and enter the base url and image width and height mentioned above, and you're ready to tell your gigapixel story. 
         </p>
     </div>
 </div>    
@@ -65,7 +65,7 @@
     <h3>Zoomify help</h3>
   </div>
   <div class="modal-body">
-    <img src="{{STATIC_URL}}/img/zoomify-tutorial-image-size.png" style="float:right;">
+    <img src="{{ STATIC_URL }}img/zoomify-tutorial-image-size.png" style="float:right;">
     <ol>
         <li>Open your image in Adobe Photoshop</li>
         <li>Note the pixel dimensions of your image:
@@ -99,7 +99,7 @@
       </ul>
       <div class="tab-content">
         <div class="tab-pane active" id="serve-with-google-drive">
-        <img src="{{STATIC_URL}}/img/zoomify-tutorial-gdrive-show-details.png" style="float:right;">
+        <img src="{{ STATIC_URL }}img/zoomify-tutorial-gdrive-show-details.png" style="float:right;">
           <ol>
             <li>Upload the entire folder (from step 4 above) to your Google Drive.</li>
             <li>After selecting your uploaded folder, choose "Details and activity" from the "More" menu.</li>
@@ -110,7 +110,7 @@
           <p><strong>Another note:</strong> once you've done this, you can move the folder around in your Google Drive. You won't need to repeat this step. The "hosting" URL will not change.</p>
         </div>
         <div class="tab-pane" id="serve-with-new-google-drive">
-        <img src="{{STATIC_URL}}/img/zoomify-tutorial-ngdrive-show-details.png" style="float:right;">
+        <img src="{{ STATIC_URL }}img/zoomify-tutorial-ngdrive-show-details.png" style="float:right;">
           <ol>
             <li>Upload the entire folder (from step 4 above) to your Google Drive.</li>
             <li>Right click the folder and select "Share...".</li>
@@ -120,7 +120,7 @@
           <p><strong>Note:</strong> once you've done this, you can move the folder around in your Google Drive. You won't need to repeat this step. The "hosting" URL will not change.</p>
         </div>
         <div class="tab-pane" id="serve-with-dropbox">
-        <img src="{{STATIC_URL}}/img/zoomify-tutorial-db_copy_public_link.png" style="float:right;">
+        <img src="{{ STATIC_URL }}img/zoomify-tutorial-db_copy_public_link.png" style="float:right;">
         <ol>
             <li>Upload the entire folder (from step 4 above) <strong>to your DropBox <em>public</em> folder</strong>.</li>
             <li>In the folder you uploaded, there should be a file named <strong><code>ImageProperties.xml</code></strong>. Right-click on it to copy its public link.</li>

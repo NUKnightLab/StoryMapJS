@@ -203,6 +203,10 @@ function storymap_url(uid, id, filename) {
         .join('/');
 }
 
+function storymap_image_url(uid, id, filename) {
+    return storymap_url(uid, id, '_images/'+filename);
+}
+
 function storymap_draft_url(uid, id) {
     return storymap_url(uid, id, 'draft.json');
 }

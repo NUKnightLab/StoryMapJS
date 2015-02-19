@@ -41,7 +41,6 @@
 <!-- === auth/sharing -->
 {% include '_credentials.html' %}
 <!-- === editor -->
-<script type="text/javascript" src="{{ STATIC_URL }}js/underscore-min.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/json2.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/editor.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/EditorMap.js"></script>
@@ -74,6 +73,9 @@ var storymap_slide_template = _.template($("#storymap_slide_template").html().tr
 var storymap_iframe_template = _.template($("#storymap_iframe_template").html().trim());
 
 L.Icon.Default.imagePath = ' http://cdn.leafletjs.com/leaflet-0.7.2/images';
+
+// for upload control
+var _storymap_upload_url = "{{ url_for('storymap_image_save') }}";
 
 var _font_url = 'http://cdn.knightlab.com/libs/storymapjs/latest/css/fonts/';
 var _link_url = 'http://cdn.knightlab.com/libs/storymapjs/latest/embed/';
@@ -666,11 +668,26 @@ function storymap_init() {
             if(data.meta.published_on && (data.meta.draft_on > data.meta.published_on)) {
                 $('#storymap_publish').show();
             }
-
-            // TODO: List .jpg|.gif|.png files in folder and sort by name
-                        
+ 
             _storymap_data = data.data;
             _slides = _storymap_data.storymap.slides;                   
+           
+            // List images and sort by name
+            ajax_get("{{ url_for('storymap_image_list') }}",
+                {
+                    id: _storymap_meta.id
+                },
+                function(error) {
+                    storymap_abort(format_error('Error listing images', error));
+                },
+                function(data) {
+                    _storymap_files = data.image_list.sort();
+                    console.log('STORYMAP FILES');
+                    console.log(_storymap_files);                
+                }
+            );
+            
+            // Map init           
             map_init();
         }
     );
@@ -1058,6 +1075,8 @@ $(function() {
         });
 
     $('#background_url').change(function(event) {
+        console.log($(this).val().trim());
+        
         _slides[_current_slide_index].background = $.extend(true, 
                 _slides[_current_slide_index].background, 
                 {url: $(this).val().trim()}
@@ -1101,7 +1120,7 @@ $(function() {
 
             $('#background_image_select a').click(function(event) {
                 $('#background_url')
-                    .val(storymap_url(_user.uid, _storymap_meta.id, $(this).html()))
+                    .val(storymap_image_url(_user.uid, _storymap_meta.id, $(this).html()))
                     .change();
             });
             
