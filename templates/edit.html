@@ -371,8 +371,6 @@ function storymap_dirty(is_dirty) {
 // save draft
 // callback(error)
 function storymap_save(callback) {
-console.log('SAVING STORYMAP');
-    
     var save_button = $('#storymap_save')
         .addClass('disabled').removeClass('btn-primary')
         .html('<i class="icon-spinner icon-spin"></i> Saving...');   
@@ -397,8 +395,6 @@ console.log('SAVING STORYMAP');
 
 // callback(error || null)
 function storymap_publish(callback) {
-console.log('PUBLISHING STORYMAP');
- 
     if(_dirty) {
         storymap_save(function(error) {
             if(error) {
@@ -660,8 +656,6 @@ function storymap_init() {
             storymap_abort(format_error('Error loading StoryMap', error));
         },
         function(data) {
-            console.log(data);
-            
             // Set page title
             document.title = document.title.replace("TITLE", data.meta.title);
 
@@ -682,8 +676,6 @@ function storymap_init() {
                 },
                 function(data) {
                     _storymap_files = data.image_list.sort();
-                    console.log('STORYMAP FILES');
-                    console.log(_storymap_files);                
                 }
             );
             
@@ -1075,8 +1067,6 @@ $(function() {
         });
 
     $('#background_url').change(function(event) {
-        console.log($(this).val().trim());
-        
         _slides[_current_slide_index].background = $.extend(true, 
                 _slides[_current_slide_index].background, 
                 {url: $(this).val().trim()}
