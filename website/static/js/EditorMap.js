@@ -312,7 +312,7 @@ GoogleEditorMap.prototype.setMapType = function(map_type, map_subdomains) {
         this.map.mapTypes.set("mapbox", new google.maps.ImageMapType({
             getTileUrl: function(coord, zoom) {
                 var index = (coord.x + coord.y) % map_subdomains.length;                        
-                return ('https://{s}.tiles.mapbox.com/v2/'+mapbox_name+'/{z}/{x}/{y}.png')
+                return ('https://api.tiles.mapbox.com/v4/' + mapbox_name + '/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibnVrbmlnaHRsYWIiLCJhIjoiczFmd0hPZyJ9.Y_afrZdAjo3u8sz_r8m2Yw')
                     .replace('{s}', map_subdomains[index])
                     .replace('{z}', zoom)
                     .replace('{x}', coord.x)
