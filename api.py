@@ -219,54 +219,8 @@ def _make_storymap_id(user, title):
 
 #
 # API views
+# These are called from the select page
 #
-        
-@app.route('/storymap/create/', methods=['POST'])
-def storymap_create():
-    """
-    Create a storymap in S3
-    """
-    try:
-        user = _get_user()  
-        title, data = _request_get_list('title', 'd')
-                         
-        id = _make_storymap_id(user, title)
-        
-        key_name = 'storymap/%s/%s/draft.json' % (user['uid'], id)        
-        content = json.loads(data)           
-        storage.save_json(key_name, content)     
-        
-        user['storymaps'][id] = {
-            'id': id,
-            'title': title,
-            'draft_on': _utc_now(),
-            'published_on': ''
-        }
-        _user.save(user)
-                                   
-        return jsonify({'error': '', 'id': id})
-    except Exception, e:
-        traceback.print_exc()
-        return jsonify({'error': str(e)})
-        
-@app.route('/storymap/')
-def storymap_get():
-    """
-    Get storymap from S3        
-    """
-    try:
-        id = _request_get('id')
-        user = _get_user_verify(id)
-                
-        key_name = 'storymap/%s/%s/draft.json' % (user['uid'], id)        
-        data = storage.load_json(key_name)                
-        return jsonify({
-            'meta': user['storymaps'][id], 
-            'data': data
-        })
-    except Exception, e:
-        traceback.print_exc()
-        return jsonify({'error': str(e)})   
 
 @app.route('/storymap/rename/', methods=['GET', 'POST'])
 def storymap_rename():
@@ -281,71 +235,6 @@ def storymap_rename():
         _user.save(user)
     
         return jsonify({'error': ''})
-    except Exception, e:
-        traceback.print_exc()
-        return jsonify({'error': str(e)})
-                
-@app.route('/storymap/save/', methods=['POST'])
-def storymap_save():
-    """
-    Save draft storymap to to S3
-    """
-    try:
-        id, data = _request_get_list('id', 'd')
-        user = _get_user_verify(id)
-        
-        key_name = 'storymap/%s/%s/draft.json' % (user['uid'], id)        
-        content = json.loads(data)          
-        storage.save_json(key_name, content)    
-        
-        user['storymaps'][id]['draft_on'] = _utc_now()
-        _user.save(user)
-                    
-        return jsonify({'error': ''})
-    except Exception, e:
-        traceback.print_exc()
-        return jsonify({'error': str(e)})
-
-@app.route('/storymap/publish/', methods=['POST'])
-def storymap_publish():
-    """
-    Save published storymap to to S3
-    """
-    try:
-        id, data = _request_get_list('id', 'd')
-        user = _get_user_verify(id)
-
-        key_name = 'storymap/%s/%s/published.json' % (user['uid'], id)        
-        content = json.loads(data)          
-        storage.save_json(key_name, content)    
-
-        user['storymaps'][id]['published_on'] = _utc_now()
-        _user.save(user)
-            
-        return jsonify({'error': ''})
-    except Exception, e:
-        traceback.print_exc()
-        return jsonify({'error': str(e)})
-        
-@app.route('/storymap/delete/')
-def storymap_delete():
-    """
-    Delete storymap from S3
-    """
-    try:
-        id = _request_get('id')
-        user = _get_user_verify(id)
-        
-        key_prefix = 'storymap/%s/%s' % (user['uid'], id)
-        
-        key_list, marker = storage.list_keys(key_prefix, 50)        
-        for key in key_list:
-            storage.delete(key.name);
-            
-        del user['storymaps'][id]
-        _user.save(user)
-     
-        return jsonify({'error': ''})    
     except Exception, e:
         traceback.print_exc()
         return jsonify({'error': str(e)})
@@ -397,8 +286,125 @@ def storymap_copy():
     except Exception, e:
         traceback.print_exc()
         return jsonify({'error': str(e)})
+
+@app.route('/storymap/delete/')
+def storymap_delete():
+    """
+    Delete storymap from S3
+    """
+    try:
+        id = _request_get('id')
+        user = _get_user_verify(id)
         
-    
+        key_prefix = 'storymap/%s/%s' % (user['uid'], id)
+        
+        key_list, marker = storage.list_keys(key_prefix, 50)        
+        for key in key_list:
+            storage.delete(key.name);
+            
+        del user['storymaps'][id]
+        _user.save(user)
+     
+        return jsonify({'error': ''})    
+    except Exception, e:
+        traceback.print_exc()
+        return jsonify({'error': str(e)})
+
+@app.route('/storymap/create/', methods=['POST'])
+def storymap_create():
+    """
+    Create a storymap in S3
+    """
+    try:
+        user = _get_user()  
+        title, data = _request_get_list('title', 'd')
+                         
+        id = _make_storymap_id(user, title)
+        
+        key_name = 'storymap/%s/%s/draft.json' % (user['uid'], id)        
+        content = json.loads(data)           
+        storage.save_json(key_name, content)     
+        
+        user['storymaps'][id] = {
+            'id': id,
+            'title': title,
+            'draft_on': _utc_now(),
+            'published_on': ''
+        }
+        _user.save(user)
+                                   
+        return jsonify({'error': '', 'id': id})
+    except Exception, e:
+        traceback.print_exc()
+        return jsonify({'error': str(e)})
+
+#
+# API views
+# These are called from the edit page
+#
+        
+@app.route('/storymap/')
+def storymap_get():
+    """
+    Get storymap from S3        
+    """
+    try:
+        id = _request_get('id')
+        user = _get_user_verify(id)
+                
+        key_name = 'storymap/%s/%s/draft.json' % (user['uid'], id)        
+        data = storage.load_json(key_name)                
+        return jsonify({
+            'meta': user['storymaps'][id], 
+            'data': data
+        })
+    except Exception, e:
+        traceback.print_exc()
+        return jsonify({'error': str(e)})   
+
+                
+@app.route('/storymap/save/', methods=['POST'])
+def storymap_save():
+    """
+    Save draft storymap to to S3
+    """
+    try:
+        id, data = _request_get_list('id', 'd')
+        user = _get_user_verify(id)
+        
+        key_name = 'storymap/%s/%s/draft.json' % (user['uid'], id)        
+        content = json.loads(data)          
+        storage.save_json(key_name, content)    
+        
+        user['storymaps'][id]['draft_on'] = _utc_now()
+        _user.save(user)
+                    
+        return jsonify({'error': ''})
+    except Exception, e:
+        traceback.print_exc()
+        return jsonify({'error': str(e)})
+
+@app.route('/storymap/publish/', methods=['POST'])
+def storymap_publish():
+    """
+    Save published storymap to to S3
+    """
+    try:
+        id, data = _request_get_list('id', 'd')
+        user = _get_user_verify(id)
+
+        key_name = 'storymap/%s/%s/published.json' % (user['uid'], id)        
+        content = json.loads(data)          
+        storage.save_json(key_name, content)    
+
+        user['storymaps'][id]['published_on'] = _utc_now()
+        _user.save(user)
+            
+        return jsonify({'error': ''})
+    except Exception, e:
+        traceback.print_exc()
+        return jsonify({'error': str(e)})
+            
 @app.route('/storymap/image/list/', methods=['GET', 'POST'])
 def storymap_image_list():
     """
