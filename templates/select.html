@@ -314,7 +314,7 @@ $(function() {
     }); 
     
     $('#entry_logout').click(function(event) {
-        document.location.href = 'http://www.google.com/accounts/Logout';    
+        document.location.href = "{{ url_for('logout') }}";    
     });
 
     // popovers
@@ -507,7 +507,6 @@ $(function() {
                 var $modal = $(this).trigger('progress_show', 'Checking authorization');   
                 
                 gdrive_check_auth(function(authorized, authResult) {
-                    console.log('authResult', authResult);               
                     $modal.trigger('handle_auth', authorized); 
                 });           
             }
@@ -542,12 +541,9 @@ $(function() {
                             name: info.user.displayName
                         },
                         function(error) {
-                            console.log('google_auth', error);
                             $modal.trigger('reset',  format_error('Error getting user storage', error)); 
                          }, 
                         function(data) {
-                            console.log('google_auth', data);
-                            
                             // Store user information
                             _user = data.user;
                             make_storymap_list();
