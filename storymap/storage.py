@@ -19,37 +19,14 @@ settings = sys.modules[os.environ['FLASK_SETTINGS_MODULE']]
 _conn = S3Connection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)    
 _bucket = _conn.get_bucket(settings.AWS_STORAGE_BUCKET_NAME)
 
+print _bucket.name
+
 def key_id():
     """
     Get id for key
     """
     return repr(time.time())
-    
-#def image_key_name(uid, ext):
-#    """
-#    Return new image key name
-#    @uid = user id
-#    @ext = file extension (e.g. 'jpg')
-#    """
-#    return 'pitcha/%s/_images/%s.%s' % (uid, key_id(), ext)     
-
-#def pitcha_key_prefix(uid, id):
-#    """
-#    Return pitcha key prefix
-#    @uid = user id
-#    #id = pitcha id
-#    """
-#    return 'pitcha/%s/_pitchas/%s' % (uid, id)
-
-#def pitcha_key_name(uid, id=''):
-#    """
-#    Return pitcha key name
-#    @uid = user id
-#    @id = existing pitcha id, or empty to create a new one
-#    """
-#    id = id or key_id()
-#    return 'pitcha/%s/_pitchas/%s.json' % (uid, id)
-         
+             
 def list_keys(key_prefix, n, marker=''):
     """
     List keys that start with key_prefix (<> key_prefix itself)
@@ -84,6 +61,13 @@ def list_key_names(key_prefix, n, marker=''):
         name_list.append(item.name)
     return name_list, (i == n)
 
+def copy_key(src_key_name, dst_key_name):
+    """
+    Copy from src_key_name to dst_key_name
+    """
+    dst_key = _bucket.copy_key(dst_key_name, _bucket.name, src_key_name)
+    dst_key.set_acl('public-read')
+
 def save_from_data(key_name, content_type, content):
     """
     Save content with content-type to key_name
@@ -100,7 +84,7 @@ def save_from_url(key_name, url):
     """
     r = requests.get(url)
     save_from_data(key_name, r.headers['content-type'], r.content) 
-
+    
 def load_json(key_name):
     """
     Get contents of key as json
@@ -113,7 +97,7 @@ def save_json(key_name, data):
     """
     Save data to key_name as json
     """
-    if type(data) == type(''):
+    if type(data) in [type(''), type(u'')]:
         content = data
     else:
         content = json.dumps(data)

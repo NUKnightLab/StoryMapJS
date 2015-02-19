@@ -12,7 +12,7 @@
 	<link rel="shortcut icon" href="http://cdn.knightlab.com/libs/blueline/latest/assets/logos/favicon.ico"> 
     <link href="//cloud.webtype.com/css/d4767ecb-457a-4677-8761-72f890add836.css" rel="stylesheet" type="text/css">
 	<link rel="stylesheet" href="http://cdn.knightlab.com/libs/blueline/latest/css/blueline.min.css">
-	<link rel="stylesheet" type="text/css" href="{{ static_url }}/css/site.css">
+	<link rel="stylesheet" type="text/css" href="{{ static_url }}css/site.css">
 	{% block prehead %}	
 	{# Allow scripts to load before storymap (e.g. Leaflet) #}
 	{% endblock %}
@@ -59,14 +59,14 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </a>
-        <a href="/" class="brand">StoryMap JS</a>
+        <a href="{{ url_for('index') }}" class="brand">StoryMap JS</a>
         <div class="nav-collapse navbar-responsive-collapse collapse" style="height: 0px;">
           <ul class="nav">
-            <li><a href="select.html" data-scroll="true">Create</a></li>
-            <li><a href="gigapixel.html" data-scroll="true">Gigapixel</a></li>
-            <li><a href="advanced.html" data-scroll="true">Advanced</a></li>
-            <li><a href="index.html#examples" data-scroll="true">Examples</a></li>
-            <li><a href="index.html#help" data-scroll="true">Help</a></li>
+            <li><a href="{{ url_for('select') }}" data-scroll="true">Create</a></li>
+            <li><a href="{{ url_for('gigapixel') }}" data-scroll="true">Gigapixel</a></li>
+            <li><a href="{{ url_for('advanced') }}" data-scroll="true">Advanced</a></li>
+            <li><a href="{{ url_for('index') }}#examples" data-scroll="true">Examples</a></li>
+            <li><a href="{{ url_for('index') }}#help" data-scroll="true">Help</a></li>
           </ul>
           <ul class="nav pull-right">
             <li class="knightlab-tab"><a data-toggle="preheader" href="http://knightlab.northwestern.edu" title="Northwesten University Knight Lab"><span>Northwestern University Knight Lab</span></a></li>
