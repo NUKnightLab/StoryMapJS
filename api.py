@@ -111,10 +111,6 @@ def _request_get(key):
 
 def _request_get_list(*keys):
     """Verify existence of request data and return values"""
-    # DEBUG
-    print request.method
-    print request.form
-    
     if request.method == 'POST':
         obj = request.form
     else:
@@ -218,8 +214,7 @@ def _make_storymap_id(user, title):
     n = 0
     while id in user['storymaps']:
         n += 1
-        id = '%s-$d' % (id_base, n)
-    
+        id = '%s-$d' % (id_base, n)    
     return id
 
 #
@@ -235,15 +230,12 @@ def storymap_create():
         user = _get_user()  
         title, data = _request_get_list('title', 'd')
                          
-        # Save storymap to S3
         id = _make_storymap_id(user, title)
-        key_name = 'storymap/%s/%s/draft.json' % (user['uid'], id)
-        print 'key_name', key_name
         
+        key_name = 'storymap/%s/%s/draft.json' % (user['uid'], id)        
         content = json.loads(data)           
         storage.save_json(key_name, content)     
         
-        # Save to user storymaps
         user['storymaps'][id] = {
             'id': id,
             'title': title,
@@ -266,9 +258,7 @@ def storymap_get():
         id = _request_get('id')
         user = _get_user_verify(id)
                 
-        key_name = 'storymap/%s/%s/draft.json' % (user['uid'], id)
-        print 'key_name', key_name
-        
+        key_name = 'storymap/%s/%s/draft.json' % (user['uid'], id)        
         data = storage.load_json(key_name)                
         return jsonify({
             'meta': user['storymaps'][id], 
@@ -304,9 +294,7 @@ def storymap_save():
         id, data = _request_get_list('id', 'd')
         user = _get_user_verify(id)
         
-        key_name = 'storymap/%s/%s/draft.json' % (user['uid'], id)
-        print 'key_name', key_name
-        
+        key_name = 'storymap/%s/%s/draft.json' % (user['uid'], id)        
         content = json.loads(data)          
         storage.save_json(key_name, content)    
         
@@ -327,9 +315,7 @@ def storymap_publish():
         id, data = _request_get_list('id', 'd')
         user = _get_user_verify(id)
 
-        key_name = 'storymap/%s/%s/published.json' % (user['uid'], id)
-        print 'key_name', key_name
-        
+        key_name = 'storymap/%s/%s/published.json' % (user['uid'], id)        
         content = json.loads(data)          
         storage.save_json(key_name, content)    
 
@@ -351,11 +337,9 @@ def storymap_delete():
         user = _get_user_verify(id)
         
         key_prefix = 'storymap/%s/%s' % (user['uid'], id)
-        print 'key_prefix', key_prefix
         
         key_list, marker = storage.list_keys(key_prefix, 50)        
         for key in key_list:
-            print 'storymap_delete', key.name
             storage.delete(key.name);
             
         del user['storymaps'][id]
@@ -425,11 +409,9 @@ def storymap_image_list():
         user = _get_user_verify(id)
                 
         key_name = "storymap/%s/%s/_images/" % (user['uid'], id)  
-        print key_name  
         key_list, more = storage.list_key_names(key_name, 999, '') 
         
         image_list = [n.split('/')[-1] for n in key_list]
-        print image_list
         return jsonify({'image_list': image_list})    
     except Exception, e:
         traceback.print_exc()
@@ -506,7 +488,7 @@ def examples(name):
 @app.route("/logout/")
 def logout():
     _session_pop('uid')    
-    return redirect(url_for('index'))
+    return redirect('http://www.google.com/accounts/Logout')
         
 @app.route("/select.html/", methods=['GET', 'POST']) # legacy
 @app.route("/select/", methods=['GET', 'POST'])
