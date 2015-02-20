@@ -5,8 +5,8 @@ import os
 import sys
 import site
 
-site.addsitedir('/home/apps/env/storymap/lib/python2.7/site-packages')
-sys.path.append('/home/apps/sites/storymap')
+site.addsitedir('/home/apps/env/StoryMapJS/lib/python2.7/site-packages')
+sys.path.append('/home/apps/sites/StoryMapJS')
 sys.stdout = sys.stderr
 
 os.environ.setdefault('FLASK_SETTINGS_MODULE', 'core.settings.stg')
