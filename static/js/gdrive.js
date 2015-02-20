@@ -958,7 +958,7 @@ function gdrive_storymap_published_url(storymapFolder) {
 // callback(error, <list of storymaps>)
 //
 // Get a list of storymaps that need to be migrated.
-// Do NOT including storymaps that are shared WITH user
+// Do NOT including storymaps that are shared WITH user 
 ////////////////////////////////////////////////////////////
 
 function gdrive_migrate_list(migrate_list_callback) {
@@ -967,27 +967,26 @@ function gdrive_migrate_list(migrate_list_callback) {
     var _process_folder_list = function(folder_list) {
         if(folder_list && folder_list.length) {
             folder = folder_list.shift();
-            folder['file_list'] = [];
-            
+            folder_file_list = []; // list of valid files
 console.log('PROCESSING '+folder.title);
-
+            
             gdrive_folder_list(folder.id, function(error, file_list) {
                 if(!error && file_list) {
                     for(var i = 0; i < file_list.length; i++) {
                         var file = file_list[i];        
-                        if(file.title == 'draft.json') {
-                            folder['draft_file'] = file_list[i];
-                        } else if(file.title == 'published.json') {
-                            folder['published_file'] = file_list[i];          
-                        } else {
-                            folder['file_list'].push(file);
+                        if(file.title != 'edit.lock') {
+                            folder_file_list.push(file.title);
                         }
                     }            
                 } 
                 if(error) {
                     migrate_list_callback(error, null);
-                } else if(folder['draft_file']) {
-                    storymap_list.push(folder);
+                } else if(folder_file_list.indexOf('draft.json') > -1) {
+                    storymap_list.push({
+                        title: folder.title,
+                        url: folder.webViewLink,                   
+                        file_list: folder_file_list
+                    });
                     _process_folder_list(folder_list);
                 }
             });
