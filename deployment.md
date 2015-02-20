@@ -16,3 +16,13 @@ You have to push and deploy all CDN changes separately.
 You need the `secrets` repository to deploy to S3.  If you haven't yet, check out that Git repository to the same directory that contains your storymapjs respository.
 
 To update S3, type `fab deploy`.  This runs a build using the latest version tag and synchronizes the files in the build directory with S3.
+
+## Deploying to EC2 (FUTURE)
+
+You need the `secrets` repository to deploy to S3.  If you haven't yet, check out that Git repository to the same directory that contains your storymapjs respository.
+
+Type `fab branch:storymap2 stg|prd deploy`.
+
+The branch task is only needed if you are deploying a branch besides `master`.
+
+
