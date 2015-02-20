@@ -478,6 +478,22 @@ function gdrive_path_create(parent, path_list, filter, callback) {
     });
 }
 
+// filter = response items filter function || null
+// callback(error, <file resource>)
+function gdrive_path_get(parent, path_list, filter, callback) {  
+    gdrive_find(parent, path_list.shift(), filter, function(error, folder) {
+        if(error) {
+            callback(error);
+        } else if(!path_list.length) {
+            callback(null, folder); // done
+        } else if(!folder) {
+            callback(null, folder); // couldn't find it
+        } else {
+            gdrive_path_get(folder, path_list, filter, callback);
+        }
+    });
+}
+
 
 // callback(error, [<file resource>])
 function gdrive_folder_list(id, callback) {
@@ -936,6 +952,72 @@ function gdrive_storymap_draft_url(storymapFolder) {
 function gdrive_storymap_published_url(storymapFolder) {
     return storymapFolder.webViewLink + 'published.json';
 }
+
+////////////////////////////////////////////////////////////
+// Migration
+// callback(error, <list of storymaps>)
+//
+// Get a list of storymaps that need to be migrated.
+// Do NOT including storymaps that are shared WITH user
+////////////////////////////////////////////////////////////
+
+function gdrive_migrate_list(migrate_list_callback) {
+    var storymap_list = []; // list of processed storymaps
+        
+    var _process_folder_list = function(folder_list) {
+        if(folder_list && folder_list.length) {
+            folder = folder_list.shift();
+            folder['file_list'] = [];
+            
+console.log('PROCESSING '+folder.title);
+
+            gdrive_folder_list(folder.id, function(error, file_list) {
+                if(!error && file_list) {
+                    for(var i = 0; i < file_list.length; i++) {
+                        var file = file_list[i];        
+                        if(file.title == 'draft.json') {
+                            folder['draft_file'] = file_list[i];
+                        } else if(file.title == 'published.json') {
+                            folder['published_file'] = file_list[i];          
+                        } else {
+                            folder['file_list'].push(file);
+                        }
+                    }            
+                } 
+                if(error) {
+                    migrate_list_callback(error, null);
+                } else if(folder['draft_file']) {
+                    storymap_list.push(folder);
+                    _process_folder_list(folder_list);
+                }
+            });
+        } else {
+            migrate_list_callback(null, storymap_list);
+        }
+    };    
+
+
+console.log('CHECKING FOR STORYMAP FOLDER');
+    gdrive_path_get(null, [STORYMAP_ROOT_FOLDER, STORYMAP_FOLDER], _gdrive_filter_shared, function(error, storymapFolder) {    
+        if(error) {
+console.log('STORYMAP FOLDER ERROR', error);
+            migrate_list_callback(error, null);
+        } else if(!storymapFolder) {
+console.log('STORYMAP FOLDER DOES NOT EXIST');
+            migrate_list_callback(error, null);
+        } else {
+console.log('STORYMAP FOLDER EXISTS, GETTING LIST');
+            gdrive_folder_list(storymapFolder.id, function(error, folder_list) {
+                if(error) {
+                    migrate_list_callback(error, null);
+                } else {
+                    _process_folder_list(folder_list);
+                }            
+            });
+        }
+    });
+}
+
 
 ////////////////////////////////////////////////////////////
 // Login/Authorization
