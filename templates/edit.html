@@ -77,9 +77,10 @@ L.Icon.Default.imagePath = ' http://cdn.leafletjs.com/leaflet-0.7.2/images';
 // for upload control
 var _storymap_upload_url = "{{ url_for('storymap_image_save') }}";
 
-var _font_url = 'http://cdn.knightlab.com/libs/storymapjs/latest/css/fonts/';
-var _link_url = 'http://cdn.knightlab.com/libs/storymapjs/latest/embed/';
+var _font_url = '{{ CDN_URL }}css/fonts/';
+var _link_url = '{{ CDN_URL }}embed/';
 var _embed_url = '//s3.amazonaws.com/cdn.knightlab.com/libs/storymapjs/latest/embed/index.html';
+
 
 // If under local development...
 switch(document.location.hostname) {
@@ -130,6 +131,18 @@ var _storymap_object;       // VCO.StoryMap, for preview
 var _current_slide_index = -1;
 var _dirty = 0;
 
+
+//
+// urls
+//
+
+function storymap_url(uid, id, filename) {
+    return "{{ STORAGE_URL }}"+[uid, id, filename].join('/');
+}
+
+function storymap_image_url(uid, id, filename) {
+    return storymap_url(uid, id, '_images/'+filename);
+}
 
 function get_storymap_property(name, default_value) {
     if(_storymap_data.storymap.hasOwnProperty(name)) {
@@ -1152,10 +1165,10 @@ $(function() {
             var url = '';
                         
             if(_storymap_meta.draft_on > _storymap_meta.published_on) {
-                url += storymap_draft_url(_user.uid, _storymap_meta.id);
+                url += storymap_url(_user.uid, _storymap_meta.id, 'draft.json');
                 $('#share_publish_panel').show();   
             } else {
-                url += storymap_published_url(_user.uid, _storymap_meta.id);
+                url += storymap_url(_user.uid, _storymap_meta.id, 'published.json');
                 $('#share_publish_panel').hide();
             }
 

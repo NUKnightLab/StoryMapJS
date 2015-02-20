@@ -194,23 +194,5 @@ function show_message(msg, callback) {
     $('#message_modal').modal('show');
 }
 
-//
-// urls
-//
 
-function storymap_url(uid, id, filename) {
-    return ['//s3.amazonaws.com/uploads.knilab.com/storymap', uid, id, filename]
-        .join('/');
-}
 
-function storymap_image_url(uid, id, filename) {
-    return storymap_url(uid, id, '_images/'+filename);
-}
-
-function storymap_draft_url(uid, id) {
-    return storymap_url(uid, id, 'draft.json');
-}
-
-function storymap_published_url(uid, id) {
-    return storymap_url(uid, id, 'published.json');
-}
