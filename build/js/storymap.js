@@ -1,4 +1,4 @@
-/* storymapjs - v0.4.6 - 2015-02-19
+/* storymapjs - v2015-02-20-20-56-06 - 2015-02-20
  * Copyright (c) 2015 Northwestern University Knight Lab 
  */
 
@@ -330,6 +330,32 @@ VCO.Util = {
 			return "";
 		}
 		
+	},
+	urljoin: function(base_url,path) {
+
+		var url1 = base_url.split('/');
+		var url2 = path.split('/');
+		var url3 = [ ];
+		for (var i = 0, l = url1.length; i < l; i ++) {
+		if (url1[i] == '..') {
+		  url3.pop();
+		} else if (url1[i] == '.') {
+		  continue;
+		} else {
+		  url3.push(url1[i]);
+		}
+		}
+		for (var i = 0, l = url2.length; i < l; i ++) {
+		if (url2[i] == '..') {
+		  url3.pop();
+		} else if (url2[i] == '.') {
+		  continue;
+		} else {
+		  url3.push(url2[i]);
+		}
+		}
+		return url3.join('/');
+
 	},
 	getUrlVars: function(string) {
 		var str,
@@ -17831,7 +17857,7 @@ VCO.StoryMap = VCO.Class.extend({
 		this.data = {};
 	
 		this.options = {
-			script_path:            "",
+			script_path:            VCO.StoryMap.SCRIPT_PATH,
 			height: 				this._el.container.offsetHeight,
 			width: 					this._el.container.offsetWidth,
 			layout: 				"landscape", 	// portrait or landscape
@@ -17961,7 +17987,7 @@ VCO.StoryMap = VCO.Class.extend({
  
  		// Emoji Support to Chrome?
 		if (VCO.Browser.chrome) {
-			VCO.Load.css(this.options.script_path + "/../css/fonts/font.emoji.css", function() {
+			VCO.Load.css(VCO.Util.urljoin(this.options.script_path,"../css/fonts/font.emoji.css"), function() {
 				trace("LOADED EMOJI CSS FOR CHROME")
 			});
 		}
@@ -18322,5 +18348,9 @@ VCO.StoryMap = VCO.Class.extend({
 	
 });
 
+(function(_) {
+	var scripts = document.getElementsByTagName("script"),
+    		src = scripts[scripts.length-1].src;
+	_.SCRIPT_PATH = src.substr(0,src.lastIndexOf("/"));
 
-
+})(VCO.StoryMap)

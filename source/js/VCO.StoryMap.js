@@ -296,7 +296,7 @@ VCO.StoryMap = VCO.Class.extend({
 		this.data = {};
 	
 		this.options = {
-			script_path:            "",
+			script_path:            VCO.StoryMap.SCRIPT_PATH,
 			height: 				this._el.container.offsetHeight,
 			width: 					this._el.container.offsetWidth,
 			layout: 				"landscape", 	// portrait or landscape
@@ -426,7 +426,7 @@ VCO.StoryMap = VCO.Class.extend({
  
  		// Emoji Support to Chrome?
 		if (VCO.Browser.chrome) {
-			VCO.Load.css(this.options.script_path + "/../css/fonts/font.emoji.css", function() {
+			VCO.Load.css(VCO.Util.urljoin(this.options.script_path,"../css/fonts/font.emoji.css"), function() {
 				trace("LOADED EMOJI CSS FOR CHROME")
 			});
 		}
@@ -787,4 +787,9 @@ VCO.StoryMap = VCO.Class.extend({
 	
 });
 
+(function(_) {
+	var scripts = document.getElementsByTagName("script"),
+    		src = scripts[scripts.length-1].src;
+	_.SCRIPT_PATH = src.substr(0,src.lastIndexOf("/"));
 
+})(VCO.StoryMap)
