@@ -16,7 +16,7 @@ os.environ['FLASK_CONFIG_MODULE'] = os.path.join(secrets_path, 'flask_config.py'
     
 STATIC_URL = 'http://media.knilab.com/StoryMapJS/'
 
-CDN_URL = 'http://cdn.knightlab.com/libs/storymap/dev/'
+CDN_URL = 'http://cdn.knightlab.com/libs/storymapjs/dev/'
 
 DATABASES = {
     'default': {
