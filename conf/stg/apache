@@ -1,6 +1,6 @@
 <VirtualHost *:80>
-    ServerName storymap.knilab.com
-    ServerAlias storymap.knilab.com
+    ServerName storymap2.knilab.com
+    ServerAlias storymap2.knilab.com
     ServerAdmin admin@knilab.com
     ErrorLog /var/log/apache2/storymap.log
 
