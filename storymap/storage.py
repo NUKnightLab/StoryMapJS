@@ -19,7 +19,6 @@ settings = sys.modules[os.environ['FLASK_SETTINGS_MODULE']]
 _conn = S3Connection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)    
 _bucket = _conn.get_bucket(settings.AWS_STORAGE_BUCKET_NAME)
 
-print _bucket.name
 
 def key_id():
     """
