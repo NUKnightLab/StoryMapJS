@@ -52,13 +52,18 @@ def inject_urls():
     storage_url = settings.AWS_STORAGE_BUCKET_URL
     if not storage_url.endswith('/'):
         storage_url += '/'
-
+    storage_url += settings.AWS_STORAGE_BUCKET_KEY
+    if not storage_url.endswith('/'):
+        storage_url += '/'
+    
     cdn_url = settings.CDN_URL
     if not cdn_url.endswith('/'):
         cdn_url += '/'
         
-    return dict(STATIC_URL=static_url, static_url=static_url, 
-        storage_url=storage_url, cdn_url=cdn_url)  
+    return dict(
+        STATIC_URL=static_url, static_url=static_url, 
+        STORAGE_URL=storage_url, storage_url=storage_url, 
+        CDN_URL=cdn_url, cdn_url=cdn_url)  
 
 class APIEncoder(json.JSONEncoder):
     def default(self, obj):
