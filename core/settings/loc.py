@@ -33,3 +33,6 @@ AWS_STORAGE_BUCKET_NAME = 'uploads.knilab.com'
 
 # User storage bucket url on S3
 AWS_STORAGE_BUCKET_URL = '//s3.amazonaws.com/uploads.knilab.com/'
+
+# Application key name within storage bucket
+AWS_STORAGE_BUCKET_KEY = 'storymap'

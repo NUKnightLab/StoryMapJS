@@ -25,7 +25,13 @@ def key_id():
     Get id for key
     """
     return repr(time.time())
-             
+    
+def key_prefix(*args):
+    return '%s/%s/' % (settings.AWS_STORAGE_BUCKET_KEY, '/'.join(args))
+
+def key_name(*args):
+    return '%s/%s' % (settings.AWS_STORAGE_BUCKET_KEY, '/'.join(args))
+                 
 def list_keys(key_prefix, n, marker=''):
     """
     List keys that start with key_prefix (<> key_prefix itself)

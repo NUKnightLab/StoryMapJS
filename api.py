@@ -251,12 +251,10 @@ def storymap_copy():
         user = _get_user_verify(id)
         dst_id = _make_storymap_id(user, name)
               
-        src_key_prefix = "storymap/%s/%s/" % (user['uid'], id)        
-        dst_key_prefix = "storymap/%s/%s/" % (user['uid'], dst_id)
-        
-        src_re = re.compile(r'/%s/%s/' % (user['uid'], id))
-        dst_rep = '/%s/%s/' % (user['uid'], dst_id)
+        src_key_prefix = storage.key_prefix(user['uid'], id)
+        dst_key_prefix = storage.key_prefix(user['uid'], dst_id)
 
+        src_re = re.compile(r'%s' % src_key_prefix)
         has_published = False
         
         src_key_list, more = storage.list_keys(src_key_prefix, 999, '') 
@@ -264,9 +262,10 @@ def storymap_copy():
             fname = src_key.name.split(src_key_prefix)[-1]
             dst_key_name = "%s%s" % (dst_key_prefix, fname)
             
-            if dst_key_name.endswith('.json'):
+            if fname.endswith('.json'):
                 json_string = src_key.get_contents_as_string()
-                storage.save_json(dst_key_name, src_re.sub(dst_rep, json_string))
+                storage.save_json(dst_key_name, 
+                    src_re.sub(dst_key_prefix, json_string))
                 
                 if fname == 'published.json':
                     has_published = True
@@ -296,9 +295,8 @@ def storymap_delete():
         id = _request_get('id')
         user = _get_user_verify(id)
         
-        key_prefix = 'storymap/%s/%s' % (user['uid'], id)
-        
-        key_list, marker = storage.list_keys(key_prefix, 50)        
+        key_name = storage.key_name(user['uid'], id)        
+        key_list, marker = storage.list_keys(key_name, 50)        
         for key in key_list:
             storage.delete(key.name);
             
@@ -321,7 +319,7 @@ def storymap_create():
                          
         id = _make_storymap_id(user, title)
         
-        key_name = 'storymap/%s/%s/draft.json' % (user['uid'], id)        
+        key_name = storage.key_name(user['uid'], id, 'draft.json')
         content = json.loads(data)           
         storage.save_json(key_name, content)     
         
@@ -352,7 +350,7 @@ def storymap_get():
         id = _request_get('id')
         user = _get_user_verify(id)
                 
-        key_name = 'storymap/%s/%s/draft.json' % (user['uid'], id)        
+        key_name = storage.key_name(user['uid'], id, 'draft.json')
         data = storage.load_json(key_name)                
         return jsonify({
             'meta': user['storymaps'][id], 
@@ -372,7 +370,7 @@ def storymap_save():
         id, data = _request_get_list('id', 'd')
         user = _get_user_verify(id)
         
-        key_name = 'storymap/%s/%s/draft.json' % (user['uid'], id)        
+        key_name = storage.key_name(user['uid'], id, 'draft.json')
         content = json.loads(data)          
         storage.save_json(key_name, content)    
         
@@ -393,7 +391,7 @@ def storymap_publish():
         id, data = _request_get_list('id', 'd')
         user = _get_user_verify(id)
 
-        key_name = 'storymap/%s/%s/published.json' % (user['uid'], id)        
+        key_name = storage.key_name(user['uid'], id, 'published.json')
         content = json.loads(data)          
         storage.save_json(key_name, content)    
 
@@ -413,9 +411,9 @@ def storymap_image_list():
     try:
         id = _request_get('id')
         user = _get_user_verify(id)
-                
-        key_name = "storymap/%s/%s/_images/" % (user['uid'], id)  
-        key_list, more = storage.list_key_names(key_name, 999, '') 
+        
+        key_prefix = storage.key_prefix(user['uid'], id, '_images')
+        key_list, more = storage.list_key_names(key_prefix, 999, '') 
         
         image_list = [n.split('/')[-1] for n in key_list]
         return jsonify({'image_list': image_list})    
@@ -443,7 +441,7 @@ def storymap_image_save():
         else:
             raise Exception('Expected content as data-url')
 
-        key_name = 'storymap/%s/%s/_images/%s' % (user['uid'], id, name)
+        key_name = storage.key_name(user['uid'], id, '_images', name)
         storage.save_from_data(key_name, content_type, content)
         
         return jsonify({'url': settings.AWS_STORAGE_BUCKET_URL+key_name})    
@@ -463,7 +461,7 @@ def storymap_image_import():
         user = _get_user_verify(id)
            
         path = urlparse.urlparse(url).path        
-        key_name = 'storymap/%s/%s/_images/%s' % (user['uid'], id, path.split('.')[-1])
+        key_name = storage.key_name(user['uid'], id, '_images', path.split('.')[-1])
         storage.save_from_url(key_name, url)   
                      
         return jsonify({'url': settings.AWS_STORAGE_BUCKET_URL+key_name})
@@ -570,3 +568,4 @@ def catch_compiled_templates(path):
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
+

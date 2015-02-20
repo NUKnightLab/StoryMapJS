@@ -19,11 +19,8 @@
 <script src="{{ STATIC_URL }}js/moment.min.js"></script>
 <script src="{{ STATIC_URL }}js/moment-timezone.min.js"></script>
 <script src="{{ STATIC_URL }}js/moment-timezone-data.js"></script>
-<!-- === auth/sharing -->
+<!-- === auth -->
 {% include '_credentials.html' %}
-<script type="text/javascript">
-window.onload = function() { gapi.load('drive-share', function() { /* noop */ }); }
-</script>
 <script type="text/javascript" src="https://apis.google.com/js/api.js"></script>
 <!-- === editor -->
 <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.history.js"></script>
