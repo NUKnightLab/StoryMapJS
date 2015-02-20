@@ -378,8 +378,8 @@ def storymap_save():
         
         user['storymaps'][id]['draft_on'] = _utc_now()
         _user.save(user)
-                    
-        return jsonify({'error': ''})
+            
+        return jsonify({'error': '', 'meta': user['storymaps'][id]})
     except Exception, e:
         traceback.print_exc()
         return jsonify({'error': str(e)})
@@ -400,7 +400,7 @@ def storymap_publish():
         user['storymaps'][id]['published_on'] = _utc_now()
         _user.save(user)
             
-        return jsonify({'error': ''})
+        return jsonify({'error': '', 'meta': user['storymaps'][id]})
     except Exception, e:
         traceback.print_exc()
         return jsonify({'error': str(e)})

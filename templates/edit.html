@@ -384,6 +384,7 @@ function storymap_save(callback) {
             save_button.removeClass('disabled').addClass('btn-primary');
         },
         function(data) {
+            _storymap_meta = data.meta; // update meta
             storymap_dirty(0);
         },
         function(error) {
@@ -412,6 +413,7 @@ function storymap_publish(callback) {
             function(error) {
             },
             function(data) {
+                _storymap_meta = data.meta; // update meta
                 $('#storymap_publish').hide(); 
             },
             function(error) {
@@ -1148,7 +1150,7 @@ $(function() {
          ////// custom
         .on('modal_show', function(event, error_msg) {                        
             var url = '';
-            
+                        
             if(_storymap_meta.draft_on > _storymap_meta.published_on) {
                 url += storymap_draft_url(_user.uid, _storymap_meta.id);
                 $('#share_publish_panel').show();   
