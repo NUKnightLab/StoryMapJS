@@ -219,14 +219,14 @@ def _make_storymap_id(user, title):
     n = 0
     while id in user['storymaps']:
         n += 1
-        id = '%s-$d' % (id_base, n)    
+        id = '%s-%d' % (id_base, n)    
     return id
 
 #
 # API views
 # These are called from the select page
 #
-
+                
 @app.route('/storymap/rename/', methods=['GET', 'POST'])
 def storymap_rename():
     """
@@ -252,9 +252,9 @@ def storymap_copy():
     @name = name of new copy
     """
     try:
-        id, name = _request_get_list('id', 'name')
+        id, title = _request_get_list('id', 'title')
         user = _get_user_verify(id)
-        dst_id = _make_storymap_id(user, name)
+        dst_id = _make_storymap_id(user, title)
               
         src_key_prefix = storage.key_prefix(user['uid'], id)
         dst_key_prefix = storage.key_prefix(user['uid'], dst_id)
@@ -264,15 +264,15 @@ def storymap_copy():
         
         src_key_list, more = storage.list_keys(src_key_prefix, 999, '') 
         for src_key in src_key_list:
-            fname = src_key.name.split(src_key_prefix)[-1]
-            dst_key_name = "%s%s" % (dst_key_prefix, fname)
+            file_name = src_key.name.split(src_key_prefix)[-1]
+            dst_key_name = "%s%s" % (dst_key_prefix, file_name)
             
-            if fname.endswith('.json'):
+            if file_name.endswith('.json'):
                 json_string = src_key.get_contents_as_string()
                 storage.save_json(dst_key_name, 
                     src_re.sub(dst_key_prefix, json_string))
                 
-                if fname == 'published.json':
+                if file_name == 'published.json':
                     has_published = True
             else:
                 storage.copy_key(src_key.name, dst_key_name)
@@ -280,7 +280,7 @@ def storymap_copy():
         dt = _utc_now()
         user['storymaps'][dst_id] = {         
             'id': dst_id,
-            'title': name,
+            'title': title,
             'draft_on': dt,
             'published_on': (has_published and dt) or ''
         }
@@ -337,6 +337,74 @@ def storymap_create():
         _user.save(user)
                                    
         return jsonify({'error': '', 'id': id})
+    except Exception, e:
+        traceback.print_exc()
+        return jsonify({'error': str(e)})
+
+@app.route('/storymap/migrate/done/', methods=['GET'])
+def storymap_migrate_done():
+    """
+    Flag user as migrated
+    """
+    try:
+        user = _get_user()
+        user['migrated'] = 1
+        _user.save(user)
+        
+        return jsonify({'error': ''})
+    except Exception, e:
+        traceback.print_exc()
+        return jsonify({'error': str(e)})
+
+@app.route('/storymap/migrate/', methods=['POST'])
+def storymap_migrate():
+    """
+    Migrate a storymap
+    @title = storymap title
+    @url = storymap base url
+    @file_list = json encoded list of file names
+    """
+    try:
+        user = _get_user()  
+        title, src_url, file_list_json = _request_get_list('title', 'url', 'file_list')
+        file_list = json.loads(file_list_json)
+
+        dst_id = _make_storymap_id(user, title)
+        dst_key_prefix = storage.key_prefix(user['uid'], dst_id)        
+        dst_url = settings.AWS_STORAGE_BUCKET_URL+dst_key_prefix
+        dst_img_url = dst_url+'_images/'
+       
+        re_img = re.compile(r'.*\.(png|gif|jpg|jpeg)$', re.I)
+        re_src = re.compile(r'%s' % src_url)
+        has_published = False
+        
+        for file_name in file_list:
+            file_url = "%s%s" % (src_url, file_name)
+            
+            if file_name.endswith('.json'):
+                key_name = storage.key_name(user['uid'], dst_id, file_name)
+                r = requests.get(file_url)                
+                storage.save_json(key_name, re_src.sub(dst_img_url, r.text))
+                
+                if file_name == 'published.json':
+                    has_published = True              
+            elif re_img.match(file_name):
+                key_name = storage.key_name(user['uid'], dst_id, '_images', file_name)
+                storage.save_from_url(key_name, file_url)
+            else:
+                continue # skip
+              
+        dt = _utc_now()
+        
+        user['storymaps'][dst_id] = {         
+            'id': dst_id,
+            'title': title,
+            'draft_on': dt,
+            'published_on': (has_published and dt) or ''
+        }
+        _user.save(user)
+        
+        return jsonify(user['storymaps'][dst_id])
     except Exception, e:
         traceback.print_exc()
         return jsonify({'error': str(e)})
@@ -454,25 +522,6 @@ def storymap_image_save():
         traceback.print_exc()
         return jsonify({'error': str(e)})
 
-@app.route('/storymap/image/import/', methods=['GET', 'POST'])
-def storymap_image_import():
-    """
-    Import image to S3
-    @id = storymap id
-    @url = the url of the image
-    """
-    try:
-        id, url = _request_get_list('id', 'url')
-        user = _get_user_verify(id)
-           
-        path = urlparse.urlparse(url).path        
-        key_name = storage.key_name(user['uid'], id, '_images', path.split('.')[-1])
-        storage.save_from_url(key_name, url)   
-                     
-        return jsonify({'url': settings.AWS_STORAGE_BUCKET_URL+key_name})
-    except Exception, e:
-        traceback.print_exc()
-        return jsonify({'error': str(e)})
                                
 #
 # Views

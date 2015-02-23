@@ -40,12 +40,11 @@
 </div>
 
 <div id="entry_modal" class="modal hide fade" data-backdrop="static">
+<!-- error -->
     <div class="modal-body">   
-        <!-- error -->
         <div class="modal-error hide">    
             <span class="modal-msg error"></span>
-        </div>
-        
+        </div>       
 <!-- login panel -->    
         <div class="entry-panel entry-login hide">
             <div>
@@ -57,6 +56,16 @@
                 </div> 
             </div>
         </div>   
+<!-- migrate panel -->    
+    <div class="entry-panel entry-migrate hide">  
+        <p>In order to continue to use the StoryMap Editor, you must migrate your data.  
+        This process will make copies of the StoryMaps currently on your Google Drive and store them on our new storage site.
+        </p>
+        <p>
+        None of the original data on your Google Drive will be altered, moved, or deleted, but the StoryMap Editor
+        will only work with the migrated copies.
+        </p>
+    </div>
 <!-- list panel -->    
         <div class="entry-panel entry-list hide">  
             <div class="table-header">
@@ -157,13 +166,15 @@
             <span id="entry_user_name"></span> | <a id="entry_logout" href="javascript:">Logout</a>
         </div>
         <span>&nbsp;</span>
+        <a id="entry_migrate" class="entry-panel entry-migrate hide btn btn-success" href="javascript:;">
+            Start Migration</a>
+        
         <a id="entry_create_cancel" class="entry-panel entry-create entry-import entry-rename entry-copy hide btn" onclick="$('#entry_modal').trigger('show_list');">
             Cancel</a>
         <a id="entry_create" class="entry-panel entry-create hide btn btn-success" href="javascript:;">
             Create</a>
         <a class="entry-panel entry-list hide btn btn-success" href="javascript:;" onclick="$('#entry_modal').trigger('show_type');">
-            <i class="icon-file "></i> New
-		</a>    
+            <i class="icon-file "></i> New</a>    
         <a id="entry_rename" class="entry-panel entry-rename hide btn btn-success" href="javascript:;">
             Rename</a>
         <a id="entry_copy" class="entry-panel entry-copy hide btn btn-success" href="javascript:;">
@@ -235,8 +246,9 @@ var _user = {};
 var storymap_row_template = _.template($('#storymap_row_template').html().trim());
 
 var _storymap_list = [];        // [object]
+var _migrate_list = [];         // [object]
 
-var _params = parseQueryString();
+var _params = parseQueryString();   // for import
 
 //
 // sort
@@ -303,6 +315,18 @@ $(function() {
         });
     });
 
+    // popovers
+    $('a.help').popover({
+        trigger: 'manual'
+    }).click(function(event) {
+        if(!$(this).next().hasClass('popover')) {
+            $('a.help').not(this).popover('hide');
+        }     
+        $(this).popover('toggle');
+        event.stopPropagation();
+        event.preventDefault();
+    });
+
 
     $('#entry_login').click(function() {
         var $modal = $('#entry_modal').trigger('progress_show', 'Logging in');
@@ -316,16 +340,55 @@ $(function() {
         document.location.href = "{{ url_for('logout') }}";    
     });
 
-    // popovers
-    $('a.help').popover({
-        trigger: 'manual'
-    }).click(function(event) {
-        if(!$(this).next().hasClass('popover')) {
-            $('a.help').not(this).popover('hide');
-        }     
-        $(this).popover('toggle');
-        event.stopPropagation();
-        event.preventDefault();
+
+// ------------------------------------------------------------
+// migrate
+// ------------------------------------------------------------
+
+    function _do_migrate(callback) {
+        var $modal = $('#entry_modal');
+
+       if(_migrate_list.length) {
+            var info = _migrate_list.pop();
+            $modal.trigger('progress_show', 'Copying '+info.title);
+            
+            ajax_post("{{ url_for('storymap_migrate') }}",
+                {
+                    title: info.title,
+                    url: info.url,
+                    file_list: JSON.stringify(info.file_list)
+                },
+                function(error) {
+                    callback(error);
+                },
+                function(data) {
+                    _user.storymaps[data.id] = data;
+                    _storymap_list.push(data);
+                    _do_migrate(callback);
+                }
+            );        
+        } else {        
+            callback();
+        }
+    }
+    
+    $('#entry_migrate').click(function(event) {
+        var $modal = $('#entry_modal');
+        
+        _do_migrate(function(error) {
+            if(error) {
+                $modal.trigger('reset', format_error('Error migrating StoryMap', error));
+            } else {
+                ajax_get("{{ url_for('storymap_migrate_done') }}", {},
+                    function(error) {
+                        $modal.trigger('reset', format_error('Error setting migration status', error));   
+                    },
+                    function(data) {
+                        $modal.trigger('show_list');                    
+                    }
+                );
+            }        
+        });
     });
 
 // ------------------------------------------------------------
@@ -336,19 +399,19 @@ $(function() {
         var $modal = $('#entry_modal');
         var $panel = $('.entry-rename');
      
-        var name = $panel.find('.entry-rename-title').val().trim();  
-        if(!validate_storymap_name($modal, name)) {
+        var title = $panel.find('.entry-rename-title').val().trim();  
+        if(!validate_storymap_name($modal, title)) {
             return false;
         }
         var id = $(this).attr('storymap-data');
                    
         ajax_post("{{ url_for('storymap_rename') }}",
-            {id: id, title: name},
+            {id: id, title: title},
             function(error) {
                 $modal.trigger('reset', format_error('Error renaming StoryMap', error));   
             },
             function(data) {
-                _user.storymaps[id].title = name;
+                _user.storymaps[id].title = title;
                 $modal.trigger('show_list'); 
             }
         );
@@ -362,8 +425,8 @@ $(function() {
         var $modal = $('#entry_modal');
         var $panel = $('.entry-copy');
      
-        var name = $panel.find('.entry-copy-title').val().trim();    
-        if(!validate_storymap_name($modal, name)) {
+        var title = $panel.find('.entry-copy-title').val().trim();    
+        if(!validate_storymap_name($modal, title)) {
             return false;
         }        
         var id = $(this).attr('storymap-data');
@@ -371,7 +434,7 @@ $(function() {
         $modal.trigger('progress_show', 'Copying StoryMap');
  
         ajax_get("{{ url_for('storymap_copy') }}",
-            {id: id, name: name},
+            {id: id, title: title},
             function(error) {
                 $modal.trigger('reset', format_error('Error copying StoryMap', error));
             },
@@ -528,11 +591,6 @@ $(function() {
                         $modal.trigger('reset',  format_error('Error getting user info', error)); 
                         return;                             
                     }      
-                    // TODO: DO WE STILL NEED THIS?
-                    if(info.domainSharingPolicy && info.domainSharingPolicy.indexOf('allowed') != 0) {
-                        $modal.trigger('reset',  'This Google Account does not support public Google Drive sharing.  Please sign in with a different Google account.');                                
-                        return;
-                    } 
                
                     ajax_get("{{ url_for('google_auth') }}", 
                         {
@@ -550,11 +608,35 @@ $(function() {
                             // Show user information
                             $('#entry_user_name').html(_user.uname);
                             $('#entry_user_info').show(); 
-                                              
-                            if(_params.import_url) {
-                                $modal.trigger('show_import');
-                            } else {                     
-                                $modal.trigger('show_list');
+                        
+                            if(_user.migrated) {
+                               if(_params.import_url) {
+                                    $modal.trigger('show_import');
+                                } else {                     
+                                    $modal.trigger('show_list');
+                                }                                    
+                            } else {
+                                gdrive_migrate_list(function(error, migrate_list) {
+                                    if(error) {
+                                        $modal.trigger('reset',  format_error('Error getting migration list', error)); 
+                                    } else if(migrate_list.length) {
+                                        _migrate_list = migrate_list;
+                                        $modal.trigger('show_migrate');
+                                    } else {
+                                        ajax_get("{{ url_for('storymap_migrate_done') }}", {},
+                                            function(error) {
+                                                $modal.trigger('reset', format_error('Error setting migration status', error));   
+                                            },
+                                            function(data) {
+                                                if(_params.import_url) {
+                                                    $modal.trigger('show_import');
+                                                } else {                     
+                                                    $modal.trigger('show_list');
+                                                }                                    
+                                            }
+                                        );
+                                    }
+                                });
                             }
                         }
                     );    
@@ -584,7 +666,13 @@ $(function() {
             
             $(this).find('.entry-panel').hide();
             $(this).find('.entry-create, .entry-create-zoomify').show();        
-        })      
+        })  
+        .on('show_migrate', function(event) {
+            $(this).find('.entry-panel').hide();
+            var $modal = $(this).trigger('error_hide');
+            $(this).find('.entry-migrate').show();
+            $(this).trigger('progress_hide');
+        })    
         .on('show_list', function(event, force_reload) {
             $(this).find('.entry-panel').hide();
             var $modal = $(this)
