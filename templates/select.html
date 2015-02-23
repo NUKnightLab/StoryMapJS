@@ -206,7 +206,7 @@
 <!-- TEMPLATES START  -->
 
 <script id="storymap_row_template" type="text/template">
-<tr id="<%= id %>">
+<tr storymap-data="<%= id %>">
 <td>
 <div style="display: inline;float: right">
     <div class="dropdown">
@@ -724,8 +724,7 @@ $(function() {
             $modal.trigger('progress_hide');
         })
         .on('show_rename', function(event, obj) {
-            var $tr = $(obj).closest('tr');
-            var id = $tr.attr('id');
+            var id = $(obj).closest('tr').attr('storymap-data');
             var item = _user.storymaps[id];
 
             $('.entry-rename-title-old').html(item.title);            
@@ -737,7 +736,7 @@ $(function() {
             $('.entry-rename-title').focus();
         })
         .on('show_copy', function(event, obj) {
-            var id = $(obj).closest('tr').attr('id');
+            var id = $(obj).closest('tr').attr('storymap-data');
             var item = _user.storymaps[id];
 
             $('.entry-copy-title-old').html(item.title);            
@@ -769,7 +768,7 @@ $(function() {
         .on('delete_storymap', function(event, obj) {
             var $modal = $(this);
             var $tr = $(obj).closest('tr');
-            var id = $tr.attr('id');
+            var id = $tr.attr('storymap-data');
             var item = _user.storymaps[id];
                         
             $modal.trigger('confirm_show', ['Delete <strong>'+item.title+'</strong> StoryMap?', function(yes) {
