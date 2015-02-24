@@ -969,22 +969,42 @@ function gdrive_migrate_list(migrate_list_callback) {
             folder = folder_list.shift();
             folder_file_list = []; // list of valid files
 console.log('PROCESSING '+folder.title);
+            draft_on = '';
+            published_on = '';
             
             gdrive_folder_list(folder.id, function(error, file_list) {
                 if(!error && file_list) {
                     for(var i = 0; i < file_list.length; i++) {
-                        var file = file_list[i];        
-                        if(file.title != 'edit.lock') {
-                            folder_file_list.push(file.title);
+                        var file = file_list[i];    
+                        
+                        switch(file.title) {
+                            case 'draft.json':   
+                                draft_on = file.modifiedDate;
+                                folder_file_list.push(file.title);
+                                break;
+                            
+                            case 'published.json':
+                                published_on = file.modifiedDate;
+                                folder_file_list.push(file.title);
+                                break;
+
+                            case 'edit.lock':
+                                break;
+                            
+                            default:
+                                folder_file_list.push(file.title);
+                                break;
                         }
                     }            
                 } 
                 if(error) {
                     migrate_list_callback(error, null);
-                } else if(folder_file_list.indexOf('draft.json') > -1) {
+                } else if(draft_on) {
                     storymap_list.push({
                         title: folder.title,
-                        url: folder.webViewLink,                   
+                        url: folder.webViewLink,   
+                        draft_on: draft_on,
+                        published_on: published_on,             
                         file_list: folder_file_list
                     });
                     _process_folder_list(folder_list);

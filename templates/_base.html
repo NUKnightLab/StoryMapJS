@@ -16,13 +16,9 @@
 	{% block prehead %}	
 	{# Allow scripts to load before storymap (e.g. Leaflet) #}
 	{% endblock %}
-	<!-- build:css http://cdn.knightlab.com/libs/storymapjs/%(cdn)s/css/storymap.css -->
-    <link rel="stylesheet" href="/build/css/storymap.css?v1">
-    <!-- endbuild -->
-	<!-- build:js http://cdn.knightlab.com/libs/storymapjs/%(cdn)s/js/storymap-min.js -->
-	<script type="text/javascript" src="/build/js/storymap.js"></script>
-    <!-- endbuild -->
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="{{ CDN_URL }}css/storymap.css?v1">
+	<script type="text/javascript" src="{{ CDN_URL }}js/storymap.js"></script>
+ 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="http://cdn.knightlab.com/libs/blueline/latest/js/blueline.min.js"></script>
    <!-- Google Analytics: don't mess with this stuff -->
    <!-- named tracker notes from https://developers.google.com/analytics/devguides/collection/gajs/ -->

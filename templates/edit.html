@@ -18,13 +18,9 @@
 <!-- === maps.stamen.com -->
 <script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.2.4"></script>
 <!-- === storymap -->
-<!-- build:css http://cdn.knightlab.com/libs/storymapjs/%(cdn)s/css/storymap.css -->
-<link rel="stylesheet" href="/build/css/storymap.css?v1">
-<!-- endbuild -->
+<link rel="stylesheet" href="{{ CDN_URL }}css/storymap.css?v1">
 <!-- TEMPORARILY USE NON-MINIFIED -->
-<!-- build:js http://cdn.knightlab.com/libs/storymapjs/%(cdn)s/js/storymap.js -->
-<script type="text/javascript" src="/build/js/storymap.js"></script>
-<!-- endbuild -->
+<script type="text/javascript" src="{{ CDN_URL }}js/storymap.js"></script>
 <!-- === extra leaflet marker classes -->
 <script type="text/javascript" src="{{ STATIC_URL }}js/leaflet-extras.js"></script>
 <!-- === bootstrap-wysihtml5 -->
@@ -62,7 +58,7 @@
 </script>
 
 <script id="storymap_iframe_template" type="text/template">
-<iframe src="<%= embed_url %>?url=<%= url %>" frameborder="0" width="<%= width %>" height="<%= height %>"></iframe>
+<iframe src="<%= embed_url %>" frameborder="0" width="<%= width %>" height="<%= height %>"></iframe>
 </script>
 
 <!-- TEMPLATES END -->
@@ -78,9 +74,6 @@ L.Icon.Default.imagePath = ' http://cdn.leafletjs.com/leaflet-0.7.2/images';
 var _storymap_upload_url = "{{ url_for('storymap_image_save') }}";
 
 var _font_url = '{{ CDN_URL }}css/fonts/';
-var _link_url = '{{ CDN_URL }}embed/';
-var _embed_url = '//s3.amazonaws.com/cdn.knightlab.com/libs/storymapjs/latest/embed/index.html';
-
 
 // If under local development...
 switch(document.location.hostname) {
@@ -120,7 +113,7 @@ var _re_slide_cls = /^slide-icon-\w+$/;
 var _map;                   // EditorMap
 
 var _user = {{ user|tojson }};
-var _storymap_meta = {{ storymap_meta|tojson }};
+var _storymap_meta = {{ meta|tojson }};
 var _storymap_data;          // { width: n, height: n, ..., storymap: { } }
 
 var _storymap_files = [];    // array of image files in this storymap folder
@@ -407,7 +400,7 @@ function storymap_save(callback) {
     );
 }
 
-// callback(error || null)
+// callback(error || null, embed_url)
 function storymap_publish(callback) {
     if(_dirty) {
         storymap_save(function(error) {
@@ -424,13 +417,13 @@ function storymap_publish(callback) {
                 d: JSON.stringify(_storymap_data)
             },
             function(error) {
+                callback(error);
             },
             function(data) {
+                console.log(data);               
                 _storymap_meta = data.meta; // update meta
-                $('#storymap_publish').hide(); 
-            },
-            function(error) {
-                callback(error);       
+                $('#storymap_publish').hide();                
+                callback(null, data.embed_url);
             }
         );
     }
@@ -1161,36 +1154,35 @@ $(function() {
      
     modal_init($('#share_modal'))
          ////// custom
-        .on('modal_show', function(event, error_msg) {                        
-            var url = '';
+        .on('modal_show', function(event, error_msg) {     
+            var embed_url = '';
                         
             if(_storymap_meta.draft_on > _storymap_meta.published_on) {
-                url += storymap_url(_user.uid, _storymap_meta.id, 'draft.json');
+                embed_url = storymap_url(_user.uid, _storymap_meta.id, 'draft.html');
                 $('#share_publish_panel').show();   
             } else {
-                url += storymap_url(_user.uid, _storymap_meta.id, 'published.json');
+                embed_url = storymap_url(_user.uid, _storymap_meta.id, 'index.html');
                 $('#share_publish_panel').hide();
             }
 
-            var link_url = _link_url+'?url='+url;
-            var enc_url = encodeURIComponent(link_url);
+
+            var enc_embed_url = encodeURIComponent(embed_url);
 
             var embed_html = storymap_iframe_template({
-                embed_url: _embed_url,
-                url: url,
+                embed_url: embed_url,
                 width: $('#share_width').val(),
                 height: $('#share_height').val()
             });
-            $('#share_url').val(link_url);
+            $('#share_url').val(embed_url);
             
             $(this).find('.share-link-twitter').attr('href',
-                'http://twitter.com/intent/tweet?url='+enc_url);
+                'http://twitter.com/intent/tweet?url='+enc_embed_url);
             $(this).find('.share-link-facebook').attr('href', 
-                'https://www.facebook.com/sharer/sharer.php?u='+enc_url);                
+                'https://www.facebook.com/sharer/sharer.php?u='+enc_embed_url);                
             $(this).find('.share-link-googleplus').attr('href', 
-                'https://plus.google.com/share?url='+enc_url);                
+                'https://plus.google.com/share?url='+enc_embed_url);                
             $(this).find('.share-link-reddit').attr('href', 
-                'http://www.reddit.com/submit?url='+enc_url);
+                'http://www.reddit.com/submit?url='+enc_embed_url);
                 
             $('#share_embed').html(embed_html);
  
