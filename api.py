@@ -29,14 +29,19 @@ import subprocess
 import requests
 import slugify
 import bson
-from storymap import storage
+from oauth2client.client import OAuth2WebServerFlow
+from storymap import storage, google
 from storymap.connection import _user
-
 
 app = Flask(__name__)
 app.config.from_envvar('FLASK_CONFIG_MODULE')
 
 settings = sys.modules[settings_module]
+
+_GOOGLE_OAUTH_SCOPES = [
+    'https://www.googleapis.com/auth/drive.readonly',
+    'https://www.googleapis.com/auth/userinfo.profile'
+];
 
 
 @app.context_processor
@@ -157,8 +162,84 @@ def _session_pop(*keys):
 
 #
 # Auth
-#    
+# https://developers.google.com/drive/web/quickstart/quickstart-python
+#
+   
+@app.route("/google/auth/start/", methods=['GET', 'POST'])
+def google_auth_start():
+    """
+    Initiate google authorization
+    """
+    flow = OAuth2WebServerFlow(
+        settings.GOOGLE_CLIENT_ID,
+        settings.GOOGLE_CLIENT_SECRET,
+        _GOOGLE_OAUTH_SCOPES,
+        redirect_uri='http://'+request.host+url_for('google_auth_verify')
+    )
+    authorize_url = flow.step1_get_authorize_url()
+    return redirect(authorize_url)
 
+
+@app.route("/google/auth/verify/", methods=['GET', 'POST'])
+def google_auth_verify():
+    """
+    Finalize google authorization
+    credentials is an oauth2client.client.OAuth2Credentials object
+    """
+    try:        
+        if 'error' in request.args:
+            raise Exception(_format_err(
+                'Error getting authorization', request.args.get('error')))
+            
+        code = _request_get('code')
+        
+        flow = OAuth2WebServerFlow(
+            settings.GOOGLE_CLIENT_ID,
+            settings.GOOGLE_CLIENT_SECRET,
+            _GOOGLE_OAUTH_SCOPES,
+            redirect_uri='http://'+request.host+url_for('google_auth_verify')
+        )
+        credentials = flow.step2_exchange(code)
+        
+        # Get user info
+        userinfo = google.get_userinfo(
+            google.get_userinfo_service(credentials))           
+        if not userinfo:
+            raise Exception('Could not get Google user info') 
+       
+        info = {
+            'id': userinfo.get('id'),
+            'name': userinfo.get('name'),
+            'credentials': credentials.to_json()
+        }
+        if not info['id']:
+            raise Exception('Could not get Google user ID')
+            
+        # Upsert user record
+        uid = _get_uid('google:'+info['id'])
+
+        user = _user.find_one({'uid': uid})
+        if user:            
+            user['google'] = info
+        else:
+            user = {
+                'uid': uid,
+                'migrated': 0,
+                'storymaps': {},
+                'google': info
+            }
+        user['uname'] = info['name']                  
+        _user.save(user)
+         
+        # Update session
+        session['uid'] = uid
+                 
+        return redirect(url_for('select'))         
+    except Exception, e:
+        traceback.print_exc()
+        return jsonify({'error': str(e)})          
+
+# THIS IS OLD
 @app.route("/google/auth/", methods=['GET', 'POST'])
 def google_auth():
     try:        
@@ -405,6 +486,23 @@ def storymap_migrate_done():
         traceback.print_exc()
         return jsonify({'error': str(e)})
 
+@app.route('/storymap/migrate/list/', methods=['GET', 'POST'])
+def storymap_migrate_list():
+    """
+    Get a list of storymaps that need to be migrated
+    """
+    try:
+        user = _get_user()  
+    
+        credentials = google.get_credentials(user['google']['credentials'])
+        drive_service = google.get_drive_service(credentials)
+        migrate_list = google.drive_get_migrate_list(drive_service)
+        
+        return jsonify({'migrate_list': migrate_list})
+    except Exception, e:
+        traceback.print_exc()
+        return jsonify({'error': str(e)})
+    
 @app.route('/storymap/migrate/', methods=['POST'])
 def storymap_migrate():
     """
@@ -416,6 +514,8 @@ def storymap_migrate():
     @file_list = json encoded list of file names
     """
     try:
+        print request.form
+        
         user = _get_user()  
         title, src_url, draft_on, published_on, file_list_json = \
             _request_get_list(
@@ -525,8 +625,7 @@ def storymap_publish():
     except Exception, e:
         traceback.print_exc()
         return jsonify({'error': str(e)})
-
-        
+       
 @app.route('/storymap/image/list/', methods=['GET', 'POST'])
 def storymap_image_list():
     """
@@ -544,7 +643,6 @@ def storymap_image_list():
     except Exception, e:
         traceback.print_exc()
         return jsonify({'error': str(e)})
-
 
 @app.route('/storymap/image/save/', methods=['POST'])
 def storymap_image_save():
@@ -573,7 +671,7 @@ def storymap_image_save():
         traceback.print_exc()
         return jsonify({'error': str(e)})
 
-                               
+                              
 #
 # Views
 #
