@@ -17,14 +17,10 @@
 <script src="{{ STATIC_URL }}js/moment.min.js"></script>
 <script src="{{ STATIC_URL }}js/moment-timezone.min.js"></script>
 <script src="{{ STATIC_URL }}js/moment-timezone-data.js"></script>
-<!-- === auth -->
-{% include '_credentials.html' %}
-<script type="text/javascript" src="https://apis.google.com/js/api.js"></script>
 <!-- === editor -->
 <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.history.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/json2.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/editor.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}js/gdrive.js"></script>
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/editor.css">
 </head>
 <body>
@@ -329,9 +325,7 @@ $(function() {
     $('#entry_login').click(function() {
         var $modal = $('#entry_modal').trigger('progress_show', 'Logging in');
 
-        gdrive_login(function(authorized) {
-            $('#entry_modal').trigger('handle_auth', authorized);     
-        });
+        document.location.href = "{{ url_for('google_auth_start') }}";    
     }); 
     
     $('#entry_logout').click(function(event) {
@@ -566,11 +560,7 @@ $(function() {
         ////// custom
         .on('show', function(event) {
             if (event.target.id == 'entry_modal') {
-                var $modal = $(this).trigger('progress_show', 'Checking authorization');   
-                
-                gdrive_check_auth(function(authorized, authResult) {
-                    $modal.trigger('handle_auth', authorized); 
-                });           
+                $(this).trigger('handle_auth', _user.uid);
             }
         })
         .on('handle_auth', function(event, authorized) {
@@ -582,69 +572,48 @@ $(function() {
                 $modal.trigger('show_login');
                 return;
             }
-            
-            $modal.trigger('progress_show', 'Handling authorization');   
-                           
-            gapi.client.load('drive', 'v2', function() {
-                gdrive_about(function(error, info) {
-                    if(error) {
-                        $modal.trigger('reset',  format_error('Error getting user info', error)); 
-                        return;                             
-                    }      
-               
-                    ajax_get("{{ url_for('google_auth') }}", 
-                        {
-                            id: info.user.emailAddress, 
-                            name: info.user.displayName
-                        },
-                        function(error) {
-                            $modal.trigger('reset',  format_error('Error getting user storage', error)); 
-                         }, 
-                        function(data) {
-                            // Store user information
-                            _user = data.user;
-                            make_storymap_list();
-                            
-                            // Show user information
-                            $('#entry_user_name').html(_user.uname);
-                            $('#entry_user_info').show(); 
-                        
-                            if(_user.migrated) {
-                               if(_params.import_url) {
-                                    $modal.trigger('show_import');
-                                } else {                     
-                                    $modal.trigger('show_list');
-                                }                                    
-                            } else {
-                                gdrive_migrate_list(function(error, migrate_list) {
-                                    if(error) {
-                                        $modal.trigger('reset',  format_error('Error getting migration list', error)); 
-                                    } else if(migrate_list.length) {
-                                        _migrate_list = migrate_list;
-                                        $modal.trigger('show_migrate');
-console.log(_migrate_list);
-                                
-                                    } else {
-                                        ajax_get("{{ url_for('storymap_migrate_done') }}", {},
-                                            function(error) {
-                                                $modal.trigger('reset', format_error('Error setting migration status', error));   
-                                            },
-                                            function(data) {
-                                                if(_params.import_url) {
-                                                    $modal.trigger('show_import');
-                                                } else {                     
-                                                    $modal.trigger('show_list');
-                                                }                                    
-                                            }
-                                        );
-                                    }
-                                });
-                            }
-                        }
-                    );    
-                });
-            }); 
-          
+ 
+            // Show user information
+            $('#entry_user_name').html(_user.uname);
+            $('#entry_user_info').show(); 
+           
+            make_storymap_list();
+ 
+            if(_user.migrated) {
+                if(_params.import_url) {
+                    $modal.trigger('show_import');
+                } else {                     
+                    $modal.trigger('show_list');
+                }                                    
+            } else {
+                 var $modal = $(this).trigger('progress_show', 'Checking migration status'); 
+                
+                ajax_get("{{ url_for('storymap_migrate_list') }}", {},
+                    function(error) {
+                        $modal.trigger('reset',  format_error('Error getting migration list', error));                     
+                    },
+                    function(data) {
+                        if(data.migrate_list.length) {  
+                            _migrate_list = data.migrate_list;
+                            $modal.trigger('show_migrate');
+                            console.log(_migrate_list);
+                        } else {
+                            ajax_get("{{ url_for('storymap_migrate_done') }}", {},
+                                function(error) {
+                                    $modal.trigger('reset', format_error('Error setting migration status', error));   
+                                },
+                                function(data) {
+                                    if(_params.import_url) {
+                                        $modal.trigger('show_import');
+                                    } else {                     
+                                        $modal.trigger('show_list');
+                                    }                                    
+                                }
+                            );
+                        }                    
+                    }
+                );
+            }
         })
         .on('show_login', function(event) {
             $(this).find('.entry-panel').hide();
@@ -758,15 +727,6 @@ console.log(_migrate_list);
             $modal.find('.entry-import').show();     
             $('entry-import-title').focus();          
         })
-/*
-        .on('share_storymap', function(event, obj) {
-            var id = $(obj).closest('tr').attr('id');
-         
-            var sc = new gapi.drive.share.ShareClient(_GDRIVE_APP_ID);
-            sc.setItemIds([id]);            
-            sc.showSettingsDialog();         
-        })
-*/
         .on('delete_storymap', function(event, obj) {
             var $modal = $(this);
             var $tr = $(obj).closest('tr');
@@ -793,13 +753,16 @@ console.log(_migrate_list);
                     );
                 }          
             }]);
-        });    
+        });   
+        
+        
+        
+    handle_onload();
 });
 
 
 </script>
 <!-- LEAVE THIS HERE -->
 <script type="text/javascript" src="{{ STATIC_URL }}js/modals.js"></script>
-<script type="text/javascript" src="https://apis.google.com/js/client.js?onload=handle_onload"></script>
 </body>
 </html>
