@@ -12,9 +12,7 @@
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
 <script src="http://cdn.knightlab.com/libs/blueline/latest/js/blueline.min.js"></script>
 <!-- === storymap -->
-<!-- build:css http://cdn.knightlab.com/libs/storymapjs/%(cdn)s/css/storymap.css -->
-<link rel="stylesheet" href="/build/css/storymap.css?v1">
-<!-- endbuild -->
+<link rel="stylesheet" href="{{ CDN_URL }}css/storymap.css?v1">
 <!-- === Moment.js -->
 <script src="{{ STATIC_URL }}js/moment.min.js"></script>
 <script src="{{ STATIC_URL }}js/moment-timezone.min.js"></script>
@@ -356,6 +354,8 @@ $(function() {
                 {
                     title: info.title,
                     url: info.url,
+                    draft_on: info.draft_on,
+                    published_on: info.published_on,
                     file_list: JSON.stringify(info.file_list)
                 },
                 function(error) {
@@ -622,6 +622,8 @@ $(function() {
                                     } else if(migrate_list.length) {
                                         _migrate_list = migrate_list;
                                         $modal.trigger('show_migrate');
+console.log(_migrate_list);
+                                
                                     } else {
                                         ajax_get("{{ url_for('storymap_migrate_done') }}", {},
                                             function(error) {

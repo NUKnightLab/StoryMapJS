@@ -6,7 +6,7 @@ import os
 from .base import *
 
 # Import secrets
-secrets_path = os.path.normpath(os.path.join(PROJECT_ROOT, '../secrets/storymap/stg'))
+secrets_path = os.path.normpath(os.path.join(PROJECT_ROOT, '../secrets/storymapjs/stg'))
 sys.path.append(secrets_path)
 
 from secrets import *
@@ -16,12 +16,12 @@ os.environ['FLASK_CONFIG_MODULE'] = os.path.join(secrets_path, 'flask_config.py'
     
 STATIC_URL = 'http://media.knilab.com/StoryMapJS/'
 
-CDN_URL = 'http://cdn.knightlab.com/libs/storymapjs/dev/'
+CDN_URL = 'https://s3.amazonaws.com/cdn.knightlab.com/libs/storymapjs/dev/'
 
 DATABASES = {
     'default': {
         'ENGINE': 'mongo',
-        'NAME': 'storymap',
+        'NAME': 'storymapjs',
         'HOST': 'stg-mongo1.knilab.com',
         'PORT': 27017,
     }
@@ -34,4 +34,4 @@ AWS_STORAGE_BUCKET_NAME = 'uploads.knilab.com'
 AWS_STORAGE_BUCKET_URL = '//s3.amazonaws.com/uploads.knilab.com/'
 
 # Application key name within storage bucket
-AWS_STORAGE_BUCKET_KEY = 'storymap'
+AWS_STORAGE_BUCKET_KEY = 'storymapjs'
