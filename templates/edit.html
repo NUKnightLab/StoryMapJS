@@ -110,8 +110,14 @@ var _re_slide_cls = /^slide-icon-\w+$/;
 
 var _map;                   // EditorMap
 
+{% if user %}
 var _user = {{ user|tojson }};
+{% endif %}
+
+{% if meta %}
 var _storymap_meta = {{ meta|tojson }};
+{% endif %}
+
 var _storymap_data;          // { width: n, height: n, ..., storymap: { } }
 
 var _storymap_files = [];    // array of image files in this storymap folder
@@ -691,32 +697,14 @@ function storymap_init() {
     );
 }
 
-
 $(function() {     
-    // popovers
-    $('a.help').popover({
-        trigger: 'manual'
-    }).click(function(event) {
-        if(!$(this).next().hasClass('popover')) {
-            $('a.help').not(this).popover('hide');
-        }     
-        $(this).popover('toggle');
-        event.stopPropagation();
-    });
 
-    $(document).click(function(e) {
-        $('a.help').popover('hide');
-    });
 
     $('.slide:first').click(slide_select); 
      
 //------------------------------------------------------------
 // Menu bar
 //------------------------------------------------------------
-    
-    $('#storymap_list').click(function(event) {
-        document.location.href = "{{ url_for('select') }}";
-    });
 
     $('#storymap_save').click(function(event) {
         storymap_save(function(error) {
@@ -1156,23 +1144,23 @@ $(function() {
             var embed_url = '';
                         
             if(_storymap_meta.draft_on > _storymap_meta.published_on) {
-                embed_url = storymap_url(_user.uid, _storymap_meta.id, 'draft.html');
+                embed_url = 'http:'+storymap_url(_user.uid, _storymap_meta.id, 'draft.html');
                 $('#share_publish_panel').show();   
             } else {
-                embed_url = storymap_url(_user.uid, _storymap_meta.id, 'index.html');
+                embed_url = 'http:'+storymap_url(_user.uid, _storymap_meta.id, 'index.html');
                 $('#share_publish_panel').hide();
             }
-
-
-            var enc_embed_url = encodeURIComponent(embed_url);
 
             var embed_html = storymap_iframe_template({
                 embed_url: embed_url,
                 width: $('#share_width').val(),
                 height: $('#share_height').val()
             });
+  
+            var enc_embed_url = encodeURIComponent(embed_url);
+
             $('#share_url').val(embed_url);
-            
+           
             $(this).find('.share-link-twitter').attr('href',
                 'http://twitter.com/intent/tweet?url='+enc_embed_url);
             $(this).find('.share-link-facebook').attr('href', 
@@ -1231,7 +1219,11 @@ $(function() {
 // Doit
 //------------------------------------------------------------
 
-        storymap_init();
+{% if error %}
+    storymap_abort('{{ error }}');
+{% else %}
+    storymap_init();
+{% endif %}
 });
 
 //
@@ -1249,6 +1241,7 @@ window.onresize = function(event) {
         _storymap_object.updateDisplay();
     }
 }
+
 </script>
 <!-- LEAVE THIS HERE -->
 <script type="text/javascript" src="{{ STATIC_URL }}js/modals.js"></script>

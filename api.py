@@ -1,8 +1,15 @@
-from flask import Flask, request, session, redirect, url_for, render_template, \
-    jsonify, make_response, flash
+from flask import Flask, request, session, redirect, url_for, \
+    render_template, jsonify
 import os
 import sys
 import importlib
+import traceback
+import time
+import datetime
+import re
+import json
+from functools import wraps
+
 
 # Import settings module
 if __name__ == "__main__":
@@ -16,16 +23,7 @@ try:
 except ImportError, e:
     raise ImportError("Could not import settings '%s' (Is it on sys.path?): %s" % (settings_module, e))
 
-import re
-import json
-import traceback
-import time
-import datetime
-import urllib
-import urlparse
 import hashlib
-import tempfile
-import subprocess
 import requests
 import slugify
 import bson
@@ -43,7 +41,7 @@ _GOOGLE_OAUTH_SCOPES = [
     'https://www.googleapis.com/auth/userinfo.profile'
 ];
 
-
+   
 @app.context_processor
 def inject_urls():
     """
@@ -107,20 +105,10 @@ def _utc_now():
     return datetime.datetime.utcnow().isoformat()+'Z'
 
 #
-# Request
+# request/session
 #
 
-def _request_get(key):
-    """Verify existence of request data and return value"""
-    if request.method == 'POST':
-        value = request.form.get(key)
-    else:
-        value = request.args.get(key)
-    if not value:
-        raise Exception('Expected "%s" parameter' % key)
-    return value
-
-def _request_get_list(*keys):
+def _request_get(*keys):
     """Verify existence of request data and return values"""
     if request.method == 'POST':
         obj = request.form
@@ -132,28 +120,22 @@ def _request_get_list(*keys):
         if not v:
             raise Exception('Expected "%s" parameter' % k)
         values.append(v)
-    return values
+    if len(values) > 1:
+        return values
+    return values[0]
 
-#
-# Session
-#
-
-def _session_get(key):
+def _session_get(*keys):
     """Verify existence of session data and return value"""
-    value = session.get(key)
-    if not value:
-        raise Exception('Expected "%s" in session' % key)
-    return value
-        
-def _session_get_list(*keys):
-    """Verify existence of session data and return values"""
     values = []
     for k in keys:
-        if not k in session:
-            raise Exception('Expected "%s" in session' % k)
-        values.append(session.get(k))
-    return values
-
+        v = session.get(key)
+        if not v:
+            raise Exception('Expected "%s" in session' % key)
+        values.append(v)
+    if len(values) > 1:
+        return values
+    return values[0]
+        
 def _session_pop(*keys):
     """Remove list of keys from session"""
     for k in keys:
@@ -161,15 +143,13 @@ def _session_pop(*keys):
             session.pop(k)
 
 #
-# Auth
+# auth
 # https://developers.google.com/drive/web/quickstart/quickstart-python
 #
    
 @app.route("/google/auth/start/", methods=['GET', 'POST'])
 def google_auth_start():
-    """
-    Initiate google authorization
-    """
+    """Initiate google authorization"""
     flow = OAuth2WebServerFlow(
         settings.GOOGLE_CLIENT_ID,
         settings.GOOGLE_CLIENT_SECRET,
@@ -179,13 +159,9 @@ def google_auth_start():
     authorize_url = flow.step1_get_authorize_url()
     return redirect(authorize_url)
 
-
 @app.route("/google/auth/verify/", methods=['GET', 'POST'])
 def google_auth_verify():
-    """
-    Finalize google authorization
-    credentials is an oauth2client.client.OAuth2Credentials object
-    """
+    """Finalize google authorization"""
     try:        
         if 'error' in request.args:
             raise Exception(_format_err(
@@ -200,6 +176,7 @@ def google_auth_verify():
             redirect_uri='http://'+request.host+url_for('google_auth_verify')
         )
         credentials = flow.step2_exchange(code)
+        # ^ this is an oauth2client.client.OAuth2Credentials object
         
         # Get user info
         userinfo = google.get_userinfo(
@@ -239,66 +216,62 @@ def google_auth_verify():
         traceback.print_exc()
         return jsonify({'error': str(e)})          
 
-# THIS IS OLD
-@app.route("/google/auth/", methods=['GET', 'POST'])
-def google_auth():
-    try:        
-        id, name = _request_get_list('id', 'name')
-        uid = _get_uid('google:'+id)
-        
-        # Upsert user record
-        user = _user.find_one({'uid': uid})
-        if user:            
-            user['google'] = {
-                'id': id,
-                'name': name
-            }
-        else:
-            user = {
-                'uid': uid,
-                'migrated': 0,
-                'storymaps': {},
-                'google': {
-                    'id': id,
-                    'name': name
-                }
-            }
-        _user.save(user)
-        user['uname'] = name                  
-        
-        # Update session
-        session['uid'] = uid
-            
-        return _jsonify({'error': '', 'user': user})          
-    except Exception, e:
-        traceback.print_exc()
-        return jsonify({'error': str(e)})          
 
-def _get_user():
-    """
-    Get user record for session['uid']
-    """
+#
+# Misc
+#
+
+def _user_get():
+    """Enforce authenticated user"""
     uid = session.get('uid')
     if not uid:
-        raise Exception('Expected "uid" in session')       
+        return redirect(url_for('select'))
     user = _user.find_one({'uid': uid})
     if not user:
-        raise Exception('Could not find user record for "%s"' % uid)
+        session.pop('uid')
+        return redirect(url_for('select'))
     return user
-
-def _get_user_verify(id):
+    
+def require_user(f):
     """
-    Get user record and verify access to storymap with id
+    Decorator to enforce authenticated user
+    Adds user to request and kwargs
     """
-    user = _get_user()
-    if id not in user['storymaps']:
-        raise Exception('You do not have permission to access to this StoryMap')
-    return user           
-
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        user = _user_get()
+        request.user = user
+        kwargs['user'] = user
+        return f(*args, **kwargs)
+    return decorated_function
+ 
+def require_user_id(template=None):
+    """
+    Decorator to enfore storymap access for authenticated user
+    Adds user to request and kwargs, adds id to kwargs
+    """
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            user = _user_get()
+        
+            id = _request_get('id')
+            if id not in user['storymaps']:
+                error = 'You do not have permission to access to this StoryMap'                
+                if template:
+                    return render_template('edit.html', error=error)
+                else:
+                    return jsonify({'error': error})
+    
+            request.user = user
+            kwargs['user'] = user
+            kwargs['id'] = id
+            return f(*args, **kwargs)
+        return decorated_function
+    return decorator
+    
 def _make_storymap_id(user, title):
-    """
-    Get unique storymap id from slugified title
-    """
+    """Get unique storymap id from slugified title"""
     id_base = slugify.slugify(title, only_ascii=True)
     id = id_base        
     n = 0
@@ -308,9 +281,7 @@ def _make_storymap_id(user, title):
     return id
 
 def _write_embed(embed_key_name, title, json_key_name, image_url=''):
-    """
-    Write embed page
-    """    
+    """Write embed page"""    
     # TODO: THIS IS JUST THE DEFAULT IMAGE URL
     image_url = image_url or settings.STATIC_URL+'img/logos/logo_storymap.png'
 
@@ -324,32 +295,26 @@ def _write_embed(embed_key_name, title, json_key_name, image_url=''):
     storage.save_from_data(embed_key_name, 'text/html', content)
 
 def _write_embed_draft(key_prefix, title, image_url=''):
-    """
-    Write embed page for draft storymap
-    """
+    """Write embed page for draft storymap """
     _write_embed(key_prefix+'draft.html', 
         title, key_prefix+'draft.json', image_url)
     
 def _write_embed_published(key_prefix, title, image_url=''):
-    """
-    Write embed for published storymap
-    """
+    """Write embed for published storymap"""
     _write_embed(key_prefix+'index.html', 
         title, key_prefix+'published.json', image_url)
 
 #
 # API views
-# These are called from the select page
+# (called from the select page)
 #
                
 @app.route('/storymap/rename/', methods=['GET', 'POST'])
-def storymap_rename():
-    """
-    Rename a storymap
-    """
+@require_user_id()
+def storymap_rename(user, id):
+    """Rename storymap"""
     try:
-        id, title = _request_get_list('id', 'title')
-        user = _get_user_verify(id)
+        title = _request_get('title')
         key_prefix = storage.key_prefix(user['uid'], id)
         
         user['storymaps'][id]['title'] = title
@@ -361,28 +326,27 @@ def storymap_rename():
         and user['storymaps'][id]['published_on']:
             _write_embed_published(key_prefix, title)
                     
-        return jsonify({'error': ''})
+        return jsonify({})
     except Exception, e:
         traceback.print_exc()
         return jsonify({'error': str(e)})
 
 @app.route('/storymap/copy/', methods=['GET', 'POST'])
-def storymap_copy():
+@require_user_id()
+def storymap_copy(user, id):
     """
     Copy storymap
     @id = storymap to copy
-    @name = name of new copy
+    @title = name of new copy
     """
     try:
-        id, title = _request_get_list('id', 'title')
-        user = _get_user_verify(id)
+        title = _request_get('title')
         dst_id = _make_storymap_id(user, title)
               
         src_key_prefix = storage.key_prefix(user['uid'], id)
         dst_key_prefix = storage.key_prefix(user['uid'], dst_id)
 
         src_re = re.compile(r'%s' % src_key_prefix)
-        has_published = False
         
         src_key_list, more = storage.list_keys(src_key_prefix, 999, '') 
         for src_key in src_key_list:
@@ -393,25 +357,21 @@ def storymap_copy():
                 json_string = src_key.get_contents_as_string()
                 storage.save_json(dst_key_name, 
                     src_re.sub(dst_key_prefix, json_string))
-                
-                if file_name == 'published.json':
-                    has_published = True
             else:
                 storage.copy_key(src_key.name, dst_key_name)
     
         # Update meta
-        dt = _utc_now()
         user['storymaps'][dst_id] = {         
             'id': dst_id,
             'title': title,
-            'draft_on': dt,
-            'published_on': (has_published and dt) or ''
+            'draft_on': user['storymaps'][id]['draft_on'],
+            'published_on': user['storymaps'][id]['published_on']
         }
         _user.save(user)
         
-        # Rewrite embed pages
+        # Write new embed pages
         _write_embed_draft(dst_key_prefix, title)        
-        if has_published:
+        if user['storymaps'][dst_id]['published_on']:
             _write_embed_published(dst_key_prefix, title)
                     
         return jsonify(user['storymaps'][dst_id])
@@ -420,14 +380,10 @@ def storymap_copy():
         return jsonify({'error': str(e)})
 
 @app.route('/storymap/delete/')
-def storymap_delete():
-    """
-    Delete storymap from S3
-    """
+@require_user_id()
+def storymap_delete(user, id):
+    """Delete storymap"""
     try:
-        id = _request_get('id')
-        user = _get_user_verify(id)
-        
         key_name = storage.key_name(user['uid'], id)        
         key_list, marker = storage.list_keys(key_name, 50)        
         for key in key_list:
@@ -436,19 +392,17 @@ def storymap_delete():
         del user['storymaps'][id]
         _user.save(user)
      
-        return jsonify({'error': ''})    
+        return jsonify({})    
     except Exception, e:
         traceback.print_exc()
         return jsonify({'error': str(e)})    
     
 @app.route('/storymap/create/', methods=['POST'])
-def storymap_create():
-    """
-    Create a storymap in S3
-    """
+@require_user
+def storymap_create(user):
+    """Create a storymap"""
     try:
-        user = _get_user()  
-        title, data = _request_get_list('title', 'd')
+        title, data = _request_get('title', 'd')
                          
         id = _make_storymap_id(user, title)
         key_prefix = storage.key_prefix(user['uid'], id)
@@ -466,34 +420,29 @@ def storymap_create():
         
         _write_embed_draft(key_prefix, title)
                                            
-        return jsonify({'error': '', 'id': id})
+        return jsonify({'id': id})
     except Exception, e:
         traceback.print_exc()
         return jsonify({'error': str(e)})
 
 @app.route('/storymap/migrate/done/', methods=['GET'])
-def storymap_migrate_done():
-    """
-    Flag user as migrated
-    """
+@require_user
+def storymap_migrate_done(user):
+    """Flag user as migrated"""
     try:
-        user = _get_user()
         user['migrated'] = 1
         _user.save(user)
         
-        return jsonify({'error': ''})
+        return jsonify({})
     except Exception, e:
         traceback.print_exc()
         return jsonify({'error': str(e)})
 
 @app.route('/storymap/migrate/list/', methods=['GET', 'POST'])
-def storymap_migrate_list():
-    """
-    Get a list of storymaps that need to be migrated
-    """
+@require_user
+def storymap_migrate_list(user):
+    """Get list of storymaps that need to be migrated"""
     try:
-        user = _get_user()  
-    
         credentials = google.get_credentials(user['google']['credentials'])
         drive_service = google.get_drive_service(credentials)
         migrate_list = google.drive_get_migrate_list(drive_service)
@@ -504,7 +453,8 @@ def storymap_migrate_list():
         return jsonify({'error': str(e)})
     
 @app.route('/storymap/migrate/', methods=['POST'])
-def storymap_migrate():
+@require_user
+def storymap_migrate(user):
     """
     Migrate a storymap
     @title = storymap title
@@ -514,11 +464,8 @@ def storymap_migrate():
     @file_list = json encoded list of file names
     """
     try:
-        print request.form
-        
-        user = _get_user()  
         title, src_url, draft_on, published_on, file_list_json = \
-            _request_get_list(
+            _request_get(
                 'title', 'url', 'draft_on', 'published_on', 'file_list')
         file_list = json.loads(file_list_json)
 
@@ -562,18 +509,14 @@ def storymap_migrate():
 
 #
 # API views
-# These are called from the edit page
+# (called from the edit page)
 #
-        
+      
 @app.route('/storymap/')
-def storymap_get():
-    """
-    Get storymap from S3        
-    """
+@require_user_id()
+def storymap_get(user, id):
+    """Get storymap"""
     try:
-        id = _request_get('id')
-        user = _get_user_verify(id)
-                
         key_name = storage.key_name(user['uid'], id, 'draft.json')
         data = storage.load_json(key_name)    
                     
@@ -583,13 +526,11 @@ def storymap_get():
         return jsonify({'error': str(e)})   
          
 @app.route('/storymap/save/', methods=['POST'])
-def storymap_save():
-    """
-    Save draft storymap to S3
-    """
+@require_user_id()
+def storymap_save(user, id):
+    """Save draft storymap"""
     try:
-        id, data = _request_get_list('id', 'd')
-        user = _get_user_verify(id)
+        data = _request_get('d')
         
         key_name = storage.key_name(user['uid'], id, 'draft.json')
         content = json.loads(data)          
@@ -598,21 +539,19 @@ def storymap_save():
         user['storymaps'][id]['draft_on'] = _utc_now()
         _user.save(user)
             
-        return jsonify({'error': '', 'meta': user['storymaps'][id]})
+        return jsonify({'meta': user['storymaps'][id]})
     except Exception, e:
         traceback.print_exc()
         return jsonify({'error': str(e)})
 
 @app.route('/storymap/publish/', methods=['POST'])
-def storymap_publish():
-    """
-    Save published storymap
-    """
+@require_user_id()
+def storymap_publish(user, id):
+    """Save published storymap"""
     try:
-        id, data = _request_get_list('id', 'd')
-        user = _get_user_verify(id)
+        data = _request_get('d')
+        
         key_prefix = storage.key_prefix(user['uid'], id)
-
         content = json.loads(data)          
         storage.save_json(key_prefix+'published.json', content)    
 
@@ -621,20 +560,16 @@ def storymap_publish():
         
         _write_embed_published(key_prefix, user['storymaps'][id]['title'])
            
-        return jsonify({'error': '', 'meta': user['storymaps'][id]})
+        return jsonify({'meta': user['storymaps'][id]})
     except Exception, e:
         traceback.print_exc()
         return jsonify({'error': str(e)})
        
 @app.route('/storymap/image/list/', methods=['GET', 'POST'])
-def storymap_image_list():
-    """
-    List storymap images in S3
-    """
+@require_user_id()
+def storymap_image_list(user, id):
+    """List storymap images """
     try:
-        id = _request_get('id')
-        user = _get_user_verify(id)
-        
         key_prefix = storage.key_prefix(user['uid'], id, '_images')
         key_list, more = storage.list_key_names(key_prefix, 999, '') 
         
@@ -645,16 +580,16 @@ def storymap_image_list():
         return jsonify({'error': str(e)})
 
 @app.route('/storymap/image/save/', methods=['POST'])
-def storymap_image_save():
+@require_user_id()
+def storymap_image_save(user, id):
     """
-    Save image to S3
+    Save storymap image
     @id = storymap id
     @name = file name
     @content = data:URL representing the file's data as base64 encoded string
     """
     try:
-        id, name, content = _request_get_list('id', 'name', 'content')
-        user = _get_user_verify(id)
+        name, content = _request_get('name', 'content')
        
         m = re.match('data:(.+);base64,(.+)', content)
         if m:
@@ -717,27 +652,10 @@ def select():
         return render_template('select.html', error=str(e))
 
 @app.route("/edit/", methods=['GET', 'POST'])
-def edit():
-    try:
-        uid = session.get('uid') 
-        if not uid:
-            return redirect(url_for('select'))
-
-        user = _user.find_one({'uid': uid})
-        if not user:   
-            _session_pop('uid')   
-            return redirect(url_for('select'))
-        del user['_id']
-      
-        if 'google' in user:
-            if uid == _get_uid('google:'+user['google']['id']):
-                user['uname'] = user['google']['name']
-        else:
-            pass # wtf
-           
-        id = _request_get('id')
-        if id not in user['storymaps']:
-            return redirect(url_for('select'))
+@require_user_id('edit.html')
+def edit(user, id):
+    try:        
+        del user['_id'] # for serialization
         
         return render_template('edit.html', 
             user=user, meta=user['storymaps'][id])
