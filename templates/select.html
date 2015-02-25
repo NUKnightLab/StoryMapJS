@@ -46,7 +46,7 @@
                     <!--
                     <p>Your StoryMaps will be saved to your Google Drive.</p>
                     -->
-                    <a id="entry_login" href="javascript:;" class="btn btn-success">Connect your Google account</a> 
+                    <a id="entry_login" href="{{ url_for('google_auth_start') }}" class="btn btn-success">Connect your Google account</a> 
                 </div> 
             </div>
         </div>   
@@ -155,9 +155,8 @@
     </div>
 <!-- FOOTER -->
     <div class="modal-footer">
-    <!-- <a href="javascript:;" id="entry_user"><i class="icon-user icon-2x"></i></a> -->
         <div id="entry_user_info" class="hide">
-            <span id="entry_user_name"></span> | <a id="entry_logout" href="javascript:">Logout</a>
+            <span id="entry_user_name"></span> | <a id="entry_logout" href="{{ url_for('logout') }}">Logout</a>
         </div>
         <span>&nbsp;</span>
         <a id="entry_migrate" class="entry-panel entry-migrate hide btn btn-success" href="javascript:;">
@@ -309,30 +308,6 @@ $(function() {
         });
     });
 
-    // popovers
-    $('a.help').popover({
-        trigger: 'manual'
-    }).click(function(event) {
-        if(!$(this).next().hasClass('popover')) {
-            $('a.help').not(this).popover('hide');
-        }     
-        $(this).popover('toggle');
-        event.stopPropagation();
-        event.preventDefault();
-    });
-
-
-    $('#entry_login').click(function() {
-        var $modal = $('#entry_modal').trigger('progress_show', 'Logging in');
-
-        document.location.href = "{{ url_for('google_auth_start') }}";    
-    }); 
-    
-    $('#entry_logout').click(function(event) {
-        document.location.href = "{{ url_for('logout') }}";    
-    });
-
-
 // ------------------------------------------------------------
 // migrate
 // ------------------------------------------------------------
@@ -461,10 +436,7 @@ $(function() {
             },
             function(data) {          
                 ajax_post("{{ url_for('storymap_create') }}",
-                    {
-                        title: name,
-                        d: JSON.stringify(data)
-                    },
+                    {title: name, d: JSON.stringify(data)},
                     function(error) {
                         $modal.trigger('reset', format_error('Error creating StoryMap', error));            
                     },
@@ -539,10 +511,7 @@ $(function() {
         $modal.trigger('progress_show', 'Creating StoryMap');
         
         ajax_post("{{ url_for('storymap_create') }}",
-            {
-                title: name,
-                d: JSON.stringify(data)
-            },
+            {title: name, d: JSON.stringify(data)},
             function(error) {
                 $modal.trigger('reset', format_error('Error creating StoryMap', error));            
             },
@@ -584,36 +553,36 @@ $(function() {
                     $modal.trigger('show_import');
                 } else {                     
                     $modal.trigger('show_list');
-                }                                    
-            } else {
-                 var $modal = $(this).trigger('progress_show', 'Checking migration status'); 
-                
-                ajax_get("{{ url_for('storymap_migrate_list') }}", {},
-                    function(error) {
-                        $modal.trigger('reset',  format_error('Error getting migration list', error));                     
-                    },
-                    function(data) {
-                        if(data.migrate_list.length) {  
-                            _migrate_list = data.migrate_list;
-                            $modal.trigger('show_migrate');
-                            console.log(_migrate_list);
-                        } else {
-                            ajax_get("{{ url_for('storymap_migrate_done') }}", {},
-                                function(error) {
-                                    $modal.trigger('reset', format_error('Error setting migration status', error));   
-                                },
-                                function(data) {
-                                    if(_params.import_url) {
-                                        $modal.trigger('show_import');
-                                    } else {                     
-                                        $modal.trigger('show_list');
-                                    }                                    
-                                }
-                            );
-                        }                    
-                    }
-                );
-            }
+                } 
+                return;                                   
+            } 
+            
+            $modal = $(this).trigger('progress_show', 'Checking migration status'); 
+            
+            ajax_get("{{ url_for('storymap_migrate_list') }}", {},
+                function(error) {
+                    $modal.trigger('reset',  format_error('Error getting migration list', error));                     
+                },
+                function(data) {
+                    if(data.migrate_list.length) {  
+                        _migrate_list = data.migrate_list;
+                        $modal.trigger('show_migrate');
+                    } else {
+                        ajax_get("{{ url_for('storymap_migrate_done') }}", {},
+                            function(error) {
+                                $modal.trigger('reset', format_error('Error setting migration status', error));   
+                            },
+                            function(data) {
+                                if(_params.import_url) {
+                                    $modal.trigger('show_import');
+                                } else {                     
+                                    $modal.trigger('show_list');
+                                }                                    
+                            }
+                        );
+                    }                    
+                }
+            );
         })
         .on('show_login', function(event) {
             $(this).find('.entry-panel').hide();
@@ -640,7 +609,7 @@ $(function() {
         })  
         .on('show_migrate', function(event) {
             $(this).find('.entry-panel').hide();
-            var $modal = $(this).trigger('error_hide');
+            $(this).trigger('error_hide');
             $(this).find('.entry-migrate').show();
             $(this).trigger('progress_hide');
         })    
@@ -754,8 +723,7 @@ $(function() {
                 }          
             }]);
         });   
-        
-        
+             
         
     handle_onload();
 });

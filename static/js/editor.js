@@ -1,6 +1,6 @@
 // editor.js
 //
-// Requires http://momentjs.com
+// Requires jquery and http://momentjs.com
 
 Array.prototype.remove = function(item) {
     for(var i = this.length; i--;) {
@@ -194,5 +194,25 @@ function show_message(msg, callback) {
     $('#message_modal').modal('show');
 }
 
+//
+// on load
+//
+$(function() {   
+    // handle popover hiding
+    $('a.help').popover({
+        trigger: 'manual'
+    }).click(function(event) {
+        if(!$(this).next().hasClass('popover')) {
+            $('a.help').not(this).popover('hide');
+        }     
+        $(this).popover('toggle');
+        event.stopPropagation();
+        event.preventDefault();
+    });
+
+    $(document).click(function(e) {
+        $('a.help').popover('hide');
+    });
+});
 
 

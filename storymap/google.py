@@ -68,10 +68,7 @@ def drive_get_path(service, parent_resource, path_list, filter_f):
     Get a resource at path_list
     """
     try:
-        print 'path_list', path_list, not path_list
         resource = drive_find(service, parent_resource, path_list.pop(0), filter_f)
-        print resource
-        print type(resource)
         if not resource or not path_list:
             return resource
         return drive_get_path(service, resource, path_list, filter_f)
@@ -83,7 +80,7 @@ def drive_get_migrate_list(service):
     parent_folder = drive_get_path(service, None, 
         ['KnightLabStoryMap', 'public'], _filter_shared)
     if not parent_folder:
-        print 'folder not found'
+        print '** storymap folder not found'
         return []
     
     print '** found storymap folder'
