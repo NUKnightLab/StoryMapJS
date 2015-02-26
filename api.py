@@ -468,7 +468,7 @@ def storymap_migrate(user):
             _request_get(
                 'title', 'url', 'draft_on', 'published_on', 'file_list')
         file_list = json.loads(file_list_json)
-
+        
         dst_id = _make_storymap_id(user, title)
         dst_key_prefix = storage.key_prefix(user['uid'], dst_id)        
         dst_url = settings.AWS_STORAGE_BUCKET_URL+dst_key_prefix
