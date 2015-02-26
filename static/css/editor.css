@@ -881,7 +881,7 @@ Progress Spinner
 display: inline-block;
 -moz-animation: none;
 -o-animation: none;
--webkit-animation: none
+-webkit-animation: none;
 animation: none;
 }
 .icon-spinner:before {
