@@ -464,9 +464,11 @@ def storymap_migrate(user):
     @file_list = json encoded list of file names
     """
     try:
-        title, src_url, draft_on, published_on, file_list_json = \
+        title, src_url, draft_on, file_list_json = \
             _request_get(
-                'title', 'url', 'draft_on', 'published_on', 'file_list')
+                'title', 'url', 'draft_on', 'file_list')
+        published_on = request.form.get('published_on', '')
+             
         file_list = json.loads(file_list_json)
         
         dst_id = _make_storymap_id(user, title)
