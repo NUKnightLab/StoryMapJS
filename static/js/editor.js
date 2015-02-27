@@ -89,11 +89,11 @@ function _ajax(url, type, data, on_error, on_success, on_complete) {
 }
 
 function ajax_get(url, data, on_error, on_success, on_complete) {
-    _ajax(url, 'GET', data, on_error, on_success, on_complete || noop);
+    _ajax(url, 'GET', data, on_error, on_success || noop, on_complete || noop);
 }
 
 function ajax_post(url, data, on_error, on_success, on_complete) {
-    _ajax(url, 'POST', data, on_error, on_success, on_complete || noop);
+    _ajax(url, 'POST', data, on_error, on_success || noop, on_complete || noop);
 }
 
 
