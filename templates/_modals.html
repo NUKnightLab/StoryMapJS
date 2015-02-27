@@ -33,202 +33,267 @@
 </div>
 
 <div id="opt_modal" class="modal hide fade">
+<!--
     <div class="modal-header">
         <h5>Options</h5>
     </div>    
+-->
     <div class="modal-body">
         <!-- error -->
         <div class="modal-error hide">    
             <span class="modal-msg error"></span>
-        </div>    
-        <form class="form-horizontal">             
-            <div class="control-group">
-                <label class="control-label">StoryMap Size</label>
-                <div class="controls">
-                    <div class="input-prepend">
-                        <span class="add-on">Width</span>
-                        <input type="text" id="width" value="" class="input-mini"> 
+        </div> 
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#opt_display_tab" data-toggle="tab">Display</a></li>
+            <li><a href="#opt_sharing_tab" data-toggle="tab">Sharing</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="opt_display_tab">
+                <form class="form-horizontal">             
+                    <div class="control-group">
+                        <label class="control-label">StoryMap Size</label>
+                        <div class="controls">
+                            <div class="input-prepend">
+                                <span class="add-on">Width</span>
+                                <input type="text" id="width" value="" class="input-mini"> 
+                            </div>
+                             <div class="input-prepend">
+                                <span class="add-on">Height</span>
+                                <input type="text" id="height" value="" class="input-mini"> 
+                            </div>
+                        </div>
                     </div>
-                     <div class="input-prepend">
-                        <span class="add-on">Height</span>
-                        <input type="text" id="height" value="" class="input-mini"> 
+                    <div class="control-group">
+                        <label class="control-label">Language</label>
+                        <div class="controls">
+                            <select id="language">
+                                <option value="en">English</option>
+                                <option value="zh-cn">Chinese (simplified)</option>
+                                <option value="zh-tw">Chinese (traditional)</option>
+                                <option value="nl">Dutch</option>
+                                <option value="fr">French</option>
+                                <option value="de">German</option>
+                                <option value="it">Italian</option>
+                                <option value="jp">Japanese</option>
+                                <option value="no">Norwegian</option>
+                                <option value="pl">Polish</option>
+                                <option value="sr">Serbian</option>
+                                <option value="es">Spanish</option>
+                                <option value="sv">Swedish</option>
+                            </select>
+                            <a class="help" href="javascript:"
+                                data-placement="left"
+                                data-content="Select the language to use in controls and messages when displaying your StoryMap."                    
+                            >&nbsp;<i class="icon-question-sign icon-large"></i></a>
+                        </div>
+                    </div>      
+                    <div class="control-group">
+                        <label class="control-label">Fonts</label>
+                        <div class="controls">
+                            <select id="font_css">
+                                <option value="">Default</option>
+                                <option value="stock:abril-droidsans">Abril Fatface &amp; Droid Sans</option>
+                                <option value="stock:amatic-andika">Amatic &amp; Andika</option>
+                                <option value="stock:bitter-raleway">Bitter &amp; Raleway</option>
+                                <option value="stock:clicker-garamond">Clicker &amp; Garamond</option>
+                                <option value="stock:dancing-ledger">Dancing &amp; Ledger</option>
+                                <option value="stock:fjalla-average">Fjalla &amp; Average</option>
+                                <option value="stock:georgia-helvetica">Georgia &amp; Helvetica</option>
+                                <option value="stock:lustria-lato">Lustria &amp; Lato</option>
+                                <option value="stock:medula-lato">Medula One &amp; Lato</option>
+                                <option value="stock:oldstandard">Old Standard</option>
+                                <option value="stock:opensans-gentiumbook">Open Sans &amp; Gentium Book Basic</option>
+                                <option value="stock:playfair-faunaone">Playfair &amp; Fauna One</option>
+                                <option value="stock:playfair">Playfair SC &amp; Playfair</option>
+                                <option value="stock:pt">PT Sans &amp; PT Serif &amp; PT Sans Narrow</option>
+                                <option value="stock:roboto-megrim">Roboto Slab &amp; Megrim</option>
+                                <option value="stock:rufina-sintony">Rufina &amp; Sintony</option>
+                                <option value="stock:unicaone-volkorn">Unica One &amp; Vollkorn</option>
+                            </select>
+                            <a class="help" href="javascript:"
+                                data-placement="bottom"
+                                data-html="true"
+                                data-content="Select a font-set for your StoryMap. See below for examples of how the fonts look.<br><img style='margin-top: 5px' src='{{ STATIC_URL }}img/font-options.png'>"                    
+                            >&nbsp;<i class="icon-question-sign icon-large"></i></a>
+                        </div>
+                    </div>      
+                    <div class="control-group">
+                        <label class="control-label">Treat As</label>
+                        <div class="controls">
+                            <label class="radio inline">
+                                <input type="radio" name="map_as_image" value="false" checked>
+                                Cartography
+                            </label>
+                            <label class="radio inline">
+                                <input type="radio" name="map_as_image" value="true">
+                                Image
+                            </label>                
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Call To Action</label>
+                        <div class="controls">
+                            <label class="radio inline">
+                                <input type="radio" name="call_to_action" value="true" checked>
+                                Yes
+                            </label>
+                            <label class="radio inline">
+                                <input type="radio" name="call_to_action" value="false">
+                                No
+                            </label>   
+                            <input type="text" id="call_to_action_text" value="" placeholder="enter text, or use default" class="input-large">          
+                            <a class="help" href="javascript:"
+                                data-placement="left"
+                                data-html="true"
+                                data-content="Choosing this will show a button on your first slide to lead your readers into the story. You can change the words on the button.<br><img style='margin-top: 5px' src='{{ STATIC_URL }}img/calltoaction.png'>"                    
+                            >&nbsp;<i class="icon-question-sign icon-large"></i></a>
+                        </div>
+                    </div>            
+                    <!-- zoomify -->
+                    <div class="control-group zoomify-control-group">
+                        <label class="control-label">Map Background Color</label>
+                        <div class="controls">
+                            <input id="map_background_color" type="text" placeholder="#ffffff">
+                        </div>
+                    </div>
+                    <div class="control-group zoomify-control-group">
+                        <label class="control-label">Zoomify URL</label>
+                        <div class="controls">
+                            <input id="zoomify_path" type="text" class="span5" placeholder="http://www.domain.org/directory/">
+                            <a class="help" href="javascript:"
+                                data-html="true"
+                                data-placement="left"
+                                data-content='Enter the URL path for your zoomable image folder.' 
+                            >&nbsp;<i class="icon-question-sign icon-large"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="control-group zoomify-control-group">
+                        <label class="control-label">Max Image Size</label>
+                        <div class="controls">
+                            <div class="input-prepend">
+                                <span class="add-on">Width</span>
+                                <input type="text" id="zoomify_width" value="" class="input-mini"> 
+                            </div>
+                            <div class="input-prepend">
+                                <span class="add-on">Height</span>
+                                <input type="text" id="zoomify_height" value="" class="input-mini"> 
+                            </div>
+                            <br />
+                            <span class="note"><i class="icon-warning-sign"></i> Changing the max image size may move the apparent location of your markers.</p>
+                        </div>
+                    </div>
+
+                    <div class="control-group zoomify-control-group">
+                        <label class="control-label">Attribution</label>
+                        <div class="controls">
+                            <input id="zoomify_attribution" type="text" class="span5">
+                        </div>
+                    </div>
+        <!-- map -->
+                    <div class="control-group map-control-group">
+                        <label class="control-label">Map Type</label>
+                        <div class="controls">
+                            <select id="map_type_menu" class="span4">
+                                <option value="stamen:toner-lite">Stamen Maps: Toner Lite</option>
+                                <option value="stamen:toner">Stamen Maps: Toner</option>
+                                <option value="stamen:toner-lines">Stamen Maps: Toner Lines</option>
+                                <option value="stamen:toner-labels">Stamen Maps: Toner Labels</option>
+                                <option value="stamen:toner-background">Stamen Maps: Toner Background</option>
+                                <option value="stamen:watercolor">Stamen Maps: Watercolor</option>
+                                <option value="stamen:terrain">Stamen Maps: Terrain</option>
+                                <option value="osm:standard">Open Street Maps: Standard</option>
+                                <option value="mapbox">Mapbox</option>
+                                <option value="">custom</option>
+                            </select>
+                            <a class="help" href="javascript:"
+                                data-html="true"
+                                data-placement="left"
+                                data-content='
+                                <p>Select a predefined map type.</p>
+                                <P>Select "Mapbox" to enter the ID of your Mapbox map.</p>
+                                <p>Select "custom" to enter the URL for a tile server.  If the server supports multiple subdomains, 
+                                enter them as a single string in the Subdomain field (e.g. subdomains "a", "b", and "c" should 
+                                be entered as "abc").</p>
+                                ' 
+                            >&nbsp;<i class="icon-question-sign icon-large"></i>
+                            </a>
+                            <p>
+                                <div class="input-prepend">
+                                    <span class="add-on">ID</span>
+                                    <input id="map_type" type="text" class="span5" placeholder="http://{s}.domain.org/{z}/{x}/{y}.png">
+                                </div>
+                            </p>
+                            <p>
+                                <div class="input-prepend">
+                                    <span class="add-on">Subdomains</span>
+                                    <input id="map_subdomains" type="text" class="input-small" placeholder="abc">                    
+                                </div>
+                            </p>
+                        </div>
+                    </div>
+                </form> 
+            </div>
+            <div class="tab-pane" id="opt_sharing_tab">              
+                <p>
+                <label><strong>Description</strong></label>
+                <textarea id="opt_description" class="stretch" rows="3"></textarea> 
+                </p>
+                <p>
+                <label><strong>Featured Image</strong></label>
+                <div class="input-prepend" style="width: 96%;">       
+                    <div class="btn-group">
+                        <button class="btn dropdown-toggle" data-toggle="dropdown">
+                            <span class="caret"></span>
+                        </button>
+                        <ul id="opt_image_select" class="dropdown-menu">
+                            <li><a href="javascript:">image 1</a></li>
+                            <li><a href="javascript:">image 2</a></li>
+                            <li><a href="javascript:">image 3</a></li>
+                    
+                        </ul>
+                    </div>
+                    <input type="text" id="opt_image_url" placeholder="<< select an image, or enter an URL">
+                </div>
+                <p>or upload an image to your StoryMap folder.</p>
+                <div class="upload-panel">
+                    <form class="form-inline">
+                    <a class="upload-file-link btn" href="javascript:">
+                    Choose File...
+                    <input type="file" class="upload-file" accept="image/*" size="40">
+                    </a>
+                    &nbsp;<label class="upload-file-name"></label>
+                    &nbsp;<a href="javascript:" class="btn btn-success upload pull-right">Upload</a>
+                    </form>
+                </div>
+                <div class="upload-conflict hide">
+                    <p class="error">A file with the same name already exists.</p>
+                    <label class="radio upload-conflict-replace">
+                        <input type="radio" name="upload_modal_conflict" value="replace">Replace existing file
+                    </label>
+                    <div>
+                    <label class="radio inline upload-conflict-rename">
+                        <input type="radio" name="upload_modal_conflict" value="rename">Save file as:
+                        <input class="upload-rename-as" type="text" size="40">
+                    </label>
                     </div>
                 </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label">Language</label>
-                <div class="controls">
-                    <select id="language">
-                        <option value="en">English</option>
-                        <option value="zh-cn">Chinese (simplified)</option>
-                        <option value="zh-tw">Chinese (traditional)</option>
-                        <option value="nl">Dutch</option>
-                        <option value="fr">French</option>
-                        <option value="de">German</option>
-                        <option value="it">Italian</option>
-                        <option value="jp">Japanese</option>
-                        <option value="no">Norwegian</option>
-                        <option value="pl">Polish</option>
-                        <option value="sr">Serbian</option>
-                        <option value="es">Spanish</option>
-                        <option value="sv">Swedish</option>
-                    </select>
-                    <a class="help" href="javascript:"
-                        data-placement="left"
-                        data-content="Select the language to use in controls and messages when displaying your StoryMap."                    
-                    >&nbsp;<i class="icon-question-sign icon-large"></i></a>
-                </div>
-            </div>      
-            <div class="control-group">
-                <label class="control-label">Fonts</label>
-                <div class="controls">
-                    <select id="font_css">
-                        <option value="">Default</option>
-                        <option value="stock:abril-droidsans">Abril Fatface &amp; Droid Sans</option>
-                        <option value="stock:amatic-andika">Amatic &amp; Andika</option>
-                        <option value="stock:bitter-raleway">Bitter &amp; Raleway</option>
-                        <option value="stock:clicker-garamond">Clicker &amp; Garamond</option>
-                        <option value="stock:dancing-ledger">Dancing &amp; Ledger</option>
-                        <option value="stock:fjalla-average">Fjalla &amp; Average</option>
-                        <option value="stock:georgia-helvetica">Georgia &amp; Helvetica</option>
-                        <option value="stock:lustria-lato">Lustria &amp; Lato</option>
-                        <option value="stock:medula-lato">Medula One &amp; Lato</option>
-                        <option value="stock:oldstandard">Old Standard</option>
-                        <option value="stock:opensans-gentiumbook">Open Sans &amp; Gentium Book Basic</option>
-                        <option value="stock:playfair-faunaone">Playfair &amp; Fauna One</option>
-                        <option value="stock:playfair">Playfair SC &amp; Playfair</option>
-                        <option value="stock:pt">PT Sans &amp; PT Serif &amp; PT Sans Narrow</option>
-                        <option value="stock:roboto-megrim">Roboto Slab &amp; Megrim</option>
-                        <option value="stock:rufina-sintony">Rufina &amp; Sintony</option>
-                        <option value="stock:unicaone-volkorn">Unica One &amp; Vollkorn</option>
-                    </select>
-                    <a class="help" href="javascript:"
-                        data-placement="bottom"
-                        data-html="true"
-                        data-content="Select a font-set for your StoryMap. See below for examples of how the fonts look.<br><img style='margin-top: 5px' src='{{ STATIC_URL }}img/font-options.png'>"                    
-                    >&nbsp;<i class="icon-question-sign icon-large"></i></a>
-                </div>
-            </div>      
-            <div class="control-group">
-                <label class="control-label">Treat As</label>
-                <div class="controls">
-                    <label class="radio inline">
-                        <input type="radio" name="map_as_image" value="false" checked>
-                        Cartography
-                    </label>
-                    <label class="radio inline">
-                        <input type="radio" name="map_as_image" value="true">
-                        Image
-                    </label>                
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label">Call To Action</label>
-                <div class="controls">
-                    <label class="radio inline">
-                        <input type="radio" name="call_to_action" value="true" checked>
-                        Yes
-                    </label>
-                    <label class="radio inline">
-                        <input type="radio" name="call_to_action" value="false">
-                        No
-                    </label>   
-                    <input type="text" id="call_to_action_text" value="" placeholder="enter text, or use default" class="input-large">          
-                    <a class="help" href="javascript:"
-                        data-placement="left"
-                        data-html="true"
-                        data-content="Choosing this will show a button on your first slide to lead your readers into the story. You can change the words on the button.<br><img style='margin-top: 5px' src='{{ STATIC_URL }}img/calltoaction.png'>"                    
-                    >&nbsp;<i class="icon-question-sign icon-large"></i></a>
-                </div>
+                </p>
             </div>            
-            <!-- zoomify -->
-            <div class="control-group zoomify-control-group">
-                <label class="control-label">Map Background Color</label>
-                <div class="controls">
-                    <input id="map_background_color" type="text" placeholder="#ffffff">
-                </div>
-            </div>
-            <div class="control-group zoomify-control-group">
-                <label class="control-label">Zoomify URL</label>
-                <div class="controls">
-                    <input id="zoomify_path" type="text" class="span5" placeholder="http://www.domain.org/directory/">
-                    <a class="help" href="javascript:"
-                        data-html="true"
-                        data-placement="left"
-                        data-content='Enter the URL path for your zoomable image folder.' 
-                    >&nbsp;<i class="icon-question-sign icon-large"></i>
-                    </a>
-                </div>
-            </div>
-
-            <div class="control-group zoomify-control-group">
-                <label class="control-label">Max Image Size</label>
-                <div class="controls">
-                    <div class="input-prepend">
-                        <span class="add-on">Width</span>
-                        <input type="text" id="zoomify_width" value="" class="input-mini"> 
-                    </div>
-                    <div class="input-prepend">
-                        <span class="add-on">Height</span>
-                        <input type="text" id="zoomify_height" value="" class="input-mini"> 
-                    </div>
-                    <br />
-                    <span class="note"><i class="icon-warning-sign"></i> Changing the max image size may move the apparent location of your markers.</p>
-                </div>
-            </div>
-
-            <div class="control-group zoomify-control-group">
-                <label class="control-label">Attribution</label>
-                <div class="controls">
-                    <input id="zoomify_attribution" type="text" class="span5">
-                </div>
-            </div>
-<!-- map -->
-            <div class="control-group map-control-group">
-                <label class="control-label">Map Type</label>
-                <div class="controls">
-                    <select id="map_type_menu" class="span4">
-                        <option value="stamen:toner-lite">Stamen Maps: Toner Lite</option>
-                        <option value="stamen:toner">Stamen Maps: Toner</option>
-                        <option value="stamen:toner-lines">Stamen Maps: Toner Lines</option>
-                        <option value="stamen:toner-labels">Stamen Maps: Toner Labels</option>
-                        <option value="stamen:toner-background">Stamen Maps: Toner Background</option>
-                        <option value="stamen:watercolor">Stamen Maps: Watercolor</option>
-                        <option value="stamen:terrain">Stamen Maps: Terrain</option>
-                        <option value="osm:standard">Open Street Maps: Standard</option>
-                        <option value="mapbox">Mapbox</option>
-                        <option value="">custom</option>
-                    </select>
-                    <a class="help" href="javascript:"
-                        data-html="true"
-                        data-placement="left"
-                        data-content='
-                        <p>Select a predefined map type.</p>
-                        <P>Select "Mapbox" to enter the ID of your Mapbox map.</p>
-                        <p>Select "custom" to enter the URL for a tile server.  If the server supports multiple subdomains, 
-                        enter them as a single string in the Subdomain field (e.g. subdomains "a", "b", and "c" should 
-                        be entered as "abc").</p>
-                        ' 
-                    >&nbsp;<i class="icon-question-sign icon-large"></i>
-                    </a>
-                    <p>
-                        <div class="input-prepend">
-                            <span class="add-on">ID</span>
-                            <input id="map_type" type="text" class="span5" placeholder="http://{s}.domain.org/{z}/{x}/{y}.png">
-                        </div>
-                    </p>
-                    <p>
-                        <div class="input-prepend">
-                            <span class="add-on">Subdomains</span>
-                            <input id="map_subdomains" type="text" class="input-small" placeholder="abc">                    
-                        </div>
-                    </p>
-                </div>
-            </div>
-        </form>        
+        </div>      
     </div>
     <div class="modal-footer">
         <a href="javascript:;" class="btn btn-primary" data-dismiss="modal">Close</a>
+    </div>
+    <!-- progress -->
+    <div class="modal-progress hide">
+        <div>
+            <div>
+                <i class="icon-spinner icon-4x icon-spin"></i>
+                <p><span class="modal-msg"></span>...</p>
+            </div>
+        </div>
     </div>
 </div>
 

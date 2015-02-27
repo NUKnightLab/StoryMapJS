@@ -109,6 +109,20 @@ def _utc_now():
 #
 
 def _request_get(*keys):
+    """Get request data and return values"""
+    if request.method == 'POST':
+        obj = request.form
+    else:
+        obj = request.args
+    values = []
+    for k in keys:
+        v = obj.get(k)
+        values.append(v)
+    if len(values) > 1:
+        return values
+    return values[0]
+    
+def _request_get_required(*keys):
     """Verify existence of request data and return values"""
     if request.method == 'POST':
         obj = request.form
@@ -167,7 +181,7 @@ def google_auth_verify():
             raise Exception(_format_err(
                 'Error getting authorization', request.args.get('error')))
             
-        code = _request_get('code')
+        code = _request_get_required('code')
         
         flow = OAuth2WebServerFlow(
             settings.GOOGLE_CLIENT_ID,
@@ -255,7 +269,7 @@ def require_user_id(template=None):
         def decorated_function(*args, **kwargs):
             user = _user_get()
         
-            id = _request_get('id')
+            id = _request_get_required('id')
             if id not in user['storymaps']:
                 error = 'You do not have permission to access to this StoryMap'                
                 if template:
@@ -280,51 +294,73 @@ def _make_storymap_id(user, title):
         id = '%s-%d' % (id_base, n)    
     return id
 
-def _write_embed(embed_key_name, title, json_key_name, image_url=''):
+def _write_embed(embed_key_name, json_key_name, meta):
     """Write embed page"""    
-    # TODO: THIS IS JUST THE DEFAULT IMAGE URL
-    image_url = image_url or settings.STATIC_URL+'img/logos/logo_storymap.png'
-
     # NOTE: facebook needs the protocol on embed_url for og tag
+    image_url = meta.get('image_url', settings.STATIC_URL+'img/logos/logo_storymap.png')
+    if image_url.startswith('//'):
+        image_url = 'http:'+image_url
+        
     content = render_template('_embed.html',
-        title=title,
-        embed_url='http'+settings.AWS_STORAGE_BUCKET_URL+embed_key_name,
-        image_url=image_url,
-        json_url=settings.AWS_STORAGE_BUCKET_URL+json_key_name
+        embed_url='http:'+settings.AWS_STORAGE_BUCKET_URL+embed_key_name,
+        json_url=settings.AWS_STORAGE_BUCKET_URL+json_key_name,
+        title=meta.get('title', ''),
+        description=meta.get('description', ''),
+        image_url=image_url
     )            
     storage.save_from_data(embed_key_name, 'text/html', content)
 
-def _write_embed_draft(key_prefix, title, image_url=''):
+def _write_embed_draft(key_prefix, meta):
     """Write embed page for draft storymap """
-    _write_embed(key_prefix+'draft.html', 
-        title, key_prefix+'draft.json', image_url)
+    _write_embed(key_prefix+'draft.html', key_prefix+'draft.json', meta)
     
-def _write_embed_published(key_prefix, title, image_url=''):
+def _write_embed_published(key_prefix, meta):
     """Write embed for published storymap"""
-    _write_embed(key_prefix+'index.html', 
-        title, key_prefix+'published.json', image_url)
+    _write_embed(key_prefix+'index.html', key_prefix+'published.json', meta)
 
 #
 # API views
 # (called from the select page)
 #
-               
+       
+@app.route('/storymap/update/meta/', methods=['GET', 'POST'])
+@require_user_id()
+def storymap_update_meta(user, id):
+    """Update storymap meta value"""
+    try:
+        key, value = _request_get_required('key', 'value')
+        print 'storymap_update_meta', key, value
+        
+        user['storymaps'][id][key] = value
+        _user.save(user)
+ 
+        key_prefix = storage.key_prefix(user['uid'], id)
+       
+        if key in ['title', 'description', 'image_url']:
+            _write_embed_draft(key_prefix, user['storymaps'][id])
+            
+            if user['storymaps'][id].get('published_on'):
+                _write_embed_published(key_prefix, user['storymaps'][id])
+     
+        return jsonify(user['storymaps'][id])
+    except Exception, e:
+        traceback.print_exc()
+        return jsonify({'error': str(e)})
+                
 @app.route('/storymap/rename/', methods=['GET', 'POST'])
 @require_user_id()
 def storymap_rename(user, id):
     """Rename storymap"""
     try:
-        title = _request_get('title')
+        title = _request_get_required('title')
         key_prefix = storage.key_prefix(user['uid'], id)
         
         user['storymaps'][id]['title'] = title
         _user.save(user)
     
-        _write_embed_draft(key_prefix, title)
-                        
-        if 'published_on' in user['storymaps'][id] \
-        and user['storymaps'][id]['published_on']:
-            _write_embed_published(key_prefix, title)
+        _write_embed_draft(key_prefix, user['storymaps'][id])        
+        if user['storymaps'][id].get('published_on'):
+            _write_embed_published(key_prefix, user['storymaps'][id])
                     
         return jsonify({})
     except Exception, e:
@@ -340,7 +376,7 @@ def storymap_copy(user, id):
     @title = name of new copy
     """
     try:
-        title = _request_get('title')
+        title = _request_get_required('title')
         dst_id = _make_storymap_id(user, title)
               
         src_key_prefix = storage.key_prefix(user['uid'], id)
@@ -370,9 +406,9 @@ def storymap_copy(user, id):
         _user.save(user)
         
         # Write new embed pages
-        _write_embed_draft(dst_key_prefix, title)        
-        if user['storymaps'][dst_id]['published_on']:
-            _write_embed_published(dst_key_prefix, title)
+        _write_embed_draft(dst_key_prefix, user['storymaps'][dst_id])        
+        if user['storymaps'][dst_id].get('published_on'):
+            _write_embed_published(dst_key_prefix, user['storymaps'][dst_id])
                     
         return jsonify(user['storymaps'][dst_id])
     except Exception, e:
@@ -402,7 +438,7 @@ def storymap_delete(user, id):
 def storymap_create(user):
     """Create a storymap"""
     try:
-        title, data = _request_get('title', 'd')
+        title, data = _request_get_required('title', 'd')
                          
         id = _make_storymap_id(user, title)
         key_prefix = storage.key_prefix(user['uid'], id)
@@ -418,7 +454,7 @@ def storymap_create(user):
         }
         _user.save(user)
         
-        _write_embed_draft(key_prefix, title)
+        _write_embed_draft(key_prefix, user['storymaps'][id])
                                            
         return jsonify({'id': id})
     except Exception, e:
@@ -464,10 +500,9 @@ def storymap_migrate(user):
     @file_list = json encoded list of file names
     """
     try:
-        title, src_url, draft_on, file_list_json = \
-            _request_get(
-                'title', 'url', 'draft_on', 'file_list')
-        published_on = request.form.get('published_on', '')
+        title, src_url, draft_on, file_list_json = _request_get_required(
+            'title', 'url', 'draft_on', 'file_list')
+        published_on = _request_get('published_on', '')
              
         file_list = json.loads(file_list_json)
         
@@ -500,9 +535,9 @@ def storymap_migrate(user):
         }
         _user.save(user)
         
-        _write_embed_draft(dst_key_prefix, title)
+        _write_embed_draft(dst_key_prefix, user['storymaps'][dst_id])
         if published_on:
-            _write_embed_published(dst_key_prefix, title)
+            _write_embed_published(dst_key_prefix, user['storymaps'][dst_id])
         
         return jsonify(user['storymaps'][dst_id])
     except Exception, e:
@@ -532,7 +567,7 @@ def storymap_get(user, id):
 def storymap_save(user, id):
     """Save draft storymap"""
     try:
-        data = _request_get('d')
+        data = _request_get_required('d')
         
         key_name = storage.key_name(user['uid'], id, 'draft.json')
         content = json.loads(data)          
@@ -551,7 +586,7 @@ def storymap_save(user, id):
 def storymap_publish(user, id):
     """Save published storymap"""
     try:
-        data = _request_get('d')
+        data = _request_get_required('d')
         
         key_prefix = storage.key_prefix(user['uid'], id)
         content = json.loads(data)          
@@ -560,7 +595,7 @@ def storymap_publish(user, id):
         user['storymaps'][id]['published_on'] = _utc_now()
         _user.save(user)
         
-        _write_embed_published(key_prefix, user['storymaps'][id]['title'])
+        _write_embed_published(key_prefix, user['storymaps'][id])
            
         return jsonify({'meta': user['storymaps'][id]})
     except Exception, e:
@@ -591,7 +626,7 @@ def storymap_image_save(user, id):
     @content = data:URL representing the file's data as base64 encoded string
     """
     try:
-        name, content = _request_get('name', 'content')
+        name, content = _request_get_required('name', 'content')
        
         m = re.match('data:(.+);base64,(.+)', content)
         if m:

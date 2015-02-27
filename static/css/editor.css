@@ -48,6 +48,18 @@ input[type="text"].stretch {
     margin-left: 0;
     margin-right: 0;
 }
+
+textarea.stretch {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    -o-box-sizing: border-box;
+    box-sizing: border-box;
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+}
+
 textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
 	background-color: #fff;
 	border: 1px solid #ccc;
@@ -105,7 +117,8 @@ input[type="radio"] {margin: 0;}
 .modal-progress > div > div {display: table-cell;text-align: center;vertical-align: middle;}
 .modal-progress i {margin-bottom: 10px;}
 
-
+/*      in-modal confirm panel 
+*/
 .modal-confirm {
     position:absolute;
     top: 0;
@@ -158,9 +171,36 @@ input[type="radio"] {margin: 0;}
 } 
 
 
+/* options
+*/
 #opt_modal {width: 660px;margin-left: -330px;max-height: none;height: auto;}
 #opt_modal .modal-body {max-height: none;height: auto;overflow-y: visible;}
 #map_background_color {padding-right: 44px;}
+
+#opt_modal .nav {font-family: "Apres RE","Helvetica Neue",Helvetica,Arial,sans-serif;}
+#opt_modal .nav-tabs {border-bottom: none;}
+#opt_modal .tab-content {
+    border-top: 1px solid #CCC;
+    padding: 15px;
+    margin-top: -22px;
+    margin-left: -15px;
+    margin-right: -15px;
+}
+#opt_modal p {font-family: "Apres RE","Helvetica Neue",Helvetica,Arial,sans-serif;}
+
+#opt_image_url {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    -o-box-sizing: border-box;
+    box-sizing: border-box;
+    margin-left: 0;
+    margin-right: 0;    
+    width: 98%;
+    height: 32px;
+
+}
+
 
 #slide_opt_modal {max-height: none;height: auto;}
 #slide_opt_modal .modal-body {max-height: none;height: auto;overflow-y: visible;}
@@ -251,6 +291,7 @@ input[type="radio"] {margin: 0;}
 .share-embed-label {
 	
 }
+
 /*	SELECT PAGE ENTRY MODAL
 ----------------------------------------------------- */
 #entry_modal .modal-body {min-height: 200px;}

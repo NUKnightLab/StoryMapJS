@@ -118,6 +118,8 @@ var _user = {{ user|tojson }};
 var _storymap_meta = {{ meta|tojson }};
 {% endif %}
 
+console.log(_storymap_meta);
+
 var _storymap_data;          // { width: n, height: n, ..., storymap: { } }
 
 var _storymap_files = [];    // array of image files in this storymap folder
@@ -569,6 +571,10 @@ function slides_load() {
  
     font_update();
     
+    // sharing options
+    $('#opt_description').val(_storymap_meta.description || '');    
+    $('#opt_image_url').val(_storymap_meta.image_url || '');
+    
     // Slides 1,...,n
     $('#slides').html();  
     var height = 0;
@@ -890,6 +896,67 @@ $(function() {
         storymap_dirty(1);
         map_set_type();        
     });
+
+    $('#opt_description').change(function(event) {
+        ajax_post("{{ url_for('storymap_update_meta') }}",
+            {
+                id: _storymap_meta.id, 
+                key: 'description',
+                value: $(this).val().trim()
+            },
+            function(error) {
+                $modal.trigger('error_show', format_error('Error updating storymap', error));    
+            },
+            function(data) {
+            }
+        );    
+    });
+    
+    $('#opt_image_url').change(function(event) {
+        ajax_post("{{ url_for('storymap_update_meta') }}",
+            {
+                id: _storymap_meta.id, 
+                key: 'image_url',
+                value: $(this).val().trim()
+            },
+            function(error) {
+                $modal.trigger('error_show', format_error('Error updating storymap', error));    
+            },
+            function(data) {
+            }
+        );    
+    });
+    
+    modal_init($('#opt_modal'))
+        .on('upload', function(event, url) {
+            $(this).trigger('refresh_image_select');
+            $('#opt_image_url').val(url).change();
+            $(this).find('.upload-panel').trigger('reset');        
+        })
+        .on('refresh_image_select', function(event) {
+            var html = '';
+            for(var i = 0; i < _storymap_files.length; i++) {
+                html += '<li><a href="javascript:">'+_storymap_files[i]+'</a></li>';
+            }
+            $('#opt_image_select').html(html || '<li class="default">no uploaded images found</li>');
+        })
+        .on('modal_show', function(event, error_msg) {
+            $(this).trigger('refresh_image_select');
+            $('#opt_image_select a').click(function(event) {
+                $('#opt_image_url')
+                    .val(storymap_image_url(_user.uid, _storymap_meta.id, $(this).html()))
+                    .change();
+            });
+            $(this).find('.upload-panel').trigger('reset');
+            $(this).trigger('reset', error_msg);
+        })
+        .on('show', function() {  
+            $(this).trigger('modal_show');
+        });
+        
+//------------------------------------------------------------
+// .....
+//------------------------------------------------------------
             
     // slide-level media options
     $('#url, #credit, #caption').change(function(event) { 
@@ -1072,8 +1139,7 @@ $(function() {
         ////// upload
         .on('upload', function(event, url) {
             $(this).trigger('refresh_background_select');
-            $('#background_url').val(url).change();    
-            
+            $('#background_url').val(url).change();                
             $(this).find('.upload-panel').trigger('reset');        
         })
         ////// custom
