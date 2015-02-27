@@ -329,7 +329,6 @@ def storymap_update_meta(user, id):
     """Update storymap meta value"""
     try:
         key, value = _request_get_required('key', 'value')
-        print 'storymap_update_meta', key, value
         
         user['storymaps'][id][key] = value
         _user.save(user)
@@ -347,26 +346,6 @@ def storymap_update_meta(user, id):
         traceback.print_exc()
         return jsonify({'error': str(e)})
                 
-@app.route('/storymap/rename/', methods=['GET', 'POST'])
-@require_user_id()
-def storymap_rename(user, id):
-    """Rename storymap"""
-    try:
-        title = _request_get_required('title')
-        key_prefix = storage.key_prefix(user['uid'], id)
-        
-        user['storymaps'][id]['title'] = title
-        _user.save(user)
-    
-        _write_embed_draft(key_prefix, user['storymaps'][id])        
-        if user['storymaps'][id].get('published_on'):
-            _write_embed_published(key_prefix, user['storymaps'][id])
-                    
-        return jsonify({})
-    except Exception, e:
-        traceback.print_exc()
-        return jsonify({'error': str(e)})
-
 @app.route('/storymap/copy/', methods=['GET', 'POST'])
 @require_user_id()
 def storymap_copy(user, id):

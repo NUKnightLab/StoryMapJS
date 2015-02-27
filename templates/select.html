@@ -374,8 +374,8 @@ $(function() {
         }
         var id = $(this).attr('storymap-data');
                    
-        ajax_post("{{ url_for('storymap_rename') }}",
-            {id: id, title: title},
+        ajax_post("{{ url_for('storymap_update_meta') }}",
+            {id: id, key:'title', value: title},
             function(error) {
                 $modal.trigger('reset', format_error('Error renaming StoryMap', error));   
             },
