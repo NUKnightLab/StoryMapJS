@@ -188,6 +188,8 @@ input[type="radio"] {margin: 0;}
 }
 #opt_modal p {font-family: "Apres RE","Helvetica Neue",Helvetica,Arial,sans-serif;}
 
+#opt_description {resize: vertical;}
+
 #opt_image_url {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
