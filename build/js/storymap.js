@@ -5755,7 +5755,7 @@ VCO.Media.GoogleDoc = VCO.Media.extend({
 		if (this.media_id.match(/docs.google.com/i)) {
 			this._el.content_item.innerHTML	=	"<iframe class='doc' frameborder='0' width='100%' height='100%' src='" + this.media_id + "&amp;embedded=true'></iframe>";
 		} else {
-			this._el.content_item.innerHTML	=	"<iframe class='doc' frameborder='0' width='100%' height='100%' src='" + "http://docs.google.com/viewer?url=" + this.media_id + "&amp;embedded=true'></iframe>";
+			this._el.content_item.innerHTML	=	"<iframe class='doc' frameborder='0' width='100%' height='100%' src='" + "//docs.google.com/viewer?url=" + this.media_id + "&amp;embedded=true'></iframe>";
 		}
 		
 		// After Loaded
@@ -15818,7 +15818,7 @@ L.control.minimap = function(options) {
 	var SUBDOMAINS = "a b c d".split(" "),
 		MAKE_PROVIDER = function(layer, type, minZoom, maxZoom) {
 			return {
-				"url":          ["http://stamen-tiles-{S}.a.ssl.fastly.net/", layer, "/{Z}/{X}/{Y}.", type].join(""),
+				"url":          ["//stamen-tiles-{S}.a.ssl.fastly.net/", layer, "/{Z}/{X}/{Y}.", type].join(""),
 				"type":         type,
 				"subdomains":   SUBDOMAINS.slice(),
 				"minZoom":      minZoom,
@@ -15837,7 +15837,7 @@ L.control.minimap = function(options) {
 	        "terrain":      MAKE_PROVIDER("terrain", "jpg", 4, 18),
 	        "watercolor":   MAKE_PROVIDER("watercolor", "jpg", 1, 16),
 	        "trees-cabs-crime": {
-	            "url": "http://{S}.tiles.mapbox.com/v3/stamen.trees-cabs-crime/{Z}/{X}/{Y}.png",
+	            "url": "//{S}.tiles.mapbox.com/v3/stamen.trees-cabs-crime/{Z}/{X}/{Y}.png",
 	            "type": "png",
 	            "subdomains": "a b c d".split(" "),
 	            "minZoom": 11,
@@ -17070,7 +17070,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 				var mapbox_name = _map_type_arr[1] || 'nuknightlab.hif6ioi4';
 				_options.subdomains 	= 'abcd';
 				_options.attribution 	= _attribution_knightlab + "<div class='mapbox-maplogo'></div><a href='https://www.mapbox.com/about/maps/' target='_blank'>© Mapbox © OpenStreetMap</a>";
-				_tilelayer = new L.TileLayer("https://api.tiles.mapbox.com/v4/" + mapbox_name + "/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibnVrbmlnaHRsYWIiLCJhIjoiczFmd0hPZyJ9.Y_afrZdAjo3u8sz_r8m2Yw", _options);
+				_tilelayer = new L.TileLayer("//api.tiles.mapbox.com/v4/" + mapbox_name + "/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibnVrbmlnaHRsYWIiLCJhIjoiczFmd0hPZyJ9.Y_afrZdAjo3u8sz_r8m2Yw", _options);
 				break;
 			case 'stamen':
 				_tilelayer = new L.StamenTileLayer(_map_type_arr[1] || 'toner-lite', _options);
@@ -17088,7 +17088,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 			case 'osm':
 				_options.subdomains = 'ab';
 				_options.attribution = _attribution_knightlab + "© <a target='_blank' href='http://www.openstreetmap.org'>OpenStreetMap</a> and contributors, under an <a target='_blank' href='http://www.openstreetmap.org/copyright'>open license</a>";
-				_tilelayer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', _options); 
+				_tilelayer = new L.TileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', _options); 
 				break;
 		    
 			case 'http':
