@@ -1,55 +1,27 @@
 <html>
 <head>
 <title>User Information</title>
-{% include '_credentials.html' %}
-<script type="text/javascript" src="{{ STATIC_URL }}/js/gdrive.js"></script>
 </head>
 
 <body>
 
+<pre id="log">
 
-<pre id="log">Loading Google API...</pre>
-
-
-<script type="text/javascript">
-
-function handle_userinfo() {
-    document.getElementById("log").innerHTML += "OK.\n\n";
-    document.getElementById("log").innerHTML += "Getting User Information...";
-    
-    gdrive_about(function(error, info) {
-        
-        if(error) {
-            document.getElementById("log").innerHTML += "ERROR.\n\n";
-            document.getElementById("log").innerHTML += (error.message || error);
-        } else {
-            document.getElementById("log").innerHTML += "OK.\n\n";
-            document.getElementById("log").innerHTML += JSON.stringify(info, null, 4);
-        }  
-    });
-}
-
-function handle_authorized(authorized) {    
-    if(authorized) {
-        document.getElementById("log").innerHTML += "OK.\n\n";
-        document.getElementById("log").innerHTML += "Loading Client API...";
-        
-        gapi.client.load('drive', 'v2', handle_userinfo);
-
-    } else {
-        document.getElementById("log").innerHTML += "NOT AUTHORIZED.\n\n";
-    }
-}
-
-function handle_onload() {
-    document.getElementById("log").innerHTML += "OK.\n\n";    
-    document.getElementById("log").innerHTML += "Checking authorization...";
-    
-    gdrive_check_auth(handle_authorized);
-}
+<strong>uid</strong>
+{% if uid %}
+{{ uid }}
+{% else %}
+NO UID
+{% endif %}
 
 
-</script>
-<script type="text/javascript" src="https://apis.google.com/js/client.js?onload=handle_onload"></script>
+<strong>user</strong>
+{% if user %}
+{{ user }}
+{% else %}
+NO USER
+{% endif %}
+</pre>
+
 </body>
 </html>

@@ -647,6 +647,22 @@ def examples(name):
 def logout():
     _session_pop('uid')    
     return redirect('http://www.google.com/accounts/Logout')
+
+@app.route("/userinfo/")
+def userinfo():
+    import pprint
+    
+    uid = session.get('uid')
+    user = None
+    
+    if uid:
+        user = _user.find_one({'uid': uid})
+        if user:
+            del user['_id']
+            user = pprint.pformat(user, indent=4)            
+            
+    return render_template('userinfo.html',
+        uid=uid, user=user)
         
 @app.route("/select.html/", methods=['GET', 'POST']) # legacy
 @app.route("/select/", methods=['GET', 'POST'])
