@@ -194,6 +194,13 @@ function show_message(msg, callback) {
     $('#message_modal').modal('show');
 }
 
+function show_message_report(msg, uid, callback) {
+    var message = msg + format_report_link(msg, msg, 'uid = '+uid);
+        
+    show_message(message, callback);
+}
+
+
 //
 // on load
 //

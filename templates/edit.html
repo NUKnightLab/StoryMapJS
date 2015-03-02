@@ -112,13 +112,13 @@ var _map;                   // EditorMap
 
 {% if user %}
 var _user = {{ user|tojson }};
+{% else %}
+var _user = {};
 {% endif %}
 
 {% if meta %}
 var _storymap_meta = {{ meta|tojson }};
 {% endif %}
-
-console.log(_storymap_meta);
 
 var _storymap_data;          // { width: n, height: n, ..., storymap: { } }
 
@@ -659,12 +659,12 @@ function map_init() {
 }
 
 function storymap_abort(message) {
-    show_message(message, function() { document.location.href = "{{ url_for('select') }}"; });
+    show_message_report(message, '{{ user.uid }}', function() { document.location.href = "{{ url_for('select') }}"; });
 }
 
 function storymap_init() {
     show_progress('Loading StoryMap');
-              
+                  
     // load storymap
     ajax_get("{{ url_for('storymap_get') }}", 
         {
