@@ -76,14 +76,11 @@ def drive_get_path(service, parent_resource, path_list, filter_f):
         raise Exception(str(error))
 
 def drive_get_migrate_list(service):
-    print '** checking for storymap folder'
     parent_folder = drive_get_path(service, None, 
         ['KnightLabStoryMap', 'public'], _filter_shared)
     if not parent_folder:
-        print '** storymap folder not found'
         return []
     
-    print '** found storymap folder'
     storymap_list = []
     
     folder_list = drive_list(service, parent_folder['id'])
