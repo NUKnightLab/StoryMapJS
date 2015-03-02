@@ -5,23 +5,37 @@
 
 <body>
 
-<pre id="log">
+<p>
+<b>navigator.userAgent =</b>
+<em>
+<script type="text/javascript">
+document.write(navigator.userAgent);
+</script>
+</em>
+</p>
 
-<strong>uid</strong>
+<p>
+<b>uid =</b>
+<em>
 {% if uid %}
 {{ uid }}
 {% else %}
 NO UID
 {% endif %}
+</em>
+</p>
 
+<p>
+<b>user:</b>
 
-<strong>user</strong>
+<pre id="log">
 {% if user %}
 {{ user }}
 {% else %}
 NO USER
 {% endif %}
 </pre>
+</p>
 
 </body>
 </html>
