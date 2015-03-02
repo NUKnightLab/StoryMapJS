@@ -328,6 +328,7 @@ $(function() {
                     file_list: JSON.stringify(info.file_list)
                 },
                 function(error) {
+                    _migrate_list.push(info);   // push back onto list
                     callback(error);
                 },
                 function(data) {
@@ -345,7 +346,7 @@ $(function() {
         var $modal = $('#entry_modal');
         
         _do_migrate(function(error) {
-            if(error) {
+            if(error) {               
                 $modal.trigger('reset', format_error('Error migrating StoryMap', error));
             } else {
                 ajax_get("{{ url_for('storymap_migrate_done') }}", {},

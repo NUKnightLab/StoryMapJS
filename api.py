@@ -456,12 +456,16 @@ def storymap_migrate_done(user):
 @app.route('/storymap/migrate/list/', methods=['GET', 'POST'])
 @require_user
 def storymap_migrate_list(user):
-    """Get list of storymaps that need to be migrated"""
+    """Get list of storymaps that still need to be migrated"""
     try:
         credentials = google.get_credentials(user['google']['credentials'])
         drive_service = google.get_drive_service(credentials)
-        migrate_list = google.drive_get_migrate_list(drive_service)
         
+        existing = [d['title'] for (k, d) in user['storymaps'].items()]
+      
+        temp_list = google.drive_get_migrate_list(drive_service)
+        migrate_list = [r for r in temp_list if r['title'] not in existing]
+                    
         return jsonify({'migrate_list': migrate_list})
     except Exception, e:
         traceback.print_exc()
@@ -481,7 +485,7 @@ def storymap_migrate(user):
     try:
         title, src_url, draft_on, file_list_json = _request_get_required(
             'title', 'url', 'draft_on', 'file_list')
-        published_on = _request_get('published_on', '')
+        published_on = _request_get('published_on')
              
         file_list = json.loads(file_list_json)
         
