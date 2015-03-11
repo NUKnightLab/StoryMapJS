@@ -486,7 +486,7 @@ def storymap_migrate(user):
         title, src_url, draft_on, file_list_json = _request_get_required(
             'title', 'url', 'draft_on', 'file_list')
         published_on = _request_get('published_on')
-             
+                    
         file_list = json.loads(file_list_json)
         
         dst_id = _make_storymap_id(user, title)

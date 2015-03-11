@@ -50,10 +50,20 @@
                 </div> 
             </div>
         </div>   
-<!-- migrate panel -->    
+<!-- migrate panel (initial) -->    
     <div class="entry-panel entry-migrate hide">  
         <p>In order to continue to use the StoryMap Editor, you must migrate your data.  
         This process will make copies of the StoryMaps currently on your Google Drive and store them on our new storage site.
+        </p>
+        <p>
+        None of the original data on your Google Drive will be altered, moved, or deleted, but the StoryMap Editor
+        will only work with the migrated copies.
+        </p>
+    </div>
+<!-- migrate panel (resume) -->    
+    <div class="entry-panel entry-migrate-resume hide">  
+        <p>In order to continue to use the StoryMap Editor, you must finish migrating your data.  
+        This process will make copies of the StoryMaps still on your Google Drive and store them on our new storage site.
         </p>
         <p>
         None of the original data on your Google Drive will be altered, moved, or deleted, but the StoryMap Editor
@@ -161,7 +171,8 @@
         <span>&nbsp;</span>
         <a id="entry_migrate" class="entry-panel entry-migrate hide btn btn-success" href="javascript:;">
             Start Migration</a>
-        
+        <a id="entry_migrate_resume" class="entry-panel entry-migrate-resume hide btn btn-success" href="javascript:;">
+            Resume Migration</a>        
         <a id="entry_create_cancel" class="entry-panel entry-create entry-import entry-rename entry-copy hide btn" onclick="$('#entry_modal').trigger('show_list');">
             Cancel</a>
         <a id="entry_create" class="entry-panel entry-create hide btn btn-success" href="javascript:;">
@@ -342,7 +353,7 @@ $(function() {
         }
     }
     
-    $('#entry_migrate').click(function(event) {
+    $('#entry_migrate, #entry_migrate_resume').click(function(event) {
         var $modal = $('#entry_modal');
         
         _do_migrate(function(error) {
@@ -549,6 +560,7 @@ $(function() {
            
             make_storymap_list();
  
+            // Already migrated?
             if(_user.migrated) {
                 if(_params.import_url) {
                     $modal.trigger('show_import');
@@ -567,7 +579,11 @@ $(function() {
                 function(data) {
                     if(data.migrate_list.length) {  
                         _migrate_list = data.migrate_list;
-                        $modal.trigger('show_migrate');
+                        if(Object.keys(_user.storymaps).length) {
+                            $modal.trigger('show_migrate_resume');                        
+                        } else {
+                            $modal.trigger('show_migrate');                        
+                        }
                     } else {
                         ajax_get("{{ url_for('storymap_migrate_done') }}", {},
                             function(error) {
@@ -612,6 +628,12 @@ $(function() {
             $(this).find('.entry-panel').hide();
             $(this).trigger('error_hide');
             $(this).find('.entry-migrate').show();
+            $(this).trigger('progress_hide');
+        })    
+        .on('show_migrate_resume', function(event) {
+            $(this).find('.entry-panel').hide();
+            $(this).trigger('error_hide');
+            $(this).find('.entry-migrate-resume').show();
             $(this).trigger('progress_hide');
         })    
         .on('show_list', function(event, force_reload) {

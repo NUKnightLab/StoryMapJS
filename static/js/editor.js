@@ -14,6 +14,17 @@ Array.prototype.move = function(from, to) {
     this.splice(to, 0, this.splice(from, 1)[0]);
 };
 
+if (!Object.keys) {
+    Object.keys = function (object) {
+        var keys = [];
+
+        for (var key in object) {
+            if (object.hasOwnProperty(key)) {
+                keys.push(key);
+            }
+        }
+    }
+}
 
 function debug() {
     if(console && console.log) {
