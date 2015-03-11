@@ -667,8 +667,13 @@ def userinfo():
             
     return render_template('userinfo.html',
         uid=uid, user=user)
-        
-@app.route("/select.html/", methods=['GET', 'POST']) # legacy
+  
+@app.route("/select.html/", methods=['GET', 'POST'])
+@app.route("/edit.html/", methods=['GET', 'POST'])
+def legacy_redirect():
+    """Legacy redirect"""
+    return redirect(url_for('select'))
+      
 @app.route("/select/", methods=['GET', 'POST'])
 def select():
     try:
@@ -686,7 +691,7 @@ def select():
     except Exception, e:
         traceback.print_exc()
         return render_template('select.html', error=str(e))
-
+   
 @app.route("/edit/", methods=['GET', 'POST'])
 @require_user_id('edit.html')
 def edit(user, id):
