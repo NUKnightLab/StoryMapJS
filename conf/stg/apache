@@ -13,18 +13,3 @@
     WSGIScriptAlias / /home/apps/sites/StoryMapJS/conf/stg/wsgi.py
 </VirtualHost>
 
-<VirtualHost *:80>
-    ServerName storymap2.knilab.com
-    ServerAlias storymap2.knilab.com
-    ServerAdmin admin@knilab.com
-    ErrorLog /var/log/apache2/storymap.log
-
-    LogLevel info
-
-    SetEnvIf X-Forwarded-Protocol "^https$" HTTPS=on
-
-    WSGIDaemonProcess storymap display-name=%{GROUP} maximum-requests=10000
-    WSGIProcessGroup storymap
-    WSGIScriptAlias / /home/apps/sites/StoryMapJS/conf/stg/wsgi.py
-</VirtualHost>
-
