@@ -46,6 +46,7 @@ def drive_find(service, parent_resource, title, filter_f):
         query += " and '%(id)s' in parents" % parent_resource
     response = service.files().list(q=query).execute()
     
+    file_list = []
     if response and 'items' in response and response['items']:
         file_list = filter(filter_f, response['items'])
     if file_list:
