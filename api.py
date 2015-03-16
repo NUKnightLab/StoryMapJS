@@ -1,5 +1,5 @@
 from flask import Flask, request, session, redirect, url_for, \
-    render_template, jsonify
+    render_template, jsonify, abort
 import os
 import sys
 import importlib
@@ -727,6 +727,14 @@ def catch_compiled(path):
 @app.route('/editor/templates/<path:path>')
 def catch_compiled_templates(path):
     return send_from_directory(templates_dir, path)      
+
+
+# redirect old documentation URLs
+@app.route('/<path:path>')
+def redirect_old_urls(path):
+    if path.endswith('.html'):
+        return redirect(url_for(path.split('.')[0]))
+    abort(404)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
