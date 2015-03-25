@@ -699,9 +699,32 @@ function storymap_init() {
             
             // Map init           
             map_init();
+            set_language_on_load();
         }
     );
 }
+
+function set_language_on_load () {
+    var url = "{{ CDN_URL }}js/locale/" + _storymap_data.storymap.language + ".js";
+    console.log(url);
+    load_language_script(url, language_loaded)
+}
+
+function load_language_script(url, callback) {
+    var head = document.getElementsByTagName('head')[0];
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.charset = 'UTF-8'
+    script.src = url;
+    script.onreadystatechange = callback;
+    script.onload = callback;
+    head.appendChild(script);
+}
+
+function language_loaded () {
+    var call_defaul_exists = document.getElementById('call_default');
+    call_defaul_exists.innerHTML = 'Default: \"' + VCO.Language.messages.start + '\"';
+};
 
 $(function() {     
 
@@ -760,6 +783,9 @@ $(function() {
     $('#language').change(function(event) {
         _storymap_data.storymap['language'] = $(this).val();
         storymap_dirty(1);
+        var url = "{{ CDN_URL }}js/locale/" + $(this).val() + ".js";
+        console.log(url);
+        load_language_script(url, language_loaded)
     });
         
     $("input[name='map_as_image']").click(function() {
