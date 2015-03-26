@@ -91,7 +91,7 @@ input[type="radio"] {margin: 0;}
 .radio.inline {line-height: 16px;}
 
 #call_to_action_text {margin-left: 6px;}
-#call_default {
+#call_to_action_default {
 	padding-left: 108px;
     margin-bottom: 0px;
 }

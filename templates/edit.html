@@ -130,6 +130,8 @@ var _storymap_object;       // VCO.StoryMap, for preview
 var _current_slide_index = -1;
 var _dirty = 0;
 
+var _language_library = {};  //cache for translations to allow switching back to English in editor, and reduce # of scripts loaded
+_language_library['en'] = VCO.Language;
 
 //
 // urls
@@ -699,31 +701,41 @@ function storymap_init() {
             
             // Map init           
             map_init();
-            set_language_on_load();
+
+            //Language init
+            check_language();
         }
     );
 }
 
-function set_language_on_load () {
-    var url = "{{ CDN_URL }}js/locale/" + _storymap_data.storymap.language + ".js";
-    console.log(url);
-    load_language_script(url, language_loaded)
-}
+function check_language () {
+    var _lang_ISO = _storymap_data.storymap['language'];
+    if (_language_library[_lang_ISO]) {
+        VCO.Language = _language_library[_lang_ISO];
+        var elem = document.getElementById('call_default_text');
+        elem.innerHTML = VCO.Language.messages['start'];
+    } else {
+        load_language_script(_lang_ISO)
+    }
+};
 
-function load_language_script(url, callback) {
+function load_language_script(_lang_ISO) {
+    var url = "{{ CDN_URL }}js/locale/" + _lang_ISO + ".js";
     var head = document.getElementsByTagName('head')[0];
     var script = document.createElement('script');
     script.type = 'text/javascript';
     script.charset = 'UTF-8'
     script.src = url;
-    script.onreadystatechange = callback;
-    script.onload = callback;
+    script.onload = function() {
+        language_loaded(_lang_ISO); 
+    }
     head.appendChild(script);
-}
+};
 
-function language_loaded () {
-    var call_defaul_exists = document.getElementById('call_default');
-    call_defaul_exists.innerHTML = 'Default: \"' + VCO.Language.messages.start + '\"';
+function language_loaded (_lang_ISO) {
+    _language_library[_lang_ISO] = VCO.Language;
+    var elem = document.getElementById('call_default_text');
+    elem.innerHTML = VCO.Language.messages['start'];
 };
 
 $(function() {     
@@ -783,9 +795,7 @@ $(function() {
     $('#language').change(function(event) {
         _storymap_data.storymap['language'] = $(this).val();
         storymap_dirty(1);
-        var url = "{{ CDN_URL }}js/locale/" + $(this).val() + ".js";
-        console.log(url);
-        load_language_script(url, language_loaded)
+        check_language();
     });
         
     $("input[name='map_as_image']").click(function() {
