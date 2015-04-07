@@ -710,6 +710,7 @@ function storymap_init() {
 
 function check_language () {
     var _lang_ISO = _storymap_data.storymap['language'];
+    if (!_lang_ISO) _lang_ISO = 'en';
     if (_language_library[_lang_ISO]) {
         VCO.Language = _language_library[_lang_ISO];
         var elem = document.getElementById('call_default_text');
