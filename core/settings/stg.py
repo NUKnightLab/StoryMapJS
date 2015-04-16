@@ -6,7 +6,7 @@ import os
 from .base import *
 
 # Import secrets
-secrets_path = os.path.normpath(os.path.join(PROJECT_ROOT, '../secrets/storymapjs/stg'))
+secrets_path = os.path.normpath(os.path.join(PROJECT_ROOT, '../secrets/storymap/stg'))
 sys.path.append(secrets_path)
 
 from secrets import *
