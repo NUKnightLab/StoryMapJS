@@ -6,7 +6,7 @@ import os
 from .base import *
 
 # Import secrets
-secrets_path = os.path.normpath(os.path.join(PROJECT_ROOT, '../secrets/storymapjs/stg'))
+secrets_path = os.path.normpath(os.path.join(PROJECT_ROOT, '../secrets/storymap/stg'))
 sys.path.append(secrets_path)
 
 from secrets import *
@@ -22,7 +22,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'mongo',
         'NAME': 'storymapjs',
-        'HOST': 'stg-mongo1.knilab.com',
+        'HOST': 'stage-mongo1.knilab.com',
         'PORT': 27017,
     }
 }
