@@ -22,7 +22,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'mongo',
         'NAME': 'storymapjs',
-        'HOST': 'stg-mongo1.knilab.com',
+        'HOST': 'stage-mongo1.knilab.com',
         'PORT': 27017,
     }
 }
