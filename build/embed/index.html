@@ -104,8 +104,7 @@
 
 		var options = {
 		    script_path: getScriptPath(/storymap(-min)?\.js/),
-		    start_at_slide: 0,
-		    show_lines: true
+		    start_at_slide: 0
 		};
 
 		if(params.hasOwnProperty('start_at_slide')) {
@@ -116,16 +115,6 @@
 		    trace('embed: storymap data loaded');
 
 		    if (d && d.storymap) {
-                PROPERTIES_TO_COPY = ['map_type', 'map_subdomains', 'map_as_image', 'use_custom_markers', 'map_background_color', 'language', 'zoomify', 'relative_date', 'call_to_action', 'call_to_action_text']
-                for (var i = 0; i < PROPERTIES_TO_COPY.length; i++) {
-                    if (d.storymap[PROPERTIES_TO_COPY[i]]) {
-                        options[PROPERTIES_TO_COPY[i]] = d.storymap[PROPERTIES_TO_COPY[i]];
-                    }
-                }
-		        if(d.storymap.hasOwnProperty('show_lines')) {
-		            options.show_lines = d.storymap.show_lines;
-		        }
-
 		        var font = "stock:default";
 		        if(d.font_css) {
 		            font = d.font_css;

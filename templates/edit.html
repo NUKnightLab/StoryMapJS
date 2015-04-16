@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>TITLE (Editing)</title>
+<meta name="description" content="Telling stories with maps.">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<link href="//cloud.webtype.com/css/d4767ecb-457a-4677-8761-72f890add836.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="http://cdn.knightlab.com/libs/blueline/latest/css/blueline.min.css">
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="//code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
+<script src="http://cdn.knightlab.com/libs/blueline/latest/js/blueline.min.js"></script>
+<!-- === leaflet -->
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
+<!-- === google maps -->
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places"></script>
+<!-- === maps.stamen.com -->
+<script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.2.4"></script>
+<!-- === storymap -->
+<link rel="stylesheet" href="{{ CDN_URL }}css/storymap.css?v1">
+<!-- TEMPORARILY USE NON-MINIFIED -->
+<script type="text/javascript" src="{{ CDN_URL }}js/storymap.js"></script>
+<!-- === extra leaflet marker classes -->
+<script type="text/javascript" src="{{ STATIC_URL }}js/leaflet-extras.js"></script>
+<!-- === bootstrap-wysihtml5 -->
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}bootstrap-wysihtml5/bootstrap-wysihtml5-0.0.2.css"></link>
+<script type="text/javascript" src="{{ STATIC_URL }}bootstrap-wysihtml5/lib/js/wysihtml5-0.3.0.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}bootstrap-wysihtml5/bootstrap-wysihtml5-0.0.2.min.js"></script>
+<!-- === jquery-minicolors -->
+<link rel="stylesheet" href="{{ STATIC_URL }}jquery-minicolors/jquery.minicolors.css">
+<script type="text/javascript" src="{{ STATIC_URL }}jquery-minicolors/jquery.minicolors.min.js"></script>
+<!-- === Moment.js -->
+<script src="{{ STATIC_URL }}js/moment.min.js"></script>
+<script src="{{ STATIC_URL }}js/moment-timezone.min.js"></script>
+<script src="{{ STATIC_URL }}js/moment-timezone-data.js"></script>
+<!-- === editor -->
+<script type="text/javascript" src="{{ STATIC_URL }}js/json2.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/editor.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/EditorMap.js"></script>
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/editor.css">
+</head>
+<body>
+
+{% include '_modals.html' %}
+
+{% include '_editor.html' %}
+
+<!-- TEMPLATES START -->
+
+<script id="storymap_slide_template" type="text/template">
+<li class="slide">
+<div class="slide-icon"></div>
+<div class="slide-title"><%= headline || "(untitled)" %></div>
+</li>
+</script>
+
+<script id="storymap_iframe_template" type="text/template">
+<iframe src="<%= embed_url %>" frameborder="0" width="<%= width %>" height="<%= height %>"></iframe>
+</script>
+
+<!-- TEMPLATES END -->
+
+<script type="text/javascript">
+
+var storymap_slide_template = _.template($("#storymap_slide_template").html().trim());
+var storymap_iframe_template = _.template($("#storymap_iframe_template").html().trim());
+
+L.Icon.Default.imagePath = ' http://cdn.leafletjs.com/leaflet-0.7.2/images';
+
+// for upload control
+var _storymap_upload_url = "{{ url_for('storymap_image_save') }}";
+
+var _font_url = '{{ CDN_URL }}css/fonts/';
+
+// If under local development...
+switch(document.location.hostname) {
+    case '127.0.0.1':
+    case '0.0.0.0':
+    case 'localhost':
+        _font_url = '/build/css/fonts/';
+        break;
+    default:
+        break;
+}  
+
+var _default_data = {
+    width: "100%",
+    height: "800",
+    font_css: '',
+    storymap: {
+        language: "en",
+        map_type: "stamen:toner-lite",
+        map_subdomains: "",
+        map_background_color: '#ffffff',
+        // just one...
+        slide: {
+            date: "",
+            text: {headline: "", text: ""},
+            media: {url: "", credit: "", caption: ""},
+            location: {
+                line: true, 
+                icon: 'http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png'
+            }
+        }
+    }
+};
+
+var _re_slide_cls = /^slide-icon-\w+$/;
+
+var _map;                   // EditorMap
+
+{% if user %}
+var _user = {{ user|tojson }};
+{% else %}
+var _user = {};
+{% endif %}
+
+{% if meta %}
+var _storymap_meta = {{ meta|tojson }};
+{% endif %}
+
+var _storymap_data;          // { width: n, height: n, ..., storymap: { } }
+
+var _storymap_files = [];    // array of image files in this storymap folder
+var _slides = null;          // _storymap_data.storymap.slides
+
+var _storymap_object;       // VCO.StoryMap, for preview
+
+var _current_slide_index = -1;
+var _dirty = 0;
+
+var _language_library = {};  //cache for translations to allow switching back to English in editor, and reduce # of scripts loaded
+_language_library['en'] = VCO.Language;
+
+//
+// urls
+//
+
+function storymap_url(uid, id, filename) {
+    return "{{ STORAGE_URL }}"+[uid, id, filename].join('/');
+}
+
+function storymap_image_url(uid, id, filename) {
+    return storymap_url(uid, id, '_images/'+filename);
+}
+
+function get_storymap_property(name, default_value) {
+    if(_storymap_data.storymap.hasOwnProperty(name)) {
+        return _storymap_data.storymap[name];
+    }    
+    return default_value;    
+}
+
+function get_map_as_image() {
+    return get_storymap_property('map_as_image', false);
+}
+
+function map_set_type() {    
+    var map_type = (_storymap_data.storymap.map_type || '');
+    
+    if(map_type == "zoomify") {
+        _map.setMapType(map_type, _storymap_data.storymap.zoomify);
+    } else {
+        _map.setMapType(map_type, (_storymap_data.storymap.map_subdomains || 'a').split(''));
+    }
+}
+
+function location_set(slide_index, data) {  
+    var dirty = 0;
+    
+    for(var key in data) {
+        if(_slides[slide_index].location[key] != data[key]) {
+            _slides[slide_index].location[key] = data[key];   
+            dirty = 1; 
+        }
+    }
+    if(dirty) {
+        storymap_dirty(1);
+    }
+}
+
+function location_mark(data) {    
+    _map.clearOverlays();    
+    if(data) {
+        _map.addMarker(data.lat, data.lon, true);
+        _map.panTo(data.lat, data.lon);
+    } 
+}
+
+function slide_set_class(slide_index) {    
+    // Get slide icon
+    var elem = $('.slide-icon').eq(slide_index);
+    
+    // Remove old slide-icon-* class
+    elem.removeClass(function(i, cls) {
+        return cls.split(' ')
+            .filter(function(val) { return _re_slide_cls.test(val); })
+            .join(' ');
+    });
+    
+    // Add new class
+    var data = _slides[slide_index];
+    var url = (data.media) ? (data.media.url || '') : '';
+    if(url) {
+        var media = VCO.MediaType({'url': url});     
+        if(media.type) {
+            elem.addClass('slide-icon-'+media.type);
+        }
+    } 
+}
+
+function slide_append_element(data) {
+    var slide_index = $('.slide').length;
+              
+    var slide_elem = $(storymap_slide_template(data.text))
+        .appendTo('#slides')
+        .click(slide_select);
+
+    $('<a class="close" href="javascript:">&nbsp;</a>')
+        .appendTo(slide_elem)
+        .click(slide_delete); 
+ 
+    slide_set_class(slide_index);       
+    return slide_elem;
+}
+
+function slide_select(event) {      
+    $(':focus').blur(); // force change event!
+ 
+    storymap_auto_save();
+    
+    $('.slide.selected').removeClass('selected');    
+    $(this).addClass('selected');
+            
+    _current_slide_index = $('.slide').index(this);   
+
+    if(preview_visible()) {
+        if(_storymap_object) {
+            _storymap_object.goTo(_current_slide_index);
+        } 
+    } else {
+        var data = $.extend(true, {}, _default_data.storymap.slide, _slides[_current_slide_index]);
+        
+        _map.zoomEnable(false);
+        _map.clearOverlays();
+      
+        if(_current_slide_index == 0) {
+            // Show overview view
+            $('#map_info, #map_overlay').show();
+            $('#map_search_input').hide();   
+                               
+            for(var i = 1; i < _slides.length; i++) {  
+                if(_slides[i].hasOwnProperty('location')) {                    
+                    var loc_data = _slides[i].location;
+                    
+                    if(loc_data.lat && loc_data.lon) {
+                        _map.addMarker(loc_data.lat, loc_data.lon, false);   
+                     }
+                }
+            }
+            
+            _map.setDefaultView();
+                    
+            if(!get_map_as_image()) {
+                _map.addPolyLine();
+            }
+        } else {
+            // Show slide view
+            $('#map_info, #map_overlay').hide();
+
+            if(_storymap_data.storymap.zoomify) {
+                $('#map_search_input').hide();           
+            } else {
+                $('#map_search_input').val('').show();   
+            }
+
+            _map.setView(data.location.lat, data.location.lon, data.location.zoom);
+            _map.zoomEnable(true);
+         
+            location_mark(data.location);       
+        }
+      
+        $('#url').val(data.media.url);
+        $('#credit').val(data.media.credit);
+        $('#caption').val(data.media.caption);
+        
+        $('#headline').val(data.text.headline);
+        $('#text').val(data.text.text);    
+        $('iframe.wysihtml5-sandbox').contents().find('body').html(data.text.text);
+    }
+}
+
+function slide_delete(event) {
+    var slide_elem = $(this).closest('.slide');
+    var slide_index = $('.slide').index(slide_elem);
+    
+    var data = _slides[slide_index];
+    var slide_title = ((data.text) ? (data.text.headline || "(untitled)") : "(untitled)");
+    
+    show_confirm('Delete "'+slide_title+'" slide?', function() {
+        var height = $('#slides').height() - slide_elem.outerHeight(true);
+          
+        // Delete the slide data
+        _slides.splice(slide_index, 1); 
+        storymap_dirty(1);    
+                 
+        // Remove DOM element
+        slide_elem.remove();
+        
+        // Adjust slide container height
+        $('#slides').css('height', height+"px");    
+               
+        if(_current_slide_index == 0) {
+            // Update overlay view
+            _map.removeMarker(slide_index - 1);   
+        } else {                            
+            // Reset current slide
+            if(slide_index < _current_slide_index) {
+                _current_slide_index--;
+                storymap_auto_save();
+            } else if(slide_index == _current_slide_index) {
+                var n = Math.min(_current_slide_index, _slides.length - 1);            
+                $('.slide').eq(n).click();
+            }              
+        }    
+        
+        // Refresh preview
+        preview_refresh();
+    });
+    
+    return false;
+}
+
+function slide_add() {
+    var data = $.extend(true, {}, _default_data.storymap.slide);
+    var n = _slides.length; 
+    
+    // Add location data if not overview slide, else add type 
+    if(n > 0) {
+        var d = _map.getDefaultView();        
+        $.extend(true, data.location, {lat: d.lat, lon: d.lng, zoom: d.zoom},
+            _slides[n - 1].location || {});
+    } else {
+        data.type = "overview";
+    }   
+       
+    // Add slide 
+    _slides.push(data);
+    storymap_dirty(1);
+
+    // Add slide element if not adding overview slide
+    if(n > 0) {
+        var slide = slide_append_element(data);
+            
+        // Adjust slide container height
+        var height = $('#slides').height() + slide.outerHeight(true);
+        $('#slides').css('height', height+"px");
+    
+        // Scroll new slide into view
+        $('.slides-container').scrollTop(Math.max(0, height - $('#slides').parent().height()));
+    } else {
+        slide_set_class(0);
+    }
+    
+    // Select new slide
+    $('.slide:last').click();
+}   
+
+function storymap_dirty(is_dirty) {
+    _dirty = is_dirty;
+    
+    if(is_dirty) {
+        $('#storymap_save').removeClass('disabled').addClass('btn-primary');
+        $('#storymap_publish').hide();
+    } else {
+        $('#storymap_save').addClass('disabled').removeClass('btn-primary');
+        if(_storymap_meta.published_on &&
+           _storymap_meta.published_on < _storymap_meta.draft_on) {
+            $('#storymap_publish').show();  
+        } 
+    }
+}
+
+// save draft
+// callback(error)
+function storymap_save(callback) {
+    var save_button = $('#storymap_save')
+        .addClass('disabled').removeClass('btn-primary')
+        .html('<i class="icon-spinner icon-spin"></i> Saving...');   
+    
+    ajax_post("{{ url_for('storymap_save') }}",
+        {
+            id: _storymap_meta.id,
+            d: JSON.stringify(_storymap_data)
+        },
+        function(error) {
+            save_button.removeClass('disabled').addClass('btn-primary');
+        },
+        function(data) {
+            _storymap_meta = data.meta; // update meta
+            storymap_dirty(0);
+        },
+        function(error) {
+            save_button.html('<i class="icon-save"></i> Save');
+            callback(error);       
+        }
+    );
+}
+
+// callback(error || null, embed_url)
+function storymap_publish(callback) {
+    if(_dirty) {
+        storymap_save(function(error) {
+            if(error) {
+                callback(error);
+            } else {
+                storymap_publish(callback);
+            }
+        });
+    } else {
+        ajax_post("{{ url_for('storymap_publish') }}",
+            {
+                id: _storymap_meta.id,
+                d: JSON.stringify(_storymap_data)
+            },
+            function(error) {
+                callback(error);
+            },
+            function(data) {
+                console.log(data);               
+                _storymap_meta = data.meta; // update meta
+                $('#storymap_publish').hide();                
+                callback(null, data.embed_url);
+            }
+        );
+    }
+}
+
+function storymap_auto_save() {
+    if(_dirty) {
+        $('#storymap_save').click();
+    }
+}
+
+function preview_visible() {
+    return $("#preview").is(":visible");
+}
+
+function preview_clear() {
+    $('#preview').html('<div id="preview_embed"></div>');
+    _storymap_object = null;
+}
+
+function preview_load() {
+    var options = {
+        script_path: getScriptPath(/storymap(-min)?\.js/)+'/',
+        start_at_slide: _current_slide_index,
+    };
+        
+    _storymap_object = new VCO.StoryMap('preview_embed', 
+        $.extend(true, {}, _storymap_data), options);
+    
+    _storymap_object.on('change', function(e) {
+        $('.slide').eq(this.current_slide).click();
+    }, false);
+}
+
+function preview_refresh() {
+    if(preview_visible()) {
+        preview_clear();    
+        preview_load();
+    }
+}
+
+function font_update() {
+    var val = $('#font_css').val().trim() || 'stock:default';
+    var href = _font_url + 'font.'+val.split(':')[1]+'.css';
+    $('head').append('<link rel="stylesheet" type="text/css" href="'+href+'">');   
+}
+
+//
+// Map
+//
+
+var _map_options = {    
+    map_id: 'map',
+    map_overlay_id: 'map_overlay',
+    search_id: 'map_search_input',
+    handlers: {
+        double_click: function(lat, lng) {
+            var data = {lat: lat, lon: lng};
+            location_mark(data);
+            location_set(_current_slide_index, data);
+        
+        },
+        zoom: function(zoom) {
+            location_set(_current_slide_index, {zoom: zoom});   
+        },
+        marker_drag: function(lat, lng) {
+            location_set(_current_slide_index, {lat: lat, lon: lng});   
+        },
+        search: function(lat, lng) {
+            var data = {lat: lat, lon: lng};                               
+            location_mark(data);
+            location_set(_current_slide_index, data);
+        }
+    }
+};
+
+function slides_load() {    
+    $('#width').val(_storymap_data.width || _default_data.width);
+    $('#height').val(_storymap_data.height || _default_data.height);            
+    $('#language').val(_storymap_data.storymap.language || _default_data.storymap.language);
+    $('#font_css').val(_storymap_data.font_css || _default_data.font_css);
+        
+    $('input:radio[name="map_as_image"][value="'+get_map_as_image()+'"]').prop('checked', true);
+    
+    var call_to_action = get_storymap_property('call_to_action', false);
+    $('input:radio[name="call_to_action"][value="'+call_to_action+'"]').prop('checked', true);   
+    if(call_to_action) {
+       $('#call_to_action_text').show().val(get_storymap_property('call_to_action_text', ''));        
+    } else {
+        $('#call_to_action_text').hide();
+    }
+     
+    document.getElementById('map').style.backgroundColor = 
+        _storymap_data.storymap.map_background_color || _default_data.storymap.map_background_color;
+    
+    $('#map_background_color').minicolors({
+        control: 'hue',
+        opacity: false,
+        theme: 'bootstrap',
+        hide: function() {
+            var color = $(this).val();
+            if(color != _storymap_data.storymap.map_background_color) {
+                _storymap_data.storymap.map_background_color = color;
+                storymap_dirty(1);   
+                
+                document.getElementById('map').style.backgroundColor = 
+                    color || _default_data.storymap.map_background_color;              
+            }
+            if(color) {
+                $('#map_background_color_clear').show();
+            } else {
+                $('#map_background_color_clear').hide();                
+            }
+        },
+        change: function(hex, opacity) {
+            if(hex) {
+                $('#map_background_color_clear').show();            
+            } else {
+                $('#map_background_color_clear').hide();                            
+            }        
+        }
+    });    
+    
+    $('<button id="map_background_color_clear" type="button" class="close text-input-clear">&times;</button>')
+        .insertAfter('#map_background_color')
+        .click(function(event) {
+            $('#map_background_color').minicolors('value', '');
+            $('#map_background_color_clear').hide();
+
+            _storymap_data.storymap.map_background_color = '';
+            storymap_dirty(1);
+            
+            if($(this).siblings('.minicolors-panel').is(':hidden')) {
+                document.getElementById('map').style.backgroundColor = _default_data.storymap.map_background_color;
+            }
+        });
+
+    $('#map_background_color').minicolors('value', _storymap_data.storymap.map_background_color || '');
+ 
+    font_update();
+    
+    // sharing options
+    $('#opt_description').val(_storymap_meta.description || '');    
+    $('#opt_image_url').val(_storymap_meta.image_url || '');
+    
+    // Slides 1,...,n
+    $('#slides').html();  
+    var height = 0;
+    
+    for(var i = 1, slide; i < _slides.length; i++) {
+        slide = slide_append_element(_slides[i]);
+        height += slide.outerHeight(true);
+    }
+    $('#slides').css('height', height + "px");
+          
+    if(_slides.length > 0) {
+        var data = _slides[0];
+        
+        slide_set_class(0);        
+        $('.slide:first .slide-title').html(((data.text) ? (data.text.headline || "(untitled)") : "(untitled)"));
+        $('.slide:first').click();  
+    } else {
+        slide_add();
+    }   
+   
+    hide_progress();
+}
+
+function map_init() {
+    var map_type = _storymap_data.storymap.map_type || _default_data.storymap.map_type;
+
+    if(map_type == "zoomify") {  
+        $('.map-control-group').hide();
+        
+        $('#zoomify_path').val(_storymap_data.storymap.zoomify.path);
+        $('#zoomify_width').val(_storymap_data.storymap.zoomify.width);
+        $('#zoomify_height').val(_storymap_data.storymap.zoomify.height);
+        $('#zoomify_attribution').val(_storymap_data.storymap.zoomify.attribution);
+             
+        _map = new LeafletEditorMap(_map_options);
+    } else {
+        $('.zoomify-control-group').hide();
+ 
+        if(map_type && map_type.match('^(http|https|//)')) {
+            $('#map_type_menu').val('');
+            $('#map_type').val(map_type).attr('placeholder', 'http://{s}.domain.org/{z}/{x}/{y}.png')
+                .prev().html('URL')
+                .parent().show();
+            $('#map_subdomains')
+                .val(_storymap_data.storymap.map_subdomains || _default_data.storymap.map_subdomains)
+                .parent().show();
+        } else if(map_type && map_type.match('^mapbox:.+')) {
+            $('#map_type_menu').val('mapbox');
+            $('#map_type').val(map_type.split(':')[1]).attr('placeholder', 'username.mapid')
+                .prev().html('Map ID')
+                .parent().show();
+            $('#map_subdomains')    
+                .val(_storymap_data.storymap.map_subdomains || 'abcd')
+                .parent().hide();
+        } else {     
+            switch(map_type) {
+                case "stamen:toner-lite":
+                case "stamen:toner":
+                case "stamen:toner-lines":
+                case "stamen:toner-labels":
+                case "stamen:toner-background":
+                case "stamen:watercolor":
+                case "stamen:terrain":
+                    $('#map_type_menu').val(map_type);                    
+                    break;
+                   
+                default:               
+                    $('#map_type_menu').val(_default_data.storymap.map_type);
+                    break; 
+            }    
+        
+            $('#map_type').val('').parent().hide();
+            $('#map_subdomains').val('').parent().hide();
+        }
+        
+        _map = new GoogleEditorMap(_map_options);
+    }
+
+    map_set_type();
+     
+    slides_load();
+}
+
+function storymap_abort(message) {
+    show_message_report(message, '{{ user.uid }}', function() { document.location.href = "{{ url_for('select') }}"; });
+}
+
+function storymap_init() {
+    show_progress('Loading StoryMap');
+                  
+    // load storymap
+    ajax_get("{{ url_for('storymap_get') }}", 
+        {
+            id: _storymap_meta.id
+        },
+        function(error) {
+            storymap_abort(format_error('Error loading StoryMap', error));
+        },
+        function(data) {
+            // Set page title
+            document.title = document.title.replace("TITLE", data.meta.title);
+
+            if(data.meta.published_on && (data.meta.draft_on > data.meta.published_on)) {
+                $('#storymap_publish').show();
+            }
+ 
+            _storymap_data = data.data;
+            _slides = _storymap_data.storymap.slides;                   
+           
+            // List images and sort by name
+            ajax_get("{{ url_for('storymap_image_list') }}",
+                {
+                    id: _storymap_meta.id
+                },
+                function(error) {
+                    storymap_abort(format_error('Error listing images', error));
+                },
+                function(data) {
+                    _storymap_files = data.image_list.sort();
+                }
+            );
+            
+            // Map init           
+            map_init();
+
+            //Language init
+            check_language();
+        }
+    );
+}
+
+function check_language () {
+    var _lang_ISO = _storymap_data.storymap['language'];
+    if (!_lang_ISO) _lang_ISO = 'en';
+    if (_language_library[_lang_ISO]) {
+        VCO.Language = _language_library[_lang_ISO];
+        var elem = document.getElementById('call_default_text');
+        elem.innerHTML = VCO.Language.messages['start'];
+    } else {
+        load_language_script(_lang_ISO)
+    }
+};
+
+function load_language_script(_lang_ISO) {
+    var url = "{{ CDN_URL }}js/locale/" + _lang_ISO + ".js";
+    var head = document.getElementsByTagName('head')[0];
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.charset = 'UTF-8'
+    script.src = url;
+    script.onload = function() {
+        language_loaded(_lang_ISO); 
+    }
+    head.appendChild(script);
+};
+
+function language_loaded (_lang_ISO) {
+    _language_library[_lang_ISO] = VCO.Language;
+    var elem = document.getElementById('call_default_text');
+    elem.innerHTML = VCO.Language.messages['start'];
+};
+
+$(function() {     
+
+
+    $('.slide:first').click(slide_select); 
+     
+//------------------------------------------------------------
+// Menu bar
+//------------------------------------------------------------
+
+    $('#storymap_save').click(function(event) {
+        storymap_save(function(error) {
+            if(error) {
+                show_error('Error saving StoryMap', error);
+            } 
+        });
+    });
+    
+    $('#storymap_publish').click(function(event) {
+        show_progress('Publishing changes');
+        
+        storymap_publish(function(error) {
+            if(error) {
+                show_error('Error publishing StoryMap', error);
+            } else {
+                hide_progress();        
+            }
+        });
+    });
+
+    $('#storymap_add_slide').click(function(event) {
+        if(preview_visible()) {                   
+            $('#edit').one('edit-tab-shown', function(event) {
+                slide_add();
+            });           
+            $('a[data-toggle="tab"][href="#edit"]').tab('show');
+        } else {
+            slide_add();    
+        }
+    });
+    
+//------------------------------------------------------------
+// StoryMap Options
+//------------------------------------------------------------
+    
+    $('#width, #height, #font_css').change(function(event) {
+        var id = $(this).attr('id');
+        _storymap_data[id] = $(this).val().trim();
+        storymap_dirty(1);
+        
+        if(id == 'font_css') {
+            font_update();
+        }
+    });
+
+    $('#language').change(function(event) {
+        _storymap_data.storymap['language'] = $(this).val();
+        storymap_dirty(1);
+        check_language();
+    });
+        
+    $("input[name='map_as_image']").click(function() {
+        var value = ($(this).val() == "true");
+        
+        if(value != get_map_as_image()) {
+            _storymap_data.storymap.map_as_image = value;
+            storymap_dirty(1);   
+            
+            if(_current_slide_index == 0) {
+                if(value) {
+                    _map.removePolyLine();
+                } else {
+                    _map.addPolyLine();
+                }
+            }     
+        }
+    });
+    
+    $("input[name='call_to_action']").click(function() {
+        var value = ($(this).val() == "true");
+        
+        if(value != get_storymap_property('call_to_action', false)) {
+            _storymap_data.storymap.call_to_action = value;
+            storymap_dirty(1);   
+            
+            if(value) {
+                $('#call_to_action_text').show();
+            } else {
+                $('#call_to_action_text').hide();
+            }       
+        }
+    });
+    $('#call_to_action_text').change(function(event) {
+        _storymap_data.storymap.call_to_action_text = $(this).val().trim();        
+        storymap_dirty(1);
+    });
+
+    $('#zoomify_path').change(function(event) {
+        var value = $(this).val().trim(); 
+
+        var re = /drive.google.com\/open\?id=/
+        var re2 = /drive.google.com\/folderview\?id=/; 
+        var subst = 'www.googledrive.com\/host\/'; 
+        var value = value.replace(re, subst);
+        var value = value.replace(re2, subst);
+
+        var re3 = /&authuser=0/;
+        var re4 = /&usp=sharing/
+        var subst2 = '/';
+        var value = value.replace(re3, subst2);
+        var value = value.replace(re4, subst2);
+        
+        if(!value.match(/\/$/)) {
+            value += '/';
+            $(this).val(value);
+        }
+        _storymap_data.storymap.zoomify.path = value;
+        
+        storymap_dirty(1);
+        map_set_type();   
+    });
+    $('#zoomify_width').change(function(event) {
+        _storymap_data.storymap.zoomify.width = parseInt($(this).val().trim());  
+        storymap_dirty(1);
+        map_set_type();   
+    });
+    $('#zoomify_height').change(function(event) {
+        _storymap_data.storymap.zoomify.height = parseInt($(this).val().trim());  
+        storymap_dirty(1);
+        map_set_type();   
+    });
+    $('#zoomify_attribution').change(function(event) {
+        _storymap_data.storymap.zoomify.attribution = $(this).val().trim();
+        storymap_dirty(1);
+        map_set_type();   
+    });
+ 
+    $('#map_type_menu').change(function(event) {
+        var map_type = $(this).val();
+        
+        if(!map_type) {
+            $('#map_type').val('').attr('placeholder', 'http://{s}.domain.org/{z}/{x}/{y}.png')
+                .prev().html('URL')
+                .parent().show();
+            $('#map_type').focus(); 
+            $('#map_subdomains').val('').parent().show();       
+
+            _storymap_data.storymap.map_type = '';
+            _storymap_data.storymap.map_subdomains = '';
+        } else if(map_type == 'mapbox') {
+            $('#map_type').val('').attr('placeholder', 'username.mapid')
+                .prev().html('Map ID')
+                .parent().show(); 
+            $('#map_type').focus(); 
+            $('#map_subdomains').val('').parent().hide();       
+
+            _storymap_data.storymap.map_type = 'mapbox:';
+            _storymap_data.storymap.map_subdomains = 'abcd';
+        } else {
+            $('#map_type').val('').parent().hide(); 
+            $('#map_subdomains').val('').parent().hide();       
+            
+            _storymap_data.storymap.map_type = map_type;
+            _storymap_data.storymap.map_subdomains = '';
+       
+            map_set_type();
+        }    
+        
+        storymap_dirty(1);
+    });
+  
+    $('#map_type').change(function(event) {
+        var map_type = $('#map_type').val().trim();
+        
+        switch($('#map_type_menu').val()) {
+            case '':    // custom
+                map_type = map_type.replace('{Z}','{z}').replace('{X}','{x}').replace('{Y}','{y}').replace('{S}','{s}');
+                _storymap_data.storymap.map_type = map_type;
+                storymap_dirty(1);
+                map_set_type();        
+                break;
+            
+            case 'mapbox':
+                _storymap_data.storymap.map_type = 'mapbox:'+map_type;
+                storymap_dirty(1);
+                map_set_type();        
+                break;
+        }
+    });
+    
+    $('#map_subdomains').change(function(event) {
+        _storymap_data.storymap.map_subdomains = $('#map_subdomains').val().trim();
+        storymap_dirty(1);
+        map_set_type();        
+    });
+
+    $('#opt_description').change(function(event) {
+        ajax_post("{{ url_for('storymap_update_meta') }}",
+            {
+                id: _storymap_meta.id, 
+                key: 'description',
+                value: $(this).val().trim()
+            },
+            function(error) {
+                $modal.trigger('error_show', format_error('Error updating storymap', error));    
+            }
+        );    
+    });
+    
+    $('#opt_image_url').change(function(event) {
+        ajax_post("{{ url_for('storymap_update_meta') }}",
+            {
+                id: _storymap_meta.id, 
+                key: 'image_url',
+                value: $(this).val().trim()
+            },
+            function(error) {
+                $modal.trigger('error_show', format_error('Error updating storymap', error));    
+            }
+        );    
+    });
+    
+    modal_init($('#opt_modal'))
+        .on('upload', function(event, url) {
+            $(this).trigger('refresh_image_select');
+            $('#opt_image_url').val(url).change();
+            $(this).find('.upload-panel').trigger('reset');        
+        })
+        .on('refresh_image_select', function(event) {
+            var html = '';
+            for(var i = 0; i < _storymap_files.length; i++) {
+                html += '<li><a href="javascript:">'+_storymap_files[i]+'</a></li>';
+            }
+            $('#opt_image_select').html(html || '<li class="default">no uploaded images found</li>');
+        })
+        .on('modal_show', function(event, error_msg) {
+            $(this).trigger('refresh_image_select');
+            $('#opt_image_select a').click(function(event) {
+                $('#opt_image_url')
+                    .val(storymap_image_url(_user.uid, _storymap_meta.id, $(this).html()))
+                    .change();
+            });
+            $(this).find('.upload-panel').trigger('reset');
+            $(this).trigger('reset', error_msg);
+        })
+        .on('show', function() {  
+            $(this).trigger('modal_show');
+        });
+        
+//------------------------------------------------------------
+// .....
+//------------------------------------------------------------
+            
+    // slide-level media options
+    $('#url, #credit, #caption').change(function(event) { 
+        var id = $(this).attr('id');
+        var val = $(this).val().trim();
+        
+        if(id == 'url' && val.match('^https://www.dropbox.com/')) {
+            val = val.replace(/^https:\/\/www.dropbox.com\//i, 'https://dl.dropboxusercontent.com/');
+            $(this).val(val);
+        }
+        
+        _slides[_current_slide_index].media[id] = val;
+        storymap_dirty(1);
+        
+        if(id == 'url') {
+            slide_set_class(_current_slide_index);
+        }
+    });
+
+    // slide-level text options
+    $('#headline').change(function() {
+        var value = $(this).val().trim();
+        _slides[_current_slide_index].text['headline'] = value;
+        storymap_dirty(1);
+        $('.slide-title').eq(_current_slide_index).html(value);
+    });
+    
+    $('#text').wysihtml5({
+        "stylesheets": ["{{ STATIC_URL }}bootstrap-wysihtml5/lib/css/wysiwyg-color.css"],
+        "font-styles": false,   // Font styling, e.g. h1, h2, etc. Default true
+        "emphasis": true,       // Italics, bold, etc. Default true
+        "lists": false,         // (Un)ordered lists, e.g. Bullets, Numbers. Default true
+        "link": true,           // Button to insert a link. Default true
+        "html": true,           // Button which allows you to edit the generated HTML. Default false
+        "image": false,         // Button to insert an image. Default true,
+        "color": false,         // Button to change color of font,
+        customTemplates: {
+            'emphasis': function(locale) { 
+                return $('#wysihtml5_emphasis').html();
+            },
+            'link': function(locale) {
+                return $('#wysihtml5_link').html();
+            },
+            'html': function(locale) {
+                return $('#wysihtml5_html').html();
+            }
+        },
+        'events': {
+            'change': function() { 
+                var val = $('#text').data("wysihtml5").editor.getValue().trim();
+                _slides[_current_slide_index].text['text'] = val;
+                storymap_dirty(1);
+            }
+        }
+    });
+      
+// ------------------------------------------------------------
+// Tab toggle
+// ------------------------------------------------------------
+
+    $('a[data-toggle="tab"][href="#edit"]').on('shown', function(event) {
+        $('.slide.selected').click();   // reselect current slide
+        $('#storymap_options').removeAttr('disabled');
+        preview_clear();
+              
+        $('#edit').trigger('edit-tab-shown');
+    });   
+    
+    $('a[data-toggle="tab"][href="#preview"]').on('shown', function(event) {
+        $('#storymap_options').attr('disabled', true);    
+        preview_refresh();
+    });
+            
+// ------------------------------------------------------------
+// Slide sorting
+// ------------------------------------------------------------
+    
+    var sortable_i = 0;
+    var sortable_j = 0;
+    
+    $('#slides').sortable({
+        axis: 'y',
+        cursor: 'move',
+        items: '.slide',
+        start: function(event, ui) {
+            sortable_i = $('.slide').index(ui.item);
+        },
+        stop: function(event, ui) {
+            sortable_j = $('.slide').index(ui.item);
+                                  
+            if(sortable_i != sortable_j) {
+                // Move slide data from i to j
+                _slides.move(sortable_i, sortable_j);
+
+                 // Adjust current slide index
+                _current_slide_index = $('.slide').index($('.slide.selected'));                
+                
+                storymap_dirty(1);
+                storymap_auto_save();
+                
+                // Refresh preview
+                preview_refresh();
+            }             
+        }
+    });
+
+// ------------------------------------------------------------
+// Uploads
+// ------------------------------------------------------------ 
+    
+    modal_init($('#upload_modal'))
+        ////// upload
+        .on('upload', function(event, url) {          
+            $('#url').val(url).change(); 
+            $(this).modal('hide');    
+        })
+        ////// custom
+        .on('modal_show', function(event, error_msg) {
+            $(this).find('.upload-panel').trigger('reset');            
+            $(this).trigger('reset', error_msg);
+        })
+        .on('show', function() {  
+            $(this).trigger('modal_show');
+        });    
+
+// ------------------------------------------------------------
+// Slide options
+// ------------------------------------------------------------
+    
+    $('#background_color').minicolors({
+        control: 'hue',
+        opacity: true,
+        theme: 'bootstrap',
+        hide: function() {
+            var color = $(this).val();
+            
+            if(color) {
+                var rgb = $(this).minicolors('rgbObject');
+                var opacity = parseInt(rgb.a * 100, 10);
+                
+                _slides[_current_slide_index].background = $.extend(true, 
+                        _slides[_current_slide_index].background, 
+                        {color: color, opacity: opacity}
+                    );                
+                $('#background_color_clear').show();                
+            } else {
+                _slides[_current_slide_index].background = {};
+                $('#background_color_clear').hide();
+            }
+            storymap_dirty(1);
+        },
+        change: function(hex, opacity) {
+            if(hex) {
+                $('#background_color_clear').show();
+            } else {
+                $('#background_color_clear').hide();
+            }
+        }
+    });
+
+    $('<button id="background_color_clear" type="button" class="close text-input-clear">&times;</button>')
+        .insertAfter('#background_color')
+        .click(function(event) {
+            $('#background_color').minicolors('value', '');
+            $('#background_color').minicolors('opacity', 1);        
+            _slides[_current_slide_index].background = {};
+            $('#background_color_clear').hide();
+            storymap_dirty(1);
+        });
+
+    $('#background_url').change(function(event) {
+        _slides[_current_slide_index].background = $.extend(true, 
+                _slides[_current_slide_index].background, 
+                {url: $(this).val().trim()}
+            );
+        storymap_dirty(1);
+    });   
+
+    modal_init($('#slide_opt_modal'))
+        ////// upload
+        .on('upload', function(event, url) {
+            $(this).trigger('refresh_background_select');
+            $('#background_url').val(url).change();                
+            $(this).find('.upload-panel').trigger('reset');        
+        })
+        ////// custom
+        .on('refresh_background_select', function(event) {
+            var html = '';            
+            for(var i = 0; i < _storymap_files.length; i++) {
+                html += '<li><a href="javascript:">'+_storymap_files[i]+'</a></li>';
+            }
+            $('#background_image_select').html(html || '<li class="default">no uploaded images found</li>');
+        })
+        .on('modal_show', function(event, error_msg) {
+            var background = _slides[_current_slide_index].background || {};
+            
+            var color = background.color || '';
+            var opacity = (background.opacity || 100) / 100;
+            var url = background.url || '';
+            
+            $('#background_color').minicolors('value', color);
+            $('#background_color').minicolors('opacity', opacity);
+            
+            if(color) {
+                $('#background_color_clear').show(); 
+            } else {
+                $('#background_color_clear').hide(); 
+            }
+
+            $(this).trigger('refresh_background_select');
+
+            $('#background_image_select a').click(function(event) {
+                $('#background_url')
+                    .val(storymap_image_url(_user.uid, _storymap_meta.id, $(this).html()))
+                    .change();
+            });
+            
+            $('#background_url').val(url);
+        
+            $(this).find('.upload-panel').trigger('reset');
+            $(this).trigger('reset', error_msg);
+        })
+        .on('show', function() {  
+            $(this).trigger('modal_show');
+        });    
+            
+// ------------------------------------------------------------
+// Sharing
+// ------------------------------------------------------------
+    
+    $('#share_publish').click(function(event) {       
+        $('#share_modal').trigger('progress_show', 'Publishing StoryMap');
+         
+        storymap_publish(function(error) {
+            if(error) {
+                $('#share_modal').trigger('modal_show', format_error('Error publishing StoryMap', error));
+            } else {
+                $('#share_modal').trigger('modal_show'); 
+            }
+        });
+    });
+    
+    $('#share_width, #share_height').change(function(event) {
+        $('#share_modal').trigger('modal_show'); 
+    });
+    
+     
+    modal_init($('#share_modal'))
+         ////// custom
+        .on('modal_show', function(event, error_msg) {     
+            var embed_url = '';
+                        
+            if(_storymap_meta.draft_on > _storymap_meta.published_on) {
+                embed_url = 'http:'+storymap_url(_user.uid, _storymap_meta.id, 'draft.html');
+                $('#share_publish_panel').show();   
+            } else {
+                embed_url = 'http:'+storymap_url(_user.uid, _storymap_meta.id, 'index.html');
+                $('#share_publish_panel').hide();
+            }
+
+            var embed_html = storymap_iframe_template({
+                embed_url: embed_url,
+                width: $('#share_width').val(),
+                height: $('#share_height').val()
+            });
+  
+            var enc_embed_url = encodeURIComponent(embed_url);
+
+            $('#share_url').val(embed_url);
+           
+            $(this).find('.share-link-twitter').attr('href',
+                'http://twitter.com/intent/tweet?url='+enc_embed_url);
+            $(this).find('.share-link-facebook').attr('href', 
+                'https://www.facebook.com/sharer/sharer.php?u='+enc_embed_url);                
+            $(this).find('.share-link-googleplus').attr('href', 
+                'https://plus.google.com/share?url='+enc_embed_url);                
+            $(this).find('.share-link-reddit').attr('href', 
+                'http://www.reddit.com/submit?url='+enc_embed_url);
+                
+            $('#share_embed').html(embed_html);
+ 
+            $(this).trigger('reset', error_msg)
+        })
+        .on('show', function() {    
+            $('#share_publish_panel').hide();       
+            $('#share_url').val('');             
+            $('#share_width').val(_storymap_data.width || _default_data.width);
+            $('#share_height').val(_storymap_data.height || _default_data.height);
+            $('#share_embed').html('');
+        })
+        .on('shown', function() {
+            var $modal = $(this);
+            
+            // If never published, then publish (will also save draft, if needed)      
+            if(!_storymap_meta.published_on) {
+                $modal.trigger('progress_show', 'Publishing changes');
+            
+                storymap_publish(function(error) {
+                    if(error) {
+                        $modal.trigger('modal_show', format_error('Error publishing changes', error));
+                    } else {
+                        $modal.trigger('modal_show');
+                    } 
+                }); 
+            } 
+            // If previously published but dirty, then save draft
+            else if(_dirty) {
+                $modal.trigger('progress_show', 'Saving StoryMap');
+             
+                storymap_save(function(error) {
+                    if(error) {
+                        $modal.trigger('modal_show', format_error('Error saving StoryMap', error));
+                    } else {
+                        $modal.trigger('modal_show');
+                    }
+                });
+            } 
+            // Else, just show the modal
+            else {
+                $modal.trigger('modal_show');
+            }        
+        });  
+        
+
+//------------------------------------------------------------
+// Doit
+//------------------------------------------------------------
+
+{% if error %}
+    storymap_abort('{{ error }}');
+{% else %}
+    storymap_init();
+{% endif %}
+});
+
+//
+// Window events
+//
+window.onbeforeunload = function confirmExit() {
+    if(_dirty) {
+        return "You have unsaved changes, and your changes will be lost."
+            + "  Are you sure you want to exit this page?";
+    }
+}
+
+window.onresize = function(event) {
+    if(preview_visible() && _storymap_object) {
+        _storymap_object.updateDisplay();
+    }
+}
+
+</script>
+<!-- LEAVE THIS HERE -->
+<script type="text/javascript" src="{{ STATIC_URL }}js/modals.js"></script>
+</body>
+</html>

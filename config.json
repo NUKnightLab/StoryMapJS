@@ -31,11 +31,6 @@
         //
         "copy": [
             {
-                "src": "website",
-                "dst": "build",
-                "regex": "(css/.*|img/.*|js/.*|.*\\.(ico))$"
-            },
-            {
                 "src": "source",
                 "dst": "build",
                 "regex": "(css/.*|img/.*|.*\\.(ico|html)|gfx/.*\\.(png|jpg|gif))$"
@@ -132,15 +127,11 @@
     "stage": [{
         "src": "build",
         "regex": "(css/.*|js/.*|gfx/.*|embed/.*)$"
-    }],
+    }]
     //
     // deploy
     // input: {
     //   env: {bucket: name of the S3 bucket that will host the website}
     // }
-    //
-    "deploy": {
-        "stg": {"bucket": "storymap.knilab.com", "usemin_context": {"cdn": "dev"}},
-        "prd": {"bucket": "storymap.knightlab.com", "usemin_context": {"cdn": "latest"}}
-    }
+    // DYNAMIC WEBSITE, NO DEPLOY ENTRY
 }

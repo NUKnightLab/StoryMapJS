@@ -1,4 +1,4 @@
-/* storymapjs - v2015-01-12-19-16-43 - 2015-01-12
+/* storymapjs - v2015-04-16-19-59-36 - 2015-04-16
  * Copyright (c) 2015 Northwestern University Knight Lab 
  */
 
@@ -133,6 +133,19 @@ VCO.Util = {
 		return data_main;
 	},
 	
+	/*  Like mergeData, except will only try to copy data that already exists
+	    in data_main
+	*/
+	updateData: function(data_main, data_to_merge) {
+	    var x;
+	    for (x in data_main) {
+			if (Object.prototype.hasOwnProperty.call(data_to_merge, x)) {
+				data_main[x] = data_to_merge[x];
+			}
+		}
+		return data_main;
+    },
+    	
 	stamp: (function () {
 		var lastId = 0, key = '_vco_id';
 		
@@ -317,6 +330,32 @@ VCO.Util = {
 			return "";
 		}
 		
+	},
+	urljoin: function(base_url,path) {
+
+		var url1 = base_url.split('/');
+		var url2 = path.split('/');
+		var url3 = [ ];
+		for (var i = 0, l = url1.length; i < l; i ++) {
+		if (url1[i] == '..') {
+		  url3.pop();
+		} else if (url1[i] == '.') {
+		  continue;
+		} else {
+		  url3.push(url1[i]);
+		}
+		}
+		for (var i = 0, l = url2.length; i < l; i ++) {
+		if (url2[i] == '..') {
+		  url3.pop();
+		} else if (url2[i] == '.') {
+		  continue;
+		} else {
+		  url3.push(url2[i]);
+		}
+		}
+		return url3.join('/');
+
 	},
 	getUrlVars: function(string) {
 		var str,
@@ -7652,6 +7691,7 @@ VCO.StorySlider = VCO.Class.extend({
 			this.options.width = width;
 		} else {
 			this.options.width = this._el.container.offsetWidth;
+      console.log("line 457: ", this.options.width);
 		}
 		
 		if (height) {
@@ -17027,11 +17067,14 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		// Set Tiles
 		switch(_map_type_arr[0]) {
 			case 'mapbox':
-				var mapbox_name = _map_type_arr[1] || 'nuknightlab.hif6ioi4';
-				_options.subdomains 	= 'abcd';
-				_options.attribution 	= _attribution_knightlab + "<div class='mapbox-maplogo'></div><a href='https://www.mapbox.com/about/maps/' target='_blank'>© Mapbox © OpenStreetMap</a>";
-				_tilelayer = new L.TileLayer("https://{s}.tiles.mapbox.com/v2/" + mapbox_name + "/{z}/{x}/{y}.png", _options);
-				break;
+				if (mapbox_name = _map_type_arr[1]) {
+					_options.subdomains 	= 'abcd';
+					_options.attribution 	= _attribution_knightlab + "<div class='mapbox-maplogo'></div><a href='https://www.mapbox.com/about/maps/' target='_blank'>© Mapbox © OpenStreetMap</a>";
+					_tilelayer = new L.TileLayer("https://api.tiles.mapbox.com/v4/" + mapbox_name + "/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibnVrbmlnaHRsYWIiLCJhIjoiczFmd0hPZyJ9.Y_afrZdAjo3u8sz_r8m2Yw", _options);
+					break;
+				} else {
+					trace("Mapbox configured but no map name provided.");
+				}
 			case 'stamen':
 				_tilelayer = new L.StamenTileLayer(_map_type_arr[1] || 'toner-lite', _options);
 				this._map.getContainer().style.backgroundColor = "#FFFFFF";
@@ -17817,7 +17860,7 @@ VCO.StoryMap = VCO.Class.extend({
 		this.data = {};
 	
 		this.options = {
-			script_path:            "",
+			script_path:            VCO.StoryMap.SCRIPT_PATH,
 			height: 				this._el.container.offsetHeight,
 			width: 					this._el.container.offsetWidth,
 			layout: 				"landscape", 	// portrait or landscape
@@ -17880,59 +17923,89 @@ VCO.StoryMap = VCO.Class.extend({
 		this.animator_map = null;
 		this.animator_storyslider = null;
 		
-		// Merge Options
+		// Merge Options -- legacy, in case people still need to pass in 
 		VCO.Util.mergeData(this.options, options);
-		
-		if (this.options.layout == "landscape") {
-			this.options.map_center_offset = {left: -200, top: 0};
-		}
-		
-		// Zoomify Layout
-		if (this.options.map_type == "zoomify" && this.options.map_as_image) {
-			this.options.map_size_sticky = 2;
-			
-		}
-		
-		// Map as Image 
-		if (this.options.map_as_image) {
-			this.options.calculate_zoom = false;
-		}
-		
-		// Use Relative Date Calculations
-		if(this.options.relative_date) {
-			if (typeof(moment) !== 'undefined') {
-				self._loadLanguage(data);
-			} else {
-				VCO.Load.js(this.options.script_path + "/library/moment.js", function() {
-					self._loadLanguage(data);
-					trace("LOAD MOMENTJS")
-				});
-			}
-			
-		} else {
-			self._loadLanguage(data);
-		}
-		
-		// Emoji Support to Chrome
-		if (VCO.Browser.chrome) {
-			VCO.Load.css(this.options.script_path + "../css/fonts/font.emoji.css", function() {
-				trace("LOADED EMOJI CSS FOR CHROME")
-			});
-		}
-		
+
+        this._initData(data);
+        
 		return this;
 	},
 	
+	/* Initialize the data
+	================================================== */
+    _initData: function(data) {
+		var self = this;
+		
+		if (typeof data === 'string') {			
+			VCO.getJSON(data, function(d) {
+				if (d && d.storymap) {
+					VCO.Util.mergeData(self.data, d.storymap);
+				}
+				self._initOptions();
+			});
+		} else if (typeof data === 'object') {
+			if (data.storymap) {
+				self.data = data.storymap;
+			} else {
+				trace("data must have a storymap property")
+			}
+			self._initOptions();
+		} else {
+		    trace("data has unknown type")
+		    self._initOptions();
+        }
+	},
+	
+	/* Initialize the options
+	================================================== */
+    _initOptions: function() {
+ 		var self = this;
+
+        // Grab options from storymap data
+        VCO.Util.updateData(this.options, this.data);
+        
+		if (this.options.layout == "landscape") {
+			this.options.map_center_offset = {left: -200, top: 0};
+		}
+		if (this.options.map_type == "zoomify" && this.options.map_as_image) {
+			this.options.map_size_sticky = 2;			
+		}
+		if (this.options.map_as_image) {
+			this.options.calculate_zoom = false;
+		}
+    
+        // Use relative date calculations?
+		if(this.options.relative_date) {
+			if (typeof(moment) !== 'undefined') {
+				self._loadLanguage();
+			} else {
+				VCO.Load.js(this.options.script_path + "/library/moment.js", function() {
+					self._loadLanguage();
+					trace("LOAD MOMENTJS")
+				});
+			}			
+		} else {
+			self._loadLanguage();
+		}    
+ 
+ 		// Emoji Support to Chrome?
+		if (VCO.Browser.chrome) {
+			VCO.Load.css(VCO.Util.urljoin(this.options.script_path,"../css/fonts/font.emoji.css"), function() {
+				trace("LOADED EMOJI CSS FOR CHROME")
+			});
+		}
+    },	
+    
 	/*	Load Language
 	================================================== */
-	_loadLanguage: function(data) {
+	_loadLanguage: function() {
 		var self = this;
 		if(this.options.language == 'en') {
 		    this.options.language = VCO.Language;
-		    this._initData(data);
+		    self._onDataLoaded();
 		} else {
 			VCO.Load.js(this.options.script_path + "/locale/" + this.options.language + ".js", function() {
-				self._initData(data);
+				self._onDataLoaded();
 			});
 		}
 	},
@@ -17957,6 +18030,7 @@ VCO.StoryMap = VCO.Class.extend({
 	================================================== */
 	
 	// Initialize the data
+/*
 	_initData: function(data) {
 		var self = this;
 		
@@ -17979,7 +18053,7 @@ VCO.StoryMap = VCO.Class.extend({
 			self._onDataLoaded();
 		}
 	},
-	
+*/	
 	// Initialize the layout
 	_initLayout: function () {
 		var self = this;
@@ -18277,5 +18351,9 @@ VCO.StoryMap = VCO.Class.extend({
 	
 });
 
+(function(_) {
+	var scripts = document.getElementsByTagName("script"),
+    		src = scripts[scripts.length-1].src;
+	_.SCRIPT_PATH = src.substr(0,src.lastIndexOf("/"));
 
-
+})(VCO.StoryMap)

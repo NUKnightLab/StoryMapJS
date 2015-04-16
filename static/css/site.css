@@ -1,0 +1,26 @@
+#demo {
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+  padding: 10px 0;
+  margin-bottom: 20px;
+}
+#homepage-storymap {
+  height: 620px;
+}
+
+#mc-embedded-subscribe-form .input-large {
+  width: 260px;
+}	
+
+#examples h3 {
+	font-size: 16px;
+	line-height: 1.3em;
+}
+
+#examples > .row {
+	margin-top: 20px;
+}
+
+.alert-info {
+   font-family: "Apres RE","Helvetica Neue",Helvetica,Arial,sans-serif; 
+}

@@ -296,7 +296,7 @@ VCO.StoryMap = VCO.Class.extend({
 		this.data = {};
 	
 		this.options = {
-			script_path:            "",
+			script_path:            VCO.StoryMap.SCRIPT_PATH,
 			height: 				this._el.container.offsetHeight,
 			width: 					this._el.container.offsetWidth,
 			layout: 				"landscape", 	// portrait or landscape
@@ -359,59 +359,89 @@ VCO.StoryMap = VCO.Class.extend({
 		this.animator_map = null;
 		this.animator_storyslider = null;
 		
-		// Merge Options
+		// Merge Options -- legacy, in case people still need to pass in 
 		VCO.Util.mergeData(this.options, options);
-		
-		if (this.options.layout == "landscape") {
-			this.options.map_center_offset = {left: -200, top: 0};
-		}
-		
-		// Zoomify Layout
-		if (this.options.map_type == "zoomify" && this.options.map_as_image) {
-			this.options.map_size_sticky = 2;
-			
-		}
-		
-		// Map as Image 
-		if (this.options.map_as_image) {
-			this.options.calculate_zoom = false;
-		}
-		
-		// Use Relative Date Calculations
-		if(this.options.relative_date) {
-			if (typeof(moment) !== 'undefined') {
-				self._loadLanguage(data);
-			} else {
-				VCO.Load.js(this.options.script_path + "/library/moment.js", function() {
-					self._loadLanguage(data);
-					trace("LOAD MOMENTJS")
-				});
-			}
-			
-		} else {
-			self._loadLanguage(data);
-		}
-		
-		// Emoji Support to Chrome
-		if (VCO.Browser.chrome) {
-			VCO.Load.css(this.options.script_path + "../css/fonts/font.emoji.css", function() {
-				trace("LOADED EMOJI CSS FOR CHROME")
-			});
-		}
-		
+
+        this._initData(data);
+        
 		return this;
 	},
 	
+	/* Initialize the data
+	================================================== */
+    _initData: function(data) {
+		var self = this;
+		
+		if (typeof data === 'string') {			
+			VCO.getJSON(data, function(d) {
+				if (d && d.storymap) {
+					VCO.Util.mergeData(self.data, d.storymap);
+				}
+				self._initOptions();
+			});
+		} else if (typeof data === 'object') {
+			if (data.storymap) {
+				self.data = data.storymap;
+			} else {
+				trace("data must have a storymap property")
+			}
+			self._initOptions();
+		} else {
+		    trace("data has unknown type")
+		    self._initOptions();
+        }
+	},
+	
+	/* Initialize the options
+	================================================== */
+    _initOptions: function() {
+ 		var self = this;
+
+        // Grab options from storymap data
+        VCO.Util.updateData(this.options, this.data);
+        
+		if (this.options.layout == "landscape") {
+			this.options.map_center_offset = {left: -200, top: 0};
+		}
+		if (this.options.map_type == "zoomify" && this.options.map_as_image) {
+			this.options.map_size_sticky = 2;			
+		}
+		if (this.options.map_as_image) {
+			this.options.calculate_zoom = false;
+		}
+    
+        // Use relative date calculations?
+		if(this.options.relative_date) {
+			if (typeof(moment) !== 'undefined') {
+				self._loadLanguage();
+			} else {
+				VCO.Load.js(this.options.script_path + "/library/moment.js", function() {
+					self._loadLanguage();
+					trace("LOAD MOMENTJS")
+				});
+			}			
+		} else {
+			self._loadLanguage();
+		}    
+ 
+ 		// Emoji Support to Chrome?
+		if (VCO.Browser.chrome) {
+			VCO.Load.css(VCO.Util.urljoin(this.options.script_path,"../css/fonts/font.emoji.css"), function() {
+				trace("LOADED EMOJI CSS FOR CHROME")
+			});
+		}
+    },	
+    
 	/*	Load Language
 	================================================== */
-	_loadLanguage: function(data) {
+	_loadLanguage: function() {
 		var self = this;
 		if(this.options.language == 'en') {
 		    this.options.language = VCO.Language;
-		    this._initData(data);
+		    self._onDataLoaded();
 		} else {
 			VCO.Load.js(this.options.script_path + "/locale/" + this.options.language + ".js", function() {
-				self._initData(data);
+				self._onDataLoaded();
 			});
 		}
 	},
@@ -436,6 +466,7 @@ VCO.StoryMap = VCO.Class.extend({
 	================================================== */
 	
 	// Initialize the data
+/*
 	_initData: function(data) {
 		var self = this;
 		
@@ -458,7 +489,7 @@ VCO.StoryMap = VCO.Class.extend({
 			self._onDataLoaded();
 		}
 	},
-	
+*/	
 	// Initialize the layout
 	_initLayout: function () {
 		var self = this;
@@ -756,4 +787,9 @@ VCO.StoryMap = VCO.Class.extend({
 	
 });
 
+(function(_) {
+	var scripts = document.getElementsByTagName("script"),
+    		src = scripts[scripts.length-1].src;
+	_.SCRIPT_PATH = src.substr(0,src.lastIndexOf("/"));
 
+})(VCO.StoryMap)

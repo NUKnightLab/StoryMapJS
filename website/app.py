@@ -9,6 +9,7 @@ from flask import request
 from flask import render_template
 from flask import json
 from flask import send_from_directory
+from flask import redirect
 import importlib
 import traceback
 import sys
@@ -43,6 +44,12 @@ compiled_dir = os.path.join(settings.PROJECT_ROOT, 'compiled')
 build_dir = os.path.join(settings.PROJECT_ROOT, 'build')
 source_dir = os.path.join(settings.PROJECT_ROOT, 'source')
 
+def get_static_url():
+    static_url = settings.STATIC_URL or app.static_url_path
+    if static_url.endswith('/'):
+        static_url = static_url.rstrip('/')
+    return static_url
+
 @app.context_processor
 def inject_static_url():
     """
@@ -50,10 +57,14 @@ def inject_static_url():
     avoid hard-coded paths to static files. Grab it from the environment 
     variable STATIC_URL, or use the default. Never has a trailing slash.
     """
-    static_url = settings.STATIC_URL or app.static_url_path
-    if static_url.endswith('/'):
-        static_url = static_url.rstrip('/')
+    static_url = get_static_url()
     return dict(static_url=static_url, STATIC_URL=static_url)
+
+
+@app.route('/favicon.ico')
+def favicon():
+    favicon_url = get_static_url() + '/img/favicon.ico'
+    return redirect(favicon_url)
 
 @app.route('/compiled/<path:path>')
 def catch_compiled(path):
