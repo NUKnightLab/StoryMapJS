@@ -283,13 +283,25 @@ def require_user_id(template=None):
             return f(*args, **kwargs)
         return decorated_function
     return decorator
-    
+               
 def _make_storymap_id(user, title):
     """Get unique storymap id from slugified title"""
+    id_set = set(user['storymaps'].keys())
+    
+    # Add keys from S3 (in case of db issues)
+    user_key_prefix = storage.key_prefix(user['uid'])
+    regex = re.compile(r'^%s([^/]+).*' % user_key_prefix)
+    
+    name_list, more = storage.list_key_names(user_key_prefix, 999, '')
+    for name in name_list:
+        m = regex.match(name)
+        if m:
+            id_set.add(m.group(1))    
+        
     id_base = slugify.slugify(title, only_ascii=True)
     id = id_base        
     n = 0
-    while id in user['storymaps']:
+    while id in id_set:
         n += 1
         id = '%s-%d' % (id_base, n)    
     return id
