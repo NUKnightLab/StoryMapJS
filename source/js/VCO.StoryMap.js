@@ -440,7 +440,7 @@ VCO.StoryMap = VCO.Class.extend({
 		    this.options.language = VCO.Language;
 		    self._onDataLoaded();
 		} else {
-			VCO.Load.js(this.options.script_path + "/locale/" + this.options.language + ".js", function() {
+			VCO.Load.js(VCO.Util.urljoin(this.options.script_path, "/locale/" + this.options.language + ".js"), function() {
 				self._onDataLoaded();
 			});
 		}

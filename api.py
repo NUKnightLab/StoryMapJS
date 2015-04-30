@@ -40,7 +40,6 @@ _GOOGLE_OAUTH_SCOPES = [
     'https://www.googleapis.com/auth/drive.readonly',
     'https://www.googleapis.com/auth/userinfo.profile'
 ];
-
    
 @app.context_processor
 def inject_urls():
@@ -715,6 +714,11 @@ def edit(user, id):
     except Exception, e:
         traceback.print_exc()
         return render_template('edit.html', error=str(e))
+
+
+@app.route("/qunit/", methods=['GET'])
+def qunit():
+    return render_template('qunit.html')
 
 
 #
