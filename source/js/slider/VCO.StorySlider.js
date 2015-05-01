@@ -454,7 +454,6 @@ VCO.StorySlider = VCO.Class.extend({
 			this.options.width = width;
 		} else {
 			this.options.width = this._el.container.offsetWidth;
-      console.log("line 457: ", this.options.width);
 		}
 		
 		if (height) {
