@@ -278,6 +278,12 @@ VCO.Util = {
 		
 	},
 	urljoin: function(base_url,path) {
+        if(base_url.length && base_url[base_url.length  - 1] == '/') {
+            base_url = base_url.substring(0, base_url.length  - 1);
+        }
+        if(path.length && path[0] == '/') {
+            path = path.substring(1);
+        }
 
 		var url1 = base_url.split('/');
 		var url2 = path.split('/');

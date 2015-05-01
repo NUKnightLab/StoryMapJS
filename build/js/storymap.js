@@ -1,4 +1,4 @@
-/* storymapjs - v2015-04-30-14-47-01 - 2015-04-30
+/* storymapjs - v2015-05-01-17-36-34 - 2015-05-01
  * Copyright (c) 2015 Northwestern University Knight Lab 
  */
 
@@ -332,6 +332,12 @@ VCO.Util = {
 		
 	},
 	urljoin: function(base_url,path) {
+        if(base_url.length && base_url[base_url.length  - 1] == '/') {
+            base_url = base_url.substring(0, base_url.length  - 1);
+        }
+        if(path.length && path[0] == '/') {
+            path = path.substring(1);
+        }
 
 		var url1 = base_url.split('/');
 		var url2 = path.split('/');
@@ -7691,7 +7697,6 @@ VCO.StorySlider = VCO.Class.extend({
 			this.options.width = width;
 		} else {
 			this.options.width = this._el.container.offsetWidth;
-      console.log("line 457: ", this.options.width);
 		}
 		
 		if (height) {
@@ -18004,7 +18009,7 @@ VCO.StoryMap = VCO.Class.extend({
 		    this.options.language = VCO.Language;
 		    self._onDataLoaded();
 		} else {
-			VCO.Load.js(this.options.script_path + "/locale/" + this.options.language + ".js", function() {
+			VCO.Load.js(VCO.Util.urljoin(this.options.script_path, "/locale/" + this.options.language + ".js"), function() {
 				self._onDataLoaded();
 			});
 		}
