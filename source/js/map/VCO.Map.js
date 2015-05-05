@@ -83,6 +83,7 @@ VCO.Map = VCO.Class.extend({
 			map_mini: 			false,
 			map_background_color: "#d9d9d9",
 			map_subdomains: 	"",
+			map_access_token:   "",
 			zoomify: {
 				path: 			"",
 				width: 			"",

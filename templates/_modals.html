@@ -32,7 +32,7 @@
     </div>
 </div>
 
-<div id="opt_modal" class="modal hide fade">
+<div id="opt_modal" class="modal hide fade" data-backdrop="static">
 <!--
     <div class="modal-header">
         <h5>Options</h5>
@@ -150,7 +150,7 @@
                             <p id="call_to_action_default">Default: "<span id="call_default_text"></span>"</p>
                         </div>
                     </div>            
-                    <!-- zoomify -->
+        <!-- zoomify -->
                     <div class="control-group zoomify-control-group">
                         <label class="control-label">Map Background Color</label>
                         <div class="controls">
@@ -196,7 +196,7 @@
                     <div class="control-group map-control-group">
                         <label class="control-label">Map Type</label>
                         <div class="controls">
-                            <select id="map_type_menu" class="span4">
+                            <select id="map_type_menu" class="span5">
                                 <option value="stamen:toner-lite">Stamen Maps: Toner Lite</option>
                                 <option value="stamen:toner">Stamen Maps: Toner</option>
                                 <option value="stamen:toner-lines">Stamen Maps: Toner Lines</option>
@@ -213,25 +213,40 @@
                                 data-placement="left"
                                 data-content='
                                 <p>Select a predefined map type.</p>
-                                <P>Select "Mapbox" to enter the ID of your Mapbox map.</p>
+                                <p>Select "Mapbox" to enter the ID of your Mapbox map and a
+                                <a href="https://www.mapbox.com/help/define-access-token/" target="_blank">public access token</a>.</p>
                                 <p>Select "custom" to enter the URL for a tile server.  If the server supports multiple subdomains, 
                                 enter them as a single string in the Subdomain field (e.g. subdomains "a", "b", and "c" should 
                                 be entered as "abc").</p>
                                 ' 
                             >&nbsp;<i class="icon-question-sign icon-large"></i>
                             </a>
-                            <p>
-                                <div class="input-prepend">
-                                    <span class="add-on">ID</span>
-                                    <input id="map_type" type="text" class="span5" placeholder="http://{s}.domain.org/{z}/{x}/{y}.png">
-                                </div>
-                            </p>
-                            <p>
-                                <div class="input-prepend">
-                                    <span class="add-on">Subdomains</span>
-                                    <input id="map_subdomains" type="text" class="input-small" placeholder="abc">                    
-                                </div>
-                            </p>
+                        </div>
+                    </div>
+                    <div class="control-group map-control-group">
+                        <div class="controls">
+                            <div class="input-prepend">
+                                <span class="add-on">ID</span>
+                                <input id="map_type" type="text" class="span5" placeholder="http://{s}.domain.org/{z}/{x}/{y}.png">
+                            </div>
+                        </div>
+                    </div>                    
+                    <div class="control-group map-control-group">
+                        <div class="controls">
+                            <div class="input-prepend">
+                                <span class="add-on">Subdomains</span>
+                                <input id="map_subdomains" type="text" class="input-small" placeholder="abc">                    
+                            </div>
+                        </div>
+                    </div>                    
+                    <div class="control-group map-control-group">
+                        <div class="controls">
+                            <div class="input-prepend">
+                                <span class="add-on">Access Token</span>
+                                <input id="map_access_token" type="text" class="span4" placeholder="public access token">                    
+                            </div>
+                            <br>
+                            <span class="help-inline hide">You must enter your public access token</span>
                         </div>
                     </div>
                 </form> 
@@ -288,7 +303,7 @@
         </div>      
     </div>
     <div class="modal-footer">
-        <a href="javascript:;" class="btn btn-primary" data-dismiss="modal">Close</a>
+        <a id="opt_close" href="javascript:;" class="btn btn-primary" >Close</a><!-- data-dismiss="modal" -->
     </div>
     <!-- progress -->
     <div class="modal-progress hide">

@@ -1,4 +1,4 @@
-/* storymapjs - v2015-05-01-17-36-34 - 2015-05-01
+/* storymapjs - v2015-05-05-18-07-39 - 2015-05-05
  * Copyright (c) 2015 Northwestern University Knight Lab 
  */
 
@@ -22271,6 +22271,7 @@ VCO.Map = VCO.Class.extend({
 			map_mini: 			false,
 			map_background_color: "#d9d9d9",
 			map_subdomains: 	"",
+			map_access_token:   "",
 			zoomify: {
 				path: 			"",
 				width: 			"",
@@ -23108,7 +23109,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 				if (mapbox_name = _map_type_arr[1]) {
 					_options.subdomains 	= 'abcd';
 					_options.attribution 	= _attribution_knightlab + "<div class='mapbox-maplogo'></div><a href='https://www.mapbox.com/about/maps/' target='_blank'>© Mapbox © OpenStreetMap</a>";
-					_tilelayer = new L.TileLayer("https://api.tiles.mapbox.com/v4/" + mapbox_name + "/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibnVrbmlnaHRsYWIiLCJhIjoiczFmd0hPZyJ9.Y_afrZdAjo3u8sz_r8m2Yw", _options);
+					_tilelayer = new L.TileLayer("https://api.tiles.mapbox.com/v4/"+mapbox_name+"/{z}/{x}/{y}.png?access_token="+this.options.map_access_token, _options);
 					break;
 				} else {
 					trace("Mapbox configured but no map name provided.");
@@ -23923,6 +23924,7 @@ VCO.StoryMap = VCO.Class.extend({
 			map_mini: 				true,
 			map_subdomains: 		"",
 			map_as_image: 			false,
+			map_access_token:       "pk.eyJ1IjoibnVrbmlnaHRsYWIiLCJhIjoiczFmd0hPZyJ9.Y_afrZdAjo3u8sz_r8m2Yw", // default
 			map_background_color: 	"#d9d9d9",
 			zoomify: {
 				path: 				"",
