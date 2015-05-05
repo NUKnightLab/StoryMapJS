@@ -290,7 +290,7 @@ GoogleEditorMap.prototype.getDefaultView = function() {
     return {lat: 0, lng: 0, zoom: 1};
 }
 
-GoogleEditorMap.prototype.setMapType = function(map_type, map_subdomains) {     
+GoogleEditorMap.prototype.setMapType = function(map_type, map_subdomains, map_access_token) {     
     if(map_type && map_type.match('^(http|https|//)')) {
         this.map.mapTypes.set("custom", new google.maps.ImageMapType({
             getTileUrl: function(coord, zoom) {
@@ -308,11 +308,12 @@ GoogleEditorMap.prototype.setMapType = function(map_type, map_subdomains) {
         this.map.setOptions({mapTypeId: 'custom'}); 
     } else if(map_type && map_type.match('^mapbox:.+')) {
         mapbox_name = map_type.split(':')[1];
-        
+        mapbox_access_token = map_access_token || 'pk.eyJ1IjoibnVrbmlnaHRsYWIiLCJhIjoiczFmd0hPZyJ9.Y_afrZdAjo3u8sz_r8m2Yw';
+               
         this.map.mapTypes.set("mapbox", new google.maps.ImageMapType({
             getTileUrl: function(coord, zoom) {
                 var index = (coord.x + coord.y) % map_subdomains.length;                        
-                return ('https://api.tiles.mapbox.com/v4/' + mapbox_name + '/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibnVrbmlnaHRsYWIiLCJhIjoiczFmd0hPZyJ9.Y_afrZdAjo3u8sz_r8m2Yw')
+                return ('https://api.tiles.mapbox.com/v4/'+mapbox_name+'/{z}/{x}/{y}.png?access_token='+mapbox_access_token)
                     .replace('{s}', map_subdomains[index])
                     .replace('{z}', zoom)
                     .replace('{x}', coord.x)
