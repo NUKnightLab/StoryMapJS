@@ -321,6 +321,7 @@ VCO.StoryMap = VCO.Class.extend({
 			map_mini: 				true,
 			map_subdomains: 		"",
 			map_as_image: 			false,
+			map_access_token:       "pk.eyJ1IjoibnVrbmlnaHRsYWIiLCJhIjoiczFmd0hPZyJ9.Y_afrZdAjo3u8sz_r8m2Yw", // default
 			map_background_color: 	"#d9d9d9",
 			zoomify: {
 				path: 				"",

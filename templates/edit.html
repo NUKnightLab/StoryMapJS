@@ -93,6 +93,7 @@ var _default_data = {
         language: "en",
         map_type: "stamen:toner-lite",
         map_subdomains: "",
+        map_access_token: "",
         map_background_color: '#ffffff',
         // just one...
         slide: {
@@ -163,7 +164,9 @@ function map_set_type() {
     if(map_type == "zoomify") {
         _map.setMapType(map_type, _storymap_data.storymap.zoomify);
     } else {
-        _map.setMapType(map_type, (_storymap_data.storymap.map_subdomains || 'a').split(''));
+        _map.setMapType(map_type, 
+            (_storymap_data.storymap.map_subdomains || 'a').split(''), 
+            _storymap_data.storymap.map_access_token);
     }
 }
 
@@ -428,8 +431,7 @@ function storymap_publish(callback) {
             function(error) {
                 callback(error);
             },
-            function(data) {
-                console.log(data);               
+            function(data) {             
                 _storymap_meta = data.meta; // update meta
                 $('#storymap_publish').hide();                
                 callback(null, data.embed_url);
@@ -509,7 +511,7 @@ var _map_options = {
     }
 };
 
-function slides_load() {    
+function slides_load(init_callback) {    
     $('#width').val(_storymap_data.width || _default_data.width);
     $('#height').val(_storymap_data.height || _default_data.height);            
     $('#language').val(_storymap_data.storymap.language || _default_data.storymap.language);
@@ -599,9 +601,10 @@ function slides_load() {
     }   
    
     hide_progress();
+    init_callback();
 }
 
-function map_init() {
+function map_init(init_callback) {
     var map_type = _storymap_data.storymap.map_type || _default_data.storymap.map_type;
 
     if(map_type == "zoomify") {  
@@ -620,18 +623,23 @@ function map_init() {
             $('#map_type_menu').val('');
             $('#map_type').val(map_type).attr('placeholder', 'http://{s}.domain.org/{z}/{x}/{y}.png')
                 .prev().html('URL')
-                .parent().show();
+                .closest('.control-group').show();
             $('#map_subdomains')
                 .val(_storymap_data.storymap.map_subdomains || _default_data.storymap.map_subdomains)
-                .parent().show();
+                .closest('.control-group').show();
+            $('#map_access_token')
+                .val('').closest('.control-group').hide();
         } else if(map_type && map_type.match('^mapbox:.+')) {
             $('#map_type_menu').val('mapbox');
             $('#map_type').val(map_type.split(':')[1]).attr('placeholder', 'username.mapid')
                 .prev().html('Map ID')
-                .parent().show();
+                .closest('.control-group').show();
             $('#map_subdomains')    
                 .val(_storymap_data.storymap.map_subdomains || 'abcd')
-                .parent().hide();
+                .closest('.control-group').hide();
+            $('#map_access_token')
+                .val(_storymap_data.storymap.map_access_token)
+                .closest('.control-group').show();
         } else {     
             switch(map_type) {
                 case "stamen:toner-lite":
@@ -649,8 +657,9 @@ function map_init() {
                     break; 
             }    
         
-            $('#map_type').val('').parent().hide();
-            $('#map_subdomains').val('').parent().hide();
+            $('#map_type').val('').closest('.control-group').hide();
+            $('#map_subdomains').val('').closest('.control-group').hide();
+            $('#map_access_token').val('').closest('.control-group').hide();
         }
         
         _map = new GoogleEditorMap(_map_options);
@@ -658,19 +667,18 @@ function map_init() {
 
     map_set_type();
      
-    slides_load();
+    slides_load(init_callback);
 }
 
 function storymap_abort(message) {
     show_message_report(message, '{{ user.uid }}', function() { document.location.href = "{{ url_for('select') }}"; });
 }
 
-function storymap_init() {
+function storymap_init(init_callback) {
     show_progress('Loading StoryMap');
                   
     // load storymap
-    ajax_get("{{ url_for('storymap_get') }}", 
-        {
+    ajax_get("{{ url_for('storymap_get') }}", {
             id: _storymap_meta.id
         },
         function(error) {
@@ -684,6 +692,8 @@ function storymap_init() {
                 $('#storymap_publish').show();
             }
  
+            //delete data.data.storymap.map_access_token;
+            
             _storymap_data = data.data;
             _slides = _storymap_data.storymap.slides;                   
            
@@ -701,7 +711,7 @@ function storymap_init() {
             );
             
             // Map init           
-            map_init();
+            map_init(init_callback);
 
             //Language init
             check_language();
@@ -783,185 +793,202 @@ $(function() {
 //------------------------------------------------------------
 // StoryMap Options
 //------------------------------------------------------------
-    
-    $('#width, #height, #font_css').change(function(event) {
-        var id = $(this).attr('id');
-        _storymap_data[id] = $(this).val().trim();
-        storymap_dirty(1);
         
-        if(id == 'font_css') {
-            font_update();
-        }
-    });
-
-    $('#language').change(function(event) {
-        _storymap_data.storymap['language'] = $(this).val();
-        storymap_dirty(1);
-        check_language();
-    });
+    var $opt_modal = modal_init($('#opt_modal'))
+        // 
+        // Display
+        //
+        .on('change', '#width, #height', function(event) {
+             var id = $(this).attr('id');
+            _storymap_data[id] = $(this).val().trim();
+            storymap_dirty(1);
+        })
+        .on('change', '#language', function(event) {
+            _storymap_data.storymap['language'] = $(this).val();
+            storymap_dirty(1);            
+            check_language();
+        })
+        .on('change', '#font_css', function(event) {
+            _storymap_data['font_css'] = $(this).val().trim();
+            storymap_dirty(1);        
+            font_update();        
+        })
+        .on('click', "input[name='map_as_image']", function() {
+            var value = ($(this).val() == "true");
         
-    $("input[name='map_as_image']").click(function() {
-        var value = ($(this).val() == "true");
-        
-        if(value != get_map_as_image()) {
-            _storymap_data.storymap.map_as_image = value;
-            storymap_dirty(1);   
+            if(value != get_map_as_image()) {
+                _storymap_data.storymap.map_as_image = value;
+                storymap_dirty(1);   
             
-            if(_current_slide_index == 0) {
+                if(_current_slide_index == 0) {
+                    if(value) {
+                        _map.removePolyLine();
+                    } else {
+                        _map.addPolyLine();
+                    }
+                }     
+            }
+        })
+        .on('click', "input[name='call_to_action']", function() {
+            var value = ($(this).val() == "true");
+        
+            if(value != get_storymap_property('call_to_action', false)) {
+                _storymap_data.storymap.call_to_action = value;
+                storymap_dirty(1);   
+            
                 if(value) {
-                    _map.removePolyLine();
+                    $('#call_to_action_text').show();
                 } else {
-                    _map.addPolyLine();
-                }
-            }     
-        }
-    });
-    
-    $("input[name='call_to_action']").click(function() {
-        var value = ($(this).val() == "true");
+                    $('#call_to_action_text').hide();
+                }       
+            }
+        })
+        .on('change', '#call_to_action_text', function() {
+            _storymap_data.storymap.call_to_action_text = $(this).val().trim();        
+            storymap_dirty(1);
+        })
+        //
+        // Display: Zoomify
+        //
+        .on('change', '#zoomify_path', function() {
+            var value = $(this).val().trim(); 
+
+            var re = /drive.google.com\/open\?id=/
+            var re2 = /drive.google.com\/folderview\?id=/; 
+            var subst = 'www.googledrive.com\/host\/'; 
+            var value = value.replace(re, subst);
+            var value = value.replace(re2, subst);
+
+            var re3 = /&authuser=0/;
+            var re4 = /&usp=sharing/
+            var subst2 = '/';
+            var value = value.replace(re3, subst2);
+            var value = value.replace(re4, subst2);
         
-        if(value != get_storymap_property('call_to_action', false)) {
-            _storymap_data.storymap.call_to_action = value;
-            storymap_dirty(1);   
+            if(!value.match(/\/$/)) {
+                value += '/';
+                $(this).val(value);
+            }
             
-            if(value) {
-                $('#call_to_action_text').show();
+            _storymap_data.storymap.zoomify.path = value;        
+            storymap_dirty(1);
+            map_set_type();   
+        })
+        .on('change', '#zoomify_width', function() {
+            _storymap_data.storymap.zoomify.width = parseInt($(this).val().trim());  
+            storymap_dirty(1);
+            map_set_type();   
+        })
+        .on('change', '#zoomify_height', function() {
+            _storymap_data.storymap.zoomify.height = parseInt($(this).val().trim());  
+            storymap_dirty(1);
+            map_set_type();   
+        })
+        .on('change', '#zoomify_attribution', function() {
+            _storymap_data.storymap.zoomify.attribution = $(this).val().trim();
+            storymap_dirty(1);
+            map_set_type();   
+        })
+        //
+        // Display: Map
+        //
+        .on('map_error_show', function(event) {
+            $('#map_access_token').focus()
+                .closest('.control-group').addClass('error')
+                .find('.help-inline').show();
+        })
+        .on('map_error_reset', function(event) {
+            $opt_modal.find('.control-group.map-control-group')
+                .removeClass('error')
+                .find('.help-inline').hide();
+        })
+        .on('change', '#map_type_menu', function(event) {
+            var map_type = $(this).val();
+                     
+            if(!map_type) {
+                $('#map_type').val('').attr('placeholder', 'http://{s}.domain.org/{z}/{x}/{y}.png')
+                    .prev().html('URL')
+                    .closest('.control-group').show();
+                $('#map_type').focus(); 
+                $('#map_subdomains').val('').closest('.control-group').show();    
+                $('#map_access_token').val('').closest('.control-group').hide();   
+
+                _storymap_data.storymap.map_type = '';
+                _storymap_data.storymap.map_subdomains = '';
+            } else if(map_type == 'mapbox') {
+                $('#map_type').val('').attr('placeholder', 'username.mapid')
+                    .prev().html('Map ID')
+                    .closest('.control-group').show(); 
+                $('#map_type').focus(); 
+                $('#map_subdomains').val('').closest('.control-group').hide();    
+                $('#map_access_token').val('').closest('.control-group').show();   
+   
+                _storymap_data.storymap.map_type = 'mapbox:';
+                _storymap_data.storymap.map_subdomains = 'abcd';
             } else {
-                $('#call_to_action_text').hide();
-            }       
-        }
-    });
-    $('#call_to_action_text').change(function(event) {
-        _storymap_data.storymap.call_to_action_text = $(this).val().trim();        
-        storymap_dirty(1);
-    });
-
-    $('#zoomify_path').change(function(event) {
-        var value = $(this).val().trim(); 
-
-        var re = /drive.google.com\/open\?id=/
-        var re2 = /drive.google.com\/folderview\?id=/; 
-        var subst = 'www.googledrive.com\/host\/'; 
-        var value = value.replace(re, subst);
-        var value = value.replace(re2, subst);
-
-        var re3 = /&authuser=0/;
-        var re4 = /&usp=sharing/
-        var subst2 = '/';
-        var value = value.replace(re3, subst2);
-        var value = value.replace(re4, subst2);
-        
-        if(!value.match(/\/$/)) {
-            value += '/';
-            $(this).val(value);
-        }
-        _storymap_data.storymap.zoomify.path = value;
-        
-        storymap_dirty(1);
-        map_set_type();   
-    });
-    $('#zoomify_width').change(function(event) {
-        _storymap_data.storymap.zoomify.width = parseInt($(this).val().trim());  
-        storymap_dirty(1);
-        map_set_type();   
-    });
-    $('#zoomify_height').change(function(event) {
-        _storymap_data.storymap.zoomify.height = parseInt($(this).val().trim());  
-        storymap_dirty(1);
-        map_set_type();   
-    });
-    $('#zoomify_attribution').change(function(event) {
-        _storymap_data.storymap.zoomify.attribution = $(this).val().trim();
-        storymap_dirty(1);
-        map_set_type();   
-    });
- 
-    $('#map_type_menu').change(function(event) {
-        var map_type = $(this).val();
-        
-        if(!map_type) {
-            $('#map_type').val('').attr('placeholder', 'http://{s}.domain.org/{z}/{x}/{y}.png')
-                .prev().html('URL')
-                .parent().show();
-            $('#map_type').focus(); 
-            $('#map_subdomains').val('').parent().show();       
-
-            _storymap_data.storymap.map_type = '';
-            _storymap_data.storymap.map_subdomains = '';
-        } else if(map_type == 'mapbox') {
-            $('#map_type').val('').attr('placeholder', 'username.mapid')
-                .prev().html('Map ID')
-                .parent().show(); 
-            $('#map_type').focus(); 
-            $('#map_subdomains').val('').parent().hide();       
-
-            _storymap_data.storymap.map_type = 'mapbox:';
-            _storymap_data.storymap.map_subdomains = 'abcd';
-        } else {
-            $('#map_type').val('').parent().hide(); 
-            $('#map_subdomains').val('').parent().hide();       
+                $('#map_type').val('').closest('.control-group').hide(); 
+                $('#map_subdomains').val('').closest('.control-group').hide();       
+                $('#map_access_token').val('').closest('.control-group').hide();   
             
-            _storymap_data.storymap.map_type = map_type;
-            _storymap_data.storymap.map_subdomains = '';
-       
-            map_set_type();
-        }    
-        
-        storymap_dirty(1);
-    });
-  
-    $('#map_type').change(function(event) {
-        var map_type = $('#map_type').val().trim();
-        
-        switch($('#map_type_menu').val()) {
-            case '':    // custom
-                map_type = map_type.replace('{Z}','{z}').replace('{X}','{x}').replace('{Y}','{y}').replace('{S}','{s}');
                 _storymap_data.storymap.map_type = map_type;
-                storymap_dirty(1);
-                map_set_type();        
-                break;
-            
-            case 'mapbox':
-                _storymap_data.storymap.map_type = 'mapbox:'+map_type;
-                storymap_dirty(1);
-                map_set_type();        
-                break;
-        }
-    });
-    
-    $('#map_subdomains').change(function(event) {
-        _storymap_data.storymap.map_subdomains = $('#map_subdomains').val().trim();
-        storymap_dirty(1);
-        map_set_type();        
-    });
+                _storymap_data.storymap.map_subdomains = '';
+       
+                map_set_type();
+            }    
+        
+            $opt_modal.trigger('map_error_reset');
 
-    $('#opt_description').change(function(event) {
-        ajax_post("{{ url_for('storymap_update_meta') }}",
-            {
-                id: _storymap_meta.id, 
-                key: 'description',
-                value: $(this).val().trim()
-            },
-            function(error) {
-                $modal.trigger('error_show', format_error('Error updating storymap', error));    
+            storymap_dirty(1);
+        })
+        .on('change', '#map_type', function(event) {
+            var map_type = $(this).val().trim();
+        
+            switch($('#map_type_menu').val()) {
+                case '':    // custom
+                    map_type = map_type.replace('{Z}','{z}').replace('{X}','{x}').replace('{Y}','{y}').replace('{S}','{s}');
+                    _storymap_data.storymap.map_type = map_type;
+                    storymap_dirty(1);
+                    map_set_type();        
+                    break;
+            
+                case 'mapbox':
+                    _storymap_data.storymap.map_type = 'mapbox:'+map_type;
+                    storymap_dirty(1);
+                    map_set_type();        
+                    break;
             }
-        );    
-    });
-    
-    $('#opt_image_url').change(function(event) {
-        ajax_post("{{ url_for('storymap_update_meta') }}",
-            {
-                id: _storymap_meta.id, 
-                key: 'image_url',
-                value: $(this).val().trim()
-            },
-            function(error) {
-                $modal.trigger('error_show', format_error('Error updating storymap', error));    
-            }
-        );    
-    });
-    
-    modal_init($('#opt_modal'))
+        })
+        .on('change', '#map_subdomains, #map_access_token', function(event) {
+            var id = $(this).attr('id');
+            _storymap_data.storymap[id] = $(this).val().trim();
+            storymap_dirty(1);        
+            map_set_type();        
+        }) 
+        //
+        // Sharing
+        //
+        .on('change', '#opt_description', function(event) {
+            ajax_post("{{ url_for('storymap_update_meta') }}", {
+                    id: _storymap_meta.id, 
+                    key: 'description',
+                    value: $(this).val().trim()
+                },
+                function(error) {
+                    $opt_modal.trigger('error_show', format_error('Error updating storymap', error));    
+                }
+            );    
+        })
+        .on('change', '#opt_image_url', function(event) {
+            ajax_post("{{ url_for('storymap_update_meta') }}", {
+                    id: _storymap_meta.id, 
+                    key: 'image_url',
+                    value: $(this).val().trim()
+                },
+                function(error) {
+                    $opt_modal.trigger('error_show', format_error('Error updating storymap', error));    
+                }
+            );    
+        })
         .on('upload', function(event, url) {
             $(this).trigger('refresh_image_select');
             $('#opt_image_url').val(url).change();
@@ -974,6 +1001,9 @@ $(function() {
             }
             $('#opt_image_select').html(html || '<li class="default">no uploaded images found</li>');
         })
+        //
+        // general
+        //
         .on('modal_show', function(event, error_msg) {
             $(this).trigger('refresh_image_select');
             $('#opt_image_select a').click(function(event) {
@@ -986,7 +1016,21 @@ $(function() {
         })
         .on('show', function() {  
             $(this).trigger('modal_show');
+        })
+        .on('click', '.btn-primary', function(event) {
+            // Check for required map_access_token
+            if($('#map_type_menu').val() == 'mapbox') {
+                if(!$('#map_access_token').val().trim()) {
+                    $opt_modal.trigger('map_error_show');
+                    event.preventDefault();
+                    return;
+                }
+            }
+           
+            $opt_modal.trigger('map_error_reset');
+            $opt_modal.modal('hide');
         });
+
         
 //------------------------------------------------------------
 // .....
@@ -1102,12 +1146,10 @@ $(function() {
 // ------------------------------------------------------------ 
     
     modal_init($('#upload_modal'))
-        ////// upload
         .on('upload', function(event, url) {          
             $('#url').val(url).change(); 
             $(this).modal('hide');    
         })
-        ////// custom
         .on('modal_show', function(event, error_msg) {
             $(this).find('.upload-panel').trigger('reset');            
             $(this).trigger('reset', error_msg);
@@ -1170,13 +1212,11 @@ $(function() {
     });   
 
     modal_init($('#slide_opt_modal'))
-        ////// upload
         .on('upload', function(event, url) {
             $(this).trigger('refresh_background_select');
             $('#background_url').val(url).change();                
             $(this).find('.upload-panel').trigger('reset');        
         })
-        ////// custom
         .on('refresh_background_select', function(event) {
             var html = '';            
             for(var i = 0; i < _storymap_files.length; i++) {
@@ -1219,27 +1259,23 @@ $(function() {
             
 // ------------------------------------------------------------
 // Sharing
-// ------------------------------------------------------------
-    
-    $('#share_publish').click(function(event) {       
-        $('#share_modal').trigger('progress_show', 'Publishing StoryMap');
-         
-        storymap_publish(function(error) {
-            if(error) {
-                $('#share_modal').trigger('modal_show', format_error('Error publishing StoryMap', error));
-            } else {
-                $('#share_modal').trigger('modal_show'); 
-            }
-        });
-    });
-    
-    $('#share_width, #share_height').change(function(event) {
-        $('#share_modal').trigger('modal_show'); 
-    });
-    
-     
-    modal_init($('#share_modal'))
-         ////// custom
+// ------------------------------------------------------------    
+      
+    $share_modal = modal_init($('#share_modal'))
+        .on('click', '#share_publish', function(event) {
+            $share_modal.trigger('progress_show', 'Publishing StoryMap');
+            
+            storymap_publish(function(error) {
+                if(error) {
+                    $('#share_modal').trigger('modal_show', format_error('Error publishing StoryMap', error));
+                } else {
+                    $('#share_modal').trigger('modal_show'); 
+                }
+            });       
+        })
+        .on('change', '#share_width, #share_height', function(event) {
+            $share_modal.trigger('modal_show'); 
+        })
         .on('modal_show', function(event, error_msg) {     
             var embed_url = '';
                         
@@ -1322,7 +1358,14 @@ $(function() {
 {% if error %}
     storymap_abort('{{ error }}');
 {% else %}
-    storymap_init();
+    storymap_init(function() {                
+        var map_type = _storymap_data.storymap.map_type;
+        
+        if(map_type && map_type.match('^mapbox:.+') && !_storymap_data.storymap.map_access_token) {
+            $opt_modal.trigger('map_error_show');
+            $opt_modal.modal('show');        
+        }
+    });
 {% endif %}
 });
 
