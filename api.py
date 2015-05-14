@@ -272,7 +272,8 @@ def require_user_id(template=None):
             if id not in user['storymaps']:
                 error = 'You do not have permission to access to this StoryMap'                
                 if template:
-                    return render_template('edit.html', error=error)
+                    del user['_id'] # for serialization
+                    return render_template('edit.html', user=user, error=error)
                 else:
                     return jsonify({'error': error})
     
