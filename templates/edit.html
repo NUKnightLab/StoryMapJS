@@ -670,8 +670,9 @@ function map_init(init_callback) {
     slides_load(init_callback);
 }
 
-function storymap_abort(message) {
-    show_message_report(message, '{{ user.uid }}', function() { document.location.href = "{{ url_for('select') }}"; });
+function storymap_abort(message, detail) {
+    detail = (detail || '')+'\nuid = {{ user.uid }}';
+    show_message_report(message, detail, function() { document.location.href = "{{ url_for('select') }}"; });
 }
 
 function storymap_init(init_callback) {
@@ -681,8 +682,8 @@ function storymap_init(init_callback) {
     ajax_get("{{ url_for('storymap_get') }}", {
             id: _storymap_meta.id
         },
-        function(error) {
-            storymap_abort(format_error('Error loading StoryMap', error));
+        function(error, error_detail) {
+            storymap_abort(format_error('Error loading StoryMap', error), error_detail);
         },
         function(data) {
             // Set page title
@@ -692,18 +693,15 @@ function storymap_init(init_callback) {
                 $('#storymap_publish').show();
             }
  
-            //delete data.data.storymap.map_access_token;
-            
             _storymap_data = data.data;
             _slides = _storymap_data.storymap.slides;                   
            
             // List images and sort by name
-            ajax_get("{{ url_for('storymap_image_list') }}",
-                {
+            ajax_get("{{ url_for('storymap_image_list') }}", {
                     id: _storymap_meta.id
                 },
-                function(error) {
-                    storymap_abort(format_error('Error listing images', error));
+                function(error, error_detail) {
+                    storymap_abort(format_error('Error listing images', error), error_detail);
                 },
                 function(data) {
                     _storymap_files = data.image_list.sort();

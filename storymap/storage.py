@@ -7,6 +7,7 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html
 import os
 import sys
 import time
+import traceback
 import json
 from functools import wraps
 from boto.s3.connection import S3Connection
@@ -20,15 +21,24 @@ settings = sys.modules[os.environ['FLASK_SETTINGS_MODULE']]
 _conn = S3Connection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)    
 _bucket = _conn.get_bucket(settings.AWS_STORAGE_BUCKET_NAME)
 
-
+class StorageException(Exception):
+    """
+    Adds 'detail' attribute to contain response body
+    """
+    def __init__(self, message, detail):
+        super(Exception, self).__init__(message)
+        self.detail = detail
+    
+    
 def _reraise_s3response(f):
-    """Decorator trap and re-raise S3ResponseError's"""
+    """Decorator trap and re-raise S3ResponseError as StorageException"""
     @wraps(f)
     def decorated_function(*args, **kwargs):
         try:
             return f(*args, **kwargs)
         except S3ResponseError, e:
-            raise Exception(e.message)
+            print traceback.format_exc()
+            raise StorageException(e.message, e.body)
     return decorated_function
 
     
@@ -43,7 +53,8 @@ def key_prefix(*args):
 
 def key_name(*args):
     return '%s/%s' % (settings.AWS_STORAGE_BUCKET_KEY, '/'.join(args))
-                 
+
+        
 @_reraise_s3response 
 def list_keys(key_prefix, n, marker=''):
     """

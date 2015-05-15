@@ -553,6 +553,9 @@ def storymap_get(user, id):
         data = storage.load_json(key_name)    
                     
         return jsonify({'meta': user['storymaps'][id], 'data': data})
+    except storage.StorageException, e:
+        traceback.print_exc()
+        return jsonify({'error': str(e), 'error_detail': e.detail})
     except Exception, e:
         traceback.print_exc()
         return jsonify({'error': str(e)})   
@@ -572,6 +575,9 @@ def storymap_save(user, id):
         _user.save(user)
             
         return jsonify({'meta': user['storymaps'][id]})
+    except storage.StorageException, e:
+        traceback.print_exc()
+        return jsonify({'error': str(e), 'error_detail': e.detail})
     except Exception, e:
         traceback.print_exc()
         return jsonify({'error': str(e)})
@@ -593,6 +599,9 @@ def storymap_publish(user, id):
         _write_embed_published(key_prefix, user['storymaps'][id])
            
         return jsonify({'meta': user['storymaps'][id]})
+    except storage.StorageException, e:
+        traceback.print_exc()
+        return jsonify({'error': str(e), 'error_detail': e.detail})
     except Exception, e:
         traceback.print_exc()
         return jsonify({'error': str(e)})
@@ -607,6 +616,9 @@ def storymap_image_list(user, id):
         
         image_list = [n.split('/')[-1] for n in key_list]
         return jsonify({'image_list': image_list})    
+    except storage.StorageException, e:
+        traceback.print_exc()
+        return jsonify({'error': str(e), 'error_detail': e.detail})
     except Exception, e:
         traceback.print_exc()
         return jsonify({'error': str(e)})
@@ -634,6 +646,9 @@ def storymap_image_save(user, id):
         storage.save_from_data(key_name, content_type, content)
         
         return jsonify({'url': settings.AWS_STORAGE_BUCKET_URL+key_name})    
+    except storage.StorageException, e:
+        traceback.print_exc()
+        return jsonify({'error': str(e), 'error_detail': e.detail})
     except Exception, e:
         traceback.print_exc()
         return jsonify({'error': str(e)})
