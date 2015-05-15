@@ -72,6 +72,7 @@ function noop() {}
 
 function _ajax(url, type, data, on_error, on_success, on_complete) {
     var _error = '';
+    var _error_detail = '';
     
     $.ajax({
         url: url,
@@ -88,13 +89,14 @@ function _ajax(url, type, data, on_error, on_success, on_complete) {
             debug('ajax data', data);
             if(data.error) {
                 _error = data.error;
-                on_error(_error);
+                _error_detail = data.error_detail || '';
+                on_error(_error, _error_detail);
             } else {
                 on_success(data);
             }
         },
         complete: function() {
-            on_complete(_error);
+            on_complete(_error, _error_detail);
         }
     });
 }
@@ -205,9 +207,9 @@ function show_message(msg, callback) {
     $('#message_modal').modal('show');
 }
 
-function show_message_report(msg, uid, callback) {
-    var message = msg + format_report_link(msg, msg, 'uid = '+uid);
-        
+function show_message_report(msg, detail, callback) {
+    detail = (detail || '')+'\nurl = '+document.location.href+'\n';
+    var message = msg + format_report_link(msg, msg, detail);        
     show_message(message, callback);
 }
 
