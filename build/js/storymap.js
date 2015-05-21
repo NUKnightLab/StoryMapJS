@@ -1,4 +1,4 @@
-/* storymapjs - v0.4.8 - 2015-05-08
+/* storymapjs - v2015-05-21-18-31-03 - 2015-05-21
  * Copyright (c) 2015 Northwestern University Knight Lab 
  */
 
@@ -21662,6 +21662,7 @@ L.control.minimap = function(options) {
      Begin VCO.TileLayer.Stamen.js
 ********************************************** */
 
+
 /*	VCO.TyleLayer.Stamen
 
 	Makes Stamen Map tiles available
@@ -21686,7 +21687,7 @@ L.control.minimap = function(options) {
 
 			return {
 
-				"url":          ["http://stamen-tiles-{S}.a.ssl.fastly.net/", layer, "/{Z}/{X}/{Y}.", type].join(""),
+				"url":          ["//stamen-tiles-{S}.a.ssl.fastly.net/", layer, "/{Z}/{X}/{Y}.", type].join(""),
 
 				"type":         type,
 
