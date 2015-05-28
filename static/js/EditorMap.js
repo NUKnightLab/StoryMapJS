@@ -83,7 +83,7 @@ EditorMap.prototype.fitBounds = function(latlngbounds) {
 // Google Maps
 // ------------------------------------------------------------
 
-function GoogleEditorMap(map_element_id, options) {
+function GoogleEditorMap(options) {
     var self = this;
     
     EditorMap.apply(this, Array.prototype.slice.call(arguments));
@@ -348,7 +348,7 @@ GoogleEditorMap.prototype.setMapType = function(map_type, map_subdomains, map_ac
 // Leaflet
 // ------------------------------------------------------------
 
-function LeafletEditorMap(map_element_id, options) {
+function LeafletEditorMap(options) {
     var self = this;
         
     EditorMap.apply(this, Array.prototype.slice.call(arguments));
