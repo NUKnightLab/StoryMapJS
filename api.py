@@ -10,6 +10,7 @@ import re
 import json
 from functools import wraps
 import urllib
+from urlparse import urlparse
 
 # Import settings module
 if __name__ == "__main__":
@@ -306,12 +307,24 @@ def _make_storymap_id(user, title):
         id = '%s-%d' % (id_base, n)    
     return id
 
+def _parse_url(url):
+    """Parse url into (scheme, netloc, path, filename)"""
+    r = urlparse(url)
+    parts = r.path.split('/')
+    return {
+        'scheme': r.scheme or 'http', 
+        'netloc': r.netloc, 
+        'path': '/'.join(parts[:-1]), 
+        'file': parts[-1]
+    }
+    
 def _write_embed(embed_key_name, json_key_name, meta):
     """Write embed page"""    
     # NOTE: facebook needs the protocol on embed_url for og tag
     image_url = meta.get('image_url', settings.STATIC_URL+'img/logos/logo_storymap.png')
-    if image_url.startswith('//'):
-        image_url = 'http:'+urllib.quote(image_url)
+    parts = _parse_url(image_url)
+    parts['path'] = urllib.quote(parts['path'])
+    image_url = '%(scheme)s://%(netloc)s%(path)s/%(file)s' % parts
         
     print 'http:'+urllib.quote(settings.AWS_STORAGE_BUCKET_URL+embed_key_name)
     content = render_template('_embed.html',
