@@ -298,7 +298,7 @@ def _make_storymap_id(user, title):
         if m:
             id_set.add(m.group(1))    
         
-    id_base = slugify.slugify(title, only_ascii=True)
+    id_base = slugify.slugify(title)
     id = id_base        
     n = 0
     while id in id_set:
