@@ -9,7 +9,7 @@ import datetime
 import re
 import json
 from functools import wraps
-
+import urllib
 
 # Import settings module
 if __name__ == "__main__":
@@ -314,11 +314,11 @@ def _write_embed(embed_key_name, json_key_name, meta):
         image_url = 'http:'+image_url
         
     content = render_template('_embed.html',
-        embed_url='http:'+settings.AWS_STORAGE_BUCKET_URL+embed_key_name,
-        json_url=settings.AWS_STORAGE_BUCKET_URL+json_key_name,
+        embed_url=urllib.quote('http:'+settings.AWS_STORAGE_BUCKET_URL+embed_key_name),
+        json_url=urllib.quote(settings.AWS_STORAGE_BUCKET_URL+json_key_name),
         title=meta.get('title', ''),
         description=meta.get('description', ''),
-        image_url=image_url
+        image_url=urllib.quote(image_url)
     )            
     storage.save_from_data(embed_key_name, 'text/html', content)
 
@@ -432,6 +432,7 @@ def storymap_create(user):
         title, data = _request_get_required('title', 'd')
                          
         id = _make_storymap_id(user, title)
+        
         key_prefix = storage.key_prefix(user['uid'], id)
         
         content = json.loads(data)           
