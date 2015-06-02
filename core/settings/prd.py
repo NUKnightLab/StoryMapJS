@@ -14,9 +14,9 @@ from secrets import *
 # Set Flask configuration
 os.environ['FLASK_CONFIG_MODULE'] = os.path.join(secrets_path, 'flask_config.py')
 
-STATIC_URL = 'http://media.knightlab.com/StoryMapJS/'
+STATIC_URL = '//media.knightlab.com/StoryMapJS/'
 
-CDN_URL = '//s3.amazonaws.com/cdn.knightlab.com/libs/storymapjs/latest/'
+CDN_URL = '//cdn.knightlab.com/libs/storymapjs/latest/'
 
 DATABASES = {
     'default': {
