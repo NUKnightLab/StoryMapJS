@@ -326,7 +326,6 @@ def _write_embed(embed_key_name, json_key_name, meta):
     parts['path'] = urllib.quote(parts['path'])
     image_url = '%(scheme)s://%(netloc)s%(path)s/%(file)s' % parts
         
-    print 'http:'+urllib.quote(settings.AWS_STORAGE_BUCKET_URL+embed_key_name)
     content = render_template('_embed.html',
         embed_url='http:'+urllib.quote(settings.AWS_STORAGE_BUCKET_URL+embed_key_name),
         json_url=urllib.quote(settings.AWS_STORAGE_BUCKET_URL+json_key_name),
