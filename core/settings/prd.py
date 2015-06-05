@@ -31,7 +31,7 @@ DATABASES = {
 AWS_STORAGE_BUCKET_NAME = 'uploads.knightlab.com'
 
 # User storage bucket url on S3
-AWS_STORAGE_BUCKET_URL = '//uploads.knightlab.com/'
+AWS_STORAGE_BUCKET_URL = '//s3.amazonaws.com/uploads.knightlab.com/'
 
 # Application key name within storage bucket
 AWS_STORAGE_BUCKET_KEY = 'storymapjs'
