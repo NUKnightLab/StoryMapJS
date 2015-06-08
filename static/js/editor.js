@@ -78,6 +78,7 @@ function _ajax(url, type, data, on_error, on_success, on_complete) {
         url: url,
         type: type,
         data: data,
+        cache: false,
         dataType: 'json',
         timeout: 45000, // ms
         error: function(xhr, status, err) { 
