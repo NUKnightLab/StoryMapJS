@@ -73,6 +73,14 @@ def list_keys(key_prefix, n, marker=''):
         key_list.append(item)
     return key_list, (i == n)
 
+
+def all_keys():
+    for item in _bucket.list(prefix=settings.AWS_STORAGE_BUCKET_KEY):
+        if item.name == key_prefix:           
+            continue
+        yield item.key
+
+
 @_reraise_s3response 
 def list_key_names(key_prefix, n, marker=''):
     """
