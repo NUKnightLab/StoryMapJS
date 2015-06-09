@@ -753,20 +753,33 @@ def edit(user, id):
 def admin(user):
     if not user['uid'] in settings.ADMINS:
         abort(401)
+    page = request.args.get('page', 1)
+    rpp = request.args.get('rpp', 100)
+    skip = (page - 1) * rpp
+    files = defaultdict(list)
+    users = []
+    for k in storage.all_keys():
+        uid = k.split('/')[1]
+        files[uid].append(k) 
+    for u in _user.find(skip=skip, limit=rpp):
+        u.update({ 'files': files[u['uid']] })
+        users.append(u)
+    return _jsonify({ 'users': users })
+
+
+@app.route('/admin/unmatched-files')
+@require_user
+def admin_unmatched_files(user):
+    if not user['uid'] in settings.ADMINS:
+        abort(401)
     files = defaultdict(list)
     users = []
     for k in storage.all_keys():
         uid = k.split('/')[1]
         files[uid].append(k) 
     for u in _user.find():
-        u.update({ 'files': files[u['uid']] })
-        users.append(u)
         del files[u['uid']]
-    data = {
-        'users': users,
-        'unmatched files': files
-    }
-    return _jsonify(data)
+    return _jsonify(files)
 
 
 @app.route("/qunit/", methods=['GET'])
