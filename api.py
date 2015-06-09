@@ -1,5 +1,6 @@
 from flask import Flask, request, session, redirect, url_for, \
     render_template, jsonify, abort
+from collections import defaultdict
 import os
 import sys
 import importlib
@@ -11,6 +12,7 @@ import json
 from functools import wraps
 import urllib
 from urlparse import urlparse
+
 
 # Import settings module
 if __name__ == "__main__":
@@ -744,6 +746,27 @@ def edit(user, id):
     except Exception, e:
         traceback.print_exc()
         return render_template('edit.html', error=str(e))
+
+
+@app.route('/admin/')
+@require_user
+def admin(user):
+    if not user['uid'] in settings.ADMINS:
+        abort(401)
+    files = defaultdict(list)
+    users = []
+    for k in storage.all_keys():
+        uid = k.split('/')[1]
+        files[uid].append(k) 
+    for u in _user.find():
+        u.update({ 'files': files[u['uid']] })
+        users.append(u)
+        del files[u['uid']]
+    data = {
+        'users': users,
+        'unmatched files': files
+    }
+    return _jsonify(data)
 
 
 @app.route("/qunit/", methods=['GET'])
