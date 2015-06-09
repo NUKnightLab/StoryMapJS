@@ -3,12 +3,12 @@ VCO.Language = {
     lang: "nn",
     messages: {
         loading: "Lastar inn",
-        wikipedia: "frå Wikipedia, det frie oppslagsverket",
+        wikipedia: "Frå Wikipedia, det frie oppslagsverket",
 	start: "Utforsk"
     },
     buttons: {
         map_overview:      "Sjå oversiktskart",
-	overview:          "Sjå oversiktskart",
+	overview:          "Oversikt",
         backtostart:       "Til starten",
         collapse_toggle:   "Gøym kartet",
         uncollapse_toggle: "Vis kartet"
