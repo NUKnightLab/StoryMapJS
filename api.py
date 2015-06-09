@@ -753,8 +753,8 @@ def edit(user, id):
 def admin(user):
     if not user['uid'] in settings.ADMINS:
         abort(401)
-    page = request.args.get('page', 1)
-    rpp = request.args.get('rpp', 100)
+    page = int(request.args.get('page', 1))
+    rpp = int(request.args.get('rpp', 100))
     skip = (page - 1) * rpp
     files = defaultdict(list)
     users = []
