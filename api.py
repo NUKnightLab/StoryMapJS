@@ -768,7 +768,7 @@ def admin_users(user):
     for u in _user.find(skip=skip, limit=rpp):
         u.update({ 'files': files[u['uid']] })
         users.append(u)
-    return _jsonify({ 'users': users })
+    return render_template('admin/users.html', **{ 'users': users })
 
 
 @app.route('/admin/unmatched-files')
