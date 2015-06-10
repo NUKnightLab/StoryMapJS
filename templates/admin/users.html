@@ -1,0 +1,26 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+  {% for user in users %}
+    <div>
+    <h3>{{ user.uname }}</h3>
+    <strong>UID:</strong> {{ user.uid }}<br/>
+    <strong>Migrated:</strong> {{ user.migrated }}<br/>
+    <h4>Files</h4>
+    <ul>
+    {% for file in user.files %}
+      <li>{{ file }}</li>
+    {% endfor %}
+    </ul>
+    <h4>StoryMaps</h4>
+    {% for storymap in user.storymaps.values() %}
+      <div>
+        <h5>{{ storymap.title }}</h5>
+        <strong>ID:</strong> {{ storymap.id }} <br/> 
+        <strong>Draft:</strong> {{ storymap.draft_on }} <br/>
+        <strong>Published:</strong> {{ storymap.published_on }} <br/>
+      </div>
+    {% endfor %}
+    </div>
+  {% endfor %}
+{% endblock content %}
