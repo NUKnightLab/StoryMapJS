@@ -778,7 +778,10 @@ def admin_unmatched_files(user):
         uid = k.split('/')[1]
         files[uid].append(k) 
     for u in _user.find():
-        del files[u['uid']]
+        try:
+            del files[u['uid']]
+        except KeyError:
+            pass
     return _jsonify(files)
 
 
