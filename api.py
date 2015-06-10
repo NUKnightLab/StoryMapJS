@@ -747,10 +747,14 @@ def edit(user, id):
         traceback.print_exc()
         return render_template('edit.html', error=str(e))
 
-
 @app.route('/admin/')
 @require_user
 def admin(user):
+    return render_template('/admin/index.html')
+
+@app.route('/admin/users/')
+@require_user
+def admin_users(user):
     if not user['uid'] in settings.ADMINS:
         abort(401)
     page = int(request.args.get('page', 1))
