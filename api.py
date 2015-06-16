@@ -1,6 +1,8 @@
+from __future__ import division
 from flask import Flask, request, session, redirect, url_for, \
     render_template, jsonify, abort
 from collections import defaultdict
+import math
 import os
 import sys
 import importlib
@@ -757,7 +759,8 @@ def admin(user):
 def admin_users(user):
     if not user['uid'] in settings.ADMINS:
         abort(401)
-    page = int(request.args.get('page', 1))
+    args = request.args.copy()
+    page = int(args.pop('page', 1))
     rpp = int(request.args.get('rpp', 100))
     skip = (page - 1) * rpp
     files = defaultdict(list)
@@ -768,7 +771,14 @@ def admin_users(user):
     for u in _user.find(skip=skip, limit=rpp):
         u.update({ 'files': files[u['uid']] })
         users.append(u)
-    return render_template('admin/users.html', **{ 'users': users })
+    pages = int(math.ceil(_user.count() / rpp))
+    return render_template('admin/users.html', **{
+        'users': users,
+        'page': page,
+        'pages': pages,
+        'args': args,
+        'querystring': urllib.urlencode(args.items())
+    })
 
 
 @app.route('/admin/unmatched-files')
