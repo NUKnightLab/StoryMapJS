@@ -1,5 +1,8 @@
+from __future__ import division
 from flask import Flask, request, session, redirect, url_for, \
     render_template, jsonify, abort
+from collections import defaultdict
+import math
 import os
 import sys
 import importlib
@@ -11,6 +14,7 @@ import json
 from functools import wraps
 import urllib
 from urlparse import urlparse
+
 
 # Import settings module
 if __name__ == "__main__":
@@ -744,6 +748,55 @@ def edit(user, id):
     except Exception, e:
         traceback.print_exc()
         return render_template('edit.html', error=str(e))
+
+@app.route('/admin/')
+@require_user
+def admin(user):
+    return render_template('/admin/index.html')
+
+@app.route('/admin/users/')
+@require_user
+def admin_users(user):
+    if not user['uid'] in settings.ADMINS:
+        abort(401)
+    args = request.args.copy()
+    page = int(args.pop('page', 1))
+    rpp = int(request.args.get('rpp', 100))
+    skip = (page - 1) * rpp
+    files = defaultdict(list)
+    users = []
+    for k in storage.all_keys():
+        uid = k.split('/')[1]
+        files[uid].append(k) 
+    for u in _user.find(skip=skip, limit=rpp):
+        u.update({ 'files': files[u['uid']] })
+        users.append(u)
+    pages = int(math.ceil(_user.count() / rpp))
+    return render_template('admin/users.html', **{
+        'users': users,
+        'page': page,
+        'pages': pages,
+        'args': args,
+        'querystring': urllib.urlencode(args.items())
+    })
+
+
+@app.route('/admin/unmatched-files')
+@require_user
+def admin_unmatched_files(user):
+    if not user['uid'] in settings.ADMINS:
+        abort(401)
+    files = defaultdict(list)
+    users = []
+    for k in storage.all_keys():
+        uid = k.split('/')[1]
+        files[uid].append(k) 
+    for u in _user.find():
+        try:
+            del files[u['uid']]
+        except KeyError:
+            pass
+    return _jsonify(files)
 
 
 @app.route("/qunit/", methods=['GET'])

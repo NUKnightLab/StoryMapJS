@@ -1,0 +1,36 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+  <div>
+    <h3>Page {{ page }} of {{ pages }}</h3>
+    {% for p in range(0,pages) %}
+      {% if p+1 == page %}
+        {{ p+1 }}
+      {% else %}
+        <a href="{{ request.path }}?{{ querystring }}&page={{ p+1 }}">{{ p+1 }}</a>
+      {% endif %}
+    {% endfor %}
+  </div>
+  {% for user in users %}
+    <div>
+    <h3>{{ user.uname }}</h3>
+    <strong>UID:</strong> {{ user.uid }}<br/>
+    <strong>Migrated:</strong> {{ user.migrated }}<br/>
+    <h4>Files</h4>
+    <ul>
+    {% for file in user.files %}
+      <li>{{ file }}</li>
+    {% endfor %}
+    </ul>
+    <h4>StoryMaps</h4>
+    {% for storymap in user.storymaps.values() %}
+      <div>
+        <h5>{{ storymap.title }}</h5>
+        <strong>ID:</strong> {{ storymap.id }} <br/> 
+        <strong>Draft:</strong> {{ storymap.draft_on }} <br/>
+        <strong>Published:</strong> {{ storymap.published_on }} <br/>
+      </div>
+    {% endfor %}
+    </div>
+  {% endfor %}
+{% endblock content %}
