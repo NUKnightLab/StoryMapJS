@@ -1,6 +1,16 @@
 {% extends "admin/base.html" %}
 
 {% block content %}
+  <div>
+    <h3>Page {{ page }} of {{ pages }}</h3>
+    {% for p in range(0,pages) %}
+      {% if p+1 == page %}
+        {{ p+1 }}
+      {% else %}
+        <a href="{{ request.path }}?{{ querystring }}&page={{ p+1 }}">{{ p+1 }}</a>
+      {% endif %}
+    {% endfor %}
+  </div>
   {% for user in users %}
     <div>
     <h3>{{ user.uname }}</h3>
