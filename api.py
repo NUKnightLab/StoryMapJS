@@ -760,7 +760,6 @@ def admin_users(user):
     if not user['uid'] in settings.ADMINS:
         abort(401)
     args = request.args.copy()
-    print args
     page = int(args.pop('page', 1))
     rpp = int(request.args.get('rpp', 100))
     skip = (page - 1) * rpp
@@ -788,7 +787,8 @@ def admin_users(user):
         'page': page,
         'pages': pages,
         'args': args,
-        'querystring': urllib.urlencode(args.items())
+        'querystring': urllib.urlencode(args.items()),
+        'storage_root': settings.AWS_STORAGE_BUCKET_URL
     })
 
 
