@@ -760,18 +760,29 @@ def admin_users(user):
     if not user['uid'] in settings.ADMINS:
         abort(401)
     args = request.args.copy()
+    print args
     page = int(args.pop('page', 1))
     rpp = int(request.args.get('rpp', 100))
     skip = (page - 1) * rpp
     files = defaultdict(list)
     users = []
+    query = {}
+    if 'uname' in args:
+        query.update({ 'uname':{'$regex': args['uname'], '$options': 'i'}})
+    if 'uid' in args:
+        query.update({ 'uid':{'$regex': args['uid'], '$options': 'i'}})
+    migrated = args.get('migrated')
+    if migrated == 'migrated':
+        query.update({ 'migrated': 1 })
+    elif migrated == 'unmigrated':
+        query.update({ 'migrated': 0 })
     for k in storage.all_keys():
         uid = k.split('/')[1]
         files[uid].append(k) 
-    for u in _user.find(skip=skip, limit=rpp):
+    for u in _user.find(query, skip=skip, limit=rpp):
         u.update({ 'files': files[u['uid']] })
         users.append(u)
-    pages = int(math.ceil(_user.count() / rpp))
+    pages = int(math.ceil(_user.find(query).count() / rpp))
     return render_template('admin/users.html', **{
         'users': users,
         'page': page,
