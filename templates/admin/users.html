@@ -24,9 +24,10 @@
   </div>
   {% for user in users %}
     <div>
-    <h3>{{ user.uname }}</h3>
+    <h3>{{ user.uname }}
+    <span class="badge badge-{% if user.migrated %}success{% else %}important{% endif %}">{% if not user.migrated %}un{% endif %}migrated</span>
+    </h3>
     <strong>UID:</strong> {{ user.uid }}<br/>
-    <strong>Migrated:</strong> {{ user.migrated }}<br/>
     <h4>Files</h4>
     <ul>
     {% for file in user.files %}
