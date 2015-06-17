@@ -14,13 +14,17 @@
   </div>
   <div>
     <h3>Page {{ page }} of {{ pages }}</h3>
-    {% for p in range(0,pages) %}
-      {% if p+1 == page %}
-        {{ p+1 }}
-      {% else %}
-        <a href="{{ request.path }}?{{ querystring }}&page={{ p+1 }}">{{ p+1 }}</a>
-      {% endif %}
-    {% endfor %}
+    <div class="pagination pagination-mini">
+      <ul>
+      {% for p in range(0,pages) %}
+        {% if p+1 == page %}
+          <li class="active"><a href="#">{{ p+1 }}</a></li>
+        {% else %}
+          <li><a href="{{ request.path }}?{{ querystring }}&page={{ p+1 }}">{{ p+1 }}</a></li>
+        {% endif %}
+      {% endfor %}
+      <ul>
+    </div>
   </div>
   {% for user in users %}
     <div>
