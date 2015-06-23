@@ -6,19 +6,33 @@
     <div class="span12">
       <form class="form-horizontal" action="." method="GET">
         <div class="control-group">
-          User name (is <input type="radio" name="unamesearch" value="is" {% if args.unamesearch == 'is' %}checked{% endif %} /> 
-          &nbsp;/ contains <input type="radio" name="unamesearch" value="contains" {% if args.unamesearch != 'is' %}checked{% endif %} />)
-          :<input type="text" name="uname" value="{{ args.uname }}"/>
+          <label class="radio inline">
+          User name (
+          </label>
+          <label class="radio inline">
+            <input type="radio" name="unamesearch" value="is" {% if args.unamesearch == 'is' %}checked{% endif %} /> is &nbsp; | 
+          </label>
+          <label class="radio inline">
+            <input type="radio" name="unamesearch" value="contains" {% if args.unamesearch != 'is' %}checked{% endif %} /> contains &nbsp;) :
+          </label>
+          <input type="text" name="uname" value="{{ args.uname }}"/>
         </div>
         <div class="control-group">
-          User ID is: <input type="text" name="uid" value="{{ args.uid }}"/>
+          User ID is:
+          <input type="text" name="uid" value="{{ args.uid }}"/>
         </div>
         <div class="control-group">
-          Migrated: <input type="radio" name="migrated" value="migrated" {% if args.get('migrated') == 'migrated' %}checked{% endif %} />
-          Unmigrated: <input type="radio" name="migrated"  value="unmigrated" {% if args.get('migrated') == 'unmigrated' %}checked{% endif %} />
-          All: <input type="radio" name="migrated"  value="all" {% if args.get('migrated') != 'migrated' and args.get('migrated') != 'unmigrated' %}checked{% endif %}/>
+          <label class="radio inline">
+            <input type="radio" name="migrated" value="migrated" {% if args.get('migrated') == 'migrated' %}checked{% endif %} /> Migrated
+          </label>
+          <label class="radio inline">
+            <input type="radio" name="migrated"  value="unmigrated" {% if args.get('migrated') == 'unmigrated' %}checked{% endif %} /> Unmigrated
+          </label>
+          <label class="radio inline">
+            <input type="radio" name="migrated"  value="all" {% if args.get('migrated') != 'migrated' and args.get('migrated') != 'unmigrated' %}checked{% endif %}/> All
+          </label>
         </div>
-        <input type="submit" value="Search"/>
+        <input type="submit" class="btn" value="Search"/>
       </form>
     </div>
   </div>
