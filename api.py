@@ -752,6 +752,8 @@ def edit(user, id):
 @app.route('/admin/')
 @require_user
 def admin(user):
+    if not user['uid'] in settings.ADMINS:
+        abort(401)
     return render_template('/admin/index.html')
 
 @app.route('/admin/users/')
