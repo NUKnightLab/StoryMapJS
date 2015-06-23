@@ -17,4 +17,5 @@ _user = _db['users']
 
 # Ensure indicies
 _user.ensure_index('uid')
+_user.ensure_index('uname')
   
