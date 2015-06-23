@@ -2,17 +2,28 @@
 
 {% block content %}
 <div class="container">
-  <div>
-    <form action="." method="GET">
-      User name contains: <input type="text" name="uname"/>
-      User ID contains: <input type="text" name="uid"/>
-      Migrated: <input type="radio" name="migrated" value="migrated" {% if args.get('migrated') == 'migrated' %}checked{% endif %} />
-      Unmigrated: <input type="radio" name="migrated"  value="unmigrated" {% if args.get('migrated') == 'unmigrated' %}checked{% endif %} />
-      All: <input type="radio" name="migrated"  value="all" {% if args.get('migrated') != 'migrated' and args.get('migrated') != 'unmigrated' %}checked{% endif %}/>
-      <input type="submit" value="Search"/>
-    </form>
+  <div class="row" style="margin: 1em 0 1em 0;">
+    <div class="span12">
+      <form class="form-horizontal" action="." method="GET">
+        <div class="control-group">
+          User name (is <input type="radio" name="unamesearch" value="is" {% if args.unamesearch == 'is' %}checked{% endif %} /> 
+          &nbsp;/ contains <input type="radio" name="unamesearch" value="contains" {% if args.unamesearch != 'is' %}checked{% endif %} />)
+          :<input type="text" name="uname" value="{{ args.uname }}"/>
+        </div>
+        <div class="control-group">
+          User ID is: <input type="text" name="uid" value="{{ args.uid }}"/>
+        </div>
+        <div class="control-group">
+          Migrated: <input type="radio" name="migrated" value="migrated" {% if args.get('migrated') == 'migrated' %}checked{% endif %} />
+          Unmigrated: <input type="radio" name="migrated"  value="unmigrated" {% if args.get('migrated') == 'unmigrated' %}checked{% endif %} />
+          All: <input type="radio" name="migrated"  value="all" {% if args.get('migrated') != 'migrated' and args.get('migrated') != 'unmigrated' %}checked{% endif %}/>
+        </div>
+        <input type="submit" value="Search"/>
+      </form>
+    </div>
   </div>
   <div>
+    {% if pages %}
     <h3>Page {{ page }} of {{ pages }}</h3>
     <div class="pagination pagination-mini">
       <ul>
@@ -25,6 +36,7 @@
       {% endfor %}
       <ul>
     </div>
+    {% endif %}
   </div>
   {% for user in users %}
     <div>

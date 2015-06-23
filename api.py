@@ -766,10 +766,13 @@ def admin_users(user):
     files = defaultdict(list)
     users = []
     query = {}
-    if 'uname' in args:
-        query.update({ 'uname':{'$regex': args['uname'], '$options': 'i'}})
-    if 'uid' in args:
-        query.update({ 'uid':{'$regex': args['uid'], '$options': 'i'}})
+    if args.get('uname'):
+        if args.get('unamesearch') == 'is':
+            query.update({ 'uname': args['uname'] })
+        else:
+            query.update({ 'uname':{'$regex': args['uname'], '$options': 'i'}})
+    if args.get('uid'):
+        query.update({ 'uid': args['uid'] })
     migrated = args.get('migrated')
     if migrated == 'migrated':
         query.update({ 'migrated': 1 })
@@ -778,10 +781,12 @@ def admin_users(user):
     for k in storage.all_keys():
         uid = k.split('/')[1]
         files[uid].append(k) 
-    for u in _user.find(query, skip=skip, limit=rpp):
-        u.update({ 'files': files[u['uid']] })
-        users.append(u)
-    pages = int(math.ceil(_user.find(query).count() / rpp))
+    pages = 0
+    if query:
+        for u in _user.find(query, skip=skip, limit=rpp):
+            u.update({ 'files': files[u['uid']] })
+            users.append(u)
+        pages = int(math.ceil(_user.find(query).count() / rpp))
     return render_template('admin/users.html', **{
         'users': users,
         'page': page,
