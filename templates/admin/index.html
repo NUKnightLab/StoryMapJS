@@ -1,10 +1,16 @@
 {% extends "admin/base.html" %}
 
 {% block content %}
-<div>
-  <a href="{{ url_for('admin_users') }}">Users</a>
-</div>
-<div>
-  <a href="{{ url_for('admin_unmatched_files') }}">Unmatched Files</a>
+<div class="container">
+  <div class="row" style="margin:  1em 0 1em 0;">
+    <div class="span6">
+      <div>
+        <a href="{{ url_for('admin_users') }}">Users</a>
+      </div>
+      <div>
+        <a href="{{ url_for('admin_unmatched_files') }}">Unmatched Files</a>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock content %}

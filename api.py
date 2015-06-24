@@ -752,6 +752,8 @@ def edit(user, id):
 @app.route('/admin/')
 @require_user
 def admin(user):
+    if not user['uid'] in settings.ADMINS:
+        abort(401)
     return render_template('/admin/index.html')
 
 @app.route('/admin/users/')
@@ -765,19 +767,35 @@ def admin_users(user):
     skip = (page - 1) * rpp
     files = defaultdict(list)
     users = []
+    query = {}
+    if args.get('uname'):
+        if args.get('unamesearch') == 'is':
+            query.update({ 'uname': args['uname'] })
+        else:
+            query.update({ 'uname':{'$regex': args['uname'], '$options': 'i'}})
+    if args.get('uid'):
+        query.update({ 'uid': args['uid'] })
+    migrated = args.get('migrated')
+    if migrated == 'migrated':
+        query.update({ 'migrated': 1 })
+    elif migrated == 'unmigrated':
+        query.update({ 'migrated': 0 })
     for k in storage.all_keys():
         uid = k.split('/')[1]
         files[uid].append(k) 
-    for u in _user.find(skip=skip, limit=rpp):
-        u.update({ 'files': files[u['uid']] })
-        users.append(u)
-    pages = int(math.ceil(_user.count() / rpp))
+    pages = 0
+    if query:
+        for u in _user.find(query, skip=skip, limit=rpp):
+            u.update({ 'files': files[u['uid']] })
+            users.append(u)
+        pages = int(math.ceil(_user.find(query).count() / rpp))
     return render_template('admin/users.html', **{
         'users': users,
         'page': page,
         'pages': pages,
         'args': args,
-        'querystring': urllib.urlencode(args.items())
+        'querystring': urllib.urlencode(args.items()),
+        'storage_root': settings.AWS_STORAGE_BUCKET_URL
     })
 
 
