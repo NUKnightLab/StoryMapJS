@@ -172,7 +172,7 @@ def google_auth_start():
         settings.GOOGLE_CLIENT_ID,
         settings.GOOGLE_CLIENT_SECRET,
         _GOOGLE_OAUTH_SCOPES,
-        redirect_uri='http://'+request.host+url_for('google_auth_verify')
+        redirect_uri='https://'+request.host+url_for('google_auth_verify')
     )
     authorize_url = flow.step1_get_authorize_url()
     return redirect(authorize_url)
@@ -191,7 +191,7 @@ def google_auth_verify():
             settings.GOOGLE_CLIENT_ID,
             settings.GOOGLE_CLIENT_SECRET,
             _GOOGLE_OAUTH_SCOPES,
-            redirect_uri='http://'+request.host+url_for('google_auth_verify')
+            redirect_uri='https://'+request.host+url_for('google_auth_verify')
         )
         credentials = flow.step2_exchange(code)
         # ^ this is an oauth2client.client.OAuth2Credentials object
@@ -695,7 +695,7 @@ def examples(name):
 @app.route("/logout/")
 def logout():
     _session_pop('uid')    
-    return redirect('http://www.google.com/accounts/Logout')
+    return redirect('https://www.google.com/accounts/Logout')
 
 @app.route("/userinfo/")
 def userinfo():
@@ -854,5 +854,33 @@ def redirect_old_urls(path):
     abort(404)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    import getopt
+
+    # Add current directory to sys.path
+    site_dir = os.path.dirname(os.path.abspath(__file__))
+    if site_dir not in sys.path:
+        sys.path.append(site_dir)
+
+    
+    ssl_context = None
+    port = 5000
+
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "sp:", ["port="])
+        for opt, arg in opts:
+            if opt == '-s':
+                from OpenSSL import SSL
+                ssl_context = SSL.Context(SSL.SSLv23_METHOD)
+                ssl_context.use_privatekey_file(os.path.join(site_dir, 'website', 'website.key'))
+                ssl_context.use_certificate_file(os.path.join(site_dir, 'website', 'website.crt'))
+            elif opt in ('-p', '--port'):
+                port = int(arg)
+            else:
+                print 'Usage: app.py [-s]'
+                sys.exit(1)   
+    except getopt.GetoptError:
+        print 'Usage: app.py [-s] [-p port]'
+        sys.exit(1)
+        
+    app.run(host='0.0.0.0', port=port, debug=True, ssl_context=ssl_context)
 

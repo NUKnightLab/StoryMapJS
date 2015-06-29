@@ -10,7 +10,7 @@ This code shadoes code in VCO.Map.Leaflet.js -- keep them in sync or unify into 
 */
 if (typeof(google) != "undefined" && google.maps) {
     google.maps.OSMMapType = function() {
-        var map_url = 'http://{S}.tile.openstreetmap.org/{Z}/{X}/{Y}.png';
+        var map_url = 'https://{S}.tile.openstreetmap.org/{Z}/{X}/{Y}.png';
         var subdomains = 'ab';
         return google.maps.ImageMapType.call(this, {
             "getTileUrl": function(coord, zoom) {
