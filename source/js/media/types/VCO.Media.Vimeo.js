@@ -42,7 +42,7 @@ VCO.Media.Vimeo = VCO.Media.extend({
 	_stopMedia: function() {
 		
 		try {
-			this.player.contentWindow.postMessage(JSON.stringify({method: "pause"}), "http://player.vimeo.com");
+			this.player.contentWindow.postMessage(JSON.stringify({method: "pause"}), "//player.vimeo.com");
 		}
 		catch(err) {
 			trace(err);
