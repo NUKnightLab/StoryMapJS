@@ -324,14 +324,14 @@ def _parse_url(url):
     
 def _write_embed(embed_key_name, json_key_name, meta):
     """Write embed page"""    
-    # NOTE: facebook needs the protocol on embed_url for og tag
     image_url = meta.get('image_url', settings.STATIC_URL+'img/logos/logo_storymap.png')
     parts = _parse_url(image_url)
     parts['path'] = urllib.quote(parts['path'])
     image_url = '%(scheme)s://%(netloc)s%(path)s/%(file)s' % parts
         
+    # NOTE: facebook needs the protocol on embed_url for og tag
     content = render_template('_embed.html',
-        embed_url='http:'+urllib.quote(settings.AWS_STORAGE_BUCKET_URL+embed_key_name),
+        embed_url=urllib.quote(settings.AWS_STORAGE_BUCKET_URL+embed_key_name),
         json_url=urllib.quote(settings.AWS_STORAGE_BUCKET_URL+json_key_name),
         title=meta.get('title', ''),
         description=meta.get('description', ''),
