@@ -9,20 +9,3 @@ To stage your changes without forcing `latest` users ahead, type `fab stage` Thi
 To stage your changes to `latest`, type `fab stage_latest` This copies files from the versioned directory in your local `cdn.knightlab.com` respository into the corresponding `latest` directory. 
 
 You have to push and deploy all CDN changes separately.
-
-
-## Deploying to S3 (storymapjs.knightlab.com)
-
-You need the `secrets` repository to deploy to S3.  If you haven't yet, check out that Git repository to the same directory that contains your storymapjs respository.
-
-To update S3, type `fab deploy`.  This runs a build using the latest version tag and synchronizes the files in the build directory with S3.
-
-## Deploying to EC2 (FUTURE)
-
-You need the `secrets` repository to deploy to S3.  If you haven't yet, check out that Git repository to the same directory that contains your storymapjs respository.
-
-Type `fab branch:storymap2 stg|prd deploy`.
-
-The branch task is only needed if you are deploying a branch besides `master`.
-
-
