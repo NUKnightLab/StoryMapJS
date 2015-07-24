@@ -32,7 +32,7 @@ VCO.Media.Instagram = VCO.Media.extend({
 		});
 		
 		// Set source
-		this._el.content_item.src			= "//instagram.com/p/" + this.media_id + "/media/?size=" + this.sizes(this._el.content.offsetWidth);
+		this._el.content_item.src			= "https://instagram.com/p/" + this.media_id + "/media/?size=" + this.sizes(this._el.content.offsetWidth);
 		
 		this.onLoaded();
 		
