@@ -25,7 +25,7 @@ VCO.Media.DailyMotion = VCO.Media.extend({
 		}
 		
 		// API URL
-		api_url = "http://www.dailymotion.com/embed/video/" + this.media_id;
+		api_url = "https://www.dailymotion.com/embed/video/" + this.media_id;
 		
 		// API Call
 		this._el.content_item.innerHTML = "<iframe autostart='false' frameborder='0' width='100%' height='100%' src='" + api_url + "'></iframe>"		

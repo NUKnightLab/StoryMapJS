@@ -25,7 +25,7 @@ VCO.Media.Vine = VCO.Media.extend({
 		api_url = "https://vine.co/v/" + this.media_id + "/embed/simple";
 		
 		// API Call
-		this._el.content_item.innerHTML = "<iframe frameborder='0' width='100%' height='100%' src='" + api_url + "'></iframe><script async src='http://platform.vine.co/static/scripts/embed.js' charset='utf-8'></script>"		
+		this._el.content_item.innerHTML = "<iframe frameborder='0' width='100%' height='100%' src='" + api_url + "'></iframe><script async src='https://platform.vine.co/static/scripts/embed.js' charset='utf-8'></script>"		
 		
 		// After Loaded
 		this.onLoaded();

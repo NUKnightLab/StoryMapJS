@@ -13,15 +13,18 @@
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
 <script src="//cdn.knightlab.com/libs/blueline/latest/js/blueline.min.js"></script>
 <!-- === leaflet -->
-<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.2/leaflet.css" />
 <!-- === google maps -->
 <script src="https://maps.googleapis.com/maps/api/js?v=3.20&sensor=false&libraries=places"></script>
 <!-- === maps.stamen.com -->
-<script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.2.4"></script>
+<script type="text/javascript" src="https://stamen-maps.a.ssl.fastly.net/js/tile.stamen.js?v1.2.4"></script>
 <!-- === storymap -->
 <link rel="stylesheet" href="{{ CDN_URL }}css/storymap.css?v1">
 <!-- TEMPORARILY USE NON-MINIFIED -->
 <script type="text/javascript" src="{{ CDN_URL }}js/storymap.js"></script>
+<!--
+<script type="text/javascript" src="/build/js/storymap.js"></script>
+-->
 <!-- === extra leaflet marker classes -->
 <script type="text/javascript" src="{{ STATIC_URL }}js/leaflet-extras.js"></script>
 <!-- === bootstrap-wysihtml5 -->
@@ -102,7 +105,7 @@ var _default_data = {
             media: {url: "", credit: "", caption: ""},
             location: {
                 line: true, 
-                icon: 'http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png'
+                icon: 'https://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png'
             }
         }
     }
@@ -1278,10 +1281,10 @@ $(function() {
             var embed_url = '';
                         
             if(_storymap_meta.draft_on > _storymap_meta.published_on) {
-                embed_url = 'http:'+storymap_url(_user.uid, _storymap_meta.id, 'draft.html');
+                embed_url = storymap_url(_user.uid, _storymap_meta.id, 'draft.html');
                 $('#share_publish_panel').show();   
             } else {
-                embed_url = 'http:'+storymap_url(_user.uid, _storymap_meta.id, 'index.html');
+                embed_url = storymap_url(_user.uid, _storymap_meta.id, 'index.html');
                 $('#share_publish_panel').hide();
             }
 

@@ -21,7 +21,7 @@ VCO.Media.Vimeo = VCO.Media.extend({
 		this.media_id = this.data.url.split(/video\/|\/\/vimeo\.com\//)[1].split(/[?&]/)[0];
 		
 		// API URL
-		api_url = "http://player.vimeo.com/video/" + this.media_id + "?api=1&title=0&amp;byline=0&amp;portrait=0&amp;color=ffffff";
+		api_url = "https://player.vimeo.com/video/" + this.media_id + "?api=1&title=0&amp;byline=0&amp;portrait=0&amp;color=ffffff";
 		
 		this.player = VCO.Dom.create("iframe", "", this._el.content_item);
 		this.player.width 		= "100%";
@@ -42,7 +42,7 @@ VCO.Media.Vimeo = VCO.Media.extend({
 	_stopMedia: function() {
 		
 		try {
-			this.player.contentWindow.postMessage(JSON.stringify({method: "pause"}), "http://player.vimeo.com");
+			this.player.contentWindow.postMessage(JSON.stringify({method: "pause"}), "https://player.vimeo.com");
 		}
 		catch(err) {
 			trace(err);

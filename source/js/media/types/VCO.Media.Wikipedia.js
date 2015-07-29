@@ -24,7 +24,7 @@ VCO.Media.Wikipedia = VCO.Media.extend({
 		api_language	 = this.data.url.split("//")[1].split(".wikipedia")[0];
 		
 		// API URL
-		api_url = "http://" + api_language + ".wikipedia.org/w/api.php?action=query&prop=extracts&redirects=&titles=" + this.media_id + "&exintro=1&format=json&callback=?";
+		api_url = "https://" + api_language + ".wikipedia.org/w/api.php?action=query&prop=extracts&redirects=&titles=" + this.media_id + "&exintro=1&format=json&callback=?";
 		
 		// API Call
 		
