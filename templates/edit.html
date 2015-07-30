@@ -1281,10 +1281,10 @@ $(function() {
             var embed_url = '';
                         
             if(_storymap_meta.draft_on > _storymap_meta.published_on) {
-                embed_url = 'http:'+storymap_url(_user.uid, _storymap_meta.id, 'draft.html');
+                embed_url = 'https:'+storymap_url(_user.uid, _storymap_meta.id, 'draft.html');
                 $('#share_publish_panel').show();   
             } else {
-                embed_url = 'http:'+storymap_url(_user.uid, _storymap_meta.id, 'index.html');
+                embed_url = 'https:'+storymap_url(_user.uid, _storymap_meta.id, 'index.html');
                 $('#share_publish_panel').hide();
             }
 
