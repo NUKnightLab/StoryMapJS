@@ -331,8 +331,8 @@ def _write_embed(embed_key_name, json_key_name, meta):
         
     # NOTE: facebook needs the protocol on embed_url for og tag
     content = render_template('_embed.html',
-        embed_url=settings.AWS_STORAGE_BUCKET_URL+embed_key_name,
-        json_url=settings.AWS_STORAGE_BUCKET_URL+json_key_name,
+        embed_url=urllib.quote(settings.AWS_STORAGE_BUCKET_URL+embed_key_name),
+        json_url=urllib.quote(settings.AWS_STORAGE_BUCKET_URL+json_key_name),
         title=meta.get('title', ''),
         description=meta.get('description', ''),
         image_url=image_url
