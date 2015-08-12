@@ -703,15 +703,21 @@ def userinfo():
     
     uid = session.get('uid')
     user = None
+    migrate_data = None
     
     if uid:
         user = _user.find_one({'uid': uid})
         if user:
+            if not user['migrated']:
+                migrate_data = google.drive_get_migration_diagnostics(user)
+ 
             del user['_id']
-            user = pprint.pformat(user, indent=4)            
+            user = pprint.pformat(user, indent=4) 
+            migrate_data = pprint.pformat(migrate_data, indent=4) 
+            
             
     return render_template('userinfo.html',
-        uid=uid, user=user)
+        uid=uid, user=user, migrate_data=migrate_data)
   
 @app.route("/select.html/", methods=['GET', 'POST'])
 @app.route("/edit.html/", methods=['GET', 'POST'])
