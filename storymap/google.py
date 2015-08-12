@@ -110,7 +110,39 @@ def drive_get_migrate_list(service):
                               
     return storymap_list
     
+
+def drive_get_migration_diagnostics(user):
+    if not 'google' in user:
+        return 'No google info in user record'
     
+    if not 'credentials' in user['google']:
+        return 'No google credentials in user record'
+    
+    try:
+        credentials = get_credentials(user['google']['credentials'])        
+    except Exception, e:
+        return 'Error getting google credentials [%s]' % str(e)
+    
+    try: 
+        drive_service = get_drive_service(credentials)
+    except Exception, e:
+        return 'Error getting drive service [%s]' % str(e)
+        
+    try:                
+        parent_folder = drive_get_path(drive_service, None, 
+            ['KnightLabStoryMap', 'public'], _filter_shared)
+    except Exception, e:
+        return 'Error getting KnightLabStoryMap/public folder [%s]' % str(e)
+        
+    if not parent_folder:
+        return 'KnightLabStoryMap/public folder not found'
+    
+    try: 
+        return drive_list(drive_service, parent_folder['id'])
+    except Exception, e:
+        return 'Error lsiting KnightLabStoryMap/public folder [%s]' % str(e)
+        
+   
     
     
     
