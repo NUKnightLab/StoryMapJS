@@ -4,6 +4,7 @@
     messages: {
         loading: "Загрузка",
         wikipedia: "Вікіпедыя",
+        start: "Start Exploring"
     },
     buttons: {
         map_overview: "Прагляд мапы",

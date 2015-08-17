@@ -4,6 +4,7 @@ VCO.Language = {
 	messages: {
 		loading: "Laden",
 		wikipedia: "Van Wikipedia, de gratis encyclopedie",
+        start: "Start Exploring"
 	},
 	buttons: {
 		map_overview: "Kaart overzicht",
