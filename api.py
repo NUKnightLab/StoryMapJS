@@ -318,23 +318,19 @@ def _parse_url(url):
     return {
         'scheme': r.scheme or 'https', # embeds go on S3, which should always be https
         'netloc': r.netloc,
-        'path': '/'.join(parts[:-1]),
-        'file': parts[-1]
+        'path': r.parts
     }
 
 def _fix_url_for_opengraph(url):
     parts = _parse_url(url)
     parts['path'] = urllib.quote(parts['path'])
-    return '%(scheme)s://%(netloc)s%(path)s/%(file)s' % parts
+    return '%(scheme)s://%(netloc)s%(path)s' % parts
 
 def _write_embed(embed_key_name, json_key_name, meta):
     """Write embed page"""
     image_url = meta.get('image_url', settings.STATIC_URL+'img/logos/logo_storymap.png')
-    parts = _parse_url(image_url)
-    parts['path'] = urllib.quote(parts['path'])
-    image_url = '%(scheme)s://%(netloc)s%(path)s/%(file)s' % parts
 
-    # NOTE: facebook needs the protocol on embed_url for og tag
+    # NOTE: facebook needs the protocol on embed_url and image_url for og tag
     content = render_template('_embed.html',
         embed_url=_fix_url_for_opengraph(settings.AWS_STORAGE_BUCKET_URL+embed_key_name),
         json_url=urllib.quote(settings.AWS_STORAGE_BUCKET_URL+json_key_name),
