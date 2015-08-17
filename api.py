@@ -318,7 +318,7 @@ def _parse_url(url):
     return {
         'scheme': r.scheme or 'https', # embeds go on S3, which should always be https
         'netloc': r.netloc,
-        'path': r.parts
+        'path': r.path
     }
 
 def _fix_url_for_opengraph(url):
