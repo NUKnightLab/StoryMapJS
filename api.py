@@ -713,6 +713,9 @@ def userinfo():
                 migrate_data = google.drive_get_migration_diagnostics(user)
 
             del user['_id']
+            try:
+                del user['google']['credentials']
+            except KeyError: pass
             user = pprint.pformat(user, indent=4)
             migrate_data = pprint.pformat(migrate_data, indent=4)
 
