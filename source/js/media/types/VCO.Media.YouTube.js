@@ -55,7 +55,9 @@ VCO.Media.YouTube = VCO.Media.extend({
 	_stopMedia: function() {
 		if (this.youtube_loaded) {
 			try {
-				this.player.pauseVideo();
+			    if(this.player.getPlayerState() == YT.PlayerState.PLAYING) {			    
+				    this.player.pauseVideo();
+				}
 			}
 			catch(err) {
 				trace(err);
