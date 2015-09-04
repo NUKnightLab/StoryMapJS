@@ -35,26 +35,26 @@
 <div id="opt_modal" class="modal hide fade" data-backdrop="static">
     <div class="modal-body">
         <!-- error -->
-        <div class="modal-error hide">    
+        <div class="modal-error hide">
             <span class="modal-msg error"></span>
-        </div> 
+        </div>
         <ul class="nav nav-tabs">
             <li class="active"><a href="#opt_display_tab" data-toggle="tab">Display</a></li>
             <li><a href="#opt_sharing_tab" data-toggle="tab">Sharing</a></li>
         </ul>
         <div class="tab-content">
             <div class="tab-pane active" id="opt_display_tab">
-                <form class="form-horizontal">             
+                <form class="form-horizontal">
                     <div class="control-group">
                         <label class="control-label">StoryMap Size</label>
                         <div class="controls">
                             <div class="input-prepend">
                                 <span class="add-on">Width</span>
-                                <input type="text" id="width" value="" class="input-mini"> 
+                                <input type="text" id="width" value="" class="input-mini">
                             </div>
                              <div class="input-prepend">
                                 <span class="add-on">Height</span>
-                                <input type="text" id="height" value="" class="input-mini"> 
+                                <input type="text" id="height" value="" class="input-mini">
                             </div>
                         </div>
                     </div>
@@ -62,27 +62,27 @@
                         <label class="control-label">Language</label>
                         <div class="controls">
                             <select id="language">
-                                <option value="en">English</option>
-                                <option value="be">Belarusian</option>
-                                <option value="zh-cn">Chinese (simplified)</option>
-                                <option value="zh-tw">Chinese (traditional)</option>
-                                <option value="nl">Dutch</option>
-                                <option value="fr">French</option>
-                                <option value="de">German</option>
-                                <option value="it">Italian</option>
-                                <option value="jp">Japanese</option>
-                                <option value="no">Norwegian</option>
-                                <option value="pl">Polish</option>
-                                <option value="sr">Serbian</option>
-                                <option value="es">Spanish</option>
-                                <option value="sv">Swedish</option>
+                                <option value="en" data-lang="English">English</option>
+                                <option value="de" data-lang="German">Deutsch</option>
+                                <option value="es" data-lang="Spanish">Español</option>
+                                <option value="fr" data-lang="French">Français</option>
+                                <option value="it" data-lang="Italian">Italiano</option>
+                                <option value="nl" data-lang="Dutch">Nederlands</option>
+                                <option value="no" data-lang="Norwegian">Norsk</option>
+                                <option value="pl" data-lang="Polish">Polski</option>
+                                <option value="sr" data-lang="Serbian">Srpski</option>
+                                <option value="sv" data-lang="Swedish">Svenska</option>
+                                <option value="be" data-lang="Belarusian">Беларуская</option>
+                                <option value="zh-cn" data-lang="Chinese (simplified)">中文</option>
+                                <option value="zh-tw" data-lang="Chinese (traditional)">正體中文</option>
+                                <option value="jp" data-lang="Japanese">日本語</option>
                             </select>
                             <a class="help" href="javascript:"
                                 data-placement="left"
-                                data-content="Select the language to use in controls and messages when displaying your StoryMap."                    
+                                data-content="Select the language to use in controls and messages when displaying your StoryMap."
                             >&nbsp;<i class="icon-question-sign icon-large"></i></a>
                         </div>
-                    </div>      
+                    </div>
                     <div class="control-group">
                         <label class="control-label">Fonts</label>
                         <div class="controls">
@@ -109,10 +109,10 @@
                             <a class="help" href="javascript:"
                                 data-placement="bottom"
                                 data-html="true"
-                                data-content="Select a font-set for your StoryMap. See below for examples of how the fonts look.<br><img style='margin-top: 5px' src='{{ STATIC_URL }}img/font-options.png'>"                    
+                                data-content="Select a font-set for your StoryMap. See below for examples of how the fonts look.<br><img style='margin-top: 5px' src='{{ STATIC_URL }}img/font-options.png'>"
                             >&nbsp;<i class="icon-question-sign icon-large"></i></a>
                         </div>
-                    </div>      
+                    </div>
                     <div class="control-group">
                         <label class="control-label">Treat As</label>
                         <div class="controls">
@@ -123,7 +123,7 @@
                             <label class="radio inline">
                                 <input type="radio" name="map_as_image" value="true">
                                 Image
-                            </label>                
+                            </label>
                         </div>
                     </div>
                     <div class="control-group">
@@ -136,16 +136,16 @@
                             <label class="radio inline">
                                 <input type="radio" name="call_to_action" value="false">
                                 No
-                            </label>   
-                            <input type="text" id="call_to_action_text" value="" placeholder="enter text, or use default" class="input-large">          
+                            </label>
+                            <input type="text" id="call_to_action_text" value="" placeholder="enter text, or use default" class="input-large">
                             <a class="help" href="javascript:"
                                 data-placement="left"
                                 data-html="true"
-                                data-content="Choosing this will show a button on your first slide to lead your readers into the story. You can change the words on the button.<br><img style='margin-top: 5px' src='{{ STATIC_URL }}img/calltoaction.png'>"                    
+                                data-content="Choosing this will show a button on your first slide to lead your readers into the story. You can change the words on the button.<br><img style='margin-top: 5px' src='{{ STATIC_URL }}img/calltoaction.png'>"
                             >&nbsp;<i class="icon-question-sign icon-large"></i></a>
                             <p id="call_to_action_default">Default: "<span id="call_default_text"></span>"</p>
                         </div>
-                    </div>            
+                    </div>
         <!-- zoomify -->
                     <div class="control-group zoomify-control-group">
                         <label class="control-label">Map Background Color</label>
@@ -160,7 +160,7 @@
                             <a class="help" href="javascript:"
                                 data-html="true"
                                 data-placement="left"
-                                data-content='Enter the URL path for your zoomable image folder.' 
+                                data-content='Enter the URL path for your zoomable image folder.'
                             >&nbsp;<i class="icon-question-sign icon-large"></i>
                             </a>
                         </div>
@@ -171,11 +171,11 @@
                         <div class="controls">
                             <div class="input-prepend">
                                 <span class="add-on">Width</span>
-                                <input type="text" id="zoomify_width" value="" class="input-mini"> 
+                                <input type="text" id="zoomify_width" value="" class="input-mini">
                             </div>
                             <div class="input-prepend">
                                 <span class="add-on">Height</span>
-                                <input type="text" id="zoomify_height" value="" class="input-mini"> 
+                                <input type="text" id="zoomify_height" value="" class="input-mini">
                             </div>
                             <br />
                             <span class="note"><i class="icon-warning-sign"></i> Changing the max image size may move the apparent location of your markers.</p>
@@ -211,10 +211,10 @@
                                 <p>Select a predefined map type.</p>
                                 <p>Select "Mapbox" to enter the ID of your Mapbox map and a
                                 <a href="https://www.mapbox.com/help/define-access-token/" target="_blank">public access token</a>.</p>
-                                <p>Select "custom" to enter the URL for a tile server.  If the server supports multiple subdomains, 
-                                enter them as a single string in the Subdomain field (e.g. subdomains "a", "b", and "c" should 
+                                <p>Select "custom" to enter the URL for a tile server.  If the server supports multiple subdomains,
+                                enter them as a single string in the Subdomain field (e.g. subdomains "a", "b", and "c" should
                                 be entered as "abc").</p>
-                                ' 
+                                '
                             >&nbsp;<i class="icon-question-sign icon-large"></i>
                             </a>
                         </div>
@@ -226,38 +226,38 @@
                                 <input id="map_type" type="text" class="span5" placeholder="http://{s}.domain.org/{z}/{x}/{y}.png">
                             </div>
                         </div>
-                    </div>                    
+                    </div>
                     <div class="control-group map-control-group">
                         <div class="controls">
                             <div class="input-prepend">
                                 <span class="add-on">Subdomains</span>
-                                <input id="map_subdomains" type="text" class="input-small" placeholder="abc">                    
+                                <input id="map_subdomains" type="text" class="input-small" placeholder="abc">
                             </div>
                         </div>
-                    </div>                    
+                    </div>
                     <div class="control-group map-control-group">
                         <div class="controls">
                             <div class="input-prepend">
                                 <span class="add-on">Access Token</span>
-                                <input id="map_access_token" type="text" class="span4" placeholder="public access token">                    
+                                <input id="map_access_token" type="text" class="span4" placeholder="public access token">
                             </div>
                             <br>
                             <span class="help-inline hide">You must enter your public access token</span>
                         </div>
                     </div>
-                </form> 
+                </form>
             </div>
-            <div class="tab-pane" id="opt_sharing_tab">              
+            <div class="tab-pane" id="opt_sharing_tab">
                 <p class='note'>
                     Set these values to improve how your StoryMap appears as part of a tweet or Facebook share.
                 </p>
                 <p>
                 <label><strong>Description</strong></label>
-                <textarea id="opt_description" class="stretch" rows="3"></textarea> 
+                <textarea id="opt_description" class="stretch" rows="3"></textarea>
                 </p>
                 <p>
                 <label><strong>Featured Image</strong></label>
-                <div class="input-prepend" style="width: 96%;">       
+                <div class="input-prepend" style="width: 96%;">
                     <div class="btn-group">
                         <button class="btn dropdown-toggle" data-toggle="dropdown">
                             <span class="caret"></span>
@@ -266,7 +266,7 @@
                             <li><a href="javascript:">image 1</a></li>
                             <li><a href="javascript:">image 2</a></li>
                             <li><a href="javascript:">image 3</a></li>
-                    
+
                         </ul>
                     </div>
                     <input type="text" id="opt_image_url" placeholder="<< select an image, or enter an URL">
@@ -295,8 +295,8 @@
                     </div>
                 </div>
                 </p>
-            </div>            
-        </div>      
+            </div>
+        </div>
     </div>
     <div class="modal-footer">
         <a id="opt_close" href="javascript:;" class="btn btn-primary" >Close</a><!-- data-dismiss="modal" -->
@@ -316,19 +316,19 @@
 <div id="slide_opt_modal" class="modal hide fade" role="dialog" aria-hidden="true">
     <div class="modal-header">
         <h5>Slide Options</h5>
-    </div>    
+    </div>
     <div class="modal-body">
         <!-- error -->
-        <div class="modal-error hide">    
+        <div class="modal-error hide">
             <span class="modal-msg error"></span>
-        </div>    
+        </div>
         <p>
         <label><strong>Background Color</strong></label>
         <input id="background_color" type="text" placeholder="#ffffff">
         </p>
         <p>
         <label><strong>Background Image</strong></label>
-        <div class="input-prepend" style="width: 96%;">       
+        <div class="input-prepend" style="width: 96%;">
             <div class="btn-group">
                 <button class="btn dropdown-toggle" data-toggle="dropdown">
                     <span class="caret"></span>
@@ -337,7 +337,7 @@
                     <li><a href="javascript:">image 1</a></li>
                     <li><a href="javascript:">image 2</a></li>
                     <li><a href="javascript:">image 3</a></li>
-                    
+
                 </ul>
             </div>
             <input type="text" id="background_url" placeholder="<< select an image, or enter an URL">
@@ -383,9 +383,9 @@
 <div id="upload_modal" class="modal hide fade" data-backdrop="static">
     <div class="modal-body">
         <!-- error -->
-        <div class="modal-error hide">    
+        <div class="modal-error hide">
             <span class="modal-msg error"></span>
-        </div>    
+        </div>
         <!-- main -->
         <p>Select an image file to upload to your StoryMap folder.</p>
         <div class="upload-panel">
@@ -431,11 +431,11 @@
 		<h4>Share This StoryMap</h4>
 	</div>
 	<div class="modal-body">
-		
+
         <!-- error -->
-        <div class="modal-error hide">    
+        <div class="modal-error hide">
             <span class="modal-msg error"></span>
-        </div>    
+        </div>
         <!-- main -->
 		<div id="share_publish_panel" class="hide">
 			<form class="form-inline">
@@ -460,27 +460,27 @@
 					</a>
 					<a class="share-link-googleplus" target="_blank" href='#' title="Share on Google+">
 						<i class="icon-google-plus-sign icon-2x"></i>
-					</a>                    
+					</a>
 					<a class="share-link-reddit" target="_blank" href="#" title="Share on Reddit">
-						<img src="//www.reddit.com/static/spreddit5.gif" /> 
+						<img src="//www.reddit.com/static/spreddit5.gif" />
 					</a>
 				</div>
-				
+
 			</div>
 		</div>
 		<div class="share-embed-container">
 			<label>Embed</label>
-			 <textarea id="share_embed" rows="5" onfocus="this.select();" onmouseup="return false;"></textarea> 
+			 <textarea id="share_embed" rows="5" onfocus="this.select();" onmouseup="return false;"></textarea>
 			 <div class="share-embed-params">
 				  <div class="vco-icon-arrow-up"></div>
 				 <div class="controls">
 					 <div class="input-prepend">
 						 <span class="add-on">Width</span>
-						 <input type="text" id="share_width" value="" class="input-mini"> 
+						 <input type="text" id="share_width" value="" class="input-mini">
 					 </div>
 					 <div class="input-prepend">
 						 <span class="add-on">Height</span>
-						 <input type="text" id="share_height" value="" class="input-mini"> 
+						 <input type="text" id="share_height" value="" class="input-mini">
 					 </div>
 				 </div>
 			 </div>
