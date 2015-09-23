@@ -843,6 +843,10 @@ build_dir = os.path.join(settings.PROJECT_ROOT, 'build')
 compiled_dir = os.path.join(settings.PROJECT_ROOT, 'compiled')
 templates_dir = os.path.join(settings.PROJECT_ROOT, 'compiled/templates')
 
+@app.route('/build/embed/')
+def catch_build_embed():
+    return send_from_directory(build_dir, 'embed/index.html')
+    
 @app.route('/build/<path:path>')
 def catch_build(path):
     return send_from_directory(build_dir, path)

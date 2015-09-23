@@ -13,6 +13,6 @@
 {% include "_analytics.html" %}
 </head>
 <body>
-    <iframe src="https://cdn.knightlab.com/libs/storymapjs/latest/embed/?url={%block json_url %}{% endblock %}" frameborder="0" width="100%" height="800"></iframe>
+    <iframe src="{{ CDN_URL }}embed/?url={%block json_url %}{% endblock %}" frameborder="0" width="100%" height="800"></iframe>
 </body>
 </html>
