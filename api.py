@@ -875,7 +875,6 @@ if __name__ == '__main__':
     if site_dir not in sys.path:
         sys.path.append(site_dir)
 
-
     ssl_context = None
     port = 5000
 
@@ -883,10 +882,7 @@ if __name__ == '__main__':
         opts, args = getopt.getopt(sys.argv[1:], "sp:", ["port="])
         for opt, arg in opts:
             if opt == '-s':
-                from OpenSSL import SSL
-                ssl_context = SSL.Context(SSL.SSLv23_METHOD)
-                ssl_context.use_privatekey_file(os.path.join(site_dir, 'website', 'website.key'))
-                ssl_context.use_certificate_file(os.path.join(site_dir, 'website', 'website.crt'))
+                ssl_context = 'adhoc'
             elif opt in ('-p', '--port'):
                 port = int(arg)
             else:
@@ -897,3 +893,4 @@ if __name__ == '__main__':
         sys.exit(1)
 
     app.run(host='0.0.0.0', port=port, debug=True, ssl_context=ssl_context)
+    
