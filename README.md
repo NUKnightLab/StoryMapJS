@@ -48,7 +48,7 @@ If you don't use CodeKit, you must have Python installed. We use python 2.7.
 
 Clone our [fabfile](https://github.com/NUKnightLab/fablib) repository and place it in the same parent directory as your StoryMapJS respository.
 
-Install [virtualenv](https://pypi.python.org/pypi/virtualenv) and [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/)
+Install [virtualenv](https://pypi.python.org/pypi/virtualenv), [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/), and [MongoDB](https://www.mongodb.org/).
 
     # Create a virtual environment
     mkvirtualenv storymapjs
@@ -59,12 +59,13 @@ Install [virtualenv](https://pypi.python.org/pypi/virtualenv) and [virtualenvwra
     # Install python requirements
     pip install -r requirements.txt
  
+    # Start the mongod process 
+    <path to binary>/mongod
+    
     # Run the development server
     fab serve
 
 Files located in the `source` directory are assets for storymapjs itself.
-
-Files located in the `website` directory are for the storymapjs website.
 
 Edit config.json as needed to modify the staging and deployment process.
           
