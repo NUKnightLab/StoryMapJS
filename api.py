@@ -727,7 +727,7 @@ def userinfo():
 @app.route("/edit.html/", methods=['GET', 'POST'])
 def legacy_redirect():
     """Legacy redirect"""
-    return redirect(url_for('select'))
+    return redirect(url_for('select')+'?'+request.query_string)
 
 @app.route("/select/", methods=['GET', 'POST'])
 def select():
