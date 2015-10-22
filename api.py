@@ -429,8 +429,8 @@ def storymap_copy(user, id):
 def storymap_delete(user, id):
     """Delete storymap"""
     try:
-        key_name = storage.key_name(user['uid'], id)
-        key_list, marker = storage.list_keys(key_name, 50)
+        key_prefix = storage.key_prefix(user['uid'], id)        
+        key_list, marker = storage.list_keys(key_prefix, 50)
         for key in key_list:
             storage.delete(key.name);
 
