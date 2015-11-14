@@ -11,18 +11,18 @@
           This file is intended as a bootstrap for translators.
 */
 VCO.Language = {
-    name:                   "English",
-    lang:                   "en",
+    name:                   "Български",
+    lang:                   "bg",
     messages: {
-        loading:            "Loading",
-        wikipedia:          "From Wikipedia, the free encyclopedia",
-        start:              "Start Exploring"
+        loading:            "Зарежда се",
+        wikipedia:          "От Wikipedia, свободната енциклопедия",
+        start:              "Започнете да разглеждате"
     },
     buttons: {
-        map_overview:       "Map Overview",
-        overview:           "Overview",
-        backtostart:        "Back To Beginning",
-        collapse_toggle:    "Hide Map",
-        uncollapse_toggle:  "Show Map"
+        map_overview:       "Начало",
+        overview:           "Преглед",
+        backtostart:        "Обратно към началото",
+        collapse_toggle:    "Скриване на картата",
+        uncollapse_toggle:  "Показване на картата"
     }
 }
