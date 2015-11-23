@@ -4,27 +4,27 @@
 <div class="container">
 <div class="row-fluid">
     <div class="span12">
-    
+
     <h2>StoryMapJS for Technical Users</h2>
-    
+
     <p>Most users will probably use the <a href="{{ url_for('select') }}">StoryMapJS authoring tool</a> to create their StoryMaps. But if you want maximum control over StoryMapJS, read on.
     </p>
-    
+
     <h3>Managing StoryMapJS data</h3>
-    
+
     <p>StoryMapJS uses JSON data as its native data format. You can load the data from a file on the web, or you can create a javascript object by any other means you like.  If you are loading the data from a URL, it must either be on the same server as the page where you are displaying the StoryMap or from a server with correctly configured CORS headers. (The details of cross-domain origin restrictions are out of scope for this document.)
     </p>
     <p>Complete details on the JSON syntax for StoryMapJS is <a href="#json-syntax">below</a>.
     </p>
-      
+
     <h3>Setting up your page</h3>
     <p> You'll need to include code something like the following.
     <pre class="prettyprint">
-&lt;!-- The StoryMap container can go anywhere on the page. Be sure to 
-    specify a width and height.  The width can be absolute (in pixels) or 
-    relative (in percentage), but the height must be an absolute value.  
+&lt;!-- The StoryMap container can go anywhere on the page. Be sure to
+    specify a width and height.  The width can be absolute (in pixels) or
+    relative (in percentage), but the height must be an absolute value.
     Of course, you can specify width and height with CSS instead --&gt;
-&lt;div id="mapdiv" style="width: 100%; height: 600px;"&gt;&lt;/div&gt; 
+&lt;div id="mapdiv" style="width: 100%; height: 600px;"&gt;&lt;/div&gt;
 
 &lt;!-- Your script tags should be placed before the closing body tag. --&gt;
 &lt;link rel="stylesheet" href="https://cdn.knightlab.com/libs/storymapjs/latest/css/storymap.css"&gt;
@@ -32,7 +32,7 @@
 
 &lt;script&gt;
 // storymap_data can be an URL or a Javascript object
-var storymap_data = '{{ STATIC_URL }}demo/demo.json'; 
+var storymap_data = '{{ STATIC_URL }}demo/demo.json';
 
 // certain settings must be passed within a separate options object
 var storymap_options = {};
@@ -40,10 +40,10 @@ var storymap_options = {};
 var storymap = new VCO.StoryMap('mapdiv', storymap_data, storymap_options);
 window.onresize = function(event) {
     storymap.updateDisplay(); // this isn't automatic
-}          
+}
 &lt;/script&gt;</pre>
     </p>
-    <p>When creating a StoryMap object, certain settings, if you wish to override the defaults, may be passed within the separate options parameter. However, as of StoryMap 0.4.6, you can also specify these directly in the <code>storymap_data</code> JSON, as "top-level" keys.  
+    <p>When creating a StoryMap object, certain settings, if you wish to override the defaults, may be passed within the separate options parameter. However, as of StoryMap 0.4.6, you can also specify these directly in the <code>storymap_data</code> JSON, as "top-level" keys.
         <ul>
             <li>map_type</li>
             <li>map_subdomains</li>
@@ -58,16 +58,16 @@ window.onresize = function(event) {
     </p>
     <p>Also, any specified fonts must be loaded by the embedding page.  View the <a href="https://github.com/NUKnightLab/StoryMapJS/blob/master/source/embed/index.html">StoryMap embed tool source code</a> for details.
     </p>
-    
+
     <h3 id="json-syntax">JSON syntax</h3>
-    
+
     <p>StoryMapJS is still in beta, so the JSON format is subject to change. Most changes should be additions, providing backward compatibility.
     </p>
-     
-    <p><strong>Map-based storymaps</strong> tell stories with geographic locations.  The JSON for these StoryMaps have the following structure:      
+
+    <p><strong>Map-based storymaps</strong> tell stories with geographic locations.  The JSON for these StoryMaps have the following structure:
     <pre class="prettyprint">
 {
-    width: <em>integer</em>,                // required for embed tool; width of StoryMap                    
+    width: <em>integer</em>,                // required for embed tool; width of StoryMap
     height: <em>integer</em>,               // required for embed tool; width of StoryMap
     font_css: <em>string</em>,              // optional; font set
     calculate_zoom: <em>true</em>,              // optional; defaults to true.
@@ -80,7 +80,7 @@ window.onresize = function(event) {
     }
 }</pre>
     </p>
-    
+
     <p>
         <code>map_type</code> may be either a custom URL tile template <a href="http://leafletjs.com/reference.html#tilelayer" target="_blank">as described in the Leaflet documentation</a> or one of the following coded values:
         <ul>
@@ -95,15 +95,15 @@ window.onresize = function(event) {
         </ul>
     </p>
     <p>
-        <code>map_subdomains</code> is only relevant if you specify a custom URL tile template.  If needed, it should be specified as a single string, where each character is a valid subdomain substitution (e.g. "abc").    
+        <code>map_subdomains</code> is only relevant if you specify a custom URL tile template.  If needed, it should be specified as a single string, where each character is a valid subdomain substitution (e.g. "abc").
     </p>
 
-    <p><code>calculate_zoom</code> is optional. StoryMapJS will compute the optimal zoom level for each of your slides so as to keep both the previous and the next map point visible. If you'd rather control the zoom level for each slide, set the <code>calculate_zoom</code> option to <code>true</code> and then be sure to set the <code>zoom</code> property for each slide.</p>
+    <p><code>calculate_zoom</code> is optional. StoryMapJS will compute the optimal zoom level for each of your slides so as to keep both the previous and the next map point visible. If you'd rather control the zoom level for each slide, set the <code>calculate_zoom</code> option to <code>false</code> and then be sure to set the <code>zoom</code> property for each slide.</p>
 
     <p><strong>Gigapixel StoryMaps</strong> tell stories using large, high-resolution images.  The JSON for these StoryMaps have the following structure:
     <pre class="prettyprint">
 {
-    width: <em>integer</em>,                    // required for embed tool; width of StoryMap                 
+    width: <em>integer</em>,                    // required for embed tool; width of StoryMap
     height: <em>integer</em>,                   // required for embed tool; height of StoryMap
     font_css: <em>string</em>,                  // optional; font set for UI controls/messages
     calculate_zoom: <em>true</em>,              // optional; defaults to true *unless* map_as_image is true.
@@ -133,7 +133,7 @@ window.onresize = function(event) {
     <pre class="prettyprint">
 {
     type: "overview",      // optional; if present must be set to "overview"
-    location: {            // required for all slides except "overview" slide                    
+    location: {            // required for all slides except "overview" slide
         lat: <em>decimal</em>,      // latitude of point on map
         lon: <em>decimal</em>       // longitude of point on map
     },
@@ -161,4 +161,3 @@ window.onresize = function(event) {
 {% block scripts %}
 <script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
 {% endblock %}
-
