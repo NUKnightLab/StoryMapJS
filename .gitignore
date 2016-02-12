@@ -10,3 +10,5 @@
 codekit-config.json
 
 build
+s3analysis/mirror
+s3analysis/*csv
