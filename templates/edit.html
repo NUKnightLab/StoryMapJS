@@ -482,6 +482,9 @@ var search = function(lat, lng) {
     var data = {lat: lat, lon: lng};
     location_mark(data);
     location_set(_current_slide_index, data);
+    if (_map.getZoom() == 1) {
+      _map.setView(lat, lng, 12);
+    }
 }
 
 var _map_options = {
