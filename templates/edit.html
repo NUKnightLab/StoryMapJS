@@ -163,7 +163,7 @@ function map_set_type() {
     var map_type = (_storymap_data.storymap.map_type || '');
 
     if(map_type == "zoomify") {
-        _map.setMapType(map_type, _storymap_data.storymap.zoomify);
+        _map.setZoomifyMapType(map_type, _storymap_data.storymap.zoomify);
     } else {
         _map.setMapType(map_type,
             (_storymap_data.storymap.map_subdomains || 'a').split(''),
