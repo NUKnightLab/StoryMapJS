@@ -478,6 +478,13 @@ function font_update() {
 // Map
 //
 
+var search = function(lat, lng) {
+    var data = {lat: lat, lon: lng};
+    location_mark(data);
+    location_set(_current_slide_index, data);
+    _map.setView(data.lat, data.lon, 12);
+}
+
 var _map_options = {
     map_id: 'map',
     map_overlay_id: 'map_overlay',
@@ -495,11 +502,7 @@ var _map_options = {
         marker_drag: function(lat, lng) {
             location_set(_current_slide_index, {lat: lat, lon: lng});
         },
-        search: function(lat, lng) {
-            var data = {lat: lat, lon: lng};
-            location_mark(data);
-            location_set(_current_slide_index, data);
-        }
+        search: search
     }
 };
 
@@ -1375,7 +1378,28 @@ window.onresize = function(event) {
     }
 }
 
+initAutocomplete = function() {
+  var input = document.getElementById('map_search_input');
+  if (input) {
+    var search_box = new google.maps.places.SearchBox(input);
+
+    google.maps.event.addListener(search_box, 'places_changed', function() {
+        var places = search_box.getPlaces();
+        if(places.length) {
+            var location = places[0].geometry.location;
+            search({lat: location.lat(), lon: location.lng()});
+            input.value = '';
+
+         }
+    });
+  } else {
+    console.log("Can't find input to set up searchbox")
+  }
+}
 </script>
+<!-- Google Maps JS API -->
+<script src="https://maps.googleapis.com/maps/api/js?libraries=places&callback=initAutocomplete"
+     async defer></script>
 <!-- LEAVE THIS HERE -->
 <script type="text/javascript" src="{{ STATIC_URL }}js/modals.js"></script>
 </body>
