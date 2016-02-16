@@ -14,8 +14,6 @@
 <script src="//cdn.knightlab.com/libs/blueline/latest/js/blueline.min.js"></script>
 <!-- === leaflet -->
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.2/leaflet.css" />
-<!-- === maps.stamen.com -->
-<script type="text/javascript" src="https://stamen-maps.a.ssl.fastly.net/js/tile.stamen.js?v1.2.4"></script>
 <!-- === storymap -->
 <link rel="stylesheet" href="{{ CDN_URL }}css/storymap.css?v1">
 <!-- TEMPORARILY USE NON-MINIFIED -->
@@ -160,15 +158,8 @@ function get_map_as_image() {
 }
 
 function map_set_type() {
-    var map_type = (_storymap_data.storymap.map_type || '');
-
-    if(map_type == "zoomify") {
-        _map.setZoomifyMapType(map_type, _storymap_data.storymap.zoomify);
-    } else {
-        _map.setMapType(map_type,
-            (_storymap_data.storymap.map_subdomains || 'a').split(''),
-            _storymap_data.storymap.map_access_token);
-    }
+  // this used to have different signatures for google and leaflet but trying to eliminate google
+    _map.setMapType(_storymap_data);
 }
 
 function location_set(slide_index, data) {
@@ -577,7 +568,7 @@ function slides_load(init_callback) {
 
     font_update();
 
-    // sharing options
+    // sharing access_token
     $('#opt_description').val(_storymap_meta.description || '');
     $('#opt_image_url').val(_storymap_meta.image_url || '');
 

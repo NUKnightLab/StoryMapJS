@@ -503,19 +503,56 @@ LeafletEditorMap.prototype.setZoomifyMapType = function(map_type, zoomify_data) 
         this.tilelayer = null;
     }
 
-    this.tilelayer = L.tileLayer.zoomify(
-        zoomify_data.path,
-        zoomify_data
-    );
     this.tilelayer.addTo(this.map);
 }
 
-LeafletEditorMap.prototype.setMapType = function(map_type, map_subdomains, map_access_token) {
+LeafletEditorMap.prototype.setMapType = function(storymap_config) {
+
   if(this.tilelayer) {
       this.map.removeLayer(this.tilelayer);
       this.tilelayer = null;
   }
 
-  this.tilelayer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png');
+  var map_type = (storymap_config.storymap.map_type || '');
+  if(map_type == "zoomify") {
+      zoomify_data = storymap_config.zoomify;
+      this.tilelayer = L.tileLayer.zoomify(
+          zoomify_data.path,
+          zoomify_data
+      );
+  } else {
+
+    var parts = map_type.split(':')
+    switch(parts[0]) { // this is a little duplicative of stuff in VCO.Map.Leaflet but I'm not sure that we can use that here. Take a look, though. Otherwise, add new tile layers...
+      case 'http':
+      case 'https':
+        var options = {};
+        if (storymap_config.storymap.map_subdomains) {
+          options.subdomains = storymap_config.storymap.map_subdomains;
+        }
+        this.tilelayer = L.tileLayer(map_type, options);
+        break;
+      case 'stamen':
+        this.tilelayer = new L.StamenTileLayer(parts[1]);
+        break;
+      case 'mapbox':
+        // need to update to handle new mapbox studio format: URLs like mapbox://styles/nuknightlab/cikplzs9w00ddsykp7vqdz22u
+        if (mapbox_name = parts[1]) {
+          var access_token = storymap_config.storymap.map_access_token;
+          if (!access_token) {
+            // temporarily use ours but maybe we issue a warning?
+            access_token = 'pk.eyJ1IjoibnVrbmlnaHRsYWIiLCJhIjoieUpRU1FOWSJ9.f7Z1min5DNfTPBIb7RbnGA'
+          }
+          this.tilelayer = new L.TileLayer("https://api.tiles.mapbox.com/v4/"+mapbox_name+"/{z}/{x}/{y}.png?access_token="+access_token);
+          break;
+        }
+      case 'osm':
+        _options = {subdomains: 'ab'};
+        this.tilelayer = new L.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', _options);
+        break;
+      default:
+        this.tilelayer = new L.StamenTileLayer('toner');
+    }
+  }
   this.tilelayer.addTo(this.map);
 }
