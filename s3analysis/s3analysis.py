@@ -12,6 +12,7 @@ settings_module = os.environ.setdefault('FLASK_SETTINGS_MODULE', 'core.settings.
 try:
     importlib.import_module(settings_module)
 except ImportError, e:
+    print sys.path
     raise ImportError("Could not import settings '%s' (Is it on sys.path?): %s" % (settings_module, e))
 
 from storymap import storage
@@ -121,6 +122,8 @@ def process_keys(keys, data_csv, error_log, dump_dir=None, force_reload=False):
     d['base_layer'] = data['storymap'].get('map_type','default')
     if d['base_layer'] == 'zoomify':
         d['kind'] = 'gigapixel'
+    
+    d['url'] = data['url']
 
     d['slide_count'] = len(data['storymap']['slides'])
     for i,slide in enumerate(data['storymap']['slides']):
@@ -156,7 +159,7 @@ if __name__ == '__main__':
         error_log.writerow(['key', 'error'])
         with open("s3analysis/storymap_data.csv", "w") as f:
             fields = ['user', 'title_slug', 'kind', 'slide_count', 'status', 'base_layer', 'uploaded_image_count',
-                      'slide_index', 'media_domain', 'background']
+                      'slide_index', 'media_domain', 'background', 'url']
             data_csv = csv.DictWriter(f,fields)
             data_csv.writerow(dict(zip(fields, fields))) # header row
             for i, key in enumerate(bucket.list(prefix='storymapjs')):
