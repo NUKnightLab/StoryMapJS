@@ -42,19 +42,13 @@ Use `image` inside the location object and include a url to use. `use_custom_mar
 
 ## Setting up a development environment
 
-The StoryMapJS repository comprises two distinct modes of development: changes to the javascript library and changes to the authoring system.
-
-We welcome community contributions to the javascript library, and instructions for setting up to do that follow. We don't currently expect community contributions to the authoring tool, and some information about why is further below.
-
-### Setting up to modify StoryMapJS Javascript
-
-In order to stay consistent with our other kinds of deployment tools, we use python and Fabric to build and deploy StoryMapJS. However, if you are comfortable using [CodeKit](http://incident57.com/codekit/), you can use it also: the rules for assembling the various files into a single final storymap.js are specified using CodeKit's syntax.
+In order to stay consistent with other kinds of deployment tools, we use python and Fabric to build and deploy StoryMapJS. However, if you are comfortable using [CodeKit](http://incident57.com/codekit/), you can use it also: the rules for assembling the various files into a single final storymap.js are specified using CodeKit's syntax.
 
 If you don't use CodeKit, you must have Python installed. We use python 2.7.
 
-Clone our [fabfile](https://github.com/NUKnightLab/fablib) repository and place it in the same parent directory as your StoryMapJS repository.
+Clone our [fabfile](https://github.com/NUKnightLab/fablib) repository and place it in the same parent directory as your StoryMapJS respository.
 
-Install [virtualenv](https://pypi.python.org/pypi/virtualenv) and [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/)
+Install [virtualenv](https://pypi.python.org/pypi/virtualenv), [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/), and [MongoDB](https://www.mongodb.org/).
 
     # Create a virtual environment
     mkvirtualenv storymapjs
@@ -62,41 +56,23 @@ Install [virtualenv](https://pypi.python.org/pypi/virtualenv) and [virtualenvwra
     # Activate the virtual environemnt
     workon storymapjs
 
-    # If you are at Knight Lab and intend to work on
-		# both javascript and the authoring tool:
-    pip install -r js-requirements.txt
+    # Install python requirements
+    pip install -r requirements.txt
 
-Once you've done this, you can edit files in the `source` directory to add features or fix bugs. After editing, use the `fab build` command to compile the javascript fragments into the `build` directory. You should be sure to test any changes you make against code compiled this way.
+    # Start the mongod process
+    <path to binary>/mongod
 
-### Setting up to develop the Authoring Tool/Server
+    # Run the development server
+    fab serve
 
-The StoryMapJS authoring tool uses Amazon S3 to store configuration and uploaded images for people who create storymaps. Because we need to control access to the S3 buckets, we have not invested the effort to support development of this part of StoryMap for people outside of the Knight Lab.
-
-If you are associated with Knight Lab, talk to someone on the development staff about getting access to the S3 credentials. Then follow the steps below. Some of this is redundant to the above, but you can just follow these steps and you'll be able to contribute to both facets of the project.
-
-
-Clone our [fabfile](https://github.com/NUKnightLab/fablib) repository and place it in the same parent directory as your StoryMapJS repository.
-
-Install [virtualenv](https://pypi.python.org/pypi/virtualenv), [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/), and [MongoDB](https://www.mongodb.org/).
-
-```bash
-# Create a virtual environment
-mkvirtualenv storymapjs
-
-# Activate the virtual environemnt
-workon storymapjs
-
-# If you are at Knight Lab and intend to work on
-# both javascript and the authoring tool:
-pip install -r requirements.txt
-
-# Start the mongod process
-<path to binary>/mongod
-
-# Run the development server
-fab serve
-```
+Files located in the `source` directory are assets for storymapjs itself.
 
 Edit config.json as needed to modify the staging and deployment process.
 
 At this time, edits to the HTML for the website are automatically visible when reloading the local server. Edits to CSS and JavaScript must be manually compiled before you'll see them.  Run `fab build`. This is something we'd like to make more automatic eventually.
+
+### A note about installing python requirements on Mac OS X 10.11 "El Capitan"
+Apparently, Apple removed support for `openssl` in Mac OS X 10.11. Here's the solution we've found.
+
+* `brew install openssl`
+* `CFLAGS="-I$(brew --prefix openssl)/include -I$(xcrun --show-sdk-path)/usr/include" LDFLAGS="-L$(brew --prefix openssl)/lib" pip install -r requirements.txt`
