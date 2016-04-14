@@ -257,53 +257,8 @@
                 </form>
             </div>
             <div class="tab-pane" id="opt_sharing_tab">
-                <p class='note'>
-                    Set these values to improve how your StoryMap appears as part of a tweet or Facebook share.
-                </p>
-                <p>
-                <label><strong>Description</strong></label>
-                <textarea id="opt_description" class="stretch" rows="3"></textarea>
-                </p>
-                <p>
-                <label><strong>Featured Image</strong></label>
-                <div class="input-prepend" style="width: 96%;">
-                    <div class="btn-group">
-                        <button class="btn dropdown-toggle" data-toggle="dropdown">
-                            <span class="caret"></span>
-                        </button>
-                        <ul id="opt_image_select" class="dropdown-menu">
-                            <li><a href="javascript:">image 1</a></li>
-                            <li><a href="javascript:">image 2</a></li>
-                            <li><a href="javascript:">image 3</a></li>
-
-                        </ul>
-                    </div>
-                    <input type="text" id="opt_image_url" placeholder="<< select an image, or enter an URL">
-                </div>
-                <p>or upload an image to your StoryMap folder.</p>
-                <div class="upload-panel">
-                    <form class="form-inline">
-                    <a class="upload-file-link btn" href="javascript:">
-                    Choose File...
-                    <input type="file" class="upload-file" accept="image/*" size="40">
-                    </a>
-                    &nbsp;<label class="upload-file-name"></label>
-                    &nbsp;<a href="javascript:" class="btn btn-success upload pull-right">Upload</a>
-                    </form>
-                </div>
-                <div class="upload-conflict hide">
-                    <p class="error">A file with the same name already exists.</p>
-                    <label class="radio upload-conflict-replace">
-                        <input type="radio" name="upload_modal_conflict" value="replace">Replace existing file
-                    </label>
-                    <div>
-                    <label class="radio inline upload-conflict-rename">
-                        <input type="radio" name="upload_modal_conflict" value="rename">Save file as:
-                        <input class="upload-rename-as" type="text" size="40">
-                    </label>
-                    </div>
-                </div>
-                </p>
+                <label>You can modify how your StoryMap appears as part of a tweet or Facebook share by clicking on the "Share" button at the top right.</label>
+                <a id="opt_share" href="javascript:$('#storymap_share').trigger('click');" class="btn btn-primary" >Open Share Settings</a><!-- data-dismiss="modal" -->
             </div>
         </div>
     </div>
@@ -478,6 +433,55 @@
 			</div>
 		</div>
 		<div class="share-embed-container">
+      <div class="tab-pane" id="opt_sharing_tab">
+          <p class='note'>
+              Set these values to improve how your StoryMap appears as part of a tweet or Facebook share.
+          </p>
+          <p>
+          <label><strong>Description</strong></label>
+          <textarea id="share_description" class="stretch" rows="3"></textarea>
+          </p>
+          <p>
+          <label><strong>Featured Image</strong></label>
+          <div class="input-prepend" style="width: 96%;">
+              <div class="btn-group">
+                  <button class="btn dropdown-toggle" data-toggle="dropdown">
+                      <span class="caret"></span>
+                  </button>
+                  <ul id="share_image_select" class="dropdown-menu">
+                      <li><a href="javascript:">image 1</a></li>
+                      <li><a href="javascript:">image 2</a></li>
+                      <li><a href="javascript:">image 3</a></li>
+
+                  </ul>
+              </div>
+              <input type="text" id="share_image_url" placeholder="<< select an image, or enter an URL">
+          </div>
+          <p>or upload an image to your StoryMap folder.</p>
+          <div class="upload-panel">
+              <form class="form-inline">
+              <a class="upload-file-link btn" href="javascript:">
+              Choose File...
+              <input type="file" class="upload-file" accept="image/*" size="40">
+              </a>
+              &nbsp;<label class="upload-file-name"></label>
+              &nbsp;<a href="javascript:" class="btn btn-success upload pull-right">Upload</a>
+              </form>
+          </div>
+          <div class="upload-conflict hide">
+              <p class="error">A file with the same name already exists.</p>
+              <label class="radio upload-conflict-replace">
+                  <input type="radio" name="upload_modal_conflict" value="replace">Replace existing file
+              </label>
+              <div>
+              <label class="radio inline upload-conflict-rename">
+                  <input type="radio" name="upload_modal_conflict" value="rename">Save file as:
+                  <input class="upload-rename-as" type="text" size="40">
+              </label>
+              </div>
+          </div>
+          </p>
+      </div>
 			<label>Embed</label>
 			 <textarea id="share_embed" rows="5" onfocus="this.select();" onmouseup="return false;"></textarea>
 			 <div class="share-embed-params">
