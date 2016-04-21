@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -521,7 +522,7 @@ function slides_load(init_callback) {
     if(call_to_action) {
        $('#call_to_action_text').show().val(get_storymap_property('call_to_action_text', ''));
     } else {
-        $('#call_to_action_text').hide();
+       $('#call_to_action_text').hide();
     }
 
     document.getElementById('map').style.backgroundColor =
@@ -604,8 +605,11 @@ function slides_load(init_callback) {
 function map_init(init_callback) {
     var map_type = _storymap_data.storymap.map_type || _default_data.storymap.map_type;
 
-    if(map_type == "zoomify") {
+    if(map_type && map_type.match('^zoomify:.+')) {
+        console.log('zoom');
         $('.map-control-group').hide();
+
+        $('.zoomify-control-group').show();
 
         $('#zoomify_path').val(_storymap_data.storymap.zoomify.path);
         $('#zoomify_width').val(_storymap_data.storymap.zoomify.width);
@@ -846,6 +850,7 @@ $(function() {
         // Display: Zoomify
         //
         .on('change', '#zoomify_path', function() {
+
             var value = $(this).val().trim();
 
             var re = /drive.google.com\/open\?id=/
@@ -899,6 +904,8 @@ $(function() {
         })
         .on('change', '#map_type_menu', function(event) {
             var map_type = $(this).val();
+            _storymap_data.storymap.zoomify = false;
+            $('.zoomify-control-group').hide();
 
             if(!map_type) {
                 $('#map_type').val('').attr('placeholder', 'http://{s}.domain.org/{z}/{x}/{y}.png')
@@ -910,6 +917,17 @@ $(function() {
 
                 _storymap_data.storymap.map_type = '';
                 _storymap_data.storymap.map_subdomains = '';
+            } else if(map_type == 'zoomify') {
+              _storymap_data.storymap.zoomify = {};
+
+              $('#map_access_token').val('').closest('.control-group').hide();
+              $('#map_subdomains').val('').closest('.control-group').hide();
+              $('.zoomify-control-group').show();
+
+                _storymap_data.storymap.map_type = 'zoomify';
+                _storymap_data.storymap.zoomify.path = "";
+                _storymap_data.storymap.zoomify.height = 600;
+                _storymap_data.storymap.zoomify.width = 600;
             } else if(map_type == 'mapbox') {
                 $('#map_type').val('').attr('placeholder', 'username.mapid')
                     .prev().html('Map ID')
