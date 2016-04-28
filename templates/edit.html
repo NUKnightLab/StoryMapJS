@@ -1017,6 +1017,23 @@ $(function() {
 
         if(id == 'url') {
             slide_set_class(_current_slide_index);
+
+            // Create Media
+            if (val) {
+              var $preview = $('.data-media-preview');
+              var media = VCO.MediaType({'url': val})
+
+              // Determine the media type
+              media.mediatype 	= VCO.MediaType(media);
+              media.media_name 	= media.name;
+              media.media_type 	= media.type;
+
+              // Create a media object using the matched class name
+              element = new media.cls(media);
+              element.loadMedia()
+              console.log(element._el.container);
+              $preview.append(element._el.container);
+            }
         }
     });
 
