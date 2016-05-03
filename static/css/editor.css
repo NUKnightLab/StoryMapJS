@@ -847,6 +847,23 @@ label, .data-media-upload {
 }
 .data-section input[type="text"] {height: 28px;}
 
+.data-media-preview {
+	display: inline-block;
+	width: 35%;
+	margin-right: 4%;
+	vertical-align: top;
+}
+
+.data-media-details {
+	display: inline-block;
+	width: 60%
+}
+
+.vco-media-item {
+	width: 100%;
+	height: auto;
+}
+
 .data-media-icons {
 	text-align:right;
 	width:100%;
