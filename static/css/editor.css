@@ -849,19 +849,29 @@ label, .data-media-upload {
 
 .data-media-preview {
 	display: inline-block;
-	width: 35%;
+	width: 40%;
 	margin-right: 4%;
 	vertical-align: top;
 }
 
 .data-media-details {
 	display: inline-block;
-	width: 60%
+	width: 55%
 }
 
 .vco-media-item {
 	width: 100%;
 	height: auto;
+}
+
+.data-media-preview .vco-media-twitter blockquote p{
+	font-size: 16px;
+	line-height: 21px;
+}
+
+.vco-media-wikipedia {
+	height: 300px;
+	overflow: scroll;
 }
 
 .data-media-icons {
