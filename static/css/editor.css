@@ -844,14 +844,24 @@ label, .data-media-upload {
     margin-left: 0;
     margin-right: 0;
     width: 100%;
+		height: 100%;
 }
 .data-section input[type="text"] {height: 28px;}
 
 .data-media-preview {
 	display: inline-block;
-	width: 40%;
+	width: 38%;
 	margin-right: 4%;
 	vertical-align: top;
+	height: 100%;
+}
+
+.data-media-preview > p{
+	text-align: center;
+	background-color: #dddddd;
+	color: #777777;
+	padding-top: 90px;
+	height: 116px;
 }
 
 .data-media-details {

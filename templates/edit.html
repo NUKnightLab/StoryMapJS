@@ -286,7 +286,7 @@ function slide_select(event) {
         $('#text').val(data.text.text);
         $('iframe.wysihtml5-sandbox').contents().find('body').html(data.text.text);
     }
-    
+
     media_preview_update($('#url').val().trim());
 }
 
@@ -480,12 +480,17 @@ function font_update() {
 function media_preview_update(url) {
     var $preview = $('.data-media-preview');
     $preview.empty();
-    var media = VCO.MediaType({'url': url})
-    if (media.type) {
-      // Create a media object using the matched class name
-      var element = new media.cls(media);
-      element.loadMedia()
-      $preview.append(element._el.container);
+
+    if (url) {
+      var media = VCO.MediaType({'url': url})
+      if (media.type) {
+        // Create a media object using the matched class name
+        var element = new media.cls(media);
+        element.loadMedia()
+        $preview.append(element._el.container);
+      }
+    } else {
+      $preview.append("<p>No Media Selected</p>");
     }
 }
 
