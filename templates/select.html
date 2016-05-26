@@ -89,59 +89,14 @@
                 <tbody></tbody>
             </table>
         </div>
-<!-- create select type panel -->
-<!-- no longer in use because the "New" button jumps straight to map -->
-        <div class="entry-panel entry-type hide">
-            <p>What type of story do you want to create?</p>
-            <div class="type-panel">
-                <div>
-                    <a href="javascript:;" class="vco-icon-location icon-button" onclick="$('#entry_modal').trigger('show_create_map');"></a>
-                 </div>
-                <label onclick="$('#entry_modal').trigger('show_create_map');">Map</label>
-            </div>
-             <div class="type-panel">
-                <div>
-                    <a href="javascript:;" class="vco-icon-image icon-button" onclick="$('#entry_modal').trigger('show_create_zoomify');"></a>
-                </div>
-                <label><span onclick="$('#entry_modal').trigger('show_create_zoomify');">Gigapixel</span> <a class="help" href="javascript:;"
-                        data-placement="top"
-                        data-html="true"
-                        data-content="Tell a story using a large photograph, a piece of art, or a historic map. <a href='{{ url_for('gigapixel') }}' target='_blank'>Learn more</a>"
-                    >&nbsp;<i class="icon-question-sign icon-large"></i></a>
-                </label>
-
-            </div>
-        </div>
 <!-- create map panel -->
         <div class="entry-panel entry-create-map hide">
             <p>
                 <label>Great!  Let's create your StoryMap.  What do you want to call it?</label>
                 <input type="text" class="entry-create-title stretch" data-onsubmit="entry_create" />
             </p>
-        </div>
-<!-- create zoomify panel -->
-        <div class="entry-panel entry-create-zoomify hide">
-            <p>
-                <label>Great!  Let's create your StoryMap.  What do you want to call it?</label>
-                <input type="text" class="entry-create-title stretch" data-onsubmit="entry_create" />
-            </p>
-            <p>
-                <label>URL path for your image directory:</label>
-                <input type="text" id="entry_create_path" class="stretch" value="" placeholder="http://www.domain.org/directory/" />
-            </p>
-            <p>
-                <label>Maximum dimensions of your image:</label>
-                <div class="controls">
-                    <div class="input-prepend">
-                        <span class="add-on">Width</span>
-                        <input type="text" id="entry_create_width" value="" class="input-small">
-                    </div>
-                     <div class="input-prepend">
-                        <span class="add-on">Height</span>
-                        <input type="text" id="entry_create_height" value="" class="input-small">
-                    </div>
-                </div>
-            </p>
+            <p class="ui-note">Making a gigapixel storymap? We moved those details, and made a few other small changes to the StoryMap editor.
+              <a target="_blank" href="http://knightlab.northwestern.edu/2016/05/24/a-few-small-improvements-to-storymapjs/">Read this for more info.</a></p>
         </div>
 <!-- import panel -->
         <div class="entry-panel entry-import hide">
