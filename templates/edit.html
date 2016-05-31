@@ -623,12 +623,11 @@ function slides_load(init_callback) {
 
 function map_init(init_callback) {
     var map_type = _storymap_data.storymap.map_type || _default_data.storymap.map_type;
-
-    if(map_type && map_type.match('^zoomify:.+')) {
-        console.log('zoom');
+    if(map_type && map_type.match('^zoomify.*$')) {
         $('.map-control-group').hide();
-
         $('.zoomify-control-group').show();
+
+        $('#map_type_menu').val("zoomify");
 
         $('#zoomify_path').val(_storymap_data.storymap.zoomify.path);
         $('#zoomify_width').val(_storymap_data.storymap.zoomify.width);
