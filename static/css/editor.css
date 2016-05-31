@@ -81,9 +81,6 @@ li.default {color: #aaa;padding-left: 6px;padding-right: 6px;}
 a.help {color: #333;margin-left: 6px;}
 a.help:hover {text-decoration: none;}
 
-.note {font-size: 0.8em;}
-.ui-note {font: 13px Roboto, Arial, Sans-serif;}
-
 /*	MODALS
 ----------------------------------------------------- */
 
@@ -355,6 +352,11 @@ input[type="radio"] {margin: 0;}
     -ms-transform: rotate(45deg);
     -webkit-transform: rotate(45deg);
 	font-family: "Apres RE","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+.entry-panel p.ui-note {
+	margin: 4em 0 0 0;
+	font-style: italic;
 }
 
 .entry-list .table-header {margin-bottom: 6px;}
@@ -1007,3 +1009,6 @@ animation: none;
     -webkit-transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
   }
 }
+
+.note {font-size: 0.8em;}
+.ui-note {font: 13px Roboto, Arial, Sans-serif;}
