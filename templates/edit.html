@@ -624,7 +624,7 @@ function slides_load(init_callback) {
 function map_init(init_callback) {
     var map_type = _storymap_data.storymap.map_type || _default_data.storymap.map_type;
 
-    if(map_type && map_type.match('^zoomify:.+')) {
+    if(map_type && map_type.match('^zoomify.*')) {
         console.log('zoom');
         $('.map-control-group').hide();
 
