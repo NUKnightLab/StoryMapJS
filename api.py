@@ -37,7 +37,7 @@ from storymap import storage, google
 from storymap.connection import _user
 
 app = Flask(__name__)
-app.config.from_envvar('FLASK_CONFIG_MODULE')
+app.config.from_envvar('FLASK_SETTINGS_FILE')
 
 settings = sys.modules[settings_module]
 
@@ -883,6 +883,7 @@ if __name__ == '__main__':
         for opt, arg in opts:
             if opt == '-s':
                 ssl_context = 'adhoc'
+                print 'ssl context: %s' % ssl_context
             elif opt in ('-p', '--port'):
                 port = int(arg)
             else:
