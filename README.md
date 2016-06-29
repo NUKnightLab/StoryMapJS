@@ -14,7 +14,7 @@ For each language, we need a simple file with a name like `*xx*.js`, where *xx* 
 
 ##GigaPixel
 
-Images are rendered so when set to be map_as_image the entire image is shown. When set as cartography the zoom will set so that all the markers fit. 
+Images are rendered so when set to be map_as_image the entire image is shown. When set as cartography the zoom will set so that all the markers fit.
 
 Points are set to only display on mouseover in image mode, but you can set map_as_image to false in the config options to always show the points. The points are hidden when the intent is an image so that nothing obstructs the image the viewer is looking at. Looking at a painting is hard with a bunch of points on it.
 
@@ -52,21 +52,27 @@ Install [virtualenv](https://pypi.python.org/pypi/virtualenv), [virtualenvwrappe
 
     # Create a virtual environment
     mkvirtualenv storymapjs
-    
+
     # Activate the virtual environemnt
     workon storymapjs
-        
+
     # Install python requirements
     pip install -r requirements.txt
- 
-    # Start the mongod process 
+
+    # Start the mongod process
     <path to binary>/mongod
-    
+
     # Run the development server
     fab serve
 
 Files located in the `source` directory are assets for storymapjs itself.
 
 Edit config.json as needed to modify the staging and deployment process.
-          
+
 At this time, edits to the HTML for the website are automatically visible when reloading the local server. Edits to CSS and JavaScript must be manually compiled before you'll see them.  Run `fab build`. This is something we'd like to make more automatic eventually.
+
+### A note about installing python requirements on Mac OS X 10.11 "El Capitan"
+Apparently, Apple removed support for `openssl` in Mac OS X 10.11. Here's the solution we've found.
+
+* `brew install openssl`
+* `CFLAGS="-I$(brew --prefix openssl)/include -I$(xcrun --show-sdk-path)/usr/include" LDFLAGS="-L$(brew --prefix openssl)/lib" pip install -r requirements.txt`

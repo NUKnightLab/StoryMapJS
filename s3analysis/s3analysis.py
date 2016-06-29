@@ -30,6 +30,9 @@ def prepare_data_from_keys(keys, error_log):
     """Given a set of S3 keys for a single storymap, analyze them to find the "best" JSON file. Read that file in,
        and "annotate" it with a list of the key names so that we can cache the data and not have to read from S3
        if we make changes to what we pull out."""
+
+    user, title_slug = keys[0].name.split('/')[1:3]
+
     image_keys = []
     pub = draft = None
     for k in keys:
@@ -59,6 +62,9 @@ def prepare_data_from_keys(keys, error_log):
     data['status'] = status
     data['image_count'] = len(image_keys)
     data['keys'] = [k.name for k in keys]
+    filename = 'draft.html' if status == 'draft' else 'index.html'
+
+    data['url'] = 'http://uploads.knightlab.com/storymapjs/{}/{}/{}'.format(user, title_slug, filename)
 
     return data
 
@@ -161,6 +167,6 @@ if __name__ == '__main__':
                     process_keys(keys, data_csv, error_log, 's3analysis/mirror') # remove the third argument to not mirror the files
                     keys = []
                     processed += 1
-                    if processed > 0 and processed % 1000 == 0: print processed, 
+                    if processed > 0 and processed % 1000 == 0: print processed,
                 last_user_title = user_title
                 keys.append(key)
