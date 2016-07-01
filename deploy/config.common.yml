@@ -1,3 +1,4 @@
+# git-deploy 1.0.1
 project_name: StoryMapJS
 port: 9014
 python: python2
