@@ -43,16 +43,20 @@
   <div class="row">
     <div class="span6">
       <p>
-        StoryMapJS is a free tool to help you tell stories on the web that highlight the locations of a series of events. It is a new tool, yet stable in our development environment, and it has a <a href="{{ url_for('select') }}">friendly authoring tool.</a> It has two significant, related features:
+        StoryMapJS is a free tool to help you tell stories on the web that highlight the locations of a series of events. It is a new tool, yet stable in our development environment, and it has a <a href="{{ url_for('select') }}">friendly authoring tool.</a> StoryMap comes in two variants.
       </p>
       <div id="storymap-features" style="margin-left: 20px;">
+        <div><strong>Classic</strong></div>
+        <p>
+          This version of StoryMapJS works with standard web maps. Add a slide for each place in your story--setting the location is as easy as a text search for the name, address, or latitude and longitude. Tell your story in text and easily add rich media -- images, videos, tweets, wikipedia pages, and much more. You can change the visual style of your map with a few presets, or you can use <a href="https://www.mapbox.com/maps/">Mapbox</a> to create your own style.
+        </p>
         <div><strong>Gigapixel</strong></div>
         <p>
-          StoryMapJS can tell stories with large photographs, works of art, historic maps, and other image files. Because it works best with pixel-dense files, we call these "gigapixel" StoryMaps. <a href="{{ url_for('gigapixel') }}">Learn more.</a>
+          StoryMapJS can also tell stories with large photographs, works of art, historic maps, and other image files. Because it works best with pixel-dense files, we call these "gigapixel" StoryMaps. <a href="{{ url_for('gigapixel') }}">Learn more.</a>
         </p>
-        <div><strong>SnapMap</strong></div>
+        <!-- <div><strong>SnapMap</strong></div>
         <p><a href="http://snapmap.knightlab.com">SnapMap</a> is a tool to help you quickly create a StoryMap. It places your 20 most recent geo-tagged Instagrams on a map that can be shared instantly. You can also edit it in StoryMap's authoring tool, adding media from other sources.
-        </p>
+        </p> -->
       </div>
       <p>
          We welcome feedback and bug reports: you can use our <a href="https://knightlab.zendesk.com/forums/22615078-StoryMapJS">support forum</a> to post questions, or email <a href="mailto:support@knightlab.zendesk.com">support@knightlab.zendesk.com</a>.
