@@ -155,48 +155,6 @@
                             <p id="call_to_action_default">Default: "<span id="call_default_text"></span>"</p>
                         </div>
                     </div>
-        <!-- zoomify -->
-                    <div class="control-group zoomify-control-group">
-                        <label class="control-label">Map Background Color</label>
-                        <div class="controls">
-                            <input id="map_background_color" type="text" placeholder="#ffffff">
-                        </div>
-                    </div>
-                    <div class="control-group zoomify-control-group">
-                        <label class="control-label">Zoomify URL</label>
-                        <div class="controls">
-                            <input id="zoomify_path" type="text" class="span5" placeholder="http://www.domain.org/directory/">
-                            <a class="help" href="javascript:"
-                                data-html="true"
-                                data-placement="left"
-                                data-content='Enter the URL path for your zoomable image folder.'
-                            >&nbsp;<i class="icon-question-sign icon-large"></i>
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="control-group zoomify-control-group">
-                        <label class="control-label">Max Image Size</label>
-                        <div class="controls">
-                            <div class="input-prepend">
-                                <span class="add-on">Width</span>
-                                <input type="text" id="zoomify_width" value="" class="input-mini">
-                            </div>
-                            <div class="input-prepend">
-                                <span class="add-on">Height</span>
-                                <input type="text" id="zoomify_height" value="" class="input-mini">
-                            </div>
-                            <br />
-                            <span class="note"><i class="icon-warning-sign"></i> Changing the max image size may move the apparent location of your markers.</p>
-                        </div>
-                    </div>
-
-                    <div class="control-group zoomify-control-group">
-                        <label class="control-label">Attribution</label>
-                        <div class="controls">
-                            <input id="zoomify_attribution" type="text" class="span5">
-                        </div>
-                    </div>
         <!-- map -->
                     <div class="control-group map-control-group">
                         <label class="control-label">Map Type</label>
@@ -211,6 +169,7 @@
                                 <option value="stamen:terrain">Stamen Maps: Terrain</option>
                                 <option value="osm:standard">Open Street Maps: Standard</option>
                                 <option value="mapbox">Mapbox</option>
+                                <option value="zoomify">Gigapixel</option>
                                 <option value="">custom</option>
                             </select>
                             <a class="help" href="javascript:"
@@ -254,56 +213,73 @@
                             <span class="help-inline hide">You must enter your public access token</span>
                         </div>
                     </div>
+
+        <!-- zoomify -->
+                    <div class="control-group zoomify-control-group">
+                        <label class="control-label">Map Background Color</label>
+                        <div class="controls">
+                            <input id="map_background_color" type="text" placeholder="#ffffff">
+                        </div>
+                    </div>
+                    <div class="control-group zoomify-control-group">
+                        <label class="control-label">Zoomify URL</label>
+                        <div class="controls">
+                            <input id="zoomify_path" type="text" class="span5" placeholder="http://www.domain.org/directory/">
+                            <a class="help" href="javascript:"
+                                data-html="true"
+                                data-placement="left"
+                                data-content='Enter the URL path for your zoomable image folder.'
+                            >&nbsp;<i class="icon-question-sign icon-large"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="control-group zoomify-control-group">
+                        <label class="control-label">Max Image Size</label>
+                        <div class="controls">
+                            <div class="input-prepend">
+                                <span class="add-on">Width</span>
+                                <input type="text" id="zoomify_width" value="" class="input-mini">
+                            </div>
+                            <div class="input-prepend">
+                                <span class="add-on">Height</span>
+                                <input type="text" id="zoomify_height" value="" class="input-mini">
+                            </div>
+                            <br />
+                            <span class="note"><i class="icon-warning-sign"></i> Changing the max image size may move the apparent location of your markers.</p>
+                        </div>
+                    </div>
+                    <div class="control-group zoomify-control-group">
+                        <label class="control-label">Attribution</label>
+                        <div class="controls">
+                            <input id="zoomify_attribution" type="text" class="span5">
+                        </div>
+                    </div>
+                    <!-- <div class="control-group zoomify-control-group">
+                        <div class="controls">
+                            <div class="input-prepend">
+                                <span class="add-on">Image Directory URL</span>
+                                <input id="zoomify_path" type="text" class="span3" placeholder="http://www.domain.org/directory/">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="control-group zoomify-control-group">
+                      <div class="controls">
+                          <div class="input-prepend">
+                              <span class="add-on">Width</span>
+                              <input type="text" id="zoomify_width" value="" class="input-small">
+                          </div>
+                           <div class="input-prepend">
+                              <span class="add-on">Height</span>
+                              <input type="text" id="zoomify_height" value="" class="input-small">
+                          </div>
+                      </div>
+                    </div> -->
                 </form>
             </div>
             <div class="tab-pane" id="opt_sharing_tab">
-                <p class='note'>
-                    Set these values to improve how your StoryMap appears as part of a tweet or Facebook share.
-                </p>
-                <p>
-                <label><strong>Description</strong></label>
-                <textarea id="opt_description" class="stretch" rows="3"></textarea>
-                </p>
-                <p>
-                <label><strong>Featured Image</strong></label>
-                <div class="input-prepend" style="width: 96%;">
-                    <div class="btn-group">
-                        <button class="btn dropdown-toggle" data-toggle="dropdown">
-                            <span class="caret"></span>
-                        </button>
-                        <ul id="opt_image_select" class="dropdown-menu">
-                            <li><a href="javascript:">image 1</a></li>
-                            <li><a href="javascript:">image 2</a></li>
-                            <li><a href="javascript:">image 3</a></li>
-
-                        </ul>
-                    </div>
-                    <input type="text" id="opt_image_url" placeholder="<< select an image, or enter an URL">
-                </div>
-                <p>or upload an image to your StoryMap folder.</p>
-                <div class="upload-panel">
-                    <form class="form-inline">
-                    <a class="upload-file-link btn" href="javascript:">
-                    Choose File...
-                    <input type="file" class="upload-file" accept="image/*" size="40">
-                    </a>
-                    &nbsp;<label class="upload-file-name"></label>
-                    &nbsp;<a href="javascript:" class="btn btn-success upload pull-right">Upload</a>
-                    </form>
-                </div>
-                <div class="upload-conflict hide">
-                    <p class="error">A file with the same name already exists.</p>
-                    <label class="radio upload-conflict-replace">
-                        <input type="radio" name="upload_modal_conflict" value="replace">Replace existing file
-                    </label>
-                    <div>
-                    <label class="radio inline upload-conflict-rename">
-                        <input type="radio" name="upload_modal_conflict" value="rename">Save file as:
-                        <input class="upload-rename-as" type="text" size="40">
-                    </label>
-                    </div>
-                </div>
-                </p>
+                <label>You can modify how your StoryMap appears as part of a tweet or Facebook share by clicking on the "Share" button at the top right.</label>
+                <a id="opt_share" href="javascript:$('#storymap_share').trigger('click');" class="btn btn-primary" >Open Share Settings</a><!-- data-dismiss="modal" -->
             </div>
         </div>
     </div>
@@ -474,10 +450,60 @@
 						<img src="//www.reddit.com/static/spreddit5.gif" />
 					</a>
 				</div>
-
 			</div>
 		</div>
+    <div id="oembed-note">
+      <p class="note">You can put this link on a line by itself to embed your storymap on <a href="https://medium.com">Medium.com</a> <a href="http://knightlab.northwestern.edu/2016/06/15/knight-lab-tools-now-embeddable-on-medium/" target="_blank"><i class="icon-question-sign icon-large"></i></a></p>
+    </div>
 		<div class="share-embed-container">
+      <div class="tab-pane" id="opt_sharing_tab">
+          <p class='note'>
+              Set these values to improve how your StoryMap appears as part of a tweet or Facebook share.
+          </p>
+          <p>
+          <label><strong>Description</strong></label>
+          <textarea id="share_description" class="stretch" rows="3"></textarea>
+          </p>
+          <p>
+          <label><strong>Featured Image</strong></label>
+          <div class="input-prepend" style="width: 96%;">
+              <div class="btn-group">
+                  <button class="btn dropdown-toggle" data-toggle="dropdown">
+                      <span class="caret"></span>
+                  </button>
+                  <ul id="share_image_select" class="dropdown-menu">
+                      <li><a href="javascript:">image 1</a></li>
+                      <li><a href="javascript:">image 2</a></li>
+                      <li><a href="javascript:">image 3</a></li>
+                  </ul>
+              </div>
+              <input type="text" id="share_image_url" placeholder="<< select an image, or enter an URL">
+          </div>
+          <p>or upload an image to your StoryMap folder.</p>
+          <div class="upload-panel">
+              <form class="form-inline">
+              <a class="upload-file-link btn" href="javascript:">
+              Choose File...
+              <input type="file" class="upload-file" accept="image/*" size="40">
+              </a>
+              &nbsp;<label class="upload-file-name"></label>
+              &nbsp;<a href="javascript:" class="btn btn-success upload pull-right">Upload</a>
+              </form>
+          </div>
+          <div class="upload-conflict hide">
+              <p class="error">A file with the same name already exists.</p>
+              <label class="radio upload-conflict-replace">
+                  <input type="radio" name="upload_modal_conflict" value="replace">Replace existing file
+              </label>
+              <div>
+              <label class="radio inline upload-conflict-rename">
+                  <input type="radio" name="upload_modal_conflict" value="rename">Save file as:
+                  <input class="upload-rename-as" type="text" size="40">
+              </label>
+              </div>
+          </div>
+          </p>
+      </div>
 			<label>Embed</label>
 			 <textarea id="share_embed" rows="5" onfocus="this.select();" onmouseup="return false;"></textarea>
 			 <div class="share-embed-params">

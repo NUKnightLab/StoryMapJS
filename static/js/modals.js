@@ -7,42 +7,42 @@
 
 modal_error_show = function(event, msg) {
     $(this).find('.modal-error .modal-msg').html(msg);
-    $(this).find('.modal-error').show();    
+    $(this).find('.modal-error').show();
 }
 modal_error_hide = function(event, msg) {
     $(this).find('.modal-error .modal-msg').html('');
-    $(this).find('.modal-error').hide();         
+    $(this).find('.modal-error').hide();
 }
 
 modal_progress_show = function(event, msg) {
     $(this).find('.modal-progress .modal-msg').html(msg);
-    $(this).find('.modal-progress').show();    
+    $(this).find('.modal-progress').show();
 }
 modal_progress_hide = function(event) {
-    $(this).find('.modal-progress').hide(); 
+    $(this).find('.modal-progress').hide();
 }
 
-modal_confirm_show = function(event, msg, callback) {    
+modal_confirm_show = function(event, msg, callback) {
     var $panel = $(this).find('.modal-confirm');
-    
+
     $panel.find('.modal-msg').html(msg);
-    
+
     $panel.find('.btn').bind('click.confirm', function(event) {
-        $(this).unbind('click.confirm'); 
-        $panel.hide();  
-        
+        $(this).unbind('click.confirm');
+        $panel.hide();
+
         callback($(this).hasClass('btn-primary'));
     });
-    
-    $panel.show();    
+
+    $panel.show();
 }
 modal_confirm_hide = function(event) {
-    $(this).find('.modal-confirm').hide(); 
+    $(this).find('.modal-confirm').hide();
 }
 
 modal_reset = function(event, error_msg) {
     if(error_msg) {
-        $(this).trigger('error_show', error_msg);            
+        $(this).trigger('error_show', error_msg);
     } else {
         $(this).trigger('error_hide');
     }
@@ -75,26 +75,26 @@ function modal_init($modal) {
 $('.upload-panel').on('reset', function(event) {
     $(this).find('.upload-file-link').removeClass('disabled');
     $(this).find('.upload-file').val('');
-    $(this).find('.upload-file-name').html('');            
+    $(this).find('.upload-file-name').html('');
     $(this).find('.btn.upload').addClass('disabled');
-    
+
     var $modal = $(this).closest('.modal');
-    
+
     $modal.find('.upload-conflict').hide();
     $modal.find('.btn.upload').addClass('disabled');
-    
+
     event.stopPropagation();
 });
 
-$('.upload-file').change(function(event) {             
+$('.upload-file').change(function(event) {
     var file = event.target.files[0];
     if(file) {
-        var $modal = $(this).closest('.modal');            
+        var $modal = $(this).closest('.modal');
         $modal.trigger('error_hide');
-    
-        $modal.find('.upload-panel .upload-file-name').html(file.name);                
+
+        $modal.find('.upload-panel .upload-file-name').html(file.name);
         $modal.find('.btn.upload').removeClass('disabled');
-                       
+
         var $panel = $modal.find('.upload-conflict');
 
         if(_storymap_files.indexOf(file.name) < 0) {
@@ -109,7 +109,7 @@ $('.upload-file').change(function(event) {
 });
 
 $('.upload-conflict input[type="radio"][value="rename"]').click(function(event) {
-    $(this).closest('.upload-conflict').find('.upload-rename-as').focus(); 
+    $(this).closest('.upload-conflict').find('.upload-rename-as').focus();
 });
 
 $('.upload-conflict .upload-rename-as').click(function(event) {
@@ -117,17 +117,17 @@ $('.upload-conflict .upload-rename-as').click(function(event) {
 });
 
 $('.btn.upload').click(function(event) {
-    var $modal = $(this).closest('.modal');   
+    var $modal = $(this).closest('.modal');
     var $panel = $modal.find('.upload-conflict');
-        
+
     var file = $modal.find('.upload-file')[0].files[0];
     if(file) {
         var name = file.name;
-                                
+
         if($panel.find('input[type="radio"][value="rename"]').is(':checked')) {
             var $upload_rename_as = $panel.find('.upload-rename-as');
             name = $upload_rename_as.val().trim();
-            
+
             if(!name) {
                 $modal.trigger('error_show', 'You must enter a file name.');
                 return;
@@ -135,21 +135,20 @@ $('.btn.upload').click(function(event) {
             if(_storymap_files.indexOf(name) > -1) {
                 $modal.trigger('error_show', 'A file with this name already exists.  Please enter a different name.');
                 $upload_rename_as.focus();
-                return;           
-            }           
-        } 
-    
-        $modal.trigger('error_hide');
-                                                                             
-        var reader = new FileReader();
-                
-        reader.onerror = function() {
-            $modal.trigger('reset', 'Error loading file');    
+                return;
+            }
         }
-    
+
+        $modal.trigger('error_hide');
+
+        var reader = new FileReader();
+
+        reader.onerror = function() {
+            $modal.trigger('reset', 'Error loading file');
+        }
+
         reader.onload = function() {
             $modal.trigger('progress_show', 'Uploading file');
-
             ajax_post(_storymap_upload_url,
                 {
                     id: _storymap_meta.id,
@@ -157,20 +156,20 @@ $('.btn.upload').click(function(event) {
                     content: reader.result,
                 },
                 function(error) {
-                    $modal.trigger('reset', 'Error uploading file' + ((error) ? ' ('+error+')' : '')); 
+                    $modal.trigger('reset', 'Error uploading file' + ((error) ? ' ('+error+')' : ''));
                 },
                 function(data) {
-                    if(_storymap_files.indexOf(name) < 0) {      
+                    if(_storymap_files.indexOf(name) < 0) {
                         _storymap_files.push(name);
                         _storymap_files.sort();
-                    }     
+                    }
                     $modal.trigger('progress_hide');
-                    $modal.trigger('upload', data.url);                                           
+                    $modal.trigger('upload', data.url);
                 }
             );
         }
-    
+
         $modal.trigger('progress_show', 'Loading file');
-        reader.readAsDataURL(file);  
-    }              
+        reader.readAsDataURL(file);
+    }
 });

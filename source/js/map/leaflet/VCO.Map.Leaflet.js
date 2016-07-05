@@ -186,7 +186,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 			case 'zoomify':
 				_options.width			= this.options.zoomify.width;
 				_options.height 		= this.options.zoomify.height;
-				_options.tolerance 		= this.options.zoomify.tolerance;
+				_options.tolerance 		= this.options.zoomify.tolerance || 0.9;
 				_options.attribution 	= _attribution_knightlab + this.options.zoomify.attribution;
 
 				_tilelayer = new L.tileLayer.zoomify(this.options.zoomify.path, _options);
