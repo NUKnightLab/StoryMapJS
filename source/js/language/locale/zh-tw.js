@@ -11,6 +11,7 @@ VCO.Language = {
 		overview: 			"總覽",
 	    backtostart: 		"回到首頁",
 	    collapse_toggle: 	"隱藏地圖",
-	    uncollapse_toggle: 	"顯示地圖"
+	    uncollapse_toggle: 	"顯示地圖",
+			swipe_to_navigate: "Swipe to Navigate<br><span class='vco-button'>OK</span>"
 	}
 }

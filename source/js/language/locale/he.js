@@ -11,6 +11,7 @@
 		overview: 	"תצוגה מקדימה",
 	    backtostart: "חזור להתחלה",
 	    collapse_toggle: "הסתר מפה",
-	    uncollapse_toggle: "הצג מפה"
+	    uncollapse_toggle: "הצג מפה",
+			swipe_to_navigate: "Swipe to Navigate<br><span class='vco-button'>OK</span>"
 	}
 }

@@ -10,6 +10,7 @@
         map_overview: "Pregled mapę",
         backtostart: "Nazad na početak",
         collapse_toggle: "Sakrij mapu",
-        uncollapse_toggle: "Prikaži mapu"
+        uncollapse_toggle: "Prikaži mapu",
+  			swipe_to_navigate: "Swipe to Navigate<br><span class='vco-button'>OK</span>"
     }
 };

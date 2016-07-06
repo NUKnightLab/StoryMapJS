@@ -11,6 +11,7 @@ VCO.Language = {
         overview:           "전체보기",
         backtostart:        "되돌아가기",
         collapse_toggle:    "숨기기",
-        uncollapse_toggle:  "보이기"
+        uncollapse_toggle:  "보이기",
+  			swipe_to_navigate: "Swipe to Navigate<br><span class='vco-button'>OK</span>"
     }
 }

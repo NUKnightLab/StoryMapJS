@@ -11,6 +11,7 @@ VCO.Language = {
 		overview:          "Kartenübersicht",
         backtostart:       "Zurück zum Anfang",
         collapse_toggle:   "Karte ausblenden",
-        uncollapse_toggle: "Karte anzeigen"
+        uncollapse_toggle: "Karte anzeigen",
+  			swipe_to_navigate: "Swipe to Navigate<br><span class='vco-button'>OK</span>"
     }
 };

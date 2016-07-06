@@ -11,6 +11,7 @@
 		overview: "Прагляд",
         backtostart: "Вярнуцца ў пачатак",
         collapse_toggle: "Схаваць мапу",
-        uncollapse_toggle: "Паказаць мапу"
+        uncollapse_toggle: "Паказаць мапу",
+  			swipe_to_navigate: "Swipe to Navigate<br><span class='vco-button'>OK</span>"
     }
 };

@@ -11,6 +11,7 @@ VCO.Language = {
         overview:           "Přehled",
         backtostart:        "Zpět na začátek",
         collapse_toggle:    "Skrýt mapu",
-        uncollapse_toggle:  "Zobrazit mapu"
+        uncollapse_toggle:  "Zobrazit mapu",
+  			swipe_to_navigate: "Swipe to Navigate<br><span class='vco-button'>OK</span>"
     }
 }

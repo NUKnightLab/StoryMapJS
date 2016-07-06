@@ -11,6 +11,7 @@ VCO.Language = {
     overview: "概観",
     backtostart: "初めに戻る",
     collapse_toggle: "地図を隠す",
-    uncollapse_toggle: "地図を表示"
+    uncollapse_toggle: "地図を表示",
+    swipe_to_navigate: "Swipe to Navigate<br><span class='vco-button'>OK</span>"
   }
 }

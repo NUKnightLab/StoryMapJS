@@ -11,6 +11,7 @@ VCO.Language = {
         overview:           "Обзор",
         backtostart:        "К началу",
         collapse_toggle:    "Скрыть карту",
-        uncollapse_toggle:  "Показать карту"
+        uncollapse_toggle:  "Показать карту",
+  			swipe_to_navigate: "Swipe to Navigate<br><span class='vco-button'>OK</span>"
     }
 };

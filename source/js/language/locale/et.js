@@ -11,6 +11,7 @@ VCO.Language = {
         overview:          "Ülevaade",
         backtostart:       "Tagasi algusesse",
         collapse_toggle:   "Peida kaart",
-        uncollapse_toggle: "Näita kaarti"
+        uncollapse_toggle: "Näita kaarti",
+  			swipe_to_navigate: "Swipe to Navigate<br><span class='vco-button'>OK</span>"
     }
 };

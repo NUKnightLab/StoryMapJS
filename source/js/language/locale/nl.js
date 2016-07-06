@@ -11,6 +11,7 @@ VCO.Language = {
 		overview: "Overzicht",
 		backtostart: "Terug naar begin",
 		collapse_toggle: "Verberg kaart",
-		uncollapse_toggle: "Toon kaart"
+		uncollapse_toggle: "Toon kaart",
+		swipe_to_navigate: "Swipe to Navigate<br><span class='vco-button'>OK</span>"
 	}
 }

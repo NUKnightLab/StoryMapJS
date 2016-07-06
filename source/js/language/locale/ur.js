@@ -11,6 +11,7 @@ VCO.Language = {
         overview:           "جائزہ",
         backtostart:        "واپس شروع سے",
         collapse_toggle:    "نقشہ غائب",
-        uncollapse_toggle:  "نقشہ حاضر"
+        uncollapse_toggle:  "نقشہ حاضر",
+  			swipe_to_navigate: "Swipe to Navigate<br><span class='vco-button'>OK</span>"
     }
 }
