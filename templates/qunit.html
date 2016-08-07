@@ -66,43 +66,43 @@
           equal(status,"success","Callback basically worked.")
           var date_parts = data.date.split('-');
           var date = new Date();
-          equal(parseInt(date_parts[0]),date.getMonth() + 1,"JSON returned correct month.");
-          equal(parseInt(date_parts[1]),date.getDate(),"JSON returned correct date.");
-          equal(parseInt(date_parts[2]),date.getFullYear(),"JSON returned correct year.");
+          equal(parseInt(date_parts[0]),date.getUTCMonth() + 1,"JSON returned correct month.");
+          equal(parseInt(date_parts[1]),date.getUTCDate(),"JSON returned correct date.");
+          equal(parseInt(date_parts[2]),date.getUTCFullYear(),"JSON returned correct year.");
           start();
         });
     });
-    
+
     test("VCO.Util.urljoin", function() {
-        var joined_path = "http://s3.amazonaws.com/cdn.knightlab.com/libs/storymapjs/dev/js/locale/nl.js";        
-        
+        var joined_path = "http://s3.amazonaws.com/cdn.knightlab.com/libs/storymapjs/dev/js/locale/nl.js";
+
         var test_items = [
             ["http://s3.amazonaws.com/cdn.knightlab.com/libs/storymapjs/dev/js/", "/locale/nl.js"],
             ["http://s3.amazonaws.com/cdn.knightlab.com/libs/storymapjs/dev/js/", "locale/nl.js"],
             ["http://s3.amazonaws.com/cdn.knightlab.com/libs/storymapjs/dev/js", "/locale/nl.js"],
             ["http://s3.amazonaws.com/cdn.knightlab.com/libs/storymapjs/dev/js", "locale/nl.js"]
         ];
-        
+
         for(var i = 0; i < test_items.length; i++) {
             var path = VCO.Util.urljoin(test_items[i][0], test_items[i][1]);
             equal(path, joined_path, "Expected path "+path+" to equal "+joined_path);
         }
-        
-        var joined_path = "http://s3.amazonaws.com/cdn.knightlab.com/libs/storymapjs/dev/css/fonts/font.emoji.css"; 
-        
+
+        var joined_path = "http://s3.amazonaws.com/cdn.knightlab.com/libs/storymapjs/dev/css/fonts/font.emoji.css";
+
         var test_items = [
             ["http://s3.amazonaws.com/cdn.knightlab.com/libs/storymapjs/dev/js/", "../css/fonts/font.emoji.css"],
             ["http://s3.amazonaws.com/cdn.knightlab.com/libs/storymapjs/dev/js", "../css/fonts/font.emoji.css"]
         ];
-            
+
         for(var i = 0; i < test_items.length; i++) {
             var path = VCO.Util.urljoin(test_items[i][0], test_items[i][1]);
             equal(path, joined_path, "Expected path "+path+" to equal "+joined_path);
-        }    
+        }
     });
-    
-    
-    
+
+
+
 </script>
 </head>
 <body>
