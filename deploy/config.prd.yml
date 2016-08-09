@@ -1,5 +1,5 @@
 domains: "storymap.knightlab.com"
-staticbucket: "media.knightlab.com"
+static_bucket: "media.knightlab.com"
 gunicorn_reload: False
 
 ssl:
