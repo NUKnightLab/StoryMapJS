@@ -1,6 +1,7 @@
 VCO.Language = {
     name:                   "Urdu",
     lang:                   "ur",
+    direction:              "rtl",
     messages: {
         loading:            "لوڈ ہو رہا ہے",
         wikipedia:          "ویکیپیڈیا, مفت دستیاب انسائیکلوپیڈیا سے ",

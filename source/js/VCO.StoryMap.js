@@ -540,7 +540,6 @@ VCO.StoryMap = VCO.Class.extend({
 			this._menubar.setSticky(this.options.menubar_height);
 		}
 
-
 		// Update Display
 		this._updateDisplay(this.options.map_height, true, 2000);
 
@@ -680,7 +679,12 @@ VCO.StoryMap = VCO.Class.extend({
 			this._storyslider.updateDisplay(this.options.width/2, this.options.storyslider_height, animate, this.options.layout);
 		}
 
-
+		if (this.options.language.direction == 'rtl') {
+			display_class += ' vco-rtl';
+		}
+		else if (VCO.Language.direction == 'rtl'){
+			display_class += ' vco-rtl';
+		}
 
 		// Apply class
 		this._el.container.className = display_class;

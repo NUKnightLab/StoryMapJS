@@ -1,6 +1,7 @@
 ﻿VCO.Language = {
 	name: "עברית",
 	lang: "he",
+	direction: "rtl",
 	messages: {
 		loading: "טוען",
 		wikipedia: "מתוך ויקיפדיה, האנציקלופדיה החופשית",
