@@ -29,3 +29,5 @@ uritemplate==0.6
 wsgiref==0.1.2
 gunicorn==19.3.0
 unicodecsv==0.14.1
+robotframework==3.0
+robotframework_selenium2library==1.8.0
