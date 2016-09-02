@@ -250,6 +250,17 @@ def _user_get():
         return redirect(url_for('select'))
     return user
 
+def check_test_user():
+    if settings.TEST_MODE:
+        if not _user.find_one({ 'uid': 'test' }):
+            _user.insert({
+                'uid': 'test',
+                'migrated': 1,
+                'storymaps': {},
+                'google': { 'name': 'Test User' }
+            })
+        session['uid'] = 'test'
+
 def require_user(f):
     """
     Decorator to enforce authenticated user
@@ -731,6 +742,8 @@ def legacy_redirect():
 
 @app.route("/select/", methods=['GET', 'POST'])
 def select():
+    check_test_user()
+
     try:
         uid = session.get('uid')
         if not uid:

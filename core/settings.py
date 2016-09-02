@@ -4,6 +4,8 @@ base configuration file
 from os.path import abspath, dirname, join
 from os import environ as env
 
+TEST_MODE = env.get('TEST_MODE')
+
 CORE_ROOT = dirname(abspath(__file__))
 PROJECT_ROOT = dirname(CORE_ROOT)
 
