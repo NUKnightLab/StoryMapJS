@@ -1,14 +1,18 @@
 import sys
 import os
 import pymongo
+import mongomock
 
 # Get settings module
 settings = sys.modules[os.environ['FLASK_SETTINGS_MODULE']]
 
-# Connect to mongo database
-_conn = pymongo.Connection(
-    settings.DATABASES['default']['HOST'],
-    int(settings.DATABASES['default']['PORT']))
+if settings.TEST_MODE:
+    _conn = mongomock.MongoClient()
+else:
+    # Connect to mongo database
+    _conn = pymongo.Connection(
+        settings.DATABASES['default']['HOST'],
+        int(settings.DATABASES['default']['PORT']))
 
 _db = _conn[settings.DATABASES['default']['NAME']]
 
