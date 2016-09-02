@@ -4,10 +4,10 @@ Library        Selenium2Library
 Library        Process
 
 *** Variables ***
-${SERVER}      localhost:5000
+${SERVER}      http://localhost:5000
 ${BROWSER}     Firefox
 ${DELAY}       0
-${ROOT URL}    http://${SERVER}/select/
+${ROOT URL}    ${SERVER}/select/
 
 *** Keywords ***
 Start Test Server
