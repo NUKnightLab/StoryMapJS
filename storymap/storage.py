@@ -47,6 +47,8 @@ def _mock_in_test_mode(f):
             result = f(*args, **kwargs)
             _mock.stop()
             return result
+        else:
+            return f(*args, **kwargs)
     return decorated_function
 
 
