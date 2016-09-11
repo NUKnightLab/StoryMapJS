@@ -2,6 +2,7 @@
 Documentation  Reusable keywords and variables for the StoryMap server.
 Library        Selenium2Library
 Library        Process
+Library        String
 
 *** Variables ***
 ${SERVER}      http://localhost:5000
@@ -41,6 +42,15 @@ Create StoryMap Should Be Visible
 StoryMap Should Be Open
     [Arguments]  ${name}
     Title Should Be  ${name} (Editing)
+
+Delete storymap
+    [Arguments]  ${name}
+    Page Should Contain  ${name}
+    ${id} =  Convert To Lowercase  ${name}
+    Click Link  css=tr[storymap-data="${id}"] td div div a
+    Click Link  css=a.list-item-delete
+    Click Button  css=.modal-confirm button.btn-primary
+    Element Should Not Contain  css=#entry_modal .modal-body  ${name}
 
 Wait Until Loaded
     Wait Until Element Is Not Visible  css=.icon-spinner
