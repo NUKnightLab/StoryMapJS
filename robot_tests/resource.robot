@@ -12,7 +12,7 @@ ${ROOT URL}    ${SERVER}/select/
 
 *** Keywords ***
 Start Test Server
-    Start Process  source env.sh && TEST_MODE\=on fab serve  shell=yes stdout=server.log  stderr=server.log  alias=test_server
+    Start Process  bash -c "source env.sh && TEST_MODE\=on fab serve"  shell=yes stdout=server.log  stderr=server.log  alias=test_server
     Sleep  3s
 
 Stop Test Server
