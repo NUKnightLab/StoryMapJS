@@ -1015,3 +1015,14 @@ animation: none;
 
 .note {font-size: 0.8em;}
 .ui-note {font: 13px Roboto, Arial, Sans-serif;}
+
+/*
+ test mode banner
+ */
+.test-mode-warning {
+	padding: 5px;
+	text-align: center;
+	font-weight: bold;
+	background-color: orange;
+	color: white;
+}

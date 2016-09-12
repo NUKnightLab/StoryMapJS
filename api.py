@@ -40,6 +40,7 @@ app = Flask(__name__)
 app.config.from_envvar('FLASK_SETTINGS_FILE')
 
 settings = sys.modules[settings_module]
+app.config['TEST_MODE'] = settings.TEST_MODE
 
 _GOOGLE_OAUTH_SCOPES = [
     'https://www.googleapis.com/auth/drive.readonly',
