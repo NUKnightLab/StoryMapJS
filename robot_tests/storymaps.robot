@@ -13,3 +13,20 @@ Delete StoryMap
     Open Browser To Authoring Tool
     Wait Until Loaded
     Delete StoryMap  Test
+
+Create And Delete Multiple StoryMaps
+    Open Browser To Authoring Tool
+    Wait Until Loaded
+    Create StoryMap  Test1
+    Create Another StoryMap  Test2
+    Create Another StoryMap  SomeOtherVeryDifferentName
+    Go To  ${SERVER}/select
+    Delete StoryMap  Test2
+    StoryMap Should Exist  Test1
+    StoryMap Should Exist  SomeOtherVeryDifferentName
+    Delete StoryMap  SomeOtherVeryDifferentName
+    StoryMap Should Exist  Test1
+    Delete StoryMap  Test1
+    StoryMap Should Not Exist  Test1
+    StoryMap Should Not Exist  Test2
+    StoryMap Should Not Exist  SomeOtherVeryDifferentName

@@ -34,23 +34,45 @@ Create StoryMap
     Input Text  css=input.entry-create-title  ${name}
     Click Link  id=entry_create
     Wait Until Loaded
+    #wait for page title to be updated.
+    Sleep  1sec
     StoryMap Should Be Open  ${name}
 
 Create StoryMap Should Be Visible
     Page Should Contain  Let's make a StoryMap.
 
+Create Another StoryMap
+    [Arguments]  ${name}
+    Go To  ${SERVER}/select
+    Wait Until Loaded
+    #sleep to wait for modal to drop down
+    Sleep  1sec
+    Click Link  css=#new_storymap
+    Create StoryMap  ${name}
+
 StoryMap Should Be Open
     [Arguments]  ${name}
     Title Should Be  ${name} (Editing)
 
+StoryMap Should Exist
+    [Arguments]  ${name}
+    Element Should Contain  css=#entry_modal .modal-body  ${name}
+
+StoryMap Should Not Exist
+    [Arguments]  ${name}
+    Element Should Not Contain  css=#entry_modal .modal-body  ${name}
+
 Delete storymap
     [Arguments]  ${name}
+    #sleep one second here just to be sure
+    Sleep  1sec
     Page Should Contain  ${name}
     ${id} =  Convert To Lowercase  ${name}
     Click Link  css=tr[storymap-data="${id}"] td div div a
-    Click Link  css=a.list-item-delete
+    #use jquery to click the delete button incase it's off the bottom of the screen
+    Execute Javascript  $(".dropdown.open a.list-item-delete").click()
     Click Button  css=.modal-confirm button.btn-primary
-    Element Should Not Contain  css=#entry_modal .modal-body  ${name}
+    StoryMap Should Not Exist  ${name}
 
 Wait Until Loaded
     Wait Until Element Is Not Visible  css=.icon-spinner
