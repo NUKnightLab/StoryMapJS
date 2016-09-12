@@ -1,6 +1,6 @@
 *** Settings ***
 Documentation  Reusable keywords and variables for the StoryMap server.
-Library        Selenium2Library
+Library        Selenium2Library  timeout=15  implicit_wait=2
 Library        Process
 Library        String
 
@@ -34,8 +34,6 @@ Create StoryMap
     Input Text  css=input.entry-create-title  ${name}
     Click Link  id=entry_create
     Wait Until Loaded
-    #wait for page title to be updated.
-    Sleep  1sec
     StoryMap Should Be Open  ${name}
 
 Create StoryMap Should Be Visible
@@ -45,8 +43,6 @@ Create Another StoryMap
     [Arguments]  ${name}
     Go To  ${SERVER}/select
     Wait Until Loaded
-    #sleep to wait for modal to drop down
-    Sleep  1sec
     Click Link  css=#new_storymap
     Create StoryMap  ${name}
 
@@ -64,8 +60,6 @@ StoryMap Should Not Exist
 
 Delete storymap
     [Arguments]  ${name}
-    #sleep one second here just to be sure
-    Sleep  1sec
     Page Should Contain  ${name}
     ${id} =  Convert To Lowercase  ${name}
     Click Link  css=tr[storymap-data="${id}"] td div div a
