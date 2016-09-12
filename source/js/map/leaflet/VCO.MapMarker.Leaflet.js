@@ -13,12 +13,12 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 		
 		if (d.location && d.location.lat && d.location.lon) {
 			this.data.real_marker = true;
-			if (o.use_custom_markers && d.location.icon && d.location.icon != "") {
+			if (d.location.icon && d.location.icon != "") {
 				this._custom_icon = true;
 				this._custom_icon_url = d.location.icon;
 				this._icon = new L.icon({iconUrl: this._custom_icon_url, iconSize: [48], iconAnchor:[24, 48]});
 			
-			} else if (o.use_custom_markers && d.location.image && d.location.image != "") {
+			} else if (d.location.image && d.location.image != "") {
 				this._custom_image_icon = true;
 				this._custom_icon_url = d.location.image;
 				this._icon = new L.icon({iconUrl: this._custom_icon_url, iconSize: [48], iconAnchor:[24, 48], shadowSize: [68, 95], shadowAnchor: [22, 94], className:"vco-mapmarker-image-icon"});
@@ -65,7 +65,9 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 		if (this.data.real_marker) {
 			if (a) {
 				this._marker.setZIndexOffset(100);
-				if (this._custom_image_icon) {
+				if (this._custom_icon) {
+					this._icon = new L.icon({iconUrl: this._custom_icon_url, iconSize: [48], iconAnchor:[24, 48]});
+				} else if (this._custom_image_icon) {
 					this._icon = new L.icon({iconUrl: this._custom_icon_url, iconSize: [48], iconAnchor:[24, 48], shadowSize: [68, 95], shadowAnchor: [22, 94], className:"vco-mapmarker-image-icon-active"});
 				} else {
 					this._icon = new L.divIcon({className: 'vco-mapmarker-active ' + this.media_icon_class, iconAnchor:[10, 10]});
@@ -77,7 +79,9 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 				//this._marker.closePopup();
 				clearTimeout(this.timer);
 				this._marker.setZIndexOffset(0);
-				if (this._custom_image_icon) {
+				if (this._custom_icon) {
+					this._icon = new L.icon({iconUrl: this._custom_icon_url, iconSize: [48], iconAnchor:[24, 48]});
+				} else if (this._custom_image_icon) {
 					this._icon = new L.icon({iconUrl: this._custom_icon_url, iconSize: [48], iconAnchor:[24, 48], shadowSize: [68, 95], shadowAnchor: [22, 94], className:"vco-mapmarker-image-icon"});
 				} else {
 					this._icon = new L.divIcon({className: 'vco-mapmarker ' + this.media_icon_class, iconAnchor:[10, 10]});
