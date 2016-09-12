@@ -5,14 +5,15 @@ Library        Process
 Library        String
 
 *** Variables ***
-${SERVER}      http://localhost:5000
+${PORT}        5001
+${SERVER}      http://localhost:${PORT}
 ${BROWSER}     Firefox
 ${DELAY}       0
 ${ROOT URL}    ${SERVER}/select/
 
 *** Keywords ***
 Start Test Server
-    Start Process  bash -c "source env.sh && TEST_MODE\=on fab serve"  shell=yes stdout=server.log  stderr=server.log  alias=test_server
+    Start Process  bash -c "source env.sh && TEST_MODE\=on fab serve:port\=${PORT}"  shell=yes stdout=server.log  stderr=server.log  alias=test_server
     Sleep  3s
 
 Stop Test Server
