@@ -63,9 +63,9 @@ StoryMap Should Not Exist
     [Arguments]  ${name}
     Element Should Not Contain  css=#entry_modal .modal-body  ${name}
 
-Delete storymap
+Delete StoryMap
     [Arguments]  ${name}
-    Page Should Contain  ${name}
+    StoryMap Should Exist  ${name}
     ${id} =  Convert To Lowercase  ${name}
     Click Link  css=tr[storymap-data="${id}"] td div div a
     #use jquery to click the delete button incase it's off the bottom of the screen
@@ -73,6 +73,17 @@ Delete storymap
     Click Button  css=.modal-confirm button.btn-primary
     Sleep  2sec
     StoryMap Should Not Exist  ${name}
+
+Rename StoryMap
+    [Arguments]  ${oldName}  ${newName}
+    StoryMap Should Exist  ${oldName}
+    ${id} =  Convert To Lowercase  ${oldName}
+    Click Link  css=tr[storymap-data="${id}"] td div div a
+    #use jquery to click the rename button incase it's off the bottom of the screen
+    Execute Javascript  $(".dropdown.open a.list-item-rename").click()
+    Input Text  css=.entry-rename-title  ${newName}
+    Click Link  css=#entry_rename
+    Sleep  2sec
 
 Wait Until Loaded
     Wait Until Element Is Not Visible  css=.icon-spinner
