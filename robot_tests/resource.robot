@@ -1,6 +1,6 @@
 *** Settings ***
 Documentation  Reusable keywords and variables for the StoryMap server.
-Library        Selenium2Library  timeout=15  implicit_wait=2
+Library        Selenium2Library  timeout=5  implicit_wait=30
 Library        Process
 Library        String
 
@@ -21,7 +21,7 @@ Stop Test Server
     Close Browser
 
 Open Browser To Authoring Tool
-    Open Browser  ${ROOT URL}  ${BROWSER}
+    Open Browser  ${SERVER}/select/
     Maximize Browser Window
     Set Selenium Speed  ${DELAY}
     Authoring Tool Should Be Open
@@ -31,11 +31,14 @@ Authoring Tool Should Be Open
 
 Create StoryMap
     [Arguments]  ${name}
+    Sleep  2sec
     Create StoryMap Should Be Visible
     Input Text  css=input.entry-create-title  ${name}
     Click Link  id=entry_create
-    Wait Until Loaded
-    StoryMap Should Be Open  ${name}
+    Sleep  2sec
+    Go To  ${SERVER}/select
+    Sleep  2sec
+    StoryMap Should Exist  ${name}
 
 Create StoryMap Should Be Visible
     Page Should Contain  Let's make a StoryMap.
@@ -43,12 +46,13 @@ Create StoryMap Should Be Visible
 Create Another StoryMap
     [Arguments]  ${name}
     Go To  ${SERVER}/select
-    Wait Until Loaded
+    Sleep  2sec
     Click Link  css=#new_storymap
     Create StoryMap  ${name}
 
 StoryMap Should Be Open
     [Arguments]  ${name}
+    Sleep  5sec
     Title Should Be  ${name} (Editing)
 
 StoryMap Should Exist
@@ -67,6 +71,7 @@ Delete storymap
     #use jquery to click the delete button incase it's off the bottom of the screen
     Execute Javascript  $(".dropdown.open a.list-item-delete").click()
     Click Button  css=.modal-confirm button.btn-primary
+    Sleep  2sec
     StoryMap Should Not Exist  ${name}
 
 Wait Until Loaded
