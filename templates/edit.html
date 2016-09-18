@@ -101,8 +101,7 @@ var _default_data = {
             text: {headline: "", text: ""},
             media: {url: "", credit: "", caption: ""},
             location: {
-                line: true,
-                icon: 'https://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png'
+                line: true
             }
         }
     }
@@ -180,7 +179,7 @@ function location_set(slide_index, data) {
 function location_mark(data) {
     _map.clearOverlays();
     if(data) {
-        _map.addMarker(data.lat, data.lon, true);
+        _map.addMarker(data.lat, data.lon, true, data.icon);
         _map.panTo(data.lat, data.lon);
     }
 }
@@ -252,7 +251,7 @@ function slide_select(event) {
                     var loc_data = _slides[i].location;
 
                     if(loc_data.lat && loc_data.lon) {
-                        _map.addMarker(loc_data.lat, loc_data.lon, false);
+                        _map.addMarker(loc_data.lat, loc_data.lon, false, loc_data.icon);
                      }
                 }
             }

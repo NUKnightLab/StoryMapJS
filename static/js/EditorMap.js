@@ -140,9 +140,19 @@ LeafletEditorMap.prototype.removePolyLine = function() {
     }
 }
 
-LeafletEditorMap.prototype.addMarker = function(lat, lng, draggable) {
+LeafletEditorMap.prototype.addMarker = function(lat, lng, draggable, customIcon) {
     var latlng = L.latLng(lat, lng);
-    var marker = L.marker(latlng, {draggable: (draggable || false)})
+
+    if (customIcon) {
+      var icon = L.icon({iconUrl: customIcon, iconSize: [48], iconAnchor:[24, 48]});
+    } else {
+      var icon = L.divIcon({className: 'vco-mapmarker', iconAnchor:[10, 10]});
+    }
+
+    var marker = L.marker(latlng, {
+      icon: icon,
+      draggable: (draggable || false)
+    });
     marker.addTo(this.map);
 
     if(draggable) {
