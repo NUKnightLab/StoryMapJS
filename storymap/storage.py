@@ -96,6 +96,9 @@ def list_keys(key_prefix, n, marker=''):
         key_list.append(item)
     return key_list, (i == n)
 
+@_mock_in_test_mode
+def get_contents_as_string(src_key):
+    return src_key.get_contents_as_string()
 
 @_mock_in_test_mode
 def all_keys():

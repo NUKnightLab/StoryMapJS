@@ -411,7 +411,7 @@ def storymap_copy(user, id):
             dst_key_name = "%s%s" % (dst_key_prefix, file_name)
 
             if file_name.endswith('.json'):
-                json_string = src_key.get_contents_as_string()
+                json_string = storage.get_contents_as_string(src_key)
                 storage.save_json(dst_key_name,
                     src_re.sub(dst_key_prefix, json_string))
             else:
@@ -441,7 +441,7 @@ def storymap_copy(user, id):
 def storymap_delete(user, id):
     """Delete storymap"""
     try:
-        key_prefix = storage.key_prefix(user['uid'], id)        
+        key_prefix = storage.key_prefix(user['uid'], id)
         key_list, marker = storage.list_keys(key_prefix, 50)
         for key in key_list:
             storage.delete(key.name);
@@ -860,7 +860,7 @@ templates_dir = os.path.join(settings.PROJECT_ROOT, 'compiled/templates')
 @app.route('/build/embed/')
 def catch_build_embed():
     return send_from_directory(build_dir, 'embed/index.html')
-    
+
 @app.route('/build/<path:path>')
 def catch_build(path):
     return send_from_directory(build_dir, path)
@@ -908,4 +908,3 @@ if __name__ == '__main__':
         sys.exit(1)
 
     app.run(host='0.0.0.0', port=port, debug=True, ssl_context=ssl_context)
-    
