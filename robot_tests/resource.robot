@@ -85,5 +85,16 @@ Rename StoryMap
     Click Link  css=#entry_rename
     Sleep  2sec
 
+Copy StoryMap
+    [Arguments]  ${oldName}  ${newName}
+    StoryMap Should Exist  ${oldName}
+    ${id} =  Convert To Lowercase  ${oldName}
+    Click Link  css=tr[storymap-data="${id}"] td div div a
+    #use jquery to click the copy button incase it's off the bottom of the screen
+    Execute Javascript  $(".dropdown.open a.list-item-copy").click()
+    Input Text  css=.entry-copy-title  ${newName}
+    Click Link  css=#entry_copy
+    Sleep  2sec
+
 Wait Until Loaded
     Wait Until Element Is Not Visible  css=.icon-spinner

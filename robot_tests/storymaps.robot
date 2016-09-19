@@ -20,6 +20,7 @@ Create And Delete Multiple StoryMaps
     Create Another StoryMap  Test2
     Create Another StoryMap  SomeOtherVeryDifferentName
     Go To  ${SERVER}/select
+    Sleep  2sec
     Delete StoryMap  Test2
     StoryMap Should Exist  Test1
     StoryMap Should Exist  SomeOtherVeryDifferentName
@@ -36,4 +37,12 @@ Rename A StoryMap
     StoryMap Should Exist  Test1
     Rename StoryMap  Test1  Test2
     StoryMap Should Not Exist  Test1
+    StoryMap Should Exist  Test2
+
+Copy A StoryMap
+    Open Browser To Authoring Tool
+    Create StoryMap  Test1
+    StoryMap Should Exist  Test1
+    Copy StoryMap  Test1  Test2
+    StoryMap Should Exist  Test1
     StoryMap Should Exist  Test2
