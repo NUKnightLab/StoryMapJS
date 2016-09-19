@@ -10,7 +10,12 @@ import time
 import traceback
 import json
 from functools import wraps
-import boto
+import boto #boto for setting up test env
+from boto.s3.key import Key
+import boto3 #boto3 for local dev accessability!
+import botocore
+from botocore.client import ClientError
+from botocore.client import Config
 from moto import mock_s3
 from boto.exception import S3ResponseError
 import requests
@@ -22,8 +27,9 @@ if settings.TEST_MODE:
     _mock = mock_s3()
     _mock.start()
 
-    _conn = boto.connect_s3()
-    _bucket = _conn.create_bucket(settings.AWS_STORAGE_BUCKET_NAME)
+    _conn = boto3.resource('s3')
+    _conn.create_bucket(Bucket=settings.AWS_STORAGE_BUCKET_NAME)
+    _bucket = _conn.Bucket(settings.AWS_STORAGE_BUCKET_NAME)
 
     _mock.stop()
 else:
