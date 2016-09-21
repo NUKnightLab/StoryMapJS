@@ -40,6 +40,7 @@ app = Flask(__name__)
 app.config.from_envvar('FLASK_SETTINGS_FILE')
 
 settings = sys.modules[settings_module]
+app.config['TEST_MODE'] = settings.TEST_MODE
 
 _GOOGLE_OAUTH_SCOPES = [
     'https://www.googleapis.com/auth/drive.readonly',
@@ -250,6 +251,17 @@ def _user_get():
         return redirect(url_for('select'))
     return user
 
+def check_test_user():
+    if settings.TEST_MODE:
+        if not _user.find_one({ 'uid': 'test' }):
+            _user.insert({
+                'uid': 'test',
+                'migrated': 1,
+                'storymaps': {},
+                'google': { 'name': 'Test User' }
+            })
+        session['uid'] = 'test'
+
 def require_user(f):
     """
     Decorator to enforce authenticated user
@@ -399,7 +411,7 @@ def storymap_copy(user, id):
             dst_key_name = "%s%s" % (dst_key_prefix, file_name)
 
             if file_name.endswith('.json'):
-                json_string = src_key.get_contents_as_string()
+                json_string = storage.get_contents_as_string(src_key)
                 storage.save_json(dst_key_name,
                     src_re.sub(dst_key_prefix, json_string))
             else:
@@ -429,7 +441,7 @@ def storymap_copy(user, id):
 def storymap_delete(user, id):
     """Delete storymap"""
     try:
-        key_prefix = storage.key_prefix(user['uid'], id)        
+        key_prefix = storage.key_prefix(user['uid'], id)
         key_list, marker = storage.list_keys(key_prefix, 50)
         for key in key_list:
             storage.delete(key.name);
@@ -731,6 +743,8 @@ def legacy_redirect():
 
 @app.route("/select/", methods=['GET', 'POST'])
 def select():
+    check_test_user()
+
     try:
         uid = session.get('uid')
         if not uid:
@@ -846,7 +860,7 @@ templates_dir = os.path.join(settings.PROJECT_ROOT, 'compiled/templates')
 @app.route('/build/embed/')
 def catch_build_embed():
     return send_from_directory(build_dir, 'embed/index.html')
-    
+
 @app.route('/build/<path:path>')
 def catch_build(path):
     return send_from_directory(build_dir, path)
@@ -894,4 +908,3 @@ if __name__ == '__main__':
         sys.exit(1)
 
     app.run(host='0.0.0.0', port=port, debug=True, ssl_context=ssl_context)
-    

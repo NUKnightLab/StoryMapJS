@@ -1,3 +1,7 @@
+{% if config.TEST_MODE %}
+<div class="test-mode-warning">Running in test mode: Data will not be saved.</div>
+{% endif %}
+
 <div class="menu-bar">
     <div class="menu-bar-left">
         <a id="storymap_list" class="btn" href="{{ url_for('select') }}"><i class="icon-chevron-left"></i> My Maps</a>
