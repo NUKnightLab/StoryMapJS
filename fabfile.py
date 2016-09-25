@@ -1,5 +1,6 @@
 from os.path import abspath, basename, dirname, join
 import sys
+import shutil
 from fabric.api import env
 
 #
@@ -29,6 +30,8 @@ from fablib import *
 
 @task
 def test(*args,**kwargs):
+    if os.path.isdir('robot_tests/logs'):
+        shutil.rmtree('robot_tests/logs')
     os.execvp('robot', ('robot', '-d', 'robot_tests/logs') + args + ('robot_tests',))
 
 @task
