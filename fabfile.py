@@ -28,6 +28,10 @@ add_paths(project_path, repos_path)
 from fablib import *
 
 @task
+def test(*args,**kwargs):
+    os.execvp('robot', ('robot', '-d', 'robot_tests/logs') + args + ('robot_tests',))
+
+@task
 def prd(*args,**kwargs):
     abort( "you should be deploying with git, not the prd task")
 
