@@ -13,15 +13,17 @@ ${DELAY}       0
 ${ROOT URL}    ${SERVER}/select/
 
 *** Keywords ***
-Detect And Open Browser
-    [Arguments]  ${url}
-
+Open Browser To Homepage
     ${browser} =  Get Environment Variable  BROWSER  default=chrome
-    Open Browser  ${url}  browser=${BROWSER}
+    Open Browser  ${SERVER}  browser=${browser}
+
+Go To Authoring Tool
+    Go To  ${SERVER}/select/
 
 Start Test Server
     Start Process  bash -c "source env.sh && TEST_MODE\=on fab serve:port\=${PORT}"  shell=yes  stdout=${SERVER LOG}  stderr=${SERVER LOG}  alias=test_server
     Sleep  3s
+    Open Browser To Homepage
 
 Stop Test Server
     Terminate Process  test_server
