@@ -1,18 +1,24 @@
 *** Settings ***
 Documentation  Reusable keywords and variables for the StoryMap server.
 Library        Selenium2Library  timeout=5  implicit_wait=30
+Library        OperatingSystem
 Library        Process
 Library        String
 
 *** Variables ***
 ${PORT}        5001
 ${SERVER}      http://localhost:${PORT}
-${BROWSER}     Firefox
 ${SERVER LOG}  ${OUTPUT DIR}/server.log
 ${DELAY}       0
 ${ROOT URL}    ${SERVER}/select/
 
 *** Keywords ***
+Detect And Open Browser
+    [Arguments]  ${url}
+
+    ${browser} =  Get Environment Variable  BROWSER  default=chrome
+    Open Browser  ${url}  browser=${BROWSER}
+
 Start Test Server
     Start Process  bash -c "source env.sh && TEST_MODE\=on fab serve:port\=${PORT}"  shell=yes  stdout=${SERVER LOG}  stderr=${SERVER LOG}  alias=test_server
     Sleep  3s
@@ -22,7 +28,7 @@ Stop Test Server
     Close Browser
 
 Open Browser To Authoring Tool
-    Open Browser  ${SERVER}/select/
+    Detect And Open Browser  ${SERVER}/select/
     Maximize Browser Window
     Set Selenium Speed  ${DELAY}
     Authoring Tool Should Be Open
