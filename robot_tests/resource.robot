@@ -59,20 +59,27 @@ StoryMap Should Exist
     [Arguments]  ${name}
     Element Should Contain  css=#entry_modal .modal-body  ${name}
 
+StoryMap Should Exist ID
+    [Arguments]  ${id}
+    Page Should Contain Element  css=tr[storymap-data="${id}"]
+
 StoryMap Should Not Exist
     [Arguments]  ${name}
     Element Should Not Contain  css=#entry_modal .modal-body  ${name}
 
+StoryMap Should Not Exist ID
+    [Arguments]  ${id}
+    Page Should Not Contain Element  css=tr[storymap-data="${id}"]
+
 Delete StoryMap
-    [Arguments]  ${name}
-    StoryMap Should Exist  ${name}
-    ${id} =  Convert To Lowercase  ${name}
+    [Arguments]  ${id}
+    StoryMap Should Exist ID  ${id}
     Click Link  css=tr[storymap-data="${id}"] td div div a
     #use jquery to click the delete button incase it's off the bottom of the screen
     Execute Javascript  $(".dropdown.open a.list-item-delete").click()
     Click Button  css=.modal-confirm button.btn-primary
     Sleep  2sec
-    StoryMap Should Not Exist  ${name}
+    StoryMap Should Not Exist ID  ${id}
 
 Rename StoryMap
     [Arguments]  ${oldName}  ${newName}
