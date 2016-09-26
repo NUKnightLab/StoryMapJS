@@ -353,6 +353,55 @@
             </div>
         </div>
     </div>
+</div>
+
+<!-- Markers //-->
+<div id="marker_opt_modal" class="modal hide fade" data-backdrop="static">
+    <div class="modal-header">
+        <h4>Map Markers</h4>
+    </div>
+    <div class="modal-body">
+        <!-- error -->
+        <div class="modal-error hide">
+            <span class="modal-msg error"></span>
+        </div>
+        <div class="input-prepend" style="width: 96%;">
+            <div class="btn-group">
+                <button class="btn dropdown-toggle" data-toggle="dropdown">
+                    <span class="caret"></span>
+                </button>
+                <ul id="marker_image_select" class="image-select dropdown-menu">
+                    <li><a href="javascript:">image 1</a></li>
+                    <li><a href="javascript:">image 2</a></li>
+                    <li><a href="javascript:">image 3</a></li>
+                </ul>
+            </div>
+            <input type="text" id="marker_url" placeholder="<< select an image, or enter an URL">
+        </div>
+        <p>or upload an new marker to your StoryMap folder.</p>
+        <div class="upload-panel">
+            <form class="form-inline">
+                <a class="upload-file-link btn" href="javascript:">
+                Choose File...
+                <input type="file" class="upload-file" accept="image/*" size="40">
+                </a>
+                &nbsp;<label class="upload-file-name"></label>
+                &nbsp;<a href="javascript:" class="btn btn-success upload pull-right">Upload</a>
+            </form>
+        </div>
+        <div class="upload-conflict hide">
+            <p class="error">A file with the same name already exists.</p>
+            <label class="radio upload-conflict-replace">
+            <input type="radio" name="upload_modal_conflict" value="replace">Replace existing file
+            </label>
+            <div>
+                <label class="radio inline upload-conflict-rename">
+                <input type="radio" name="upload_modal_conflict" value="rename">Save file as:
+                <input class="upload-rename-as" type="text" size="40">
+                </label>
+            </div>
+       </div>
+    </div>
     <div class="modal-footer">
         <a href="javascript:;" class="btn btn-primary" data-dismiss="modal">Close</a>
     </div>

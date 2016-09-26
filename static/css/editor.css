@@ -903,7 +903,7 @@ label, .data-media-upload {
 	margin-bottom: 24px;
 }
 
-.data-right button {margin-bottom: 10px;}
+.data-right button {margin-bottom: 10px; margin-left: 5px;}
 
 /* font-face, font-size, line-height, etc should be set in font-specific css */
 #headline {color: #000;margin-bottom: 11px;height: auto;}
