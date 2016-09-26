@@ -1264,9 +1264,10 @@ $(function() {
             $(this).find('.upload-panel').trigger('reset');
         })
         .on('refresh_image_select', function(event) {
-            var html = '';
+            var html = '<li><a href="javascript:">(Default icon)</a></li>';
             for(var i = 0; i < _storymap_files.length; i++) {
-                html += '<li><a href="javascript:">'+_storymap_files[i]+'</a></li>'; // TODO: find a nicer way of trimming these (local doesn't look nice)
+                // TODO: find a nicer way of trimming these (local doesn't look nice)
+                html += '<li><a href="javascript:" data-filename="'+_storymap_files[i]+'">'+_storymap_files[i]+'</a></li>';
             }
             $('.image-select').html(html || '<li class="default">no uploaded images found</li>');
         })
@@ -1275,10 +1276,13 @@ $(function() {
             $(this).trigger('refresh_image_select');
 
             $('#marker_image_select a').click(function(event) {
-                $('#marker_url')
-                    .val(storymap_image_url(_user.uid, _storymap_meta.id, $(this).html()))
+                if ($(this).data('filename')) {
+                  $('#marker_url')
+                    .val(storymap_image_url(_user.uid, _storymap_meta.id, $(this).data('filename')))
                     .change();
-                    console.log("change marker url");
+                } else {
+                  $('#marker_url').val('').change();
+                }
             });
 
             $('#marker_url').val(marker);
