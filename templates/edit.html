@@ -179,8 +179,8 @@ function location_set(slide_index, data) {
 function location_mark(data) {
     _map.clearOverlays();
     if(data) {
-        _map.addMarker(data.lat, data.lon, true, data.icon);
-        _map.panTo(data.lat, data.lon);
+        _map.addMarker(data, true);
+        _map.panTo(data.location.lat, data.location.lon);
     }
 }
 
@@ -251,7 +251,7 @@ function slide_select(event) {
                     var loc_data = _slides[i].location;
 
                     if(loc_data.lat && loc_data.lon) {
-                        _map.addMarker(loc_data.lat, loc_data.lon, false, loc_data.icon);
+                        _map.addMarker(_slides[i], false);
                      }
                 }
             }
@@ -277,7 +277,7 @@ function slide_select(event) {
             _map.setView(data.location.lat, data.location.lon, data.location.zoom);
             _map.zoomEnable(true);
 
-            location_mark(data.location);
+            location_mark(data);
         }
 
         $('#url').val(data.media.url);
@@ -502,8 +502,8 @@ function media_preview_update(url) {
 
 var search = function(lat, lng) {
     var data = {lat: lat, lon: lng};
-    location_mark(data);
     location_set(_current_slide_index, data);
+    location_mark(_slides[_current_slide_index]);
     if (_map.getZoom() == 1) {
       _map.setView(lat, lng, 12);
     }
@@ -516,9 +516,8 @@ var _map_options = {
     handlers: {
         double_click: function(lat, lng) {
             var data = {lat: lat, lon: lng};
-            location_mark(data);
             location_set(_current_slide_index, data);
-
+            location_mark(_slides[_current_slide_index]);
         },
         zoom: function(zoom) {
             location_set(_current_slide_index, {zoom: zoom});
@@ -1037,6 +1036,7 @@ $(function() {
         storymap_dirty(1);
 
         slide_set_class(_current_slide_index);
+        location_mark(_slides[_current_slide_index]);
 
         if (id == 'url') {
             media_preview_update(val);
@@ -1254,7 +1254,7 @@ $(function() {
         var old = _slides[_current_slide_index].location.icon;
         _slides[_current_slide_index].location.icon = $(this).val().trim();
         storymap_dirty(1);
-        location_mark(_slides[_current_slide_index].location);
+        location_mark(_slides[_current_slide_index]);
     });
 
     modal_init($('#marker_opt_modal'))
