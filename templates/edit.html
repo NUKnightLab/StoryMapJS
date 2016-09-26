@@ -256,6 +256,8 @@ function slide_select(event) {
                 }
             }
 
+            $('#marker_options').attr('disabled',true);
+
             _map.setDefaultView();
 
             if(!get_map_as_image()) {
@@ -264,6 +266,7 @@ function slide_select(event) {
         } else {
             // Show slide view
             $('#map_info, #map_overlay').hide();
+            $('#marker_options').attr('disabled',false);
 
             if(_storymap_data.storymap.zoomify) {
                 $('#map_search_input').hide();
@@ -1199,20 +1202,19 @@ $(function() {
 
     modal_init($('#slide_opt_modal'))
         .on('upload', function(event, url) {
-            $(this).trigger('refresh_background_select');
+            $(this).trigger('refresh_image_select');
             $('#background_url').val(url).change();
             $(this).find('.upload-panel').trigger('reset');
         })
-        .on('refresh_background_select', function(event) {
+        .on('refresh_image_select', function(event) {
             var html = '';
             for(var i = 0; i < _storymap_files.length; i++) {
                 html += '<li><a href="javascript:">'+_storymap_files[i]+'</a></li>';
             }
-            $('#background_image_select').html(html || '<li class="default">no uploaded images found</li>');
+            $('.image-select').html(html || '<li class="default">no uploaded images found</li>');
         })
         .on('modal_show', function(event, error_msg) {
             var background = _slides[_current_slide_index].background || {};
-
             var color = background.color || '';
             var opacity = (background.opacity || 100) / 100;
             var url = background.url || '';
@@ -1220,13 +1222,14 @@ $(function() {
             $('#background_color').minicolors('value', color);
             $('#background_color').minicolors('opacity', opacity);
 
+
             if(color) {
                 $('#background_color_clear').show();
             } else {
                 $('#background_color_clear').hide();
             }
 
-            $(this).trigger('refresh_background_select');
+            $(this).trigger('refresh_image_select');
 
             $('#background_image_select a').click(function(event) {
                 $('#background_url')
@@ -1235,6 +1238,49 @@ $(function() {
             });
 
             $('#background_url').val(url);
+
+            $(this).find('.upload-panel').trigger('reset');
+            $(this).trigger('reset', error_msg);
+        })
+        .on('show', function() {
+            $(this).trigger('modal_show');
+        });
+
+// ------------------------------------------------------------
+// Markers
+// ------------------------------------------------------------
+
+    $('#marker_url').change(function(event) {
+        var old = _slides[_current_slide_index].location.icon;
+        _slides[_current_slide_index].location.icon = $(this).val().trim();
+        storymap_dirty(1);
+    });
+
+    modal_init($('#marker_opt_modal'))
+        .on('upload', function(event, url) {
+            $(this).trigger('refresh_image_select');
+            $('#marker_url').val(url).change();
+            $(this).find('.upload-panel').trigger('reset');
+        })
+        .on('refresh_image_select', function(event) {
+            var html = '';
+            for(var i = 0; i < _storymap_files.length; i++) {
+                html += '<li><a href="javascript:">'+_storymap_files[i]+'</a></li>'; // TODO: find a nicer way of trimming these (local doesn't look nice)
+            }
+            $('.image-select').html(html || '<li class="default">no uploaded images found</li>');
+        })
+        .on('modal_show', function(event, error_msg) {
+            var marker = _slides[_current_slide_index].location.icon;
+            $(this).trigger('refresh_image_select');
+
+            $('#marker_image_select a').click(function(event) {
+                $('#marker_url')
+                    .val(storymap_image_url(_user.uid, _storymap_meta.id, $(this).html()))
+                    .change();
+                    console.log("change marker url");
+            });
+
+            $('#marker_url').val(marker);
 
             $(this).find('.upload-panel').trigger('reset');
             $(this).trigger('reset', error_msg);
