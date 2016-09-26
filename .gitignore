@@ -10,6 +10,7 @@
 codekit-config.json
 
 build
+robot_tests/logs
 s3analysis/mirror
 s3analysis/*csv
 

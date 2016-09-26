@@ -1,27 +1,36 @@
 *** Settings ***
 Documentation  Reusable keywords and variables for the StoryMap server.
 Library        Selenium2Library  timeout=5  implicit_wait=30
+Library        OperatingSystem
 Library        Process
 Library        String
 
 *** Variables ***
 ${PORT}        5001
 ${SERVER}      http://localhost:${PORT}
-${BROWSER}     Firefox
+${SERVER LOG}  ${OUTPUT DIR}/server.log
 ${DELAY}       0
 ${ROOT URL}    ${SERVER}/select/
 
 *** Keywords ***
+Open Browser To Homepage
+    ${browser} =  Get Environment Variable  BROWSER  default=chrome
+    Open Browser  ${SERVER}  browser=${browser}
+
+Go To Authoring Tool
+    Go To  ${SERVER}/select/
+
 Start Test Server
-    Start Process  bash -c "source env.sh && TEST_MODE\=on fab serve:port\=${PORT}"  shell=yes stdout=server.log  stderr=server.log  alias=test_server
+    Start Process  bash -c "source env.sh && TEST_MODE\=on fab serve:port\=${PORT}"  shell=yes  stdout=${SERVER LOG}  stderr=${SERVER LOG}  alias=test_server
     Sleep  3s
+    Open Browser To Homepage
 
 Stop Test Server
     Terminate Process  test_server
     Close Browser
 
 Open Browser To Authoring Tool
-    Open Browser  ${SERVER}/select/
+    Detect And Open Browser  ${SERVER}/select/
     Maximize Browser Window
     Set Selenium Speed  ${DELAY}
     Authoring Tool Should Be Open
@@ -59,20 +68,27 @@ StoryMap Should Exist
     [Arguments]  ${name}
     Element Should Contain  css=#entry_modal .modal-body  ${name}
 
+StoryMap Should Exist ID
+    [Arguments]  ${id}
+    Page Should Contain Element  css=tr[storymap-data="${id}"]
+
 StoryMap Should Not Exist
     [Arguments]  ${name}
     Element Should Not Contain  css=#entry_modal .modal-body  ${name}
 
+StoryMap Should Not Exist ID
+    [Arguments]  ${id}
+    Page Should Not Contain Element  css=tr[storymap-data="${id}"]
+
 Delete StoryMap
-    [Arguments]  ${name}
-    StoryMap Should Exist  ${name}
-    ${id} =  Convert To Lowercase  ${name}
+    [Arguments]  ${id}
+    StoryMap Should Exist ID  ${id}
     Click Link  css=tr[storymap-data="${id}"] td div div a
     #use jquery to click the delete button incase it's off the bottom of the screen
     Execute Javascript  $(".dropdown.open a.list-item-delete").click()
     Click Button  css=.modal-confirm button.btn-primary
     Sleep  2sec
-    StoryMap Should Not Exist  ${name}
+    StoryMap Should Not Exist ID  ${id}
 
 Rename StoryMap
     [Arguments]  ${oldName}  ${newName}
