@@ -1254,6 +1254,7 @@ $(function() {
         var old = _slides[_current_slide_index].location.icon;
         _slides[_current_slide_index].location.icon = $(this).val().trim();
         storymap_dirty(1);
+        location_mark(_slides[_current_slide_index].location);
     });
 
     modal_init($('#marker_opt_modal'))
