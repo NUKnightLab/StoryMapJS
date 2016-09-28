@@ -13,6 +13,7 @@ from functools import wraps
 import boto
 from moto import mock_s3
 from boto.exception import S3ResponseError
+from boto.s3.connection import OrdinaryCallingFormat
 import requests
 
 # Get settings module
@@ -27,7 +28,9 @@ if settings.TEST_MODE:
 
     _mock.stop()
 else:
-    _conn = boto.connect_s3(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
+    _conn = boto.connect_s3(
+            settings.AWS_ACCESS_KEY_ID,
+            settings.AWS_SECRET_ACCESS_KEY, calling_format=OrdinaryCallingFormat())
     _bucket = _conn.get_bucket(settings.AWS_STORAGE_BUCKET_NAME)
 
 class StorageException(Exception):
