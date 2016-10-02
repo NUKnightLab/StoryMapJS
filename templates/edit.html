@@ -1200,7 +1200,7 @@ $(function() {
         storymap_dirty(1);
     });
 
-    modal_init($('#slide_opt_modal'))
+    modal_init($('#background_opt_modal'))
         .on('upload', function(event, url) {
             $(this).trigger('refresh_image_select');
             $('#background_url').val(url).change();
