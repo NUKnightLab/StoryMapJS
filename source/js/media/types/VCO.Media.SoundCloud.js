@@ -28,7 +28,7 @@ VCO.Media.SoundCloud = VCO.Media.extend({
 
 		// API Call
 		VCO.getJSON(api_url, function(d) {
-			TL.Load.js("https://w.soundcloud.com/player/api.js", function() {//load soundcloud api for pausing.
+			VCO.Load.js("https://w.soundcloud.com/player/api.js", function() {//load soundcloud api for pausing.
  				self.createMedia(d);
  			});
 		});
