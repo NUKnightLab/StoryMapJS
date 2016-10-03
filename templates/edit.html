@@ -1212,6 +1212,12 @@ $(function() {
                 html += '<li><a href="javascript:">'+_storymap_files[i]+'</a></li>';
             }
             $('.image-select').html(html || '<li class="default">no uploaded images found</li>');
+
+            $('#background_image_select a').click(function(event) {
+                $('#background_url')
+                    .val(storymap_image_url(_user.uid, _storymap_meta.id, $(this).html()))
+                    .change();
+            });
         })
         .on('modal_show', function(event, error_msg) {
             var background = _slides[_current_slide_index].background || {};
@@ -1230,12 +1236,6 @@ $(function() {
             }
 
             $(this).trigger('refresh_image_select');
-
-            $('#background_image_select a').click(function(event) {
-                $('#background_url')
-                    .val(storymap_image_url(_user.uid, _storymap_meta.id, $(this).html()))
-                    .change();
-            });
 
             $('#background_url').val(url);
 
@@ -1270,10 +1270,6 @@ $(function() {
                 html += '<li><a href="javascript:" data-filename="'+_storymap_files[i]+'">'+_storymap_files[i]+'</a></li>';
             }
             $('.image-select').html(html || '<li class="default">no uploaded images found</li>');
-        })
-        .on('modal_show', function(event, error_msg) {
-            var marker = _slides[_current_slide_index].location.icon;
-            $(this).trigger('refresh_image_select');
 
             $('#marker_image_select a').click(function(event) {
                 if ($(this).data('filename')) {
@@ -1284,6 +1280,10 @@ $(function() {
                   $('#marker_url').val('').change();
                 }
             });
+        })
+        .on('modal_show', function(event, error_msg) {
+            var marker = _slides[_current_slide_index].location.icon;
+            $(this).trigger('refresh_image_select');
 
             $('#marker_url').val(marker);
 
