@@ -29,10 +29,6 @@ Stop Test Server
     Terminate Process  test_server
     Close Browser
 
-Go To Authoring Tool
-    Go To  ${SERVER}/select/
-
-
 Open Browser To Authoring Tool
     Detect And Open Browser  ${SERVER}/select/
     Maximize Browser Window

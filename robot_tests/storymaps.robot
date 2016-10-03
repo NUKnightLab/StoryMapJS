@@ -54,7 +54,7 @@ Copy A StoryMap
     Delete StoryMap  test2
 
 Use Custom Map Marker
-    Open Browser To Authoring Tool
+    Go To Authoring Tool
     Create StoryMap  Test
     StoryMap Should Exist  Test
     Edit StoryMap  Test
