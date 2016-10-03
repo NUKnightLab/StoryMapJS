@@ -52,3 +52,14 @@ Copy A StoryMap
     StoryMap Should Exist  Test2
     Delete StoryMap  test1
     Delete StoryMap  test2
+
+Use Custom Map Marker
+    Open Browser To Authoring Tool
+    Create StoryMap  Test
+    StoryMap Should Exist  Test
+    Edit StoryMap  Test
+    Create New StoryMap Slide
+    Apply Custom Map Marker  https://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png
+    Go To  ${SERVER}/select
+    Confirm Action
+    Delete StoryMap  test
