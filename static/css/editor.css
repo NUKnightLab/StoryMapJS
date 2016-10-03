@@ -221,6 +221,10 @@ input[type="radio"] {margin: 0;}
     height: 32px;
 }
 
+#marker_url {
+	margin-right:10px;
+}
+
 .minicolors-theme-bootstrap .minicolors-swatch {width: 24px;height: 24px;}
 #share_modal label {
 	font-weight:bold;
