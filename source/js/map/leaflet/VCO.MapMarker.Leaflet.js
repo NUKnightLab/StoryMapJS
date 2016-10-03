@@ -13,12 +13,13 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 		
 		if (d.location && d.location.lat && d.location.lon) {
 			this.data.real_marker = true;
-			if (d.location.icon && d.location.icon != "") {
+			var use_custom_marker = o.use_custom_markers || d.location.use_custom_marker;
+			if (use_custom_marker && d.location.icon && d.location.icon != "") {
 				this._custom_icon = true;
 				this._custom_icon_url = d.location.icon;
 				this._icon = new L.icon({iconUrl: this._custom_icon_url, iconSize: [48], iconAnchor:[24, 48]});
 			
-			} else if (d.location.image && d.location.image != "") {
+			} else if (use_custom_marker && d.location.image && d.location.image != "") {
 				this._custom_image_icon = true;
 				this._custom_icon_url = d.location.image;
 				this._icon = new L.icon({iconUrl: this._custom_icon_url, iconSize: [48], iconAnchor:[24, 48], shadowSize: [68, 95], shadowAnchor: [22, 94], className:"vco-mapmarker-image-icon"});
