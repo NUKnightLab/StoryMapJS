@@ -50,7 +50,7 @@ Clone our [fabfile](https://github.com/NUKnightLab/fablib) repository and place 
 
 Install [virtualenv](https://pypi.python.org/pypi/virtualenv), [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/), and [MongoDB](https://www.mongodb.org/).
 
-If you need to run the server, copy `env.sh.sample` to `env.sh` and, if necessary, modify any values in it. Execute this script when you are working on StoryMapJS, or otherwise arrange for these environment variables to be set. There are a number of environment variables which are critical to running the server which involve Amazon Web Services and Google Application credentials which we do not store in GitHub. If you are at Knight Lab, see a staff developer for these values. If you are outside of Knight Lab, you may not
+If you need to run the server, copy `env.sh.sample` to `env.sh` and, if necessary, modify any values in it. Execute this script with `source env.sh` when you are working on StoryMapJS, or otherwise arrange for these environment variables to be set. There are a number of environment variables which are critical to running the server which involve Amazon Web Services and Google Application credentials which we do not store in GitHub. If you are at Knight Lab, see a staff developer for these values. If you are outside of Knight Lab, you may not
 
     # Create a virtual environment
     mkvirtualenv storymapjs
