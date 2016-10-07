@@ -10,7 +10,7 @@
 
 #mc-embedded-subscribe-form .input-large {
   width: 260px;
-}	
+}
 
 #examples h3 {
 	font-size: 16px;
@@ -22,6 +22,10 @@
 }
 
 .alert-info {
-   font-family: "Apres RE","Helvetica Neue",Helvetica,Arial,sans-serif; 
+   font-family: "Apres RE","Helvetica Neue",Helvetica,Arial,sans-serif;
 }
 
+code {
+    display: block;
+    white-space:normal;
+}
