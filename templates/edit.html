@@ -101,8 +101,7 @@ var _default_data = {
             text: {headline: "", text: ""},
             media: {url: "", credit: "", caption: ""},
             location: {
-                line: true,
-                icon: 'https://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/blue-pushpin.png'
+                line: true
             }
         }
     }
@@ -180,8 +179,8 @@ function location_set(slide_index, data) {
 function location_mark(data) {
     _map.clearOverlays();
     if(data) {
-        _map.addMarker(data.lat, data.lon, true);
-        _map.panTo(data.lat, data.lon);
+        _map.addMarker(data, true);
+        _map.panTo(data.location.lat, data.location.lon);
     }
 }
 
@@ -252,10 +251,12 @@ function slide_select(event) {
                     var loc_data = _slides[i].location;
 
                     if(loc_data.lat && loc_data.lon) {
-                        _map.addMarker(loc_data.lat, loc_data.lon, false);
+                        _map.addMarker(_slides[i], false);
                      }
                 }
             }
+
+            $('#marker_options').attr('disabled',true);
 
             _map.setDefaultView();
 
@@ -265,6 +266,7 @@ function slide_select(event) {
         } else {
             // Show slide view
             $('#map_info, #map_overlay').hide();
+            $('#marker_options').attr('disabled',false);
 
             if(_storymap_data.storymap.zoomify) {
                 $('#map_search_input').hide();
@@ -275,7 +277,7 @@ function slide_select(event) {
             _map.setView(data.location.lat, data.location.lon, data.location.zoom);
             _map.zoomEnable(true);
 
-            location_mark(data.location);
+            location_mark(data);
         }
 
         $('#url').val(data.media.url);
@@ -500,8 +502,8 @@ function media_preview_update(url) {
 
 var search = function(lat, lng) {
     var data = {lat: lat, lon: lng};
-    location_mark(data);
     location_set(_current_slide_index, data);
+    location_mark(_slides[_current_slide_index]);
     if (_map.getZoom() == 1) {
       _map.setView(lat, lng, 12);
     }
@@ -514,9 +516,8 @@ var _map_options = {
     handlers: {
         double_click: function(lat, lng) {
             var data = {lat: lat, lon: lng};
-            location_mark(data);
             location_set(_current_slide_index, data);
-
+            location_mark(_slides[_current_slide_index]);
         },
         zoom: function(zoom) {
             location_set(_current_slide_index, {zoom: zoom});
@@ -1035,6 +1036,7 @@ $(function() {
         storymap_dirty(1);
 
         slide_set_class(_current_slide_index);
+        location_mark(_slides[_current_slide_index]);
 
         if (id == 'url') {
             media_preview_update(val);
@@ -1198,22 +1200,27 @@ $(function() {
         storymap_dirty(1);
     });
 
-    modal_init($('#slide_opt_modal'))
+    modal_init($('#background_opt_modal'))
         .on('upload', function(event, url) {
-            $(this).trigger('refresh_background_select');
+            $(this).trigger('refresh_image_select');
             $('#background_url').val(url).change();
             $(this).find('.upload-panel').trigger('reset');
         })
-        .on('refresh_background_select', function(event) {
+        .on('refresh_image_select', function(event) {
             var html = '';
             for(var i = 0; i < _storymap_files.length; i++) {
                 html += '<li><a href="javascript:">'+_storymap_files[i]+'</a></li>';
             }
-            $('#background_image_select').html(html || '<li class="default">no uploaded images found</li>');
+            $('.image-select').html(html || '<li class="default">no uploaded images found</li>');
+
+            $('#background_image_select a').click(function(event) {
+                $('#background_url')
+                    .val(storymap_image_url(_user.uid, _storymap_meta.id, $(this).html()))
+                    .change();
+            });
         })
         .on('modal_show', function(event, error_msg) {
             var background = _slides[_current_slide_index].background || {};
-
             var color = background.color || '';
             var opacity = (background.opacity || 100) / 100;
             var url = background.url || '';
@@ -1221,21 +1228,88 @@ $(function() {
             $('#background_color').minicolors('value', color);
             $('#background_color').minicolors('opacity', opacity);
 
+
             if(color) {
                 $('#background_color_clear').show();
             } else {
                 $('#background_color_clear').hide();
             }
 
-            $(this).trigger('refresh_background_select');
-
-            $('#background_image_select a').click(function(event) {
-                $('#background_url')
-                    .val(storymap_image_url(_user.uid, _storymap_meta.id, $(this).html()))
-                    .change();
-            });
+            $(this).trigger('refresh_image_select');
 
             $('#background_url').val(url);
+
+            $(this).find('.upload-panel').trigger('reset');
+            $(this).trigger('reset', error_msg);
+        })
+        .on('show', function() {
+            $(this).trigger('modal_show');
+        });
+
+// ------------------------------------------------------------
+// Markers
+// ------------------------------------------------------------
+
+    $('#marker_url').change(function(event) {
+        var currentSlide = _slides[_current_slide_index];
+        var icon = $(this).val().trim();
+
+        if (icon) {
+            var img = new Image();
+
+            img.onload = function() {
+                currentSlide.location.use_custom_marker = true;
+                currentSlide.location.icon = icon;
+                currentSlide.location.iconSize = [this.width, this.height];
+                var size = currentSlide.location.iconSize;
+                if (this.width > this.height) {
+                    currentSlide.location.iconSize = [48, this.height * 48/this.width ];
+                } else {
+                    currentSlide.location.iconSize = [this.width * 48/this.height, 48];
+                }
+                storymap_dirty(1);
+                location_mark(_slides[_current_slide_index]);
+            }
+
+            img.src = icon;
+        } else {
+            currentSlide.location.use_custom_marker = false;
+            delete currentSlide.location.icon;
+            delete currentSlide.location.iconSize;
+            storymap_dirty(1);
+            location_mark(_slides[_current_slide_index]);
+        }
+    });
+
+    modal_init($('#marker_opt_modal'))
+        .on('upload', function(event, url) {
+            $(this).trigger('refresh_image_select');
+            $('#marker_url').val(url).change();
+            $(this).find('.upload-panel').trigger('reset');
+        })
+        .on('refresh_image_select', function(event) {
+            var html = '<li><a href="javascript:">(Default icon)</a></li>';
+            for(var i = 0; i < _storymap_files.length; i++) {
+                // TODO: find a nicer way of trimming these (local doesn't look nice)
+                html += '<li><a href="javascript:" data-filename="'+_storymap_files[i]+'">'+_storymap_files[i]+'</a></li>';
+            }
+            $('.image-select').html(html || '<li class="default">no uploaded images found</li>');
+
+            $('#marker_image_select a').click(function(event) {
+                if ($(this).data('filename')) {
+                  $('#marker_url')
+                    .val(storymap_image_url(_user.uid, _storymap_meta.id, $(this).data('filename')))
+                    .change();
+                } else {
+                  $('#marker_url').val('').change();
+                }
+            });
+        })
+        .on('modal_show', function(event, error_msg) {
+            var marker = _slides[_current_slide_index].location.icon;
+            $(this).trigger('refresh_image_select');
+
+            $('#marker_url').val(marker);
 
             $(this).find('.upload-panel').trigger('reset');
             $(this).trigger('reset', error_msg);

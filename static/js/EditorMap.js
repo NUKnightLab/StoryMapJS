@@ -140,9 +140,27 @@ LeafletEditorMap.prototype.removePolyLine = function() {
     }
 }
 
-LeafletEditorMap.prototype.addMarker = function(lat, lng, draggable) {
-    var latlng = L.latLng(lat, lng);
-    var marker = L.marker(latlng, {draggable: (draggable || false)})
+LeafletEditorMap.prototype.addMarker = function(data, draggable) {
+    var latlng = L.latLng(data.location.lat, data.location.lon);
+
+    if (data.location.icon) {
+      var anchor = data.location.iconSize ? [data.location.iconSize[0] * 0.5, data.location.iconSize[1]] : [24,48] ;
+      var icon = L.icon({iconUrl: data.location.icon, iconSize: data.location.iconSize || [48,48], iconAnchor: anchor});
+    } else {
+      var media = VCO.MediaType({url: data.media.url});
+      if (media.type) {
+        var iconClass = "vco-mapmarker-icon vco-icon-" + media.type;
+      } else {
+        var iconClass = "vco-mapmarker-icon vco-icon-plaintext";
+      }
+
+      var icon = L.divIcon({className: 'vco-mapmarker ' + iconClass, iconAnchor:[10, 10]});
+    }
+
+    var marker = L.marker(latlng, {
+      icon: icon,
+      draggable: (draggable || false)
+    });
     marker.addTo(this.map);
 
     if(draggable) {

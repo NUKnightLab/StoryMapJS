@@ -221,6 +221,10 @@ input[type="radio"] {margin: 0;}
     height: 32px;
 }
 
+#marker_url {
+	margin-right:10px;
+}
+
 .minicolors-theme-bootstrap .minicolors-swatch {width: 24px;height: 24px;}
 #share_modal label {
 	font-weight:bold;
@@ -763,7 +767,6 @@ a.list-item-options:hover {
 */
 #map-div {position: absolute;top: 0;left: 0;bottom: 312px;right: 0;border-bottom: 1px solid #CCC;}
 #map {width: 100%;height: 100%;}
-#map * {font-family: Roboto,Arial,sans-serif;}
 #map img{max-width:none}
 
 #map_overlay {position: absolute;left: 0;top: 0;width: 100%;height: 100%;}
@@ -904,7 +907,7 @@ label, .data-media-upload {
 	margin-bottom: 24px;
 }
 
-.data-right button {margin-bottom: 10px;}
+.data-right button {margin-bottom: 10px; margin-left: 5px;}
 
 /* font-face, font-size, line-height, etc should be set in font-specific css */
 #headline {color: #000;margin-bottom: 11px;height: auto;}

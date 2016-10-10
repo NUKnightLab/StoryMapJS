@@ -1,6 +1,6 @@
 *** Settings ***
 Documentation  Reusable keywords and variables for the StoryMap server.
-Library        Selenium2Library  timeout=5  implicit_wait=30
+Library        Selenium2Library  timeout=5  implicit_wait=5
 Library        OperatingSystem
 Library        Process
 Library        String
@@ -114,3 +114,30 @@ Copy StoryMap
 
 Wait Until Loaded
     Wait Until Element Is Not Visible  css=.icon-spinner
+
+Edit StoryMap
+    [Arguments]  ${name}
+    ${id} =  Convert To Lowercase  ${name}
+    Click Link  css=tr[storymap-data="${id}"] td a.title
+    Edit StoryMap Fields  ${name}  Test title slide
+
+Edit StoryMap Fields
+    [Arguments]  ${headline}  ${body}
+    Wait Until Loaded
+    Input Text  css=#headline  ${headline}
+    Select Frame  css=#edit iframe
+    Input Text  css=.wysihtml5-editor  ${body}
+    Unselect Frame
+Apply Custom Map Marker
+    [Arguments]  ${marker}
+    Click Element  css=#marker_options
+    Sleep  2sec
+    Input Text  css=#marker_url  ${marker}
+    Click Element  css=#marker_options_close
+    Sleep  2sec
+    Element Should Be Visible  css=img.leaflet-marker-icon
+    ${img_src}=  Get Element Attribute  css=img.leaflet-marker-icon@src
+    Should Be Equal As Strings  ${marker}  ${img_src}
+
+Create New StoryMap Slide
+    Click Element  css=div#storymap_add_slide.slides-add

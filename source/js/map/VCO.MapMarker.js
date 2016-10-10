@@ -46,8 +46,7 @@ VCO.MapMarker = VCO.Class.extend({
 			ease: 				VCO.Ease.easeInSpline,
 			width: 				600,
 			height: 			600,
-			map_popup: 			false,
-			use_custom_markers: false
+			map_popup: 			false
 		};
 		
 		
