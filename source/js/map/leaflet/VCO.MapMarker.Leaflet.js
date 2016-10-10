@@ -14,17 +14,18 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 		if (d.location && d.location.lat && d.location.lon) {
 			this.data.real_marker = true;
 			var use_custom_marker = o.use_custom_markers || d.location.use_custom_marker;
-			if (use_custom_marker && d.location.icon && d.location.icon != "") {
-				this._custom_icon = true;
-				this._custom_icon_url = d.location.icon;
-				this._icon = new L.icon({iconUrl: this._custom_icon_url, iconSize: [48], iconAnchor:[24, 48]});
-			
-			} else if (use_custom_marker && d.location.image && d.location.image != "") {
-				this._custom_image_icon = true;
-				this._custom_icon_url = d.location.image;
-				this._icon = new L.icon({iconUrl: this._custom_icon_url, iconSize: [48], iconAnchor:[24, 48], shadowSize: [68, 95], shadowAnchor: [22, 94], className:"vco-mapmarker-image-icon"});
+			if (use_custom_marker && d.location.icon) {
+				this._custom_icon = {
+					url: d.location.icon,
+					size: d.location.iconSize || [48,48],
+					anchor: this._customIconAnchor(d.location.iconSize)
+				};
+				this._icon = this._createIcon();
+			} else if (use_custom_marker && d.location.image) {
+				this._custom_image_icon = d.location.image;
+				this._icon = this._createImage();
 			} else {
-				this._icon = new L.divIcon({className: 'vco-mapmarker ' + this.media_icon_class, iconAnchor:[10, 10]});
+				this._icon = this._createDefaultIcon(false);
 			}
 			
 			this._marker = new L.marker([d.location.lat, d.location.lon], {
@@ -62,34 +63,46 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 		} else {
 			this.media_icon_class = "vco-mapmarker-icon vco-icon-plaintext";
 		}
-		
 		if (this.data.real_marker) {
 			if (a) {
 				this._marker.setZIndexOffset(100);
-				if (this._custom_icon) {
-					this._icon = new L.icon({iconUrl: this._custom_icon_url, iconSize: [48], iconAnchor:[24, 48]});
-				} else if (this._custom_image_icon) {
-					this._icon = new L.icon({iconUrl: this._custom_icon_url, iconSize: [48], iconAnchor:[24, 48], shadowSize: [68, 95], shadowAnchor: [22, 94], className:"vco-mapmarker-image-icon-active"});
-				} else {
-					this._icon = new L.divIcon({className: 'vco-mapmarker-active ' + this.media_icon_class, iconAnchor:[10, 10]});
-				}
-				
 				//this.timer = setTimeout(function() {self._openPopup();}, this.options.duration + 200);
-				this._setIcon();
 			} else {
-				//this._marker.closePopup();
 				clearTimeout(this.timer);
 				this._marker.setZIndexOffset(0);
-				if (this._custom_icon) {
-					this._icon = new L.icon({iconUrl: this._custom_icon_url, iconSize: [48], iconAnchor:[24, 48]});
-				} else if (this._custom_image_icon) {
-					this._icon = new L.icon({iconUrl: this._custom_icon_url, iconSize: [48], iconAnchor:[24, 48], shadowSize: [68, 95], shadowAnchor: [22, 94], className:"vco-mapmarker-image-icon"});
-				} else {
-					this._icon = new L.divIcon({className: 'vco-mapmarker ' + this.media_icon_class, iconAnchor:[10, 10]});
-				}
-				
-				this._setIcon();
 			}
+			//this._marker.closePopup();
+			if (this._custom_icon) {
+				this._icon = this._createIcon();
+			} else if (this._custom_image_icon) {
+				this._icon = this._createImage(a);
+			} else {
+				this._icon = this._createDefaultIcon (a);
+			}
+
+			this._setIcon();
+		}
+	},
+
+	_createIcon: function() {
+		return new L.icon({iconUrl: this._custom_icon.url, iconSize: this._custom_icon.size, iconAnchor: this._custom_icon.anchor});
+	},
+
+	_createImage: function(active) { // TODO: calculate shadow dimensions
+		var className = active ? "vco-mapmarker-image-icon-active" : "vco-mapmarker-image-icon";
+		return new L.icon({iconUrl: url, iconSize: [48], iconAnchor:[24, 48], shadowSize: [68, 95], shadowAnchor: [22, 94], className: className});
+	},
+
+	_createDefaultIcon: function(active) {
+		var className = active ? "vco-mapmarker-active" : "vco-mapmarker";
+		return L.divIcon({className: className + " " + this.media_icon_class, iconAnchor:[10, 10]});
+	},
+
+	_customIconAnchor: function(size) {
+		if (size) {
+			return [ size[0] * 0.5, size[1] ];
+		} else {
+			return [ 24, 48 ];
 		}
 	},
 	

@@ -144,7 +144,8 @@ LeafletEditorMap.prototype.addMarker = function(data, draggable) {
     var latlng = L.latLng(data.location.lat, data.location.lon);
 
     if (data.location.icon) {
-      var icon = L.icon({iconUrl: data.location.icon, iconSize: [48], iconAnchor:[24, 48]});
+      var anchor = data.location.iconSize ? [data.location.iconSize[0] * 0.5, data.location.iconSize[1]] : [24,48] ;
+      var icon = L.icon({iconUrl: data.location.icon, iconSize: data.location.iconSize || [48,48], iconAnchor: anchor});
     } else {
       var media = VCO.MediaType({url: data.media.url});
       if (media.type) {
