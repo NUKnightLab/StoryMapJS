@@ -92,3 +92,9 @@ Apparently, Apple removed support for `openssl` in Mac OS X 10.11. Here's the so
 
 * `brew install openssl`
 * `CFLAGS="-I$(brew --prefix openssl)/include -I$(xcrun --show-sdk-path)/usr/include" LDFLAGS="-L$(brew --prefix openssl)/lib" pip install -r requirements.txt`
+
+
+## Troubleshooting
+
+Users may be directed to our userinfo page to help with troubleshooting. This page provides information about the user's account and saved storymaps. The endpoint is `https://storymap.knightlab.com/userinfo/`
+
