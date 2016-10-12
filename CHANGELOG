@@ -1,4 +1,4 @@
-0.6.1 (TBA)
+0.6.0
 ------------------------
 * PR #302 Media fixes including pause of video types when navigating away from slide
 * PR #303 Adds custom map marker upload in editor
