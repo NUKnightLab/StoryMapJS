@@ -19,7 +19,7 @@ import requests
 # Get settings module
 settings = sys.modules[os.environ['FLASK_SETTINGS_MODULE']]
 
-if settings.get('TEST_MODE'):
+if hasattr(settings, 'TEST_MODE') and settings.TEST_MODE:
     _mock = mock_s3()
     _mock.start()
 
@@ -45,7 +45,7 @@ class StorageException(Exception):
 def _mock_in_test_mode(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if settings.get('TEST_MODE'):
+        if hasattr(settings, 'TEST_MODE') and settings.TEST_MODE:
             _mock.start(reset=False)
             result = f(*args, **kwargs)
             _mock.stop()
