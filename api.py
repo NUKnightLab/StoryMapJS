@@ -243,12 +243,9 @@ def google_auth_verify():
 def _user_get():
     """Enforce authenticated user"""
     uid = session.get('uid')
-    if not uid:
-        return redirect(url_for('select'))
     user = _user.find_one({'uid': uid})
-    if not user:
+    if not user and 'uid' in session:
         session.pop('uid')
-        return redirect(url_for('select'))
     return user
 
 def check_test_user():
@@ -270,6 +267,8 @@ def require_user(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         user = _user_get()
+        if user is None:
+            return redirect(url_for('select'))
         request.user = user
         kwargs['user'] = user
         return f(*args, **kwargs)
