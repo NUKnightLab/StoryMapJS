@@ -45,7 +45,7 @@ class StorageException(Exception):
 def _mock_in_test_mode(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if settings.TEST_MODE:
+        if settings.get('TEST_MODE'):
             _mock.start(reset=False)
             result = f(*args, **kwargs)
             _mock.stop()
