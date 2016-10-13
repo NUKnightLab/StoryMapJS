@@ -1306,10 +1306,12 @@ $(function() {
             });
         })
         .on('modal_show', function(event, error_msg) {
-            var marker = _slides[_current_slide_index].location.icon;
+            var currentSlide = _slides[_current_slide_index];
             $(this).trigger('refresh_image_select');
 
-            $('#marker_url').val(marker);
+            if (currentSlide.location.use_custom_marker) {
+                $('#marker_url').val(currentSlide.location.icon);
+            }
 
             $(this).find('.upload-panel').trigger('reset');
             $(this).trigger('reset', error_msg);
