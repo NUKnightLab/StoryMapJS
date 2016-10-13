@@ -281,6 +281,9 @@ input[type="radio"] {margin: 0;}
 #share_modal #oembed-note {
 	border-bottom: 1px dotted #ccc;
 }
+#share_modal .share-embed-params {
+	margin-bottom: 10px;
+}
 #share_modal .share-embed-params input[type="text"] {
 	border: 1px solid #DDD;
 }

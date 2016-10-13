@@ -1,6 +1,6 @@
 from __future__ import division
 from flask import Flask, request, session, redirect, url_for, \
-    render_template, jsonify, abort
+    render_template, jsonify, abort, send_file, after_this_request
 from collections import defaultdict
 import math
 import os
@@ -14,6 +14,9 @@ import json
 from functools import wraps
 import urllib
 from urlparse import urlparse
+import tempfile
+from zipfile import ZipFile
+import mimetypes
 
 
 # Import settings module
@@ -359,6 +362,16 @@ def _write_embed_published(key_prefix, meta):
     """Write embed for published storymap"""
     _write_embed(key_prefix+'index.html', key_prefix+'published.json', meta)
 
+def _import_metadata(user, data):
+    """Add a StoryMap to a user based on imported metadata"""
+
+    id = _make_storymap_id(user, data['title'])
+    data['id'] = id
+    user['storymaps'][id] = data
+    _user.save(user)
+
+    return id
+
 #
 # API views
 # (called from the select page)
@@ -383,6 +396,64 @@ def storymap_update_meta(user, id):
                 _write_embed_published(key_prefix, user['storymaps'][id])
 
         return jsonify(user['storymaps'][id])
+    except Exception, e:
+        traceback.print_exc()
+        return jsonify({'error': str(e)})
+
+@app.route('/storymap/export/')
+@require_user_id()
+def storymap_export(user, id):
+    """
+    Download a zip file of the StoryMap's data, for importing or self-hosting
+    """
+    key_prefix = storage.key_prefix(user['uid'], id)
+    key_list, _ = storage.list_keys(key_prefix, 999, '')
+
+    temp_file, temp_path = tempfile.mkstemp()
+
+    @after_this_request
+    def cleanup_temp_file(response):
+        os.close(temp_file)
+        os.remove(temp_path)
+        return response
+
+    with ZipFile(temp_path, mode='a') as zip_file:
+        zip_file.writestr('metadata.json', json.dumps(user['storymaps'][id]))
+        for key in key_list:
+            file_name = key.name.split(key_prefix)[-1]
+            zip_file.writestr(file_name, storage.get_contents_as_string(key))
+
+    return send_file(temp_path, as_attachment=True, attachment_filename=('storymap-%s.zip' % id))
+
+@app.route('/storymap/import/', methods=['POST'])
+@require_user
+def storymap_import(user):
+    try:
+        if 'archive' in request.files:
+            temp_file, temp_path = tempfile.mkstemp()
+            request.files['archive'].save(temp_path)
+
+            @after_this_request
+            def cleanup_temp_file(response):
+                os.close(temp_file)
+                os.remove(temp_path)
+                return response
+
+            with ZipFile(temp_path, mode='r') as zip_file:
+                files = zip_file.namelist()
+                if ('metadata.json' not in files) or ('draft.json' not in files) or ('draft.html' not in files):
+                    return jsonify({'error': 'This doesn\'t look like a StoryMap exported package.'})
+
+                id = _import_metadata(user, json.loads(zip_file.read('metadata.json')))
+                key_prefix = storage.key_prefix(user['uid'], id)
+
+                for file_name in files:
+                    if file_name != 'metadata.json':
+                        key_name = "%s%s" % (key_prefix, file_name)
+                        storage.save_from_data(key_name, mimetypes.guess_type(file_name), zip_file.read(file_name))
+
+                return jsonify({'id': id})
+
     except Exception, e:
         traceback.print_exc()
         return jsonify({'error': str(e)})
