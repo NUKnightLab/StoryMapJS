@@ -143,7 +143,7 @@ LeafletEditorMap.prototype.removePolyLine = function() {
 LeafletEditorMap.prototype.addMarker = function(data, draggable) {
     var latlng = L.latLng(data.location.lat, data.location.lon);
 
-    if (data.location.icon) {
+    if (data.location.use_custom_marker) {
       var anchor = data.location.iconSize ? [data.location.iconSize[0] * 0.5, data.location.iconSize[1]] : [24,48] ;
       var icon = L.icon({iconUrl: data.location.icon, iconSize: data.location.iconSize || [48,48], iconAnchor: anchor});
     } else {
