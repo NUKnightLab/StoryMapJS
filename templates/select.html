@@ -531,6 +531,8 @@ $(function() {
 
             $modal = $(this).trigger('progress_show', 'Checking migration status');
 
+            {# // Disabling check for migration
+               // migration no longer valid with hard Google Drive cutoff
             ajax_get("{{ url_for('storymap_migrate_list') }}", {},
                 function(error) {
                     $modal.trigger('reset',  format_error('Error getting migration list', error));
@@ -559,6 +561,7 @@ $(function() {
                     }
                 }
             );
+            // disabled check for migration #}
         })
         .on('show_login', function(event) {
             $(this).find('.entry-panel').hide();
