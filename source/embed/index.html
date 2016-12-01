@@ -45,6 +45,12 @@
 		  ga('create', 'UA-27829802-2', 'knightlab.com'); /* StoryMap Embed analytics only. Not KnightLab broadly */
 		  ga('send', 'pageview');
 		  ga('send', 'event', 'StoryMapJS', 'EmbeddedIn', document.referrer)
+          
+          if(map_type == 'zoomify') {
+              console.log('zoomify');
+		  ga('send', 'event', 'StoryMapJS', 'zoomify', document.referrer)
+          
+          }
 
 		</script>
 		<!-- End Google Analytics -->
