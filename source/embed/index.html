@@ -37,15 +37,14 @@
 		<!-- named tracker notes from https://developers.google.com/analytics/devguides/collection/gajs/ -->
 		<!-- multi-domain tracking notes from https://developers.google.com/analytics/devguides/collection/gajs/gaTrackingSite -->
 		<script>
-		  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-		  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-		  ga('create', 'UA-27829802-2', 'knightlab.com'); /* StoryMap Embed analytics only. Not KnightLab broadly */
-		  ga('send', 'pageview');
-		  ga('send', 'event', 'StoryMapJS', 'EmbeddedIn', document.referrer)
-
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+          // Analytics ID for StoryMap Embeds only. Not KnightLab broadly
+          ga('create', 'UA-27829802-2', 'knightlab.com');
+          ga('send', 'pageview');
+          ga('send', 'event', 'StoryMapJS', 'EmbeddedIn', document.referrer)
 		</script>
 		<!-- End Google Analytics -->
 
@@ -119,7 +118,6 @@
 
 		function storymap_onload(d) {
 		    trace('embed: storymap data loaded');
-
 		    if (d && d.storymap) {
 		        var font = "stock:default";
 		        if(d.font_css) {
@@ -135,6 +133,10 @@
 		        VCO.Load.css(font,function(){ trace('font loaded: ' + font);});
 		        storymap = new VCO.StoryMap('storymap-embed', d, options, {title: on_storymap_title});
 		    }
+            var mapType = storymap.options.map_type;
+            if(mapType && mapType.match('^zoomify.*')) {
+                ga('send', 'event', 'StoryMapJS', 'zoomify', document.referrer)
+            }
 		}
 
 		function on_storymap_title(e) {
