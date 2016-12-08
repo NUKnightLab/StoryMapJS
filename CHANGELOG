@@ -1,3 +1,6 @@
+0.6.2 (TBD)
+* PR #333 Adds zoomify analytics
+
 0.6.1 (2016-10-14)
 ------------------------
 * PR #302 Media fixes including pause of video types when navigating away from slide
