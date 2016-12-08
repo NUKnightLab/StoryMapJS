@@ -55,7 +55,7 @@
 		    var nvpair = {};
 		    var qs = window.location.search.replace('?', '');
 		    var pairs = qs.split('&');
-    
+
 		    for(var i = 0; i < pairs.length; i++) {
 		        var p = pairs[i].split('=');
 		        nvpair[p[0]] = p[1];
@@ -65,10 +65,10 @@
 
 		function getScriptPath(scriptname) {
 		    var scriptTags = document.getElementsByTagName('script');
-    
+
 			for(var i = 0; i < scriptTags.length; i++) {
 		        if(scriptTags[i].src.match(scriptname)) {
-		            script_path = scriptTags[i].src;            
+		            script_path = scriptTags[i].src;
 		            return script_path.split('?')[0].split('/').slice(0, -1).join('/');
 		        }
 			}
@@ -101,7 +101,7 @@
 
 		if(!!navigator.userAgent.match(/AppleWebKit\/.* Mobile\//)
 		|| !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/)
-		|| !!navigator.userAgent.toLowerCase().match(/msie [789]/)) {    
+		|| !!navigator.userAgent.toLowerCase().match(/msie [789]/)) {
 		    if(storymap_url.match(/^https?:\/\/www\.googledrive\.com\/host\//)) {
 		        storymap_url = location.protocol+'//proxy.knightlab.com/'+storymap_url.split('://')[1];
 		        trace('proxy, '+storymap_url);
@@ -136,11 +136,11 @@
 		        storymap = new VCO.StoryMap('storymap-embed', d, options, {title: on_storymap_title});
 		    }
 		}
-		
+
 		function on_storymap_title(e) {
 			document.title = "StoryMapJS: " + e.title;
 		};
-		
+
 		function storymap_getjson() {
 		    if('withCredentials' in new XMLHttpRequest()) {
 		        // Supports cross-domain requests
@@ -153,8 +153,8 @@
 		        xdr.onload = function() {
 		            storymap_onload(JSON.parse(xdr.responseText));
 		        };
-		        xdr.onerror = function() { 
-		            trace('embed: error loading data via XDomainRequest'); 
+		        xdr.onerror = function() {
+		            trace('embed: error loading data via XDomainRequest');
 		        };
 		        xdr.onprogress = function() {};
 		        xdr.open("get", storymap_url);
@@ -163,24 +163,24 @@
 		}
 
 		window.onload = function() {
-		    if(storymap_url.match('\\.js$')) {        
+		    if(storymap_url.match('\\.js$')) {
 		        trace('embed: loading data via script injection');
-		        var loaded = false;  
+		        var loaded = false;
 		        var script = document.createElement("script");
 		        script.type = "text/javascript";
-		        script.src  = storymap_url;    
+		        script.src  = storymap_url;
 		        script.onload = script.onreadystatechange = function() {
 		            if(!loaded && (!(d = this.readyState) || d == "loaded" || d == "complete")) {
 		                loaded = true;
 		                storymap_onload(storymap_json);
 		            }
 		        }
-    
+
 		        // document.head not standard before HTML5
 		        var insertionPoint = document.head || document.getElementsByTagName('head').item(0) || document.documentElement.childNodes[0];
 		        insertionPoint.appendChild(script);
-		    } else {    
-		        storymap_getjson(); 
+		    } else {
+		        storymap_getjson();
 		    }
 		}
 
