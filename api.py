@@ -244,6 +244,9 @@ def _user_get():
     """Enforce authenticated user"""
     uid = session.get('uid')
     user = _user.find_one({'uid': uid})
+    # google data field in user record no longer used
+    if 'google' in user:
+        del user['google']
     if not user and 'uid' in session:
         session.pop('uid')
     return user
