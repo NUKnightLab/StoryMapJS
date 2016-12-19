@@ -249,10 +249,12 @@ function slide_select(event) {
             for(var i = 1; i < _slides.length; i++) {
                 if(_slides[i].hasOwnProperty('location')) {
                     var loc_data = _slides[i].location;
-
-                    if(loc_data.lat && loc_data.lon) {
+                    if(loc_data
+                            && loc_data.hasOwnProperty('lat')
+                            && loc_data.hasOwnProperty('lon')
+                            && loc_data.lat && loc_data.lon) {
                         _map.addMarker(_slides[i], false);
-                     }
+                    }
                 }
             }
 
