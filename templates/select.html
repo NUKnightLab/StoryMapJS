@@ -523,7 +523,20 @@ $(function() {
 
             ajax_get("{{ url_for('storymap_migrate_list') }}", {},
                 function(error) {
-                    $modal.trigger('reset',  format_error('Error getting migration list', error));
+                    // No longer triggering this error due to changes in Google Drive
+                    //$modal.trigger('reset',  format_error('Error getting migration list', error));
+                    ajax_get("{{ url_for('storymap_migrate_done') }}", {},
+                        function(error) {
+                            $modal.trigger('reset', format_error('Error setting migration status', error));
+                        },
+                        function(data) {
+                            if(_params.import_url) {
+                                $modal.trigger('show_import');
+                            } else {
+                                $modal.trigger('show_list');
+                            }
+                        }
+                    );
                 },
                 function(data) {
                     if(data.migrate_list.length) {
