@@ -41,6 +41,8 @@ app.config.from_envvar('FLASK_SETTINGS_FILE')
 
 settings = sys.modules[settings_module]
 app.config['TEST_MODE'] = settings.TEST_MODE
+examples_json = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'examples.json')
+faq_json = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'faq.json')
 
 _GOOGLE_OAUTH_SCOPES = [
     'https://www.googleapis.com/auth/drive.readonly',
@@ -72,6 +74,12 @@ def inject_urls():
         STATIC_URL=static_url, static_url=static_url,
         STORAGE_URL=storage_url, storage_url=storage_url,
         CDN_URL=cdn_url, cdn_url=cdn_url)
+
+
+@app.context_processor
+def inject_index_data():
+        return dict(examples=json.load(open(examples_json)),faqs=json.load(open(faq_json)))
+
 
 class APIEncoder(json.JSONEncoder):
     def default(self, obj):
@@ -174,7 +182,7 @@ def _build_oauth_redirect(host,path):
 
 @app.route('/orangeline')
 def orangeline():
-    return render_template('orangeline.html')
+    return render_template('orangeline/index.html')
 
 
 @app.route("/google/auth/start/", methods=['GET', 'POST'])
