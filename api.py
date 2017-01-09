@@ -180,11 +180,6 @@ def _build_oauth_redirect(host,path):
     return url
 
 
-@app.route('/orangeline')
-def orangeline():
-    return render_template('orangeline/index.html')
-
-
 @app.route("/google/auth/start/", methods=['GET', 'POST'])
 def google_auth_start():
     """Initiate google authorization"""
