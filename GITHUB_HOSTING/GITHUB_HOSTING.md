@@ -1,6 +1,6 @@
 # Hosting your Gigapixel through Github
 
-Before you can being this process, you wil need to have generated Zoomify images. You can learn more about how to make one [here](https://storymap.knightlab.com/gigapixel/).
+Before you can being this process, you will need to have generated Zoomify images. You can learn more about how to make one [here](https://storymap.knightlab.com/gigapixel/).
 
 1. Sign up to create an account on Github. A free account is fine. If you already have an account, you can proceed to the next step.
 <br><br>
