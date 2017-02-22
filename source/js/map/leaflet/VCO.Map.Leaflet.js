@@ -201,6 +201,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 			case 'http':
 			case 'https':
 				_options.subdomains = this.options.map_subdomains;
+				_options.attribution 	= _attribution_knightlab + this.options.attribution;
 				_tilelayer = new L.TileLayer(this.options.map_type, _options);
 				break;
 

@@ -13,17 +13,17 @@ L.TileLayer.Zoomify = L.TileLayer.extend({
 		options = L.setOptions(this, options);
 		this._url = url;
 
-    	var imageSize = L.point(options.width, options.height),
-	    	tileSize = options.tileSize;
+  	var imageSize = L.point(options.width, options.height),
+    	tileSize = options.tileSize;
 
-    	this._imageSize = [imageSize];
-    	this._gridSize = [this._getGridSize(imageSize)];
+		this._imageSize = [imageSize];
+		this._gridSize = [this._getGridSize(imageSize)];
 
-        while (imageSize.x > tileSize || imageSize.y > tileSize) {
-        	imageSize = imageSize.divideBy(2).floor();
-        	this._imageSize.push(imageSize);
-        	this._gridSize.push(this._getGridSize(imageSize));
-        }
+    while (imageSize.x > tileSize || imageSize.y > tileSize) {
+    	imageSize = imageSize.divideBy(2).floor();
+    	this._imageSize.push(imageSize);
+    	this._gridSize.push(this._getGridSize(imageSize));
+    }
 
 		this._imageSize.reverse();
 		this._gridSize.reverse();
@@ -41,25 +41,25 @@ L.TileLayer.Zoomify = L.TileLayer.extend({
 
 		//map.setView(center, zoom, true);
 	},
-	
+
 	getZoomifyBounds: function(map) {
 		//return "getZoomifyBounds";
 		var imageSize 	= this._imageSize[0],
 			topleft 	= map.options.crs.pointToLatLng(L.point(0, 0), 0),
 		    bottomright = map.options.crs.pointToLatLng(L.point(imageSize.x, imageSize.y), 0),
 		    bounds 		= L.latLngBounds(topleft, bottomright);
-			
-			
+
+
 		return bounds;
 		//[[75, -132], [-30, 128]]
 	},
-	
+
 	getCenterZoom: function(map) {
 		var mapSize = map.getSize(),
 			zoom = this._getBestFitZoom(mapSize),
 			imageSize = this._imageSize[zoom],
 			center = map.options.crs.pointToLatLng(L.point(imageSize.x / 2, imageSize.y / 2), zoom);
-			
+
 		return {
 			center: center,
 			lat: 	center.lat,
@@ -82,7 +82,7 @@ L.TileLayer.Zoomify = L.TileLayer.extend({
 			imageSize = this._imageSize[zoom];
 			if (imageSize.x * tolerance < mapSize.x && imageSize.y * tolerance < mapSize.y) {
 				return zoom;
-			}			
+			}
 			zoom--;
 		}
 
@@ -109,11 +109,11 @@ L.TileLayer.Zoomify = L.TileLayer.extend({
 
 		if (tilePoint.x === gridSize.x - 1) {
 			tile.style.width = imageSize.x - (tileSize * (gridSize.x - 1)) + 'px';
-		} 
+		}
 
 		if (tilePoint.y === gridSize.y - 1) {
-			tile.style.height = imageSize.y - (tileSize * (gridSize.y - 1)) + 'px';			
-		} 
+			tile.style.height = imageSize.y - (tileSize * (gridSize.y - 1)) + 'px';
+		}
 
 		L.DomUtil.setPosition(tile, tilePos, L.Browser.chrome || L.Browser.android23);
 
@@ -136,8 +136,8 @@ L.TileLayer.Zoomify = L.TileLayer.extend({
 
 		for (z = 0; z < zoom; z++) {
 			gridSize = this._gridSize[z];
-			num += gridSize.x * gridSize.y; 
-		}	
+			num += gridSize.x * gridSize.y;
+		}
 
 		num += tilePoint.y * this._gridSize[zoom].x + tilePoint.x;
       	return Math.floor(num / 256);;
