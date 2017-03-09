@@ -1,6 +1,6 @@
 /*
 	https://github.com/Norkart/Leaflet-MiniMap
-	
+
 */
 
 L.Control.MiniMap = L.Control.extend({
@@ -63,7 +63,7 @@ L.Control.MiniMap = L.Control.extend({
             scrollWheelZoom: false,
             doubleClickZoom: false,
             boxZoom: false,
-			dragging:false,
+			      dragging:false,
             crs: map.options.crs
         });
 
@@ -84,24 +84,24 @@ L.Control.MiniMap = L.Control.extend({
         this._miniMap.whenReady(L.Util.bind(function() {
             this._aimingRect = L.rectangle(this._mainMap.getBounds(), this.options.aimingRectOptions).addTo(this._miniMap);
             this._shadowRect = L.rectangle(this._mainMap.getBounds(), this.options.shadowRectOptions).addTo(this._miniMap);
-			
-			this._locationCircle = L.circleMarker(this._mainMap.getCenter(), {
-				fillColor: "#c34528",
-				color: "#FFFFFF",
-				weight:2,
-				radius: 10,
-				fill:true,
-				fillOpacity: 1,
-				stroke:true,
-				clickable: false
-			}).addTo(this._miniMap);
-			this._locationCircle.setRadius(5);
-			
-            this._mainMap.on('moveend', this._onMainMapMoved, this);
-            this._mainMap.on('move', this._onMainMapMoving, this);
-            //this._miniMap.on('movestart', this._onMiniMapMoveStarted, this);
-            //this._miniMap.on('move', this._onMiniMapMoving, this);
-            //this._miniMap.on('moveend', this._onMiniMapMoved, this);
+
+  			this._locationCircle = L.circleMarker(this._mainMap.getCenter(), {
+  				fillColor: "#c34528",
+  				color: "#FFFFFF",
+  				weight:2,
+  				radius: 10,
+  				fill:true,
+  				fillOpacity: 1,
+  				stroke:true,
+  				clickable: false
+  			}).addTo(this._miniMap);
+  			this._locationCircle.setRadius(5);
+
+        this._mainMap.on('moveend', this._onMainMapMoved, this);
+        this._mainMap.on('move', this._onMainMapMoving, this);
+        //this._miniMap.on('movestart', this._onMiniMapMoveStarted, this);
+        //this._miniMap.on('move', this._onMiniMapMoving, this);
+        //this._miniMap.on('moveend', this._onMiniMapMoved, this);
 			if (this.options.bounds_array) {
 				this._miniMap.fitBounds(this.options.bounds_array, {padding:[15,15]});
 			}
@@ -109,19 +109,19 @@ L.Control.MiniMap = L.Control.extend({
 
         return this._container;
     },
-	
-	minimize: function(hide_completely) {
-		if (!this._minimized) {
-			this._minimize();
-		}
-	},
-	
-	restore: function() {
-		if (this._minimized) {
-			this._restore();
-			this._miniMap.fitBounds(this.options.bounds_array, {padding:[15,15]});
-		}
-	},
+
+  	minimize: function(hide_completely) {
+  		if (!this._minimized) {
+  			this._minimize();
+  		}
+  	},
+
+  	restore: function() {
+  		if (this._minimized) {
+  			this._restore();
+  			this._miniMap.fitBounds(this.options.bounds_array, {padding:[15,15]});
+  		}
+  	},
 
     addTo: function(map) {
         L.Control.prototype.addTo.call(this, map);
@@ -194,22 +194,17 @@ L.Control.MiniMap = L.Control.extend({
 
     _onMainMapMoved: function(e) {
         if (!this._miniMapMoving) {
-			var zoom = this._decideZoom(true);
-			if (zoom != 0) {
-				//this._miniMap.setView(this._mainMap.getCenter(), this._decideZoom(true));
-				//this._miniMap.setView(this._mainMap.getCenter());
-			}
-            this._mainMapMoving = true;
-
-            this._setDisplay(this._decideMinimized());
+    			var zoom = this._decideZoom(true);
+  				// this._miniMap.setView(this._mainMap.getCenter(), this._decideZoom(true));
+          this._mainMapMoving = true;
+          this._setDisplay(this._decideMinimized());
         } else {
-            this._miniMapMoving = false;
+          this._miniMapMoving = false;
         }
-		if (this.options.show_view) {
-			this._aimingRect.setBounds(this._mainMap.getBounds());
-		}
-		this._locationCircle.setLatLng(this._mainMap.getCenter());
-        
+    		if (this.options.show_view) {
+    			this._aimingRect.setBounds(this._mainMap.getBounds());
+    		}
+    		this._locationCircle.setLatLng(this._mainMap.getCenter());
     },
 
     _onMainMapMoving: function(e) {
@@ -286,7 +281,7 @@ L.Control.MiniMap = L.Control.extend({
 			} else {
 				return this._mainMap.getZoom();
 			}
-             
+
         }
     },
 
