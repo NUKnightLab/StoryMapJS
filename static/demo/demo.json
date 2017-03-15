@@ -98,9 +98,9 @@
                 "line": true
             },
             "media": {
-                    "url":              "https://www.library.yale.edu/MapColl/oldsite/map/va1830.gif",
-                    "credit":               "Yale Library",
-                    "caption":          "Map of Virginia"
+                    "url":              "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/1827_Finley_Map_of_Virginia_-_Geographicus_-_Virginia-finley-1827.jpg/1920px-1827_Finley_Map_of_Virginia_-_Geographicus_-_Virginia-finley-1827.jpg",
+                    "credit":               "<a href='https://en.wikipedia.org/wiki/Virginia_Conventions#/media/File:1827_Finley_Map_of_Virginia_-_Geographicus_-_Virginia-finley-1827.jpg'>Wikimedia Commons</a>",
+                    "caption":          "Anthony Finley's 1827 map of Virginia"
                 }
         }, {
             "date": "1840",
