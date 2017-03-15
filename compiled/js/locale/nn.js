@@ -1,0 +1,1 @@
+VCO.Language={name:"Norsk nynorsk",lang:"nn",messages:{loading:"Lastar inn",wikipedia:"Frå Wikipedia, det frie oppslagsverket",start:"Utforsk"},buttons:{map_overview:"Sjå oversiktskart",overview:"Oversikt",backtostart:"Til starten",collapse_toggle:"Gøym kartet",uncollapse_toggle:"Vis kartet",swipe_to_navigate:"Swipe to Navigate<br><span class='vco-button'>OK</span>"}};
