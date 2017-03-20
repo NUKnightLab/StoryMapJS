@@ -289,6 +289,11 @@ LeafletEditorMap.prototype.setMapType = function(storymap_config) {
         if (storymap_config.storymap.map_subdomains) {
           options.subdomains = storymap_config.storymap.map_subdomains;
         }
+
+        if (storymap_config.storymap.attribution) {
+          options.attribution = storymap_config.storymap.attribution;
+        }
+
         this.tilelayer = L.tileLayer(map_type, options);
         break;
       case 'stamen':
