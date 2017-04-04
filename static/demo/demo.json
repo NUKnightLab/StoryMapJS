@@ -98,9 +98,9 @@
                 "line": true
             },
             "media": {
-                    "url":              "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/1827_Finley_Map_of_Virginia_-_Geographicus_-_Virginia-finley-1827.jpg/1920px-1827_Finley_Map_of_Virginia_-_Geographicus_-_Virginia-finley-1827.jpg",
-                    "credit":               "<a href='https://en.wikipedia.org/wiki/Virginia_Conventions#/media/File:1827_Finley_Map_of_Virginia_-_Geographicus_-_Virginia-finley-1827.jpg'>Wikimedia Commons</a>",
-                    "caption":          "Anthony Finley's 1827 map of Virginia"
+                    "url":              "http://www.virginiaplaces.org/boundaries/graphics/kanawha1862.png",
+                    "credit":               "Virginia Places",
+                    "caption":          "Map of Virginia"
                 }
         }, {
             "date": "1840",
@@ -124,7 +124,7 @@
             "date": "1850",
             "text": {
                 "headline": "1850: Uncle Tom's Cabin",
-                "text": "<p>The mean is in Wirt County in what is now West Virginia. In 1852, Harriet Beecher Stowe's 'Uncle Tom's Cabin' was published, galvanizing the abolitionist movement.</p> <span class='vco-note'>Embed a Vine URL like this one about rafting in West Virginia.</span>"
+                "text": "<p>The mean is in Wirt County in what is now West Virginia. In 1852, Harriet Beecher Stowe's 'Uncle Tom's Cabin' was published, galvanizing the abolitionist movement.</p> <span class='vco-note'>Embed a YouTube URL like this one about Uncle Tom's Cabin.</span>"
             },
             "location": {
                 "name": "Wirt County, Virginia (now W. Virginia)",
@@ -134,9 +134,9 @@
                 "line": true
             },
             "media": {
-                    "url":              "https://vine.co/v/hvJQbhiTZDq",
-                    "credit":               "Spotlight WV",
-                    "caption":          "White Water Rafting in West Virginia"
+                    "url":              "https://www.youtube.com/watch?v=CZCsBCio41k",
+                    "credit":               "Appucator",
+                    "caption":          "Uncle Tom's Cabin (1903 Silent Film)"
                 }
         }, {
             "date": "1860",
@@ -170,8 +170,8 @@
                 "line": true
             },
             "media": {
-                    "url":              "https://www.examiner.com/images/blog/EXID8873/images/reconstruction_congress.jpg",
-                    "credit":               "examiner",
+                    "url": "https://www.archives.gov/exhibits/treasures_of_congress/Images/page_13/47a.jpg",
+                    "credit":               "Archives.gov",
                     "caption":          "41st & 42nd Congress newly elected"
                 }
         }, {
@@ -368,7 +368,7 @@
                 "line": true
             },
             "media": {
-                    "url":              "https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/U.S._Territorial_Acquisitions.png/1280px-U.S._Territorial_Acquisitions.png",
+                    "url":              "https://upload.wikimedia.org/wikipedia/commons/6/62/Territorial-acquisition-uscensus-bureau.jpg",
                     "credit":               "wikimedia",
                     "caption":          "United States Territories"
                 }
