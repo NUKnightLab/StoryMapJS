@@ -102,7 +102,7 @@ $('.upload-file').change(function(event) {
             $panel.hide();
         } else {
             $panel.find('input[type="radio"][value="replace"]').prop('checked', true);
-            $panel.find('.upload-rename-as').val('');
+            $panel.find('.upload-rename-as').val('.jpg');
             $panel.show();
         }
     }
@@ -121,8 +121,13 @@ $('.btn.upload').click(function(event) {
     var $panel = $modal.find('.upload-conflict');
 
     var file = $modal.find('.upload-file')[0].files[0];
+
     if(file) {
         var name = file.name;
+        
+        function hasExtension(name, exts) {
+        return (new RegExp('(' + exts.join('|').replace(/\./g, '\\.') + ')$')).test(name);
+}
 
         if($panel.find('input[type="radio"][value="rename"]').is(':checked')) {
             var $upload_rename_as = $panel.find('.upload-rename-as');
@@ -132,6 +137,10 @@ $('.btn.upload').click(function(event) {
                 $modal.trigger('error_show', 'You must enter a file name.');
                 return;
             }
+            if (!hasExtension(name, ['.jpg', '.gif', '.png'])) {
+                $modal.trigger('error_show', 'You must enter a file extension like jpg, gif or png.');
+                return;
+}
             if(_storymap_files.indexOf(name) > -1) {
                 $modal.trigger('error_show', 'A file with this name already exists.  Please enter a different name.');
                 $upload_rename_as.focus();
