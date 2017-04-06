@@ -1,8 +1,8 @@
 /*!
 	StoryMap
-	
+
 	Designed and built by Zach Wise for the Northwestern University Knight Lab
-	
+
 	This Source Code Form is subject to the terms of the Mozilla Public
 	License, v. 2.0. If a copy of the MPL was not distributed with this
 	file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -54,9 +54,9 @@
 
 @import "map/VCO.MapMarker.less";
 @import "map/VCO.ImageMarker.less";
-@import "map/VCO.Map.less"; 
+@import "map/VCO.Map.less";
 
-@import "snapmap/VCO.SnapMap.less"; 
+@import "snapmap/VCO.SnapMap.less";
 
 /* StoryMap
 ================================================== */
@@ -68,7 +68,9 @@
 	overflow:hidden;
 	position: relative;
 	.user-select(none);
-
+    *, *::before, *::after {
+        box-sizing: content-box;
+    }
 }
 
 /* Portrait
@@ -100,7 +102,7 @@
 		}
 		.vco-slider-container-mask {
 			overflow: visible;
-			
+
 			//.translucent-background(#FFF, 0.70);
 			//#gradient > .horizontal(@start-color: rgba(256,256,256,.0001); @end-color: rgba(256,256,256,0.85); @start-percent: 0%; @end-percent: 25%);
 			//#gradient > .horizontal-three-colors(@start-color: rgba(256,256,256,.0001); @mid-color: rgba(256,256,256,0.85); @color-stop: 10%; @end-color: rgba(256,256,256,.50));
@@ -121,7 +123,7 @@
 	}
 }
 .vco-secondary-font {
-	
+
 }
 */
 
