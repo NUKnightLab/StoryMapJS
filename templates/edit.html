@@ -286,7 +286,8 @@ function slide_select(event) {
 
         $('#headline').val(data.text.headline);
         $('#text').val(data.text.text);
-        $('iframe.wysihtml5-sandbox').contents().find('body').html(data.text.text);
+//        $('iframe.wysihtml5-sandbox').contents().find('body').html(data.text.text, data.media.caption);
+//        $('iframe.wysihtml5-sandbox').contents().find('body').html(data.media.caption);
     }
 
     media_preview_update($('#url').val().trim());
@@ -1061,7 +1062,7 @@ $(function() {
         $('.slide-title').eq(_current_slide_index).html(value);
     });
 
-    $('#text').wysihtml5({
+    $('#text, #caption').wysihtml5({
         "stylesheets": ["{{ STATIC_URL }}bootstrap-wysihtml5/lib/css/wysiwyg-color.css"],
         "font-styles": false,   // Font styling, e.g. h1, h2, etc. Default true
         "emphasis": true,       // Italics, bold, etc. Default true
@@ -1085,10 +1086,36 @@ $(function() {
             'change': function() {
                 var val = $('#text').data("wysihtml5").editor.getValue().trim();
                 _slides[_current_slide_index].text['text'] = val;
+                var capval = $('#caption').data("wysihtml5").editor.getValue().trim();
+                _slides[_current_slide_index].media['caption'] = capval;
                 storymap_dirty(1);
             }
         }
     });
+    
+//    $('#caption').wysihtml5({
+//        "stylesheets": ["{{ STATIC_URL }}bootstrap-wysihtml5/lib/css/wysiwyg-color.css"],
+//        "font-styles": false,   // Font styling, e.g. h1, h2, etc. Default true
+//        "emphasis": false,       // Italics, bold, etc. Default true
+//        "lists": false,         // (Un)ordered lists, e.g. Bullets, Numbers. Default true
+//        "link": true,           // Button to insert a link. Default true
+//        "html": false,          // Button which allows you to edit the generated HTML. Default false
+//        "image": false,         // Button to insert an image. Default true,
+//        "color": false,         // Button to change color of font,
+//        customTemplates: {
+//            'link': function(locale) {
+//                return $('#wysihtml5_link').html();
+//            }
+//        },
+//        'events': {
+//            'change': function() {
+//                
+//                var capval = $('#caption').data("wysihtml5").editor.getValue().trim();
+//                _slides[_current_slide_index].media['caption'] = capval;
+//                storymap_dirty(1);
+//            }
+//        }
+//    });
 
 // ------------------------------------------------------------
 // Tab toggle
