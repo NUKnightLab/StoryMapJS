@@ -98,3 +98,17 @@ Apparently, Apple removed support for `openssl` in Mac OS X 10.11. Here's the so
 
 Users may be directed to our userinfo page to help with troubleshooting. This page provides information about the user's account and saved storymaps. The endpoint is `https://storymap.knightlab.com/userinfo/`
 
+
+## Using Atlassian localstack for development/testing
+
+NOTE: boto3 is required for localstack. Until transition to boto3 is complete, development and testing involving s3 connections still requires AWS credentials
+
+Be sure to have the aws cli installed (http://docs.aws.amazon.com/cli/latest/userguide/installing.html)
+
+In your StoryMap virtualenvironment, install localstack and create the test bucket:
+
+  * git clone https://github.com/atlassian/localstack.git
+  * cd localstack
+  * make clean install test
+  * make infra
+  * aws --endpoint-url=http://localhost:4572 s3 mb s3://test.knilab.com
