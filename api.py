@@ -1,6 +1,7 @@
 from __future__ import division
 from flask import Flask, request, session, redirect, url_for, \
     render_template, jsonify, abort
+from werkzeug.exceptions import Forbidden
 from collections import defaultdict
 import math
 import os
@@ -224,6 +225,10 @@ def google_auth_verify():
         }
         if not info['id']:
             raise Exception('Could not get Google user ID')
+
+        if allowed_ids and not info['id'] in allowed_ids:
+            print('User id not in ALLOWED_IDS:  %s ' % info['id'])
+            raise Forbidden()
 
         # Upsert user record
         uid = _get_uid('google:'+info['id'])
@@ -877,6 +882,7 @@ build_dir = os.path.join(settings.PROJECT_ROOT, 'build')
 compiled_dir = os.path.join(settings.PROJECT_ROOT, 'compiled')
 templates_dir = os.path.join(settings.PROJECT_ROOT, 'compiled/templates')
 domains = os.environ.get('APPLICATION_DOMAINS')
+allowed_ids = os.environ.get('ALLOWED_IDS', '').split(',')
 
 @app.route('/robots.txt')
 def robots_txt():
