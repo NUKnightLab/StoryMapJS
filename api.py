@@ -875,7 +875,8 @@ templates_dir = os.path.join(settings.PROJECT_ROOT, 'compiled/templates')
 
 @app.route('/robots.txt')
 def robots_txt():
-    return send_file('templates/robots.txt')
+    if 'storymap.knilab.com' in os.environ.get('APPLICATION_DOMAINS'):
+        return send_file('templates/robots.txt')
 
 @app.route('/build/embed/')
 def catch_build_embed():
