@@ -867,11 +867,15 @@ def qunit():
 # SERVE URLS FROM DIRECTORIES
 #
 
-from flask import send_from_directory
+from flask import send_file, send_from_directory
 
 build_dir = os.path.join(settings.PROJECT_ROOT, 'build')
 compiled_dir = os.path.join(settings.PROJECT_ROOT, 'compiled')
 templates_dir = os.path.join(settings.PROJECT_ROOT, 'compiled/templates')
+
+@app.route('/robots.txt')
+def robots_txt():
+    return send_file('templates/robots.txt')
 
 @app.route('/build/embed/')
 def catch_build_embed():
@@ -888,7 +892,6 @@ def catch_compiled(path):
 @app.route('/editor/templates/<path:path>')
 def catch_compiled_templates(path):
     return send_from_directory(templates_dir, path)
-
 
 # redirect old documentation URLs
 @app.route('/<path:path>')
