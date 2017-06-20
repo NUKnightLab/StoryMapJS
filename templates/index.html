@@ -1,5 +1,10 @@
 {% extends "base.html" %}
 
+{% block head %}
+    {{ super() }}
+    <meta name="robots" content="noindex">
+{% endblock head %}
+
 {% block content %}
 {% include "_header.html" %}
 

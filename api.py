@@ -707,7 +707,11 @@ def storymap_image_save(user, id):
 
 @app.route("/")
 def index():
-    return render_template('index.html')
+    if 'storymap.knightlab.com' in domains:
+        production = True
+    else:
+        production = False
+    return render_template('index.html', production=production)
 
 @app.route("/gigapixel/")
 def gigapixel():
@@ -872,10 +876,11 @@ from flask import send_file, send_from_directory
 build_dir = os.path.join(settings.PROJECT_ROOT, 'build')
 compiled_dir = os.path.join(settings.PROJECT_ROOT, 'compiled')
 templates_dir = os.path.join(settings.PROJECT_ROOT, 'compiled/templates')
+domains = os.environ.get('APPLICATION_DOMAINS')
 
 @app.route('/robots.txt')
 def robots_txt():
-    if 'storymap.knilab.com' in os.environ.get('APPLICATION_DOMAINS'):
+    if 'storymap.knilab.com' in domains:
         return send_file('templates/robots.txt')
 
 @app.route('/build/embed/')
