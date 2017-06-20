@@ -226,7 +226,7 @@ def google_auth_verify():
         if not info['id']:
             raise Exception('Could not get Google user ID')
 
-        if allowed_ids and not info['id'] in allowed_ids:
+        if 'storymap.knilab.com' in domains and not info['id'] in allowed_ids:
             print('User id not in ALLOWED_IDS:  %s ' % info['id'])
             raise Forbidden()
 
