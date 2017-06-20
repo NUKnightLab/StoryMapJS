@@ -2,7 +2,9 @@
 
 {% block head %}
     {{ super() }}
-    <meta name="robots" content="noindex">
+    {% if not production %}
+      <meta name="robots" content="noindex">
+    {% endif %}
 {% endblock head %}
 
 {% block content %}
