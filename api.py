@@ -228,7 +228,7 @@ def google_auth_verify():
 
         if 'storymap.knilab.com' in domains and not info['id'] in allowed_ids:
             print('User id not in ALLOWED_IDS:  %s ' % info['id'])
-            raise Forbidden()
+            raise Exception('You are not authorized to access this page. Please contact support@knightlab.zendesk.com')
 
         # Upsert user record
         uid = _get_uid('google:'+info['id'])
