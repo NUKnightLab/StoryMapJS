@@ -6,6 +6,28 @@ If you want information on creating JSON with your own code and embedding it, se
 
 The rest of this document gets into a few technical details that some folks might want.
 
+## TL;DR
+
+Follow this quickstart guide to get StoryMapJS set up locally or see below for a more in-depth process explanation.
+
+* Clone the StoryMapJS repository to your machine.
+* Clone the [fabfile](https://github.com/NUKnightLab/fablib) repository into the same *parent* folder that stores the StoryMap repo.
+* Install [virtualenv](https://pypi.python.org/pypi/virtualenv), [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/), and [MongoDB](https://www.mongodb.org/).
+* To run the server, copy `env.sh.sample` to `env.sh` and, if necessary, modify any values in it. Execute this script with `source env.sh` when you are working on StoryMapJS.
+  * There are many environment variables critical to the server that are only available to Knight Lab staff and students. You will not be able to launch the server wtihout these requirements.
+  * If you're unsure whether you need to run the server for your project, see below.
+* Set up your virtual environment:
+  `mkvirtualenv storymapjs`
+* Activate the virtual environemnt:
+   `workon storymapjs`
+* Install python requirements:
+  `pip install -r requirements.txt`
+* `fab build` the project
+* Start making changes!
+* To see your changes, run a simple local web server (we like [http-server](https://www.npmjs.com/package/http-server)) and load the following url (assuming your local server runs on port 8080): 
+`http://0.0.0.0:8080/embed/index.html?url=http://media.knightlab.com/StoryMapJS/demo/sochi.json`
+
+
 ## Contributing translations for new languages
 
 StoryMap's older sibling, [TimelineJS](http://timeline.knightlab.com) has proven internationally popular, in part because users have contributed translation support for dozens of languages.  StoryMap is also ready to be used in languages other than English, but once again, we'll need your help.
