@@ -14,7 +14,7 @@ Follow this quickstart guide to get StoryMapJS set up locally or see below for a
 * Clone the [fabfile](https://github.com/NUKnightLab/fablib) repository into the same *parent* folder that stores the StoryMap repo.
 * Install [virtualenv](https://pypi.python.org/pypi/virtualenv), [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/), and [MongoDB](https://www.mongodb.org/).
 * To run the server, copy `env.sh.sample` to `env.sh` and, if necessary, modify any values in it. Execute this script with `source env.sh` when you are working on StoryMapJS.
-  * There are many environment variables critical to the server that are only available to Knight Lab staff and students. You will not be able to launch the server wtihout these requirements.
+  * There are many environment variables critical to the server that are only available to Knight Lab staff and students. You will not be able to launch the server without these requirements.
   * If you're unsure whether you need to run the server for your project, see below.
 * Set up your virtual environment:
   `mkvirtualenv storymapjs`
