@@ -1,4 +1,6 @@
 domains: "storymap.knightlab.com"
+cnames: "storymapjs.knightlab.com"
+
 static_bucket: "media.knightlab.com"
 gunicorn_reload: False
 

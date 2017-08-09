@@ -1,4 +1,5 @@
 domains: "storymap.knilab.com"
+cnames: "storymapjs.knilab.com"
 static_bucket: "media.knilab.com"
 gunicorn_reload: True # generally True on staging only
 ssl:
