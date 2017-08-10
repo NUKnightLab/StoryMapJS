@@ -8,7 +8,7 @@ The rest of this document gets into a few technical details that some folks migh
 
 ## TL;DR
 
-Follow this quickstart guide to get StoryMapJS set up locally or see below for a more in-depth process explanation.
+Follow this quickstart guide to get StoryMapJS set up locally or see below for a more in-depth process explanation. This setup is specifically geared toward Knight Lab faculty and staff working to make changes to the StoryMap code itself, not just the story editor.
 
 * Clone the StoryMapJS repository to your machine.
 * Clone the [fabfile](https://github.com/NUKnightLab/fablib) repository into the same *parent* folder that stores the StoryMap repo.
