@@ -8,14 +8,12 @@ The rest of this document gets into a few technical details that some folks migh
 
 ## TL;DR
 
-Follow this quickstart guide to get StoryMapJS set up locally or see below for a more in-depth process explanation. This setup is specifically geared toward Knight Lab faculty and staff working to make changes to the StoryMap code itself, not just the story editor.
+Follow this quickstart guide to get StoryMapJS set up locally or see below for a more in-depth process explanation.
 
 * Clone the StoryMapJS repository to your machine.
 * Clone the [fabfile](https://github.com/NUKnightLab/fablib) repository into the same *parent* folder that stores the StoryMap repo.
 * Install [virtualenv](https://pypi.python.org/pypi/virtualenv), [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/), and [MongoDB](https://www.mongodb.org/).
-* To run the server, copy `env.sh.sample` to `env.sh` and, if necessary, modify any values in it. Execute this script with `source env.sh` when you are working on StoryMapJS.
-  * There are many environment variables critical to the server that are only available to Knight Lab staff and students. You will not be able to launch the server without these requirements.
-  * If you're unsure whether you need to run the server for your project, see below.
+* To run the server, copy `env.sh.sample` to `env.sh` and, if necessary, modify any values in it. Execute this script with `source env.sh` when you are working on StoryMapJS. If you're unsure whether you need to run the server for your project, see below this quickstart for more information.
 * Set up your virtual environment:
   `mkvirtualenv storymapjs`
 * Activate the virtual environemnt:
@@ -27,6 +25,9 @@ Follow this quickstart guide to get StoryMapJS set up locally or see below for a
 * To see your changes, run a simple local web server (we like [http-server](https://www.npmjs.com/package/http-server)) and load the following url (assuming your local server runs on port 8080): 
 `http://0.0.0.0:8080/embed/index.html?url=http://media.knightlab.com/StoryMapJS/demo/sochi.json`
 
+#### Setup for working on the StoryMap editor
+
+There are a number of environment variables critical to working on the edior that are only available to Knight Lab staff and students. Ask a staff member for this information if applicable. 
 
 ## Contributing translations for new languages
 
