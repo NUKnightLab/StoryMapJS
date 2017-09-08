@@ -45,7 +45,7 @@ application_user: apps
 install_root: /home/{{ application_user }}/sites
 virtualenv_root: /home/{{ application_user }}/env
 
-nginx_template: "{{ pwd }}/deploy/custom_nginx.j2"
+nginx_template: "{{ config_dir }}/custom_nginx.j2"
 
 # environment keys must match deployment branch names. Value is the name
 # of the branch to be merged into this environment during deployment.
