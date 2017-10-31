@@ -68,7 +68,7 @@
           </ol>
         </li>
         <li>From the <strong>File</strong> menu choose <strong>Export > Zoomify.</strong></li>
-        <li>Set the output folder and click OK. Take note of (or edit) the "Base Name". Photoshop will create a folder with that name in your output folder. Later, you'll need to put that "Base Name" folder on a <a href="#serving-your-tiles" data-toggle="modal">web server</a>.</li>
+        <li>Set the output folder and click OK. Take note of (or edit) the "Base Name". Photoshop will create a folder with that name in your output folder. Later, you'll need to put that "Base Name" folder on a web server.</li>
         <li>After you click OK, Photoshop will open a page in your browser showing your Zoomify export. You can ignore this.</li>
     </ol>
   </div>
@@ -76,61 +76,5 @@
     <a href="#" class="btn" data-dismiss="modal" aria-hidden="true">Close</a>
   </div>
 </div>
-<div id="serving-your-tiles" class="modal hide fade" data-keyboard="true">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    <h3>Serving your tiles</h3>
-  </div>
-    <div class="modal-body">
-      <ul class="nav nav-tabs">
-        <li class="active">
-          <a data-toggle="tab" href="#serve-with-google-drive">Google Drive</a>
-        </li>
-        <li><a data-toggle="tab" href="#serve-with-new-google-drive">New Google Drive</a></li>
-        <li><a data-toggle="tab" href="#serve-with-dropbox">Dropbox</a></li>
-      </ul>
-      <div class="tab-content">
-        <div class="tab-pane active" id="serve-with-google-drive">
-        <img src="{{ STATIC_URL }}img/zoomify-tutorial-gdrive-show-details.png" style="float:right;">
-          <ol>
-            <li>Upload the entire folder (from step 4 above) to your Google Drive.</li>
-            <li>After selecting your uploaded folder, choose "Details and activity" from the "More" menu.</li>
-            <li>In the "Details" tab, click the pencil icon next to "sharing."</li>
-            <li>Under "Who has access," change the setting to "public on the web" and click "Done".</li>
-            <li>Now on the "Details" tab you'll see a section labeled "Hosting." (You may need to wait a moment or reload the page.) Copy the entire URL. You'll need it when you start your StoryMap. <strong>Note:</strong> some of the URL may not be visible. It may be easiest to click on it, and then copy the URL from your browser address bar.</li>
-          </ol>
-          <p><strong>Another note:</strong> once you've done this, you can move the folder around in your Google Drive. You won't need to repeat this step. The "hosting" URL will not change.</p>
-        </div>
-        <div class="tab-pane" id="serve-with-new-google-drive">
-        <img src="{{ STATIC_URL }}img/zoomify-tutorial-ngdrive-show-details.png" style="float:right;">
-          <ol>
-            <li>Upload the entire folder (from step 4 above) to your Google Drive.</li>
-            <li>Right click the folder and select "Share...".</li>
-            <li>Change to "Anyone on the internet can find and view" and click "Done".</li>
-            <li>Right click the folder again and select "Get link". Copy the entire URL. You'll need it when you start your StoryMap.</li>
-          </ol>
-          <p><strong>Note:</strong> once you've done this, you can move the folder around in your Google Drive. You won't need to repeat this step. The "hosting" URL will not change.</p>
-        </div>
-        <div class="tab-pane" id="serve-with-dropbox">
-        <img src="{{ STATIC_URL }}img/zoomify-tutorial-db_copy_public_link.png" style="float:right;">
-        <ol>
-            <li>Upload the entire folder (from step 4 above) <strong>to your DropBox <em>public</em> folder</strong>.</li>
-            <li>In the folder you uploaded, there should be a file named <strong><code>ImageProperties.xml</code></strong>. Right-click on it to copy its public link.</li>
-            <li>Paste that link somewhere for a minute, and delete the "ImageProperties.xml" part of the URL. For example:
-                    <br>copied: <code>https://dl.dropboxusercontent.com/u/2653407/folder_name/ImageProperties.xml</code>
-                    <br>edited: <code>https://dl.dropboxusercontent.com/u/2653407/folder_name/</code>
-            </li>
-            <li>
-                Keep track of the edited URL. You'll need it when you start your StoryMap.
-            </li>
-        </ol>
-        </div>
-      </div>
-    </div>
-    <div class="modal-footer">
-        <a href="#" class="btn" data-dismiss="modal" aria-hidden="true">Close</a>
-    </div>
-</div>
-    
 </div>
 {% endblock %}
