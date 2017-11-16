@@ -46,7 +46,7 @@ examples_json = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'exampl
 faq_json = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'faq.json')
 
 _GOOGLE_OAUTH_SCOPES = [
-    'https://www.googleapis.com/auth/drive.readonly',
+#    'https://www.googleapis.com/auth/drive.readonly', # we may need to restore this if there are legacy accounts unmigrated
     'https://www.googleapis.com/auth/userinfo.profile'
 ];
 
