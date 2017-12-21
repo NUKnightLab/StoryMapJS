@@ -1,6 +1,6 @@
 # Hosting your Gigapixel through Amazon Web Services
 
-Before you can begin this process, you wil need to have generated Zoomify images. You can learn more about how to make one [here](https://storymap.knightlab.com/gigapixel/).
+Before you can begin this process, you wil need to have generated Zoomify images. You can learn more about how to make one [here](/gigapixel/).
 
 Note: While Amazon supports free web hosting through its Free Tier option, after a year, you will have to pay to use their hosting services. It's relatively cheap (~$.03 / month for 1 GB, using their [pricing calculator](https://calculator.s3.amazonaws.com/index.html), but if you want an entirely free option, you can check out our GitHub hosting tutorial [here](https://github.com/NUKnightLab/StoryMapJS/blob/master/GITHUB_HOSTING/GITHUB_HOSTING.md).
 
@@ -17,6 +17,7 @@ Note: While Amazon supports free web hosting through its Free Tier option, after
 6. Amazon will spend ~15 minutes to publish your Gigapixel to their servers, but once Amazon is done, they will provide you a link to your hosted webpage. The location of the link is highlighted in the red box below.
 ![](6.png)
 
-You're done! Use the [Storymap authoring tool](https://storymap.knightlab.com/select/) to create your Gigapixel and include the link to your Amazon webpage. If you need more information on best practices after creating your Gigapixel, you can read our documentation [here](https://github.com/NUKnightLab/StoryMapJS/blob/master/BEST_PRACTICES/BEST_PRACTICES.md).
+You're done! Use the [Storymap authoring tool](/select/) to create your Gigapixel and include the link to your Amazon webpage. If you need more information on best practices after creating your Gigapixel, you can read our documentation [here](https://github.com/NUKnightLab/StoryMapJS/blob/master/BEST_PRACTICES/BEST_PRACTICES.md).
 
 ![](7.png)
+/
