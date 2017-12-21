@@ -15,3 +15,6 @@ s3analysis/mirror
 s3analysis/*csv
 
 env.sh
+local_only.key
+local_only.crt
+
