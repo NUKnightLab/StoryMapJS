@@ -22,12 +22,12 @@ Follow this quickstart guide to get StoryMapJS set up locally or see below for a
   `pip install -r requirements.txt`
 * `fab build` the project
 * Start making changes!
-* To see your changes, run a simple local web server (we like [http-server](https://www.npmjs.com/package/http-server)) and load the following url (assuming your local server runs on port 8080): 
+* To see your changes, run a simple local web server (we like [http-server](https://www.npmjs.com/package/http-server)) and load the following url (assuming your local server runs on port 8080):
 `http://0.0.0.0:8080/embed/index.html?url=http://media.knightlab.com/StoryMapJS/demo/sochi.json`
 
 #### Setup for working on the StoryMap editor
 
-There are a number of environment variables critical to working on the edior that are only available to Knight Lab staff and students. Ask a staff member for this information if applicable. 
+There are a number of environment variables critical to working on the edior that are only available to Knight Lab staff and students. Ask a staff member for this information if applicable.
 
 ## Contributing translations for new languages
 
@@ -69,7 +69,7 @@ In order to stay consistent with other kinds of deployment tools, we use python 
 
 If you don't use CodeKit, you must have Python installed. We use python 2.7.
 
-Clone our [fabfile](https://github.com/NUKnightLab/fablib) repository and place it in the same parent directory as your StoryMapJS respository.
+Clone our [fabfile](https://github.com/NUKnightLab/fablib) repository and place it in the same parent directory as your StoryMapJS repository.
 
 Install [virtualenv](https://pypi.python.org/pypi/virtualenv), [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/), and [MongoDB](https://www.mongodb.org/).
 
@@ -109,6 +109,18 @@ Once you've established the necessary environment variables, you should be able 
 Files located in the `source` directory are assets for storymapjs itself. The core Flask app which controls the server is `api.py` which uses library code in the `storymap` directory. The pages you see are built from files in `templates`.
 
 At this time, edits to the HTML for the website are automatically visible when reloading the local server. Edits to CSS and JavaScript must be manually compiled before you'll see them.  Run `fab build`. This is something we'd like to make more automatic eventually.
+
+**Note:** Recent updates to Google's OAuth policies mean that the above only works for editing the StoryMapJS website/documentation. If you want to work on the authoring tool and test it locally, you will need to set up for local secure development.
+
+First, you must create a certificate pair. These files should NOT be put in the repository. Use this command, executed from the root of the project repository:
+
+    openssl req -x509 -sha256 -nodes -days 10000 -newkey rsa:2048 -keyout local_only.key -out local_only.crt
+
+Once you've done this, to run the server, use this instead of the above command:
+
+    fab serve:ssl=y
+
+Of course, you'll need to use `https://localhost:5000/select/` to access the authoring tool. You'll get a warning that the security certificate is not trusted. Disable that warning to proceed. 
 
 ### A note about installing python requirements on Mac OS X 10.11 "El Capitan"
 Apparently, Apple removed support for `openssl` in Mac OS X 10.11. Here's the solution we've found.

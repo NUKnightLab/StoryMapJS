@@ -37,6 +37,7 @@ from oauth2client.client import OAuth2WebServerFlow
 from storymap import storage, google
 from storymap.connection import _user
 
+
 app = Flask(__name__)
 app.config.from_envvar('FLASK_SETTINGS_FILE')
 
@@ -175,8 +176,9 @@ def _session_pop(*keys):
 # https://developers.google.com/drive/web/quickstart/quickstart-python
 #
 
-def _build_oauth_redirect(host,path):
-    protocol = 'http' if host.startswith('localhost') else 'https'
+def _build_oauth_redirect(request,path):
+    host = request.host
+    protocol = request.url.split(':')[0]
     url = '{}://{}{}'.format(protocol, host, path)
     return url
 
@@ -188,7 +190,7 @@ def google_auth_start():
         settings.GOOGLE_CLIENT_ID,
         settings.GOOGLE_CLIENT_SECRET,
         _GOOGLE_OAUTH_SCOPES,
-        redirect_uri=_build_oauth_redirect(request.host, url_for('google_auth_verify'))
+        redirect_uri=_build_oauth_redirect(request, url_for('google_auth_verify'))
     )
     authorize_url = flow.step1_get_authorize_url()
     return redirect(authorize_url)
@@ -207,7 +209,7 @@ def google_auth_verify():
             settings.GOOGLE_CLIENT_ID,
             settings.GOOGLE_CLIENT_SECRET,
             _GOOGLE_OAUTH_SCOPES,
-            redirect_uri=_build_oauth_redirect(request.host, url_for('google_auth_verify'))
+            redirect_uri=_build_oauth_redirect(request, url_for('google_auth_verify'))
         )
         credentials = flow.step2_exchange(code)
         # ^ this is an oauth2client.client.OAuth2Credentials object
@@ -927,8 +929,18 @@ if __name__ == '__main__':
         opts, args = getopt.getopt(sys.argv[1:], "sp:", ["port="])
         for opt, arg in opts:
             if opt == '-s':
-                ssl_context = 'adhoc'
-                print 'ssl context: %s' % ssl_context
+                if (os.path.isfile('local_only.crt') and os.path.isfile('local_only.key')):
+                    ssl_context = ('local_only.crt', 'local_only.key')
+                else:
+                    print '''
+To run HTTPS locally you should create a crt/key file.
+Don't put them in the repository, because if you tell your browser to trust the certificate
+and an adversary got the cert from the public repository, they could take
+advantage of you.
+Use this command to create the files:
+  openssl req -x509 -sha256 -nodes -days 10000 -newkey rsa:2048 -keyout local_only.key -out local_only.crt
+'''
+                    sys.exit(1)
             elif opt in ('-p', '--port'):
                 port = int(arg)
             else:
@@ -937,5 +949,5 @@ if __name__ == '__main__':
     except getopt.GetoptError:
         print 'Usage: app.py [-s] [-p port]'
         sys.exit(1)
-
-    app.run(host='0.0.0.0', port=port, debug=True, ssl_context=ssl_context)
+    # Google OAuth requires localhost, not a raw IP address
+    app.run(host='localhost', port=port, debug=True, ssl_context=ssl_context)
