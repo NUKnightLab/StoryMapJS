@@ -105,6 +105,7 @@ def get_contents_as_string(src_key):
 
 @_mock_in_test_mode
 def all_keys():
+    print settings.AWS_STORAGE_BUCKET_KEY
     for item in _bucket.list(prefix=settings.AWS_STORAGE_BUCKET_KEY):
         if item.name == key_prefix:
             continue

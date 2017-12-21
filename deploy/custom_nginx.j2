@@ -1,0 +1,49 @@
+server {
+  listen 80;
+  server_name {{ cnames }};
+  return 301 https://{{ domains }}$request_uri;
+}
+
+server {
+  listen 80;
+  server_name {{ domains }};
+  return 301 https://$server_name$request_uri;
+}
+
+server {
+  listen 443 ssl;
+  server_name {{ cnames }};
+  return 301 https://{{ domains }}$request_uri;
+
+  ssl_certificate {{ ssl.ssl_certificate }};
+  ssl_certificate_key {{ ssl.ssl_certificate_key }};
+  ssl_protocols  TLSv1 TLSv1.1 TLSv1.2;
+
+}
+
+server {
+  listen 443 ssl;
+
+  server_name {{ domains }};
+
+  ssl_certificate {{ ssl.ssl_certificate }};
+  ssl_certificate_key {{ ssl.ssl_certificate_key }};
+  ssl_protocols  TLSv1 TLSv1.1 TLSv1.2;
+
+  access_log  /var/log/nginx/{{ project_name }}.log;
+
+  client_max_body_size 5M;
+
+  root /usr/share/nginx/{{ project_name }};
+
+  location / {
+    try_files $uri @proxy_to_{{ project_name }};
+  }
+
+  location @proxy_to_{{ project_name }} {
+      proxy_pass http://127.0.0.1:{{ port }};
+      proxy_set_header Host $host;
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+  }
+}

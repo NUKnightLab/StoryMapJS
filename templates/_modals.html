@@ -70,6 +70,7 @@
                                 <option value="el" data-lang="Greek">Ελληνικά</option>
                                 <option value="fr" data-lang="French">Français</option>
                                 <option value="he" data-lang="Hebrew">עִברִית</option>
+                                <option value="is" data-lang="Icelandic">Íslenska</option>
                                 <option value="it" data-lang="Italian">Italiano</option>
                                 <option value="hu" data-lang="Hungarian">Magyar</option>
                                 <option value="nl" data-lang="Dutch">Nederlands</option>
@@ -80,6 +81,7 @@
                                 <option value="ru" data-lang="Russian">Русский язык</option>
                                 <option value="sr" data-lang="Serbian">Srpski</option>
                                 <option value="sv" data-lang="Swedish">Svenska</option>
+                                <option value="tr" data-lang="Turkish">Türkçe</option>
                                 <option value="uk" data-lang="Ukrainian">Українська</option>
                                 <option value="be" data-lang="Belarusian">Беларуская</option>
                                 <option value="bg" data-lang="Bulgarian">български език</option>
@@ -169,7 +171,6 @@
                                 <option value="stamen:toner-labels">Stamen Maps: Toner Labels</option>
                                 <option value="stamen:toner-background">Stamen Maps: Toner Background</option>
                                 <option value="stamen:watercolor">Stamen Maps: Watercolor</option>
-                                <option value="stamen:terrain">Stamen Maps: Terrain</option>
                                 <option value="osm:standard">Open Street Maps: Standard</option>
                                 <option value="mapbox">Mapbox</option>
                                 <option value="zoomify">Gigapixel</option>
@@ -214,6 +215,14 @@
                             </div>
                             <br>
                             <span class="help-inline hide">You must enter your public access token</span>
+                        </div>
+                    </div>
+                    <div class="control-group map-control-group">
+                        <div class="controls">
+                            <div class="input-prepend">
+                                <span class="add-on">Attribution</span>
+                                <input id="attribution" type="text" class="span4">
+                            </div>
                         </div>
                     </div>
 
@@ -590,4 +599,24 @@
             </div>
         </div>
     </div>
+</div>
+
+<div id="html_modal" class="modal hide fade" data-backdrop="static">
+    <div class="modal-body">
+        <!-- error -->
+        <div class="modal-error hide">
+            <span class="modal-msg error"></span>
+        </div>
+        <!-- main -->
+        <p>Credits and captions accept HTML markup. Here are a few basics.</p>
+        <ul>
+        <li>Wrap text in <code>&lt;b&gt;&lt;&frasl;b&gt;</code> tags for <b>bold</b> text and <code>&lt;i&gt;&lt;&frasl;i&gt;</code> for <i>italics</i>.</li>
+        <li>Wrap text in <code>&lt;a href&#61;"INSERT URL"&gt;&lt;&frasl;a&gt;</code> tags to add a link.</li>
+        </ul>
+    </div>
+    <div class="modal-footer">
+        <a href="javascript:;" class="btn" data-dismiss="modal">OK</a>
+    </div>
+    <!-- progress -->
+
 </div>

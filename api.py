@@ -1,6 +1,7 @@
 from __future__ import division
 from flask import Flask, request, session, redirect, url_for, \
     render_template, jsonify, abort
+from werkzeug.exceptions import Forbidden
 from collections import defaultdict
 import math
 import os
@@ -36,14 +37,17 @@ from oauth2client.client import OAuth2WebServerFlow
 from storymap import storage, google
 from storymap.connection import _user
 
+
 app = Flask(__name__)
 app.config.from_envvar('FLASK_SETTINGS_FILE')
 
 settings = sys.modules[settings_module]
 app.config['TEST_MODE'] = settings.TEST_MODE
+examples_json = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'examples.json')
+faq_json = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'faq.json')
 
 _GOOGLE_OAUTH_SCOPES = [
-    'https://www.googleapis.com/auth/drive.readonly',
+#    'https://www.googleapis.com/auth/drive.readonly', # we may need to restore this if there are legacy accounts unmigrated
     'https://www.googleapis.com/auth/userinfo.profile'
 ];
 
@@ -72,6 +76,12 @@ def inject_urls():
         STATIC_URL=static_url, static_url=static_url,
         STORAGE_URL=storage_url, storage_url=storage_url,
         CDN_URL=cdn_url, cdn_url=cdn_url)
+
+
+@app.context_processor
+def inject_index_data():
+        return dict(examples=json.load(open(examples_json)),faqs=json.load(open(faq_json)))
+
 
 class APIEncoder(json.JSONEncoder):
     def default(self, obj):
@@ -166,6 +176,13 @@ def _session_pop(*keys):
 # https://developers.google.com/drive/web/quickstart/quickstart-python
 #
 
+def _build_oauth_redirect(request,path):
+    host = request.host
+    protocol = request.url.split(':')[0]
+    url = '{}://{}{}'.format(protocol, host, path)
+    return url
+
+
 @app.route("/google/auth/start/", methods=['GET', 'POST'])
 def google_auth_start():
     """Initiate google authorization"""
@@ -173,7 +190,7 @@ def google_auth_start():
         settings.GOOGLE_CLIENT_ID,
         settings.GOOGLE_CLIENT_SECRET,
         _GOOGLE_OAUTH_SCOPES,
-        redirect_uri='https://'+request.host+url_for('google_auth_verify')
+        redirect_uri=_build_oauth_redirect(request, url_for('google_auth_verify'))
     )
     authorize_url = flow.step1_get_authorize_url()
     return redirect(authorize_url)
@@ -192,7 +209,7 @@ def google_auth_verify():
             settings.GOOGLE_CLIENT_ID,
             settings.GOOGLE_CLIENT_SECRET,
             _GOOGLE_OAUTH_SCOPES,
-            redirect_uri='https://'+request.host+url_for('google_auth_verify')
+            redirect_uri=_build_oauth_redirect(request, url_for('google_auth_verify'))
         )
         credentials = flow.step2_exchange(code)
         # ^ this is an oauth2client.client.OAuth2Credentials object
@@ -210,6 +227,10 @@ def google_auth_verify():
         }
         if not info['id']:
             raise Exception('Could not get Google user ID')
+
+        if 'storymap.knilab.com' in domains and not info['id'] in allowed_ids:
+            print('User id not in ALLOWED_IDS:  %s ' % info['id'])
+            raise Exception('You are not authorized to access this page. Please send the following information to support@knightlab.zendesk.com: storymap.knilab.com unauthorized %s' % info['id'])
 
         # Upsert user record
         uid = _get_uid('google:'+info['id'])
@@ -244,6 +265,9 @@ def _user_get():
     """Enforce authenticated user"""
     uid = session.get('uid')
     user = _user.find_one({'uid': uid})
+    # google data field in user record no longer used
+    if 'google' in user:
+        del user['google']
     if not user and 'uid' in session:
         session.pop('uid')
     return user
@@ -690,7 +714,11 @@ def storymap_image_save(user, id):
 
 @app.route("/")
 def index():
-    return render_template('index.html')
+    if 'storymap.knightlab.com' in domains:
+        production = True
+    else:
+        production = False
+    return render_template('index.html', production=production)
 
 @app.route("/gigapixel/")
 def gigapixel():
@@ -850,11 +878,18 @@ def qunit():
 # SERVE URLS FROM DIRECTORIES
 #
 
-from flask import send_from_directory
+from flask import send_file, send_from_directory
 
 build_dir = os.path.join(settings.PROJECT_ROOT, 'build')
 compiled_dir = os.path.join(settings.PROJECT_ROOT, 'compiled')
 templates_dir = os.path.join(settings.PROJECT_ROOT, 'compiled/templates')
+domains = os.environ.get('APPLICATION_DOMAINS')
+allowed_ids = os.environ.get('ALLOWED_IDS', '').split(',')
+
+@app.route('/robots.txt')
+def robots_txt():
+    if 'storymap.knilab.com' in domains:
+        return send_file('templates/robots.txt')
 
 @app.route('/build/embed/')
 def catch_build_embed():
@@ -871,7 +906,6 @@ def catch_compiled(path):
 @app.route('/editor/templates/<path:path>')
 def catch_compiled_templates(path):
     return send_from_directory(templates_dir, path)
-
 
 # redirect old documentation URLs
 @app.route('/<path:path>')
@@ -895,8 +929,18 @@ if __name__ == '__main__':
         opts, args = getopt.getopt(sys.argv[1:], "sp:", ["port="])
         for opt, arg in opts:
             if opt == '-s':
-                ssl_context = 'adhoc'
-                print 'ssl context: %s' % ssl_context
+                if (os.path.isfile('local_only.crt') and os.path.isfile('local_only.key')):
+                    ssl_context = ('local_only.crt', 'local_only.key')
+                else:
+                    print '''
+To run HTTPS locally you should create a crt/key file.
+Don't put them in the repository, because if you tell your browser to trust the certificate
+and an adversary got the cert from the public repository, they could take
+advantage of you.
+Use this command to create the files:
+  openssl req -x509 -sha256 -nodes -days 10000 -newkey rsa:2048 -keyout local_only.key -out local_only.crt
+'''
+                    sys.exit(1)
             elif opt in ('-p', '--port'):
                 port = int(arg)
             else:
@@ -905,5 +949,5 @@ if __name__ == '__main__':
     except getopt.GetoptError:
         print 'Usage: app.py [-s] [-p port]'
         sys.exit(1)
-
-    app.run(host='0.0.0.0', port=port, debug=True, ssl_context=ssl_context)
+    # Google OAuth requires localhost, not a raw IP address
+    app.run(host='localhost', port=port, debug=True, ssl_context=ssl_context)

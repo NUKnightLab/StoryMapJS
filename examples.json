@@ -1,0 +1,44 @@
+[
+  {
+      "link": "http://apps.washingtonpost.com/g/page/world/map-how-isis-is-carving-out-a-new-country/1095/",
+      "thumbnail": "https://media.knightlab.com/StoryMapJS/img/thumbnails/thumb_islamicstate.jpg",
+      "source": "Washington Post",
+      "source_logo": "https://media.knightlab.com/StoryMapJS/img/logos/logo_wapo.png",
+      "title": "How the Islamic State is Carving out a New Country"
+  },
+  {
+      "link": "http://extras.thetimes.co.uk/public/2014/maps/25-02/Yanukovych_storymap.html",
+      "thumbnail": "https://media.knightlab.com/StoryMapJS/img/thumbnails/thetimes_victor_yanukovych.jpg",
+      "source": "The Times",
+      "source_logo": "https://media.knightlab.com/StoryMapJS/img/logos/logo_thetimes.png",
+      "title": "Yanukovych on the Run"
+  },
+  {
+      "link": "http://www.minnpost.com/stroll/2014/06/hockey-hip-hop-and-other-green-line-highlights",
+      "thumbnail": "https://media.knightlab.com/StoryMapJS/img/thumbnails/thumb_greenline.jpg",
+      "source": "MinnPost",
+      "source_logo": "https://media.knightlab.com/StoryMapJS/img/logos/logo_minn.png",
+      "title": "Hockey, Hip-hop, and Other Green Line Highlights"
+  },
+  {
+      "link": "http://thecityjournal.net/data-alex-tutorial/0-89-million-pounds-expensive-transfers-football-history/",
+      "thumbnail": "https://media.knightlab.com/StoryMapJS/img/thumbnails/thumb_football.png",
+      "source": "The City Journal",
+      "source_logo": "https://media.knightlab.com/StoryMapJS/img/logos/logo_city_journal.png",
+      "title": "From 0-89 Million Pounds - The Most Expensive Transfers in Football History"
+  },
+  {
+      "link": "https://storymap.knightlab.com/examples/aryas-journey/",
+      "thumbnail": "https://media.knightlab.com/StoryMapJS/img/thumbnails/knightlab_arya.png",
+      "source": "Knight Lab",
+      "source_logo": "https://cdn.knightlab.com/libs/orangeline/latest/assets/logo-knightlab.png",
+      "title": "Game of Thrones: Arya's Journey"
+  },
+  {
+      "link": "https://storymap.knightlab.com/examples/bosch-garden/",
+      "thumbnail": "https://media.knightlab.com/StoryMapJS/img/thumbnails/knightlab_bosch.png",
+      "source": "Knight Lab",
+      "source_logo": "https://cdn.knightlab.com/libs/orangeline/latest/assets/logo-knightlab.png",
+      "title": "Hieronymus Bosch: Garden of Earthly Delights"
+  }
+]

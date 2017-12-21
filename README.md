@@ -6,6 +6,29 @@ If you want information on creating JSON with your own code and embedding it, se
 
 The rest of this document gets into a few technical details that some folks might want.
 
+## TL;DR
+
+Follow this quickstart guide to get StoryMapJS set up locally or see below for a more in-depth process explanation.
+
+* Clone the StoryMapJS repository to your machine.
+* Clone the [fabfile](https://github.com/NUKnightLab/fablib) repository into the same *parent* folder that stores the StoryMap repo.
+* Install [virtualenv](https://pypi.python.org/pypi/virtualenv), [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/), and [MongoDB](https://www.mongodb.org/).
+* To run the server, copy `env.sh.sample` to `env.sh` and, if necessary, modify any values in it. Execute this script with `source env.sh` when you are working on StoryMapJS. If you're unsure whether you need to run the server for your project, see below this quickstart for more information.
+* Set up your virtual environment:
+  `mkvirtualenv storymapjs`
+* Activate the virtual environemnt:
+   `workon storymapjs`
+* Install python requirements:
+  `pip install -r requirements.txt`
+* `fab build` the project
+* Start making changes!
+* To see your changes, run a simple local web server (we like [http-server](https://www.npmjs.com/package/http-server)) and load the following url (assuming your local server runs on port 8080):
+`http://0.0.0.0:8080/embed/index.html?url=http://media.knightlab.com/StoryMapJS/demo/sochi.json`
+
+#### Setup for working on the StoryMap editor
+
+There are a number of environment variables critical to working on the edior that are only available to Knight Lab staff and students. Ask a staff member for this information if applicable.
+
 ## Contributing translations for new languages
 
 StoryMap's older sibling, [TimelineJS](http://timeline.knightlab.com) has proven internationally popular, in part because users have contributed translation support for dozens of languages.  StoryMap is also ready to be used in languages other than English, but once again, we'll need your help.
@@ -46,7 +69,7 @@ In order to stay consistent with other kinds of deployment tools, we use python 
 
 If you don't use CodeKit, you must have Python installed. We use python 2.7.
 
-Clone our [fabfile](https://github.com/NUKnightLab/fablib) repository and place it in the same parent directory as your StoryMapJS respository.
+Clone our [fabfile](https://github.com/NUKnightLab/fablib) repository and place it in the same parent directory as your StoryMapJS repository.
 
 Install [virtualenv](https://pypi.python.org/pypi/virtualenv), [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/), and [MongoDB](https://www.mongodb.org/).
 
@@ -87,6 +110,18 @@ Files located in the `source` directory are assets for storymapjs itself. The co
 
 At this time, edits to the HTML for the website are automatically visible when reloading the local server. Edits to CSS and JavaScript must be manually compiled before you'll see them.  Run `fab build`. This is something we'd like to make more automatic eventually.
 
+**Note:** Recent updates to Google's OAuth policies mean that the above only works for editing the StoryMapJS website/documentation. If you want to work on the authoring tool and test it locally, you will need to set up for local secure development.
+
+First, you must create a certificate pair. These files should NOT be put in the repository. Use this command, executed from the root of the project repository:
+
+    openssl req -x509 -sha256 -nodes -days 10000 -newkey rsa:2048 -keyout local_only.key -out local_only.crt
+
+Once you've done this, to run the server, use this instead of the above command:
+
+    fab serve:ssl=y
+
+Of course, you'll need to use `https://localhost:5000/select/` to access the authoring tool. You'll get a warning that the security certificate is not trusted. Disable that warning to proceed. 
+
 ### A note about installing python requirements on Mac OS X 10.11 "El Capitan"
 Apparently, Apple removed support for `openssl` in Mac OS X 10.11. Here's the solution we've found.
 
@@ -98,3 +133,17 @@ Apparently, Apple removed support for `openssl` in Mac OS X 10.11. Here's the so
 
 Users may be directed to our userinfo page to help with troubleshooting. This page provides information about the user's account and saved storymaps. The endpoint is `https://storymap.knightlab.com/userinfo/`
 
+
+## Using Atlassian localstack for development/testing
+
+NOTE: boto3 is required for localstack. Until transition to boto3 is complete, development and testing involving s3 connections still requires AWS credentials
+
+Be sure to have the aws cli installed (http://docs.aws.amazon.com/cli/latest/userguide/installing.html)
+
+In your StoryMap virtualenvironment, install localstack and create the test bucket:
+
+  * git clone https://github.com/atlassian/localstack.git
+  * cd localstack
+  * make clean install test
+  * make infra
+  * aws --endpoint-url=http://localhost:4572 s3 mb s3://test.knilab.com

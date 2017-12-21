@@ -3,7 +3,7 @@ gitdeploy_version: "1.0.4"
 port: 9014
 python: python2
 type: flask
-
+pwd: "{{ lookup('env', 'PWD') }}"
 # these will be merged with deployment-specific env into init_env
 init_env_common:
   PROJECT_NAME: "{{ project_name }}"
@@ -21,6 +21,7 @@ init_env_common:
   GOOGLE_CLIENT_ID: "{{ vault_google_client_id }}"
   GOOGLE_CLIENT_SECRET: "{{ vault_google_client_secret }}"
   ADMINS: "{{ vault_admins | join(' ') }}"
+  ALLOWED_IDS: "{{ vault_allowed_ids }}"
 
 # Flask specific configs
 static_dir: "{{ deploy_dir }}/static"
@@ -43,6 +44,8 @@ static_dest: "s3://{{ static_bucket }}/{{ project_name }}"
 application_user: apps
 install_root: /home/{{ application_user }}/sites
 virtualenv_root: /home/{{ application_user }}/env
+
+nginx_template: "{{ config_dir }}/custom_nginx.j2"
 
 # environment keys must match deployment branch names. Value is the name
 # of the branch to be merged into this environment during deployment.

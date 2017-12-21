@@ -86,14 +86,17 @@ $('.upload-panel').on('reset', function(event) {
     event.stopPropagation();
 });
 
+
 $('.upload-file').change(function(event) {
     var file = event.target.files[0];
+    
     if(file) {
         var $modal = $(this).closest('.modal');
         $modal.trigger('error_hide');
 
         $modal.find('.upload-panel .upload-file-name').html(file.name);
         $modal.find('.btn.upload').removeClass('disabled');
+        //$modal.close();
 
         var $panel = $modal.find('.upload-conflict');
 
@@ -121,8 +124,19 @@ $('.btn.upload').click(function(event) {
     var $panel = $modal.find('.upload-conflict');
 
     var file = $modal.find('.upload-file')[0].files[0];
+    var name = file.name;
+    var ext = name.split('.').pop();
+    
     if(file) {
         var name = file.name;
+        
+        function hasExtension(name, exts) {
+            return (new RegExp('(' + exts.join('|').replace(/\./g, '\\.') + ')$')).test(name);
+}
+        
+        function appendToFilename(name, ext){
+            return name + '.' + ext;
+} 
 
         if($panel.find('input[type="radio"][value="rename"]').is(':checked')) {
             var $upload_rename_as = $panel.find('.upload-rename-as');
@@ -132,6 +146,12 @@ $('.btn.upload').click(function(event) {
                 $modal.trigger('error_show', 'You must enter a file name.');
                 return;
             }
+            if (!hasExtension(name, [".jpg", ".jpeg", ".bmp", ".gif", ".png"])) {
+                //$modal.trigger('error_show', 'You must enter a file extension like jpg, gif or png.');
+                name = $upload_rename_as.val().trim();
+                name = appendToFilename(name, ext);
+                //$modal.close();
+}
             if(_storymap_files.indexOf(name) > -1) {
                 $modal.trigger('error_show', 'A file with this name already exists.  Please enter a different name.');
                 $upload_rename_as.focus();

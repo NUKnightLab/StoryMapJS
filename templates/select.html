@@ -23,6 +23,43 @@
 <script type="text/javascript" src="{{ STATIC_URL }}js/json2.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/editor.js"></script>
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/editor.css">
+<style>
+  #entry_login {
+    display: block;
+    margin: 2em auto;
+    background-image: url("{{STATIC_URL}}img/google/1x/btn_google_signin_dark_normal_web.png");
+    width: 191px;
+    height: 46px;
+  }
+
+  #entry_login:focus,#entry_login:hover {
+    background-image: url("{{STATIC_URL}}img/google/1x/btn_google_signin_dark_focus_web.png");
+  }
+
+  #entry_login:active {
+    background-image: url("{{STATIC_URL}}img/google/1x/btn_google_signin_dark_pressed_web.png");
+  }
+
+  @media
+  (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    #entry_login {
+      background-image: url("{{STATIC_URL}}img/google/2x/btn_google_signin_dark_pressed_web@2x.png");
+      background-size: 191px 46px;
+    }
+
+    #entry_login:focus,#entry_login:hover {
+      background-image: url("{{STATIC_URL}}img/google/2x/btn_google_signin_dark_focus_web@2x.png");
+      background-size: 191px 46px;
+    }
+
+    #entry_login:active {
+      background-image: url("{{STATIC_URL}}img/google/2x/btn_google_signin_dark_pressed_web@2x.png");
+      background-size: 191px 46px;
+    }
+  }
+
+
+</style>
 </head>
 <body>
 
@@ -44,32 +81,26 @@
         <div class="entry-panel entry-login hide">
             <div>
                 <div>
-                    <!--
-                    <p>Your StoryMaps will be saved to your Google Drive.</p>
-                    -->
-                    <a id="entry_login" href="{{ url_for('google_auth_start') }}" class="btn btn-success">Login with your Google account</a>
+                    <a id="entry_login" href="{{ url_for('google_auth_start') }}" ></a>
+                    <p class="ui-note">The StoryMapJS editor uses your Google account for logging in,
+                      so that only you can edit your projects, and
+                      so that you don't need to remember another password.
+                      <br>[ <a href="/#privacy">learn more</a> ]
+                    </p>
                 </div>
             </div>
         </div>
 <!-- migrate panel (initial) -->
     <div class="entry-panel entry-migrate hide">
-        <p>In order to continue to use the StoryMap Editor, you must migrate your data.
-        This process will make copies of the StoryMaps currently on your Google Drive and store them on our new storage site.
-        </p>
-        <p>
-        None of the original data on your Google Drive will be altered, moved, or deleted, but the StoryMap Editor
-        will only work with the migrated copies.
-        </p>
+        <p>Your StoryMap account currently has content from an older version of the StoryMap editor which will not work due to changes in the Google Drive API. In order to continue editing these older entries, please do the following:        <p>1. Find the folder on your Google Drive called <strong>KnightLabStoryMap/public</strong></p>
+        <p>2. Share the contents of that folder with the gmail user: <strong>nuknightlab@gmail.com</strong></p>
+        <p>3. Click the error report link below and send the resulting email to report this issue and to initiate the migration process</p>
     </div>
 <!-- migrate panel (resume) -->
     <div class="entry-panel entry-migrate-resume hide">
-        <p>In order to continue to use the StoryMap Editor, you must finish migrating your data.
-        This process will make copies of the StoryMaps still on your Google Drive and store them on our new storage site.
-        </p>
-        <p>
-        None of the original data on your Google Drive will be altered, moved, or deleted, but the StoryMap Editor
-        will only work with the migrated copies.
-        </p>
+        <p>Your StoryMap account currently has content from an older version of the StoryMap editor which will not work due to changes in the Google Drive API. In order to continue editing these older entries, please do the following:        <p>1. Find the folder on your Google Drive called <strong>KnightLabStoryMap/public</strong></p>
+        <p>2. Share the contents of that folder with the gmail user: <strong>nuknightlab@gmail.com</strong></p>
+        <p>3. Click the error report link below and send the resulting email to report this issue and to initiate the migration process</p>
     </div>
 <!-- list panel -->
         <div class="entry-panel entry-list hide">
@@ -125,10 +156,6 @@
             <span id="entry_user_name"></span> | <a id="entry_logout" href="{{ url_for('logout') }}">Logout</a>
         </div>
         <span>&nbsp;</span>
-        <a id="entry_migrate" class="entry-panel entry-migrate hide btn btn-success" href="javascript:;">
-            Start Migration</a>
-        <a id="entry_migrate_resume" class="entry-panel entry-migrate-resume hide btn btn-success" href="javascript:;">
-            Resume Migration</a>
         <a id="entry_create_cancel" class="entry-panel entry-create entry-import entry-rename entry-copy hide btn" onclick="$('#entry_modal').trigger('show_list');">
             Cancel</a>
         <a id="entry_create" class="entry-panel entry-create hide btn btn-success" href="javascript:;">
@@ -519,6 +546,8 @@ $(function() {
 
             make_storymap_list();
 
+
+
             // Already migrated?
             if(_user.migrated) {
                 if(_params.import_url) {
@@ -533,7 +562,20 @@ $(function() {
 
             ajax_get("{{ url_for('storymap_migrate_list') }}", {},
                 function(error) {
-                    $modal.trigger('reset',  format_error('Error getting migration list', error));
+                    // No longer triggering this error due to changes in Google Drive
+                    //$modal.trigger('reset',  format_error('Error getting migration list', error));
+                    ajax_get("{{ url_for('storymap_migrate_done') }}", {},
+                        function(error) {
+                            $modal.trigger('reset', format_error('Error setting migration status', error));
+                        },
+                        function(data) {
+                            if(_params.import_url) {
+                                $modal.trigger('show_import');
+                            } else {
+                                $modal.trigger('show_list');
+                            }
+                        }
+                    );
                 },
                 function(data) {
                     if(data.migrate_list.length) {
@@ -543,6 +585,10 @@ $(function() {
                         } else {
                             $modal.trigger('show_migrate');
                         }
+                        var link = format_report_link('StoryMap Data Migration Required');
+                        link = $(link).find('a');
+                        link.addClass('entry-panel entry-migrate btn btn-success');
+                        $('.modal-footer').append(link);
                     } else {
                         ajax_get("{{ url_for('storymap_migrate_done') }}", {},
                             function(error) {

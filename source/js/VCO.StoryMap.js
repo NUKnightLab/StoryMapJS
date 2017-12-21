@@ -318,6 +318,7 @@ VCO.StoryMap = VCO.Class.extend({
 			dragging: 				true,
 			trackResize: 			true,
 			map_type: 				"stamen:toner-lite",
+			attribution: 			"",
 			map_mini: 				true,
 			map_subdomains: 		"",
 			map_as_image: 			false,
@@ -369,7 +370,7 @@ VCO.StoryMap = VCO.Class.extend({
 
 	/* Initialize the data
 	================================================== */
-    _initData: function(data) {
+  _initData: function(data) {
 		var self = this;
 
 		if (typeof data === 'string') {
@@ -387,18 +388,18 @@ VCO.StoryMap = VCO.Class.extend({
 			}
 			self._initOptions();
 		} else {
-		    trace("data has unknown type")
-		    self._initOptions();
-        }
+	    trace("data has unknown type")
+	    self._initOptions();
+    }
 	},
 
 	/* Initialize the options
 	================================================== */
-    _initOptions: function() {
+  _initOptions: function() {
  		var self = this;
 
-        // Grab options from storymap data
-        VCO.Util.updateData(this.options, this.data);
+    // Grab options from storymap data
+    VCO.Util.updateData(this.options, this.data);
 
 		if (this.options.layout == "landscape") {
 			this.options.map_center_offset = {left: -200, top: 0};
@@ -410,7 +411,7 @@ VCO.StoryMap = VCO.Class.extend({
 			this.options.calculate_zoom = false;
 		}
 
-        // Use relative date calculations?
+    // Use relative date calculations?
 		if(this.options.relative_date) {
 			if (typeof(moment) !== 'undefined') {
 				self._loadLanguage();
@@ -430,7 +431,7 @@ VCO.StoryMap = VCO.Class.extend({
 				trace("LOADED EMOJI CSS FOR CHROME")
 			});
 		}
-    },
+  },
 
 	/*	Load Language
 	================================================== */

@@ -1,0 +1,22 @@
+
+      <link rel="stylesheet" href="//cdn.knightlab.com/libs/storymapjs/latest/css/fonts/font.pt.css">
+        <section id="demo" class="container-fluid">
+          <div id="homepage-storymap">
+          </div>
+        </section>
+        <script>
+          var storymap = new VCO.StoryMap('homepage-storymap',
+                                           '{{ STATIC_URL }}demo/demo.json');
+
+          var e = $(window).height(),
+          t = $("#homepage-storymap");
+          t.height(e - 20);
+
+          $(window).resize(function() {
+             e = $(window).height();
+             t.height(e - 20);
+            storymap.updateDisplay();
+          })
+        </script>
+
+        </section>
