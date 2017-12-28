@@ -142,8 +142,8 @@ Be sure to have the aws cli installed (http://docs.aws.amazon.com/cli/latest/use
 
 In your StoryMap virtualenvironment, install localstack and create the test bucket:
 
-  * git clone https://github.com/atlassian/localstack.git
-  * cd localstack
-  * make clean install test
-  * make infra
-  * aws --endpoint-url=http://localhost:4572 s3 mb s3://test.knilab.com
+  * `git clone https://github.com/atlassian/localstack.git`
+  * `cd localstack`
+  * `make clean install test`
+  * `make infra`
+  * `aws --endpoint-url=http://localhost:4572 s3 mb s3://test.knilab.com`
