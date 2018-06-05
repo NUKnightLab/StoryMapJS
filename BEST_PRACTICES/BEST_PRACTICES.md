@@ -1,11 +1,11 @@
-#Storymap Gigapixel Best Practices#
+# Storymap Gigapixel Best Practices
 
 
 After you’ve created a Gigapixel image through the process described [here](https://storymap.knightlab.com/gigapixel/), there are two options for displaying your Gigapixel in the Options Panel: ‘Image’ and ‘Cartography.’ While most of the features are the same in each mode, there are a few quirks of each mode that you might want to be aware of when creating your StoryMap.
 
 ![Options Panel](1.png)
 
-##Best Practices for Image Mode:##
+## Best Practices for Image Mode:
 
 
 In Image Mode, StoryMap markers are displayed only on hover, and path lines between markers are removed. Since these lines are removed, you should use this option if there is no spatial relationship between consecutive slides. 
@@ -20,7 +20,7 @@ For the overview image, your Gigapixel will be resized to fit only the left hand
 If you want the image to fill the entire panel, you should choose an image that is sized in portrait view (2:3 or 1:2), rather than landscape. If none of these options work for you, you can use Cartography Mode instead.
 
 
-##Best Practices for Cartography Mode:##
+## Best Practices for Cartography Mode:
 
 
 In Cartography Mode, StoryMap markers will always be displayed, and path lines between consecutive markers will be displayed. You should use this mode if you want to emphasize the spatial relationship between events, or if you want to customize sizing without the constraints of Image Mode.
