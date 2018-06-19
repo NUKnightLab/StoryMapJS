@@ -12,7 +12,8 @@ Follow this quickstart guide to get StoryMapJS set up locally or see below for a
 
 * Clone the StoryMapJS repository to your machine.
 * Clone the [fabfile](https://github.com/NUKnightLab/fablib) repository into the same *parent* folder that stores the StoryMap repo.
-* Install [virtualenv](https://pypi.python.org/pypi/virtualenv), [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/), and [MongoDB](https://www.mongodb.org/).
+* Install [virtualenv](https://pypi.python.org/pypi/virtualenv), [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/),  [MongoDB](https://docs.mongodb.com/manual/administration/install-community/), [Node.js](http://nodejs.org)
+, [LESS](http://lesscss.org) and [UglifyJS](https://github.com/mishoo/UglifyJS2).
 * To run the server, copy `env.sh.sample` to `env.sh` and, if necessary, modify any values in it. Execute this script with `source env.sh` when you are working on StoryMapJS. If you're unsure whether you need to run the server for your project, see below this quickstart for more information.
 * Set up your virtual environment:
   `mkvirtualenv storymapjs`
@@ -71,11 +72,24 @@ If you don't use CodeKit, you must have Python installed. We use python 2.7.
 
 Clone our [fabfile](https://github.com/NUKnightLab/fablib) repository and place it in the same parent directory as your StoryMapJS repository.
 
-Install [virtualenv](https://pypi.python.org/pypi/virtualenv), [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/), and [MongoDB](https://www.mongodb.org/).
+Install [virtualenv](https://pypi.python.org/pypi/virtualenv), [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/),  [MongoDB](https://docs.mongodb.com/manual/administration/install-community/), [Node.js](http://nodejs.org)
+, [LESS](http://lesscss.org) and [UglifyJS](https://github.com/mishoo/UglifyJS2).
+
+    pip install virtualenv
+
+    # Read the docs for complete installation
+    pip install virtualenvwrapper
+
+    npm install less -g
+
+    npm install uglify-js -g
+
 
 If you need to run the server, copy `env.sh.sample` to `env.sh` and, if necessary, modify any values in it. Execute this script with `source env.sh` when you are working on StoryMapJS, or otherwise arrange for these environment variables to be set. There are a number of environment variables which are critical to running the server which involve Amazon Web Services and Google Application credentials which we do not store in GitHub. If you are at Knight Lab, see a staff developer for these values. If you are outside of Knight Lab, you may not
 
     # Create a virtual environment
+    # Make sure that your virtual enviornment uses Python 2.7.X
+    # use the -p tag to choose python version if multiple installed
     mkvirtualenv storymapjs
 
     # Activate the virtual environemnt
