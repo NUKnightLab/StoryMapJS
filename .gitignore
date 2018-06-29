@@ -18,3 +18,4 @@ env.sh
 local_only.key
 local_only.crt
 
+static/local

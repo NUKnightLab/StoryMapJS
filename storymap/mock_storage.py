@@ -20,8 +20,13 @@ _conn = boto.connect_s3()
 _bucket = _conn.create_bucket(settings.AWS_STORAGE_BUCKET_NAME)
 _mock.stop()
         
-LOCAL_DIRECTORY = '/Users/Simeon/Desktop/uhh'
-# app.config['LOCAL_DIRECTORY'] = LOCAL_DIRECTORY
+LOCAL_DIRECTORY = os.environ['LOCAL_DIRECTORY'] 
+
+class kkey():
+    def __init__(self, name, path):
+        self.name = name
+        self.path = path
+
 
 class StorageException(Exception):
     """
@@ -64,10 +69,10 @@ def key_id():
     return repr(time.time())
 
 def key_prefix(*args):
-    return '%s/%s/' % (LOCAL_DIRECTORY, '/'.join(args))
+    return '%s/%s/' % ('/static/local', '/'.join(args))
 
 def key_name(*args):
-    return '%s/%s' % (LOCAL_DIRECTORY, '/'.join(args))
+    return '%s/%s' % ('/static/local', '/'.join(args))
 
 @_reraise_s3response
 @_mock_in_test_mode
@@ -80,7 +85,7 @@ def list_keys(key_prefix, n, marker=''):
     key_list = []
     i = 0
 
-    for file in os.listdir(LOCAL_DIRECTORY):
+    for file in os.listdir((LOCAL_DIRECTORY + '/static/local/')):
         if file == key_prefix:
             continue
         key_list.append(file)
@@ -92,7 +97,7 @@ def get_contents_as_string(src_key):
 
 @_mock_in_test_mode
 def all_keys():
-    return [f for f in os.listdir(LOCAL_DIRECTORY)]
+    return [f for f in os.listdir((LOCAL_DIRECTORY + '/static/local/'))]
 
 
 @_reraise_s3response
@@ -106,7 +111,7 @@ def list_key_names(key_prefix, n, marker=''):
     name_list = []
     i = 0
 
-    for file in os.listdir(LOCAL_DIRECTORY):
+    for file in os.listdir((LOCAL_DIRECTORY + '/static/local/')):
         if file == key_prefix:
             continue
         name_list.append(file)
@@ -130,19 +135,20 @@ def save_from_data(key_name, content_type, content):
     """
     Save content with content-type to key_name
     """
+    key = LOCAL_DIRECTORY + key_name
     files = set(all_keys())
-    if key_name not in files:
-        if not os.path.exists(os.path.dirname(key_name)):
+    if key not in files:
+        if not os.path.exists(os.path.dirname(key)):
             try:
-                os.makedirs(os.path.dirname(key_name))
+                os.makedirs(os.path.dirname(key))
             except OSError as exc: # Guard against race condition
                 if exc.errno != errno.EEXIST:
                     raise
-        f = open(key_name,'w+')
+        f = open(key,'w+')
         """
          key.content_type = content_type 
         """
-    save = open(key_name, 'w')
+    save = open(key, 'w')
     save.write(content)
 
     """
@@ -155,6 +161,7 @@ def save_from_url(key_name, url):
     """
     Save file at url to key_name
     """
+    key = LOCAL_DIRECTORY + key_name
     r = requests.get(url)
     save_from_data(key_name, r.headers['content-type'], r.content)
 
@@ -164,7 +171,8 @@ def load_json(key_name):
     """
     Get contents of key as json
     """
-    contents = open(key_name,"r")
+    key = LOCAL_DIRECTORY + key_name
+    contents = open(key,"r")
     return json.loads(contents.read())
 
 @_reraise_s3response
@@ -173,6 +181,7 @@ def save_json(key_name, data):
     """
     Save data to key_name as json
     """
+    key = LOCAL_DIRECTORY + key_name
     if type(data) in [type(''), type(u'')]:
         content = data
     else:
