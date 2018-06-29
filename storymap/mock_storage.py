@@ -1,29 +1,27 @@
-"""
-S3-based storage backend
-
-Object Keys
-http://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html
-"""
 import os
 import sys
 import time
 import traceback
 import json
+from shutil import copyfile
 from functools import wraps
 import boto
 from moto import mock_s3
 from boto.exception import S3ResponseError
+from flask import send_from_directory, flash
+from werkzeug.utils import secure_filename
 from boto.s3.connection import OrdinaryCallingFormat
 import requests
 import settings
 
-# Get settings module
-# settings = sys.modules[os.environ['FLASK_SETTINGS_MODULE']]
-
-_conn = boto.connect_s3(
-        settings.AWS_ACCESS_KEY_ID,
-        settings.AWS_SECRET_ACCESS_KEY, calling_format=OrdinaryCallingFormat())
-_bucket = _conn.get_bucket(settings.AWS_STORAGE_BUCKET_NAME)
+_mock = mock_s3()
+_mock.start()
+_conn = boto.connect_s3()
+_bucket = _conn.create_bucket(settings.AWS_STORAGE_BUCKET_NAME)
+_mock.stop()
+        
+LOCAL_DIRECTORY = '/Users/Simeon/Desktop/uhh'
+# app.config['LOCAL_DIRECTORY'] = LOCAL_DIRECTORY
 
 class StorageException(Exception):
     """
@@ -66,11 +64,10 @@ def key_id():
     return repr(time.time())
 
 def key_prefix(*args):
-    return '%s/%s/' % (settings.AWS_STORAGE_BUCKET_KEY, '/'.join(args))
+    return '%s/%s/' % (LOCAL_DIRECTORY, '/'.join(args))
 
 def key_name(*args):
-    return '%s/%s' % (settings.AWS_STORAGE_BUCKET_KEY, '/'.join(args))
-
+    return '%s/%s' % (LOCAL_DIRECTORY, '/'.join(args))
 
 @_reraise_s3response
 @_mock_in_test_mode
@@ -83,12 +80,10 @@ def list_keys(key_prefix, n, marker=''):
     key_list = []
     i = 0
 
-    for i, item in enumerate(_bucket.list(prefix=key_prefix, marker=marker)):
-        if i == n:
-            break
-        if item.name == key_prefix:
+    for file in os.listdir(LOCAL_DIRECTORY):
+        if file == key_prefix:
             continue
-        key_list.append(item)
+        key_list.append(file)
     return key_list, (i == n)
 
 @_mock_in_test_mode
@@ -97,11 +92,7 @@ def get_contents_as_string(src_key):
 
 @_mock_in_test_mode
 def all_keys():
-    print settings.AWS_STORAGE_BUCKET_KEY
-    for item in _bucket.list(prefix=settings.AWS_STORAGE_BUCKET_KEY):
-        if item.name == key_prefix:
-            continue
-        yield item.key
+    return [f for f in os.listdir(LOCAL_DIRECTORY)]
 
 
 @_reraise_s3response
@@ -115,12 +106,10 @@ def list_key_names(key_prefix, n, marker=''):
     name_list = []
     i = 0
 
-    for i, item in enumerate(_bucket.list(prefix=key_prefix, marker=marker)):
-        if i == n:
-            break
-        if item.name == key_prefix:
+    for file in os.listdir(LOCAL_DIRECTORY):
+        if file == key_prefix:
             continue
-        name_list.append(item.name)
+        name_list.append(file)
     return name_list, (i == n)
 
 @_reraise_s3response
@@ -129,8 +118,11 @@ def copy_key(src_key_name, dst_key_name):
     """
     Copy from src_key_name to dst_key_name
     """
-    dst_key = _bucket.copy_key(dst_key_name, _bucket.name, src_key_name)
-    dst_key.set_acl('public-read')
+    copyfile(os.path.join(LOCAL_DIRECTORY, src_key_name),os.path.join(LOCAL_DIRECTORY, dst_key_name))
+
+""" 
+idea: use content_type as extension
+"""
 
 @_reraise_s3response
 @_mock_in_test_mode
@@ -138,11 +130,24 @@ def save_from_data(key_name, content_type, content):
     """
     Save content with content-type to key_name
     """
-    key = _bucket.get_key(key_name)
-    if not key:
-        key = _bucket.new_key(key_name)
-        key.content_type = content_type
+    files = set(all_keys())
+    if key_name not in files:
+        if not os.path.exists(os.path.dirname(key_name)):
+            try:
+                os.makedirs(os.path.dirname(key_name))
+            except OSError as exc: # Guard against race condition
+                if exc.errno != errno.EEXIST:
+                    raise
+        f = open(key_name,'w+')
+        """
+         key.content_type = content_type 
+        """
+    save = open(key_name, 'w')
+    save.write(content)
+
+    """
     key.set_contents_from_string(content, policy='public-read')
+    """
 
 @_reraise_s3response
 @_mock_in_test_mode
@@ -159,9 +164,8 @@ def load_json(key_name):
     """
     Get contents of key as json
     """
-    key = _bucket.get_key(key_name)
-    contents = key.get_contents_as_string()
-    return json.loads(contents)
+    contents = open(key_name,"r")
+    return json.loads(contents.read())
 
 @_reraise_s3response
 @_mock_in_test_mode
@@ -181,4 +185,4 @@ def delete(key_name):
     """
     Delete key
     """
-    _bucket.delete_key(key_name)
+    os.remove(LOCAL_DIRECTORY + key_name)
