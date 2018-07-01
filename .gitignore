@@ -8,6 +8,7 @@
 # Other
 .DS_Store
 codekit-config.json
+.bugs.done
 
 build
 robot_tests/logs
