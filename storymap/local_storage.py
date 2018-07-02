@@ -19,10 +19,12 @@ _mock.start()
 _conn = boto.connect_s3()
 _bucket = _conn.create_bucket(settings.AWS_STORAGE_BUCKET_NAME)
 _mock.stop()
-        
-LOCAL_DIRECTORY = os.environ['LOCAL_DIRECTORY'] 
 
-class kkey():
+STORYMAPJS_DIRECTORY = os.environ['STORYMAPJS_DIRECTORY']
+LOCAL_PATH = 'static/local/'
+LOCAL_DIRECTORY = os.path.join(STORYMAPJS_DIRECTORY, LOCAL_PATH)
+
+class key():
     def __init__(self, name, path):
         self.name = name
         self.path = path
@@ -32,6 +34,7 @@ class StorageException(Exception):
     """
     Adds 'detail' attribute to contain response body
     """
+
     def __init__(self, message, detail):
         super(Exception, self).__init__(message)
         self.detail = detail
@@ -68,11 +71,14 @@ def key_id():
     """
     return repr(time.time())
 
+
 def key_prefix(*args):
-    return '%s/%s/' % ('/static/local', '/'.join(args))
+    print(os.path.join(LOCAL_PATH, '/'.join(args), '/'))
+    return os.path.join(LOCAL_PATH, '/'.join(args), '/')
+
 
 def key_name(*args):
-    return '%s/%s' % ('/static/local', '/'.join(args))
+    return os.path.join(LOCAL_PATH, '/'.join(args))
 
 @_reraise_s3response
 @_mock_in_test_mode
@@ -85,19 +91,25 @@ def list_keys(key_prefix, n, marker=''):
     key_list = []
     i = 0
 
-    for file in os.listdir((LOCAL_DIRECTORY + '/static/local/')):
+    for file in os.listdir(LOCAL_DIRECTORY):
         if file == key_prefix:
             continue
         key_list.append(file)
     return key_list, (i == n)
 
+
 @_mock_in_test_mode
 def get_contents_as_string(src_key):
     return src_key.get_contents_as_string()
 
+
 @_mock_in_test_mode
 def all_keys():
-    return [f for f in os.listdir((LOCAL_DIRECTORY + '/static/local/'))]
+    keys = set() 
+    for (dirpath, dirnames, filenames) in os.walk(LOCAL_DIRECTORY):
+        for file in filenames:
+            keys.add(os.path.join(dirpath, file))
+    return keys 
 
 
 @_reraise_s3response
@@ -111,11 +123,12 @@ def list_key_names(key_prefix, n, marker=''):
     name_list = []
     i = 0
 
-    for file in os.listdir((LOCAL_DIRECTORY + '/static/local/')):
+    for file in os.listdir(LOCAL_DIRECTORY):
         if file == key_prefix:
             continue
         name_list.append(file)
     return name_list, (i == n)
+
 
 @_reraise_s3response
 @_mock_in_test_mode
@@ -123,11 +136,8 @@ def copy_key(src_key_name, dst_key_name):
     """
     Copy from src_key_name to dst_key_name
     """
-    copyfile(os.path.join(LOCAL_DIRECTORY, src_key_name),os.path.join(LOCAL_DIRECTORY, dst_key_name))
-
-""" 
-idea: use content_type as extension
-"""
+    copyfile(os.path.join(STORYMAPJS_DIRECTORY, src_key_name),
+             os.path.join(STORYMAPJS_DIRECTORY, dst_key_name))
 
 @_reraise_s3response
 @_mock_in_test_mode
@@ -135,16 +145,16 @@ def save_from_data(key_name, content_type, content):
     """
     Save content with content-type to key_name
     """
-    key = LOCAL_DIRECTORY + key_name
-    files = set(all_keys())
+    key = STORYMAPJS_DIRECTORY + key_name
+    files = all_keys()
     if key not in files:
         if not os.path.exists(os.path.dirname(key)):
             try:
                 os.makedirs(os.path.dirname(key))
-            except OSError as exc: # Guard against race condition
+            except OSError as exc:  # Guard against race condition
                 if exc.errno != errno.EEXIST:
                     raise
-        f = open(key,'w+')
+        f = open(key, 'w+')
         """
          key.content_type = content_type 
         """
@@ -155,15 +165,17 @@ def save_from_data(key_name, content_type, content):
     key.set_contents_from_string(content, policy='public-read')
     """
 
+
 @_reraise_s3response
 @_mock_in_test_mode
 def save_from_url(key_name, url):
     """
     Save file at url to key_name
     """
-    key = LOCAL_DIRECTORY + key_name
+    key = STORYMAPJS_DIRECTORY + key_name
     r = requests.get(url)
     save_from_data(key_name, r.headers['content-type'], r.content)
+
 
 @_reraise_s3response
 @_mock_in_test_mode
@@ -171,9 +183,10 @@ def load_json(key_name):
     """
     Get contents of key as json
     """
-    key = LOCAL_DIRECTORY + key_name
-    contents = open(key,"r")
+    key = STORYMAPJS_DIRECTORY + key_name
+    contents = open(key, "r")
     return json.loads(contents.read())
+
 
 @_reraise_s3response
 @_mock_in_test_mode
@@ -181,12 +194,13 @@ def save_json(key_name, data):
     """
     Save data to key_name as json
     """
-    key = LOCAL_DIRECTORY + key_name
+    key = STORYMAPJS_DIRECTORY + key_name
     if type(data) in [type(''), type(u'')]:
         content = data
     else:
         content = json.dumps(data)
     save_from_data(key_name, 'application/json', content)
+
 
 @_reraise_s3response
 @_mock_in_test_mode
@@ -194,4 +208,4 @@ def delete(key_name):
     """
     Delete key
     """
-    os.remove(LOCAL_DIRECTORY + key_name)
+    os.remove(STORYMAPJS_DIRECTORY + key_name)

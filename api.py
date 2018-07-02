@@ -44,7 +44,7 @@ app = Flask(__name__)
 app.config.from_envvar('FLASK_SETTINGS_FILE')
 
 if settings.TEST_MODE:
-    from storymap import mock_storage as storage
+    from storymap import local_storage as storage
 else:
     from storymap import storage as storage
 
