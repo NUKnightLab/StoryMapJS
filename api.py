@@ -34,9 +34,6 @@ import requests
 import slugify
 import bson
 
-import google_auth_oauthlib.flow
-import google.oauth2.credentials
-import googleapiclient.discovery
 from storymap import google
 from storymap.connection import _user
 
