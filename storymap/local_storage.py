@@ -73,11 +73,12 @@ def key_id():
 
 
 def key_prefix(*args):
-    print(os.path.join(LOCAL_PATH, '/'.join(args), '/'))
-    return os.path.join(LOCAL_PATH, '/'.join(args), '/')
+    print(args)
+    return '%s/%s/' % (LOCAL_PATH, '/'.join(args))
 
 
 def key_name(*args):
+    print(args)
     return os.path.join(LOCAL_PATH, '/'.join(args))
 
 @_reraise_s3response
@@ -91,16 +92,15 @@ def list_keys(key_prefix, n, marker=''):
     key_list = []
     i = 0
 
-    for file in os.listdir(LOCAL_DIRECTORY):
-        if file == key_prefix:
-            continue
-        key_list.append(file)
+    for file in os.listdir(key_prefix):
+        key_list.append(os.path.join(key_prefix, file))
     return key_list, (i == n)
-
 
 @_mock_in_test_mode
 def get_contents_as_string(src_key):
-    return src_key.get_contents_as_string()
+    key = os.path.join(STORYMAPJS_DIRECTORY, src_key)
+    contents = open(key, "r")
+    return contents.read()
 
 
 @_mock_in_test_mode
@@ -136,6 +136,8 @@ def copy_key(src_key_name, dst_key_name):
     """
     Copy from src_key_name to dst_key_name
     """
+    print(src_key_name)
+    print(dst_key_name)
     copyfile(os.path.join(STORYMAPJS_DIRECTORY, src_key_name),
              os.path.join(STORYMAPJS_DIRECTORY, dst_key_name))
 
@@ -145,7 +147,7 @@ def save_from_data(key_name, content_type, content):
     """
     Save content with content-type to key_name
     """
-    key = STORYMAPJS_DIRECTORY + key_name
+    key = os.path.join(STORYMAPJS_DIRECTORY, key_name)
     files = all_keys()
     if key not in files:
         if not os.path.exists(os.path.dirname(key)):
@@ -155,16 +157,8 @@ def save_from_data(key_name, content_type, content):
                 if exc.errno != errno.EEXIST:
                     raise
         f = open(key, 'w+')
-        """
-         key.content_type = content_type 
-        """
     save = open(key, 'w')
     save.write(content)
-
-    """
-    key.set_contents_from_string(content, policy='public-read')
-    """
-
 
 @_reraise_s3response
 @_mock_in_test_mode
@@ -172,7 +166,7 @@ def save_from_url(key_name, url):
     """
     Save file at url to key_name
     """
-    key = STORYMAPJS_DIRECTORY + key_name
+    key = os.path.join(STORYMAPJS_DIRECTORY, key_name)
     r = requests.get(url)
     save_from_data(key_name, r.headers['content-type'], r.content)
 
@@ -183,7 +177,7 @@ def load_json(key_name):
     """
     Get contents of key as json
     """
-    key = STORYMAPJS_DIRECTORY + key_name
+    key = os.path.join(STORYMAPJS_DIRECTORY, key_name)
     contents = open(key, "r")
     return json.loads(contents.read())
 
@@ -194,7 +188,7 @@ def save_json(key_name, data):
     """
     Save data to key_name as json
     """
-    key = STORYMAPJS_DIRECTORY + key_name
+    key = os.path.join(STORYMAPJS_DIRECTORY, key_name)
     if type(data) in [type(''), type(u'')]:
         content = data
     else:
@@ -208,4 +202,4 @@ def delete(key_name):
     """
     Delete key
     """
-    os.remove(STORYMAPJS_DIRECTORY + key_name)
+    os.remove(os.path.join(STORYMAPJS_DIRECTORY, key_name))
