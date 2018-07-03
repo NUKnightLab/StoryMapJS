@@ -140,7 +140,7 @@ Of course, you'll need to use `https://localhost:5000/select/` to access the aut
 
 In order to work with the authoring environment locally, you have to enter the path to your cloned StoryMapJS repository as the value of LOCAL_DIRECTORY in your env.sh file. 
 
-    export LOCAL_DIRECTORY="FILL IN WITH PATH TO YOUR STORYMAPJS REPO DIRECTORY"
+    export STORYMAPJS_DIRECTORY="FILL IN WITH PATH TO YOUR STORYMAPJS REPO DIRECTORY" 
 
 ### A note about installing python requirements on Mac OS X 10.11 "El Capitan"
 Apparently, Apple removed support for `openssl` in Mac OS X 10.11. Here's the solution we've found.
