@@ -15,15 +15,27 @@ from moto import mock_s3
 from boto.exception import S3ResponseError
 from boto.s3.connection import OrdinaryCallingFormat
 import requests
-import settings
 
 # Get settings module
-# settings = sys.modules[os.environ['FLASK_SETTINGS_MODULE']]
+settings = sys.modules[os.environ['FLASK_SETTINGS_MODULE']]
 
+if hasattr(settings, 'TEST_MODE') and settings.TEST_MODE:
 _conn = boto.connect_s3(
+    _mock = mock_s3()
         settings.AWS_ACCESS_KEY_ID,
+    _mock.start()
         settings.AWS_SECRET_ACCESS_KEY, calling_format=OrdinaryCallingFormat())
+
 _bucket = _conn.get_bucket(settings.AWS_STORAGE_BUCKET_NAME)
+    _conn = boto.connect_s3()
+    _bucket = _conn.create_bucket(settings.AWS_STORAGE_BUCKET_NAME)
+
+    _mock.stop()
+else:
+    _conn = boto.connect_s3(
+            settings.AWS_ACCESS_KEY_ID,
+            settings.AWS_SECRET_ACCESS_KEY, calling_format=OrdinaryCallingFormat())
+    _bucket = _conn.get_bucket(settings.AWS_STORAGE_BUCKET_NAME)
 
 class StorageException(Exception):
     """
