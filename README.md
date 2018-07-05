@@ -136,10 +136,11 @@ Once you've done this, to run the server, use this instead of the above command:
 
 Of course, you'll need to use `https://localhost:5000/select/` to access the authoring tool. You'll get a warning that the security certificate is not trusted. Disable that warning to proceed. 
 
-### Local Storage
+### Developement with Local Storage
 
-In order to work with the authoring environment locally, you have to enter the path to your cloned StoryMapJS repository as the value of LOCAL_DIRECTORY in your env.sh file. 
+In order to work with the authoring environment locally, you have to enter the path to your cloned StoryMapJS repository as the value of LOCAL_DIRECTORY & LOCAL_STORAGE_MODE in your env.sh file. 
 
+    export LOCAL_STORAGE_MODE=True
     export STORYMAPJS_DIRECTORY="FILL IN WITH PATH TO YOUR STORYMAPJS REPO DIRECTORY" 
 
 ### A note about installing python requirements on Mac OS X 10.11 "El Capitan"
