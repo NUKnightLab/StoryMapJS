@@ -15,7 +15,6 @@ import json
 from functools import wraps
 import urllib
 from urlparse import urlparse
-from storymap import settings
 
 # Import settings module
 if __name__ == "__main__":
@@ -33,19 +32,20 @@ import hashlib
 import requests
 import slugify
 import bson
-
+from oauth2client.client import OAuth2WebServerFlow
 from storymap import google
 from storymap.connection import _user
 
 app = Flask(__name__)
 app.config.from_envvar('FLASK_SETTINGS_FILE')
+settings = sys.modules[settings_module]
 
-if settings.TEST_MODE:
+if settings.LOCAL_STORAGE_MODE:
     from storymap import local_storage as storage
 else:
     from storymap import storage as storage
 
-# settings = sys.modules[settings_module]
+app.config['LOCAL_STORAGE_MODE'] = settings.LOCAL_STORAGE_MODE
 app.config['TEST_MODE'] = settings.TEST_MODE
 examples_json = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'examples.json')
 faq_json = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'faq.json')

@@ -12,7 +12,9 @@ from flask import send_from_directory, flash
 from werkzeug.utils import secure_filename
 from boto.s3.connection import OrdinaryCallingFormat
 import requests
-import settings
+
+settings_module = os.environ.get('FLASK_SETTINGS_MODULE')
+settings = sys.modules[settings_module]
 
 _mock = mock_s3()
 _mock.start()

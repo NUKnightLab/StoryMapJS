@@ -268,7 +268,7 @@
                 var activeButton = $(this).hasClass("wysihtml5-command-active");
 
                 if (!activeButton) {
-                    self.editor.currentView.element.focus({});
+                    self.editor.currentView.element.focus();
                     caretBookmark = self.editor.composer.selection.getBookmark();
                     insertImageModal.appendTo('body').modal('show');
                     insertImageModal.on('click.dismiss.modal', '[data-dismiss="modal"]', function(e) {
@@ -342,7 +342,7 @@
                 var activeButton = $(this).hasClass("wysihtml5-command-active");
 
                 if (!activeButton) {
-                    self.editor.currentView.element.focus({});
+                    self.editor.currentView.element.focus();
                     caretBookmark = self.editor.composer.selection.getBookmark();
                     insertLinkModal.appendTo('body').modal('show');
                     insertLinkModal.on('click.dismiss.modal', '[data-dismiss="modal"]', function(e) {
@@ -373,24 +373,7 @@
             var that = this;
             return methods.bypassDefaults.apply(that, [settings]);
         },
-        deepExtend: function(options) {
-            var settings = $.extend(true, {}, $.fn.wysihtml5.defaultOptions, options || {});
-            var that = this;
-            return methods.bypassDefaults.apply(that, [settings]);
-        },
-        init: function(options) {
-            var that = this;
-            return methods.shallowExtend.apply(that, [options]);
-        }
-    };
-
-    $.fn.wysihtml5 = function ( method ) {
-        if ( methods[method] ) {
-            return methods[method].apply( this, Array.prototype.slice.call( arguments, 1 ));
-        } else if ( typeof method === 'object' || ! method ) {
-            return methods.init.apply( this, arguments );
-        } else {
-            $.error( 'Method ' +  method + ' does not exist on jQuery.wysihtml5' );
+        deepExtend: function(options) { var settings = $.extend(true, {}, $.fn.wysihtml5.defaultOptions, options || {}); var that = this; return methods.bypassDefaults.apply(that, [settings]); }, init: function(options) { var that = this; return methods.shallowExtend.apply(that, [options]); } }; $.fn.wysihtml5 = function ( method ) { if ( methods[method] ) { return methods[method].apply( this, Array.prototype.slice.call( arguments, 1 )); } else if ( typeof method === 'object' || ! method ) { return methods.init.apply( this, arguments ); } else { $.error( 'Method ' +  method + ' does not exist on jQuery.wysihtml5' );
         }    
     };
 
