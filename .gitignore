@@ -8,6 +8,8 @@
 # Other
 .DS_Store
 codekit-config.json
+.bugs.done
+bugs
 
 build
 robot_tests/logs
@@ -18,3 +20,5 @@ env.sh
 local_only.key
 local_only.crt
 
+static/local/*
+!static/local/.gitkeep 

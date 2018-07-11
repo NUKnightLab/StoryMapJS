@@ -16,7 +16,6 @@ from functools import wraps
 import urllib
 from urlparse import urlparse
 
-
 # Import settings module
 if __name__ == "__main__":
     if not os.environ.get('FLASK_SETTINGS_MODULE', ''):
@@ -34,14 +33,19 @@ import requests
 import slugify
 import bson
 from oauth2client.client import OAuth2WebServerFlow
-from storymap import storage, google
+from storymap import google
 from storymap.connection import _user
-
 
 app = Flask(__name__)
 app.config.from_envvar('FLASK_SETTINGS_FILE')
-
 settings = sys.modules[settings_module]
+
+if settings.LOCAL_STORAGE_MODE:
+    from storymap import local_storage as storage
+else:
+    from storymap import storage as storage
+
+app.config['LOCAL_STORAGE_MODE'] = settings.LOCAL_STORAGE_MODE
 app.config['TEST_MODE'] = settings.TEST_MODE
 examples_json = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'examples.json')
 faq_json = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'faq.json')
@@ -430,7 +434,7 @@ def storymap_copy(user, id):
 
         src_key_list, more = storage.list_keys(src_key_prefix, 999, '')
         for src_key in src_key_list:
-            file_name = src_key.name.split(src_key_prefix)[-1]
+            file_name = src_key.split(src_key_prefix)[-1]
             dst_key_name = "%s%s" % (dst_key_prefix, file_name)
 
             if file_name.endswith('.json'):
@@ -438,7 +442,7 @@ def storymap_copy(user, id):
                 storage.save_json(dst_key_name,
                     src_re.sub(dst_key_prefix, json_string))
             else:
-                storage.copy_key(src_key.name, dst_key_name)
+                storage.copy_key(src_key, dst_key_name)
 
         # Update meta
         user['storymaps'][dst_id] = {
@@ -467,7 +471,7 @@ def storymap_delete(user, id):
         key_prefix = storage.key_prefix(user['uid'], id)
         key_list, marker = storage.list_keys(key_prefix, 50)
         for key in key_list:
-            storage.delete(key.name);
+            storage.delete(key);
 
         del user['storymaps'][id]
         _user.save(user)
