@@ -1,5 +1,6 @@
 0.6.8 (TBD)
 * PR #394 Fixes anchor button in editor for Chrome
+* PR #395 Adds localized mock S3 storage for development
 
 0.6.7 (2017-12-21)
 * PR #361/366 Adds Turkish translation
