@@ -224,8 +224,6 @@ function slide_append_element(data) {
 function slide_select(event) {
     $(':focus').blur(); // force change event!
 
-    console.log('slide select');
-
     storymap_auto_save();
 
     $('.slide.selected').removeClass('selected');
@@ -484,7 +482,6 @@ function font_update() {
 function media_preview_update(url) {
     var $preview = $('.data-media-preview');
     $preview.empty();
-    console.log('media preview update', url)
     if (url) {
       var media = VCO.MediaType({'url': url})
       if (media.type) {
@@ -1056,7 +1053,6 @@ $(function() {
 
     // slide-level text options
     $('#headline').change(function() {
-        console.log('does this work on the overview page')
         var value = $(this).val().trim();
         _slides[_current_slide_index].text['headline'] = value;
         storymap_dirty(1);
