@@ -178,7 +178,7 @@ function location_set(slide_index, data) {
 
 function location_mark(data) {
     _map.clearOverlays();
-    if(data) {
+    if(data && data.location.lat && data.location.lon) {
         _map.addMarker(data, true);
         _map.panTo(data.location.lat, data.location.lon);
     }
@@ -482,7 +482,6 @@ function font_update() {
 function media_preview_update(url) {
     var $preview = $('.data-media-preview');
     $preview.empty();
-
     if (url) {
       var media = VCO.MediaType({'url': url})
       if (media.type) {
@@ -1046,7 +1045,6 @@ $(function() {
         storymap_dirty(1);
 
         slide_set_class(_current_slide_index);
-        location_mark(_slides[_current_slide_index]);
 
         if (id == 'url') {
             media_preview_update(val);
