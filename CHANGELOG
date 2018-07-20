@@ -1,6 +1,11 @@
 0.6.8 (TBD)
 * PR #394 Fixes anchor button in editor for Chrome
 * PR #395 Adds localized mock S3 storage for development
+* PR #399 Fixes null slide entries
+* PR #400 Updates for changes to mapbox
+* PR #401 Fixes content link button for Chrome
+* PR #384 Updates zh-tw translation
+* PR #340 Fixes null locations in data
 
 0.6.7 (2017-12-21)
 * PR #361/366 Adds Turkish translation
