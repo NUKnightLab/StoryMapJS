@@ -164,7 +164,10 @@ function map_set_type() {
 
 function location_set(slide_index, data) {
     var dirty = 0;
-
+    if ( ('location' in _slides[slide_index]) === false
+         || _slides[slide_index].location === null) {
+        _slides[slide_index]['location'] = {};
+    }
     for(var key in data) {
         if(_slides[slide_index].location[key] != data[key]) {
             _slides[slide_index].location[key] = data[key];
@@ -178,7 +181,7 @@ function location_set(slide_index, data) {
 
 function location_mark(data) {
     _map.clearOverlays();
-    if(data) {
+    if(data && data.location.lat && data.location.lon) {
         _map.addMarker(data, true);
         _map.panTo(data.location.lat, data.location.lon);
     }
@@ -249,10 +252,12 @@ function slide_select(event) {
             for(var i = 1; i < _slides.length; i++) {
                 if(_slides[i].hasOwnProperty('location')) {
                     var loc_data = _slides[i].location;
-
-                    if(loc_data.lat && loc_data.lon) {
+                    if(loc_data
+                            && 'lat' in loc_data
+                            && 'lon' in loc_data
+                            && loc_data.lat && loc_data.lon) {
                         _map.addMarker(_slides[i], false);
-                     }
+                    }
                 }
             }
 
@@ -274,10 +279,20 @@ function slide_select(event) {
                 $('#map_search_input').val('').show();
             }
 
-            _map.setView(data.location.lat, data.location.lon, data.location.zoom);
+            if(data.location
+                    && 'lat' in data.location
+                    && 'lon' in data.location
+                    && data.location.lat && data.location.lon) {
+                _map.setView(data.location.lat, data.location.lon, data.location.zoom);
+            }
             _map.zoomEnable(true);
 
-            location_mark(data);
+            if(data.location
+                    && 'lat' in data.location
+                    && 'lon' in data.location
+                    && data.location.lat && data.location.lon) {
+                location_mark(data);
+            }
         }
 
         $('#url').val(data.media.url);
@@ -482,7 +497,6 @@ function font_update() {
 function media_preview_update(url) {
     var $preview = $('.data-media-preview');
     $preview.empty();
-
     if (url) {
       var media = VCO.MediaType({'url': url})
       if (media.type) {
@@ -654,8 +668,8 @@ function map_init(init_callback) {
               .show();
         } else if(map_type && map_type.match('^mapbox:.+')) {
             $('#map_type_menu').val('mapbox');
-            $('#map_type').val(map_type.split(':')[1]).attr('placeholder', 'username.mapid')
-                .prev().html('Map ID')
+            $('#map_type').val(map_type.split(':')[1]).attr('placeholder', 'mapbox://')
+                .prev().html('Style URL')
                 .closest('.control-group').show();
             $('#map_subdomains')
                 .val(_storymap_data.storymap.map_subdomains || 'abcd')
@@ -721,6 +735,13 @@ function storymap_init(init_callback) {
             }
 
             _storymap_data = data.data;
+          
+            for (i = 0; i < _storymap_data.storymap.slides.length; i++) {
+                if (_storymap_data.storymap.slides[i] === null) {
+                    _storymap_data.storymap.slides.splice(i, 1);
+                } 
+            } 
+          
             _slides = _storymap_data.storymap.slides;
 
             // List images and sort by name
@@ -957,8 +978,8 @@ $(function() {
                 _storymap_data.storymap.zoomify.height = 600;
                 _storymap_data.storymap.zoomify.width = 600;
             } else if(map_type == 'mapbox') {
-                $('#map_type').val('').attr('placeholder', 'username.mapid')
-                    .prev().html('Map ID')
+                $('#map_type').val('').attr('placeholder', 'mapbox://')
+                    .prev().html('Style URL')
                     .closest('.control-group').show();
                 $('#map_type').focus();
                 $('#map_subdomains').val('').closest('.control-group').hide();
@@ -1046,7 +1067,6 @@ $(function() {
         storymap_dirty(1);
 
         slide_set_class(_current_slide_index);
-        location_mark(_slides[_current_slide_index]);
 
         if (id == 'url') {
             media_preview_update(val);
