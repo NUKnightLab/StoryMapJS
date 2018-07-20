@@ -164,7 +164,10 @@ function map_set_type() {
 
 function location_set(slide_index, data) {
     var dirty = 0;
-
+    if ( ('location' in _slides[slide_index]) === false
+         || _slides[slide_index].location === null) {
+        _slides[slide_index]['location'] = {};
+    }
     for(var key in data) {
         if(_slides[slide_index].location[key] != data[key]) {
             _slides[slide_index].location[key] = data[key];
@@ -249,10 +252,12 @@ function slide_select(event) {
             for(var i = 1; i < _slides.length; i++) {
                 if(_slides[i].hasOwnProperty('location')) {
                     var loc_data = _slides[i].location;
-
-                    if(loc_data.lat && loc_data.lon) {
+                    if(loc_data
+                            && 'lat' in loc_data
+                            && 'lon' in loc_data
+                            && loc_data.lat && loc_data.lon) {
                         _map.addMarker(_slides[i], false);
-                     }
+                    }
                 }
             }
 
@@ -274,10 +279,20 @@ function slide_select(event) {
                 $('#map_search_input').val('').show();
             }
 
-            _map.setView(data.location.lat, data.location.lon, data.location.zoom);
+            if(data.location
+                    && 'lat' in data.location
+                    && 'lon' in data.location
+                    && data.location.lat && data.location.lon) {
+                _map.setView(data.location.lat, data.location.lon, data.location.zoom);
+            }
             _map.zoomEnable(true);
 
-            location_mark(data);
+            if(data.location
+                    && 'lat' in data.location
+                    && 'lon' in data.location
+                    && data.location.lat && data.location.lon) {
+                location_mark(data);
+            }
         }
 
         $('#url').val(data.media.url);
