@@ -720,6 +720,13 @@ function storymap_init(init_callback) {
             }
 
             _storymap_data = data.data;
+          
+            for (i = 0; i < _storymap_data.storymap.slides.length; i++) {
+                if (_storymap_data.storymap.slides[i] === null) {
+                    _storymap_data.storymap.slides.splice(i, 1);
+                } 
+            } 
+          
             _slides = _storymap_data.storymap.slides;
 
             // List images and sort by name
