@@ -653,8 +653,8 @@ function map_init(init_callback) {
               .show();
         } else if(map_type && map_type.match('^mapbox:.+')) {
             $('#map_type_menu').val('mapbox');
-            $('#map_type').val(map_type.split(':')[1]).attr('placeholder', 'username.mapid')
-                .prev().html('Map ID')
+            $('#map_type').val(map_type.split(':')[1]).attr('placeholder', 'mapbox://')
+                .prev().html('Style URL')
                 .closest('.control-group').show();
             $('#map_subdomains')
                 .val(_storymap_data.storymap.map_subdomains || 'abcd')
@@ -720,13 +720,6 @@ function storymap_init(init_callback) {
             }
 
             _storymap_data = data.data;
-
-            for (i = 0; i < _storymap_data.storymap.slides.length; i++) {
-                if (_storymap_data.storymap.slides[i] === null) {
-                    _storymap_data.storymap.slides.splice(i, 1);
-                } 
-            }
-
             _slides = _storymap_data.storymap.slides;
 
             // List images and sort by name
@@ -963,8 +956,8 @@ $(function() {
                 _storymap_data.storymap.zoomify.height = 600;
                 _storymap_data.storymap.zoomify.width = 600;
             } else if(map_type == 'mapbox') {
-                $('#map_type').val('').attr('placeholder', 'username.mapid')
-                    .prev().html('Map ID')
+                $('#map_type').val('').attr('placeholder', 'mapbox://')
+                    .prev().html('Style URL')
                     .closest('.control-group').show();
                 $('#map_type').focus();
                 $('#map_subdomains').val('').closest('.control-group').hide();

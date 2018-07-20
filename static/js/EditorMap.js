@@ -303,11 +303,12 @@ LeafletEditorMap.prototype.setMapType = function(storymap_config) {
         // need to update to handle new mapbox studio format: URLs like mapbox://styles/nuknightlab/cikplzs9w00ddsykp7vqdz22u
         if (mapbox_name = parts[1]) {
           var access_token = storymap_config.storymap.map_access_token;
+          var mapbox_split = parts[2].split("/");
           if (!access_token) {
             // temporarily use ours but maybe we issue a warning?
             access_token = 'pk.eyJ1IjoibnVrbmlnaHRsYWIiLCJhIjoieUpRU1FOWSJ9.f7Z1min5DNfTPBIb7RbnGA'
           }
-          this.tilelayer = new L.TileLayer("https://api.tiles.mapbox.com/v4/"+mapbox_name+"/{z}/{x}/{y}.png?access_token="+access_token);
+          this.tilelayer = new L.TileLayer("https://api.mapbox.com/styles/v1/"+mapbox_split[3]+"/"+mapbox_split[4]+"/tiles/256/{z}/{x}/{y}@2x?access_token="+access_token);
           break;
         }
       case 'osm':
