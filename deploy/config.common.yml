@@ -8,6 +8,7 @@ pwd: "{{ lookup('env', 'PWD') }}"
 init_env_common:
   PROJECT_NAME: "{{ project_name }}"
   APPLICATION_DOMAINS: "{{ domains }}" # space-delimited
+  STORYMAPJS_DIRECTORY: "{{ deploy_dir }}"
 
   # Flask specific
   FLASK_SECRET_KEY: "{{ vault_flask_secret_key }}"
