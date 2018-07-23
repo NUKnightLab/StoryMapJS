@@ -6,6 +6,7 @@
 * PR #401 Fixes content link button for Chrome
 * PR #384 Updates zh-tw translation
 * PR #340 Fixes null locations in data
+* PR #402 Fixes image distortion in editor preview
 
 0.6.7 (2017-12-21)
 * PR #361/366 Adds Turkish translation
