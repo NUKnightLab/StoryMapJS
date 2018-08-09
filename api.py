@@ -183,6 +183,7 @@ def _session_pop(*keys):
 def _build_oauth_redirect(request,path):
     host = request.host
     url = 'https://{}{}'.format(host, path) # must always use https even for local
+    app.logger.info("_build_oauth_redirect url: {}".format(url))
     return url
 
 
@@ -196,6 +197,7 @@ def google_auth_start():
         redirect_uri=_build_oauth_redirect(request, url_for('google_auth_verify'))
     )
     authorize_url = flow.step1_get_authorize_url()
+    app.logger.info("google_auth_start url: {}".format(authorize_url))
     return redirect(authorize_url)
 
 @app.route("/google/auth/verify/", methods=['GET', 'POST'])
@@ -253,8 +255,10 @@ def google_auth_verify():
 
         # Update session
         session['uid'] = uid
+        url = url_for('select')
 
-        return redirect(url_for('select'))
+        app.logger.info("google_auth_verify url: {}".format(url))
+        return redirect(url)
     except Exception, e:
         traceback.print_exc()
         return jsonify({'error': str(e)})
