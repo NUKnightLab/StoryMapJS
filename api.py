@@ -183,6 +183,8 @@ def _session_pop(*keys):
 def _build_oauth_redirect(request,path):
     host = request.host
     protocol = request.url.split(':')[0]
+    if 'knightlab' in host:
+        protocol = 'https'
     url = '{}://{}{}'.format(protocol, host, path)
     return url
 
