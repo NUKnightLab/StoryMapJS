@@ -22,3 +22,5 @@ local_only.crt
 
 static/local/*
 !static/local/.gitkeep 
+
+.vscode
