@@ -12,12 +12,11 @@ Follow this quickstart guide to get StoryMapJS set up locally or see below for a
 
 * Clone the StoryMapJS repository to your machine.
 * Clone the [fabfile](https://github.com/NUKnightLab/fablib) repository into the same *parent* folder that stores the StoryMap repo.
-* Install [virtualenv](https://pypi.python.org/pypi/virtualenv), [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/),  [MongoDB](https://docs.mongodb.com/manual/administration/install-community/), [Node.js](http://nodejs.org)
-, [LESS](http://lesscss.org) and [UglifyJS](https://github.com/mishoo/UglifyJS2).
+* Install [virtualenv](https://pypi.python.org/pypi/virtualenv), [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/),  [MongoDB](https://docs.mongodb.com/manual/administration/install-community/), [Node.js](http://nodejs.org), [LESS](http://lesscss.org) and [UglifyJS](https://github.com/mishoo/UglifyJS2).
 * To run the server, copy `env.sh.sample` to `env.sh` and, if necessary, modify any values in it. Execute this script with `source env.sh` when you are working on StoryMapJS. If you're unsure whether you need to run the server for your project, see below this quickstart for more information.
 * Set up your virtual environment:
   `mkvirtualenv storymapjs`
-* Activate the virtual environemnt:
+* Activate the virtual environment:
    `workon storymapjs`
 * Install python requirements:
   `pip install -r requirements.txt`
@@ -28,7 +27,7 @@ Follow this quickstart guide to get StoryMapJS set up locally or see below for a
 
 #### Setup for working on the StoryMap editor
 
-There are a number of environment variables critical to working on the edior that are only available to Knight Lab staff and students. Ask a staff member for this information if applicable.
+There are a number of environment variables critical to working on the editor that are only available to Knight Lab staff and students. Ask a staff member for this information if applicable.
 
 ## Contributing translations for new languages
 
@@ -43,7 +42,7 @@ Images are rendered so when set to be map_as_image the entire image is shown. Wh
 Points are set to only display on mouseover in image mode, but you can set map_as_image to false in the config options to always show the points. The points are hidden when the intent is an image so that nothing obstructs the image the viewer is looking at. Looking at a painting is hard with a bunch of points on it.
 
 ## Map Options
-To disable connecting lines on maps use the StoryMap options: "Treat as Image" (as opposed to the default, "Treat as Cartography"
+To disable connecting lines on maps use the StoryMap options: "Treat as Image" (as opposed to the default, "Treat as Cartography")
 
 More config options available to do what you want with the line:
 
@@ -72,8 +71,7 @@ If you don't use CodeKit, you must have Python installed. We use python 2.7.
 
 Clone our [fabfile](https://github.com/NUKnightLab/fablib) repository and place it in the same parent directory as your StoryMapJS repository.
 
-Install [virtualenv](https://pypi.python.org/pypi/virtualenv), [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/),  [MongoDB](https://docs.mongodb.com/manual/administration/install-community/), [Node.js](http://nodejs.org)
-, [LESS](http://lesscss.org) and [UglifyJS](https://github.com/mishoo/UglifyJS2).
+Install [virtualenv](https://pypi.python.org/pypi/virtualenv), [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/), [MongoDB](https://docs.mongodb.com/manual/administration/install-community/), [Node.js](http://nodejs.org), [LESS](http://lesscss.org) and [UglifyJS](https://github.com/mishoo/UglifyJS2).
 
     pip install virtualenv
 
@@ -138,7 +136,7 @@ Of course, you'll need to use `https://localhost:5000/select/` to access the aut
 
 ### Developement with Local Storage
 
-In order to work with the authoring environment locally, you have to enter the path to your cloned StoryMapJS repository as the value of LOCAL_DIRECTORY & LOCAL_STORAGE_MODE in your env.sh file. 
+In order to work with the authoring environment locally, you have to enter the path to your cloned StoryMapJS repository as the value of `LOCAL_DIRECTORY` & `LOCAL_STORAGE_MODE` in your `env.sh` file. 
 
     export LOCAL_STORAGE_MODE=True
     export STORYMAPJS_DIRECTORY="FILL IN WITH PATH TO YOUR STORYMAPJS REPO DIRECTORY" 
