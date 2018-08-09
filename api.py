@@ -182,7 +182,7 @@ def _session_pop(*keys):
 
 def _build_oauth_redirect(request,path):
     host = request.host
-    url = 'https://{}{}'.format(protocol, host, path) # must always use https even for local
+    url = 'https://{}{}'.format(host, path) # must always use https even for local
     return url
 
 
