@@ -8,7 +8,7 @@ Before you can being this process, you will need to have generated Zoomify image
 <br><br>
 <img src="1.png" width="90%"><br>
 <br><br>
-3. Create your new repository, and give it an identifying name. Make sure your repository is set to public. Check the box to initialize your repository with a READM	E. A repository is just a place for us to store our files. In our case, we'll be uploading our Zoomify images to this repository.
+3. Create your new repository, and give it an identifying name. Make sure your repository is set to public. Check the box to initialize your repository with a README. A repository is just a place for us to store our files. In our case, we'll be uploading our Zoomify images to this repository.
 <br><br>
 <img src="2.png" width="90%"><br>
 <br>
