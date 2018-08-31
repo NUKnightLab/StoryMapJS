@@ -112,6 +112,7 @@
 
 		// TileLayerWMS WMS tile layer.
 			// @codekit-prepend "map/leaflet/leaflet-src/layer/tile/TileLayer.js";
+			// @codekit-prepend "map/leaflet/leaflet-src/layer/tile/TileLayer.WMS.js";
 
 		// TileLayerCanvas Tile layer made from canvases (for custom drawing purposes)
 			// @codekit-prepend "map/leaflet/leaflet-src/layer/tile/TileLayer.Canvas.js";
@@ -234,234 +235,249 @@
 	// @codekit-prepend "map/VCO.MapMarker.js";
 	// @codekit-prepend "map/VCO.Map.js";
 
-// LEAFLET IMPLIMENTATION
+// LEAFLET IMPLEMENTATION
 	// @codekit-prepend "map/leaflet/VCO.MapMarker.Leaflet.js";
 	// @codekit-prepend "map/leaflet/VCO.Map.Leaflet.js";
 
 
-VCO.StoryMap = VCO.Class.extend({
+VCO.StoryMap = VCO.Class.extend(
 
-	includes: VCO.Events,
+	{
 
-	/*	Private Methods
-	================================================== */
-	initialize: function (elem, data, options,listeners) {
-		for (key in listeners) {
-			var callbacks = listeners[key];
-			if (typeof(callbacks) == 'function') {
-				this.on(key,callbacks);
-			} else {
-				for (var idx in callbacks) {
-					this.on(key,callbacks[idx]);
-				}
-			}
-		}
-		var self = this;
-		// Version
-		this.version = "0.1.16";
+			includes: VCO.Events,
 
-		// Ready
-		this.ready = false;
+			/*	Private Methods
+			================================================== */
+			initialize: function (elem, data, options, listeners) {
 
-		// DOM ELEMENTS
-		this._el = {
-			container: {},
-			storyslider: {},
-			map: {},
-			menubar: {}
-		};
+									// attach listeners to the storymap object, using the key/name, and function definition
+									for (key in listeners) {
+										// appears that listeners can contain either key:value, where value is a callbacks
+										// OR key:list, where list contains further list of callbacks
+										var callbacks = listeners[key];
+										if (typeof(callbacks) == 'function') {
+											this.on(key,callbacks);
+										} else {
+											for (var idx in callbacks) {
+												this.on(key,callbacks[idx]);
+											}
+										}
+									}
+									var self = this;
+									// Version
+									this.version = "0.1.16";
 
-		// Determine Container Element
-		if (typeof elem === 'object') {
-			this._el.container = elem;
-		} else {
-			this._el.container = VCO.Dom.get(elem);
-		}
+									// Ready
+									this.ready = false;
 
-		// Slider
-		this._storyslider = {};
+									// DOM ELEMENTS
+									this._el = {
+										container: {},
+										storyslider: {},
+										map: {},
+										menubar: {}
+									};
 
-		// Map
-		this._map = {};
-		this.map = {}; // For direct access to Leaflet Map
+									// Determine Container Element
+									if (typeof elem === 'object') {
+										this._el.container = elem;
+									} else {
+										this._el.container = VCO.Dom.get(elem);
+									}
 
-		// Menu Bar
-		this._menubar = {};
+									// Slider
+									this._storyslider = {};
 
-		// Loaded State
-		this._loaded = {storyslider:false, map:false};
+									// Map
+									this._map = {};
+									this.map = {}; // For direct access to Leaflet Map
 
-		// Data Object
-		// Test Data compiled from http://www.pbs.org/marktwain/learnmore/chronology.html
-		this.data = {};
+									// Menu Bar
+									this._menubar = {};
 
-		this.options = {
-			script_path:            VCO.StoryMap.SCRIPT_PATH,
-			height: 				this._el.container.offsetHeight,
-			width: 					this._el.container.offsetWidth,
-			layout: 				"landscape", 	// portrait or landscape
-			base_class: 			"",
-			default_bg_color: 		{r:256, g:256, b:256},
-			map_size_sticky: 		2.5, 				// Set as division 1/3 etc
-			map_center_offset:  	null, 			// takes object {top:0,left:0}
-			less_bounce: 			false, 			// Less map bounce when calculating zoom, false is good when there are clusters of tightly grouped markers
-			start_at_slide: 		0,
-			call_to_action: 		false,
-			call_to_action_text: 	"",
-			menubar_height: 		0,
-			skinny_size: 			650,
-			relative_date: 			false, 			// Use momentjs to show a relative date from the slide.text.date.created_time field
-			// animation
-			duration: 				1000,
-			ease: 					VCO.Ease.easeInOutQuint,
-			// interaction
-			dragging: 				true,
-			trackResize: 			true,
-			map_type: 				"stamen:toner-lite",
-			attribution: 			"",
-			map_mini: 				true,
-			map_subdomains: 		"",
-			map_as_image: 			false,
-			map_access_token:       "pk.eyJ1IjoibnVrbmlnaHRsYWIiLCJhIjoiczFmd0hPZyJ9.Y_afrZdAjo3u8sz_r8m2Yw", // default
-			map_background_color: 	"#d9d9d9",
-			zoomify: {
-				path: 				"",
-				width: 				"",
-				height: 			"",
-				tolerance: 			0.8,
-				attribution: 		""
+									// Loaded State
+									this._loaded = {storyslider:false, map:false};
+
+									// Data Object
+									// Test Data compiled from http://www.pbs.org/marktwain/learnmore/chronology.html
+									this.data = {};
+
+									this.options = {
+										script_path:            VCO.StoryMap.SCRIPT_PATH,
+										height: 								this._el.container.offsetHeight, // HTML Dom property, setting height and width off the container element for the map
+										width: 					        this._el.container.offsetWidth,
+										layout: 				        "landscape", 	// portrait or landscape
+										base_class: 			      "",
+										default_bg_color: 		  {r:255, g:255, b:255},
+										map_size_sticky: 		    2.5, 				// Set as division 1/3 etc
+										map_center_offset:  	  null, 			// takes object {top:0,left:0}
+										less_bounce: 			      false, 			// Less map bounce when calculating zoom, false is good when there are clusters of tightly grouped markers
+										start_at_slide: 		    0,
+										call_to_action: 		    false,
+										call_to_action_text: 	  "",
+										menubar_height: 		    0,
+										skinny_size: 			      650,
+										relative_date: 			    false, 			// Use momentjs to show a relative date from the slide.text.date.created_time field
+
+										// animation
+										duration: 				      1000,
+										ease: 					        VCO.Ease.easeInOutQuint,
+
+										// interaction
+										dragging: 				      true,
+										trackResize: 			      true,
+										map_type: 				      "stamen:toner-lite",
+										wms_options:						{},
+										attribution: 			      "",
+										map_mini: 				      true,
+										map_subdomains: 		    "",
+										map_as_image: 			    false,
+										map_access_token:       "pk.eyJ1IjoibnVrbmlnaHRsYWIiLCJhIjoiczFmd0hPZyJ9.Y_afrZdAjo3u8sz_r8m2Yw", // default
+										map_background_color: 	"#d9d9d9",
+										zoomify: {
+											path: 				"",
+											width: 				"",
+											height: 			"",
+											tolerance: 			0.8,
+											attribution: 		""
+										},
+										map_height: 			       300,
+										storyslider_height: 	   600,
+										slide_padding_lr: 	 	   45, 			// padding on slide of slide
+										slide_default_fade: 	   "0%", 			// landscape fade
+										menubar_default_y: 		   0,
+										path_gfx: 				      "gfx",
+										map_popup: 				      false,
+										zoom_distance: 			    100,
+										calculate_zoom: 		    true,   		// Allow map to determine best zoom level between markers (recommended)
+										line_follows_path: 		  true,   		// Map history path follows default line, if false it will connect previous and current only
+										line_color: 			      "#c34528", //"#DA0000",
+										line_color_inactive: 	  "#CCC",
+										line_join: 				      "miter",
+										line_weight: 			      3,
+										line_opacity: 			    0.80,
+										line_dash: 				      "5,5",
+										show_lines: 			      true,
+										show_history_line: 		  true,
+										api_key_flickr: 		    "f2cc870b4d233dd0a5bfe73fd0d64ef0",
+										language:               "en",
+										use_custom_markers:		  false
+									};
+
+									// Current Slide
+									this.current_slide = this.options.start_at_slide;
+
+									// Animation Objects
+									this.animator_map = null;
+									this.animator_storyslider = null;
+
+									// Merge Options -- legacy, in case people still need to pass in
+									VCO.Util.mergeData(this.options, options);
+ 									this._initData(data);
+
+									return this;
+				},
+
+
+				/* Initialize the data
+				================================================== */
+  			_initData: function(data) {
+									var self = this;
+
+									if (typeof data === 'string') {
+										VCO.getJSON(data, function(d) {
+											if (d && d.storymap) {
+												VCO.Util.mergeData(self.data, d.storymap);
+											}
+											self._initOptions();
+										});
+									} else if (typeof data === 'object') {
+										if (data.storymap) {
+											self.data = data.storymap;
+										} else {
+											trace("data must have a storymap property")
+										}
+										self._initOptions();
+									} else {
+								    trace("data has unknown type")
+								    self._initOptions();
+							    }
 			},
-			map_height: 			300,
-			storyslider_height: 	600,
-			slide_padding_lr: 		45, 			// padding on slide of slide
-			slide_default_fade: 	"0%", 			// landscape fade
-			menubar_default_y: 		0,
-			path_gfx: 				"gfx",
-			map_popup: 				false,
-			zoom_distance: 			100,
-			calculate_zoom: 		true,   		// Allow map to determine best zoom level between markers (recommended)
-			line_follows_path: 		true,   		// Map history path follows default line, if false it will connect previous and current only
-			line_color: 			"#c34528", //"#DA0000",
-			line_color_inactive: 	"#CCC",
-			line_join: 				"miter",
-			line_weight: 			3,
-			line_opacity: 			0.80,
-			line_dash: 				"5,5",
-			show_lines: 			true,
-			show_history_line: 		true,
-			api_key_flickr: 		"f2cc870b4d233dd0a5bfe73fd0d64ef0",
-			language:               "en"
-		};
 
-		// Current Slide
-		this.current_slide = this.options.start_at_slide;
+			/* Initialize the options
+			================================================== */
+  		_initOptions: function() {
+							 		var self = this;
 
-		// Animation Objects
-		this.animator_map = null;
-		this.animator_storyslider = null;
+							    // Grab options from storymap data
 
-		// Merge Options -- legacy, in case people still need to pass in
-		VCO.Util.mergeData(this.options, options);
+							    VCO.Util.updateData(this.options, this.data);
 
-        this._initData(data);
+									if (this.options.layout == "landscape") {
+										this.options.map_center_offset = {left: -200, top: 0};
+									}
+									if (this.options.map_type == "zoomify" && this.options.map_as_image) {
+										this.options.map_size_sticky = 2;
+									}
+									if (this.options.map_as_image) {
+										this.options.calculate_zoom = false;
+									}
 
-		return this;
-	},
+							    // Use relative date calculations?
+									if(this.options.relative_date) {
+										if (typeof(moment) !== 'undefined') {
+											self._loadLanguage();
+										} else {
+											VCO.Load.js(this.options.script_path + "/library/moment.js", function() {
+												self._loadLanguage();
+												trace("LOAD MOMENTJS")
+											});
+										}
+									} else {
+										self._loadLanguage();
+									}
 
-	/* Initialize the data
-	================================================== */
-  _initData: function(data) {
-		var self = this;
+							 		// Emoji Support to Chrome?
+									if (VCO.Browser.chrome) {
+										VCO.Load.css(VCO.Util.urljoin(this.options.script_path,"../css/fonts/font.emoji.css"), function() {
+											trace("LOADED EMOJI CSS FOR CHROME")
+										});
+									}
+									trace(this.options);
+			  },
 
-		if (typeof data === 'string') {
-			VCO.getJSON(data, function(d) {
-				if (d && d.storymap) {
-					VCO.Util.mergeData(self.data, d.storymap);
-				}
-				self._initOptions();
-			});
-		} else if (typeof data === 'object') {
-			if (data.storymap) {
-				self.data = data.storymap;
-			} else {
-				trace("data must have a storymap property")
-			}
-			self._initOptions();
-		} else {
-	    trace("data has unknown type")
-	    self._initOptions();
-    }
-	},
+		/*	Load Language
+		================================================== */
+		_loadLanguage: function()
+		{
+								var self = this;
+								if(this.options.language == 'en') {
+								    this.options.language = VCO.Language;
+								    self._onDataLoaded();
+								} else {
+									VCO.Load.js(VCO.Util.urljoin(this.options.script_path, "/locale/" + this.options.language + ".js"), function() {
+										self._onDataLoaded();
+									});
+								}
+		},
 
-	/* Initialize the options
-	================================================== */
-  _initOptions: function() {
- 		var self = this;
+		/*	Navigation
+		================================================== */
+		goTo: function(n)
+		{
+							if (n != this.current_slide) {
+								this.current_slide = n;
+								this._storyslider.goTo(this.current_slide);
+								this._map.goTo(this.current_slide);
+							}
+		},
 
-    // Grab options from storymap data
-    VCO.Util.updateData(this.options, this.data);
-
-		if (this.options.layout == "landscape") {
-			this.options.map_center_offset = {left: -200, top: 0};
-		}
-		if (this.options.map_type == "zoomify" && this.options.map_as_image) {
-			this.options.map_size_sticky = 2;
-		}
-		if (this.options.map_as_image) {
-			this.options.calculate_zoom = false;
-		}
-
-    // Use relative date calculations?
-		if(this.options.relative_date) {
-			if (typeof(moment) !== 'undefined') {
-				self._loadLanguage();
-			} else {
-				VCO.Load.js(this.options.script_path + "/library/moment.js", function() {
-					self._loadLanguage();
-					trace("LOAD MOMENTJS")
-				});
-			}
-		} else {
-			self._loadLanguage();
-		}
-
- 		// Emoji Support to Chrome?
-		if (VCO.Browser.chrome) {
-			VCO.Load.css(VCO.Util.urljoin(this.options.script_path,"../css/fonts/font.emoji.css"), function() {
-				trace("LOADED EMOJI CSS FOR CHROME")
-			});
-		}
-  },
-
-	/*	Load Language
-	================================================== */
-	_loadLanguage: function() {
-		var self = this;
-		if(this.options.language == 'en') {
-		    this.options.language = VCO.Language;
-		    self._onDataLoaded();
-		} else {
-			VCO.Load.js(VCO.Util.urljoin(this.options.script_path, "/locale/" + this.options.language + ".js"), function() {
-				self._onDataLoaded();
-			});
-		}
-	},
-
-	/*	Navigation
-	================================================== */
-	goTo: function(n) {
-		if (n != this.current_slide) {
-			this.current_slide = n;
-			this._storyslider.goTo(this.current_slide);
-			this._map.goTo(this.current_slide);
-		}
-	},
-
-	updateDisplay: function() {
-		if (this.ready) {
-			this._updateDisplay();
-		}
-	},
+		updateDisplay: function()
+		{
+							if (this.ready) {
+								this._updateDisplay();
+							}
+		},
 
 	/*	Private Methods
 	================================================== */
@@ -491,256 +507,265 @@ VCO.StoryMap = VCO.Class.extend({
 		}
 	},
 */
-	// Initialize the layout
-	_initLayout: function () {
-		var self = this;
+		// Initialize the layout
+		_initLayout: function ()
+		{
+						var self = this;
 
-		this._el.container.className += ' vco-storymap';
-		this.options.base_class = this._el.container.className;
+						this._el.container.className += ' vco-storymap';
+						this.options.base_class = this._el.container.className;
 
-		// Create Layout
-		this._el.menubar		= VCO.Dom.create('div', 'vco-menubar', this._el.container);
-		this._el.map 			= VCO.Dom.create('div', 'vco-map', this._el.container);
-		this._el.storyslider 	= VCO.Dom.create('div', 'vco-storyslider', this._el.container);
+						// Create Layout
+						this._el.menubar		= VCO.Dom.create('div', 'vco-menubar', this._el.container);
+						this._el.map 			= VCO.Dom.create('div', 'vco-map', this._el.container);
+						this._el.storyslider 	= VCO.Dom.create('div', 'vco-storyslider', this._el.container);
 
-		// Initial Default Layout
-		this.options.width 				= this._el.container.offsetWidth;
-		this.options.height 			= this._el.container.offsetHeight;
-		this._el.map.style.height 		= "1px";
-		this._el.storyslider.style.top 	= "1px";
+						// Initial Default Layout
+						this.options.width 				= this._el.container.offsetWidth;
+						this.options.height 			= this._el.container.offsetHeight;
+						this._el.map.style.height 		= "1px";
+						this._el.storyslider.style.top 	= "1px";
 
-		// Create Map using preferred Map API
-		this._map = new VCO.Map.Leaflet(this._el.map, this.data, this.options);
-		this.map = this._map._map; // For access to Leaflet Map.
-		this._map.on('loaded', this._onMapLoaded, this);
+						// Create Map using preferred Map API
+						this._map = new VCO.Map.Leaflet(this._el.map, this.data, this.options);
+						this.map = this._map._map; // For access to Leaflet Map.
+						this._map.on('loaded', this._onMapLoaded, this);
 
-		// Map Background Color
-		this._el.map.style.backgroundColor = this.options.map_background_color;
+						// Map Background Color
+						this._el.map.style.backgroundColor = this.options.map_background_color;
 
-		// Create Menu Bar
-		this._menubar = new VCO.MenuBar(this._el.menubar, this._el.container, this.options);
+						// Create Menu Bar
+						this._menubar = new VCO.MenuBar(this._el.menubar, this._el.container, this.options);
 
-		// Create StorySlider
-		this._storyslider = new VCO.StorySlider(this._el.storyslider, this.data, this.options);
-		this._storyslider.on('loaded', this._onStorySliderLoaded, this);
-		this._storyslider.on('title', this._onTitle, this);
-		this._storyslider.init();
+						// Create StorySlider
+						this._storyslider = new VCO.StorySlider(this._el.storyslider, this.data, this.options);
+						this._storyslider.on('loaded', this._onStorySliderLoaded, this);
+						this._storyslider.on('title', this._onTitle, this);
+						this._storyslider.init();
 
-		// LAYOUT
-		if (this.options.layout == "portrait") {
-			// Set Default Component Sizes
-			this.options.map_height 		= (this.options.height / this.options.map_size_sticky);
-			this.options.storyslider_height = (this.options.height - this._el.menubar.offsetHeight - this.options.map_height - 1);
-			this._menubar.setSticky(0);
-		} else {
-			this.options.menubar_height = this._el.menubar.offsetHeight;
-			// Set Default Component Sizes
-			this.options.map_height 		= this.options.height;
-			this.options.storyslider_height = (this.options.height - this._el.menubar.offsetHeight - 1);
-			this._menubar.setSticky(this.options.menubar_height);
-		}
+						// LAYOUT
+						if (this.options.layout == "portrait") {
+							// Set Default Component Sizes
+							this.options.map_height 		= (this.options.height / this.options.map_size_sticky);
+							this.options.storyslider_height = (this.options.height - this._el.menubar.offsetHeight - this.options.map_height - 1);
+							this._menubar.setSticky(0);
+						} else {
+							this.options.menubar_height = this._el.menubar.offsetHeight;
+							// Set Default Component Sizes
+							this.options.map_height 		= this.options.height;
+							this.options.storyslider_height = (this.options.height - this._el.menubar.offsetHeight - 1);
+							this._menubar.setSticky(this.options.menubar_height);
+						}
 
-		// Update Display
-		this._updateDisplay(this.options.map_height, true, 2000);
+						// Update Display
+						this._updateDisplay(this.options.map_height, true, 2000);
 
-		// Animate Menu Bar to Default Location
-		this._menubar.show(2000);
-
+						// Animate Menu Bar to Default Location
+						this._menubar.show(2000);
 	},
 
-	_initEvents: function () {
+	_initEvents: function ()
+	{
 
-		// Sidebar Events
-		this._menubar.on('collapse', this._onMenuBarCollapse, this);
-		this._menubar.on('back_to_start', this._onBackToStart, this);
-		this._menubar.on('overview', this._onOverview, this);
+						// Sidebar Events
+						this._menubar.on('collapse', this._onMenuBarCollapse, this);
+						this._menubar.on('back_to_start', this._onBackToStart, this);
+						this._menubar.on('overview', this._onOverview, this);
 
-		// StorySlider Events
-		this._storyslider.on('change', this._onSlideChange, this);
-		this._storyslider.on('colorchange', this._onColorChange, this);
+						// StorySlider Events
+						this._storyslider.on('change', this._onSlideChange, this);
+						this._storyslider.on('colorchange', this._onColorChange, this);
 
-		// Map Events
-		this._map.on('change', this._onMapChange, this);
+						// Map Events
+						this._map.on('change', this._onMapChange, this);
 	},
 
 	// Update View
-	_updateDisplay: function(map_height, animate, d) {
-		var duration 		= this.options.duration,
-			display_class 	= this.options.base_class,
-			self			= this;
+	_updateDisplay: function(map_height, animate, d)
+	{
+						var duration 		= this.options.duration,
+							display_class 	= this.options.base_class,
+							self			= this;
 
-		if (d) {
-			duration = d;
-		}
+						if (d) {
+							duration = d;
+						}
 
-		// Update width and height
-		this.options.width = this._el.container.offsetWidth;
-		this.options.height = this._el.container.offsetHeight;
+						// Update width and height
+						this.options.width = this._el.container.offsetWidth;
+						this.options.height = this._el.container.offsetHeight;
 
-		// Check if skinny
-		if (this.options.width <= this.options.skinny_size) {
-			this.options.layout = "portrait";
-			//display_class += " vco-skinny";
-		} else {
-			this.options.layout = "landscape";
-		}
-
-
-		// Map Height
-		if (map_height) {
-			this.options.map_height = map_height;
-		}
+						// Check if skinny
+						if (this.options.width <= this.options.skinny_size) {
+							this.options.layout = "portrait";
+							//display_class += " vco-skinny";
+						} else {
+							this.options.layout = "landscape";
+						}
 
 
-		// Detect Mobile and Update Orientation on Touch devices
-		if (VCO.Browser.touch) {
-			this.options.layout = VCO.Browser.orientation();
-			display_class += " vco-mobile";
-		}
-
-		// LAYOUT
-		if (this.options.layout == "portrait") {
-			display_class += " vco-skinny";
-			// Map Offset
-			this._map.setMapOffset(0, 0);
-
-			this.options.map_height 		= (this.options.height / this.options.map_size_sticky);
-			this.options.storyslider_height = (this.options.height - this.options.map_height - 1);
-			this._menubar.setSticky(0);
-
-			// Portrait
-			display_class += " vco-layout-portrait";
-
-			if (animate) {
-
-				// Animate Map
-				if (this.animator_map) {
-					this.animator_map.stop();
-				}
-
-				this.animator_map = VCO.Animate(this._el.map, {
-					height: 	(this.options.map_height) + "px",
-					duration: 	duration,
-					easing: 	VCO.Ease.easeOutStrong,
-					complete: function () {
-						self._map.updateDisplay(self.options.width, self.options.map_height, animate, d, self.options.menubar_height);
-					}
-				});
-
-				// Animate StorySlider
-				if (this.animator_storyslider) {
-					this.animator_storyslider.stop();
-				}
-				this.animator_storyslider = VCO.Animate(this._el.storyslider, {
-					height: 	this.options.storyslider_height + "px",
-					duration: 	duration,
-					easing: 	VCO.Ease.easeOutStrong
-				});
-
-			} else {
-				// Map
-				this._el.map.style.height = Math.ceil(this.options.map_height) + "px";
-
-				// StorySlider
-				this._el.storyslider.style.height = this.options.storyslider_height + "px";
-			}
-
-			// Update Component Displays
-			this._menubar.updateDisplay(this.options.width, this.options.height, animate);
-			this._map.updateDisplay(this.options.width, this.options.height, false);
-			this._storyslider.updateDisplay(this.options.width, this.options.storyslider_height, animate, this.options.layout);
-
-		} else {
-
-			// Landscape
-			display_class += " vco-layout-landscape";
-
-			this.options.menubar_height = this._el.menubar.offsetHeight;
-
-			// Set Default Component Sizes
-			this.options.map_height 		= this.options.height;
-			this.options.storyslider_height = this.options.height;
-			this._menubar.setSticky(this.options.menubar_height);
-
-			// Set Sticky state of MenuBar
-			this._menubar.setSticky(this.options.menubar_height);
-
-			this._el.map.style.height = this.options.height + "px";
-
-			// Update Component Displays
-			this._map.setMapOffset(-(this.options.width/4), 0);
-
-			// StorySlider
-			this._el.storyslider.style.top = 0;
-			this._el.storyslider.style.height = this.options.storyslider_height + "px";
-
-			this._menubar.updateDisplay(this.options.width, this.options.height, animate);
-			this._map.updateDisplay(this.options.width, this.options.height, animate, d);
-			this._storyslider.updateDisplay(this.options.width/2, this.options.storyslider_height, animate, this.options.layout);
-		}
-
-		if (this.options.language.direction == 'rtl') {
-			display_class += ' vco-rtl';
-		}
-		else if (VCO.Language.direction == 'rtl'){
-			display_class += ' vco-rtl';
-		}
-
-		// Apply class
-		this._el.container.className = display_class;
+						// Map Height
+						if (map_height) {
+							this.options.map_height = map_height;
+						}
 
 
-	},
+						// Detect Mobile and Update Orientation on Touch devices
+						if (VCO.Browser.touch) {
+							this.options.layout = VCO.Browser.orientation();
+							display_class += " vco-mobile";
+						}
+
+						// LAYOUT
+						if (this.options.layout == "portrait") {
+							display_class += " vco-skinny";
+							// Map Offset
+							this._map.setMapOffset(0, 0);
+
+							this.options.map_height 		= (this.options.height / this.options.map_size_sticky);
+							this.options.storyslider_height = (this.options.height - this.options.map_height - 1);
+							this._menubar.setSticky(0);
+
+							// Portrait
+							display_class += " vco-layout-portrait";
+
+							if (animate) {
+
+								// Animate Map
+								if (this.animator_map) {
+									this.animator_map.stop();
+								}
+
+								this.animator_map = VCO.Animate(this._el.map, {
+									height: 	(this.options.map_height) + "px",
+									duration: 	duration,
+									easing: 	VCO.Ease.easeOutStrong,
+									complete: function () {
+										self._map.updateDisplay(self.options.width, self.options.map_height, animate, d, self.options.menubar_height);
+									}
+								});
+
+								// Animate StorySlider
+								if (this.animator_storyslider) {
+									this.animator_storyslider.stop();
+								}
+								this.animator_storyslider = VCO.Animate(this._el.storyslider, {
+									height: 	this.options.storyslider_height + "px",
+									duration: 	duration,
+									easing: 	VCO.Ease.easeOutStrong
+								});
+
+							} else {
+								// Map
+								this._el.map.style.height = Math.ceil(this.options.map_height) + "px";
+
+								// StorySlider
+								this._el.storyslider.style.height = this.options.storyslider_height + "px";
+							}
+
+							// Update Component Displays
+							this._menubar.updateDisplay(this.options.width, this.options.height, animate);
+							this._map.updateDisplay(this.options.width, this.options.height, false);
+							this._storyslider.updateDisplay(this.options.width, this.options.storyslider_height, animate, this.options.layout);
+
+						} else {
 
 
-	/*	Events
-	================================================== */
+							// Landscape
+							display_class += " vco-layout-landscape";
 
-	_onDataLoaded: function(e) {
-		this.fire("dataloaded");
-		this._initLayout();
-		this._initEvents();
-		this.ready = true;
+							this.options.menubar_height = this._el.menubar.offsetHeight;
 
-	},
+							// Set Default Component Sizes
+							this.options.map_height 		= this.options.height;
+							this.options.storyslider_height = this.options.height;
+							this._menubar.setSticky(this.options.menubar_height);
 
-	_onTitle: function(e) {
-		this.fire("title", e);
-	},
+							// Set Sticky state of MenuBar
+							this._menubar.setSticky(this.options.menubar_height);
 
-	_onColorChange: function(e) {
-		if (e.color || e.image) {
-			this._menubar.setColor(true);
-		} else {
-			this._menubar.setColor(false);
-		}
-	},
+							this._el.map.style.height = this.options.height + "px";
 
-	_onSlideChange: function(e) {
-		if (this.current_slide != e.current_slide) {
-			this.current_slide = e.current_slide;
-			this._map.goTo(this.current_slide);
-			this.fire("change", {current_slide: this.current_slide}, this);
-		}
-	},
+							// Update Component Displays
+							this._map.setMapOffset(-(this.options.width/4), 0);
 
-	_onMapChange: function(e) {
-		if (this.current_slide != e.current_marker) {
-			this.current_slide = e.current_marker;
-			this._storyslider.goTo(this.current_slide);
-			this.fire("change", {current_slide: this.current_slide}, this);
-		}
-	},
+							// StorySlider
+							this._el.storyslider.style.top = 0;
+							this._el.storyslider.style.height = this.options.storyslider_height + "px";
 
-	_onOverview: function(e) {
-		this._map.markerOverview();
-	},
+							this._menubar.updateDisplay(this.options.width, this.options.height, animate);
+							this._map.updateDisplay(this.options.width, this.options.height, animate, d);
+							this._storyslider.updateDisplay(this.options.width/2, this.options.storyslider_height, animate, this.options.layout);
+						}
 
-	_onBackToStart: function(e) {
-		this.current_slide = 0;
-		this._map.goTo(this.current_slide);
-		this._storyslider.goTo(this.current_slide);
-		this.fire("change", {current_slide: this.current_slide}, this);
+						if (this.options.language.direction == 'rtl') {
+							display_class += ' vco-rtl';
+						}
+						else if (VCO.Language.direction == 'rtl'){
+							display_class += ' vco-rtl';
+						}
+
+						// Apply class
+						this._el.container.className = display_class;
+
+
+		},
+
+
+		/*	Events
+		================================================== */
+
+		_onDataLoaded: function(e)
+		{
+						this.fire("dataloaded");
+						this._initLayout();
+						this._initEvents();
+						this.ready = true;
+		},
+
+		_onTitle: function(e)
+		{
+						this.fire("title", e);
+		},
+
+		_onColorChange: function(e)
+		{
+						if (e.color || e.image) {
+							this._menubar.setColor(true);
+						} else {
+							this._menubar.setColor(false);
+						}
+					},
+
+		_onSlideChange: function(e)
+		{
+						if (this.current_slide != e.current_slide) {
+							this.current_slide = e.current_slide;
+							this._map.goTo(this.current_slide);
+							this.fire("change", {current_slide: this.current_slide}, this);
+						}
+					},
+
+	  _onMapChange: function(e)
+		{
+						if (this.current_slide != e.current_marker) {
+							this.current_slide = e.current_marker;
+							this._storyslider.goTo(this.current_slide);
+							this.fire("change", {current_slide: this.current_slide}, this);
+						}
+		},
+
+	  _onOverview: function(e)
+		{
+						this._map.markerOverview();
+		},
+
+	_onBackToStart: function(e)
+	{
+						this.current_slide = 0;
+						this._map.goTo(this.current_slide);
+						this._storyslider.goTo(this.current_slide);
+						this.fire("change", {current_slide: this.current_slide}, this);
 	},
 
 	_onMenuBarCollapse: function(e) {
