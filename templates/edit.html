@@ -668,7 +668,7 @@ function map_init(init_callback) {
               .show();
         } else if(map_type && map_type.match('^mapbox:.+')) {
             $('#map_type_menu').val('mapbox');
-            $('#map_type').val(map_type.split(':')[1]).attr('placeholder', 'mapbox://')
+            $('#map_type').val(map_type.substr('mapbox:'.length)).attr('placeholder', 'mapbox://')
                 .prev().html('Style URL')
                 .closest('.control-group').show();
             $('#map_subdomains')
