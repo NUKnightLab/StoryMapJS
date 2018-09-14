@@ -171,14 +171,21 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		// Set Tiles
 		switch(_map_type_arr[0]) {
 			case 'mapbox':
-				if (mapbox_name = _map_type_arr[1]) {
-					_options.subdomains 	= 'abcd';
-					_options.attribution 	= _attribution_knightlab + "<div class='mapbox-maplogo'></div><a href='https://www.mapbox.com/about/maps/' target='_blank'>© Mapbox © OpenStreetMap</a>";
-					_tilelayer = new L.TileLayer("https://api.tiles.mapbox.com/v4/"+mapbox_name+"/{z}/{x}/{y}.png?access_token="+this.options.map_access_token, _options);
-					break;
+				var mapbox_url;
+				_options.attribution = _attribution_knightlab + "<div class='mapbox-maplogo'></div><a href='https://www.mapbox.com/about/maps/' target='_blank'>© Mapbox © OpenStreetMap</a>";
+				if (_map_type_arr.length > 2) {
+					// new form mapbox URL:
+					// mapbox://styles/nuknightlab/cjl6w8oio0agu2sltd04tp1kx
+					var this_mapbox_map = _map_type_arr[2].substr('//styles/'.length);
+					mapbox_url = "https://api.mapbox.com/styles/v1/" + this_mapbox_map + "/tiles/256/{z}/{x}/{y}@2x?access_token=" + this.options.map_access_token;
 				} else {
-					trace("Mapbox configured but no map name provided.");
+					// legacy configuration
+					// nuknightlab.cjl6w8oio0agu2sltd04tp1kx
+					var mapbox_name = _map_type_arr[1];
+					mapbox_url = "https://api.tiles.mapbox.com/v4/" + mapbox_name + "/{z}/{x}/{y}.png?access_token=" + this.options.map_access_token;
 				}
+				_tilelayer = new L.TileLayer(mapbox_url, _options);
+				break;
 			case 'stamen':
 				_tilelayer = new L.StamenTileLayer(_map_type_arr[1] || 'toner-lite', _options);
 				this._map.getContainer().style.backgroundColor = "#FFFFFF";
