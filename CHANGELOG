@@ -1,4 +1,7 @@
-0.6.8 (TBD)
+0.6.9 (2018-09-14)
+* Implement support for new-style mapbox style URLs (should have gone with #400)
+
+0.6.8 (2018-07-20)
 * PR #394 Fixes anchor button in editor for Chrome
 * PR #395 Adds localized mock S3 storage for development
 * PR #399 Fixes null slide entries
