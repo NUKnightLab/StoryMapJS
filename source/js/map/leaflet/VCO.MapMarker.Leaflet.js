@@ -12,6 +12,10 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 		var icon = {}; //new L.Icon.Default();
 
 		if (d.location && d.location.lat && d.location.lon) {
+			console.log("d===============================");
+			console.log(d);
+			console.log("d.location======================");
+			console.log(d.location);
 			this.data.real_marker = true;
 			var use_custom_marker = o.use_custom_markers || d.location.use_custom_marker;
 			if (use_custom_marker && d.location.icon) {
@@ -22,7 +26,11 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 				};
 				this._icon = this._createIcon();
 			} else if (use_custom_marker && d.location.image) {
-				this._custom_image_icon = d.location.image;
+				this._custom_image_icon = {
+					url:d.location.image,
+					size: d.location.imageSize || [50,100],
+					anchor: this._customIconAnchor(d.location.imageSize)
+				}
 				this._icon = this._createImage();
 			} else {
 				this._icon = this._createDefaultIcon(false);
@@ -90,7 +98,7 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 
 	_createImage: function(active) { // TODO: calculate shadow dimensions
 		var className = active ? "vco-mapmarker-image-icon-active" : "vco-mapmarker-image-icon";
-		return new L.icon({iconUrl: this._custom_image_icon, iconSize: [48], iconAnchor:[24, 48], shadowSize: [68, 95], shadowAnchor: [22, 94], className: className});
+		return new L.icon({iconUrl: this._custom_image_icon.url, iconSize:this._custom_image_icon.size, iconAnchor: this._custom_icon.anchor, className: className});
 	},
 
 	_createDefaultIcon: function(active) {
