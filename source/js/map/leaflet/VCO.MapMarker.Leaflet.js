@@ -105,7 +105,13 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 		var className = active ? "vco-mapmarker-active" : "vco-mapmarker";
 		return L.divIcon({className: className + " " + this.media_icon_class, iconAnchor:[10, 10]});
 	},
-
+	_customImageIconAnchor: function(size) {
+		if (size) {
+			return [ size[0] * 0.5, size[1]* 0.5 ];
+		} else {
+			return [ 25, 50 ];
+		}
+	},
 	_customIconAnchor: function(size) {
 		if (size) {
 			return [ size[0] * 0.5, size[1] ];
