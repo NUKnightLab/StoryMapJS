@@ -786,18 +786,6 @@ a.list-item-options:hover {
     display: none;
 }
 
-#map_search_input {
-    position: absolute;
-    width: 250px;
-    left: 50%;
-    bottom: 10px;
-    margin-left: -125px;
-    font-family: "Apres RE","Helvetica Neue",Helvetica,Arial,sans-serif;
-    border: 1px solid #CCC;
-
-	box-shadow: 1px 1px 7px rgba(0,0,0,.30);
-}
-
 /* SearchBox drop-down items */
 .pac-item {font-family: Roboto, Arial, Sans-serif;}
 
@@ -817,9 +805,38 @@ label, .data-media-upload {
 .data-section.data-frame input#url{
 	margin-bottom:4px;
 }
+
+
+#map_search_input {
+	margin: 1rem;
+	text-align: center;
+}
+
+
+.search-note::before {
+    padding-right: 3px;
+    font-weight: 700;
+    color: #df4e13;
+    content: "Note: ";
+    font-style: normal;
+
+}
+.search-note {
+	display: inline-block;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    color: #9c9c9c;
+    font-family: "Apres RE","Helvetica Neue",Helvetica,Arial,sans-serif;
+    padding: .5rem;
+    font-size: .9em;
+    line-height: 1.2em;
+    font-style: italic;
+    overflow: hidden;
+}
+
 .data-left, .data-right {
 	position: absolute;
-	height: 312px;
+	height: 270px;
 	bottom:0;
 }
 .data-left {left: 0;right: 50%;}

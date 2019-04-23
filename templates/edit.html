@@ -526,7 +526,7 @@ var search = function(lat, lng) {
 var _map_options = {
     map_id: 'map',
     map_overlay_id: 'map_overlay',
-    search_id: 'map_search_input',
+    // search_id: 'map_search_input',
     handlers: {
         double_click: function(lat, lng) {
             var data = {lat: lat, lon: lng};
@@ -1532,26 +1532,26 @@ window.onresize = function(event) {
     }
 }
 
-initAutocomplete = function() {
-  var input = document.getElementById('map_search_input');
-  if (input) {
-    var search_box = new google.maps.places.SearchBox(input);
+// initAutocomplete = function() {
+//   var input = document.getElementById('map_search_input');
+//   if (input) {
+//     var search_box = new google.maps.places.SearchBox(input);
 
-    google.maps.event.addListener(search_box, 'places_changed', function() {
-        var places = search_box.getPlaces();
-        if(places.length) {
-            var location = places[0].geometry.location;
-            search(location.lat(), location.lng());
-            input.value = '';
+//     google.maps.event.addListener(search_box, 'places_changed', function() {
+//         var places = search_box.getPlaces();
+//         if(places.length) {
+//             var location = places[0].geometry.location;
+//             search(location.lat(), location.lng());
+//             input.value = '';
 
-         }
-    });
-  } else {
-    console.log("Can't find input to set up searchbox")
-  }
-}
+//          }
+//     });
+//   } else {
+//     console.log("Can't find input to set up searchbox")
+//   }
+// }
 </script>
-<!-- Google Maps JS API -->
+Google Maps JS API
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDMSYrR2AmYmt9rDKCTtbzPMfyunD2Za60&libraries=places&callback=initAutocomplete&fields=geometry"
      async defer></script>
 <!-- LEAVE THIS HERE -->
