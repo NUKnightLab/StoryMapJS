@@ -24,3 +24,6 @@ static/local/*
 !static/local/.gitkeep 
 
 .vscode
+
+analysis
+

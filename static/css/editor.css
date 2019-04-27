@@ -1029,3 +1029,27 @@ animation: none;
 	background-color: orange;
 	color: white;
 }
+
+#geocode-autocomplete {
+	list-style-type: none;
+	margin: 10px;
+	z-index: 1000;
+	background-color: white;
+	padding: 5px;
+	border: .5px #ccc solid;
+}
+
+#geocode-autocomplete li {
+	font-family: "Apres RE", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	padding: 3px 0;
+	margin: 4px 0;
+}
+#geocode-autocomplete li:before {
+	content: "\01F4CD";
+	padding-right: 2px;
+}
+
+#geocode-autocomplete li:hover {
+	background-color: lightyellow;
+	cursor: pointer;
+}
