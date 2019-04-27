@@ -1700,7 +1700,7 @@ function debounce(func, wait, immediate) {
                 lat = $(selection).data('center')[1],
                 place_type = $(selection).data('place_type');
             search(lat, lng);
-            $("#geocode-autocomplete").empty()
+            $("#geocode-autocomplete").remove()
             document.getElementById('map_search_input').value = '';
         } else {
             console.error("geocode_select called with no selection and no active element")
