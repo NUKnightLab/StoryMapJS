@@ -788,7 +788,7 @@ a.list-item-options:hover {
 
 #map_search_input {
     position: absolute;
-    width: 250px;
+    width: 400px;
     left: 50%;
     bottom: 10px;
     margin-left: -125px;
@@ -1043,13 +1043,14 @@ animation: none;
 	font-family: "Apres RE", "Helvetica Neue", Helvetica, Arial, sans-serif;
 	padding: 3px 0;
 	margin: 4px 0;
+	cursor: pointer;
 }
+
 #geocode-autocomplete li:before {
 	content: "\01F4CD";
 	padding-right: 2px;
 }
 
-#geocode-autocomplete li:hover {
+#geocode-autocomplete li.active {
 	background-color: lightyellow;
-	cursor: pointer;
 }
