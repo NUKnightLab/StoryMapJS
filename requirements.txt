@@ -1,7 +1,8 @@
+asn1crypto==0.24.0
 boto==2.42.0
 cffi==1.8.3
 Click==7.0
-cryptography==1.5.2
+cryptography==2.6.1
 decorator==4.0.10
 docopt==0.6.1
 enum34==1.1.6
@@ -14,6 +15,7 @@ httplib2==0.9
 httpretty==0.8.10
 idna==2.1
 ipaddress==1.0.17
+ipython==0.13.2
 itsdangerous==1.1.0
 Jinja2==2.10.1
 livereload==1.0.0
@@ -30,7 +32,7 @@ pyasn1-modules==0.0.5
 pycparser==2.14
 pycrypto==2.6
 pymongo==2.8
-pyOpenSSL==16.0.0
+pyOpenSSL==19.0.0
 python-slugify==1.1.2
 readline==6.2.4.1
 requests==2.5.1
