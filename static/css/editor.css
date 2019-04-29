@@ -640,7 +640,7 @@ a.list-item-options:hover {
 .slide a.close {
     position: absolute;
     top: -4px;
-    right: 20px;
+    right: 6px;
     z-index: 99;
     color: #000000;
     opacity: 1;
@@ -793,9 +793,14 @@ a.list-item-options:hover {
     bottom: 10px;
     margin-left: -125px;
     font-family: "Apres RE","Helvetica Neue",Helvetica,Arial,sans-serif;
-    border: 1px solid #CCC;
+    border: 1px solid #DA0000;
 
 	box-shadow: 1px 1px 7px rgba(0,0,0,.30);
+}
+
+/* Easier to see markers */
+.vco-map .vco-mapmarker, .vco-map .vco-mapmarker-active {
+	color: #da0000 !important;
 }
 
 /* SearchBox drop-down items */
