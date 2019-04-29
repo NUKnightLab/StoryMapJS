@@ -799,7 +799,7 @@ a.list-item-options:hover {
 }
 
 /* Easier to see markers */
-.vco-map .vco-mapmarker-active {
+#edit .vco-map .vco-mapmarker {
 	color: #da0000 !important;
 }
 
