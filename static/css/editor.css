@@ -774,15 +774,16 @@ a.list-item-options:hover {
 
 #map_info {
     position: absolute;
-	font-family: "Apres RE","Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-family: "Apres RE","Helvetica Neue",Helvetica,Arial,sans-serif;
     top: 0;
-	width:100%;
-    background-color:rgba(256,256,256,0.8);
-    color: #999;
-	font-style: italic;
+    width:100%;
+    background-color: rgba(218, 0, 0, .9);
+    color: #FFF;
+    font-style: italic;
     padding: 10px 0px 10px 0px;
     text-align:center;
-
+    font-weight: bold;
+    font-size: 14px;
     display: none;
 }
 
