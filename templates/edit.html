@@ -1621,7 +1621,8 @@ function debounce(func, wait, immediate) {
         if (query) {
             var opts = {
                 query: query,
-                limit: 7
+                limit: 7,
+                mode: 'mapbox.places-permanent'
                 // https://docs.mapbox.com/api/search/#forward-geocoding
                 // language, types, limit might be interesting config values
             }
@@ -1711,7 +1712,10 @@ function debounce(func, wait, immediate) {
     initAutocomplete = function() {
         var input = document.getElementById('map_search_input');
         if (input) {
-            window.mapboxClient = mapboxSdk({ accessToken: 'pk.eyJ1IjoibnVrbmlnaHRsYWIiLCJhIjoiY2pzZGxiaTRpMHd0eTQ0cGVscWliaXA2YyJ9.YTxvt_ZegqDqNxtl_gdDYA' });
+            window.mapboxClient = mapboxSdk({ 
+                accessToken: 'pk.eyJ1IjoibnVrbmlnaHRsYWIiLCJhIjoiY2pzZGxiaTRpMHd0eTQ0cGVscWliaXA2YyJ9.YTxvt_ZegqDqNxtl_gdDYA',
+
+            });
             input.addEventListener('keyup',function(e) {
                 if (e.keyCode == keys.enter) {
                     e.stopPropagation();
