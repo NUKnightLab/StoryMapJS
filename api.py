@@ -273,10 +273,13 @@ def _user_get():
     uid = session.get('uid')
     user = _user.find_one({'uid': uid})
     # google data field in user record no longer used
+    if not user:
+        try:
+            session.pop('uid')
+        except KeyError: pass
+        return None
     if 'google' in user:
         del user['google']
-    if not user and 'uid' in session:
-        session.pop('uid')
     return user
 
 def check_test_user():
@@ -396,6 +399,7 @@ def _write_embed_published(key_prefix, meta):
 #
 
 @app.route('/storymap/update/meta/', methods=['GET', 'POST'])
+@require_user
 @require_user_id()
 def storymap_update_meta(user, id):
     """Update storymap meta value"""
@@ -419,6 +423,7 @@ def storymap_update_meta(user, id):
         return jsonify({'error': str(e)})
 
 @app.route('/storymap/copy/', methods=['GET', 'POST'])
+@require_user
 @require_user_id()
 def storymap_copy(user, id):
     """
@@ -467,6 +472,7 @@ def storymap_copy(user, id):
         return jsonify({'error': str(e)})
 
 @app.route('/storymap/delete/')
+@require_user
 @require_user_id()
 def storymap_delete(user, id):
     """Delete storymap"""
@@ -606,6 +612,7 @@ def storymap_migrate(user):
 #
 
 @app.route('/storymap/')
+@require_user
 @require_user_id()
 def storymap_get(user, id):
     """Get storymap"""
@@ -622,6 +629,7 @@ def storymap_get(user, id):
         return jsonify({'error': str(e)})
 
 @app.route('/storymap/save/', methods=['POST'])
+@require_user
 @require_user_id()
 def storymap_save(user, id):
     """Save draft storymap"""
@@ -644,6 +652,7 @@ def storymap_save(user, id):
         return jsonify({'error': str(e)})
 
 @app.route('/storymap/publish/', methods=['POST'])
+@require_user
 @require_user_id()
 def storymap_publish(user, id):
     """Save published storymap"""
@@ -668,6 +677,7 @@ def storymap_publish(user, id):
         return jsonify({'error': str(e)})
 
 @app.route('/storymap/image/list/', methods=['GET', 'POST'])
+@require_user
 @require_user_id()
 def storymap_image_list(user, id):
     """List storymap images """
@@ -685,6 +695,7 @@ def storymap_image_list(user, id):
         return jsonify({'error': str(e)})
 
 @app.route('/storymap/image/save/', methods=['POST'])
+@require_user
 @require_user_id()
 def storymap_image_save(user, id):
     """
@@ -796,13 +807,19 @@ def select():
         return render_template('select.html', error=str(e))
 
 @app.route("/edit/", methods=['GET', 'POST'])
+@require_user
 @require_user_id('edit.html')
 def edit(user, id):
     try:
         del user['_id'] # for serialization
-
+        # production key is restricted to only work from our domains
+        # local developers need to configure an unrestricted MAPBOX_API_KEY
+        # in their environment
+        mapbox_api_key = os.environ.get('MAPBOX_API_KEY', 
+            'pk.eyJ1IjoibnVrbmlnaHRsYWIiLCJhIjoiY2pzZGxiaTRpMHd0eTQ0cGVscWliaXA2YyJ9.YTxvt_ZegqDqNxtl_gdDYA')
         return render_template('edit.html',
-            user=user, meta=user['storymaps'][id])
+            user=user, meta=user['storymaps'][id],
+            mapbox_api_key=mapbox_api_key)
     except Exception, e:
         traceback.print_exc()
         return render_template('edit.html', error=str(e))
