@@ -1133,6 +1133,7 @@ $(function() {
     });
 
     $('a[data-toggle="tab"][href="#preview"]').on('shown', function(event) {
+        $("#geocode-autocomplete").remove();
         $('#storymap_options').attr('disabled', true);
         preview_refresh();
     });
