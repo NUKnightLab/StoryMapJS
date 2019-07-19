@@ -1,5 +1,6 @@
-0.7.0 (TBD)
+0.7.0 (2019-07-19)
 * PR #416 adds woff2 font to fix nav arrows on MS Edge
+* Update Mapbox wordmark in attribution
 
 0.6.9 (2018-09-14)
 * Implement support for new-style mapbox style URLs (should have gone with #400)
