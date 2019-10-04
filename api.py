@@ -434,24 +434,24 @@ def storymap_copy(user, id):
     try:
         title = _request_get_required('title')
         dst_id = _make_storymap_id(user, title)
-
         src_key_prefix = storage.key_prefix(user['uid'], id)
         dst_key_prefix = storage.key_prefix(user['uid'], dst_id)
-
         src_re = re.compile(r'%s' % src_key_prefix)
-
         src_key_list, more = storage.list_keys(src_key_prefix, 999, '')
         for src_key in src_key_list:
-            file_name = src_key.split(src_key_prefix)[-1]
+            key_path = src_key.name.split('/')
+            if key_path[-2] == '_images':
+                file_name = '_images/%s' % key_path[-1]
+            else:
+                file_name = key_path[-1]
+            src_key_name = '%s%s' % (src_key_prefix, file_name)
             dst_key_name = "%s%s" % (dst_key_prefix, file_name)
-
             if file_name.endswith('.json'):
                 json_string = storage.get_contents_as_string(src_key)
                 storage.save_json(dst_key_name,
                     src_re.sub(dst_key_prefix, json_string))
             else:
-                storage.copy_key(src_key, dst_key_name)
-
+                storage.copy_key(src_key_name, dst_key_name)
         # Update meta
         user['storymaps'][dst_id] = {
             'id': dst_id,
@@ -460,16 +460,15 @@ def storymap_copy(user, id):
             'published_on': user['storymaps'][id]['published_on']
         }
         _user.save(user)
-
         # Write new embed pages
         _write_embed_draft(dst_key_prefix, user['storymaps'][dst_id])
         if user['storymaps'][dst_id].get('published_on'):
             _write_embed_published(dst_key_prefix, user['storymaps'][dst_id])
-
         return jsonify(user['storymaps'][dst_id])
     except Exception, e:
         traceback.print_exc()
         return jsonify({'error': str(e)})
+
 
 @app.route('/storymap/delete/')
 @require_user
