@@ -1618,8 +1618,31 @@ function debounce(func, wait, immediate) {
         }); 
     }
 
+    function parseLatLon(s) {
+        var tokens = s.split(' ');
+        var lat;
+        var lon;
+        for (let i=0; i<tokens.length; i++) {
+            var token = tokens[i];
+            if (token.startsWith("lat:")) {
+                lat = token.substring(4);
+            } else if (token.startsWith("lon:")) {
+                lon = token.substring(4);
+            }
+        }
+        return [lat, lon];
+    }
+
     function geocode(query) {
         if (query) {
+            if (query.includes("lat:") && query.includes("lon:")) {
+                var latlon = parseLatLon(query);
+                if (latlon[0] && latlon[1]) {
+                    search(latlon[0], latlon[1]);
+                    $("#geocode-autocomplete").empty();
+                }
+                return;
+            }
             var opts = {
                 query: query,
                 limit: 7,
