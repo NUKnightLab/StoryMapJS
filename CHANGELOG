@@ -1,6 +1,8 @@
-TBD
+0.7.1 (2019-11-01)
 * Implement support for lat/lon coordinate specification
 * Fix to editor copy function
+* Add Slovak translation (thanks @martin-havala)
+* Improve Spanish translation (thanks @doxrealm)
 
 0.7.0 (2019-07-19)
 * PR #416 adds woff2 font to fix nav arrows on MS Edge
