@@ -1622,14 +1622,19 @@ function debounce(func, wait, immediate) {
         var tokens = s.split(' ');
         var lat;
         var lon;
-        for (let i=0; i<tokens.length; i++) {
-            var token = tokens[i];
-            if (token.startsWith("lat:")) {
-                lat = token.substring(4);
-            } else if (token.startsWith("lon:")) {
-                lon = token.substring(4);
+        if (lat_match = s.match(/lat:<?(\-?\d+\.?\d*)>?/)) {
+            lat_match = parseFloat(lat_match[1])
+            if (!isNaN(lat_match)) {
+                lat = lat_match;
             }
         }
+        if (lon_match = s.match(/lon:<?(\-?\d+\.?\d*)>?/)) {
+            lon_match = parseFloat(lon_match[1])
+            if (!isNaN(lon_match)) {
+                lon = lon_match;
+            }
+        }
+
         return [lat, lon];
     }
 
