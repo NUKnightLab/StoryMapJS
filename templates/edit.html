@@ -1624,13 +1624,13 @@ function debounce(func, wait, immediate) {
         var lon;
         if (lat_match = s.match(/lat:<?(\-?\d+\.?\d*)>?/)) {
             lat_match = parseFloat(lat_match[1])
-            if (!isNaN(lat_match)) {
+            if (!isNaN(lat_match) && lat_match >= -90 && lat_match <= 90) {
                 lat = lat_match;
             }
         }
         if (lon_match = s.match(/lon:<?(\-?\d+\.?\d*)>?/)) {
             lon_match = parseFloat(lon_match[1])
-            if (!isNaN(lon_match)) {
+            if (!isNaN(lon_match) && lon_match >= -180 && lon_match <= 180) {
                 lon = lon_match;
             }
         }
