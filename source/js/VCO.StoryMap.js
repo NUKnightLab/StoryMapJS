@@ -296,62 +296,63 @@ VCO.StoryMap = VCO.Class.extend({
 		this.data = {};
 
 		this.options = {
-			script_path:            VCO.StoryMap.SCRIPT_PATH,
-			height: 				this._el.container.offsetHeight,
-			width: 					this._el.container.offsetWidth,
-			layout: 				"landscape", 	// portrait or landscape
-			base_class: 			"",
-			default_bg_color: 		{r:256, g:256, b:256},
-			map_size_sticky: 		2.5, 				// Set as division 1/3 etc
-			map_center_offset:  	null, 			// takes object {top:0,left:0}
-			less_bounce: 			false, 			// Less map bounce when calculating zoom, false is good when there are clusters of tightly grouped markers
-			start_at_slide: 		0,
-			call_to_action: 		false,
-			call_to_action_text: 	"",
-			menubar_height: 		0,
-			skinny_size: 			650,
-			relative_date: 			false, 			// Use momentjs to show a relative date from the slide.text.date.created_time field
-			// animation
-			duration: 				1000,
-			ease: 					VCO.Ease.easeInOutQuint,
-			// interaction
-			dragging: 				true,
-			trackResize: 			true,
-			map_type: 				"stamen:toner-lite",
-			attribution: 			"",
-			map_mini: 				true,
-			map_subdomains: 		"",
-			map_as_image: 			false,
-			map_access_token:       "pk.eyJ1IjoibnVrbmlnaHRsYWIiLCJhIjoiczFmd0hPZyJ9.Y_afrZdAjo3u8sz_r8m2Yw", // default
-			map_background_color: 	"#d9d9d9",
-			zoomify: {
-				path: 				"",
-				width: 				"",
-				height: 			"",
-				tolerance: 			0.8,
-				attribution: 		""
-			},
-			map_height: 			300,
-			storyslider_height: 	600,
-			slide_padding_lr: 		45, 			// padding on slide of slide
-			slide_default_fade: 	"0%", 			// landscape fade
-			menubar_default_y: 		0,
-			path_gfx: 				"gfx",
-			map_popup: 				false,
-			zoom_distance: 			100,
-			calculate_zoom: 		true,   		// Allow map to determine best zoom level between markers (recommended)
-			line_follows_path: 		true,   		// Map history path follows default line, if false it will connect previous and current only
-			line_color: 			"#c34528", //"#DA0000",
-			line_color_inactive: 	"#CCC",
-			line_join: 				"miter",
-			line_weight: 			3,
-			line_opacity: 			0.80,
-			line_dash: 				"5,5",
-			show_lines: 			true,
-			show_history_line: 		true,
-			api_key_flickr: 		"f2cc870b4d233dd0a5bfe73fd0d64ef0",
-			language:               "en"
-		};
+      script_path: VCO.StoryMap.SCRIPT_PATH,
+      height: this._el.container.offsetHeight,
+      width: this._el.container.offsetWidth,
+      layout: "landscape", // portrait or landscape
+      base_class: "",
+      default_bg_color: { r: 256, g: 256, b: 256 },
+      map_size_sticky: 2.5, // Set as division 1/3 etc
+      map_center_offset: null, // takes object {top:0,left:0}
+      less_bounce: false, // Less map bounce when calculating zoom, false is good when there are clusters of tightly grouped markers
+      start_at_slide: 0,
+      call_to_action: false,
+      call_to_action_text: "",
+      menubar_height: 0,
+      skinny_size: 650,
+      relative_date: false, // Use momentjs to show a relative date from the slide.text.date.created_time field
+      // animation
+      duration: 1000,
+      ease: VCO.Ease.easeInOutQuint,
+      // interaction
+      dragging: true,
+      trackResize: true,
+      map_type: "stamen:toner-lite",
+      attribution: "",
+      map_mini: true,
+      map_subdomains: "",
+      map_as_image: false,
+      map_access_token:
+        "pk.eyJ1IjoibnVrbmlnaHRsYWIiLCJhIjoiczFmd0hPZyJ9.Y_afrZdAjo3u8sz_r8m2Yw", // default
+      map_background_color: "#d9d9d9",
+      zoomify: {
+        path: "",
+        width: "",
+        height: "",
+        tolerance: 0.8,
+        attribution: ""
+      },
+      map_height: 300,
+      storyslider_height: 600,
+      slide_padding_lr: 45, // padding on slide of slide
+      slide_default_fade: "0%", // landscape fade
+      menubar_default_y: 0,
+      path_gfx: "gfx",
+      map_popup: false,
+      zoom_distance: 100,
+      calculate_zoom: true, // Allow map to determine best zoom level between markers (recommended)
+      line_follows_path: true, // Map history path follows default line, if false it will connect previous and current only
+      line_color: "#c34528", //"#DA0000",
+      line_color_inactive: "#CCC",
+      line_join: "miter",
+      line_weight: 3,
+      line_opacity: 0.8,
+      line_dash: "5,5",
+      show_lines: true,
+      show_history_line: true,
+      api_key_flickr: "8f2d5becf7b6ba46570741620054b507",
+      language: "en"
+    };
 
 		// Current Slide
 		this.current_slide = this.options.start_at_slide;

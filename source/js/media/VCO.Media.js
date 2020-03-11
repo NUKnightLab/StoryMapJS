@@ -58,10 +58,10 @@ VCO.Media = VCO.Class.extend({
 
 		//Options
 		this.options = {
-			api_key_flickr: 		"f2cc870b4d233dd0a5bfe73fd0d64ef0",
-			credit_height: 			0,
-			caption_height: 		0
-		};
+      api_key_flickr: "8f2d5becf7b6ba46570741620054b507",
+      credit_height: 0,
+      caption_height: 0
+    };
 
 		this.animator = {};
 

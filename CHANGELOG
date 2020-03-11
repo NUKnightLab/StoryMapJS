@@ -1,3 +1,6 @@
+0.7.2 (2020-03-11)
+* Update Flickr API key
+
 0.7.1 (2019-11-01)
 * Implement support for lat/lon coordinate specification
 * Fix to editor copy function
