@@ -84,8 +84,17 @@ def inject_urls():
 
 @app.context_processor
 def inject_index_data():
-        return dict(examples=json.load(open(examples_json)),faqs=json.load(open(faq_json)))
+    from urlparse import urljoin
+    examples = json.load(open(examples_json))
+    # note this appears elsewhere and should probably be done once
+    # but I'm feeling lazy right now
+    static_url = settings.STATIC_URL or app.static_url_path 
+    for e in examples:
+        for key in ["link","thumbnail","source_logo"]:
+            if not e[key].startswith('http'):
+                e[key] = urljoin(static_url,e[key])
 
+    return dict(examples=examples,faqs=json.load(open(faq_json)))
 
 class APIEncoder(json.JSONEncoder):
     def default(self, obj):
