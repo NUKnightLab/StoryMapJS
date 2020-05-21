@@ -22,26 +22,7 @@ services:
       - mongo:mongo
     volumes:
       - .:/usr/src/apps/StoryMapJS
-    environment:
-      - FLASK_SECRET_KEY=development
-      - STATIC_URL=/static/
-      - CDN_URL=//cdn.knightlab.com/libs/storymapjs/dev/
-      - DB_PORT__DEFAULT=27017
-      - DB_ENGINE__DEFAULT=mongo
-      - DB_HOST__DEFAULT=mongo
-      - DB_NAME__DEFAULT=storymapjs
-      - AWS_STORAGE_BUCKET_URL=//uploads.knilab.com/
-      - AWS_STORAGE_BUCKET_NAME=uploads.knilab.com
-      - AWS_STORAGE_BUCKET_KEY=storymapjs
-      - AWS_SECRET_ACCESS_KEY=kgisU0N9+2K+pWSR2izFVEfVWIMj0zUjsiuiTOkw
-      - AWS_ACCESS_KEY_ID=AKIAIXRBBVMKDYZSK6EA
-      - GOOGLE_CLIENT_ID=701246230876-a6u4kc70qpluhk7jhplrv4hcor8gj0d5.apps.googleusercontent.com
-      - GOOGLE_CLIENT_SECRET=rojrSGaY0FksKU5UBpnQaemH
-      - ADMINS=054a784aca8cda9bbdd4d48d06fbbfd0 840247dca8fd6c1aac7e520c6e58ee9b 7d5cf9cfc9fa75da134291f9fe3c57fb a1a349b51799ee49e96bed10cc235e7f 5adc981b33abcca3b95bc93bc2fe088a
-      - STORYMAPJS_DIRECTORY=/home/apps/sites/StoryMapJS
-      - FLASK_SETTINGS_MODULE=core.settings
-      - FLASK_SETTINGS_FILE=core/settings.py
-      - APPLICATION_DOMAINS=localhost
+    env_file: .env
     command: python api.py -p 5000
     depends_on:
       - mongo
