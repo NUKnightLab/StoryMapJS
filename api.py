@@ -982,4 +982,4 @@ Use this command to create the files:
         print 'Usage: app.py [-s] [-p port]'
         sys.exit(1)
     # Google OAuth requires localhost, not a raw IP address
-    app.run(host='localhost', port=port, debug=True, ssl_context=ssl_context)
+    app.run(host='0.0.0.0', port=port, debug=True, ssl_context=ssl_context)

@@ -6,6 +6,9 @@ import mongomock
 # Get settings module
 settings = sys.modules[os.environ['FLASK_SETTINGS_MODULE']]
 
+print('db host', settings.DATABASES['default']['HOST'])
+print('db port', int(settings.DATABASES['default']['PORT']))
+
 if settings.TEST_MODE:
     _conn = mongomock.MongoClient()
 else:
