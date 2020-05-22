@@ -183,11 +183,12 @@ def save_from_data(key_name, content_type, content):
     """
     Save content with content-type to key_name
     """
-    key = _bucket.get_key(key_name)
-    if not key:
-        key = _bucket.new_key(key_name)
-        key.content_type = content_type
-    key.set_contents_from_string(content, policy='public-read')
+    #key = _bucket.get_key(key_name)
+    #if not key:
+    #    key = _bucket.new_key(key_name)
+    #    key.content_type = content_type
+    #key.set_contents_from_string(content, policy='public-read')
+    _conn.put_object(ACL='public-read', Body=content, Bucket=_bucket.name, Key=key_name, ContentType=content_type)
 
 @_reraise_s3response
 @_mock_in_test_mode
