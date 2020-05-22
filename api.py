@@ -722,28 +722,12 @@ def storymap_image_save(user, id):
         m = re.match('data:(.+);base64,(.+)', content)
         if m:
             content_type = m.group(1)
-            #content = m.group(2).decode('base64')
             content = m.group(2)
-            print(content_type, content[:10])
-
             content = base64.b64decode(m.group(2))
-            #content = base64.b64encode(base64.b64decode(m.group(2)))
-
-            #content = base64.b64encode(content)
-            #content = base64.decodebytes(content)
-
-            #content = codecs.encode(content, 'utf-8').decode()
-            #content = base64.b64decode(content).decode()
-
-            #content = content.encode('utf-8')
-            #content = base64.decodestring(content.encode('base64'))
-            #content = base64.b64encode(bytes(content, 'utf-8')).decode()
-            #content = base64.b64encode(content).decode('utf-8')
         else:
             raise Exception('Expected content as data-url')
 
         key_name = storage.key_name(user['uid'], id, '_images', name)
-        #storage.save_from_data(key_name, content_type, content)
         storage.save_bytes_from_data(key_name, content_type, content)
 
         return jsonify({'url': settings.AWS_STORAGE_BUCKET_URL+key_name})
