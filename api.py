@@ -14,7 +14,7 @@ import re
 import json
 from functools import wraps
 import urllib
-from urlparse import urlparse
+from urllib.parse import urlparse, urljoin, quote
 
 # Import settings module
 if __name__ == "__main__":
@@ -25,7 +25,7 @@ settings_module = os.environ.get('FLASK_SETTINGS_MODULE')
 
 try:
     importlib.import_module(settings_module)
-except ImportError, e:
+except ImportError as e:
     raise ImportError("Could not import settings '%s' (Is it on sys.path?): %s" % (settings_module, e))
 
 import hashlib
@@ -84,7 +84,6 @@ def inject_urls():
 
 @app.context_processor
 def inject_index_data():
-    from urlparse import urljoin
     examples = json.load(open(examples_json))
     # note this appears elsewhere and should probably be done once
     # but I'm feeling lazy right now
@@ -127,7 +126,7 @@ def _format_err(err_type, err_msg):
 
 def _get_uid(user_string):
     """Generate a unique identifer for user string"""
-    return hashlib.md5(user_string).hexdigest()
+    return hashlib.md5(user_string.encode('utf-8')).hexdigest()
 
 def _utc_now():
     return datetime.datetime.utcnow().isoformat()+'Z'
@@ -268,7 +267,7 @@ def google_auth_verify():
 
         app.logger.info("google_auth_verify url: {}".format(url))
         return redirect(url)
-    except Exception, e:
+    except Exception as e:
         traceback.print_exc()
         return jsonify({'error': str(e)})
 
@@ -377,7 +376,7 @@ def _parse_url(url):
 
 def _fix_url_for_opengraph(url):
     parts = _parse_url(url)
-    parts['path'] = urllib.quote(parts['path'])
+    parts['path'] = quote(parts['path'])
     return '%(scheme)s://%(netloc)s%(path)s' % parts
 
 def _write_embed(embed_key_name, json_key_name, meta):
@@ -387,7 +386,7 @@ def _write_embed(embed_key_name, json_key_name, meta):
     # NOTE: facebook needs the protocol on embed_url and image_url for og tag
     content = render_template('_embed.html',
         embed_url=_fix_url_for_opengraph(settings.AWS_STORAGE_BUCKET_URL+embed_key_name),
-        json_url=urllib.quote(settings.AWS_STORAGE_BUCKET_URL+json_key_name),
+        json_url=quote(settings.AWS_STORAGE_BUCKET_URL+json_key_name),
         title=meta.get('title', ''),
         description=meta.get('description', ''),
         image_url=_fix_url_for_opengraph(image_url)
@@ -427,7 +426,7 @@ def storymap_update_meta(user, id):
                 _write_embed_published(key_prefix, user['storymaps'][id])
 
         return jsonify(user['storymaps'][id])
-    except Exception, e:
+    except Exception as e:
         traceback.print_exc()
         return jsonify({'error': str(e)})
 
@@ -474,7 +473,7 @@ def storymap_copy(user, id):
         if user['storymaps'][dst_id].get('published_on'):
             _write_embed_published(dst_key_prefix, user['storymaps'][dst_id])
         return jsonify(user['storymaps'][dst_id])
-    except Exception, e:
+    except Exception as e:
         traceback.print_exc()
         return jsonify({'error': str(e)})
 
@@ -494,7 +493,7 @@ def storymap_delete(user, id):
         _user.save(user)
 
         return jsonify({})
-    except Exception, e:
+    except Exception as e:
         traceback.print_exc()
         return jsonify({'error': str(e)})
 
@@ -523,7 +522,7 @@ def storymap_create(user):
         _write_embed_draft(key_prefix, user['storymaps'][id])
 
         return jsonify({'id': id})
-    except Exception, e:
+    except Exception as e:
         traceback.print_exc()
         return jsonify({'error': str(e)})
 
@@ -536,7 +535,7 @@ def storymap_migrate_done(user):
         _user.save(user)
 
         return jsonify({})
-    except Exception, e:
+    except Exception as e:
         traceback.print_exc()
         return jsonify({'error': str(e)})
 
@@ -554,7 +553,7 @@ def storymap_migrate_list(user):
         migrate_list = [r for r in temp_list if r['title'] not in existing]
 
         return jsonify({'migrate_list': migrate_list})
-    except Exception, e:
+    except Exception as e:
         traceback.print_exc()
         return jsonify({'error': str(e)})
 
@@ -610,7 +609,7 @@ def storymap_migrate(user):
             _write_embed_published(dst_key_prefix, user['storymaps'][dst_id])
 
         return jsonify(user['storymaps'][dst_id])
-    except Exception, e:
+    except Exception as e:
         traceback.print_exc()
         return jsonify({'error': str(e)})
 
@@ -629,10 +628,10 @@ def storymap_get(user, id):
         data = storage.load_json(key_name)
 
         return jsonify({'meta': user['storymaps'][id], 'data': data})
-    except storage.StorageException, e:
+    except storage.StorageException as e:
         traceback.print_exc()
         return jsonify({'error': str(e), 'error_detail': e.detail})
-    except Exception, e:
+    except Exception as e:
         traceback.print_exc()
         return jsonify({'error': str(e)})
 
@@ -652,10 +651,10 @@ def storymap_save(user, id):
         _user.save(user)
 
         return jsonify({'meta': user['storymaps'][id]})
-    except storage.StorageException, e:
+    except storage.StorageException as e:
         traceback.print_exc()
         return jsonify({'error': str(e), 'error_detail': e.detail})
-    except Exception, e:
+    except Exception as e:
         traceback.print_exc()
         return jsonify({'error': str(e)})
 
@@ -677,10 +676,10 @@ def storymap_publish(user, id):
         _write_embed_published(key_prefix, user['storymaps'][id])
 
         return jsonify({'meta': user['storymaps'][id]})
-    except storage.StorageException, e:
+    except storage.StorageException as e:
         traceback.print_exc()
         return jsonify({'error': str(e), 'error_detail': e.detail})
-    except Exception, e:
+    except Exception as e:
         traceback.print_exc()
         return jsonify({'error': str(e)})
 
@@ -695,10 +694,10 @@ def storymap_image_list(user, id):
 
         image_list = [n.split('/')[-1] for n in key_list]
         return jsonify({'image_list': image_list})
-    except storage.StorageException, e:
+    except storage.StorageException as e:
         traceback.print_exc()
         return jsonify({'error': str(e), 'error_detail': e.detail})
-    except Exception, e:
+    except Exception as e:
         traceback.print_exc()
         return jsonify({'error': str(e)})
 
@@ -712,24 +711,46 @@ def storymap_image_save(user, id):
     @name = file name
     @content = data:URL representing the file's data as base64 encoded string
     """
+    import base64
+    import codecs
+    from io import BytesIO
+    import binascii
     try:
         name, content = _request_get_required('name', 'content')
+        print(content[:30])
 
         m = re.match('data:(.+);base64,(.+)', content)
         if m:
             content_type = m.group(1)
-            content = m.group(2).decode('base64')
+            #content = m.group(2).decode('base64')
+            content = m.group(2)
+            print(content_type, content[:10])
+
+            content = base64.b64decode(m.group(2))
+            #content = base64.b64encode(base64.b64decode(m.group(2)))
+
+            #content = base64.b64encode(content)
+            #content = base64.decodebytes(content)
+
+            #content = codecs.encode(content, 'utf-8').decode()
+            #content = base64.b64decode(content).decode()
+
+            #content = content.encode('utf-8')
+            #content = base64.decodestring(content.encode('base64'))
+            #content = base64.b64encode(bytes(content, 'utf-8')).decode()
+            #content = base64.b64encode(content).decode('utf-8')
         else:
             raise Exception('Expected content as data-url')
 
         key_name = storage.key_name(user['uid'], id, '_images', name)
-        storage.save_from_data(key_name, content_type, content)
+        #storage.save_from_data(key_name, content_type, content)
+        storage.save_bytes_from_data(key_name, content_type, content)
 
         return jsonify({'url': settings.AWS_STORAGE_BUCKET_URL+key_name})
-    except storage.StorageException, e:
+    except storage.StorageException as e:
         traceback.print_exc()
         return jsonify({'error': str(e), 'error_detail': e.detail})
-    except Exception, e:
+    except Exception as e:
         traceback.print_exc()
         return jsonify({'error': str(e)})
 
@@ -810,7 +831,7 @@ def select():
         del user['_id']
 
         return render_template('select.html', user=user)
-    except Exception, e:
+    except Exception as e:
         traceback.print_exc()
         return render_template('select.html', error=str(e))
 
@@ -820,15 +841,15 @@ def select():
 def edit(user, id):
     try:
         del user['_id'] # for serialization
-        # production key is restricted to only work from our domains
-        # local developers need to configure an unrestricted MAPBOX_API_KEY
-        # in their environment
+        # Default Mapbox key is the production key, which is restricted to
+        # only work from our domains local developers need to configure an
+        # unrestricted MAPBOX_API_KEY in their environment.
         mapbox_api_key = os.environ.get('MAPBOX_API_KEY', 
             'pk.eyJ1IjoibnVrbmlnaHRsYWIiLCJhIjoiY2pzZGxiaTRpMHd0eTQ0cGVscWliaXA2YyJ9.YTxvt_ZegqDqNxtl_gdDYA')
         return render_template('edit.html',
             user=user, meta=user['storymaps'][id],
             mapbox_api_key=mapbox_api_key)
-    except Exception, e:
+    except Exception as e:
         traceback.print_exc()
         return render_template('edit.html', error=str(e))
 
@@ -964,22 +985,22 @@ if __name__ == '__main__':
                 if (os.path.isfile('local_only.crt') and os.path.isfile('local_only.key')):
                     ssl_context = ('local_only.crt', 'local_only.key')
                 else:
-                    print '''
+                    print('''
 To run HTTPS locally you should create a crt/key file.
 Don't put them in the repository, because if you tell your browser to trust the certificate
 and an adversary got the cert from the public repository, they could take
 advantage of you.
 Use this command to create the files:
   openssl req -x509 -sha256 -nodes -days 10000 -newkey rsa:2048 -keyout local_only.key -out local_only.crt
-'''
+''')
                     sys.exit(1)
             elif opt in ('-p', '--port'):
                 port = int(arg)
             else:
-                print 'Usage: app.py [-s]'
+                print('Usage: app.py [-s]')
                 sys.exit(1)
     except getopt.GetoptError:
-        print 'Usage: app.py [-s] [-p port]'
+        print('Usage: app.py [-s] [-p port]')
         sys.exit(1)
     # Google OAuth requires localhost, not a raw IP address
     app.run(host='0.0.0.0', port=port, debug=True, ssl_context=ssl_context)

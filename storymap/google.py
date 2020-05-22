@@ -24,7 +24,7 @@ def get_userinfo_service(credentials):
 def get_userinfo(service):
     try:
         return service.userinfo().get().execute()
-    except errors.HttpError, e:
+    except errors.HttpError as e:
         raise Exception(str(e))
             
 #
@@ -73,7 +73,7 @@ def drive_get_path(service, parent_resource, path_list, filter_f):
         if not resource or not path_list:
             return resource
         return drive_get_path(service, resource, path_list, filter_f)
-    except errors.HttpError, error:
+    except errors.HttpError as error:
         raise Exception(str(error))
 
 def drive_get_migrate_list(service):
@@ -120,18 +120,18 @@ def drive_get_migration_diagnostics(user):
     
     try:
         credentials = get_credentials(user['google']['credentials'])        
-    except Exception, e:
+    except Exception as e:
         return 'Error getting google credentials [%s]' % str(e)
     
     try: 
         drive_service = get_drive_service(credentials)
-    except Exception, e:
+    except Exception as e:
         return 'Error getting drive service [%s]' % str(e)
         
     try:                
         parent_folder = drive_get_path(drive_service, None, 
             ['KnightLabStoryMap', 'public'], _filter_shared)
-    except Exception, e:
+    except Exception as e:
         return 'Error getting KnightLabStoryMap/public folder [%s]' % str(e)
         
     if not parent_folder:
@@ -139,7 +139,7 @@ def drive_get_migration_diagnostics(user):
     
     try: 
         return drive_list(drive_service, parent_folder['id'])
-    except Exception, e:
+    except Exception as e:
         return 'Error lsiting KnightLabStoryMap/public folder [%s]' % str(e)
         
    

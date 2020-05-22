@@ -17,13 +17,15 @@ services:
     restart: always
     build: .
     ports:
-      - "80:5000"
+      - "443:5000"
     links:
       - mongo:mongo
     volumes:
       - .:/usr/src/apps/StoryMapJS
     env_file: .env
-    command: python api.py -p 5000
+    #command: python api.py -p 5000
+    #command: fab serve:ssl=y
+    command: python api.py -s -p 5000
     depends_on:
       - mongo
 
@@ -37,7 +39,6 @@ services:
       - "28017:28017"
     environment:
       MONGO_INITDB_DATABASE: storymapjs
-
 
 
 volumes:
