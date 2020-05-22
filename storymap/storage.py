@@ -100,14 +100,11 @@ def list_keys(key_prefix, n, marker=''):
     """
     key_list = []
     i = 0
-
-    _key_list = [ key['Key'] for key in _conn.list_objects(Bucket=_bucket.name, Prefix=key_prefix, Marker=marker)['Contents']]
-
-    #for i, item in enumerate(_bucket.list(prefix=key_prefix, marker=marker)):
+    _contents = _conn.list_objects(Bucket=_bucket.name, Prefix=key_prefix, Marker=marker)
+    _key_list = [ key['Key'] for key in _contents.get('Contents', []) ]
     for i, item in enumerate(_key_list):
         if i == n:
             break
-        #if item.name == key_prefix:
         if item == key_prefix:
             continue
         key_list.append(item)
@@ -119,11 +116,9 @@ def get_contents_as_string(src_key):
 
 @_mock_in_test_mode
 def all_keys():
-    print(settings.AWS_STORAGE_BUCKET_KEY)
-    _key_list = [ key['Key'] for key in _conn.list_objects(Bucket=_bucket.name, Prefix=settings.AWS_STORAGE_BUCKET_KEY)['Contents']]
-    #for item in _bucket.list(prefix=settings.AWS_STORAGE_BUCKET_KEY):
+    _contents = _conn.list_objects(Bucket=_bucket.name, Prefix=settings.AWS_STORAGE_BUCKET_KEY)
+    _key_list = [ key['Key'] for key in _contents.get('Contents', []) ]
     for item in _key_list:
-        #if item.name == key_prefix:
         if item == key_prefix:
             continue
         yield item.key
@@ -139,17 +134,13 @@ def list_key_names(key_prefix, n, marker=''):
     """
     name_list = []
     i = 0
-
-    _key_list = [ key['Key'] for key in _conn.list_objects(Bucket=_bucket.name, Prefix=key_prefix, Marker=marker)['Contents']]
-
-    #for i, item in enumerate(_bucket.list(prefix=key_prefix, marker=marker)):
+    _contents = _conn.list_objects(Bucket=_bucket.name, Prefix=key_prefix, Marker=marker)
+    _key_list = [ key['Key'] for key in _contents.get('Contents', []) ]
     for i, item in enumerate(_key_list):
         if i == n:
             break
-        #if item.name == key_prefix:
         if item == key_prefix:
             continue
-        #name_list.append(item.name)
         name_list.append(item)
     return name_list, (i == n)
 
@@ -169,11 +160,6 @@ def save_bytes_from_data(key_name, content_type, content):
     """
     Save content with content-type to key_name
     """
-    #key = _bucket.get_key(key_name)
-    #if not key:
-    #    key = _bucket.new_key(key_name)
-    #    key.content_type = content_type
-    #key.set_contents_from_string(content, policy='public-read')
     _conn.put_object(ACL='public-read', Body=content, Bucket=_bucket.name, Key=key_name, ContentType=content_type)
 
 
@@ -183,11 +169,6 @@ def save_from_data(key_name, content_type, content):
     """
     Save content with content-type to key_name
     """
-    #key = _bucket.get_key(key_name)
-    #if not key:
-    #    key = _bucket.new_key(key_name)
-    #    key.content_type = content_type
-    #key.set_contents_from_string(content, policy='public-read')
     _conn.put_object(ACL='public-read', Body=content, Bucket=_bucket.name, Key=key_name, ContentType=content_type)
 
 @_reraise_s3response
@@ -205,9 +186,6 @@ def load_json(key_name):
     """
     Get contents of key as json
     """
-    #key = _bucket.get_key(key_name)
-    #contents = key.get_contents_as_string()
-    #return json.loads(contents)
     obj = s3.Object(_bucket.name, key_name)
     return json.loads(obj.get()['Body'].read().decode('utf-8'))
 
