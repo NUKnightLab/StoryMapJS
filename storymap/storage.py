@@ -20,28 +20,35 @@ import requests
 # Get settings module
 settings = sys.modules[os.environ['FLASK_SETTINGS_MODULE']]
 
+def truthy(s):
+   return str(s).lower()[0] in ['t', '1']
+
 
 if hasattr(settings, 'TEST_MODE') and settings.TEST_MODE:
+    # TODO: Not sure if mocks still work
     _mock = mock_s3()
     _mock.start()
-    #_conn = boto.connect_s3()
     _conn = boto.client()
-    #_bucket = _conn.create_bucket(settings.AWS_STORAGE_BUCKET_NAME)
+    _bucket = _conn.create_bucket(settings.AWS_STORAGE_BUCKET_NAME)
     _mock.stop()
 else:
+    # TODO: do we still need OrdinaryCallingFormat for dots in the bucket name?
     #_conn = boto.connect_s3(
     #        settings.AWS_ACCESS_KEY_ID,
     #        settings.AWS_SECRET_ACCESS_KEY, calling_format=OrdinaryCallingFormat())
+    endpoint = os.environ.get('AWS_ENDPOINT_URL')
+    ssl_verify = truthy(os.environ.get('AWS_SSL_VERIFY', 't'))
     _conn = boto.client('s3',
+            verify=ssl_verify,
+            endpoint_url=endpoint,
             aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
             aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
     session = boto.session.Session(
             aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
             aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
-    s3 = session.resource('s3')
+    s3 = session.resource('s3', verify=ssl_verify, endpoint_url=endpoint)
     _bucket = s3.Bucket(settings.AWS_STORAGE_BUCKET_NAME)
-    #_bucket = _conn.get_bucket(settings.AWS_STORAGE_BUCKET_NAME)
-    #_bucket = _conn.Bucket(settings.AWS_STORAGE_BUCKET_NAME)
+
 
 class StorageException(Exception):
     """
@@ -100,7 +107,11 @@ def list_keys(key_prefix, n, marker=''):
     """
     key_list = []
     i = 0
-    _contents = _conn.list_objects(Bucket=_bucket.name, Prefix=key_prefix, Marker=marker)
+    # localstack cannot handle an empty marker
+    if marker:
+        _contents = _conn.list_objects(Bucket=_bucket.name, Prefix=key_prefix, Marker=marker)
+    else:
+        _contents = _conn.list_objects(Bucket=_bucket.name, Prefix=key_prefix)
     _key_list = [ key['Key'] for key in _contents.get('Contents', []) ]
     for i, item in enumerate(_key_list):
         if i == n:
@@ -134,7 +145,11 @@ def list_key_names(key_prefix, n, marker=''):
     """
     name_list = []
     i = 0
-    _contents = _conn.list_objects(Bucket=_bucket.name, Prefix=key_prefix, Marker=marker)
+    # localstack cannot handle an empty marker
+    if marker:
+        _contents = _conn.list_objects(Bucket=_bucket.name, Prefix=key_prefix, Marker=marker)
+    else:
+        _contents = _conn.list_objects(Bucket=_bucket.name, Prefix=key_prefix)
     _key_list = [ key['Key'] for key in _contents.get('Contents', []) ]
     for i, item in enumerate(_key_list):
         if i == n:
@@ -207,4 +222,4 @@ def delete(key_name):
     """
     Delete key
     """
-    _bucket.delete_key(key_name)
+    _conn.delete_object(Bucket=_bucket.name, Key=key_name)

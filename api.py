@@ -379,6 +379,7 @@ def _fix_url_for_opengraph(url):
     parts['path'] = quote(parts['path'])
     return '%(scheme)s://%(netloc)s%(path)s' % parts
 
+
 def _write_embed(embed_key_name, json_key_name, meta):
     """Write embed page"""
     image_url = meta.get('image_url', settings.STATIC_URL+'img/logos/logo_storymap.png')
@@ -544,6 +545,8 @@ def storymap_migrate_done(user):
 def storymap_migrate_list(user):
     """Get list of storymaps that still need to be migrated"""
     try:
+        if not 'google' in user:
+            return jsonify({'migrate_list': []})
         credentials = google.get_credentials(user['google']['credentials'])
         drive_service = google.get_drive_service(credentials)
 

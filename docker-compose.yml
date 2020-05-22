@@ -20,11 +20,10 @@ services:
       - "443:5000"
     links:
       - mongo:mongo
+      - localstack:localstack
     volumes:
       - .:/usr/src/apps/StoryMapJS
     env_file: .env
-    #command: python api.py -p 5000
-    #command: fab serve:ssl=y
     command: python api.py -s -p 5000
     depends_on:
       - mongo
@@ -40,6 +39,20 @@ services:
     environment:
       MONGO_INITDB_DATABASE: storymapjs
 
+  localstack:
+    image: localstack/localstack-light
+    restart: always
+    environment:
+      USE_LIGHT_IMAGE: 1
+      USE_SSL: 1
+      LOCALSTACK_SERVICES: s3
+      DATA_DIR: /tmp/localstack/data
+    ports:
+      - '4563-4599:4563-4599'
+      - '8080:8080'
+    volumes:
+      - ./.localstack:/tmp/localstack
+      - /var/run/docker.sock:/var/run/docker.sock
 
 volumes:
   mongodata:
