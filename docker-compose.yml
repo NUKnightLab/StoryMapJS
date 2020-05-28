@@ -49,7 +49,7 @@ services:
       DATA_DIR: /tmp/localstack/data
     ports:
       - '4563-4599:4563-4599'
-      - '8080:8080'
+      - '8000:8080'
     volumes:
       - ./.localstack:/tmp/localstack
       - /var/run/docker.sock:/var/run/docker.sock
