@@ -385,9 +385,10 @@ def _write_embed(embed_key_name, json_key_name, meta):
     image_url = meta.get('image_url', settings.STATIC_URL+'img/logos/logo_storymap.png')
 
     # NOTE: facebook needs the protocol on embed_url and image_url for og tag
+    json_url=settings.AWS_STORAGE_BUCKET_URL+json_key_name
     content = render_template('_embed.html',
         embed_url=_fix_url_for_opengraph(settings.AWS_STORAGE_BUCKET_URL+embed_key_name),
-        json_url=quote(settings.AWS_STORAGE_BUCKET_URL+json_key_name),
+        json_url=json_url,
         title=meta.get('title', ''),
         description=meta.get('description', ''),
         image_url=_fix_url_for_opengraph(image_url)
