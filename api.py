@@ -970,17 +970,19 @@ if __name__ == '__main__':
         opts, args = getopt.getopt(sys.argv[1:], "sp:", ["port="])
         for opt, arg in opts:
             if opt == '-s':
-                if (os.path.isfile('local_only.crt') and os.path.isfile('local_only.key')):
-                    ssl_context = ('local_only.crt', 'local_only.key')
+                crt_file = os.environ.get('APP_SSL_CRT_FILE', 'local_only.crt')
+                key_file = os.environ.get('APP_SSL_KEY_FILE', 'local_only.key')
+                if (os.path.isfile(crt_file) and os.path.isfile(key_file)):
+                    ssl_context = (crt_file, key_file)
                 else:
-                    print('''
+                    print("""
 To run HTTPS locally you should create a crt/key file.
 Don't put them in the repository, because if you tell your browser to trust the certificate
 and an adversary got the cert from the public repository, they could take
 advantage of you.
-Use this command to create the files:
-  openssl req -x509 -sha256 -nodes -days 10000 -newkey rsa:2048 -keyout local_only.key -out local_only.crt
-''')
+
+Run ./makecerts.sh to create the files:
+""")
                     sys.exit(1)
             elif opt in ('-p', '--port'):
                 port = int(arg)

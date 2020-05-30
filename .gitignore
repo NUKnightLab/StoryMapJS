@@ -2,6 +2,9 @@
 .env
 .in
 .localstack/
+package-lock.json
+node_modules/*
+
 
 # Ignore the build directory
 
