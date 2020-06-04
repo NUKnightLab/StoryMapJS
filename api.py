@@ -55,6 +55,20 @@ _GOOGLE_OAUTH_SCOPES = [
     'https://www.googleapis.com/auth/userinfo.profile'
 ];
 
+
+@app.before_request
+def https_redirect():
+    """Generally, in deployment, https redirect will be handled by the proxy
+    rather than here by the application. This is a mere convenience to forward
+    to https in development. Still, this should work in theory for deployment
+    if no proxy redirect is being used.
+    """
+    if not request.is_secure:
+        url = request.url.replace("http://", "https://", 1)
+        code = 302 if os.environ.get('FLASK_ENV') == 'development' else 301
+        return redirect(url, code=code)
+
+
 @app.context_processor
 def inject_urls():
     """

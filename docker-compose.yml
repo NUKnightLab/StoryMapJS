@@ -18,6 +18,7 @@ services:
     build: .
     ports:
       - "443:5000"
+      - "80:5000"
     links:
       - mongo:mongo
       - localstack:localstack
