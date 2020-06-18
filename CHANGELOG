@@ -1,3 +1,6 @@
+0.7.3 (2020-06-18)
+* Improve handling for markers on Null Island (fixes #444)
+
 0.7.2 (2020-03-11)
 * Update Flickr API key
 

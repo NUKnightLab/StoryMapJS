@@ -370,9 +370,16 @@ VCO.Map = VCO.Class.extend({
 	
 	_createMarkers: function(array) {
 		for (var i = 0; i < array.length; i++) {
-			this._createMarker(array[i]);
-			if (array[i].location && array[i].location.lat && this.options.show_lines) {
-				this._addToLine(this._line, array[i]);
+			var marker = array[i];
+			if (marker.location && typeof (marker.location.lat) == 'number' && typeof (marker.location.lon) == 'number') {
+				this._createMarker(marker);
+				if (this.options.show_lines) {
+					this._addToLine(this._line, marker);
+				}
+			} else {
+				if (!(marker.type == 'overview')) {
+					throw new Error("Invalid location for marker ", i)
+				}
 			}
 		};
 		

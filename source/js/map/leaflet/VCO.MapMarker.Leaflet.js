@@ -11,7 +11,7 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 		
 		var icon = {}; //new L.Icon.Default();
 		
-		if (d.location && d.location.lat && d.location.lon) {
+		if (d.location && typeof (d.location.lat) == 'number' && typeof (d.location.lon) == 'number') {
 			this.data.real_marker = true;
 			var use_custom_marker = o.use_custom_markers || d.location.use_custom_marker;
 			if (use_custom_marker && d.location.icon) {
@@ -38,6 +38,8 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 			if (o.map_popup) {
 				this._createPopup(d, o);
 			}
+		} else {
+			throw new Error("Invalid location")
 		}
 	},
 	
