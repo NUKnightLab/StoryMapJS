@@ -1,3 +1,6 @@
+0.7.4 (2020-06-18)
+* Fix regression added in 0.7.3
+
 0.7.3 (2020-06-18)
 * Improve handling for markers on Null Island (fixes #444)
 
