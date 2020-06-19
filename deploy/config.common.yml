@@ -1,6 +1,7 @@
 project_name: StoryMapJS
 gitdeploy_version: "1.0.5"
 python: python3
+docker_compose_file: "docker-compose.ec2.yml"
 type: flask
 pwd: "{{ lookup('env', 'PWD') }}"
 # these will be merged with deployment-specific env into init_env
@@ -42,8 +43,8 @@ wsgi_application: "core.wsgi:application"
 
 # Configs common to all projects
 application_user: apps
-install_root: /home/{{ application_user }}/sites
-virtualenv_root: /home/{{ application_user }}/env
+install_root: "/usr/src/apps"
+#virtualenv_root: /home/{{ application_user }}/env
 
 nginx_conf: "{{ deploy_dir }}/nginx/conf.d/{{ project_name }}.conf"
 
