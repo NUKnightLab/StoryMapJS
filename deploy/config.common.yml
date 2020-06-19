@@ -25,6 +25,7 @@ init_env_common:
 
 # Flask specific configs
 static_dir: "{{ deploy_dir }}/static"
+static_dest: "/var/www/{{ project_name }}"
 
 application_dir: "{{ deploy_dir }}" # application dir could be a subdirectory
 service_name: "storymap"
