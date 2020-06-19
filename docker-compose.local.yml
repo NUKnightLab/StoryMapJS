@@ -1,0 +1,87 @@
+version: '3'
+
+# Runs the Django development server, which is less than ideal in terms of
+# replicating the deployment environment locally -- for which, the
+# docker-compose-local.yml file is provided. However, due to lack of a good solution
+# for static file development in a more deployment-like configuration, this
+# current compose file is provided for development.
+
+# web service mount to apps location so that development updates in the application
+# are reflected in the container.
+
+# Note: the db build will create the default postgres database and user. To
+# create the application database, run `initdb.sh` after building.
+
+services:
+  app:
+    restart: always
+    build: .
+    #ports:
+    #  - "443:5000"
+    #  - "80:5000"
+    links:
+      - mongo:mongo
+      - localstack:localstack
+    volumes:
+      - .:/usr/src/apps/StoryMapJS
+      - .localstack:/usr/src/apps/StoryMapJS/.localstack
+    env_file: .env
+    #command: python api.py -s -p 5000
+    command: gunicorn --workers 3 --worker-tmp-dir /dev/shm --bind unix:/usr/src/apps/StoryMapJS/mnt/storymap.sock core.wsgi:application
+    depends_on:
+      - mongo
+
+  #static:
+  #  restart: always
+  #  image: nginx:alpine
+  #  volumes:
+  #    - ./build:/var/www
+  #    - ./localhost/default.conf:/etc/nginx/conf.d/default.conf
+  #    - .localstack/server.test.pem.crt:/etc/nginx/conf.d/server.crt
+  #    - .localstack/server.test.pem.key:/etc/nginx/conf.d/server.key
+  #  ports:
+  #    - "3000:443"
+
+  nginx:
+    build: ./nginx/
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - .:/usr/src/apps/storymap
+      - web-static:/var/www/storymap
+      - ./nginx/logs:/var/log/nginx
+    links:
+      - app:app
+    depends_on:
+      - app
+
+  mongo:
+    image: mongo:2.4
+    restart: always
+    volumes:
+      - mongodata:/data/db
+    ports:
+      - "27017-27019:27017-27019"
+      - "28017:28017"
+    environment:
+      MONGO_INITDB_DATABASE: storymapjs
+
+  localstack:
+    image: localstack/localstack-light
+    restart: always
+    environment:
+      USE_LIGHT_IMAGE: 1
+      USE_SSL: 1
+      LOCALSTACK_SERVICES: s3
+      DATA_DIR: /tmp/localstack/data
+    ports:
+      - '4563-4599:4563-4599'
+    volumes:
+      - ./.localstack:/tmp/localstack
+      - /var/run/docker.sock:/var/run/docker.sock
+
+volumes:
+  mongodata:
+  web-static:

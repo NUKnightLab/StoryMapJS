@@ -1,9 +1,17 @@
 *.pyc
 .env
+.envrc
+venv
 .in
 .localstack/
 package-lock.json
 node_modules/*
+
+/mnt/*
+
+nginx/localhost/*
+minica-key.pem
+minica.pem
 
 
 # Ignore the build directory
