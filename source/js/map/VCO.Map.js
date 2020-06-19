@@ -370,7 +370,7 @@ VCO.Map = VCO.Class.extend({
 	
 	_createMarkers: function(array) {
 		for (var i = 0; i < array.length; i++) {
-			this._createMarker(array[i]);
+			this._createMarker(array[i]); // this must be called even for overview which has no marker or other logic must be fixed.  
 			if (array[i].location && array[i].location.lat && this.options.show_lines) {
 				this._addToLine(this._line, array[i]);
 			}
