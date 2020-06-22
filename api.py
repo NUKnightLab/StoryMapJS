@@ -56,6 +56,7 @@ _GOOGLE_OAUTH_SCOPES = [
 ];
 
 
+'''
 @app.before_request
 def https_redirect():
     """Generally, in deployment, https redirect will be handled by the proxy
@@ -67,6 +68,7 @@ def https_redirect():
         url = request.url.replace("http://", "https://", 1)
         code = 302 if os.environ.get('FLASK_ENV') == 'development' else 301
         return redirect(url, code=code)
+'''
 
 
 @app.context_processor
