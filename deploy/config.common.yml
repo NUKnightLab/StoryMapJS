@@ -21,7 +21,7 @@ init_env_common:
   AWS_SECRET_ACCESS_KEY: "{{ vault_aws_secret_access_key }}"
   GOOGLE_CLIENT_ID: "{{ vault_google_client_id }}"
   GOOGLE_CLIENT_SECRET: "{{ vault_google_client_secret }}"
-  ADMINS: "{{ vault_admins | join(' ') }}"
+  ADMINS: "{{ vault_admins | join(',') }}"
   ALLOWED_IDS: "{{ vault_allowed_ids }}"
 
 # Flask specific configs
