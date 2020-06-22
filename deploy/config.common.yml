@@ -45,7 +45,7 @@ wsgi_application: "core.wsgi:application"
 # Configs common to all projects
 application_user: apps
 install_root: "/usr/src/apps"
-virtualenv_root: "{{ deploy_dir }}/venv"
+virtualenv_root: "{{ deploy_dir }}"
 
 nginx_conf: "{{ deploy_dir }}/nginx/conf.d/{{ project_name }}.conf"
 
