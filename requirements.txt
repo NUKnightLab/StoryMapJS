@@ -11,7 +11,7 @@ decorator==4.0.10
 docopt==0.6.1
 enum34==1.1.6
 Fabric
-Flask==0.10.1
+Flask==1.1.2
 funcsigs==1.0.2
 google-api-python-client
 gunicorn==19.5.0
@@ -55,5 +55,5 @@ unicodecsv==0.14.1
 Unidecode==0.4.17
 uritemplate
 urllib3==1.24.2
-Werkzeug==0.15.3
+Werkzeug==1.0.1
 xmltodict==0.10.2
