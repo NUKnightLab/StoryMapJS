@@ -39,7 +39,7 @@ env_file: "{{ deploy_dir }}/.env"
 envrc_file: "{{ deploy_dir }}/.envrc"
 project_repo: "git@github.com:NUKnightLab/{{ project_name }}.git"
 requirements_file: "{{ deploy_dir }}/requirements.txt"
-virtualenv: "{{ virtualenv_root }}/{{ project_name }}"
+virtualenv: "{{ virtualenv_root }}/venv"
 wsgi_application: "core.wsgi:application"
 
 # Configs common to all projects
