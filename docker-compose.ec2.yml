@@ -7,7 +7,7 @@ services:
     env_file: .env
     restart: always
     volumes:
-      - .:/usr/src/apps/StoryMapjs
+      - .:/usr/src/apps/StoryMapJS
       - /var/www/StoryMapJS:/var/www/StoryMapJS
     environment:
       DEBUG: 'true'
