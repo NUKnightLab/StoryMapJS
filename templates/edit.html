@@ -78,7 +78,7 @@ function ready(fn) {
 var storymap_slide_template = _.template($("#storymap_slide_template").html().trim());
 var storymap_iframe_template = _.template($("#storymap_iframe_template").html().trim());
 
-L.Icon.Default.imagePath = ' http://cdn.leafletjs.com/leaflet-0.7.2/images';
+L.Icon.Default.imagePath = 'http://cdn.leafletjs.com/leaflet-0.7.2/images';
 
 // for upload control
 var _storymap_upload_url = "{{ url_for('storymap_image_save') }}";

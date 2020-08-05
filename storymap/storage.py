@@ -123,7 +123,8 @@ def list_keys(key_prefix, n, marker=''):
 
 @_mock_in_test_mode
 def get_contents_as_string(src_key):
-    return src_key.get_contents_as_string()
+    obj = s3.Object(_bucket.name, src_key)
+    return obj.get()['Body'].read().decode('utf-8')
 
 @_mock_in_test_mode
 def all_keys():
@@ -165,8 +166,11 @@ def copy_key(src_key_name, dst_key_name):
     """
     Copy from src_key_name to dst_key_name
     """
-    dst_key = _bucket.copy_key(dst_key_name, _bucket.name, src_key_name)
-    dst_key.set_acl('public-read')
+    dst_key = _bucket.copy(
+        { 'Bucket': _bucket.name, 'Key': src_key_name },
+        dst_key_name,
+        ExtraArgs={ 'ACL': 'public-read' }
+    )
 
 
 @_reraise_s3response

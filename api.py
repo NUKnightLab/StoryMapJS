@@ -465,7 +465,7 @@ def storymap_copy(user, id):
         src_re = re.compile(r'%s' % src_key_prefix)
         src_key_list, more = storage.list_keys(src_key_prefix, 999, '')
         for src_key in src_key_list:
-            key_path = src_key.name.split('/')
+            key_path = src_key.split('/')
             if key_path[-2] == '_images':
                 file_name = '_images/%s' % key_path[-1]
             else:
