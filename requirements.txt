@@ -3,7 +3,7 @@ bcrypt==3.1.6
 #boto==2.42.0
 boto3
 certifi
-cffi==1.8.3
+cffi==1.14.1
 chardet==3.0.4
 Click==7.0
 cryptography
