@@ -7,7 +7,7 @@ ssl:
   ssl_certificate_key: "/etc/nginx/ssl/knilab/knilab-com.key"
 
 init_env_stg:
-  STATIC_URL: "/static/{{ project_name }}/"
+  STATIC_URL: "//stg-storymap.knightlab.com/static/{{ project_name }}/"
   CDN_URL: "//cdn.knightlab.com/libs/storymapjs/dev/"
   DB_ENGINE__DEFAULT: "mongo"
   DB_NAME__DEFAULT: "storymapjs"
