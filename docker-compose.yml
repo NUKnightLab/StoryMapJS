@@ -22,6 +22,7 @@ services:
     links:
       - mongo:mongo
       - localstack:localstack
+      - pg:pg
     volumes:
       - .:/usr/src/apps/StoryMapJS
       - .localstack:/usr/src/apps/StoryMapJS/.localstack
@@ -29,6 +30,7 @@ services:
     command: python api.py -s -p 5000
     depends_on:
       - mongo
+      - pg
 
   static:
     restart: always
@@ -51,6 +53,18 @@ services:
       - "28017:28017"
     environment:
       MONGO_INITDB_DATABASE: storymapjs
+
+  pg:
+    image: postgres:11.6
+    restart: always
+    environment:
+      POSTGRES_USER: storymap
+      POSTGRES_DB: storymap
+      POSTGRES_PASSWORD: storymap
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./.pgdata:/var/lib/postgresql/data/
 
   localstack:
     image: localstack/localstack-light

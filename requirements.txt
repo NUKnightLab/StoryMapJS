@@ -31,6 +31,7 @@ oauth2client
 paramiko==2.4.2
 pbr==1.10.0
 ply==3.4
+psycopg2-binary
 pyasn1
 pyasn1-modules
 pycparser==2.14

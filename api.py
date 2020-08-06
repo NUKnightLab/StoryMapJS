@@ -34,7 +34,7 @@ import slugify
 import bson
 from oauth2client.client import OAuth2WebServerFlow
 from storymap import google
-from storymap.connection import _user
+from storymap.connection import _user, get_pg_user
 
 app = Flask(__name__)
 app.config.from_envvar('FLASK_SETTINGS_FILE')
@@ -265,6 +265,7 @@ def google_auth_verify():
         uid = _get_uid('google:'+info['id'])
 
         user = _user.find_one({'uid': uid})
+        pg_user = get_pg_user(uid)
         if user:
             user['google'] = info
         else:
@@ -296,6 +297,7 @@ def _user_get():
     """Enforce authenticated user"""
     uid = session.get('uid')
     user = _user.find_one({'uid': uid})
+    pg_user = get_pg_user(uid)
     # google data field in user record no longer used
     if not user:
         try:
@@ -973,6 +975,15 @@ def redirect_old_urls(path):
 
 if __name__ == '__main__':
     import getopt
+
+    if sys.argv[1] == 'migrate':
+        """Temporary utility to create the postgres db.
+
+        $ docker-compose run app python api.py migrate
+        """
+        from storymap.connection import migrate_pg
+        migrate_pg()
+        exit()
 
     # Add current directory to sys.path
     site_dir = os.path.dirname(os.path.abspath(__file__))
