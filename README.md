@@ -1,3 +1,6 @@
+For getting started with development: This README is a work in progress. Please
+see QUICKSTART.md for the current development onboarding process.
+
 # StoryMapJS: Maps that tell stories.
 
 [StoryMapJS](http://storymap.knightlab.com) is a simple tool to help you tell stories with maps. If you're not a programmer, you don't need to spend much time on the GitHub page—instead, go [StoryMapJS](http://storymap.knightlab.com)

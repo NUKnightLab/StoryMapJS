@@ -1,3 +1,6 @@
+This README is a work in progress. Please see QUICKSTART.md for the current
+development onboarding process.
+
 ## Alternative localized "deployment"
 
 

@@ -982,31 +982,34 @@ if __name__ == '__main__':
     ssl_context = None
     port = 5000
 
-    try:
-        opts, args = getopt.getopt(sys.argv[1:], "sp:", ["port="])
-        for opt, arg in opts:
-            if opt == '-s':
-                crt_file = os.environ.get('APP_SSL_CRT_FILE', 'local_only.crt')
-                key_file = os.environ.get('APP_SSL_KEY_FILE', 'local_only.key')
-                if (os.path.isfile(crt_file) and os.path.isfile(key_file)):
-                    ssl_context = (crt_file, key_file)
-                else:
-                    print("""
-To run HTTPS locally you should create a crt/key file.
-Don't put them in the repository, because if you tell your browser to trust the certificate
-and an adversary got the cert from the public repository, they could take
-advantage of you.
+    # Experimenting with using Flask's scarcely documented 'adhoc' ssl context
+    app.run(host='0.0.0.0', port=port, debug=True, ssl_context='adhoc')
 
-Run ./makecerts.sh to create the files:
-""")
-                    sys.exit(1)
-            elif opt in ('-p', '--port'):
-                port = int(arg)
-            else:
-                print('Usage: app.py [-s]')
-                sys.exit(1)
-    except getopt.GetoptError:
-        print('Usage: app.py [-s] [-p port]')
-        sys.exit(1)
+    #try:
+    #    opts, args = getopt.getopt(sys.argv[1:], "sp:", ["port="])
+    #    for opt, arg in opts:
+    #        if opt == '-s':
+    #            crt_file = os.environ.get('APP_SSL_CRT_FILE', 'local_only.crt')
+    #            key_file = os.environ.get('APP_SSL_KEY_FILE', 'local_only.key')
+    #            if (os.path.isfile(crt_file) and os.path.isfile(key_file)):
+    #                ssl_context = (crt_file, key_file)
+    #            else:
+    #                print("""
+    # To run HTTPS locally you should create a crt/key file.
+    # Don't put them in the repository, because if you tell your browser to trust the certificate
+    # and an adversary got the cert from the public repository, they could take
+    # advantage of you.
+
+    # Run ./makecerts.sh to create the files:
+    # """)
+    #                sys.exit(1)
+    #        elif opt in ('-p', '--port'):
+    #            port = int(arg)
+    #        else:
+    #            print('Usage: app.py [-s]')
+    #            sys.exit(1)
+    #except getopt.GetoptError:
+    #    print('Usage: app.py [-s] [-p port]')
+    #    sys.exit(1)
     # Google OAuth requires localhost, not a raw IP address
-    app.run(host='0.0.0.0', port=port, debug=True, ssl_context=ssl_context)
+    #app.run(host='0.0.0.0', port=port, debug=True, ssl_context=ssl_context)
