@@ -60,6 +60,29 @@ def migrate_pg():
     _pg_conn.close()
 
 
+def audit_pg():
+    with _pg_conn.cursor() as cursor:
+        cursor.execute('SELECT COUNT (*) from users')
+        count = cursor.fetchone()[0]
+        assert count == _user.count(), 'Postgres / Mongo user count mismatch'
+
+        cursor.execute(
+            "SELECT uid, uname, migrated, google, storymaps FROM users " \
+            "ORDER BY RANDOM() " \
+            "LIMIT 1000")
+        rand_users = cursor.fetchall()
+        for u in rand_users:
+            uid, uname, migrated, google, storymaps = u
+            print(uid)
+            mongo_user = _user.find_one({'uid': uid})
+            print(mongo_user)
+            assert uid == mongo_user['uid']
+            assert uname == mongo_user['uname']
+            assert migrated == mongo_user['migrated']
+            assert google == mongo_user['google']
+            assert storymaps == mongo_user['storymaps']
+
+
 def get_pg_user(uid):
     with _pg_conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
         cursor.execute(

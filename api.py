@@ -985,6 +985,16 @@ if __name__ == '__main__':
         migrate_pg()
         exit()
 
+    if sys.argv[1] == 'audit':
+        """Temporary utility to audit user database entries and to ensure
+        pg/mongo parity.
+
+        $ docker-compose run app python api.py audit
+        """
+        from storymap.connection import audit_pg
+        audit_pg()
+        exit()
+
     # Add current directory to sys.path
     site_dir = os.path.dirname(os.path.abspath(__file__))
     if site_dir not in sys.path:
@@ -992,6 +1002,8 @@ if __name__ == '__main__':
 
     ssl_context = None
     port = 5000
+    app.run(host='0.0.0.0', port=port, debug=True, ssl_context='adhoc')
+    exit()
 
     try:
         opts, args = getopt.getopt(sys.argv[1:], "sp:", ["port="])
