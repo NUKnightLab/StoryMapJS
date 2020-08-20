@@ -15,11 +15,11 @@ print('db host', settings.DATABASES['default']['HOST'])
 print('db port', int(settings.DATABASES['default']['PORT']))
 
 _pg_conn = psycopg2.connect(
-    f"host={settings.DATABASES['pg']['HOST']} " \
-    f"dbname={settings.DATABASES['pg']['NAME']} " \
-    f"user={settings.DATABASES['pg']['USER']} " \
-    f"password={settings.DATABASES['pg']['PASSWORD']}")
-
+    host=settings.DATABASES['pg']['HOST'],
+    port=settings.DATABASES['pg']['PORT'],
+    dbname=settings.DATABASES['pg']['NAME'],
+    user=settings.DATABASES['pg']['USER'],
+    password=settings.DATABASES['pg']['PASSWORD'])
 
 
 if settings.TEST_MODE:
