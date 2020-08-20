@@ -20,6 +20,12 @@ DATABASES = {
         'NAME': env['DB_NAME__DEFAULT'],
         'HOST': env['DB_HOST__DEFAULT'],
         'PORT': env['DB_PORT__DEFAULT']
+    },
+    'pg': {
+        'HOST': env.get('PG_HOST', 'pg'),
+        'NAME': env.get('PG_NAME', 'storymap'),
+        'USER': env.get('PG_USER', 'storymap'),
+        'PASSWORD': env.get('PG_PASSWORD', 'storymap')
     }
 }
 

@@ -14,9 +14,11 @@ settings = sys.modules[os.environ['FLASK_SETTINGS_MODULE']]
 print('db host', settings.DATABASES['default']['HOST'])
 print('db port', int(settings.DATABASES['default']['PORT']))
 
-# Checked max length of uname in mongo was 71 characters
-_pg_conn = psycopg2.connect('host=pg dbname=storymap user=storymap password=storymap')
-
+_pg_conn = psycopg2.connect(
+    f"host={settings.DATABASES['pg']['HOST']} " \
+    f"dbname={settings.DATABASES['pg']['NAME']} " \
+    f"user={settings.DATABASES['pg']['USER']} " \
+    f"password={settings.DATABASES['pg']['PASSWORD']}")
 
 
 
@@ -55,6 +57,7 @@ def create_pg_user(uid, uname, migrated=1, storymaps=None, cursor=None):
 
 
 def migrate_pg(drop_table=True):
+    # Checked max length of uname in mongo was 71 characters
     if drop_table:
         with _pg_conn.cursor() as cursor:
             cursor.execute('DROP TABLE IF EXISTS users;')
