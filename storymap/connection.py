@@ -109,13 +109,21 @@ def get_pg_user(uid):
 
 def save_pg_user(user):
     with _pg_conn.cursor() as cursor:
-        _u = dict(get_pg_user(user['uid']))
-        _u.update(user)
-        cursor.execute(
-            "UPDATE users SET uid=%(uid)s, uname=%(uname)s, " \
-            "migrated=%(migrated)s, storymaps=%(storymaps)s " \
-            "WHERE uid=%(uid)s;", user)
-        _pg_conn.commit()
+        _u = get_pg_user(user['uid'])
+        if _u:
+            _u = dict(_u)
+            _u.update(user)
+            cursor.execute(
+                "UPDATE users SET uid=%(uid)s, uname=%(uname)s, " \
+                "migrated=%(migrated)s, storymaps=%(storymaps)s " \
+                "WHERE uid=%(uid)s;", user)
+            _pg_conn.commit()
+        else:
+            create_pg_user(
+                user['uid'],
+                user['uname'],
+                migrated=user.get('migrated', 1),
+                storymaps=user.get('storymaps'), cursor=cursor)
 
 
 def create_user(uid, uname, migrated=1, storymaps=None):
@@ -133,7 +141,7 @@ def create_user(uid, uname, migrated=1, storymaps=None):
 def get_user(uid):
     # for pg: get_pg_user(uid)
     user = _users.find_one({'uid': uid})
-    if 'google' in user:
+    if user and 'google' in user:
         del user['google']
     return user
 
