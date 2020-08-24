@@ -87,7 +87,7 @@ def audit_pg():
             mongo_users = _users.find()
             for u in mongo_users:
                 cursor.execute(
-                    "SELECT * FROM users where uid=%s", (u['uid']))
+                    "SELECT * FROM users where uid=%s", (u['uid'],))
                 pg_user = cursor.fetchall()
                 if not pg_user:
                     print('Mongo user:', u['uid'], 'not in pg database')
