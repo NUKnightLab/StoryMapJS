@@ -67,15 +67,17 @@ def migrate_pg(drop_table=False):
                 "migrated smallint, storymaps jsonb, " \
                 "CONSTRAINT unique_uid UNIQUE (uid))")
         _pg_conn.commit()
-    with _pg_conn.cursor() as cursor:
-        for u in _users.find({}):
+    for u in _users.find({}):
+        query = "INSERT INTO users (uid, uname, migrated, storymaps) " \
+            "VALUES (%s, %s, %s, %s);"
+        with _pg_conn.cursor() as cursor:
             try:
-                create_pg_user(u['uid'], u['uname'], u['migrated'],
-                    json.dumps(u['storymaps']))
-                print(u['uid'])
+                cursor.execute(query, (u['uid'], u['uname'], u['migrated'], {}))
             except psycopg2.errors.UniqueViolation:
-                print('Skipping existing:', u['uid'])
-    _pg_conn.commit()
+                return
+        print('Created:', u['uid'])
+        _pg_conn.commit()
+        print('Created pg user:', u['uid'])
     _pg_conn.close()
 
 
