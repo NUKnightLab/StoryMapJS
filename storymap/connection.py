@@ -108,9 +108,9 @@ def get_pg_user(uid):
 
 
 def save_pg_user(user):
-    with _pg_conn.cursor() as cursor:
-        _u = get_pg_user(user['uid'])
-        if _u:
+    _u = get_pg_user(user['uid'])
+    if _u:
+        with _pg_conn.cursor() as cursor:
             _u = dict(_u)
             _u.update(user)
             cursor.execute(
@@ -118,12 +118,12 @@ def save_pg_user(user):
                 "migrated=%(migrated)s, storymaps=%(storymaps)s " \
                 "WHERE uid=%(uid)s;", user)
             _pg_conn.commit()
-        else:
-            create_pg_user(
-                user['uid'],
-                user['uname'],
-                migrated=user.get('migrated', 1),
-                storymaps=user.get('storymaps'), cursor=cursor)
+    else:
+        create_pg_user(
+            user['uid'],
+            user['uname'],
+            migrated=user.get('migrated', 1),
+            storymaps=user.get('storymaps'))
 
 
 def create_user(uid, uname, migrated=1, storymaps=None):
