@@ -72,7 +72,6 @@ services:
     restart: always
     environment:
       USE_LIGHT_IMAGE: 1
-      # USE_SSL: 1
       LOCALSTACK_SERVICES: s3
       DATA_DIR: /tmp/localstack/data
     ports:
