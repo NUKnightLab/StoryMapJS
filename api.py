@@ -34,7 +34,7 @@ import slugify
 import bson
 from oauth2client.client import OAuth2WebServerFlow
 from storymap import google
-from storymap.connection import _user
+from storymap.connection import get_user, save_user, create_user, find_users
 
 app = Flask(__name__)
 app.config.from_envvar('FLASK_SETTINGS_FILE')
@@ -263,8 +263,7 @@ def google_auth_verify():
 
         # Upsert user record
         uid = _get_uid('google:'+info['id'])
-
-        user = _user.find_one({'uid': uid})
+        user = get_user(uid)
         if user:
             user['google'] = info
         else:
@@ -275,7 +274,7 @@ def google_auth_verify():
                 'google': info
             }
         user['uname'] = info['name']
-        _user.save(user)
+        save_user(user)
 
         # Update session
         session['uid'] = uid
@@ -292,29 +291,22 @@ def google_auth_verify():
 # Misc
 #
 
-def _user_get():
+def get_session_user():
     """Enforce authenticated user"""
     uid = session.get('uid')
-    user = _user.find_one({'uid': uid})
-    # google data field in user record no longer used
+    user = get_user(uid)
     if not user:
         try:
             session.pop('uid')
         except KeyError: pass
         return None
-    if 'google' in user:
-        del user['google']
     return user
+
 
 def check_test_user():
     if settings.TEST_MODE:
-        if not _user.find_one({ 'uid': 'test' }):
-            _user.insert({
-                'uid': 'test',
-                'migrated': 1,
-                'storymaps': {},
-                'google': { 'name': 'Test User' }
-            })
+        if not get_user('test'):
+            create_user('test', 'Test User')
         session['uid'] = 'test'
 
 def require_user(f):
@@ -324,7 +316,7 @@ def require_user(f):
     """
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        user = _user_get()
+        user = get_session_user()
         if user is None:
             return redirect(url_for('select'))
         request.user = user
@@ -340,7 +332,7 @@ def require_user_id(template=None):
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
-            user = _user_get()
+            user = get_session_user()
 
             id = _request_get_required('id')
             if id not in user['storymaps']:
@@ -433,7 +425,7 @@ def storymap_update_meta(user, id):
         key, value = _request_get_required('key', 'value')
 
         user['storymaps'][id][key] = value
-        _user.save(user)
+        save_user(user)
 
         key_prefix = storage.key_prefix(user['uid'], id)
 
@@ -485,7 +477,7 @@ def storymap_copy(user, id):
             'draft_on': user['storymaps'][id]['draft_on'],
             'published_on': user['storymaps'][id]['published_on']
         }
-        _user.save(user)
+        save_user(user)
         # Write new embed pages
         _write_embed_draft(dst_key_prefix, user['storymaps'][dst_id])
         if user['storymaps'][dst_id].get('published_on'):
@@ -508,7 +500,7 @@ def storymap_delete(user, id):
             storage.delete(key);
 
         del user['storymaps'][id]
-        _user.save(user)
+        save_user(user)
 
         return jsonify({})
     except Exception as e:
@@ -535,7 +527,7 @@ def storymap_create(user):
             'draft_on': _utc_now(),
             'published_on': ''
         }
-        _user.save(user)
+        save_user(user)
 
         _write_embed_draft(key_prefix, user['storymaps'][id])
 
@@ -550,8 +542,7 @@ def storymap_migrate_done(user):
     """Flag user as migrated"""
     try:
         user['migrated'] = 1
-        _user.save(user)
-
+        save_user(user)
         return jsonify({})
     except Exception as e:
         traceback.print_exc()
@@ -622,8 +613,7 @@ def storymap_migrate(user):
             'draft_on': draft_on,
             'published_on': published_on
         }
-        _user.save(user)
-
+        save_user(user)
         _write_embed_draft(dst_key_prefix, user['storymaps'][dst_id])
         if published_on:
             _write_embed_published(dst_key_prefix, user['storymaps'][dst_id])
@@ -668,8 +658,7 @@ def storymap_save(user, id):
         storage.save_json(key_name, content)
 
         user['storymaps'][id]['draft_on'] = _utc_now()
-        _user.save(user)
-
+        save_user(user)
         return jsonify({'meta': user['storymaps'][id]})
     except storage.StorageException as e:
         traceback.print_exc()
@@ -691,8 +680,7 @@ def storymap_publish(user, id):
         storage.save_json(key_prefix+'published.json', content)
 
         user['storymaps'][id]['published_on'] = _utc_now()
-        _user.save(user)
-
+        save_user(user)
         _write_embed_published(key_prefix, user['storymaps'][id])
 
         return jsonify({'meta': user['storymaps'][id]})
@@ -797,7 +785,7 @@ def userinfo():
     migrate_data = None
 
     if uid:
-        user = _user.find_one({'uid': uid})
+        user = get_user(uid)
         if user:
             if not user['migrated']:
                 migrate_data = google.drive_get_migration_diagnostics(user)
@@ -819,25 +807,24 @@ def legacy_redirect():
     """Legacy redirect"""
     return redirect(url_for('select')+'?'+request.query_string)
 
+
 @app.route("/select/", methods=['GET', 'POST'])
 def select():
     check_test_user()
-
     try:
         uid = session.get('uid')
         if not uid:
             return render_template('select.html')
-
-        user = _user.find_one({'uid': uid})
+        user = get_user(uid)
         if not user:
             _session_pop('uid')
             return render_template('select.html')
         del user['_id']
-
         return render_template('select.html', user=user)
     except Exception as e:
         traceback.print_exc()
         return render_template('select.html', error=str(e))
+
 
 @app.route("/edit/", methods=['GET', 'POST'])
 @require_user
@@ -893,7 +880,7 @@ def admin_users(user):
         files[uid].append(k)
     pages = 0
     if query:
-        for u in _user.find(query, skip=skip, limit=rpp):
+        for u in find_users(query, skip, limit):
             u.update({ 'files': files[u['uid']] })
             users.append(u)
         pages = int(math.ceil(_user.find(query).count() / rpp))
@@ -917,7 +904,7 @@ def admin_unmatched_files(user):
     for k in storage.all_keys():
         uid = k.split('/')[1]
         files[uid].append(k)
-    for u in _user.find():
+    for u in find_users():
         try:
             del files[u['uid']]
         except KeyError:
@@ -974,6 +961,25 @@ def redirect_old_urls(path):
 if __name__ == '__main__':
     import getopt
 
+    if sys.argv[1] == 'migrate':
+        """Temporary utility to create the postgres db.
+
+        $ docker-compose run app python api.py migrate
+        """
+        from storymap.connection import migrate_pg
+        migrate_pg()
+        exit()
+
+    if sys.argv[1] == 'audit':
+        """Temporary utility to audit user database entries and to ensure
+        pg/mongo parity.
+
+        $ docker-compose run app python api.py audit
+        """
+        from storymap.connection import audit_pg
+        audit_pg()
+        exit()
+
     # Add current directory to sys.path
     site_dir = os.path.dirname(os.path.abspath(__file__))
     if site_dir not in sys.path:
@@ -981,6 +987,8 @@ if __name__ == '__main__':
 
     ssl_context = None
     port = 5000
+    app.run(host='0.0.0.0', port=port, debug=True, ssl_context='adhoc')
+    exit()
 
     # Experimenting with using Flask's scarcely documented 'adhoc' ssl context
     app.run(host='0.0.0.0', port=port, debug=True, ssl_context='adhoc')

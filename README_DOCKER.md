@@ -75,3 +75,9 @@ build details.
 ```
 $ docker-compose up
 ```
+
+### Connecting to postgres
+
+```
+ $ docker-compose run pg psql -h pg -U storymap
+```
