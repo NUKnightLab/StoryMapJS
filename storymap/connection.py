@@ -56,7 +56,7 @@ def create_pg_user(uid, uname, migrated=1, storymaps=None, cursor=None):
         _pg_conn.commit()
 
 
-def migrate_pg(drop_table=True):
+def migrate_pg(drop_table=False):
     # Checked max length of uname in mongo was 71 characters
     if drop_table:
         with _pg_conn.cursor() as cursor:
@@ -83,7 +83,14 @@ def audit_pg():
     with _pg_conn.cursor() as cursor:
         cursor.execute('SELECT COUNT (*) from users')
         count = cursor.fetchone()[0]
-        assert count == _users.count(), 'Postgres / Mongo user count mismatch'
+        if count != _users.count():
+            mongo_users = _users.find()
+            for u in mongo_users:
+                cursor.execute(
+                    "SELECT * FROM users where uid=%s", (u['uid']))
+                pg_user = cursor.fetchall()
+                if not pg_user:
+                    print('Mongo user:', u['uid'], 'not in pg database')
         cursor.execute(
             "SELECT uid, uname, migrated, storymaps FROM users " \
             "ORDER BY RANDOM() " \
