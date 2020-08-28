@@ -788,13 +788,11 @@ a.list-item-options:hover {
 
 #map_search_input {
     position: absolute;
-    width: 400px;
-    left: 50%;
+    width: 50%;
+    left: 25%;
     bottom: 10px;
-    margin-left: -125px;
     font-family: "Apres RE","Helvetica Neue",Helvetica,Arial,sans-serif;
     border: 1px solid #DA0000;
-
 	box-shadow: 1px 1px 7px rgba(0,0,0,.30);
 }
 
