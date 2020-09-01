@@ -111,9 +111,10 @@ def audit_pg():
                 if not pg_user:
                     print('Mongo user:', u['uid'], 'not in pg database')
         cursor.execute(
-            "SELECT uid, uname, migrated, storymaps FROM users " \
-            "ORDER BY RANDOM() " \
-            "LIMIT 1000")
+            "SELECT uid, uname, migrated, storymaps FROM users")
+            #"SELECT uid, uname, migrated, storymaps FROM users " \
+            #"ORDER BY RANDOM() " \
+            #"LIMIT 1000")
         rand_users = cursor.fetchall()
         audit_count = 0
         for u in rand_users:
