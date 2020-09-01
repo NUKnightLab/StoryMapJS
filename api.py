@@ -843,12 +843,14 @@ def edit(user, id):
         traceback.print_exc()
         return render_template('edit.html', error=str(e))
 
+
 @app.route('/admin/')
 @require_user
 def admin(user):
     if not user['uid'] in settings.ADMINS:
         abort(401)
     return render_template('/admin/index.html')
+
 
 @app.route('/admin/users/')
 @require_user
@@ -861,7 +863,7 @@ def admin_users(user):
     skip = (page - 1) * rpp
     files = defaultdict(list)
     users = []
-    query = { 'limit': rpp, 'offset': page-1 }
+    query = {}
     if args.get('uname'):
         if args.get('unamesearch') == 'is':
             query.update({ 'uname': args['uname'] })
@@ -879,6 +881,7 @@ def admin_users(user):
         files[uid].append(k)
     pages = 0
     if query:
+        query.update({ 'limit': rpp, 'offset': page-1 })
         users, pages = find_users(**query)
     return render_template('admin/users.html', **{
         'users': users,
@@ -888,24 +891,6 @@ def admin_users(user):
         'querystring': urlencode(list(args.items())),
         'storage_root': settings.AWS_STORAGE_BUCKET_URL
     })
-
-
-@app.route('/admin/unmatched-files')
-@require_user
-def admin_unmatched_files(user):
-    if not user['uid'] in settings.ADMINS:
-        abort(401)
-    files = defaultdict(list)
-    users = []
-    for k in storage.all_keys():
-        uid = k.split('/')[1]
-        files[uid].append(k)
-    for u in find_users():
-        try:
-            del files[u['uid']]
-        except KeyError:
-            pass
-    return _jsonify(files)
 
 
 @app.route("/qunit/", methods=['GET'])
