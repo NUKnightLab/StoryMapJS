@@ -256,12 +256,14 @@ def google_auth_verify():
         if not info['id']:
             raise Exception('Could not get Google user ID')
 
+        uid = _get_uid('google:'+info['id'])
         if 'stg-storymap.knightlab.com' in domains and not info['id'] in allowed_ids:
-            print('User id not in ALLOWED_IDS:  %s ' % info['id'])
-            raise Exception('You are not authorized to access this page. Please send the following information to support@knightlab.zendesk.com: stg-storymap.knightlab.com unauthorized %s' % info['id'])
+            raise Exception(
+                "You are not authorized to access this page. Please send the " \
+                "following information to support@knightlab.zendesk.com: " \
+                "stg-storymap.knightlab.com unauthorized %s" % uid)
 
         # Upsert user record
-        uid = _get_uid('google:'+info['id'])
         user = get_user(uid)
         if user:
             user['google'] = info
