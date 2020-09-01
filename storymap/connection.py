@@ -1,12 +1,16 @@
 import json
+import math
 import sys
 import os
 import psycopg2
 import psycopg2.extras
 import pymongo
 import mongomock
+from psycopg2.sql import SQL, Literal
 
 psycopg2.extensions.register_adapter(dict, psycopg2.extras.Json)
+
+DEFAULT_USER_QUERY_LIMIT = 20
 
 # Get settings module
 settings = sys.modules[os.environ['FLASK_SETTINGS_MODULE']]
@@ -160,6 +164,36 @@ def save_user(user):
     save_pg_user(user)
 
 
-def find_users(query=None, skip=None, limit=None):
-    for u in _users.find(query, skip, limit):
-        yield u
+def find_users(uname=None, uname__like=None, uid=None, migrated=None,
+        limit=DEFAULT_USER_QUERY_LIMIT, offset=0):
+    """NOTE: currently does not properly handle an all-users search. Must
+    include either uname, uname__like, or uid for a legitimate query.
+    """
+    params = []
+    query = SQL('')
+    if uid is not None:
+        query += SQL('uid=%s')
+        params.append(uid) 
+    else:
+        if uname is not None:
+            query += SQL('uname=%s')
+            params.append(uname)
+        elif uname__like is not None:
+            query += SQL('uname ILIKE %s')
+            params.append(f'%{uname__like}%')
+    if migrated is not None:
+        conj = 'AND' if any([uname, uname__like, uid]) else 'WHERE'
+        query += SQL(f' {conj} migrated=%s')
+        params.append(migrated)
+    with _pg_conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+        q = SQL('SELECT COUNT(*) FROM users WHERE ') + query
+        cursor.execute(q, params)
+        count = cursor.fetchone()[0]
+        q = SQL('SELECT * FROM users WHERE ') + query + \
+            SQL(' OFFSET %s LIMIT %s')
+        params.extend([offset, limit])
+        cursor.execute(q, params)
+        users = cursor.fetchall()
+    pages = int(math.ceil(count / limit))
+    return users, pages
+    

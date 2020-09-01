@@ -3,7 +3,6 @@ from flask import Flask, request, session, redirect, url_for, \
     render_template, jsonify, abort
 from werkzeug.exceptions import Forbidden
 from collections import defaultdict
-import math
 import os
 import sys
 import importlib
@@ -14,7 +13,7 @@ import re
 import json
 from functools import wraps
 import urllib
-from urllib.parse import urlparse, urljoin, quote
+from urllib.parse import urlparse, urljoin, quote, urlencode
 
 # Import settings module
 if __name__ == "__main__":
@@ -862,12 +861,12 @@ def admin_users(user):
     skip = (page - 1) * rpp
     files = defaultdict(list)
     users = []
-    query = {}
+    query = { 'limit': rpp, 'offset': page-1 }
     if args.get('uname'):
         if args.get('unamesearch') == 'is':
             query.update({ 'uname': args['uname'] })
         else:
-            query.update({ 'uname':{'$regex': args['uname'], '$options': 'i'}})
+            query.update({ 'uname__like': args['uname'] })
     if args.get('uid'):
         query.update({ 'uid': args['uid'] })
     migrated = args.get('migrated')
@@ -880,16 +879,13 @@ def admin_users(user):
         files[uid].append(k)
     pages = 0
     if query:
-        for u in find_users(query, skip, limit):
-            u.update({ 'files': files[u['uid']] })
-            users.append(u)
-        pages = int(math.ceil(_user.find(query).count() / rpp))
+        users, pages = find_users(**query)
     return render_template('admin/users.html', **{
         'users': users,
         'page': page,
         'pages': pages,
         'args': args,
-        'querystring': urllib.urlencode(args.items()),
+        'querystring': urlencode(list(args.items())),
         'storage_root': settings.AWS_STORAGE_BUCKET_URL
     })
 
