@@ -339,7 +339,8 @@ def require_user_id(template=None):
             if id not in user['storymaps']:
                 error = 'You do not have permission to access to this StoryMap'
                 if template:
-                    del user['_id'] # for serialization
+                    if '_id' in user: # mongo only
+                        del user['_id'] # for serialization
                     return render_template('edit.html', user=user, error=error)
                 else:
                     return jsonify({'error': error})
@@ -791,7 +792,8 @@ def userinfo():
             if not user['migrated']:
                 migrate_data = google.drive_get_migration_diagnostics(user)
 
-            del user['_id']
+            if '_id' in user: # mongo only
+                del user['_id']
             try:
                 del user['google']['credentials']
             except KeyError: pass
@@ -820,7 +822,8 @@ def select():
         if not user:
             _session_pop('uid')
             return render_template('select.html')
-        del user['_id']
+        if '_id' in user: # mongo only
+            del user['_id']
         return render_template('select.html', user=user)
     except Exception as e:
         traceback.print_exc()
@@ -832,7 +835,8 @@ def select():
 @require_user_id('edit.html')
 def edit(user, id):
     try:
-        del user['_id'] # for serialization
+        if '_id' in user: # mongo only
+            del user['_id'] # for serialization
         # Default Mapbox key is the production key, which is restricted to
         # only work from our domains local developers need to configure an
         # unrestricted MAPBOX_API_KEY in their environment.
@@ -961,6 +965,14 @@ if __name__ == '__main__':
         """
         from storymap.connection import audit_pg
         audit_pg()
+        exit()
+
+    if sys.argv[1] == 'deltest':
+        """Temporary utility to delete the KnightLab user from both dbs.
+        For testing new-user workflow.
+        """
+        from storymap.connection import delete_test_user
+        delete_test_user()
         exit()
 
     # Add current directory to sys.path

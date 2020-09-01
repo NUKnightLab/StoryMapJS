@@ -1,3 +1,4 @@
+import copy
 import json
 import math
 import sys
@@ -85,6 +86,18 @@ def migrate_pg(drop_table=False):
     _pg_conn.close()
 
 
+
+def delete_test_user():
+    """Delete the hard-coded user from the database.
+    Use for testing new-user workflow
+    """
+    test_uid = '6331e0e40cd0ea0a72a130f6b352b106'
+    _users.remove({ 'uid': test_uid })
+    with _pg_conn.cursor() as cursor:
+        cursor.execute('DELETE FROM users where uid=%s', (test_uid,))
+    _pg_conn.commit()
+
+
 def audit_pg():
     with _pg_conn.cursor() as cursor:
         cursor.execute('SELECT COUNT (*) from users')
@@ -102,13 +115,16 @@ def audit_pg():
             "ORDER BY RANDOM() " \
             "LIMIT 1000")
         rand_users = cursor.fetchall()
+        audit_count = 0
         for u in rand_users:
+            audit_count += 1
             uid, uname, migrated, storymaps = u
             mongo_user = _users.find_one({'uid': uid})
             assert uid == mongo_user['uid']
             assert uname == mongo_user['uname']
             assert migrated == mongo_user['migrated']
             assert storymaps == mongo_user['storymaps']
+        print(f'Audited {audit_count} users')
 
 
 def get_pg_user(uid):
@@ -117,6 +133,8 @@ def get_pg_user(uid):
             "SELECT uid, uname, migrated, storymaps FROM users " \
             "WHERE uid=%s", (uid,))
         u = cursor.fetchone()
+    if u is not None:
+        u = dict(u)
     return u
 
 
@@ -152,16 +170,24 @@ def create_user(uid, uname, migrated=1, storymaps=None):
 
 
 def get_user(uid):
-    # for pg: get_pg_user(uid)
+    # for mongo:
     user = _users.find_one({'uid': uid})
     if user and 'google' in user:
         del user['google']
+
+    # for pg:
+    #user = get_pg_user(uid)
+
     return user
 
 
 def save_user(user):
-    _users.save(user)
+    user = copy.copy(user)
     save_pg_user(user)
+    mongo_user = _users.find_one({'uid': user['uid']})
+    if mongo_user:
+        user['_id'] = mongo_user['_id']
+    _users.save(user)
 
 
 def find_users(uname=None, uname__like=None, uid=None, migrated=None,
