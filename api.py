@@ -257,7 +257,7 @@ def google_auth_verify():
             raise Exception('Could not get Google user ID')
 
         uid = _get_uid('google:'+info['id'])
-        if 'stg-storymap.knightlab.com' in domains and not info['id'] in allowed_ids:
+        if 'stg-storymap.knightlab.com' in domains and not uid in admins:
             raise Exception(
                 "You are not authorized to access this page. Please send the " \
                 "following information to support@knightlab.zendesk.com: " \
@@ -915,7 +915,7 @@ build_dir = os.path.join(settings.PROJECT_ROOT, 'build')
 compiled_dir = os.path.join(settings.PROJECT_ROOT, 'compiled')
 templates_dir = os.path.join(settings.PROJECT_ROOT, 'compiled/templates')
 domains = os.environ.get('APPLICATION_DOMAINS')
-allowed_ids = os.environ.get('ALLOWED_IDS', '').split(',')
+admins = os.environ.get('ADMINS', '').split(' ')
 
 @app.route('/robots.txt')
 def robots_txt():
