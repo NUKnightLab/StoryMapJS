@@ -183,12 +183,16 @@ def get_user(uid):
 
 
 def save_user(user):
-    user = copy.copy(user)
-    save_pg_user(user)
-    mongo_user = _users.find_one({'uid': user['uid']})
+    """The time requirement for saving a user in Mongo is enough that record
+    audits usually show at least a few mismatched records. Trying to mitigate
+    that by saving the Mongo record first.
+    """
+    user_copy = copy.copy(user)
+    mongo_user = _users.find_one({'uid': user_copy['uid']})
     if mongo_user:
-        user['_id'] = mongo_user['_id']
-    _users.save(user)
+        user_copy['_id'] = mongo_user['_id']
+    _users.save(user_copy)
+    save_pg_user(user)
 
 
 def find_users(uname=None, uname__like=None, uid=None, migrated=None,
