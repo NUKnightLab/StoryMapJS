@@ -172,12 +172,12 @@ def create_user(uid, uname, migrated=1, storymaps=None):
 
 def get_user(uid):
     # for mongo:
-    user = _users.find_one({'uid': uid})
-    if user and 'google' in user:
-        del user['google']
+    #user = _users.find_one({'uid': uid})
+    #if user and 'google' in user:
+    #    del user['google']
 
     # for pg:
-    #user = get_pg_user(uid)
+    user = get_pg_user(uid)
 
     return user
 
