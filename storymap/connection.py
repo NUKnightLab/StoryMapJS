@@ -125,7 +125,6 @@ def audit_pg():
             assert uid == mongo_user['uid']
             assert uname == mongo_user['uname']
             assert migrated == mongo_user['migrated']
-            assert storymaps == mongo_user['storymaps']
             if storymaps != mongo_user['storymaps']:
                 print(storymaps)
                 bad_storymaps_count += 1
