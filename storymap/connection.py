@@ -117,6 +117,7 @@ def audit_pg():
             #"LIMIT 1000")
         rand_users = cursor.fetchall()
         audit_count = 0
+        bad_storymaps_count = 0
         for u in rand_users:
             audit_count += 1
             uid, uname, migrated, storymaps = u
@@ -125,7 +126,11 @@ def audit_pg():
             assert uname == mongo_user['uname']
             assert migrated == mongo_user['migrated']
             assert storymaps == mongo_user['storymaps']
+            if storymaps != mongo_user['storymaps']:
+                print(storymaps)
+                bad_storymaps_count += 1
         print(f'Audited {audit_count} users')
+        print(f'{bad_storymaps_count} mismatched')
 
 
 def get_pg_user(uid):
