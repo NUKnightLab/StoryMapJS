@@ -5,8 +5,6 @@ import sys
 import os
 import psycopg2
 import psycopg2.extras
-import pymongo
-import mongomock
 from psycopg2.sql import SQL, Literal
 
 psycopg2.extensions.register_adapter(dict, psycopg2.extras.Json)
@@ -19,6 +17,7 @@ settings = sys.modules[os.environ['FLASK_SETTINGS_MODULE']]
 print('db host', settings.DATABASES['default']['HOST'])
 print('db port', int(settings.DATABASES['default']['PORT']))
 
+
 _pg_conn = psycopg2.connect(
     host=settings.DATABASES['pg']['HOST'],
     port=settings.DATABASES['pg']['PORT'],
@@ -26,6 +25,12 @@ _pg_conn = psycopg2.connect(
     user=settings.DATABASES['pg']['USER'],
     password=settings.DATABASES['pg']['PASSWORD'])
 
+
+### Consolidated mongo resources. TODO: Remove these
+import pymongo
+import mongomock
+
+USE_MONGO = True
 
 if settings.TEST_MODE:
     _conn = mongomock.MongoClient()
@@ -43,6 +48,8 @@ _users = _db['users']
 # Ensure indicies
 _users.ensure_index('uid')
 _users.ensure_index('uname')
+
+### /END consolidated mongo resources
 
 
 ### Postgres ###
@@ -63,6 +70,7 @@ def create_pg_user(uid, uname, migrated=1, storymaps=None, cursor=None):
 
 def migrate_pg(drop_table=False):
     # Checked max length of uname in mongo was 71 characters
+    raise Exception('Migration currently unavailable')
     if drop_table:
         with _pg_conn.cursor() as cursor:
             cursor.execute('DROP TABLE IF EXISTS users;')
@@ -92,13 +100,16 @@ def delete_test_user():
     Use for testing new-user workflow
     """
     test_uid = '6331e0e40cd0ea0a72a130f6b352b106'
-    _users.remove({ 'uid': test_uid })
+    if USE_MONGO:
+        _users.remove({ 'uid': test_uid })
     with _pg_conn.cursor() as cursor:
         cursor.execute('DELETE FROM users where uid=%s', (test_uid,))
     _pg_conn.commit()
 
 
 def audit_pg():
+    if not USE_MONGO:
+        print('Mongo usage is disabled. Expect extreme divergence between databases!')
     with _pg_conn.cursor() as cursor:
         cursor.execute('SELECT COUNT (*) from users')
         count = cursor.fetchone()[0]
@@ -165,16 +176,20 @@ def save_pg_user(user):
 def create_user(uid, uname, migrated=1, storymaps=None):
     if storymaps is None:
         storymaps = {}
-    _users.insert({
-        'uid': uid,
-        'uname': uname,
-        'migrated': migrated,
-        'storymaps': storymaps
-    })
+    if USE_MONGO:
+        _users.insert({
+            'uid': uid,
+            'uname': uname,
+            'migrated': migrated,
+            'storymaps': storymaps
+        })
     create_pg_user(uid, uname, migrated=1, storymaps=storymaps)
 
 
 def get_user(uid):
+    # We have fully cut-over user retrieval to be from pg now instead of mongo
+    # TODO: Delete these mongo lines when consolidated mongo resources are
+    # also deleted.
     # for mongo:
     #user = _users.find_one({'uid': uid})
     #if user and 'google' in user:
@@ -192,10 +207,11 @@ def save_user(user):
     that by saving the Mongo record first.
     """
     user_copy = copy.copy(user)
-    mongo_user = _users.find_one({'uid': user_copy['uid']})
-    if mongo_user:
-        user_copy['_id'] = mongo_user['_id']
-    _users.save(user_copy)
+    if USE_MONGO:
+        mongo_user = _users.find_one({'uid': user_copy['uid']})
+        if mongo_user:
+            user_copy['_id'] = mongo_user['_id']
+        _users.save(user_copy)
     save_pg_user(user)
 
 
