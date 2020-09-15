@@ -30,7 +30,7 @@ _pg_conn = psycopg2.connect(
 import pymongo
 import mongomock
 
-USE_MONGO = True
+USE_MONGO = False
 
 if settings.TEST_MODE:
     _conn = mongomock.MongoClient()
