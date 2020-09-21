@@ -20,6 +20,13 @@ DATABASES = {
         'NAME': env['DB_NAME__DEFAULT'],
         'HOST': env['DB_HOST__DEFAULT'],
         'PORT': env['DB_PORT__DEFAULT']
+    },
+    'pg': {
+        'HOST': env.get('PG_HOST', 'pg'),
+        'PORT': env.get('PG_PORT', '5432'),
+        'NAME': env.get('PG_NAME', 'storymap'),
+        'USER': env.get('PG_USER', 'storymap'),
+        'PASSWORD': env.get('PG_PASSWORD', 'storymap')
     }
 }
 
@@ -36,7 +43,8 @@ AWS_SECRET_ACCESS_KEY = env['AWS_SECRET_ACCESS_KEY']
 AWS_ENDPOINT_URL = env.get('AWS_ENDPOINT_URL')
 GOOGLE_CLIENT_ID = env['GOOGLE_CLIENT_ID']
 GOOGLE_CLIENT_SECRET = env['GOOGLE_CLIENT_SECRET']
-ADMINS = env['ADMINS'].split(',')
+ADMINS = env['ADMINS'].split(' ')
+
 
 STORYMAPJS_DIRECTORY = env['STORYMAPJS_DIRECTORY']
 

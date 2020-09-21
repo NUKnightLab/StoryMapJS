@@ -1,27 +1,30 @@
 version: '3'
 
-# Runs the Django development server, which is less than ideal in terms of
-# replicating the deployment environment locally -- for which, the
-# docker-compose-local.yml file is provided. However, due to lack of a good solution
-# for static file development in a more deployment-like configuration, this
-# current compose file is provided for development.
+# The default docker-compose file for local development
 
-# web service mount to apps location so that development updates in the application
-# are reflected in the container.
+# Usage:
+#
+#  $ docker-compose build
+#  $ docker-compose up
+#
+#  Navigate to https://localhost
+#
+# See QUICKSTART.md for preliminaries before running this stack.
 
-# Note: the db build will create the default postgres database and user. To
-# create the application database, run `initdb.sh` after building.
+# Runs the Flask development server. This stack is sufficient for most
+# development needs and so is the default docker-compose option.
 
 services:
+
   app:
     restart: always
     build: .
     ports:
       - "443:5000"
-      - "80:5000"
     links:
       - mongo:mongo
       - localstack:localstack
+      - pg:pg
     volumes:
       - .:/usr/src/apps/StoryMapJS
       - .localstack:/usr/src/apps/StoryMapJS/.localstack
@@ -29,17 +32,7 @@ services:
     command: python api.py -s -p 5000
     depends_on:
       - mongo
-
-  static:
-    restart: always
-    image: nginx:alpine
-    volumes:
-      - ./compiled:/var/www
-      - ./localhost/default.conf:/etc/nginx/conf.d/default.conf
-      - .localstack/server.test.pem.crt:/etc/nginx/conf.d/server.crt
-      - .localstack/server.test.pem.key:/etc/nginx/conf.d/server.key
-    ports:
-      - "3000:443"
+      - pg
 
   mongo:
     image: mongo:2.4
@@ -48,20 +41,30 @@ services:
       - mongodata:/data/db
     ports:
       - "27017-27019:27017-27019"
-      - "28017:28017"
     environment:
       MONGO_INITDB_DATABASE: storymapjs
+
+  pg:
+    image: postgres:11.6
+    restart: always
+    environment:
+      POSTGRES_USER: storymap
+      POSTGRES_DB: storymap
+      POSTGRES_PASSWORD: storymap
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./.pgdata:/var/lib/postgresql/data/
 
   localstack:
     image: localstack/localstack-light
     restart: always
     environment:
       USE_LIGHT_IMAGE: 1
-      USE_SSL: 1
       LOCALSTACK_SERVICES: s3
       DATA_DIR: /tmp/localstack/data
     ports:
-      - '4563-4599:4563-4599'
+      - "4566:4566"
     volumes:
       - ./.localstack:/tmp/localstack
       - /var/run/docker.sock:/var/run/docker.sock

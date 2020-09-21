@@ -65,4 +65,4 @@ openssl x509 \
 cat $CERTDIR/$FN.key $CERTDIR/$FN.crt > $CERTDIR/$FN
 
 echo "Trust cert. E.g.: Apple Keychain > System. File > Import items: $CERTDIR/$FN\n\nSet to trust SSL."
-echo "\nFor Firefox: Preferences > Certificates > View Certificates > Import $CERTDIR/$FN."
+echo "\nFor Firefox: Preferences > Certificates > View Certificates > Your Certificates > Import $CERTDIR/$CA.pem."

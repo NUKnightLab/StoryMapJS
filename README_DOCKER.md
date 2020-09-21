@@ -1,4 +1,5 @@
-
+This README is a work in progress. Please see QUICKSTART.md for the current
+development onboarding process.
 
 ## Development
 
@@ -73,4 +74,10 @@ build details.
 
 ```
 $ docker-compose up
+```
+
+### Connecting to postgres
+
+```
+ $ docker-compose run pg psql -h pg -U storymap
 ```

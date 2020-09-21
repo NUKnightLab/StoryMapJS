@@ -22,8 +22,13 @@ init_env_common:
   AWS_SECRET_ACCESS_KEY: "{{ vault_aws_secret_access_key }}"
   GOOGLE_CLIENT_ID: "{{ vault_google_client_id }}"
   GOOGLE_CLIENT_SECRET: "{{ vault_google_client_secret }}"
-  ADMINS: "{{ vault_admins | join(',') }}"
+  ADMINS: "{{ vault_admins | join(' ') }}"
   ALLOWED_IDS: "{{ vault_allowed_ids }}"
+  PG_HOST: "{{ vault_pg_host }}"
+  PG_PORT: "{{ vault_pg_port }}"
+  PG_NAME: "{{ vault_pg_name }}"
+  PG_USER: "{{ vault_pg_user }}"
+  PG_PASSWORD: "{{ vault_pg_password }}"
 
 # Flask specific configs
 static_dir: "{{ deploy_dir }}/static"

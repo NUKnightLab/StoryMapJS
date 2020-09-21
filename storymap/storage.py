@@ -133,7 +133,8 @@ def all_keys():
     for item in _key_list:
         if item == key_prefix:
             continue
-        yield item.key
+        #yield item.key
+        yield item
 
 
 @_reraise_s3response
