@@ -13,6 +13,6 @@ VCO.Language = {
 
         collapse_toggle: "ocultar mapa",
         uncollapse_toggle: "mostrar mapa",
-  			swipe_to_navigate: "Swipe to Navigate<br><span class='vco-button'>OK</span>"
+        swipe_to_navigate: "Deslize para navegar<br><span class='vco-button'>OK</span>"
     }
 };
