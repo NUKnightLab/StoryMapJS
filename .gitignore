@@ -1,3 +1,5 @@
+.pgdata/
+
 .srl
 *.pyc
 .env
