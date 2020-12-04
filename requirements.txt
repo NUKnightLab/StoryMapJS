@@ -4,7 +4,7 @@ boto3==1.14.10
 cffi==1.14.1
 chardet==3.0.4
 Click==7.0
-cryptography==2.9.2
+cryptography==3.2
 decorator==4.0.10
 docopt==0.6.1
 enum34==1.1.6
