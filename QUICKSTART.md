@@ -63,6 +63,12 @@ After the services come up, create the required buckets:
  $ ./makebuckets.sh
 ```
 
+### Create the users table
+
+```
+ $ ./create-tables.sh
+```
+
 
 ### Open application
 
