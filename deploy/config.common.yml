@@ -1,10 +1,18 @@
 project_name: StoryMapJS
-gitdeploy_version: "1.0.5"
-python: python3.7
-port: 9014
+gitdeploy_version: "1.0.6"
+#python: python3.7
+#port: 9014
+
+playbooks:
+  - playbook.deploy-repo.yml
+  - playbook.build-containers.yml
+  - playbook.deploy-web.yml
+
+
 #docker_compose_file: "docker-compose.ec2.yml"
-type: flask
-pwd: "{{ lookup('env', 'PWD') }}"
+#type: flask
+#pwd: "{{ lookup('env', 'PWD') }}"
+
 # these will be merged with deployment-specific env into init_env
 init_env_common:
   PROJECT_NAME: "{{ project_name }}"
@@ -31,31 +39,32 @@ init_env_common:
   PG_PASSWORD: "{{ vault_pg_password }}"
 
 # Flask specific configs
-static_dir: "{{ deploy_dir }}/static"
-static_dest: "/var/www/{{ project_name }}"
+#static_dir: "{{ deploy_dir }}/static"
+#static_dest: "/var/www/{{ project_name }}"
 
-application_dir: "{{ deploy_dir }}" # application dir could be a subdirectory
-service_name: "storymap"
+#application_dir: "{{ deploy_dir }}" # application dir could be a subdirectory
+#service_name: "storymap"
 
 # Configs below will not usually change
-deploy_dir: "{{ install_root }}/{{ project_name }}"
-env_run_script: "direnv exec {{ deploy_dir }}"
-env_file: "{{ deploy_dir }}/.env"
-envrc_file: "{{ deploy_dir }}/.envrc"
-project_repo: "git@github.com:NUKnightLab/{{ project_name }}.git"
-requirements_file: "{{ deploy_dir }}/requirements.txt"
-virtualenv: "{{ virtualenv_root }}/venv"
-wsgi_application: "core.wsgi:application"
 
-# Configs common to all projects
-application_user: apps
 install_root: "/usr/src/apps"
-virtualenv_root: "{{ deploy_dir }}"
+deploy_dir: "{{ install_root }}/{{ project_name }}"
 
-nginx_conf: "{{ deploy_dir }}/nginx/conf.d/{{ project_name }}.conf"
+#env_run_script: "direnv exec {{ deploy_dir }}"
+#env_file: "{{ deploy_dir }}/.env"
+#envrc_file: "{{ deploy_dir }}/.envrc"
+project_repo: "git@github.com:NUKnightLab/{{ project_name }}.git"
+#requirements_file: "{{ deploy_dir }}/requirements.txt"
+#virtualenv: "{{ virtualenv_root }}/venv"
+#wsgi_application: "core.wsgi:application"
+#
+# Configs common to all projects
+#application_user: apps
+#virtualenv_root: "{{ deploy_dir }}"
+
 
 # environment keys must match deployment branch names. Value is the name
 # of the branch to be merged into this environment during deployment.
-supported_envs:
-  stg: master
-  prd: stg
+#supported_envs:
+#  stg: master
+#  prd: stg

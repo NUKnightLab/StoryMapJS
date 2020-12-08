@@ -1,0 +1,16 @@
+## Ansible docs indicate that we should be able to
+## [factorvars_files intoroles](https://docs.ansible.com/ansible/latest/user_guide/playbooks_reuse_roles.html#roles)
+## but do not indicate how. Including `vars_files` in meta does not work.
+
+## Ideally, a "deploy" role would enable factoring out these first few common lines.
+
+- hosts: "{{ env }}"
+  vars_files:
+    - "{{ config_dir }}/config.common.yml"
+    - "{{ config_dir }}/config.{{ env }}.yml"
+    - "{{ vault }}"
+  gather_facts: false
+
+  roles:
+    - role: deploy
+    - role: repo
