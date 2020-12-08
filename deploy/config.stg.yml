@@ -16,6 +16,6 @@ init_env_stg:
 
 # Note that env vars set in the upstart config will also be set when using the
 # modified manage.py file for db migration and custom management commands
-#init_env: "{{ init_env_common|combine(init_env_stg) }}"
+init_env: "{{ init_env_common|combine(init_env_stg) }}"
 
 nginx_conf: "{{ deploy_dir }}/deploy/nginx/conf.d/storymap-stg.conf"

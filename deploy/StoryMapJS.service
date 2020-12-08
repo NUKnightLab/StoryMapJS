@@ -1,0 +1,13 @@
+[Unit]
+Description=StoryMapJS
+After=network.target
+
+[Service]
+User=apps
+Group=apps
+WorkingDirectory=/usr/src/apps/StoryMapJS
+EnvironmentFile=/usr/src/apps/StoryMapJS/.env
+ExecStart=/usr/src/apps/StoryMapJS/venv/bin/gunicorn -b :9014 --workers 3 --reload core.wsgi:application
+
+[Install]
+WantedBy=multi-user.target
