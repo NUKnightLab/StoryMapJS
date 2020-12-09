@@ -1,0 +1,18 @@
+
+[Unit]
+Description={{ project_name }}
+After=network.target
+
+[Service]
+User={{ application_user }}
+Group={{ application_user }}
+WorkingDirectory={{ application_dir }}
+EnvironmentFile={{ env_file }}
+{% if gunicorn_reload %}
+ExecStart={{ virtualenv}}/bin/gunicorn -b :{{ service_port }} --workers 3 --reload {{ wsgi_application }}
+{% else %}
+ExecStart={{ virtualenv}}/bin/gunicorn -b :{{ service_port }} --workers 3 {{ wsgi_application }}
+{% endif %}
+
+[Install]
+WantedBy=multi-user.target

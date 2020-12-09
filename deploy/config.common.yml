@@ -1,7 +1,7 @@
 project_name: StoryMapJS
 gitdeploy_version: "1.0.6"
-#python: python3.7
-#port: 9014
+python: python3.7
+service_port: 9014
 
 playbooks:
   - playbook.deploy-repo.yml
@@ -43,8 +43,8 @@ init_env_common:
 #static_dir: "{{ deploy_dir }}/static"
 #static_dest: "/var/www/{{ project_name }}"
 
-#application_dir: "{{ deploy_dir }}" # application dir could be a subdirectory
-#service_name: "storymap"
+application_dir: "{{ deploy_dir }}" # application dir could be a subdirectory
+service_name: "storymap"
 
 # Configs below will not usually change
 
@@ -53,12 +53,12 @@ deploy_dir: "{{ install_root }}/{{ project_name }}"
 service_conf: "{{ deploy_dir }}/deploy/{{ project_name }}.service"
 
 #env_run_script: "direnv exec {{ deploy_dir }}"
-#env_file: "{{ deploy_dir }}/.env"
-#envrc_file: "{{ deploy_dir }}/.envrc"
+env_file: "{{ deploy_dir }}/.env"
+envrc_file: "{{ deploy_dir }}/.envrc"
 project_repo: "git@github.com:NUKnightLab/{{ project_name }}.git"
-#requirements_file: "{{ deploy_dir }}/requirements.txt"
-#virtualenv: "{{ virtualenv_root }}/venv"
-#wsgi_application: "core.wsgi:application"
+requirements_file: "{{ deploy_dir }}/requirements.txt"
+virtualenv: "{{ deploy_dir }}/.venv"
+wsgi_application: "core.wsgi:application"
 #
 # Configs common to all projects
 #application_user: apps
