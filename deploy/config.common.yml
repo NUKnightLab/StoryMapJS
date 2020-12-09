@@ -4,15 +4,7 @@ python: python3.7
 service_port: 9014
 
 playbooks:
-  - playbook.deploy-repo.yml
-  - playbook.create-env.yml
-  - playbook.deploy-service.yml
-  - playbook.deploy-web.yml
-
-
-#docker_compose_file: "docker-compose.ec2.yml"
-#type: flask
-#pwd: "{{ lookup('env', 'PWD') }}"
+  - playbook.deploy.yml
 
 # these will be merged with deployment-specific env into init_env
 init_env_common:
