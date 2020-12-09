@@ -41,7 +41,7 @@ service_name: "storymap"
 
 # Configs below will not usually change
 
-install_root: "/usr/src/apps"
+install_root: "/home/apps/sites"
 deploy_dir: "{{ install_root }}/{{ project_name }}"
 service_conf: "{{ deploy_dir }}/deploy/{{ project_name }}.service"
 
