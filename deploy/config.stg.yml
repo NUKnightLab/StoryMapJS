@@ -1,13 +1,8 @@
 domains: "stg-storymap.knightlab.com"
-gunicorn_reload: True # generally True on staging only
-gunicorn_workers: 1
+cnames: "storymap.knilab.com storymapjs.knilab.com"
 
 init_env_stg:
   CDN_URL: "//cdn.knightlab.com/libs/storymapjs/dev/"
 
-# Note that env vars set in the upstart config will also be set when using the
-# modified manage.py file for db migration and custom management commands
 init_env: "{{ init_env_common|combine(init_env_stg) }}"
-
-
 service_exec: "{{ virtualenv}}/bin/gunicorn -b :{{ service_port }} --workers 1 --reload {{ wsgi_application }}"
