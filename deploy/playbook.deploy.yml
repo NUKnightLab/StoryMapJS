@@ -6,7 +6,7 @@
   gather_facts: false
 
   roles:
-    - role: deploy
+    - role: knightlab
     - role: repo
     - role: dotenv
     - role: virtualenv

@@ -1,21 +1,10 @@
 domains: "stg-storymap.knightlab.com"
-#cnames: "storymapjs.knilab.com"
-#static_bucket: "media.knilab.com"
 gunicorn_reload: True # generally True on staging only
-#ssl:
-#  ssl_certificate: "/etc/nginx/ssl/knilab/knilab-bundle.crt"
-#  ssl_certificate_key: "/etc/nginx/ssl/knilab/knilab-com.key"
+gunicorn_workers: 1
 
 init_env_stg:
-  #STATIC_URL: "//stg-storymap.knightlab.com/static/"
   CDN_URL: "//cdn.knightlab.com/libs/storymapjs/dev/"
-  #DB_ENGINE__DEFAULT: "mongo"
-  #DB_NAME__DEFAULT: "storymapjs"
-  #DB_HOST__DEFAULT: "stage-mongo1.knilab.com"
-  #DB_PORT__DEFAULT: "27017"
 
 # Note that env vars set in the upstart config will also be set when using the
 # modified manage.py file for db migration and custom management commands
 init_env: "{{ init_env_common|combine(init_env_stg) }}"
-
-nginx_conf: "{{ deploy_dir }}/deploy/nginx/conf.d/storymap-stg.conf"
