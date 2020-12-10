@@ -1,0 +1,24 @@
+# Example role-specific playbook to demonstrate playbook specified execution
+# in lieu of the playbooks defined by the configs. Normally reserved for
+# troubleshooting, but can also be used for executing regular tasks that are
+# orthogonal to the standard set of deployment tasks.
+
+# Execute with, e.g.:
+# git deploy --playbook playbook.repo.yml stg v1.0 
+
+# Multiple playbooks may be specified with multiple invocations of the
+# --playbook parameter
+
+# To see the available playbooks (note the dash):
+# git-deploy --help
+
+- hosts: "{{ env }}"
+  vars_files:
+    - "{{ config_dir }}/config.common.yml"
+    - "{{ config_dir }}/config.{{ env }}.yml"
+    - "{{ vault }}"
+  gather_facts: false
+
+  roles:
+    - role: knightlab
+    - role: repo
