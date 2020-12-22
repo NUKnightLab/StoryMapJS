@@ -1,3 +1,4 @@
+import { extend } from "../core/Util"
 /*	Events
 	adds custom events functionality to a class
 ================================================== */
@@ -40,7 +41,7 @@ export default class Events {
 			return this;
 		}
 
-		var event = VCO.Util.extend({
+		var event = extend({
 			type: type,
 			target: this
 		}, data);

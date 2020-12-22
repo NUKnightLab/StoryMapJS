@@ -7,6 +7,7 @@
     "test": "tests"
   },
   "dependencies": {
+    "leaflet": "^0.7.2",
     "uglify-js": "^2.8.29"
   },
   "devDependencies": {
@@ -16,6 +17,7 @@
     "file-loader": "^6.2.0",
     "fs-extra": "^9.0.1",
     "html-webpack-plugin": "^4.5.0",
+    "jstrace": "^0.3.0",
     "less": "^3.13.0",
     "less-loader": "^7.1.0",
     "style-loader": "^2.0.0",

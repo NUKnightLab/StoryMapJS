@@ -1,7 +1,9 @@
 import { classMixin } from "../../core/Util";
-import { L } from "./leaflet-src/Leaflet";
+import { LeafletModule } from "leaflet";
 import Map from "../Map";
 import Events from "../../core/Events";
+import ZoomifyTileLayer from "./extensions/Leaflet.TileLayer.Zoomify";
+import LeafletMapMarker from "./MapMarker.Leaflet";
 /*	Map.Leaflet
 	Creates a Map using Leaflet
 ================================================== */
@@ -202,7 +204,7 @@ export default class Leaflet extends Map {
 				_options.tolerance 		= this.options.zoomify.tolerance || 0.9;
 				_options.attribution 	= _attribution_knightlab + this.options.zoomify.attribution;
 
-				_tilelayer = new L.tileLayer.zoomify(this.options.zoomify.path, _options);
+				_tilelayer = new ZoomifyTileLayer(this.options.zoomify.path, _options);
 				//this._image_layer = new L.imageOverlay(this.options.zoomify.path + "TileGroup0/0-0-0.jpg", _tilelayer.getZoomifyBounds(this._map));
 				break;
 			case 'osm':
@@ -250,7 +252,7 @@ export default class Leaflet extends Map {
 	/*	Marker
 	================================================== */
 	_createMarker(d) {
-		var marker = new MapMarker.Leaflet(d, this.options);
+		var marker = new LeafletMapMarker(d, this.options);
 		marker.on('markerclick', this._onMarkerClick, this);
 		this._addMarker(marker);
 		this._markers.push(marker);

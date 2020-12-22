@@ -1,4 +1,5 @@
-import { classMixin } from "../core/Util";
+import { classMixin, mergeData } from "../core/Util";
+import Dom from "../dom/Dom";
 import Events from "../core/Events";
 import DomMixins from "../dom/DomMixins";
 /*	Map
@@ -31,7 +32,7 @@ export default class Map {
 		if (typeof elem === 'object') {
 			this._el.container = elem;
 		} else {
-			this._el.container = VCO.Dom.get(elem);
+			this._el.container = Dom.get(elem);
 		}
 		
 		// LOADED
@@ -127,8 +128,8 @@ export default class Map {
 		};
 		
 		// Merge Data and Options
-		VCO.Util.mergeData(this.options, options);
-		VCO.Util.mergeData(this.data, data);
+		mergeData(this.options, options);
+		mergeData(this.data, data);
 		
 		this._initLayout();
 		this._initEvents();
@@ -597,12 +598,12 @@ export default class Map {
 	_initLayout() {
 		
 		// Create Layout
-		this._el.map_mask 	= VCO.Dom.create("div", "vco-map-mask", this._el.container);
+		this._el.map_mask 	= Dom.create("div", "vco-map-mask", this._el.container);
 		
 		if (this.options.map_as_image) {
-			this._el.map 	= VCO.Dom.create("div", "vco-map-display vco-mapimage-display", this._el.map_mask);
+			this._el.map 	= Dom.create("div", "vco-map-display vco-mapimage-display", this._el.map_mask);
 		} else {
-			this._el.map 	= VCO.Dom.create("div", "vco-map-display", this._el.map_mask);
+			this._el.map 	= Dom.create("div", "vco-map-display", this._el.map_mask);
 		}
 		
 		

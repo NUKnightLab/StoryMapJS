@@ -1,10 +1,13 @@
-import { classMixin, mergeData, trace, updateData } from "../core/Util";
-import Dom from "../dom/Dom";
-import Ease from "../animation/Ease";
-import { Language } from "../language/Language";
-//import { I18NMixins } from "../language/I18NMixins";
-import Events from "../core/Events";
-import Leaflet from "../map/leaflet/Map.Leaflet";
+import { classMixin, mergeData, trace, updateData } from "../core/Util"
+import Dom from "../dom/Dom"
+import Ease from "../animation/Ease"
+import { Language } from "../language/Language"
+//import { I18NMixins } from "../language/I18NMixins"
+import Events from "../core/Events"
+import Leaflet from "../map/leaflet/Map.Leaflet"
+import MenuBar from "../ui/MenuBar"
+import StorySlider from "../slider/StorySlider"
+import { mobile as BROWSER_MOBILE } from "../core/Browser"
 /*	StoryMap
 	Designed and built by Zach Wise at VéritéCo
 
@@ -384,6 +387,7 @@ class StoryMap {
 	/* Initialize the data
 	================================================== */
   _initData(data) {
+        console.log(data);
 		var self = this;
 
 		if (typeof data === 'string') {
@@ -523,7 +527,7 @@ class StoryMap {
 		this._el.storyslider.style.top 	= "1px";
 
 		// Create Map using preferred Map API
-		this._map = new Map.Leaflet(this._el.map, this.data, this.options);
+		this._map = new Leaflet(this._el.map, this.data, this.options);
 		this.map = this._map._map; // For access to Leaflet Map.
 		this._map.on('loaded', this._onMapLoaded, this);
 

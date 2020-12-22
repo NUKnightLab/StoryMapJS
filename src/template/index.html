@@ -29,11 +29,23 @@
     <div id='storymap-embed'></div>
 
     <script>
+    var storymap;
+    function buildStoryMap(data) {
+        console.log('building storymap');
+        console.log(data);
+        let options = {};
+        let storymapTitle = 'My StoryMap';
+	    storymap = new KLStoryMap.StoryMap('storymap-embed', data, options, {title: storymapTitle});
+    }
+
     (function() {
         var data = {};
         var options = {};
         var storymapTitle = 'Test';
-	    storymap = new KLStoryMap.StoryMap('storymap-embed', data, options, {title: storymapTitle});
+        let url = 'https://uploads.knightlab.com/storymapjs/a1a349b51799ee49e96bed10cc235e7f/aryas-journey/published.json';
+        fetch(url)
+            .then(response => response.json())
+            .then(data => buildStoryMap(data));
     })();
     </script>
 
