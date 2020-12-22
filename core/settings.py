@@ -15,12 +15,12 @@ STATIC_URL = env['STATIC_URL']
 CDN_URL = env['CDN_URL']
 
 DATABASES = {
-    'default': {
-        'ENGINE': env['DB_ENGINE__DEFAULT'],
-        'NAME': env['DB_NAME__DEFAULT'],
-        'HOST': env['DB_HOST__DEFAULT'],
-        'PORT': env['DB_PORT__DEFAULT']
-    },
+    #'default': {
+    #    'ENGINE': env['DB_ENGINE__DEFAULT'],
+    #    'NAME': env['DB_NAME__DEFAULT'],
+    #    'HOST': env['DB_HOST__DEFAULT'],
+    #    'PORT': env['DB_PORT__DEFAULT']
+    #},
     'pg': {
         'HOST': env.get('PG_HOST', 'pg'),
         'PORT': env.get('PG_PORT', '5432'),

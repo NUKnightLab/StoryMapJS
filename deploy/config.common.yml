@@ -1,15 +1,18 @@
 project_name: StoryMapJS
-gitdeploy_version: "1.0.5"
+service_name: "{{ project_name|lower }}"
+gitdeploy_version: "1.0.6"
 python: python3.7
-port: 9014
-#docker_compose_file: "docker-compose.ec2.yml"
-type: flask
-pwd: "{{ lookup('env', 'PWD') }}"
-# these will be merged with deployment-specific env into init_env
+service_port: "{{ storymap_port }}"
+
+playbooks:
+  - playbook.deploy.yml
+
+# these will be merged with deployment-specific env into variable init_env
 init_env_common:
   PROJECT_NAME: "{{ project_name }}"
   APPLICATION_DOMAINS: "{{ domains }}" # space-delimited
   STORYMAPJS_DIRECTORY: "{{ deploy_dir }}"
+  STATIC_URL: "/static"
 
   # Flask specific
   FLASK_SECRET_KEY: "{{ vault_flask_secret_key }}"
@@ -30,32 +33,12 @@ init_env_common:
   PG_USER: "{{ vault_pg_user }}"
   PG_PASSWORD: "{{ vault_pg_password }}"
 
-# Flask specific configs
-static_dir: "{{ deploy_dir }}/static"
-static_dest: "/var/www/{{ project_name }}"
-
-application_dir: "{{ deploy_dir }}" # application dir could be a subdirectory
-service_name: "storymap"
-
-# Configs below will not usually change
+install_root: "/home/apps/sites"
 deploy_dir: "{{ install_root }}/{{ project_name }}"
-env_run_script: "direnv exec {{ deploy_dir }}"
+application_dir: "{{ deploy_dir }}" # application dir could be a subdirectory
 env_file: "{{ deploy_dir }}/.env"
 envrc_file: "{{ deploy_dir }}/.envrc"
+virtualenv: "{{ deploy_dir }}/.venv"
 project_repo: "git@github.com:NUKnightLab/{{ project_name }}.git"
 requirements_file: "{{ deploy_dir }}/requirements.txt"
-virtualenv: "{{ virtualenv_root }}/venv"
 wsgi_application: "core.wsgi:application"
-
-# Configs common to all projects
-application_user: apps
-install_root: "/usr/src/apps"
-virtualenv_root: "{{ deploy_dir }}"
-
-nginx_conf: "{{ deploy_dir }}/nginx/conf.d/{{ project_name }}.conf"
-
-# environment keys must match deployment branch names. Value is the name
-# of the branch to be merged into this environment during deployment.
-supported_envs:
-  stg: master
-  prd: stg

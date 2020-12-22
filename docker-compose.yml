@@ -22,7 +22,7 @@ services:
     ports:
       - "443:5000"
     links:
-      - mongo:mongo
+      #- mongo:mongo
       - localstack:localstack
       - pg:pg
     volumes:
@@ -31,18 +31,18 @@ services:
     env_file: .env
     command: python api.py -s -p 5000
     depends_on:
-      - mongo
+      #- mongo
       - pg
 
-  mongo:
-    image: mongo:2.4
-    restart: always
-    volumes:
-      - mongodata:/data/db
-    ports:
-      - "27017-27019:27017-27019"
-    environment:
-      MONGO_INITDB_DATABASE: storymapjs
+  #mongo:
+  #  image: mongo:2.4
+  #  restart: always
+  #  volumes:
+  #    - mongodata:/data/db
+  #  ports:
+  #    - "27017-27019:27017-27019"
+  #  environment:
+  #    MONGO_INITDB_DATABASE: storymapjs
 
   pg:
     image: postgres:11.6
@@ -69,5 +69,5 @@ services:
       - ./.localstack:/tmp/localstack
       - /var/run/docker.sock:/var/run/docker.sock
 
-volumes:
-  mongodata:
+#volumes:
+#  mongodata:
