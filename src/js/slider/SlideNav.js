@@ -2,8 +2,9 @@ import { classMixin, mergeData } from "../core/Util"
 import Dom from "../dom/Dom"
 import DomMixins from "../dom/DomMixins"
 import Events from "../core/Events"
+import Animate from "../animation/Animate"
 import { DomEvent } from "../dom/DomEvent"
-import { mobile as BROWSER_MOBILE } from "../core/Browser"
+import { Browser } from "../core/Browser"
 /*	SlideNav
 	Navigation for Slideshows
 ================================================== */
@@ -52,7 +53,7 @@ export default class SlideNav {
 		
 		this._el.container = Dom.create("div", "vco-slidenav-" + this.options.direction);
 		
-		if (BROWSER_MOBILE) {
+		if (Browser.mobile) {
 			this._el.container.setAttribute("ontouchstart"," ");
 		}
 		

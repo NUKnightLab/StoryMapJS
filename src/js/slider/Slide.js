@@ -3,11 +3,11 @@ import Events from "../core/Events"
 import Dom from "../dom/Dom"
 import DomMixins from "../dom/DomMixins"
 import Ease from "../animation/Ease"
-import { Animate } from "../animation/Animate"
+import Animate from "../animation/Animate"
 import Media from "../media/Media"
 import MediaType from "../media/MediaType"
 import Text from "../media/types/Text"
-import { mobile as BROWSER_MOBILE } from "../core/Browser"
+import { Browser } from "../core/Browser"
 /*	VCO.Slide
 	Creates a slide. Takes a data object and
 	populates the slide with content.
@@ -271,7 +271,7 @@ export default class Slide {
 			this.options.width 					= this._el.container.offsetWidth;
 		}
 		
-		if(BROWSER_MOBILE && (this.options.width <= this.options.skinny_size)) {
+		if(Browser.mobile && (this.options.width <= this.options.skinny_size)) {
 			pad_left 	= 0 + "px";
 			pad_right 	= 0 + "px";
 			new_width	= this.options.width - 0 + "px";

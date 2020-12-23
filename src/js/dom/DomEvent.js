@@ -1,5 +1,5 @@
 import { Draggable } from "../ui/Draggable";
-import { touch as BROWSER_TOUCH } from "../core/Browser";
+import { Browser } from "../core/Browser";
 import { stamp } from "../core/Util";
 
 /*	DomEvent
@@ -22,7 +22,7 @@ var DomEvent = {
 			return fn.call(context || obj, e || DomEvent._getEvent());
 		};
 
-		if (BROWSER_TOUCH && (type === 'dblclick') && this.addDoubleTapListener) {
+		if (Browser.touch && (type === 'dblclick') && this.addDoubleTapListener) {
 			this.addDoubleTapListener(obj, handler, id);
 		} else if ('addEventListener' in obj) {
 			if (type === 'mousewheel') {
@@ -57,7 +57,7 @@ var DomEvent = {
 			return;
 		}
 
-		if (BROWSER_TOUCH && (type === 'dblclick') && this.removeDoubleTapListener) {
+		if (Browser.touch && (type === 'dblclick') && this.removeDoubleTapListener) {
 			this.removeDoubleTapListener(obj, id);
 		} else if ('removeEventListener' in obj) {
 			if (type === 'mousewheel') {

@@ -7,7 +7,7 @@ import Events from "../core/Events"
 import Leaflet from "../map/leaflet/Map.Leaflet"
 import MenuBar from "../ui/MenuBar"
 import StorySlider from "../slider/StorySlider"
-import { mobile as BROWSER_MOBILE } from "../core/Browser"
+import { Browser } from "../core/Browser"
 /*	StoryMap
 	Designed and built by Zach Wise at VéritéCo
 

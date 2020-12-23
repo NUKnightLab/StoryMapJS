@@ -5,7 +5,7 @@ import Ease from "../animation/Ease"
 import DomMixins from "../dom/DomMixins"
 import { DomEvent } from "../dom/DomEvent"
 import { Language } from "../language/Language"
-import { mobile as BROWSER_MOBILE } from "../core/Browser"
+import { Browser } from "../core/Browser"
 
 /*	MenuBar
 	Draggable component to control size
@@ -126,7 +126,7 @@ export default class MenuBar {
 			this.show();
 			this._el.button_overview.style.display = "inline";
 			this.fire("collapse", {y:this.options.menubar_default_y});
-			if (BROWSER_MOBILE) {
+			if (Browser.mobile) {
 				this._el.button_collapse_toggle.innerHTML	= "<span class='vco-icon-arrow-up'></span>";
 			} else {
 				this._el.button_collapse_toggle.innerHTML	= Language.buttons.collapse_toggle + "<span class='vco-icon-arrow-up'></span>";
@@ -136,7 +136,7 @@ export default class MenuBar {
 			this.hide(25);
 			this._el.button_overview.style.display = "none";
 			this.fire("collapse", {y:1});
-			if (BROWSER_MOBILE) {
+			if (Browser.mobile) {
 				this._el.button_collapse_toggle.innerHTML	= "<span class='vco-icon-arrow-down'></span>";
 			} else {
 				this._el.button_collapse_toggle.innerHTML	= Language.buttons.uncollapse_toggle + "<span class='vco-icon-arrow-down'></span>";
@@ -165,7 +165,7 @@ export default class MenuBar {
 			this._el.button_overview.innerHTML			= Language.buttons.map_overview;
 		}
 		
-		if (BROWSER_MOBILE) {
+		if (Browser.mobile) {
 			
 			this._el.button_backtostart.innerHTML		= "<span class='vco-icon-goback'></span>";
 			this._el.button_collapse_toggle.innerHTML	= "<span class='vco-icon-arrow-up'></span>";

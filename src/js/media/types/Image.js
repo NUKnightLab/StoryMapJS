@@ -1,7 +1,7 @@
 import { Media } from "../Media"
 import Dom from "../../dom/Dom"
 import { Language } from "../../language/Language"
-import { firefox as BROWSER_FIREFOX } from "../../core/Browser"
+import { Browser } from "../../core/Browser"
 /*	VCO.Media.Image
 	Produces image assets.
 	Takes a data object and populates a dom object
@@ -40,7 +40,7 @@ export default class Image extends Media {
 	
 	_updateMediaDisplay(layout) {
 		
-		if(BROWSER_FIREFOX) { 
+		if(Browser.firefox) { 
 			//this._el.content_item.style.maxWidth = (this.options.width/2) - 40 + "px";
 			this._el.content_item.style.width = "auto";
 		}

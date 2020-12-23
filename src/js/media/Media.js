@@ -2,8 +2,7 @@ import { classMixin, mergeData, trace } from "../core/Util"
 import Dom from "../dom/Dom"
 import Events from "../core/Events"
 import Message from "../ui/Message"
-import { mobile as BROWSER_MOBILE } from "../core/Browser"
-import { firefox as BROWSER_FIREFOX } from "../core/Browser"
+import { Browser } from "../core/Browser"
 /*	VCO.Media
 	Main media template for media assets.
 	Takes a data object and populates a dom object
@@ -118,7 +117,7 @@ export class Media {
 		if (this._state.loaded) {
 			this._updateMediaDisplay(layout);
 
-			if (!BROWSER_MOBILE && layout != "portrait") {
+			if (!Browser.mobile && layout != "portrait") {
 				this._el.content_item.style.maxHeight = (this.options.height/2) + "px";
 			}
 
@@ -132,7 +131,7 @@ export class Media {
 			}
 
 			// Fix for max-width issues in Firefox
-			if (BROWSER_FIREFOX) {
+			if (Browser.firefox) {
 				if (this._el.content_item.offsetWidth > this._el.content_item.offsetHeight) {
 					this._el.content_item.style.width = "100%";
 					this._el.content_item.style.maxWidth = "100%";

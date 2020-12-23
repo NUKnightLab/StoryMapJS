@@ -10,7 +10,7 @@ ___deleteme__Animate(el, options) {
 };
 */
 
-export function Animate(el, options) {
+export default function Animate(el, options) {
     return storymapAnimate(el, options);
 }
 

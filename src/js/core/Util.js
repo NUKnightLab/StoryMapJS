@@ -1,5 +1,5 @@
 const debug = true;
-import { chrome as BROWSER_CHROME } from "../core/Browser"
+import { Browser } from "../core/Browser"
 import Emoji from "../library/Emoji"
 
 
@@ -153,7 +153,7 @@ export function hexToRgb(hex) {
 
 export function htmlify(str) {
     //if (str.match(/<\s*p[^>]*>([^<]*)<\s*\/\s*p\s*>/)) {
-    if (BROWSER_CHROME) {
+    if (Browser.chrome) {
         str = Emoji(str);
     }
     if (str.match(/<p>[\s\S]*?<\/p>/)) {

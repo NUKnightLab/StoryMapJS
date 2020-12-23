@@ -1,13 +1,13 @@
 import { classMixin, mergeData, unique_ID, findArrayNumberByUniqueID, hexToRgb } from "../core/Util"
 import Dom from "../dom/Dom"
+import { DomEvent } from "../dom/DomEvent"
 import Events from "../core/Events"
 import Ease from "../animation/Ease"
 import { Language } from "../language/Language"
 import SlideNav from "./SlideNav"
 import Slide from "./Slide"
-import { Animate } from "../animation/Animate"
-import { mobile as BROWSER_MOBILE } from "../core/Browser"
-import { touch as BROWSER_TOUCH } from "../core/Browser"
+import Animate from "../animation/Animate"
+import { Browser } from "../core/Browser"
 
 /*	StorySlider
 	is the central class of the API - it is used to create a StorySlider
@@ -327,7 +327,7 @@ export default class StorySlider {
 
 	showNav(nav_obj, show) {
 
-		if (this.options.width <= 500 && BROWSER_MOBILE) {
+		if (this.options.width <= 500 && Browser.mobile) {
 
 		} else {
 			if (show) {
@@ -535,7 +535,7 @@ export default class StorySlider {
 
 		this._el.slider_container.style.left="0px";
 
-		if (BROWSER_TOUCH) {
+		if (Browser.touch) {
 			//this._el.slider_touch_mask = VCO.Dom.create('div', 'vco-slider-touch-mask', this._el.slider_container_mask);
 			this._swipable = new VCO.Swipable(this._el.slider_container_mask, this._el.slider_container, {
 				enable: {x:true, y:false},
@@ -548,7 +548,7 @@ export default class StorySlider {
 				message_class: 		"vco-message-full",
 				message_icon_class: "vco-icon-swipe-left"
 			});
-			this._message.updateMessage(VCO.Language.buttons.swipe_to_navigate);
+			this._message.updateMessage(Language.buttons.swipe_to_navigate);
 			this._message.addTo(this._el.container);
 		}
 	}
@@ -634,7 +634,7 @@ export default class StorySlider {
 		}
 
 		if (type === 'contextmenu') {
-			VCO.DomEvent.preventDefault(e);
+			DomEvent.preventDefault(e);
 		}
 
 		this.fire(type, {

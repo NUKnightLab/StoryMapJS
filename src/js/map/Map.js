@@ -1,7 +1,8 @@
-import { classMixin, mergeData } from "../core/Util";
-import Dom from "../dom/Dom";
-import Events from "../core/Events";
-import DomMixins from "../dom/DomMixins";
+import { classMixin, mergeData, trace } from "../core/Util"
+import Dom from "../dom/Dom"
+import Events from "../core/Events"
+import DomMixins from "../dom/DomMixins"
+import { Browser } from "../core/Browser"
 /*	Map
 	Makes a Map
 
@@ -525,7 +526,7 @@ export default class Map {
 		
 		this.calculateMinMaxZoom();
 		
-		if (this.options.map_mini && !VCO.Browser.touch) {
+		if (this.options.map_mini && !Browser.touch) {
 			this.createMiniMap();
 		}
 		
