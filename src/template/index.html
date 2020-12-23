@@ -3,6 +3,7 @@
 
 <head>
     <title>Bundled StoryMapJS test page</title>
+    <meta charset="utf-8">
     <!-- this is normally done by embed page -->
 	<script type="text/javascript" src="/dist/js/storymap.js"></script>
 
@@ -30,12 +31,17 @@
 
     <script>
     var storymap;
+
+	function onStoryMapTitle(e) {
+			document.title = "StoryMapJS: " + e.title;
+	};
+
     function buildStoryMap(data) {
         console.log('building storymap');
         console.log(data);
         let options = {};
         let storymapTitle = 'My StoryMap';
-	    storymap = new KLStoryMap.StoryMap('storymap-embed', data, options, {title: storymapTitle});
+	    storymap = new KLStoryMap.StoryMap('storymap-embed', data, options, {title: onStoryMapTitle});
     }
 
     (function() {

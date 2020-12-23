@@ -19,7 +19,7 @@ export default class Events {
 		return (k in this) && (type in this[k]) && (this[k][type].length > 0);
 	}
 
-	removeEventListener(/*String*/ type, /*Function*/ fn, /*(optional) Object*/ context) {
+	off(/*String*/ type, /*Function*/ fn, /*(optional) Object*/ context) {
 		if (!this.hasEventListeners(type)) {
 			return this;
 		}
@@ -57,5 +57,5 @@ export default class Events {
 };
 
 //Events.on	= Events.addEventListener;
-Events.off	= Events.removeEventListener;
+//Events.off	= Events.removeEventListener;
 //Events.fire = Events.fireEvent;

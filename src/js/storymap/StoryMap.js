@@ -257,7 +257,7 @@ class StoryMap {
 	/*	Private Methods
 	================================================== */
 	//initialize: function (elem, data, options,listeners) {
-	constructor(elem, data, options,listeners) {
+	constructor(elem, data, options, listeners) {
 
 		for (let key in listeners) {
 			var callbacks = listeners[key];
@@ -265,7 +265,14 @@ class StoryMap {
 				this.on(key,callbacks);
 			} else {
 				for (var idx in callbacks) {
-					this.on(key,callbacks[idx]);
+                    if (typeof(callbacks[idx]) == 'function') { 
+					    this.on(key,callbacks[idx]);
+                    } else {
+                        console.log(
+                            "WARNING: Ignoring invalid callback '" +
+                            callbacks[idx] + "' defined for " +
+                            "listener '" + key + "' in StoryMap constructor");
+                    }
 				}
 			}
 		}
@@ -387,7 +394,6 @@ class StoryMap {
 	/* Initialize the data
 	================================================== */
   _initData(data) {
-        console.log(data);
 		var self = this;
 
 		if (typeof data === 'string') {

@@ -1,5 +1,8 @@
+import { unique_ID, getUrlVars, ratio } from "../../core/Util"
 import { Media } from "../Media"
 import Dom from "../../dom/Dom"
+import { Language } from "../../language/Language"
+import { loadJS } from "../../core/Load"
 /*	VCO.Media.YouTube
 ================================================== */
 
@@ -14,16 +17,16 @@ export default class YouTube extends Media {
 			url_vars;
 		
 		// Loading Message 
-		this.message.updateMessage(VCO.Language.messages.loading + " " + this.options.media_name);
+		this.message.updateMessage(Language.messages.loading + " " + this.options.media_name);
 		
 		this.youtube_loaded = false;
 		
 		// Create Dom element
-		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-youtube vco-media-shadow", this._el.content);
-		this._el.content_item.id = VCO.Util.unique_ID(7)
+		this._el.content_item	= Dom.create("div", "vco-media-item vco-media-youtube vco-media-shadow", this._el.content);
+		this._el.content_item.id = unique_ID(7)
 		
 		// URL Vars
-		url_vars = VCO.Util.getUrlVars(this.data.url);
+		url_vars = getUrlVars(this.data.url);
 		
 		// Get Media ID
 		this.media_id = {};
@@ -43,7 +46,7 @@ export default class YouTube extends Media {
 		
 		
 		// API Call
-		VCO.Load.js('https://www.youtube.com/iframe_api', function() {
+		loadJS('https://www.youtube.com/iframe_api', function() {
 			self.createMedia();
 		});
 		
@@ -51,7 +54,7 @@ export default class YouTube extends Media {
 	
 	// Update Media Display
 	_updateMediaDisplay() {
-		this._el.content_item.style.height = VCO.Util.ratio.r16_9({w:this._el.content_item.offsetWidth}) + "px";
+		this._el.content_item.style.height = ratio.r16_9({w:this._el.content_item.offsetWidth}) + "px";
 	}
 	
 	_stopMedia() {
