@@ -3,7 +3,9 @@ import { LeafletModule } from "leaflet";
 import Map from "../Map";
 import Events from "../../core/Events";
 import ZoomifyTileLayer from "./extensions/Leaflet.TileLayer.Zoomify";
+import MiniMapControl from "./extensions/Leaflet.MiniMap.js";
 import LeafletMapMarker from "./MapMarker.Leaflet";
+
 /*	Map.Leaflet
 	Creates a Map using Leaflet
 ================================================== */
@@ -70,7 +72,7 @@ export default class Leaflet extends Map {
 		}
 
 		this._tile_layer_mini = this._createTileLayer(this.options.map_type);
-		this._mini_map = new L.Control.MiniMap(this._tile_layer_mini, {
+		this._mini_map = new MiniMapControl(this._tile_layer_mini, {
 			width: 				150,
 			height: 			100,
 			position: 			"topleft",
@@ -95,7 +97,6 @@ export default class Leaflet extends Map {
 	_createBackgroundMap(tiles) {
 
 		// TODO Check width and height
-		trace("CREATE BACKGROUND MAP");
 		if (!this._image_layer) {
 			// Make Image Layer a Group
 			this._image_layer = new L.layerGroup();
@@ -108,7 +109,7 @@ export default class Leaflet extends Map {
 
 		if (tiles) {
 			// Create Image Overlay for each tile in the group
-			for (x in tiles) {
+			for (let x in tiles) {
 				var target_tile = tiles[x],
 					image = {},
 					tile = {
@@ -240,7 +241,6 @@ export default class Leaflet extends Map {
 	}
 
 	_onMapZoomed(e) {
-		trace("FIRST ZOOM");
 		this._map.off("zoomend", this._onMapZoomed, this);
 
 	}

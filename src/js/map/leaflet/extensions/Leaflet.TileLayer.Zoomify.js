@@ -133,7 +133,7 @@ export default class ZoomifyTileLayer extends L.TileLayer {
 			num = 0,
 			gridSize;
 
-		for (z = 0; z < zoom; z++) {
+		for (let z = 0; z < zoom; z++) {
 			gridSize = this._gridSize[z];
 			num += gridSize.x * gridSize.y;
 		}
