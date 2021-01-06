@@ -114,9 +114,15 @@ export default class MiniMapControl extends L.Control {
     }
 	
 	minimize(hide_completely) {
+        /* It is not clear if we want to support a minimize option, but if we
+           do, we will need to sort out why this function is currently being
+           called in the normal course of navigation. In the mean time, this
+           code is commented out to prevent inadvertent minimization. */
+        /*
 		if (!this._minimized) {
 			this._minimize();
 		}
+        */
 	}
 	
 	restore() {
