@@ -1,4 +1,5 @@
 import { classMixin, mergeData } from "../core/Util"
+import { DomEvent } from "../dom/DomEvent"
 import Events from "../core/Events"
 import Dom from "../dom/Dom"
 import DomMixins from "../dom/DomMixins"

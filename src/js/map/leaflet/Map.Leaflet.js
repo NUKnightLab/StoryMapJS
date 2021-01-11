@@ -5,6 +5,7 @@ import Events from "../../core/Events";
 import ZoomifyTileLayer from "./extensions/Leaflet.TileLayer.Zoomify";
 import MiniMapControl from "./extensions/Leaflet.MiniMap.js";
 import LeafletMapMarker from "./MapMarker.Leaflet";
+import StamenTileLayer from "../tile/TileLayer.Stamen";
 
 /*	Map.Leaflet
 	Creates a Map using Leaflet
@@ -196,7 +197,7 @@ export default class Leaflet extends Map {
 				_tilelayer = new L.TileLayer(mapbox_url, _options);
 				break;
 			case 'stamen':
-				_tilelayer = new L.StamenTileLayer(_map_type_arr[1] || 'toner-lite', _options);
+				_tilelayer = new StamenTileLayer(_map_type_arr[1] || 'toner-lite', _options);
 				this._map.getContainer().style.backgroundColor = "#FFFFFF";
 				break;
 			case 'zoomify':
