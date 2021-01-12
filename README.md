@@ -100,13 +100,15 @@ If you need to run the server, copy `env.sh.sample` to `env.sh` and, if necessar
     pip install -r requirements.txt
 
 ### Developing StoryMapJS - the javascript
-If you are interested in contributing to the development of the StoryMapJS javascript library, that is about it. When you make changes to the code, you should execute the `fab build` command. (Be sure you have activated the virtual environment.) To test your changes, run a simple local web server with `build` as the document root. You can test your local work by loading a URL like this (assuming your local server runs on port `8080`):
 
-	http://0.0.0.0:8080/embed/index.html?url=http://media.knightlab.com/StoryMapJS/demo/sochi.json
+If you are interested in contributing to the development of the StoryMapJS javascript library, that is about it. When you make changes to the code, you should execute the build command. To test your changes, run a simple local web server in the project root and navigate, e.g. to http://localhost:8000/src/template/index.html.
 
-You can change the URL to other examples. You can generally find the JSON for a StoryMap you've published by taking the StoryMap's direct URL and changing `index.html` to `published.json`.
+To build changes in src, execute:
 
-As you work, don't forget to run `fab build` each time you make changes. When time allows, we hope to make this automatic, but we haven't budgeted the time yet.
+```
+ $ npx webpack -c webpack.dev.js
+```
+
 
 ### Developing StoryMapJS - the authoring environment
 
