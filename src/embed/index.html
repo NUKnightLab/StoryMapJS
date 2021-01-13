@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>StoryMapJS Embed</title>
+  <meta charset="utf-8">
+  <meta name="description" content="StoryMapJS Embed">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-touch-fullscreen" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <link rel="stylesheet" href="../css/storymap.css">
+  <script type="text/javascript" src="../js/storymap.js"></script>
+  <style>
+    html, body {
+      width: 100%;
+      height: 100%;
+      padding: 0;
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="storymap-embed"></div>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-27829802-2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'UA-27829802-2', {
+      'anonymize_ip': true,
+      'linker': { 'domains': ['knightlab.com'] }
+    });
+    gtag('event', 'EmbeddedIn', {
+      'event_label': document.referrer,
+      'event_category': 'StoryMapJS',
+      'non_interaction': true
+    });
+  </script>
+
+  <script>
+    var storymap;
+    const urlParams = new URLSearchParams(window.location.search);
+
+	function onStoryMapTitle(e) {
+      document.title = "StoryMapJS: " + e.title;
+	};
+
+    function getScriptPath(scriptname) {
+      let scriptTags = document.getElementsByTagName('script');
+      for (const [i, tag] of Object.entries(scriptTags)) {
+        if (tag.src.match(scriptname)) {
+            let path = tag.src.split('?')[0].split('/').slice(0, -1).join('/');
+            return path;
+        }
+      }
+      return '';
+    }
+
+    function getStartSlide() {
+      var slide = 0;
+      if (urlParams.has('start_at_slide')) {
+        slide = parseInt(urlParams.get('start_at_slide'), 10);
+      }
+      return slide;
+    }
+
+    function buildStoryMap(data) {
+      var options = {
+        script_path: getScriptPath(/storymap(-min)?\.js/),
+        start_at_slide: getStartSlide()
+      };
+	  storymap = new KLStoryMap.StoryMap('storymap-embed', data, options, {
+        title: onStoryMapTitle
+      });
+    }
+
+    (function() {
+        let storymap_url = urlParams.get('url');
+		if(!!navigator.userAgent.match(/AppleWebKit\/.* Mobile\//)
+		|| !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/)
+		|| !!navigator.userAgent.toLowerCase().match(/msie [789]/)) {
+		    if(storymap_url.match(/^https?:\/\/www\.googledrive\.com\/host\//)) {
+		        storymap_url = location.protocol+'//proxy.knightlab.com/'+storymap_url.split('://')[1];
+		        trace('proxy, '+storymap_url);
+		    }
+		}
+        fetch(storymap_url)
+            .then(response => response.json())
+            .then(data => buildStoryMap(data));
+    })();
+
+    window.onresize = function(event) {
+      if (storymap) {
+        storymap.updateDisplay();
+      }
+    }
+  </script>
+</body>
+</html>

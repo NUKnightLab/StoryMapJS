@@ -19,11 +19,12 @@ module.exports = {
         //    to: path.join(output_path, "js/locale"),
         //    flatten: true
         //}]),
-        //new CopyPlugin([{
-        //    from: './source/embed/*',
-        //    to: path.join(output_path, "embed"),
-        //    flatten: true
-        //}]),
+        new CopyPlugin({
+            patterns: [{
+                from: './src/embed/*.html',
+                to: path.join(output_path, "embed/[name].[ext]")
+            }]
+        }),
         new CleanWebpackPlugin({
             cleanStaleWebpackAssets: true
         }),
