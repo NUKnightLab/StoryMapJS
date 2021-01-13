@@ -1,4 +1,19 @@
 For KnightLab people only:
+
+# New git-deploy based static deployment
+
+To stage the current dist folder:
+
+```
+ $ git deploy --playbook playbook.static.yml stg <branch>
+```
+
+Note that branch is currently required by git-deploy, but has no effect on the
+deployment. The static playbook will simply copy the current dist folder to
+s3.
+
+
+# Legacy fablib based deployment:
           
 ## Deploying updates the the CDN
 
