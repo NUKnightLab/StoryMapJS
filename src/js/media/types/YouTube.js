@@ -73,14 +73,11 @@ export default class YouTube extends Media {
 	
 	createMedia() {
 		var self = this;
-		
 		// Determine Start of Media
 		if (typeof(this.media_id.start) != 'undefined') {
-			
 			var vidstart			= this.media_id.start.toString(),
 				vid_start_minutes	= 0,
 				vid_start_seconds	= 0;
-				
 			if (vidstart.match('m')) {
 				vid_start_minutes = parseInt(vidstart.split("m")[0], 10);
 				vid_start_seconds = parseInt(vidstart.split("m")[1].split("s")[0], 10);
@@ -91,24 +88,18 @@ export default class YouTube extends Media {
 		} else {
 			this.media_id.start = 0;
 		}
-		
 		// Determine HD
 		if (typeof(this.media_id.hd) != 'undefined') {
 			this.media_id.hd = true;
 		} else {
 			this.media_id.hd = false;
 		}
-		
 		this.createPlayer();
-		
-			
 	}
 	
 	createPlayer() {
 		var self = this;
-		
 		clearTimeout(this.timer);
-		
 		if(typeof YT != 'undefined' && typeof YT.Player != 'undefined') {
 			// Create Player
 			this.player = new YT.Player(this._el.content_item.id, {
@@ -137,9 +128,7 @@ export default class YouTube extends Media {
 				self.createPlayer();
 			}, 1000);
 		}
-		
 		this.onLoaded();
-		
 	}
 	
 	/*	Events
