@@ -38,7 +38,7 @@ export default class YouTube extends Media {
 		} else if (this.data.url.match(/v\/|v=|youtu\.be\//)){
 			this.media_id.id	= this.data.url.split(/v\/|v=|youtu\.be\//)[1].split(/[?&]/)[0];
 		} else {
-			trace("YOUTUBE IN URL BUT NOT A VALID VIDEO");
+			console.log("YouTube in URL but not a valid video");
 		}
 		
 		this.media_id.start		= url_vars["t"];
@@ -65,7 +65,7 @@ export default class YouTube extends Media {
 				}
 			}
 			catch(err) {
-				trace(err);
+				console.log(err);
 			}
 			
 		}

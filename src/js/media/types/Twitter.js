@@ -50,7 +50,6 @@ export default class Twitter extends Media {
 	}
 	
 	createMedia(d) {	
-		trace("create_media")	
 		var tweet				= "",
 			tweet_text			= "",
 			tweetuser			= "",

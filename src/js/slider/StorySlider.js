@@ -602,7 +602,6 @@ export default class StorySlider {
 	}
 
 	_onSlideAdded(e) {
-		trace("slideadded")
 		this.fire("slideAdded", this.data);
 	}
 

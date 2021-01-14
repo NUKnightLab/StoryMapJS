@@ -1,4 +1,4 @@
-import { classMixin, mergeData, trace } from "../core/Util"
+import { classMixin, mergeData } from "../core/Util"
 import Dom from "../dom/Dom"
 import Events from "../core/Events"
 import DomMixins from "../dom/DomMixins"
@@ -307,7 +307,6 @@ export default class Map {
 			}
 			
 		}
-		trace("MAX ZOOM: " + this.zoom_min_max.max + " MIN ZOOM: " + this.zoom_min_max.min);
 	}
 	
 	updateMinMaxZoom(zoom) {

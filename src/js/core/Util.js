@@ -69,17 +69,6 @@ export function mergeData(data_main, data_to_merge) {
     return data_main;
 }
 
-export function trace( msg ) {
-	if (debug) {
-		if (window.console) {
-			console.log(msg);
-		} else if ( typeof( jsTrace ) != 'undefined' ) {
-			jsTrace.send( msg );
-		} else {
-			alert(msg);
-		}
-	}
-}
 
 /**
  *  Like mergeData, except will only try to copy data that already exists
@@ -107,7 +96,6 @@ export function findArrayNumberByUniqueID(id, array, prop) {
     var _n = 0;
     for (var i = 0; i < array.length; i++) {
         if (array[i].data[prop] == id) {
-            trace(array[i].data[prop]);
             _n = i;
         }
     };

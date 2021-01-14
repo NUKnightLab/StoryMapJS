@@ -47,7 +47,7 @@ export default class Vimeo extends Media {
 			this.player.contentWindow.postMessage(JSON.stringify({method: "pause"}), "https://player.vimeo.com");
 		}
 		catch(err) {
-			trace(err);
+			console.log(err);
 		}
 
 	}

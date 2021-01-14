@@ -1,4 +1,4 @@
-import { classMixin, mergeData, trace } from "../core/Util"
+import { classMixin, mergeData } from "../core/Util"
 import Dom from "../dom/Dom"
 import Events from "../core/Events"
 import Message from "../ui/Message"
@@ -101,8 +101,8 @@ export class Media {
 					self._updateDisplay();
 				}, 1200);
 			} catch (e) {
-				trace("Error loading media for ", this._media);
-				trace(e);
+				console.log("Error loading media for ", this._media);
+				console.log(e);
 			}
 
 			//this._state.loaded = true;
