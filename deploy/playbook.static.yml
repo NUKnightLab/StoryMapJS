@@ -36,6 +36,8 @@
 
     - name: "build distribution"
       shell: npx webpack -c webpack.dev.js
+      args:
+        chdir: "{{ project_root }}"
 
     - name: "checkout original branch: {{ original_branch.stdout }}"
       shell: git checkout {{ original_branch.stdout }}
