@@ -39,13 +39,17 @@
       args:
         chdir: "{{ project_root }}"
 
-    - name: "checkout original branch: {{ original_branch.stdout }}"
-      shell: git checkout {{ original_branch.stdout }}
-      args:
-        chdir: "{{ project_root }}"
-        warn: False
 
   roles:
 
     - role: knightlab
     - role: s3
+
+
+  post_tasks:
+
+    - name: "checkout original branch: {{ original_branch.stdout }}"
+      shell: git checkout {{ original_branch.stdout }}
+      args:
+        chdir: "{{ project_root }}"
+        warn: False
