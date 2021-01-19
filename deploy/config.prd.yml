@@ -6,3 +6,7 @@ init_env_prd:
 
 init_env: "{{ init_env_common|combine(init_env_prd) }}"
 service_exec: "{{ virtualenv}}/bin/gunicorn -b :{{ service_port }} --workers 3 {{ wsgi_application }}"
+
+
+s3_src_dir: "../dist" # relative to deploy dir
+s3_dest: s3://cdn.knightlab.com/libs/storymapjs/{{ project_version }}/

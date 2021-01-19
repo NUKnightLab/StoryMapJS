@@ -5,6 +5,44 @@
     - "{{ vault }}"
   gather_facts: false
 
+  pre_tasks:
+
+
+    # warn False on these tasks b/c we are calling git directly. Be on the
+    # lookout for updates to the git module that will allow us to replace
+    # some of these shell calls
+
+    - name: get current working branch
+      local_action: git rev-parse --abbrev-ref HEAD
+      args:
+        chdir: "{{ project_root }}"
+        warn: False
+      register: original_branch
+
+    - name: "checkout deployment branch: {{ project_version }}"
+      local_action: git checkout {{ project_version }}
+      args:
+        chdir: "{{ project_root }}"
+        warn: False
+
+    # Don't use the git module here - it will overwrite local commits.
+    # See: https://github.com/ansible/ansible-modules-core/issues/614
+    - name: "sync local deployment branch: {{ project_version }}"
+      local_action: git pull; git push
+      args:
+        chdir: "{{ project_root }}"
+        warn: False
+
+    - name: "build distribution"
+      local_action: npx webpack -c webpack.dev.js
+
+    - name: "checkout original branch: {{ original_branch.stdout }}"
+      local_action: git checkout {{ original_branch.stdout }}
+      args:
+        chdir: "{{ project_root }}"
+        warn: False
+
   roles:
+
     - role: knightlab
     - role: s3
