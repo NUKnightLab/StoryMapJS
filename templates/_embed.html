@@ -144,7 +144,7 @@ function storymap_onload(d) {
         } else if(!font.match('^(http|https|//)')) {
             font = url_join(options.script_path, font);
         }
-        KLStoryMap.Load.css(font,function(){ console.log('font loaded: ' + font);});
+        KLStoryMap.loadCSS(font,function(){ console.log('font loaded: ' + font);});
         storymap = new KLStoryMap.StoryMap('storymap-embed', d, options);
     }
 }
@@ -153,7 +153,19 @@ function storymap_getjson() {
     if('withCredentials' in new XMLHttpRequest()) {
         // Supports cross-domain requests
         console.log('embed: loading data via XMLHttpRequest');
-        KLStoryMap.getJSON(storymap_url, storymap_onload);
+        let httpRequest = new XMLHttpRequest();
+        httpRequest.onreadystatechange = function() {
+            if (httpRequest.readyState === XMLHttpRequest.DONE) {
+                if (httpRequest.status === 200) {
+                    let data = JSON.parse(httpRequest.responseText);
+                    storymap_onload(data);
+                } else {
+                    alert('There was a problem with the request.');
+                }
+            }
+        };
+        httpRequest.open('GET', storymap_url);
+        httpRequest.send();
     } else if(typeof XDomainRequest !== "undefined") {
         // Use IE-specific "CORS" code with XDR
         console.log('embed: loading data via XDomainRequest');
