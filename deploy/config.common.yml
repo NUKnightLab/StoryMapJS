@@ -6,6 +6,7 @@ service_port: "{{ storymap_port }}"
 
 playbooks:
   - playbook.deploy.yml
+  - playbook.restart.yml
 
 # these will be merged with deployment-specific env into variable init_env
 init_env_common:
