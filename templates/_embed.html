@@ -116,7 +116,7 @@ if(!!navigator.userAgent.match(/AppleWebKit\/.* Mobile\//)
 || !!navigator.userAgent.toLowerCase().match(/msie [789]/)) {
     if(storymap_url.match(/^https?:\/\/www\.googledrive\.com\/host\//)) {
         storymap_url = location.protocol+'//proxy.knightlab.com/'+storymap_url.split('://')[1];
-        trace('proxy, '+storymap_url);
+        console.log('proxy, '+storymap_url);
     }
 }
 */
@@ -130,7 +130,7 @@ if(params.hasOwnProperty('start_at_slide')) {
 }
 
 function storymap_onload(d) {
-    trace('embed: storymap data loaded');
+    console.log('embed: storymap data loaded');
 
     if (d && d.storymap) {
         var font = "stock:default";
@@ -144,25 +144,25 @@ function storymap_onload(d) {
         } else if(!font.match('^(http|https|//)')) {
             font = url_join(options.script_path, font);
         }
-        VCO.Load.css(font,function(){ trace('font loaded: ' + font);});
-        storymap = new VCO.StoryMap('storymap-embed', d, options);
+        KLStoryMap.Load.css(font,function(){ console.log('font loaded: ' + font);});
+        storymap = new KLStoryMap.StoryMap('storymap-embed', d, options);
     }
 }
 
 function storymap_getjson() {
     if('withCredentials' in new XMLHttpRequest()) {
         // Supports cross-domain requests
-        trace('embed: loading data via XMLHttpRequest');
-        VCO.getJSON(storymap_url, storymap_onload);
+        console.log('embed: loading data via XMLHttpRequest');
+        KLStoryMap.getJSON(storymap_url, storymap_onload);
     } else if(typeof XDomainRequest !== "undefined") {
         // Use IE-specific "CORS" code with XDR
-        trace('embed: loading data via XDomainRequest');
+        console.log('embed: loading data via XDomainRequest');
         var xdr = new XDomainRequest();
         xdr.onload = function() {
             storymap_onload(JSON.parse(xdr.responseText));
         };
         xdr.onerror = function() {
-            trace('embed: error loading data via XDomainRequest');
+            console.log('embed: error loading data via XDomainRequest');
         };
         xdr.onprogress = function() {};
         xdr.open("get", storymap_url);
@@ -172,7 +172,7 @@ function storymap_getjson() {
 
 window.onload = function() {
     if(storymap_url.match('\\.js$')) {
-        trace('embed: loading data via script injection');
+        console.log('embed: loading data via script injection');
         var loaded = false;
         var script = document.createElement("script");
         script.type = "text/javascript";
