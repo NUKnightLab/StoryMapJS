@@ -1,11 +1,11 @@
-const merge = require('webpack-merge')
+const { merge } = require('webpack-merge')
 const common = require('./webpack.common.js')
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const output_path = path.resolve(__dirname, "dist");
 
-module.exports = merge.smart({
+module.exports = merge({
     mode: 'production',
     devtool: 'source-map',
     devServer: {

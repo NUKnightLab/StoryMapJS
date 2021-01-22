@@ -5,7 +5,7 @@ dist/*
 *.pyc
 .env
 .envrc
-venv
+.venv/*
 .in
 .localstack/
 package-lock.json

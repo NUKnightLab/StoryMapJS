@@ -10,6 +10,7 @@ docopt==0.6.1
 enum34==1.1.6
 fabric==2.5.0
 Flask==1.1.2
+flask-cors
 funcsigs==1.0.2
 google-api-python-client==1.9.3
 gunicorn==19.5.0
