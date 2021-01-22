@@ -1,12 +1,16 @@
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const TerserPlugin = require("terser-webpack-plugin");
 
 const output_path = path.resolve(__dirname, "dist");
 module.exports = {
     entry: "./src/js/index.js",
     optimization: {
-        usedExports: true
+        usedExports: true,
+        minimizer: [
+            new TerserPlugin()
+        ]
     },
     output: {
         filename: "storymap.js",

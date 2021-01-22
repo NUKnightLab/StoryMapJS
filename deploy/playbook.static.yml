@@ -35,7 +35,7 @@
         warn: False
 
     - name: "build distribution"
-      shell: npx webpack -c webpack.dev.js
+      shell: npx webpack -c webpack.{{ env }}.js
       args:
         chdir: "{{ project_root }}"
 
