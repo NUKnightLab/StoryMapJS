@@ -912,7 +912,7 @@ def qunit():
 from flask import send_file, send_from_directory
 
 build_dir = os.path.join(settings.PROJECT_ROOT, 'build')
-compiled_dir = os.path.join(settings.PROJECT_ROOT, 'compiled')
+compiled_dir = os.path.join(settings.PROJECT_ROOT, 'dist')
 templates_dir = os.path.join(settings.PROJECT_ROOT, 'compiled/templates')
 domains = os.environ.get('APPLICATION_DOMAINS')
 admins = os.environ.get('ADMINS', '').split(' ')

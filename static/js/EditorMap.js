@@ -6,7 +6,7 @@
 /*
 OSMMapType for Google Maps API V3
 <https://developers.google.com/maps/documentation/javascript/>
-This code shadoes code in VCO.Map.Leaflet.js -- keep them in sync or unify into a single source file.
+This code shadoes code in KLStoryMap.Map.Leaflet.js -- keep them in sync or unify into a single source file.
 */
 
 // TODO: delete this if everything works
@@ -149,7 +149,7 @@ LeafletEditorMap.prototype.addMarker = function(data, draggable) {
       var anchor = data.location.iconSize ? [data.location.iconSize[0] * 0.5, data.location.iconSize[1]] : [24,48] ;
       var icon = L.icon({iconUrl: data.location.icon, iconSize: data.location.iconSize || [48,48], iconAnchor: anchor});
     } else {
-      var media = VCO.MediaType({url: data.media.url});
+      var media = KLStoryMap.MediaType({url: data.media.url});
       if (media.type) {
         var iconClass = "vco-mapmarker-icon vco-icon-" + media.type;
       } else {
@@ -284,7 +284,7 @@ LeafletEditorMap.prototype.setMapType = function(storymap_config) {
   } else {
 
     var parts = map_type.split(':')
-    switch(parts[0]) { // this is a little duplicative of stuff in VCO.Map.Leaflet but I'm not sure that we can use that here. Take a look, though. Otherwise, add new tile layers...
+    switch(parts[0]) { // this is a little duplicative of stuff in KLStoryMap.Map.Leaflet but I'm not sure that we can use that here. Take a look, though. Otherwise, add new tile layers...
       case 'http':
       case 'https':
         var options = {};
@@ -299,7 +299,7 @@ LeafletEditorMap.prototype.setMapType = function(storymap_config) {
         this.tilelayer = L.tileLayer(map_type, options);
         break;
       case 'stamen':
-        this.tilelayer = new L.StamenTileLayer(parts[1]);
+        this.tilelayer = new StamenTileLayer(parts[1]);
         break;
       case 'mapbox':
         // rare legacy may not have a map_access_token configured
@@ -322,7 +322,7 @@ LeafletEditorMap.prototype.setMapType = function(storymap_config) {
         this.tilelayer = new L.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', _options);
         break;
       default:
-        this.tilelayer = new L.StamenTileLayer('toner');
+        this.tilelayer = new KLStoryMap.StamenTileLayer('toner');
     }
   }
   this.tilelayer.addTo(this.map);
