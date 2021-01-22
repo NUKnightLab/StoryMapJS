@@ -2,7 +2,7 @@ domains: "stg-storymap.knightlab.com"
 cnames: "storymap.knilab.com storymapjs.knilab.com"
 
 init_env_stg:
-  CDN_URL: "//cdn.knightlab.com/libs/storymapjs/dev/"
+  CDN_URL: "//cdn.knightlab.com/libs/storymapjs/stg/"
 
 init_env: "{{ init_env_common|combine(init_env_stg) }}"
 service_exec: "{{ virtualenv}}/bin/gunicorn -b :{{ service_port }} --workers 1 --reload {{ wsgi_application }}"
