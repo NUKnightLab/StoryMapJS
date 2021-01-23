@@ -19,7 +19,7 @@ from flask_cors import cross_origin
 # Import settings module
 if __name__ == "__main__":
     if not os.environ.get('FLASK_SETTINGS_MODULE', ''):
-        os.environ['FLASK_SETTINGS_MODULE'] = 'core.settings.loc'
+        os.environ['FLASK_SETTINGS_MODULE'] = 'storymap.core.settings.loc'
 
 settings_module = os.environ.get('FLASK_SETTINGS_MODULE')
 
@@ -33,17 +33,21 @@ import requests
 import slugify
 import bson
 from oauth2client.client import OAuth2WebServerFlow
-from storymap import google
-from storymap.connection import get_user, save_user, create_user, find_users
+#from storymap import google
+#from storymap.connection import get_user, save_user, create_user, find_users
+import googleauth
+from connection import get_user, save_user, create_user, find_users
 
 app = Flask(__name__)
 app.config.from_envvar('FLASK_SETTINGS_FILE')
 settings = sys.modules[settings_module]
 
 if settings.LOCAL_STORAGE_MODE:
-    from storymap import local_storage as storage
+    #from storymap import local_storage as storage
+    import local_storage as storage
 else:
-    from storymap import storage as storage
+    #from storymap import storage as storage
+    import storage as storage
 
 app.config['LOCAL_STORAGE_MODE'] = settings.LOCAL_STORAGE_MODE
 app.config['TEST_MODE'] = settings.TEST_MODE
@@ -244,8 +248,8 @@ def google_auth_verify():
         # ^ this is an oauth2client.client.OAuth2Credentials object
 
         # Get user info
-        userinfo = google.get_userinfo(
-            google.get_userinfo_service(credentials))
+        userinfo = googleauth.get_userinfo(
+            googleauth.get_userinfo_service(credentials))
         if not userinfo:
             raise Exception('Could not get Google user info')
 
@@ -558,12 +562,12 @@ def storymap_migrate_list(user):
     try:
         if not 'google' in user:
             return jsonify({'migrate_list': []})
-        credentials = google.get_credentials(user['google']['credentials'])
-        drive_service = google.get_drive_service(credentials)
+        credentials = googleauth.get_credentials(user['google']['credentials'])
+        drive_service = googleauth.get_drive_service(credentials)
 
         existing = [d['title'] for (k, d) in user['storymaps'].items()]
 
-        temp_list = google.drive_get_migrate_list(drive_service)
+        temp_list = googleauth.drive_get_migrate_list(drive_service)
         migrate_list = [r for r in temp_list if r['title'] not in existing]
 
         return jsonify({'migrate_list': migrate_list})
@@ -791,7 +795,7 @@ def userinfo():
         user = get_user(uid)
         if user:
             if not user['migrated']:
-                migrate_data = google.drive_get_migration_diagnostics(user)
+                migrate_data = googleauth.drive_get_migration_diagnostics(user)
 
             if '_id' in user: # mongo only
                 del user['_id']
