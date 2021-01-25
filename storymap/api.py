@@ -406,7 +406,8 @@ def _write_embed(embed_key_name, json_key_name, meta):
         json_url=json_url,
         title=meta.get('title', ''),
         description=meta.get('description', ''),
-        image_url=_fix_url_for_opengraph(image_url)
+        image_url=_fix_url_for_opengraph(image_url),
+        storymap_js_file=settings.STORYMAP_JS_FILE
     )
     storage.save_from_data(embed_key_name, 'text/html', content)
 
