@@ -8,7 +8,7 @@ STATE=Illinois
 CITY=Evanston
 COUNTRY=US
 ORG=KnightLab
-COMMON_NAME=localhost.storymap
+COMMON_NAME=localhost
 
 mkdir -p .localstack
 
@@ -25,8 +25,6 @@ if [[ -f $CERTDIR/$FN
 fi
 
 # Generate CA
-
-
 openssl req \
     -x509 \
     -nodes \
@@ -40,9 +38,7 @@ openssl req \
 
 openssl x509 -outform pem -in $CERTDIR/$CA.pem -out $CERTDIR/$CA.crt
 
-# Generate domain name cert
-
-
+# Create domain specific key
 openssl req \
     -new \
     -nodes \
@@ -51,6 +47,8 @@ openssl req \
     -out $CERTDIR/$FN.csr \
     -subj "/C=$COUNTRY/ST=$STATE/L=$CITY/O=$ORG/CN=$COMMON_NAME"
 
+
+# Create final .crt with authority
 openssl x509 \
     -req \
     -sha256 \
@@ -63,6 +61,29 @@ openssl x509 \
     -out $CERTDIR/$FN.crt
 
 cat $CERTDIR/$FN.key $CERTDIR/$FN.crt > $CERTDIR/$FN
+
+openssl req \
+    -x509 \
+    -nodes \
+    -new \
+    -sha256 \
+    -days 1024 \
+    -newkey rsa:2048 \
+    -keyout $CERTDIR/$FN.key \
+    -out $CERTDIR/$FN.pem \
+    -subj "/C=$COUNTRY/CN=$FN"
+
+openssl x509 -outform pem -in $CERTDIR/$FN.pem -out $CERTDIR/$FN.crt
+
+openssl x509 \
+    -req \
+    -sha256 \
+    -days 1024 \
+    -in $CERTDIR/$FN.csr \
+    -CA $CERTDIR/$FN.pem \
+    -CAkey $CERTDIR/$FN.key \
+    -CAcreateserial \
+    -out $CERTDIR/$FN.crt
 
 echo "Trust cert. E.g.: Apple Keychain > System. File > Import items: $CERTDIR/$FN\n\nSet to trust SSL."
 echo "\nFor Firefox: Preferences > Certificates > View Certificates > Your Certificates > Import $CERTDIR/$CA.pem."

@@ -14,7 +14,7 @@ import json
 from functools import wraps
 import urllib
 from urllib.parse import urlparse, urljoin, quote, urlencode
-#from flask_cors import cross_origin
+from flask_cors import cross_origin
 
 # Import settings module
 if __name__ == "__main__":
@@ -35,8 +35,8 @@ import bson
 from oauth2client.client import OAuth2WebServerFlow
 #from storymap import google
 #from storymap.connection import get_user, save_user, create_user, find_users
-import googleauth
-from connection import get_user, save_user, create_user, find_users
+from . import googleauth
+from .connection import get_user, save_user, create_user, find_users
 
 app = Flask(__name__)
 app.config.from_envvar('FLASK_SETTINGS_FILE')
@@ -44,10 +44,10 @@ settings = sys.modules[settings_module]
 
 if settings.LOCAL_STORAGE_MODE:
     #from storymap import local_storage as storage
-    import local_storage as storage
+    from . import local_storage as storage
 else:
     #from storymap import storage as storage
-    import storage as storage
+    from . import storage
 
 app.config['LOCAL_STORAGE_MODE'] = settings.LOCAL_STORAGE_MODE
 app.config['TEST_MODE'] = settings.TEST_MODE
@@ -409,6 +409,8 @@ def _write_embed(embed_key_name, json_key_name, meta):
         image_url=_fix_url_for_opengraph(image_url),
         storymap_js_file=settings.STORYMAP_JS_FILE
     )
+    print('content')
+    print(content)
     storage.save_from_data(embed_key_name, 'text/html', content)
 
 def _write_embed_draft(key_prefix, meta):
@@ -937,7 +939,9 @@ def catch_build(path):
     return send_from_directory(build_dir, path)
 
 @app.route('/compiled/<path:path>')
+@cross_origin()
 def catch_compiled(path):
+    print(path)
     return send_from_directory(compiled_dir, path)
 
 @app.route('/editor/templates/<path:path>')

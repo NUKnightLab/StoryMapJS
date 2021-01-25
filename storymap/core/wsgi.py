@@ -2,7 +2,7 @@ import os, sys
 
 sys.stdout = sys.stderr
 
-from api import app as application
+from ..api import app as application
 
 if os.environ.get('FLASK_DEBUG', '').lower() == 'true':
     from werkzeug.debug import DebuggedApplication

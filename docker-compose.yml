@@ -29,7 +29,7 @@ services:
       - ./dist:/usr/src/apps/StoryMapJS/dist
     #  #- ./.localstack/:/usr/src/apps/StoryMapJS/.localstack
     env_file: .env
-    command: python storymap/api.py -s -p 5000
+    command: gunicorn -b :5000 --workers 1 --reload storymap.core.wsgi:application --keyfile server.test.pem.key --certfile server.test.pem.crt
     depends_on:
       - pg
       - localstack
@@ -58,3 +58,4 @@ services:
     volumes:
       - ./.localstack/:/tmp/localstack
       #- /var/run/docker.sock:/var/run/docker.sock
+
