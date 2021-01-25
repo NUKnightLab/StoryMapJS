@@ -26,6 +26,7 @@ services:
       - localstack:localstack
     volumes:
       - ./storymap:/usr/src/apps/StoryMapJS/storymap
+      - ./dist:/usr/src/apps/StoryMapJS/dist
     #  #- ./.localstack/:/usr/src/apps/StoryMapJS/.localstack
     env_file: .env
     command: python storymap/api.py -s -p 5000

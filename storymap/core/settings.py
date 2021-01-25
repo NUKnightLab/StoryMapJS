@@ -8,7 +8,7 @@ TEST_MODE = env.get('TEST_MODE')
 LOCAL_STORAGE_MODE = env.get('TEST_MODE') 
 
 CORE_ROOT = dirname(abspath(__file__))
-PROJECT_ROOT = dirname(CORE_ROOT)
+PROJECT_ROOT = dirname(dirname(CORE_ROOT))
 
 SECRET_KEY = env['FLASK_SECRET_KEY']
 STATIC_URL = env['STATIC_URL']

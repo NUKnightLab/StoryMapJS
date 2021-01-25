@@ -14,7 +14,7 @@ import json
 from functools import wraps
 import urllib
 from urllib.parse import urlparse, urljoin, quote, urlencode
-from flask_cors import cross_origin
+#from flask_cors import cross_origin
 
 # Import settings module
 if __name__ == "__main__":
@@ -936,7 +936,6 @@ def catch_build(path):
     return send_from_directory(build_dir, path)
 
 @app.route('/compiled/<path:path>')
-@cross_origin
 def catch_compiled(path):
     return send_from_directory(compiled_dir, path)
 
