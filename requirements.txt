@@ -13,7 +13,7 @@ Flask==1.1.2
 flask-cors
 funcsigs==1.0.2
 google-api-python-client==1.9.3
-gunicorn
+gunicorn==20.0.4
 httplib2==0.18.1
 httpretty==0.8.10
 idna==2.7
