@@ -18,7 +18,7 @@ init_env_common:
   # Flask specific
   FLASK_SECRET_KEY: "{{ vault_flask_secret_key }}"
   FLASK_SETTINGS_MODULE: "storymap.core.settings"
-  FLASK_SETTINGS_FILE: "storymap/core/settings.py"
+  FLASK_SETTINGS_FILE: "core/settings.py"
   AWS_STORAGE_BUCKET_NAME: "{{ vault_aws_storage_bucket_name }}"
   AWS_STORAGE_BUCKET_URL: "{{ vault_aws_storage_bucket_url }}"
   AWS_STORAGE_BUCKET_KEY: "{{ vault_aws_storage_bucket_key }}"
