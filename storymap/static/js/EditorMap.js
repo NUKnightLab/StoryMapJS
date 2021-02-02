@@ -277,7 +277,7 @@ LeafletEditorMap.prototype.setMapType = function(storymap_config) {
   var map_type = (storymap_config.storymap.map_type || '');
   if(map_type == "zoomify") {
       zoomify_data = storymap_config.storymap.zoomify;
-      this.tilelayer = L.tileLayer.zoomify(
+      this.tilelayer = new KLStoryMap.ZoomifyTileLayer(
           zoomify_data.path,
           zoomify_data
       );
