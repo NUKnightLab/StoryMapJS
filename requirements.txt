@@ -13,7 +13,7 @@ Flask==1.1.2
 funcsigs==1.0.2
 google-api-python-client==1.9.3
 gunicorn==19.5.0
-httplib2==0.18.1
+httplib2==0.19.0
 httpretty==0.8.10
 idna==2.7
 ipaddress==1.0.17
