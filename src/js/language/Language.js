@@ -1,4 +1,21 @@
-import { mergeData, pad } from "../core/Util"
+import { pad } from "../core/Util"
+
+let EN = require('./locale/en.json');
+
+let getLanguage = function(code) {
+    var lang = require('./locale/' + code + '.json');
+    for (let k in EN) {
+        if (lang[k]) {
+            if (typeof(EN[k]) == 'object') {
+                lang[k] = Object.assign(EN[k], lang[k]);
+            }
+        } else {
+            lang[k] = EN[k];
+        }
+    }
+    return lang;
+}
+
 const LANGUAGES = {
     'be': require('./locale/be.json'),
     'bg': require('./locale/bg.json'),
@@ -6,7 +23,7 @@ const LANGUAGES = {
     'de': require('./locale/de.json'),
     'el': require('./locale/el.json'),
     'en': require('./locale/en.json'),
-    'es': require('./locale/es.json'),
+    'es': getLanguage('es'),
     'et': require('./locale/et.json'),
     'fr': require('./locale/fr.json'),
     'he': require('./locale/he.json'),
