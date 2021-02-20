@@ -1,8 +1,8 @@
-import { classMixin, mergeData, updateData } from "../core/Util"
+import { classMixin, mergeData, updateData, urljoin } from "../core/Util"
+import { loadJS, loadCSS } from "../core/Load"
 import Dom from "../dom/Dom"
 import Ease from "../animation/Ease"
-import { Language } from "../language/Language"
-//import { I18NMixins } from "../language/I18NMixins"
+import { LANGUAGES } from "../language/Language"
 import Events from "../core/Events"
 import Leaflet from "../map/leaflet/Map.Leaflet"
 import MenuBar from "../ui/MenuBar"
@@ -159,7 +159,7 @@ class StoryMap {
 		if (typeof data === 'string') {
 			getJSON(data, function(d) {
 				if (d && d.storymap) {
-					Util.mergeData(self.data, d.storymap);
+					mergeData(self.data, d.storymap);
 				}
 				self._initOptions();
 			});
@@ -199,7 +199,7 @@ class StoryMap {
 			if (typeof(moment) !== 'undefined') {
 				self._loadLanguage();
 			} else {
-				Load.js(this.options.script_path + "/library/moment.js", function() {
+				loadJS(this.options.script_path + "/library/moment.js", function() {
 					self._loadLanguage();
 				});
 			}
@@ -209,24 +209,65 @@ class StoryMap {
 
  		// Emoji Support to Chrome?
 		if (Browser.chrome) {
-			Load.css(Util.urljoin(this.options.script_path,"../css/fonts/font.emoji.css"), function() {
+			loadCSS(urljoin(this.options.script_path,"../css/fonts/font.emoji.css"), function() {
 			});
 		}
   }
 
 	/*	Load Language
 	================================================== */
-	_loadLanguage() {
-		var self = this;
-		if(this.options.language == 'en') {
-		    this.options.language = Language;
-		    self._onDataLoaded();
-		} else {
-			Load.js(Util.urljoin(this.options.script_path, "/locale/" + this.options.language + ".js"), function() {
-				self._onDataLoaded();
-			});
-		}
-	}
+	//_LEGACY_loadLanguage() {
+    //		var self = this;
+    //		if(this.options.language == 'en') {
+    //		    this.options.language = Language;
+    //		    self._onDataLoaded();
+    //		} else {
+    //			loadJS(urljoin(this.options.script_path, "/locale/" + this.options.language + ".js"), function() {
+    //				self._onDataLoaded();
+    //			});
+    //		}
+	    //}
+
+    _loadLanguage() {
+        var self = this;
+        var code = self.options.language;
+        self.language = LANGUAGES[code];
+        self.options.language = LANGUAGES[code];
+        self._onDataLoaded();
+        //var script_path = self.options.script_path;
+        //console.log(code);
+        //console.log(script_path);
+        //var lang = new Language(code, script_path);
+        //self.language = lang;
+        //self.options.languageObject = lang;
+        //try {
+        //    var lang = this.options.language;
+        //    console.log('_loadLanguage: ' + this.options.language);
+        //    var script_path = this.options.script_path
+        //    console.log('script path: ' + script_path);
+        //    await loadLanguage(lang, script_path).then((language) => {
+        //        if (language) {
+        //            console.log('Setting this.language');
+        //            console.log(language);
+        //            self.language = language
+        //            //this.message.setLanguage(this.language)
+        //            self.options.language = language // easiest way to make language available to I18NMixins
+        //            console.log('calling _onDataLoaded()');
+        //            self._onDataLoaded();
+        //            console.log('called _on_DataLoaded');
+        //        } else {
+        //            console.log(`Error loading ${lang}`) // but we will carry on using the fallback
+        //        }
+        //        //this._initData(data)
+        //        //console.log('calling _onDataLoaded()');
+        //        //this._onDataLoaded();
+        //        //console.log('called _on_DataLoaded');
+        //    })
+        //} catch (e) {
+        //    console.log(self._translateError(e))
+        //}
+        console.log('End _loadLanguage'); 
+    }
 
 	/*	Navigation
 	================================================== */
@@ -277,6 +318,7 @@ class StoryMap {
 		this._menubar = new MenuBar(this._el.menubar, this._el.container, this.options);
 
 		// Create StorySlider
+        console.log('Creating StorySlider');
 		this._storyslider = new StorySlider(this._el.storyslider, this.data, this.options);
 		this._storyslider.on('loaded', this._onStorySliderLoaded, this);
 		this._storyslider.on('title', this._onTitle, this);
@@ -438,7 +480,7 @@ class StoryMap {
 		if (this.options.language.direction == 'rtl') {
 			display_class += ' vco-rtl';
 		}
-		else if (Language.direction == 'rtl'){
+		else if (this.options.language.direction == 'rtl'){
 			display_class += ' vco-rtl';
 		}
 
@@ -453,6 +495,7 @@ class StoryMap {
 	================================================== */
 
 	_onDataLoaded(e) {
+        console.log('_onDataLoaded');
 		this.fire("dataloaded");
 		this._initLayout();
 		this._initEvents();
@@ -552,6 +595,5 @@ class StoryMap {
 //    		src = scripts[scripts.length-1].src;
 //  _.SCRIPT_PATH = src.substr(0,src.lastIndexOf("/"));
 
-//classMixin(StoryMap, I18NMixins, Events)
 classMixin(StoryMap, Events)
-export { StoryMap }
+export { StoryMap, LANGUAGES }

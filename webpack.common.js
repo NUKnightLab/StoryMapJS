@@ -24,17 +24,20 @@ module.exports = {
         //    flatten: true
         //}]),
         new CopyPlugin({
-            patterns: [{
-                from: './src/embed/*.html',
-                to: path.join(output_path, "embed/[name].[ext]")
-            }]
+            patterns: [
+              { from: './src/embed/*.html',
+                to: path.join(output_path, "embed/[name].[ext]")},
+              { from: './src/js/language/locale/*.json',
+                to: path.join(output_path, 'js/locale/[name].[ext]') }
+            ]
         }),
         new CleanWebpackPlugin({
             cleanStaleWebpackAssets: true
         }),
     ],
     module: {
-        rules: [{
+        rules: [
+          {
                 test: /\.less$/,
                 use: [{
                         loader: 'css-loader',

@@ -207,3 +207,34 @@ export const ratio = {
         }
     }
 }
+
+export function urljoin(base_url, path) {
+    if(base_url.length && base_url[base_url.length  - 1] == '/') {
+        base_url = base_url.substring(0, base_url.length  - 1);
+    }
+    if(path.length && path[0] == '/') {
+        path = path.substring(1);
+    }
+    var url1 = base_url.split('/');
+    var url2 = path.split('/');
+    var url3 = [ ];
+    for (var i = 0, l = url1.length; i < l; i ++) {
+    if (url1[i] == '..') {
+      url3.pop();
+    } else if (url1[i] == '.') {
+      continue;
+    } else {
+      url3.push(url1[i]);
+    }
+    }
+    for (var i = 0, l = url2.length; i < l; i ++) {
+    if (url2[i] == '..') {
+      url3.pop();
+    } else if (url2[i] == '.') {
+      continue;
+    } else {
+      url3.push(url2[i]);
+    }
+    }
+    return url3.join('/');
+}

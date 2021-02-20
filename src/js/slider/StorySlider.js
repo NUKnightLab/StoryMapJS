@@ -3,7 +3,6 @@ import Dom from "../dom/Dom"
 import { DomEvent } from "../dom/DomEvent"
 import Events from "../core/Events"
 import Ease from "../animation/Ease"
-import { Language } from "../language/Language"
 import SlideNav from "./SlideNav"
 import Slide from "./Slide"
 import Animate from "../animation/Animate"
@@ -490,7 +489,7 @@ export default class StorySlider {
 	_introInterface() {
 
 		if (this.options.call_to_action) {
-			var _str = Language.messages.start;
+			var _str = this.options.language.messages.start;
 			if (this.options.call_to_action_text != "") {
 				_str = this.options.call_to_action_text;
 			}
@@ -548,7 +547,7 @@ export default class StorySlider {
 				message_class: 		"vco-message-full",
 				message_icon_class: "vco-icon-swipe-left"
 			});
-			this._message.updateMessage(Language.buttons.swipe_to_navigate);
+			this._message.updateMessage(this.options.language.buttons.swipe_to_navigate);
 			this._message.addTo(this._el.container);
 		}
 	}
