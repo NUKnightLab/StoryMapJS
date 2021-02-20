@@ -5,6 +5,7 @@ import Ease from "../animation/Ease"
 import DomMixins from "../dom/DomMixins"
 import { DomEvent } from "../dom/DomEvent"
 import { Browser } from "../core/Browser"
+import { Language } from "../language/Language"
 
 /*	MenuBar
 	Draggable component to control size
@@ -128,7 +129,7 @@ export default class MenuBar {
 			if (Browser.mobile) {
 				this._el.button_collapse_toggle.innerHTML	= "<span class='vco-icon-arrow-up'></span>";
 			} else {
-				this._el.button_collapse_toggle.innerHTML	= this.options.language.buttons.collapse_toggle + "<span class='vco-icon-arrow-up'></span>";
+				this._el.button_collapse_toggle.innerHTML	= Language.buttons.collapse_toggle + "<span class='vco-icon-arrow-up'></span>";
 			}
 		} else {
 			this.collapsed = true;
@@ -138,7 +139,7 @@ export default class MenuBar {
 			if (Browser.mobile) {
 				this._el.button_collapse_toggle.innerHTML	= "<span class='vco-icon-arrow-down'></span>";
 			} else {
-				this._el.button_collapse_toggle.innerHTML	= this.options.language.buttons.uncollapse_toggle + "<span class='vco-icon-arrow-down'></span>";
+				this._el.button_collapse_toggle.innerHTML	= Language.buttons.uncollapse_toggle + "<span class='vco-icon-arrow-down'></span>";
 			}
 		}
 	}
@@ -158,12 +159,10 @@ export default class MenuBar {
 		this._el.button_collapse_toggle 				= Dom.create('span', 'vco-menubar-button', this._el.container);
 		DomEvent.addListener(this._el.button_collapse_toggle, 'click', this._onButtonCollapseMap, this);
 		
-        console.log('Initing MenuBar. This object:');
-        console.log(this); 
 		if (this.options.map_as_image) {
-			this._el.button_overview.innerHTML			= this.options.language.buttons.overview;
+			this._el.button_overview.innerHTML			= Language.buttons.overview;
 		} else {
-			this._el.button_overview.innerHTML			= this.options.language.buttons.map_overview;
+			this._el.button_overview.innerHTML			= Language.buttons.map_overview;
 		}
 		
 		if (Browser.mobile) {
@@ -173,8 +172,8 @@ export default class MenuBar {
 			this._el.container.setAttribute("ontouchstart"," ");
 		} else {
 			
-			this._el.button_backtostart.innerHTML		= this.options.language.buttons.backtostart + " <span class='vco-icon-goback'></span>";
-			this._el.button_collapse_toggle.innerHTML	= this.options.language.buttons.collapse_toggle + "<span class='vco-icon-arrow-up'></span>";
+			this._el.button_backtostart.innerHTML		= Language.buttons.backtostart + " <span class='vco-icon-goback'></span>";
+			this._el.button_collapse_toggle.innerHTML	= Language.buttons.collapse_toggle + "<span class='vco-icon-arrow-up'></span>";
 		}
 		
 		if (this.options.layout == "landscape") {

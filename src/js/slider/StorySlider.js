@@ -7,6 +7,7 @@ import SlideNav from "./SlideNav"
 import Slide from "./Slide"
 import Animate from "../animation/Animate"
 import { Browser } from "../core/Browser"
+import { Language } from "../language/Language"
 
 /*	StorySlider
 	is the central class of the API - it is used to create a StorySlider
@@ -489,7 +490,7 @@ export default class StorySlider {
 	_introInterface() {
 
 		if (this.options.call_to_action) {
-			var _str = this.options.language.messages.start;
+			var _str = Language.messages.start;
 			if (this.options.call_to_action_text != "") {
 				_str = this.options.call_to_action_text;
 			}
@@ -547,7 +548,7 @@ export default class StorySlider {
 				message_class: 		"vco-message-full",
 				message_icon_class: "vco-icon-swipe-left"
 			});
-			this._message.updateMessage(this.options.language.buttons.swipe_to_navigate);
+			this._message.updateMessage(Language.buttons.swipe_to_navigate);
 			this._message.addTo(this._el.container);
 		}
 	}
