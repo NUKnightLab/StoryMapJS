@@ -1,12 +1,12 @@
 import { Media } from "../Media"
 import Dom from "../../dom/Dom"
-/*	VCO.Media.Flickr
+import { Language } from "../../language/Language"                              
+
+/*	Media.Flickr
 
 ================================================== */
 
 export default class Flickr extends Media {
-	
-	//includes: [VCO.Events],
 	
 	/*	Load the media
 	================================================== */
@@ -15,10 +15,10 @@ export default class Flickr extends Media {
 			self = this;
 		
 		// Loading Message
-		this.message.updateMessage(VCO.Language.messages.loading + " " + this.options.media_name);
+		this.message.updateMessage(Language.messages.loading + " " + this.options.media_name);
 		
 		// Create Dom element
-		this._el.content_item	= VCO.Dom.create("img", "vco-media-item vco-media-image vco-media-flickr vco-media-shadow", this._el.content);
+		this._el.content_item	= Dom.create("img", "vco-media-item vco-media-image vco-media-flickr vco-media-shadow", this._el.content);
 		
 		// Media Loaded Event
 		this._el.content_item.addEventListener('load', function(e) {

@@ -1,14 +1,13 @@
 import { unique_ID, getUrlVars, ratio } from "../../core/Util"
 import { Media } from "../Media"
 import Dom from "../../dom/Dom"
-import { Language } from "../../language/Language"
 import { loadJS } from "../../core/Load"
-/*	VCO.Media.YouTube
+import { Language } from "../../language/Language"
+
+/*	Media.YouTube
 ================================================== */
 
 export default class YouTube extends Media {
-	
-	//includes: [VCO.Events],
 	
 	/*	Load the media
 	================================================== */

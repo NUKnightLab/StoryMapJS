@@ -8,5 +8,7 @@ export { StamenTileLayer }
 import MediaType from "./media/MediaType"
 export { MediaType }
 
+export { setLanguage } from "./language/Language"
+
 import ZoomifyTileLayer from "./map/leaflet/extensions/Leaflet.TileLayer.Zoomify"
 export { ZoomifyTileLayer }

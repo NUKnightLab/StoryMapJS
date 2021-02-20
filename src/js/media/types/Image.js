@@ -2,14 +2,13 @@ import { Media } from "../Media"
 import Dom from "../../dom/Dom"
 import { Language } from "../../language/Language"
 import { Browser } from "../../core/Browser"
-/*	VCO.Media.Image
+
+/*	Media.Image
 	Produces image assets.
 	Takes a data object and populates a dom object
 ================================================== */
 
 export default class Image extends Media {
-	
-	//includes: [VCO.Events],
 	
 	/*	Load the media
 	================================================== */

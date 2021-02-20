@@ -1,12 +1,12 @@
 import { Media } from "../Media"
 import Dom from "../../dom/Dom"
-/*	VCO.Media.Twitter
+import { Language } from "../../language/Language"
+
+/*	Media.Twitter
 	Produces Twitter Display
 ================================================== */
 
 export default class Twitter extends Media {
-	
-	//includes: [VCO.Events],
 	
 	/*	Load the media
 	================================================== */
@@ -15,10 +15,10 @@ export default class Twitter extends Media {
 			self = this;
 			
 		// Loading Message
-		this.message.updateMessage(VCO.Language.messages.loading + " " + this.options.media_name);
+		this.message.updateMessage(Language.messages.loading + " " + this.options.media_name);
 		
 		// Create Dom element
-		this._el.content_item = VCO.Dom.create("div", "vco-media-twitter", this._el.content);
+		this._el.content_item = Dom.create("div", "vco-media-twitter", this._el.content);
 		
 		// Get Media ID
 		if (this.data.url.match("status\/")) {

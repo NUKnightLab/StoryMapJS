@@ -1,11 +1,12 @@
 import { Media } from "../Media"
 import Dom from "../../dom/Dom"
-/*	VCO.Media.DailyMotion
+import { Language } from "../../language/Language"                              
+import { ratio } from "../../core/Util"
+
+/*	Media.DailyMotion
 ================================================== */
 
 export default class DailyMotion extends Media {
-
-	//includes: [VCO.Events],
 
 	/*	Load the media
 	================================================== */
@@ -14,10 +15,10 @@ export default class DailyMotion extends Media {
 			self = this;
 
 		// Loading Message
-		this.message.updateMessage(VCO.Language.messages.loading + " " + this.options.media_name);
+		this.message.updateMessage(Language.messages.loading + " " + this.options.media_name);
 
 		// Create Dom element
-		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe vco-media-dailymotion", this._el.content);
+		this._el.content_item	= Dom.create("div", "vco-media-item vco-media-iframe vco-media-dailymotion", this._el.content);
 
 		// Get Media ID
 		if (this.data.url.match("video")) {
@@ -38,7 +39,7 @@ export default class DailyMotion extends Media {
 
 	// Update Media Display
 	_updateMediaDisplay() {
-		this._el.content_item.style.height = VCO.Util.ratio.r16_9({w:this._el.content_item.offsetWidth}) + "px";
+		this._el.content_item.style.height = ratio.r16_9({w:this._el.content_item.offsetWidth}) + "px";
 	}
 
 	_stopMedia() {

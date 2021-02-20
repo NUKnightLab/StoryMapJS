@@ -1,12 +1,13 @@
 import { Media } from "../Media"
 import Dom from "../../dom/Dom"
-/*	VCO.Media.Vine
+import { Language } from "../../language/Language"
+import { ratio } from "../../core/Util"
+
+/*	Media.Vine
 
 ================================================== */
 
 export default class Vine extends Media {
-
-	//includes: [VCO.Events],
 
 	/*	Load the media
 	================================================== */
@@ -15,10 +16,10 @@ export default class Vine extends Media {
 			self = this;
 
 		// Loading Message
-		this.message.updateMessage(VCO.Language.messages.loading + " " + this.options.media_name);
+		this.message.updateMessage(Language.messages.loading + " " + this.options.media_name);
 
 		// Create Dom element
-		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe vco-media-vine vco-media-shadow", this._el.content);
+		this._el.content_item	= Dom.create("div", "vco-media-item vco-media-iframe vco-media-vine vco-media-shadow", this._el.content);
 
 		// Get Media ID
 		this.media_id = this.data.url.split("vine.co/v/")[1];
@@ -35,7 +36,7 @@ export default class Vine extends Media {
 
 	// Update Media Display
 	_updateMediaDisplay() {
-		var size = VCO.Util.ratio.square({w:this._el.content_item.offsetWidth , h:this.options.height});
+		var size = ratio.square({w:this._el.content_item.offsetWidth , h:this.options.height});
 		this._el.content_item.style.height = size.h + "px";
 	}
 

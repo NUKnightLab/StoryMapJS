@@ -1,12 +1,12 @@
 import { Media } from "../Media"
 import Dom from "../../dom/Dom"
-/*	VCO.Media.Instagram
+import { Language } from "../../language/Language"
+
+/*	Media.Instagram
 
 ================================================== */
 
 export default class Instagram extends Media {
-	
-	//includes: [VCO.Events],
 	
 	/*	Load the media
 	================================================== */
@@ -15,18 +15,18 @@ export default class Instagram extends Media {
 			self = this;
 		
 		// Loading Message
-		this.message.updateMessage(VCO.Language.messages.loading + " " + this.options.media_name);
+		this.message.updateMessage(Language.messages.loading + " " + this.options.media_name);
 		
 		// Get Media ID
 		this.media_id = this.data.url.split("\/p\/")[1].split("/")[0];
 		
 		// Link
-		this._el.content_link 				= VCO.Dom.create("a", "", this._el.content);
+		this._el.content_link 				= Dom.create("a", "", this._el.content);
 		this._el.content_link.href 			= this.data.url;
 		this._el.content_link.target 		= "_blank";
 		
 		// Photo
-		this._el.content_item				= VCO.Dom.create("img", "vco-media-item vco-media-image vco-media-instagram vco-media-shadow", this._el.content_link);
+		this._el.content_item				= Dom.create("img", "vco-media-item vco-media-image vco-media-instagram vco-media-shadow", this._el.content_link);
 		
 		// Media Loaded Event
 		this._el.content_item.addEventListener('load', function(e) {

@@ -2,7 +2,7 @@ import { pad } from "../core/Util"
 
 let EN = require('./locale/en.json');
 
-let getLanguage = function(code) {
+function getLanguage(code) {
     var lang = require('./locale/' + code + '.json');
     for (let k in EN) {
         if (lang[k]) {
@@ -16,36 +16,45 @@ let getLanguage = function(code) {
     return lang;
 }
 
+/*
 const LANGUAGES = {
-    'be': require('./locale/be.json'),
-    'bg': require('./locale/bg.json'),
-    'cs': require('./locale/cs.json'),
-    'de': require('./locale/de.json'),
-    'el': require('./locale/el.json'),
-    'en': require('./locale/en.json'),
+    'be': getLanguage('be'),
+    'bg': getLanguage('bg'),
+    'cs': getLanguage('cs'),
+    'de': getLanguage('de'),
+    'el': getLanguage('el'),
+    'en': EN,
     'es': getLanguage('es'),
-    'et': require('./locale/et.json'),
-    'fr': require('./locale/fr.json'),
-    'he': require('./locale/he.json'),
-    'hu': require('./locale/hu.json'),
-    'is': require('./locale/is.json'),
-    'it': require('./locale/it.json'),
-    'jp': require('./locale/jp.json'),
-    'ko': require('./locale/ko.json'),
-    'nl': require('./locale/nl.json'),
-    'nn': require('./locale/nn.json'),
-    'no': require('./locale/no.json'),
-    'pl': require('./locale/pl.json'),
-    'pt': require('./locale/pt.json'),
-    'ru': require('./locale/ru.json'),
-    'sk': require('./locale/sk.json'),
-    'sr': require('./locale/sr.json'),
-    'sv': require('./locale/sv.json'),
-    'tr': require('./locale/tr.json'),
-    'uk': require('./locale/uk.json'),
-    'ur': require('./locale/ur.json'),
-    'zh-cn': require('./locale/zh-cn.json'),
-    'zh-tw': require('./locale/zh-tw.json')
+    'et': getLanguage('et'),
+    'fr': getLanguage('fr'),
+    'he': getLanguage('he'),
+    'hu': getLanguage('hu'),
+    'is': getLanguage('is'),
+    'it': getLanguage('it'),
+    'jp': getLanguage('jp'),
+    'ko': getLanguage('ko'),
+    'nl': getLanguage('nl'),
+    'nn': getLanguage('nn'),
+    'no': getLanguage('no'),
+    'pl': getLanguage('pl'),
+    'pt': getLanguage('pt'),
+    'ru': getLanguage('ru'),
+    'sk': getLanguage('sk'),
+    'sr': getLanguage('sr'),
+    'sv': getLanguage('sv'),
+    'tr': getLanguage('tr'),
+    'uk': getLanguage('uk'),
+    'ur': getLanguage('ur'),
+    'zh-cn': getLanguage('zh-cn'),
+    'zh-tw': getLanguage('zh-tw')
+}
+*/
+
+var Language = {}
+
+function setLanguage(code) {
+    Language = getLanguage(code);
+    return Language;
 }
 
 
@@ -57,7 +66,7 @@ const LANGUAGES = {
  * @param {string} [script_path] - if `language` is not a URL, this is used
  *     to construct a fully-qualified URL to load a translation file.
  */
-class Language {
+class _Language {
     constructor(code, script_path) {
         //if (!(code in LANGUAGES) ) {
         //    loadLanguage(code, script_path);
@@ -353,4 +362,4 @@ Language.DATE_FORMAT_TOKENS = /d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[LloSZ]|"[^
 //let fallback = new Language();
 //Language.fallback = fallback;
 //export { Language, fallback }
-export { Language, LANGUAGES }
+export { Language, setLanguage }

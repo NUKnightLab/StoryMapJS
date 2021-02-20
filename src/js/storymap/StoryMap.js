@@ -2,7 +2,7 @@ import { classMixin, mergeData, updateData, urljoin } from "../core/Util"
 import { loadJS, loadCSS } from "../core/Load"
 import Dom from "../dom/Dom"
 import Ease from "../animation/Ease"
-import { LANGUAGES } from "../language/Language"
+import { setLanguage } from "../language/Language"
 import Events from "../core/Events"
 import Leaflet from "../map/leaflet/Map.Leaflet"
 import MenuBar from "../ui/MenuBar"
@@ -231,8 +231,9 @@ class StoryMap {
     _loadLanguage() {
         var self = this;
         var code = self.options.language;
-        self.language = LANGUAGES[code];
-        self.options.language = LANGUAGES[code];
+        //self.language = LANGUAGES[code];
+        self.language = setLanguage(code);
+        self.options.language = self.language;
         self._onDataLoaded();
         //var script_path = self.options.script_path;
         //console.log(code);
@@ -596,4 +597,4 @@ class StoryMap {
 //  _.SCRIPT_PATH = src.substr(0,src.lastIndexOf("/"));
 
 classMixin(StoryMap, Events)
-export { StoryMap, LANGUAGES }
+export { StoryMap }

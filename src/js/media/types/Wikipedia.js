@@ -1,11 +1,11 @@
 import { Media } from "../Media"
 import Dom from "../../dom/Dom"
-/*	VCO.Media.Wikipedia
+import { Language } from "../../language/Language"
+
+/*	Media.Wikipedia
 ================================================== */
 
 export default class Wikipedia extends Media {
-	
-	//includes: [VCO.Events],
 	
 	/*	Load the media
 	================================================== */
@@ -15,10 +15,10 @@ export default class Wikipedia extends Media {
 			self = this;
 		
 		// Loading Message
-		this.message.updateMessage(VCO.Language.messages.loading + " " + this.options.media_name);
+		this.message.updateMessage(Language.messages.loading + " " + this.options.media_name);
 		
 		// Create Dom element
-		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-wikipedia", this._el.content);
+		this._el.content_item	= Dom.create("div", "vco-media-item vco-media-wikipedia", this._el.content);
 		
 		// Get Media ID
 		this.media_id	 = this.data.url.split("wiki\/")[1].split("#")[0].replace("_", " ");
@@ -78,7 +78,7 @@ export default class Wikipedia extends Media {
 			}
 			
 			content		=	"<h4><a href='" + this.data.url + "' target='_blank'>" + wiki.title + "</a></h4>";
-			content		+=	"<span class='wiki-source'>" + VCO.Language.messages.wikipedia + "</span>";
+			content		+=	"<span class='wiki-source'>" + Language.messages.wikipedia + "</span>";
 			content		+=	wiki.text;
 			
 			if (wiki.extract.match("REDIRECT")) {

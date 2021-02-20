@@ -4,8 +4,6 @@ import Dom from "../../dom/Dom"
 
 export default class Text {
 	
-	//includes: [VCO.Events],
-	
 	/*	Constructor
 	================================================== */
 	constructor(data, options, add_to_container) {

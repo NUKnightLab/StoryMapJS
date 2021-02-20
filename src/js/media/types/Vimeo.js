@@ -1,11 +1,12 @@
 import { Media } from "../Media"
 import Dom from "../../dom/Dom"
-/*	VCO.Media.Vimeo
+import { Language } from "../../language/Language"
+import { ratio } from "../../core/Util"
+
+/*	Media.Vimeo
 ================================================== */
 
 export default class Vimeo extends Media {
-
-	//includes: [VCO.Events],
 
 	/*	Load the media
 	================================================== */
@@ -14,10 +15,10 @@ export default class Vimeo extends Media {
 			self = this;
 
 		// Loading Message
-		this.message.updateMessage(VCO.Language.messages.loading + " " + this.options.media_name);
+		this.message.updateMessage(Language.messages.loading + " " + this.options.media_name);
 
 		// Create Dom element
-		this._el.content_item	= VCO.Dom.create("div", "vco-media-item vco-media-iframe vco-media-vimeo vco-media-shadow", this._el.content);
+		this._el.content_item	= Dom.create("div", "vco-media-item vco-media-iframe vco-media-vimeo vco-media-shadow", this._el.content);
 
 		// Get Media ID
 		this.media_id = this.data.url.split(/video\/|\/\/vimeo\.com\//)[1].split(/[?&]/)[0];
@@ -25,7 +26,7 @@ export default class Vimeo extends Media {
 		// API URL
 		api_url = "https://player.vimeo.com/video/" + this.media_id + "?api=1&title=0&amp;byline=0&amp;portrait=0&amp;color=ffffff";
 
-		this.player = VCO.Dom.create("iframe", "", this._el.content_item);
+		this.player = Dom.create("iframe", "", this._el.content_item);
 		this.player.width 		= "100%";
 		this.player.height 		= "100%";
 		this.player.frameBorder = "0";
@@ -37,7 +38,7 @@ export default class Vimeo extends Media {
 
 	// Update Media Display
 	_updateMediaDisplay() {
-		this._el.content_item.style.height = VCO.Util.ratio.r16_9({w:this._el.content_item.offsetWidth}) + "px";
+		this._el.content_item.style.height = ratio.r16_9({w:this._el.content_item.offsetWidth}) + "px";
 
 	}
 
