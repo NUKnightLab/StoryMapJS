@@ -451,7 +451,6 @@ class StoryMap {
 		this._initLayout();
 		this._initEvents();
 		this.ready = true;
-
 	}
 
 	_onTitle(e) {

@@ -11,6 +11,7 @@ export default class Flickr extends Media {
 	/*	Load the media
 	================================================== */
 	_loadMedia() {
+        console.log('load flickr');
 		var api_url,
 			self = this;
 		

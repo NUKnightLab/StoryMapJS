@@ -635,16 +635,15 @@ function slides_load(init_callback) {
 
     if(_slides.length > 0) {
         var data = _slides[0];
-
         slide_set_class(0);
         $('.slide:first .slide-title').html(((data.text) ? (data.text.headline || "(untitled)") : "(untitled)"));
         $('.slide:first').click();
     } else {
         slide_add();
     }
-
     hide_progress();
     init_callback();
+
 }
 
 function map_init(init_callback) {
@@ -767,18 +766,19 @@ function storymap_init(init_callback) {
                 }
             );
 
+            //Language init
+            check_language();
+
             // Map init
             map_init(init_callback);
 
-            //Language init
-            check_language();
         }
     );
 }
 
 function check_language () {
     var _lang_ISO = _storymap_data.storymap['language'];
-    KLStoryMap.setLanguage(_lang_ISO);
+    KLStoryMap.Language = KLStoryMap.setLanguage(_lang_ISO);
 };
 
 function language_loaded (_lang_ISO) {
