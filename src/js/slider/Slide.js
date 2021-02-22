@@ -147,7 +147,18 @@ export default class Slide {
 	
 	stopMedia() {
 		if (this._media && this._state.loaded) {
-			this._media.stopMedia();
+            try {
+			    this._media.stopMedia();
+            } catch(e) {
+                // Some sort of race condition or other ordering condition can cause
+                // an error when the preview tab is selected in the editor due to
+                // the stopped media not being properly formed.
+                if (e.message == 'this._el.content_item.querySelector is not a function') {
+                    console.log('Ignoring error in editor context: ' + e.message);
+                } else {
+                    throw e;
+                } 
+            }
 		}
 	}
 	
