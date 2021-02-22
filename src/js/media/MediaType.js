@@ -10,7 +10,6 @@ import Twitter from "./types/Twitter"
 import Flickr from "./types/Flickr"
 import GoogleDoc from "./types/GoogleDoc"
 import Slider from "./types/Slider"
-import Storify from "./types/Storify"
 import IFrame from "./types/IFrame"
 import Website from "./types/Website"
 import { Media } from "./Media"
@@ -100,12 +99,6 @@ export default function MediaType(m) {
 				name: 		"iFrame",
 				match_str: 	"iframe",
 				cls: 		IFrame
-			},
-			{
-				type: 		"storify",
-				name: 		"Storify",
-				match_str: 	"storify",
-				cls: 		Storify
 			},
 			{
 				type: 		"blockquote",
