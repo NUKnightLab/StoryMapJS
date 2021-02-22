@@ -36,7 +36,7 @@ export default class Flickr extends Media {
             } else {
 				self.loadErrorDisplay("Photo not found or private.");
             }
-        }))
+        }));
 		
 	}
 

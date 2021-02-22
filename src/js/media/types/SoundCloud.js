@@ -1,6 +1,7 @@
 import { Media } from "../Media"
 import Dom from "../../dom/Dom"
 import { Language } from "../../language/Language"
+import { loadJS } from "../../core/Load"
 
 /*	Media.SoundCloud
 ================================================== */
@@ -26,14 +27,14 @@ export default class SoundCloud extends Media {
 		this.media_id = this.data.url;
 
 		// API URL
-		api_url = "https://soundcloud.com/oembed?url=" + this.media_id + "&format=js&callback=?"
+		api_url = "https://soundcloud.com/oembed?url=" + this.media_id + "&format=json";
 
 		// API Call
-		VCO.getJSON(api_url, function(d) {
-			VCO.Load.js("https://w.soundcloud.com/player/api.js", function() {//load soundcloud api for pausing.
- 				self.createMedia(d);
- 			});
-		});
+        fetch(api_url).then(r => r.json().then(d => {
+		    loadJS("https://w.soundcloud.com/player/api.js", function() {//load soundcloud api for pausing.
+				self.createMedia(d);
+			});
+        }));
 
 	}
 
