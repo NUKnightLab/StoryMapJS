@@ -11,7 +11,6 @@ import Flickr from "./types/Flickr"
 import Instagram from "./types/Instagram"
 import Profile from "./types/Profile"
 import GoogleDoc from "./types/GoogleDoc"
-import GooglePlus from "./types/GooglePlus"
 import Slider from "./types/Slider"
 import Storify from "./types/Storify"
 import IFrame from "./types/IFrame"
@@ -74,12 +73,6 @@ export default function MediaType(m) {
 		    //		match_str: 	"maps.google",
 			//	cls: 		VCO.Media.Map
 			//},
-			{
-				type: 		"googleplus",
-				name: 		"Google+", 
-				match_str: 	"plus.google",
-				cls: 		GooglePlus
-			},
 			{
 				type: 		"flickr",
 				name: 		"Flickr", 
