@@ -12,13 +12,14 @@ import Instagram from "./types/Instagram"
 import Profile from "./types/Profile"
 import GoogleDoc from "./types/GoogleDoc"
 import GooglePlus from "./types/GooglePlus"
+import Slider from "./types/Slider"
 import Storify from "./types/Storify"
 import IFrame from "./types/IFrame"
 import Website from "./types/Website"
 import { Media } from "./Media"
 
 
-/*	VCO.MediaType
+/*	MediaType
 	Determines the type of media the url string is.
 	returns an object with .type and .id
 	You can add new media types by adding a regex 
@@ -151,7 +152,7 @@ export default function MediaType(m) {
 		if (m instanceof Array) {
 			return media = {
 				type: 		"slider",
-				cls: 		VCO.Media.Slider
+				cls: 		Slider
 			};
 		} else if (m.url.match(media_types[i].match_str)) {
 			media 		= media_types[i];

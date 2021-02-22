@@ -63,10 +63,10 @@ export class Media {
 
 		//Options
 		this.options = {
-      api_key_flickr: "8f2d5becf7b6ba46570741620054b507",
-      credit_height: 0,
-      caption_height: 0
-    };
+            api_key_flickr: "8f2d5becf7b6ba46570741620054b507",
+            credit_height: 0,
+            caption_height: 0
+        };
 
 		this.animator = {};
 
@@ -87,7 +87,6 @@ export class Media {
 			add_to_container.appendChild(this._el.container);
 			this._el.parent = add_to_container;
 		};
-
 	}
 
 	loadMedia() {
