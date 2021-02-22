@@ -8,8 +8,6 @@ import DailyMotion from "./types/DailyMotion"
 import Vine from "./types/Vine"
 import Twitter from "./types/Twitter"
 import Flickr from "./types/Flickr"
-import Instagram from "./types/Instagram"
-import Profile from "./types/Profile"
 import GoogleDoc from "./types/GoogleDoc"
 import Slider from "./types/Slider"
 import Storify from "./types/Storify"
@@ -78,18 +76,6 @@ export default function MediaType(m) {
 				name: 		"Flickr", 
 				match_str: 	"flickr.com/photos",
 				cls: 		Flickr
-			},
-			{
-				type: 		"instagram",
-				name: 		"Instagram", 
-				match_str: 	/(instagr.am|instagram.com)\/p\//,
-				cls: 		Instagram
-			},
-			{
-				type: 		"profile",
-				name: 		"Profile", 
-				match_str: 	/((instagr.am|instagram.com)(\/profiles\/|[-a-zA-Z0-9@:%_\+.~#?&//=]+instagramprofile))|[-a-zA-Z0-9@:%_\+.~#?&//=]+\?profile/,
-				cls: 		Profile
 			},
 			{
 				type: 		"image",
