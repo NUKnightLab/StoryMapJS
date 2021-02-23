@@ -21,34 +21,23 @@ export default class Twitter extends Media {
 		this._el.content_item = Dom.create("div", "vco-media-twitter", this._el.content);
 		
 		// Get Media ID
-		if (this.data.url.match("status\/")) {
-			this.media_id = this.data.url.split("status\/")[1];
-		} else if (url.match("statuses\/")) {
-			this.media_id = this.data.url.split("statuses\/")[1];
-		} else {
-			this.media_id = "";
-		}
-		
-		// API URL
-		api_url = "https://api.twitter.com/1/statuses/oembed.json?id=" + this.media_id + "&omit_script=true&include_entities=true&callback=?";
-		
-		// API Call
-		VCO.ajax({
-			type: 'GET',
-			url: api_url,
-			dataType: 'json', //json data type
-			success: function(d){
-				self.createMedia(d);
-			},
-			error:function(xhr, type){
-				var error_text = "";
-				error_text += "Unable to load Tweet. <br/>" + self.media_id + "<br/>" + type;
-				self.loadErrorDisplay(error_text);
-			}
-		});
-		 
+
+        let r = /twitter.com\/(.+?)\/status\/(\d+)/
+        let match = r.exec(this.data.url);
+        if (match) { 
+            this.user_id = match[1];
+            this.media_id = match[2];
+        }
+        let callbackName = `twitterCallback_${this.media_id}`;
+        api_url = `https://api.twitter.com/1/statuses/oembed.json?id=${this.media_id}&include_entities=true&callback=${callbackName}`;
+        let callbackScript = document.createElement('script');
+        window[callbackName] = function(data) {
+            self.createMedia(data);
+        };
+        callbackScript.src = api_url;
+        document.body.appendChild(callbackScript);
 	}
-	
+
 	createMedia(d) {	
 		var tweet				= "",
 			tweet_text			= "",
