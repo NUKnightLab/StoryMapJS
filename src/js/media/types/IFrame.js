@@ -10,12 +10,15 @@ export default class IFrame extends Media {
 	/*	Load the media
 	================================================== */
 	_loadMedia() {
-		var api_url,
-			self = this;
+		self = this;
 		
 		// Loading Message
 		this.message.updateMessage(Language.messages.loading + " " + this.options.media_name);
 		
+
+        console.log('content:');
+        console.log(this._el.content);
+
 		// Create Dom element
 		this._el.content_item	= Dom.create("div", "vco-media-item vco-media-iframe", this._el.content);
 		
@@ -23,10 +26,10 @@ export default class IFrame extends Media {
 		this.media_id = this.data.url;
 		
 		// API URL
-		api_url = this.media_id;
-		
+		let iframe = this.media_id;
+
 		// API Call
-		this._el.content_item.innerHTML = api_url;
+		this._el.content_item.innerHTML = iframe;
 		
 		// After Loaded
 		this.onLoaded();

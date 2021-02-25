@@ -109,7 +109,7 @@ export default function MediaType(m) {
 			{
 				type: 		"website",
 				name: 		"Website",
-				match_str: 	"http://",
+				match_str: 	"https?://",
 				cls: 		Website
 			},
 			{
