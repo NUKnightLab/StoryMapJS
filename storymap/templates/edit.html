@@ -778,6 +778,9 @@ function storymap_init(init_callback) {
 
 function check_language () {
     var _lang_ISO = _storymap_data.storymap['language'];
+    if (!_lang_ISO) {
+        _lang_ISO = 'en';
+    }
     KLStoryMap.Language = KLStoryMap.setLanguage(_lang_ISO);
 };
 
