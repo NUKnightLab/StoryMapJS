@@ -30,7 +30,6 @@ export default class Wikipedia extends Media {
         let maxIDLength = 512 - callbackPrefix.length;
         let callbackName = callbackPrefix + this.media_id.replace(/[^0-9a-z]/gi, '').slice(0, maxIDLength);
 		api_url = `https://${api_language}.wikipedia.org/w/api.php?action=query&prop=extracts&redirects=&titles=${this.media_id}&exintro=1&format=json&callback=${callbackName}`;
-        console.log(api_url);
         let callbackScript = document.createElement('script');
         window[callbackName] = function(data) {
             self.createMedia(data);

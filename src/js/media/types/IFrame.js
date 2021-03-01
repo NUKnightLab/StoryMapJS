@@ -15,10 +15,6 @@ export default class IFrame extends Media {
 		// Loading Message
 		this.message.updateMessage(Language.messages.loading + " " + this.options.media_name);
 		
-
-        console.log('content:');
-        console.log(this._el.content);
-
 		// Create Dom element
 		this._el.content_item	= Dom.create("div", "vco-media-item vco-media-iframe", this._el.content);
 		
