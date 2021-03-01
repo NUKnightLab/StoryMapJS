@@ -1,6 +1,7 @@
 import { Media } from "../Media"
 import Dom from "../../dom/Dom"
 import { Language } from "../../language/Language"
+import { getObjectAttributeByIndex } from "../../core/Util"
 
 /*	Media.Wikipedia
 ================================================== */
@@ -24,27 +25,18 @@ export default class Wikipedia extends Media {
 		this.media_id	 = this.data.url.split("wiki\/")[1].split("#")[0].replace("_", " ");
 		this.media_id	 = this.media_id.replace(" ", "%20");
 		api_language	 = this.data.url.split("//")[1].split(".wikipedia")[0];
-		
-		// API URL
-		api_url = "https://" + api_language + ".wikipedia.org/w/api.php?action=query&prop=extracts&redirects=&titles=" + this.media_id + "&exintro=1&format=json&callback=?";
-		
-		// API Call
-		
-		VCO.ajax({
-			type: 'GET',
-			url: api_url,
-			dataType: 'json', //json data type
-			
-			success: function(d){
-				self.createMedia(d);
-			},
-			error:function(xhr, type){
-				var error_text = "";
-				error_text += "Unable to load Wikipedia entry. <br/>" + self.media_id + "<br/>" + type;
-				self.loadErrorDisplay(error_text);
-			}
-		});
-		
+
+        let callbackPrefix = 'wikipediaCallback_';
+        let maxIDLength = 512 - callbackPrefix.length;
+        let callbackName = callbackPrefix + this.media_id.replace(/[^0-9a-z]/gi, '').slice(0, maxIDLength);
+		api_url = `https://${api_language}.wikipedia.org/w/api.php?action=query&prop=extracts&redirects=&titles=${this.media_id}&exintro=1&format=json&callback=${callbackName}`;
+        console.log(api_url);
+        let callbackScript = document.createElement('script');
+        window[callbackName] = function(data) {
+            self.createMedia(data);
+        };
+        callbackScript.src = api_url;
+        document.body.appendChild(callbackScript);
 	}
 	
 	createMedia(d) {
@@ -61,7 +53,7 @@ export default class Wikipedia extends Media {
 					text_array: []
 				};
 			
-			wiki.entry		 = VCO.Util.getObjectAttributeByIndex(d.query.pages, 0);
+			wiki.entry		 = getObjectAttributeByIndex(d.query.pages, 0);
 			wiki.extract	 = wiki.entry.extract;
 			wiki.title		 = wiki.entry.title;
 			

@@ -238,3 +238,19 @@ export function urljoin(base_url, path) {
     }
     return url3.join('/');
 }
+
+
+export function getObjectAttributeByIndex(obj, index) {
+    if(typeof obj != 'undefined') {
+        var i = 0;
+        for (var attr in obj){
+            if (index === i){
+                return obj[attr];
+            }
+            i++;
+        }
+        return "";
+    } else {
+        return "";
+    }
+}
