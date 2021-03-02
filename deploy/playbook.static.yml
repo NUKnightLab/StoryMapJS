@@ -28,11 +28,12 @@
 
     # Don't use the git module here - it will overwrite local commits.
     # See: https://github.com/ansible/ansible-modules-core/issues/614
-    - name: "sync local deployment branch: {{ project_version }}"
-      shell: git pull; git push
-      args:
-        chdir: "{{ project_root }}"
-        warn: False
+    # Does not seem to work with tags
+    #- name: "sync local deployment branch: {{ project_version }}"
+    #  shell: git pull; git push
+    #  args:
+    #    chdir: "{{ project_root }}"
+    #    warn: False
 
     - name: "build distribution"
       shell: npx webpack -c webpack.{{ env }}.js
