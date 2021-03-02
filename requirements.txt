@@ -10,9 +10,10 @@ docopt==0.6.1
 enum34==1.1.6
 fabric==2.5.0
 Flask==1.1.2
+flask-cors
 funcsigs==1.0.2
 google-api-python-client==1.9.3
-gunicorn==19.5.0
+gunicorn==20.0.4
 httplib2==0.18.1
 httpretty==0.8.10
 idna==2.7
@@ -56,3 +57,4 @@ uritemplate==3.0.1
 urllib3==1.24.2
 Werkzeug==1.0.1
 xmltodict==0.10.2
+gunicorn==20.0.4

@@ -1,10 +1,11 @@
+dist/*
 .pgdata/
 
 .srl
 *.pyc
 .env
 .envrc
-venv
+.venv/*
 .in
 .localstack/
 package-lock.json

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Bundled StoryMapJS test page</title>
+    <meta charset="utf-8">
+    <!-- this is normally done by embed page -->
+	<script type="text/javascript" src="/dist/js/storymap.js"></script>
+
+
+	<style>
+		html, body {
+		    width: 100%;
+		    height: 100%;
+		    padding: 0;
+		    margin: 0;
+		}
+		#storymap-embed {
+			/*border: 1px solid #999;*/
+		}
+	</style>
+
+</head>
+
+<body>
+    <h1>StoryMap Development</h1>
+    <div>
+        <label for="timeline-src">data source URL:</label><input type="text" size="120" name="timeline-src" id="timeline-src">
+    </div>
+    <div id='storymap-embed'></div>
+
+    <script>
+    var storymap;
+
+	function onStoryMapTitle(e) {
+			document.title = "StoryMapJS: " + e.title;
+	};
+
+    function buildStoryMap(data) {
+        console.log('building storymap');
+        console.log(data);
+        let options = {};
+        let storymapTitle = 'My StoryMap';
+	    storymap = new KLStoryMap.StoryMap('storymap-embed', data, options, {title: onStoryMapTitle});
+    }
+
+    (function() {
+        var data = {};
+        var options = {};
+        var storymapTitle = 'Test';
+        let url = 'https://uploads.knightlab.com/storymapjs/a1a349b51799ee49e96bed10cc235e7f/aryas-journey/published.json';
+        fetch(url)
+            .then(response => response.json())
+            .then(data => buildStoryMap(data));
+    })();
+    </script>
+
+</body>
+
+</html>

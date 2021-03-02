@@ -22,27 +22,17 @@ services:
     ports:
       - "443:5000"
     links:
-      #- mongo:mongo
-      - localstack:localstack
       - pg:pg
+      - localstack:localstack
     volumes:
-      - .:/usr/src/apps/StoryMapJS
-      - .localstack:/usr/src/apps/StoryMapJS/.localstack
+      - ./storymap:/usr/src/apps/StoryMapJS/storymap
+      - ./dist:/usr/src/apps/StoryMapJS/dist
+    #  #- ./.localstack/:/usr/src/apps/StoryMapJS/.localstack
     env_file: .env
-    command: python api.py -s -p 5000
+    command: gunicorn -b :5000 --workers 1 --reload storymap.core.wsgi:application --keyfile server.test.pem.key --certfile server.test.pem.crt
     depends_on:
-      #- mongo
       - pg
-
-  #mongo:
-  #  image: mongo:2.4
-  #  restart: always
-  #  volumes:
-  #    - mongodata:/data/db
-  #  ports:
-  #    - "27017-27019:27017-27019"
-  #  environment:
-  #    MONGO_INITDB_DATABASE: storymapjs
+      - localstack
 
   pg:
     image: postgres:11.6
@@ -54,7 +44,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./.pgdata:/var/lib/postgresql/data/
+      - ./.pgdata/:/var/lib/postgresql/data/
 
   localstack:
     image: localstack/localstack-light
@@ -66,8 +56,6 @@ services:
     ports:
       - "4566:4566"
     volumes:
-      - ./.localstack:/tmp/localstack
-      - /var/run/docker.sock:/var/run/docker.sock
+      - ./.localstack/:/tmp/localstack
+      #- /var/run/docker.sock:/var/run/docker.sock
 
-#volumes:
-#  mongodata:

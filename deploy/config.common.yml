@@ -6,6 +6,7 @@ service_port: "{{ storymap_port }}"
 
 playbooks:
   - playbook.deploy.yml
+  - playbook.restart.yml
 
 # these will be merged with deployment-specific env into variable init_env
 init_env_common:
@@ -16,7 +17,7 @@ init_env_common:
 
   # Flask specific
   FLASK_SECRET_KEY: "{{ vault_flask_secret_key }}"
-  FLASK_SETTINGS_MODULE: "core.settings"
+  FLASK_SETTINGS_MODULE: "storymap.core.settings"
   FLASK_SETTINGS_FILE: "core/settings.py"
   AWS_STORAGE_BUCKET_NAME: "{{ vault_aws_storage_bucket_name }}"
   AWS_STORAGE_BUCKET_URL: "{{ vault_aws_storage_bucket_url }}"
@@ -41,4 +42,4 @@ envrc_file: "{{ deploy_dir }}/.envrc"
 virtualenv: "{{ deploy_dir }}/.venv"
 project_repo: "git@github.com:NUKnightLab/{{ project_name }}.git"
 requirements_file: "{{ deploy_dir }}/requirements.txt"
-wsgi_application: "core.wsgi:application"
+wsgi_application: "storymap.core.wsgi:application"
