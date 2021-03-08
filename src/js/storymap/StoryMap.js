@@ -157,12 +157,11 @@ class StoryMap {
 		var self = this;
 
 		if (typeof data === 'string') {
-			getJSON(data, function(d) {
-				if (d && d.storymap) {
-					mergeData(self.data, d.storymap);
-				}
-				self._initOptions();
-			});
+            fetch(data)
+            .then(response => response.json())
+            .then(result => {
+                console.log(result);
+            });
 		} else if (typeof data === 'object') {
 			if (data.storymap) {
 				self.data = data.storymap;

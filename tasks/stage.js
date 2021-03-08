@@ -37,9 +37,6 @@ function stageToCDN(version, latest) {
     //     })
     // }
 
-    // backwards compatibility -- we've offered timeline-min.js
-    // webpack makes something smaller even than that, so just copy.
-    // for people who want to debug, there's the sourcemap.
     fse.copySync('dist/js/storymap.js', 'dist/js/storymap-min.js')
 
     if (fse.existsSync(CDN_ROOT)) {

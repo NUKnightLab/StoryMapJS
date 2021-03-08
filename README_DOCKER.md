@@ -81,3 +81,9 @@ $ docker-compose up
 ```
  $ docker-compose run pg psql -h pg -U storymap
 ```
+
+### Using aws cli with localstack
+
+```
+$ aws --endpoint-url=http://localhost:4566 s3 ls s3://uploads.knilab.com/storymapjs/
+```

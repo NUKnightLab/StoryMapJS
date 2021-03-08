@@ -11,6 +11,12 @@ To stage the current dist folder:
 A stg deployment will always deploy the specified branch to the stg endpoint in the CDN:
 s3://cdn.knightlab.com/libs/storymapjs/stg/
 
+To create a versioned endpoint, create a tag:
+
+```
+ $ git tag -a <version> -m "deployment version"
+ $ git push origin --tags
+```
 
 To deploy to a specific versioned endpoint, specify prd:
 
