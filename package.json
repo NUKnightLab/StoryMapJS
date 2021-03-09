@@ -1,56 +1,56 @@
 {
-  "name": "StoryMapJS",
-  "version": "1.0.0",
-  "description": "This README is a work in progress. Please see QUICKSTART.md for the current development onboarding process.",
-  "private": "true",
-  "directories": {
-    "test": "tests"
-  },
-  "dependencies": {
-    "adm-zip": "^0.5.4",
-    "leaflet": "^0.7.2",
-    "prompt": "^1.1.0",
-    "simple-git": "^2.36.1",
-    "trash-cli": "^4.0.0",
-    "uglify-js": "^2.8.29"
-  },
-  "devDependencies": {
-    "clean-webpack-plugin": "^3.0.0",
-    "copy-webpack-plugin": "^7.0.0",
-    "css-loader": "^5.0.1",
-    "file-loader": "^6.2.0",
-    "fs-extra": "^9.0.1",
-    "html-webpack-plugin": "^4.5.0",
-    "json-loader": "^0.5.7",
-    "jstrace": "^0.3.0",
-    "less": "^3.13.0",
-    "less-loader": "^7.1.0",
-    "npm-run-all": "^4.1.5",
-    "run-all": "^1.0.1",
-    "run-s": "0.0.0",
-    "style-loader": "^2.0.0",
-    "trash": "^7.1.0",
-    "webpack": "^5.11.0",
-    "webpack-cli": "^4.4.0"
-  },
-  "scripts": {
-    "build": "webpack --config webpack.prd.js && node tasks/compile_less.js",
-    "clean": "trash dist",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dist": "npm-run-all -s clean build",
-    "stage": "npm run dist && node tasks/stage.js",
-    "stage_latest": "npm run dist && node tasks/stage.js latest",
-    "stage_dev": "npm run dist && node tasks/stage.js dev"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/NUKnightLab/StoryMapJS.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/NUKnightLab/StoryMapJS/issues"
-  },
-  "homepage": "https://github.com/NUKnightLab/StoryMapJS#readme"
+    "name": "StoryMapJS",
+    "version": "0.7.8",
+    "description": "This README is a work in progress. Please see QUICKSTART.md for the current development onboarding process.",
+    "private": "true",
+    "directories": {
+        "test": "tests"
+    },
+    "dependencies": {
+        "adm-zip": "^0.5.4",
+        "leaflet": "^0.7.2",
+        "prompt": "^1.1.0",
+        "simple-git": "^2.36.1",
+        "trash-cli": "^4.0.0",
+        "uglify-js": "^2.8.29"
+    },
+    "devDependencies": {
+        "clean-webpack-plugin": "^3.0.0",
+        "copy-webpack-plugin": "^7.0.0",
+        "css-loader": "^5.0.1",
+        "file-loader": "^6.2.0",
+        "fs-extra": "^9.0.1",
+        "html-webpack-plugin": "^4.5.0",
+        "json-loader": "^0.5.7",
+        "jstrace": "^0.3.0",
+        "less": "^3.13.0",
+        "less-loader": "^7.1.0",
+        "npm-run-all": "^4.1.5",
+        "run-all": "^1.0.1",
+        "run-s": "0.0.0",
+        "style-loader": "^2.0.0",
+        "trash": "^7.1.0",
+        "webpack": "^5.11.0",
+        "webpack-cli": "^4.4.0"
+    },
+    "scripts": {
+        "build": "webpack --config webpack.prd.js && node tasks/compile_less.js",
+        "clean": "trash dist",
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "dist": "npm-run-all -s clean build",
+        "stage": "npm run dist && node tasks/stage.js",
+        "stage_latest": "npm run dist && node tasks/stage.js latest",
+        "stage_dev": "npm run dist && node tasks/stage.js dev"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/NUKnightLab/StoryMapJS.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/NUKnightLab/StoryMapJS/issues"
+    },
+    "homepage": "https://github.com/NUKnightLab/StoryMapJS#readme"
 }
