@@ -7,7 +7,7 @@ const output_path = path.resolve(__dirname, "dist");
 
 module.exports = merge({
     mode: 'production',
-    devtool: 'source-map',
+    devtool: 'inline-source-map',
     devServer: {
         contentBase: ['./src/css'],
         contentBasePublicPath: ['/', '/css'],
@@ -25,11 +25,13 @@ module.exports = merge({
         //new HtmlWebpackPlugin({
         //    template: 'src/template/index.html'
         //})
-        new CopyPlugin({
-            patterns: [{
-                from: path.join(output_path, 'js/storymap.js'),
-                to: path.join(output_path, 'js/storymap-min.js')
-            }]
-        })
+
+        // do this in the stage task
+        //new CopyPlugin({
+        //    patterns: [{
+        //        from: path.join(output_path, 'js/storymap.js'),
+        //        to: path.join(output_path, 'js/storymap-min.js')
+        //    }]
+        //})
     ]
 }, common)

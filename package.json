@@ -7,7 +7,10 @@
     "test": "tests"
   },
   "dependencies": {
+    "adm-zip": "^0.5.4",
     "leaflet": "^0.7.2",
+    "prompt": "^1.1.0",
+    "simple-git": "^2.36.1",
     "trash-cli": "^4.0.0",
     "uglify-js": "^2.8.29"
   },

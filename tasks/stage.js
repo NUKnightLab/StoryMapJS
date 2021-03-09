@@ -6,8 +6,8 @@ const prompt = require('prompt'),
     glob = require('glob'),
     _template = require('lodash/template');
 
-const CDN_ROOT = '../cdn.knightlab.com', // maybe parameterize later
-    PROJECT_NAME = 'storymap'; // can we read this from package.json?
+const CDN_ROOT = '../cdn.knightlab.com',
+    PROJECT_NAME = 'storymapjs';
 
 function makeCDNPath(version) {
     return path.normalize(path.join(CDN_ROOT, 'app/libs', PROJECT_NAME, version));
@@ -28,17 +28,7 @@ function writeBanner(file, options) {
 
 function stageToCDN(version, latest) {
     var banner_version = (version == 'dev') ? new Date().toISOString() : version;
-
-    // var to_banner = glob.sync('dist/**/*.+(js|css)');
-    // for (var i = 0; i < to_banner.length; i++) {
-    //     writeBanner(to_banner[i], {
-    //         banner: 'banner.tmpl',
-    //         version: banner_version,
-    //     })
-    // }
-
     fse.copySync('dist/js/storymap.js', 'dist/js/storymap-min.js')
-
     if (fse.existsSync(CDN_ROOT)) {
         var dest = makeCDNPath(version);
         var zip = new AdmZip();
@@ -46,14 +36,12 @@ function stageToCDN(version, latest) {
         zip.writeZip(path.join('dist', PROJECT_NAME + ".zip"));
         fse.copySync('dist', dest, onErr);
         console.log('copied to ' + dest);
-
         if (latest) {
             var latest_dir = makeCDNPath('latest');
             fse.removeSync(latest_dir);
             fse.copySync(dest, latest_dir, onErr);
             console.log('copied version ' + version + ' to latest');
         }
-
     } else {
         console.error("CDN directory " + CDN_ROOT + "does not exist; nothing was copied")
     }
