@@ -75,12 +75,10 @@ def key_id():
 
 
 def key_prefix(*args):
-    print(args)
     return '%s/%s/' % (LOCAL_PATH, '/'.join(args))
 
 
 def key_name(*args):
-    print(args)
     return os.path.join(LOCAL_PATH, '/'.join(args))
 
 @_reraise_s3response
@@ -138,8 +136,6 @@ def copy_key(src_key_name, dst_key_name):
     """
     Copy from src_key_name to dst_key_name
     """
-    print(src_key_name)
-    print(dst_key_name)
     copyfile(os.path.join(STORYMAPJS_DIRECTORY, src_key_name),
              os.path.join(STORYMAPJS_DIRECTORY, dst_key_name))
 

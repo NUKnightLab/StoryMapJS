@@ -29,7 +29,7 @@ services:
       - ./dist:/usr/src/apps/StoryMapJS/dist
     #  #- ./.localstack/:/usr/src/apps/StoryMapJS/.localstack
     env_file: .env
-    command: gunicorn -b :5000 --workers 1 --reload storymap.core.wsgi:application --keyfile server.test.pem.key --certfile server.test.pem.crt
+    command: gunicorn -b :5000 --workers 1 --reload --log-level debug storymap.core.wsgi:application --keyfile localhost.key --certfile localhost.pem
     depends_on:
       - pg
       - localstack

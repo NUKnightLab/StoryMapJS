@@ -65,26 +65,53 @@
       return slide;
     }
 
+    function urlJoin(url, concat) { // see http://stackoverflow.com/questions/2676178/joining-relative-urls
+        function build(parts,container) {
+            for (var i = 0, l = parts.length; i < l; i ++) {
+                if (parts[i] == '..') {
+                    container.pop();
+                } else if (parts[i] == '.') {
+                    continue;
+                } else {
+                    container.push(parts[i]);
+                }
+            }
+        }
+        var url_parts = [ ];
+        build(url.split('/'),url_parts);
+        build(concat.split('/'),url_parts);
+        return url_parts.join('/');
+    }
+
     function buildStoryMap(data) {
-      var options = {
-        script_path: getScriptPath(/storymap(-min)?\.js/),
-        start_at_slide: getStartSlide()
-      };
-	  storymap = new KLStoryMap.StoryMap('storymap-embed', data, options, {
-        title: onStoryMapTitle
-      });
+        if (!data || !data.storymap) { return; }
+        var options = {
+            script_path: getScriptPath(/storymap(-min)?\.js/),
+            start_at_slide: getStartSlide()
+        };
+        var font = "stock:default";
+        if(d.font_css) {
+            font = d.font_css;
+        }
+        if(font.indexOf("stock:") == 0) {
+            var font_name = font.split(':')[1];
+            var base_url = urlJoin(options.script_path,"../css/fonts");
+            font = urlJoin(base_url, "font." + font_name + ".css");
+        } else if(!font.match('^(http|https|//)')) {
+            font = urlJoin(options.script_path, font);
+        }
+        KLStoryMap.loadCSS(font,function(){ console.log('font loaded: ' + font);});
+	    storymap = new KLStoryMap.StoryMap('storymap-embed', data, options, {
+            title: onStoryMapTitle
+        });
+        var mapType = storymap.options.map_type;
+        if(mapType && mapType.match('^zoomify.*')) {
+            ga('send', 'event', 'StoryMapJS', 'zoomify', document.referrer)
+        }
     }
 
     (function() {
         let storymap_url = urlParams.get('url');
-		if(!!navigator.userAgent.match(/AppleWebKit\/.* Mobile\//)
-		|| !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/)
-		|| !!navigator.userAgent.toLowerCase().match(/msie [789]/)) {
-		    if(storymap_url.match(/^https?:\/\/www\.googledrive\.com\/host\//)) {
-		        storymap_url = location.protocol+'//proxy.knightlab.com/'+storymap_url.split('://')[1];
-		        trace('proxy, '+storymap_url);
-		    }
-		}
         fetch(storymap_url)
             .then(response => response.json())
             .then(data => buildStoryMap(data));

@@ -3,7 +3,7 @@
 
 CERTDIR=.localstack
 CA=KnightLabRootCA
-FN=server.test.pem
+FN=localhost
 STATE=Illinois
 CITY=Evanston
 COUNTRY=US

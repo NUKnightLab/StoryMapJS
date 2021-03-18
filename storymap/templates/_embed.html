@@ -61,154 +61,89 @@ html, body {
 <!-- End Google Analytics -->
 
 <script type="text/javascript">
+    var storymap;
+    var storymap_url = '{{ json_url }}';
+    const urlParams = new URLSearchParams(window.location.search);
 
-function parseQuerystring() {
-    var nvpair = {};
-    var qs = window.location.search.replace('?', '');
-    var pairs = qs.split('&');
+	function onStoryMapTitle(e) {
+      document.title = "StoryMapJS: " + e.title;
+	};
 
-    for(var i = 0; i < pairs.length; i++) {
-        var p = pairs[i].split('=');
-        nvpair[p[0]] = p[1];
-    }
-    return nvpair;
-}
-
-function getScriptPath(scriptname) {
-    var scriptTags = document.getElementsByTagName('script');
-
-    for(var i = 0; i < scriptTags.length; i++) {
-        if(scriptTags[i].src.match(scriptname)) {
-            script_path = scriptTags[i].src;
-            return script_path.split('?')[0].split('/').slice(0, -1).join('/');
-        }
-    }
-    return '';
-}
-
-function url_join(url, concat) { // see http://stackoverflow.com/questions/2676178/joining-relative-urls
-    function build(parts,container) {
-        for (var i = 0, l = parts.length; i < l; i ++) {
-            if (parts[i] == '..') {
-                container.pop();
-            } else if (parts[i] == '.') {
-                continue;
-            } else {
-                container.push(parts[i]);
+    function getScriptPath(scriptname) {
+        var scriptTags = document.getElementsByTagName('script');
+        for(var i = 0; i < scriptTags.length; i++) {
+            if(scriptTags[i].src.match(scriptname)) {
+                script_path = scriptTags[i].src;
+                return script_path.split('?')[0].split('/').slice(0, -1).join('/');
             }
         }
+        return '';
     }
-    var url_parts = [ ];
-    build(url.split('/'),url_parts);
-    build(concat.split('/'),url_parts);
-    return url_parts.join('/');
-}
 
-
-var storymap = null;
-var storymap_url = '{{ json_url }}'; //decodeURIComponent(params['url']);
-
-var params = parseQuerystring();
-
-/* don't need this anymore
-if(!!navigator.userAgent.match(/AppleWebKit\/.* Mobile\//)
-|| !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/)
-|| !!navigator.userAgent.toLowerCase().match(/msie [789]/)) {
-    if(storymap_url.match(/^https?:\/\/www\.googledrive\.com\/host\//)) {
-        storymap_url = location.protocol+'//proxy.knightlab.com/'+storymap_url.split('://')[1];
-        console.log('proxy, '+storymap_url);
+    function getStartSlide() {
+        var slide = 0;
+        if (urlParams.has('start_at_slide')) {
+            slide = parseInt(urlParams.get('start_at_slide'), 10);
+        }
+        return slide;
     }
-}
-*/
-var options = {
-    script_path: getScriptPath(/storymap(-min)?\.js/),
-    start_at_slide: 0
-};
 
-if(params.hasOwnProperty('start_at_slide')) {
-    options.start_at_slide = parseInt(params.start_at_slide);
-}
+    function urlJoin(url, concat) { // see http://stackoverflow.com/questions/2676178/joining-relative-urls
+        function build(parts,container) {
+            for (var i = 0, l = parts.length; i < l; i ++) {
+                if (parts[i] == '..') {
+                    container.pop();
+                } else if (parts[i] == '.') {
+                    continue;
+                } else {
+                    container.push(parts[i]);
+                }
+            }
+        }
+        var url_parts = [ ];
+        build(url.split('/'),url_parts);
+        build(concat.split('/'),url_parts);
+        return url_parts.join('/');
+    }
 
-function storymap_onload(d) {
-    console.log('embed: storymap data loaded');
-
-    if (d && d.storymap) {
+    function buildStoryMap(data) {
+        if (!data || !data.storymap) { return; }
+        var options = {
+            script_path: getScriptPath(/storymap(-min)?\.js/),
+            start_at_slide: getStartSlide()
+        };
         var font = "stock:default";
-        if(d.font_css) {
-            font = d.font_css;
+        if(data.font_css) {
+            font = data.font_css;
         }
         if(font.indexOf("stock:") == 0) {
             var font_name = font.split(':')[1];
-            var base_url = url_join(options.script_path,"../css/fonts");
-            font = url_join(base_url, "font." + font_name + ".css");
+            var base_url = urlJoin(options.script_path,"../css/fonts");
+            font = urlJoin(base_url, "font." + font_name + ".css");
         } else if(!font.match('^(http|https|//)')) {
-            font = url_join(options.script_path, font);
+            font = urlJoin(options.script_path, font);
         }
         KLStoryMap.loadCSS(font,function(){ console.log('font loaded: ' + font);});
-        storymap = new KLStoryMap.StoryMap('storymap-embed', d, options);
-    }
-}
-
-function storymap_getjson() {
-    if('withCredentials' in new XMLHttpRequest()) {
-        // Supports cross-domain requests
-        console.log('embed: loading data via XMLHttpRequest');
-        let httpRequest = new XMLHttpRequest();
-        httpRequest.onreadystatechange = function() {
-            if (httpRequest.readyState === XMLHttpRequest.DONE) {
-                if (httpRequest.status === 200) {
-                    let data = JSON.parse(httpRequest.responseText);
-                    storymap_onload(data);
-                } else {
-                    alert('There was a problem with the request.');
-                }
-            }
-        };
-        httpRequest.open('GET', storymap_url);
-        httpRequest.send();
-    } else if(typeof XDomainRequest !== "undefined") {
-        // Use IE-specific "CORS" code with XDR
-        console.log('embed: loading data via XDomainRequest');
-        var xdr = new XDomainRequest();
-        xdr.onload = function() {
-            storymap_onload(JSON.parse(xdr.responseText));
-        };
-        xdr.onerror = function() {
-            console.log('embed: error loading data via XDomainRequest');
-        };
-        xdr.onprogress = function() {};
-        xdr.open("get", storymap_url);
-        xdr.send();
-    }
-}
-
-window.onload = function() {
-    if(storymap_url.match('\\.js$')) {
-        console.log('embed: loading data via script injection');
-        var loaded = false;
-        var script = document.createElement("script");
-        script.type = "text/javascript";
-        script.src  = storymap_url;
-        script.onload = script.onreadystatechange = function() {
-            if(!loaded && (!(d = this.readyState) || d == "loaded" || d == "complete")) {
-                loaded = true;
-                storymap_onload(storymap_json);
-            }
+	    storymap = new KLStoryMap.StoryMap('storymap-embed', data, options, {
+            title: onStoryMapTitle
+        });
+        var mapType = storymap.options.map_type;
+        if(mapType && mapType.match('^zoomify.*')) {
+            ga('send', 'event', 'StoryMapJS', 'zoomify', document.referrer)
         }
-
-        // document.head not standard before HTML5
-        var insertionPoint = document.head || document.getElementsByTagName('head').item(0) || document.documentElement.childNodes[0];
-        insertionPoint.appendChild(script);
-    } else {
-        storymap_getjson();
     }
-}
 
-window.onresize = function(event) {
-    if(storymap) {
-        storymap.updateDisplay();
+    (function() {
+        fetch(storymap_url)
+            .then(response => response.json())
+            .then(data => buildStoryMap(data));
+    })();
+
+    window.onresize = function(event) {
+        if(storymap) {
+            storymap.updateDisplay();
+        }
     }
-}
-</script>
+  </script>
 </body>
 </html>

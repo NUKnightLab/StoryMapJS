@@ -31,7 +31,7 @@ except ImportError as e:
 import hashlib
 import requests
 import slugify
-import bson
+#import bson
 from oauth2client.client import OAuth2WebServerFlow
 #from storymap import google
 #from storymap.connection import get_user, save_user, create_user, find_users
@@ -120,8 +120,6 @@ class APIEncoder(json.JSONEncoder):
         """Format obj as json."""
         if isinstance(obj, datetime.datetime):
             return obj.isoformat()
-        if isinstance(obj, bson.objectid.ObjectId):
-            return str(obj)
         return json.JSONEncoder.default(self, obj)
 
 def _str2bool(s):
@@ -409,8 +407,6 @@ def _write_embed(embed_key_name, json_key_name, meta):
         image_url=_fix_url_for_opengraph(image_url),
         storymap_js_file=settings.STORYMAP_JS_FILE
     )
-    print('content')
-    print(content)
     storage.save_from_data(embed_key_name, 'text/html', content)
 
 def _write_embed_draft(key_prefix, meta):
@@ -992,7 +988,8 @@ if __name__ == '__main__':
 
     ssl_context = None
     port = 5000
-    app.run(host='0.0.0.0', port=port, debug=True, ssl_context='adhoc')
+    app.run(host='0.0.0.0', port=port, debug=True)
+    #app.run(host='0.0.0.0', port=port, debug=True, ssl_context='adhoc')
     exit()
 
     # Experimenting with using Flask's scarcely documented 'adhoc' ssl context

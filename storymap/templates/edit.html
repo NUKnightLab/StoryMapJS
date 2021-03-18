@@ -291,6 +291,27 @@ function slide_select(event) {
                 $('#map_search_input').val('').show();
             }
 
+            /**
+             * Ensure a zoomify slide is editable and properly displayed by
+             * placing a marker if no marker is defined. It is not clear how
+             * to best calculate a good location for the marker so an arbitrary
+             * point is used.
+             */
+            if (_storymap_data.storymap.zoomify && 
+                    ( !data.location.lat || !data.location.lon )) {
+                if (!data.location.lat) {
+                    data.location.lat = 50.0;
+                    data.location.zoom = 1;
+                }
+                if (!data.location.lon) {
+                    data.location.lon = -50.0;
+                }
+                data.location.zoom = 1;
+                location_set(_current_slide_index, {zoom: data.location.zoom});
+                location_set(_current_slide_index, {
+                    lat: data.location.lat, lon: data.location.lon });
+            }
+
             if(data.location
                     && 'lat' in data.location
                     && 'lon' in data.location
@@ -890,26 +911,21 @@ $(function() {
         // Display: Zoomify
         //
         .on('change', '#zoomify_path', function() {
-
             var value = $(this).val().trim();
-
             var re = /drive.google.com\/open\?id=/
             var re2 = /drive.google.com\/folderview\?id=/;
             var subst = 'www.googledrive.com\/host\/';
             var value = value.replace(re, subst);
             var value = value.replace(re2, subst);
-
             var re3 = /&authuser=0/;
             var re4 = /&usp=sharing/
             var subst2 = '/';
             var value = value.replace(re3, subst2);
             var value = value.replace(re4, subst2);
-
             if(!value.match(/\/$/)) {
                 value += '/';
                 $(this).val(value);
             }
-
             _storymap_data.storymap.zoomify.path = value;
             storymap_dirty(1);
             map_set_type();
