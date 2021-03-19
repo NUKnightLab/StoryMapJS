@@ -172,6 +172,30 @@ function get_map_as_image() {
 function map_set_type() {
   // this used to have different signatures for google and leaflet but trying to eliminate google
     _map.setMapType(_storymap_data);
+    if(_storymap_data.storymap.map_type == "zoomify") {
+        /**
+         * When converting a StoryMap with existing slides to zoomify type, we
+         * must ensure are slides are editable and properly displayed by
+         * placing markers where none is defined.
+         */
+        for(var i = 1; i < _slides.length; i++) {
+            var loc = _slides[i].location || {};
+            if (!loc.lat || !loc.lon) {
+                if (i === 1) {
+                    var d = _map.getDefaultView();
+                    _slides[i].location = {
+                        lat:d.lat,
+                        lon:d.lng,
+                        zoom:d.zoom ? d.zoom : 1 };
+                } else {
+                    Object.assign(_slides[i].location,  _slides[i-1].location);
+                }
+            }
+        }
+
+        $('.slide.selected').click(); // effective reset of the edit view
+        storymap_auto_save();
+    }
 }
 
 function location_set(slide_index, data) {
@@ -291,27 +315,6 @@ function slide_select(event) {
                 $('#map_search_input').val('').show();
             }
 
-            /**
-             * Ensure a zoomify slide is editable and properly displayed by
-             * placing a marker if no marker is defined. It is not clear how
-             * to best calculate a good location for the marker so an arbitrary
-             * point is used.
-             */
-            if (_storymap_data.storymap.zoomify && 
-                    ( !data.location.lat || !data.location.lon )) {
-                if (!data.location.lat) {
-                    data.location.lat = 50.0;
-                    data.location.zoom = 1;
-                }
-                if (!data.location.lon) {
-                    data.location.lon = -50.0;
-                }
-                data.location.zoom = 1;
-                location_set(_current_slide_index, {zoom: data.location.zoom});
-                location_set(_current_slide_index, {
-                    lat: data.location.lat, lon: data.location.lon });
-            }
-
             if(data.location
                     && 'lat' in data.location
                     && 'lon' in data.location
@@ -388,7 +391,7 @@ function slide_add() {
     // Add location data if not overview slide, else add type
     if(n > 0) {
         var d = _map.getDefaultView();
-        $.extend(true, data.location, {lat: d.lat, lon: d.lng, zoom: d.zoom},
+        $.extend(true, data.location, {lat: d.lat, lon: d.lng, zoom: d.zoom ? d.zoom : 1},
             _slides[n - 1].location || {});
     } else {
         data.type = "overview";
@@ -1016,6 +1019,7 @@ $(function() {
         .on('change', '#map_type', function(event) {
             var map_type = $(this).val().trim();
 
+
             switch($('#map_type_menu').val()) {
                 case '':    // custom
                     map_type = map_type.replace('{Z}','{z}').replace('{X}','{x}').replace('{Y}','{y}').replace('{S}','{s}');
@@ -1029,6 +1033,7 @@ $(function() {
                     storymap_dirty(1);
                     map_set_type();
                     break;
+
             }
         })
         .on('change', '#map_subdomains, #map_access_token, #attribution', function(event) {
