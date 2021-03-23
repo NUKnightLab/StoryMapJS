@@ -1,1791 +1,1939 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<title>TITLE (Editing)</title>
-<meta name="description" content="Telling stories with maps.">
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-<link rel="shortcut icon" href="//cdn.knightlab.com/libs/blueline/latest/assets/logos/favicon.ico">
-<link href="//cloud.webtype.com/css/d4767ecb-457a-4677-8761-72f890add836.css" rel="stylesheet" type="text/css">
-<link rel="stylesheet" href="//cdn.knightlab.com/libs/blueline/latest/css/blueline.min.css">
-<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script type="text/javascript" src="//code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
-<script src="//cdn.knightlab.com/libs/blueline/latest/js/blueline.min.js"></script>
-<!-- === leaflet -->
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.2/leaflet.css" />
-<!-- === storymap -->
-<link rel="stylesheet" href="{{ CDN_URL }}css/storymap.css?v1">
-<!-- TEMPORARILY USE NON-MINIFIED -->
-<script type="text/javascript" src="{{ CDN_URL }}js/storymap.js"></script>
-<!--
+    <title>TITLE (Editing)</title>
+    <meta name="description" content="Telling stories with maps.">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="shortcut icon" href="//cdn.knightlab.com/libs/blueline/latest/assets/logos/favicon.ico">
+    <link href="//cloud.typenetwork.com/projects/5433/fontface.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="//cdn.knightlab.com/libs/blueline/latest/css/blueline.min.css">
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="//code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
+    <script src="//cdn.knightlab.com/libs/blueline/latest/js/blueline.min.js"></script>
+    <!-- === leaflet -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.2/leaflet.css" />
+    <!-- === storymap -->
+    <link rel="stylesheet" href="{{ CDN_URL }}css/storymap.css?v1">
+    <!-- TEMPORARILY USE NON-MINIFIED -->
+    <script type="text/javascript" src="{{ CDN_URL }}js/storymap.js"></script>
+    <!--
 <script type="text/javascript" src="/build/js/storymap.js"></script>
 -->
-<!-- === extra leaflet marker classes -->
-<script type="text/javascript" src="{{ STATIC_URL }}js/leaflet-extras.js"></script>
-<!-- === bootstrap-wysihtml5 -->
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}bootstrap-wysihtml5/bootstrap-wysihtml5-0.0.2.css"></link>
-<script type="text/javascript" src="{{ STATIC_URL }}bootstrap-wysihtml5/lib/js/wysihtml5-0.3.0.min.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}bootstrap-wysihtml5/bootstrap-wysihtml5-0.0.2.min.js"></script>
-<!-- === jquery-minicolors -->
-<link rel="stylesheet" href="{{ STATIC_URL }}jquery-minicolors/jquery.minicolors.css">
-<script type="text/javascript" src="{{ STATIC_URL }}jquery-minicolors/jquery.minicolors.min.js"></script>
-<!-- === Moment.js -->
-<script src="{{ STATIC_URL }}js/moment.min.js"></script>
-<script src="{{ STATIC_URL }}js/moment-timezone.min.js"></script>
-<script src="{{ STATIC_URL }}js/moment-timezone-data.js"></script>
-<!-- === editor -->
-<script type="text/javascript" src="{{ STATIC_URL }}js/json2.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}js/editor.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}js/EditorMap.js"></script>
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/editor.css">
+    <!-- === extra leaflet marker classes -->
+    <script type="text/javascript" src="{{ STATIC_URL }}js/leaflet-extras.js"></script>
+    <!-- === bootstrap-wysihtml5 -->
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}bootstrap-wysihtml5/bootstrap-wysihtml5-0.0.2.css"></link>
+    <script type="text/javascript" src="{{ STATIC_URL }}bootstrap-wysihtml5/lib/js/wysihtml5-0.3.0.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}bootstrap-wysihtml5/bootstrap-wysihtml5-0.0.2.min.js"></script>
+    <!-- === jquery-minicolors -->
+    <link rel="stylesheet" href="{{ STATIC_URL }}jquery-minicolors/jquery.minicolors.css">
+    <script type="text/javascript" src="{{ STATIC_URL }}jquery-minicolors/jquery.minicolors.min.js"></script>
+    <!-- === Moment.js -->
+    <script src="{{ STATIC_URL }}js/moment.min.js"></script>
+    <script src="{{ STATIC_URL }}js/moment-timezone.min.js"></script>
+    <script src="{{ STATIC_URL }}js/moment-timezone-data.js"></script>
+    <!-- === editor -->
+    <script type="text/javascript" src="{{ STATIC_URL }}js/json2.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/editor.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/EditorMap.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/editor.css">
 </head>
+
 <body>
 
-{% include '_modals.html' %}
+    {% include '_modals.html' %} {% include '_editor.html' %}
 
-{% include '_editor.html' %}
+    <!-- TEMPLATES START -->
 
-<!-- TEMPLATES START -->
+    <script id="storymap_slide_template" type="text/template">
+        <li class="slide">
+            <div class="slide-icon"></div>
+            <div class="slide-title">
+                <%= headline || "(untitled)" %>
+            </div>
+        </li>
+    </script>
 
-<script id="storymap_slide_template" type="text/template">
-<li class="slide">
-<div class="slide-icon"></div>
-<div class="slide-title"><%= headline || "(untitled)" %></div>
-</li>
-</script>
+    <script id="storymap_iframe_template" type="text/template">
+        <iframe src="<%= embed_url %>" frameborder="0" width="<%= width %>" height="<%= height %>"></iframe>
+    </script>
 
-<script id="storymap_iframe_template" type="text/template">
-<iframe src="<%= embed_url %>" frameborder="0" width="<%= width %>" height="<%= height %>"></iframe>
-</script>
+    <!-- TEMPLATES END -->
 
-<!-- TEMPLATES END -->
+    <script type="text/javascript">
+        var keys = {
+            backspace: 8,
+            tab: 9,
+            enter: 13,
+            shift: 16,
+            ctrl: 17,
+            alt: 18,
+            pausebreak: 19,
+            capslock: 20,
+            esc: 27,
+            space: 32,
+            pageup: 33,
+            pagedown: 34,
+            end: 35,
+            home: 36,
+            leftarrow: 37,
+            uparrow: 38,
+            rightarrow: 39,
+            downarrow: 40,
+            insert: 45,
+            delete: 46,
+            0: 48,
+            1: 49,
+            2: 50,
+            3: 51,
+            4: 52,
+            5: 53,
+            6: 54,
+            7: 55,
+            8: 56,
+            9: 57,
+            a: 65,
+            b: 66,
+            c: 67,
+            d: 68,
+            e: 69,
+            f: 70,
+            g: 71,
+            h: 72,
+            i: 73,
+            j: 74,
+            k: 75,
+            l: 76,
+            m: 77,
+            n: 78,
+            o: 79,
+            p: 80,
+            q: 81,
+            r: 82,
+            s: 83,
+            t: 84,
+            u: 85,
+            v: 86,
+            w: 87,
+            x: 88,
+            y: 89,
+            z: 90,
+            leftwindowkey: 91,
+            rightwindowkey: 92,
+            selectkey: 93,
+            numpad0: 96,
+            numpad1: 97,
+            numpad2: 98,
+            numpad3: 99,
+            numpad4: 100,
+            numpad5: 101,
+            numpad6: 102,
+            numpad7: 103,
+            numpad8: 104,
+            numpad9: 105,
+            multiply: 106,
+            add: 107,
+            subtract: 109,
+            decimalpoint: 110,
+            divide: 111,
+            f1: 112,
+            f2: 113,
+            f3: 114,
+            f4: 115,
+            f5: 116,
+            f6: 117,
+            f7: 118,
+            f8: 119,
+            f9: 120,
+            f10: 121,
+            f11: 122,
+            f12: 123,
+            numlock: 144,
+            scrolllock: 145,
+            semicolon: 186,
+            equalsign: 187,
+            comma: 188,
+            dash: 189,
+            period: 190,
+            forwardslash: 191,
+            graveaccent: 192,
+            openbracket: 219,
+            backslash: 220,
+            closebracket: 221,
+            singlequote: 222
+        };
 
-<script type="text/javascript">
 
-var keys = { backspace: 8, tab: 9, enter: 13, shift: 16, ctrl: 17, alt: 18, pausebreak: 19, capslock: 20, esc: 27, space: 32, pageup: 33, pagedown: 34, end: 35, home: 36, leftarrow: 37, uparrow: 38, rightarrow: 39, downarrow: 40, insert: 45, delete: 46, 0: 48, 1: 49, 2: 50, 3: 51, 4: 52, 5: 53, 6: 54, 7: 55, 8: 56, 9: 57, a: 65, b: 66, c: 67, d: 68, e: 69, f: 70, g: 71, h: 72, i: 73, j: 74, k: 75, l: 76, m: 77, n: 78, o: 79, p: 80, q: 81, r: 82, s: 83, t: 84, u: 85, v: 86, w: 87, x: 88, y: 89, z: 90, leftwindowkey: 91, rightwindowkey: 92, selectkey: 93, numpad0: 96, numpad1: 97, numpad2: 98, numpad3: 99, numpad4: 100, numpad5: 101, numpad6: 102, numpad7: 103, numpad8: 104, numpad9: 105, multiply: 106, add: 107, subtract: 109, decimalpoint: 110, divide: 111, f1: 112, f2: 113, f3: 114, f4: 115, f5: 116, f6: 117, f7: 118, f8: 119, f9: 120, f10: 121, f11: 122, f12: 123, numlock: 144, scrolllock: 145, semicolon: 186, equalsign: 187, comma: 188, dash: 189, period: 190, forwardslash: 191, graveaccent: 192, openbracket: 219, backslash: 220, closebracket: 221, singlequote: 222 };    
-    
-
-function ready(fn) {
-    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
-        fn();
-    } else {
-        document.addEventListener('DOMContentLoaded', fn);
-    }
-}
-
-var storymap_slide_template = _.template($("#storymap_slide_template").html().trim());
-var storymap_iframe_template = _.template($("#storymap_iframe_template").html().trim());
-
-L.Icon.Default.imagePath = 'http://cdn.leafletjs.com/leaflet-0.7.2/images';
-
-// for upload control
-var _storymap_upload_url = "{{ url_for('storymap_image_save') }}";
-
-var _font_url = '{{ CDN_URL }}css/fonts/';
-
-// If under local development...
-switch(document.location.hostname) {
-    case '127.0.0.1':
-    case '0.0.0.0':
-    case 'localhost':
-        _font_url = '/build/css/fonts/';
-        break;
-    default:
-        break;
-}
-
-var _default_data = {
-    width: "100%",
-    height: "800",
-    font_css: '',
-    storymap: {
-        language: "en",
-        map_type: "stamen:toner-lite",
-        map_subdomains: "",
-        map_access_token: "",
-        map_background_color: '#ffffff',
-        // just one...
-        slide: {
-            date: "",
-            text: {headline: "", text: ""},
-            media: {url: "", credit: "", caption: ""},
-            location: {
-                line: true
-            }
-        }
-    }
-};
-
-var _re_slide_cls = /^slide-icon-\w+$/;
-
-var _map;                   // EditorMap
-
-{% if user %}
-var _user = {{ user|tojson }};
-{% else %}
-var _user = {};
-{% endif %}
-
-{% if meta %}
-var _storymap_meta = {{ meta|tojson }};
-{% endif %}
-
-var _storymap_data;          // { width: n, height: n, ..., storymap: { } }
-
-var _storymap_files = [];    // array of image files in this storymap folder
-var _slides = null;          // _storymap_data.storymap.slides
-
-var _storymap_object;
-
-var _current_slide_index = -1;
-var _dirty = 0;
-
-//var _language_library = {};  //cache for translations to allow switching back to English in editor, and reduce # of scripts loaded
-//_language_library['en'] = KLStoryMap.Language;
-
-
-//
-// urls
-//
-
-function storymap_url(uid, id, filename) {
-    return "{{ STORAGE_URL }}"+[uid, id, filename].join('/');
-}
-
-function storymap_image_url(uid, id, filename) {
-    return storymap_url(uid, id, '_images/'+filename);
-}
-
-function get_storymap_property(name, default_value) {
-    if(_storymap_data.storymap.hasOwnProperty(name)) {
-        return _storymap_data.storymap[name];
-    }
-    return default_value;
-}
-
-function get_map_as_image() {
-    return get_storymap_property('map_as_image', false);
-}
-
-function map_set_type() {
-  // this used to have different signatures for google and leaflet but trying to eliminate google
-    _map.setMapType(_storymap_data);
-    if(_storymap_data.storymap.map_type == "zoomify") {
-        /**
-         * When converting a StoryMap with existing slides to zoomify type, we
-         * must ensure are slides are editable and properly displayed by
-         * placing markers where none is defined.
-         */
-        for(var i = 1; i < _slides.length; i++) {
-            var loc = _slides[i].location || {};
-            if (!loc.lat || !loc.lon) {
-                if (i === 1) {
-                    var d = _map.getDefaultView();
-                    _slides[i].location = {
-                        lat:d.lat,
-                        lon:d.lng,
-                        zoom:d.zoom ? d.zoom : 1 };
-                } else {
-                    Object.assign(_slides[i].location,  _slides[i-1].location);
-                }
+        function ready(fn) {
+            if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+                fn();
+            } else {
+                document.addEventListener('DOMContentLoaded', fn);
             }
         }
 
-        $('.slide.selected').click(); // effective reset of the edit view
-        storymap_auto_save();
-    }
-}
+        var storymap_slide_template = _.template($("#storymap_slide_template").html().trim());
+        var storymap_iframe_template = _.template($("#storymap_iframe_template").html().trim());
 
-function location_set(slide_index, data) {
-    var dirty = 0;
-    if ( ('location' in _slides[slide_index]) === false
-         || _slides[slide_index].location === null) {
-        _slides[slide_index]['location'] = {};
-    }
-    for(var key in data) {
-        if(_slides[slide_index].location[key] != data[key]) {
-            _slides[slide_index].location[key] = data[key];
-            dirty = 1;
+        L.Icon.Default.imagePath = 'http://cdn.leafletjs.com/leaflet-0.7.2/images';
+
+        // for upload control
+        var _storymap_upload_url = "{{ url_for('storymap_image_save') }}";
+
+        var _font_url = '{{ CDN_URL }}css/fonts/';
+
+        // If under local development...
+        switch (document.location.hostname) {
+            case '127.0.0.1':
+            case '0.0.0.0':
+            case 'localhost':
+                _font_url = '/build/css/fonts/';
+                break;
+            default:
+                break;
         }
-    }
-    if(dirty) {
-        storymap_dirty(1);
-    }
-}
 
-function location_mark(data) {
-    _map.clearOverlays();
-    if(data && data.location.lat && data.location.lon) {
-        _map.addMarker(data, true);
-        _map.panTo(data.location.lat, data.location.lon);
-    }
-}
-
-function slide_set_class(slide_index) {
-    // Get slide icon
-    var elem = $('.slide-icon').eq(slide_index);
-
-    // Remove old slide-icon-* class
-    elem.removeClass(function(i, cls) {
-        return cls.split(' ')
-            .filter(function(val) { return _re_slide_cls.test(val); })
-            .join(' ');
-    });
-
-    // Add new class
-    var data = _slides[slide_index];
-    var url = (data.media) ? (data.media.url || '') : '';
-    if(url) {
-        var media = KLStoryMap.MediaType({'url': url});
-        if(media.type) {
-            elem.addClass('slide-icon-'+media.type);
-        }
-    }
-}
-
-function slide_append_element(data) {
-    var slide_index = $('.slide').length;
-
-    var slide_elem = $(storymap_slide_template(data.text))
-        .appendTo('#slides')
-        .click(slide_select);
-
-    $('<a class="close" href="javascript:">&nbsp;</a>')
-        .appendTo(slide_elem)
-        .click(slide_delete);
-
-    slide_set_class(slide_index);
-    return slide_elem;
-}
-
-function slide_select(event) {
-    $(':focus').blur(); // force change event!
-
-    storymap_auto_save();
-
-    $('.slide.selected').removeClass('selected');
-    $(this).addClass('selected');
-
-    _current_slide_index = $('.slide').index(this);
-
-    if(preview_visible()) {
-        if(_storymap_object) {
-            _storymap_object.goTo(_current_slide_index);
-        }
-    } else {
-        var data = $.extend(true, {}, _default_data.storymap.slide, _slides[_current_slide_index]);
-
-        _map.zoomEnable(false);
-        _map.clearOverlays();
-
-        if(_current_slide_index == 0) {
-            // Show overview view
-            $('#map_info, #map_overlay').show();
-            $('#map_search_input').hide();
-
-            for(var i = 1; i < _slides.length; i++) {
-                if(_slides[i].hasOwnProperty('location')) {
-                    var loc_data = _slides[i].location;
-                    if(loc_data
-                            && 'lat' in loc_data
-                            && 'lon' in loc_data
-                            && loc_data.lat && loc_data.lon) {
-                        _map.addMarker(_slides[i], false);
+        var _default_data = {
+            width: "100%",
+            height: "800",
+            font_css: '',
+            storymap: {
+                language: "en",
+                map_type: "stamen:toner-lite",
+                map_subdomains: "",
+                map_access_token: "",
+                map_background_color: '#ffffff',
+                // just one...
+                slide: {
+                    date: "",
+                    text: {
+                        headline: "",
+                        text: ""
+                    },
+                    media: {
+                        url: "",
+                        credit: "",
+                        caption: ""
+                    },
+                    location: {
+                        line: true
                     }
                 }
             }
+        };
 
-            $('#marker_options').attr('disabled',true);
+        var _re_slide_cls = /^slide-icon-\w+$/;
 
-            _map.setDefaultView();
+        var _map; // EditorMap
 
-            if(!get_map_as_image()) {
-                _map.addPolyLine();
-            }
-        } else {
-            // Show slide view
-            $('#map_info, #map_overlay').hide();
-            $('#marker_options').attr('disabled',false);
-
-            if(_storymap_data.storymap.zoomify) {
-                $('#map_search_input').hide();
-            } else {
-                $('#map_search_input').val('').show();
-            }
-
-            if(data.location
-                    && 'lat' in data.location
-                    && 'lon' in data.location
-                    && data.location.lat && data.location.lon) {
-                _map.setView(data.location.lat, data.location.lon, data.location.zoom);
-            }
-            _map.zoomEnable(true);
-
-            if(data.location
-                    && 'lat' in data.location
-                    && 'lon' in data.location
-                    && data.location.lat && data.location.lon) {
-                location_mark(data);
-            }
+        { %
+            if user %
         }
-
-        $('#url').val(data.media.url);
-        $('#credit').val(data.media.credit);
-        $('#caption').val(data.media.caption);
-
-        $('#headline').val(data.text.headline);
-        $('#text').val(data.text.text);
-        $('iframe.wysihtml5-sandbox').contents().find('body').html(data.text.text);
-    }
-
-    media_preview_update($('#url').val().trim());
-}
-
-function slide_delete(event) {
-    var slide_elem = $(this).closest('.slide');
-    var slide_index = $('.slide').index(slide_elem);
-
-    var data = _slides[slide_index];
-    var slide_title = ((data.text) ? (data.text.headline || "(untitled)") : "(untitled)");
-
-    show_confirm('Delete "'+slide_title+'" slide?', function() {
-        var height = $('#slides').height() - slide_elem.outerHeight(true);
-
-        // Delete the slide data
-        _slides.splice(slide_index, 1);
-        storymap_dirty(1);
-
-        // Remove DOM element
-        slide_elem.remove();
-
-        // Adjust slide container height
-        $('#slides').css('height', height+"px");
-
-        if(_current_slide_index == 0) {
-            // Update overlay view
-            _map.removeMarker(slide_index - 1);
-        } else {
-            // Reset current slide
-            if(slide_index < _current_slide_index) {
-                _current_slide_index--;
-                storymap_auto_save();
-            } else if(slide_index == _current_slide_index) {
-                var n = Math.min(_current_slide_index, _slides.length - 1);
-                $('.slide').eq(n).click();
-            }
-        }
-
-        // Refresh preview
-        preview_refresh();
-    });
-
-    return false;
-}
-
-function slide_add() {
-    var data = $.extend(true, {}, _default_data.storymap.slide);
-    var n = _slides.length;
-
-    // Add location data if not overview slide, else add type
-    if(n > 0) {
-        var d = _map.getDefaultView();
-        $.extend(true, data.location, {lat: d.lat, lon: d.lng, zoom: d.zoom ? d.zoom : 1},
-            _slides[n - 1].location || {});
-    } else {
-        data.type = "overview";
-    }
-
-    // Add slide
-    _slides.push(data);
-    storymap_dirty(1);
-
-    // Add slide element if not adding overview slide
-    if(n > 0) {
-        var slide = slide_append_element(data);
-
-        // Adjust slide container height
-        var height = $('#slides').height() + slide.outerHeight(true);
-        $('#slides').css('height', height+"px");
-
-        // Scroll new slide into view
-        $('.slides-container').scrollTop(Math.max(0, height - $('#slides').parent().height()));
-    } else {
-        slide_set_class(0);
-    }
-
-    // Select new slide
-    $('.slide:last').click();
-}
-
-function storymap_dirty(is_dirty) {
-    _dirty = is_dirty;
-
-    if(is_dirty) {
-        $('#storymap_save').removeClass('disabled').addClass('btn-primary');
-        $('#storymap_publish').hide();
-    } else {
-        $('#storymap_save').addClass('disabled').removeClass('btn-primary');
-        if(_storymap_meta.published_on &&
-           _storymap_meta.published_on < _storymap_meta.draft_on) {
-            $('#storymap_publish').show();
-        }
-    }
-}
-
-// save draft
-// callback(error)
-function storymap_save(callback) {
-    var save_button = $('#storymap_save')
-        .addClass('disabled').removeClass('btn-primary')
-        .html('<i class="icon-spinner icon-spin"></i> Saving...');
-
-    ajax_post("{{ url_for('storymap_save') }}",
-        {
-            id: _storymap_meta.id,
-            d: JSON.stringify(_storymap_data)
-        },
-        function(error) {
-            save_button.removeClass('disabled').addClass('btn-primary');
-        },
-        function(data) {
-            _storymap_meta = data.meta; // update meta
-            storymap_dirty(0);
-        },
-        function(error) {
-            save_button.html('<i class="icon-save"></i> Save');
-            callback(error);
-        }
-    );
-}
-
-// callback(error || null, embed_url)
-function storymap_publish(callback) {
-    if(_dirty) {
-        storymap_save(function(error) {
-            if(error) {
-                callback(error);
-            } else {
-                storymap_publish(callback);
-            }
-        });
-    } else {
-        ajax_post("{{ url_for('storymap_publish') }}",
+        var _user = {
             {
-                id: _storymap_meta.id,
-                d: JSON.stringify(_storymap_data)
-            },
-            function(error) {
-                callback(error);
-            },
-            function(data) {
-                _storymap_meta = data.meta; // update meta
-                $('#storymap_publish').hide();
-                callback(null, data.embed_url);
+                user | tojson
             }
-        );
-    }
-}
-
-function storymap_auto_save() {
-    if(_dirty) {
-        $('#storymap_save').click();
-    }
-}
-
-function preview_visible() {
-    return $("#preview").is(":visible");
-}
-
-function preview_clear() {
-    $('#preview').html('<div id="preview_embed"></div>');
-    _storymap_object = null;
-}
-
-function preview_load() {
-    var options = {
-        script_path: getScriptPath(/storymap(-min)?\.js/)+'/',
-        start_at_slide: _current_slide_index,
-    };
-
-    _storymap_object = new KLStoryMap.StoryMap('preview_embed',
-        $.extend(true, {}, _storymap_data), options);
-
-    _storymap_object.on('change', function(e) {
-        $('.slide').eq(this.current_slide).click();
-    }, false);
-}
-
-function preview_refresh() {
-    if(preview_visible()) {
-        preview_clear();
-        preview_load();
-    }
-}
-
-function font_update() {
-    var val = $('#font_css').val().trim() || 'stock:default';
-    var href = _font_url + 'font.'+val.split(':')[1]+'.css';
-    $('head').append('<link rel="stylesheet" type="text/css" href="'+href+'">');
-}
-
-function media_preview_update(url) {
-    var $preview = $('.data-media-preview');
-    $preview.empty();
-    if (url) {
-      var media = KLStoryMap.MediaType({'url': url})
-      if (media.type) {
-        // Create a media object using the matched class name
-        var element = new media.cls(media);
-        element.loadMedia()
-        $preview.append(element._el.container);
-      }
-    } else {
-      $preview.append("<p>No Media Selected</p>");
-    }
-}
-
-//
-// Map
-//
-
-var search = function(lat, lng) {
-    var data = {lat: lat, lon: lng};
-    location_set(_current_slide_index, data);
-    location_mark(_slides[_current_slide_index]);
-    if (_map.getZoom() == 1) {
-      _map.setView(lat, lng, 12);
-    }
-}
-
-var _map_options = {
-    map_id: 'map',
-    map_overlay_id: 'map_overlay',
-    handlers: {
-        double_click: function(lat, lng) {
-            var data = {lat: lat, lon: lng};
-            location_set(_current_slide_index, data);
-            location_mark(_slides[_current_slide_index]);
-        },
-        zoom: function(zoom) {
-            location_set(_current_slide_index, {zoom: zoom});
-        },
-        marker_drag: function(lat, lng) {
-            location_set(_current_slide_index, {lat: lat, lon: lng});
-        },
-        search: search
-    }
-};
-
-function slides_load(init_callback) {
-    $('#width').val(_storymap_data.width || _default_data.width);
-    $('#height').val(_storymap_data.height || _default_data.height);
-    $('#language').val(_storymap_data.storymap.language || _default_data.storymap.language);
-    $('#font_css').val(_storymap_data.font_css || _default_data.font_css);
-
-    $('input:radio[name="map_as_image"][value="'+get_map_as_image()+'"]').prop('checked', true);
-
-    var call_to_action = get_storymap_property('call_to_action', false);
-    $('input:radio[name="call_to_action"][value="'+call_to_action+'"]').prop('checked', true);
-    if(call_to_action) {
-       $('#call_to_action_text').show().val(get_storymap_property('call_to_action_text', ''));
-    } else {
-       $('#call_to_action_text').hide();
-    }
-
-    document.getElementById('map').style.backgroundColor =
-        _storymap_data.storymap.map_background_color || _default_data.storymap.map_background_color;
-
-    $('#map_background_color').minicolors({
-        control: 'hue',
-        opacity: false,
-        theme: 'bootstrap',
-        hide: function() {
-            var color = $(this).val();
-            if(color != _storymap_data.storymap.map_background_color) {
-                _storymap_data.storymap.map_background_color = color;
-                storymap_dirty(1);
-
-                document.getElementById('map').style.backgroundColor =
-                    color || _default_data.storymap.map_background_color;
-            }
-            if(color) {
-                $('#map_background_color_clear').show();
-            } else {
-                $('#map_background_color_clear').hide();
-            }
-        },
-        change: function(hex, opacity) {
-            if(hex) {
-                $('#map_background_color_clear').show();
-            } else {
-                $('#map_background_color_clear').hide();
-            }
+        }; { %
+            else %
         }
-    });
-
-    $('<button id="map_background_color_clear" type="button" class="close text-input-clear">&times;</button>')
-        .insertAfter('#map_background_color')
-        .click(function(event) {
-            $('#map_background_color').minicolors('value', '');
-            $('#map_background_color_clear').hide();
-
-            _storymap_data.storymap.map_background_color = '';
-            storymap_dirty(1);
-
-            if($(this).siblings('.minicolors-panel').is(':hidden')) {
-                document.getElementById('map').style.backgroundColor = _default_data.storymap.map_background_color;
-            }
-        });
-
-    $('#map_background_color').minicolors('value', _storymap_data.storymap.map_background_color || '');
-
-    font_update();
-
-    // sharing access_token
-    $('#share_description').val(_storymap_meta.description || '');
-    $('#share_image_url').val(_storymap_meta.image_url || '');
-
-    // Slides 1,...,n
-    $('#slides').html();
-    var height = 0;
-
-    for(var i = 1, slide; i < _slides.length; i++) {
-        slide = slide_append_element(_slides[i]);
-        height += slide.outerHeight(true);
-    }
-    $('#slides').css('height', height + "px");
-
-    if(_slides.length > 0) {
-        var data = _slides[0];
-        slide_set_class(0);
-        $('.slide:first .slide-title').html(((data.text) ? (data.text.headline || "(untitled)") : "(untitled)"));
-        $('.slide:first').click();
-    } else {
-        slide_add();
-    }
-    hide_progress();
-    init_callback();
-
-}
-
-function map_init(init_callback) {
-    var map_type = _storymap_data.storymap.map_type || _default_data.storymap.map_type;
-
-    if(map_type && map_type.match('^zoomify.*')) {
-        $('.map-control-group').hide();
-
-        $('.zoomify-control-group').show();
-
-        $('#zoomify_path').val(_storymap_data.storymap.zoomify.path);
-        $('#zoomify_width').val(_storymap_data.storymap.zoomify.width);
-        $('#zoomify_height').val(_storymap_data.storymap.zoomify.height);
-        $('#zoomify_attribution').val(_storymap_data.storymap.zoomify.attribution);
-
-        _map = new LeafletEditorMap(_map_options);
-    } else {
-        $('.zoomify-control-group').hide();
-
-        if(map_type && map_type.match('^(http|https|//)')) {
-            $('#map_type_menu').val('');
-            $('#map_type').val(map_type).attr('placeholder', 'http://{s}.domain.org/{z}/{x}/{y}.png')
-                .prev().html('URL')
-                .closest('.control-group').show();
-            $('#map_subdomains')
-                .val(_storymap_data.storymap.map_subdomains || _default_data.storymap.map_subdomains)
-                .closest('.control-group').show();
-            $('#map_access_token')
-                .val('').closest('.control-group').hide();
-            $('#attribution')
-              .val(_storymap_data.storymap.attribution)
-              .show();
-        } else if(map_type && map_type.match('^mapbox:.+')) {
-            $('#map_type_menu').val('mapbox');
-            $('#map_type').val(map_type.substr('mapbox:'.length)).attr('placeholder', 'mapbox://')
-                .prev().html('Style URL')
-                .closest('.control-group').show();
-            $('#map_subdomains')
-                .val(_storymap_data.storymap.map_subdomains || 'abcd')
-                .closest('.control-group').hide();
-            $('#map_access_token')
-                .val(_storymap_data.storymap.map_access_token)
-                .closest('.control-group').show();
-            $('#attribution')
-                .val(_storymap_data.storymap.attribution)
-                .closest('.control-group').hide();
-        } else {
-            switch(map_type) {
-                case "stamen:toner-lite":
-                case "stamen:toner":
-                case "stamen:toner-lines":
-                case "stamen:toner-labels":
-                case "stamen:toner-background":
-                case "stamen:watercolor":
-                case "stamen:terrain":
-                    $('#map_type_menu').val(map_type);
-                    break;
-
-                default:
-                    $('#map_type_menu').val(_default_data.storymap.map_type);
-                    break;
-            }
-
-            $('#map_type').val('').closest('.control-group').hide();
-            $('#map_subdomains').val('').closest('.control-group').hide();
-            $('#map_access_token').val('').closest('.control-group').hide();
-            $('#attribution').val('').closest('.control-group').hide();
+        var _user = {}; { % endif %
         }
 
-        _map = new LeafletEditorMap(_map_options);
-    }
-
-    map_set_type();
-
-    slides_load(init_callback);
-}
-
-function storymap_abort(message, detail) {
-    detail = (detail || '')+'\nuid = {{ user.uid }}';
-    show_message_report(message, detail, function() { document.location.href = "{{ url_for('select') }}"; });
-}
-
-function storymap_init(init_callback) {
-    show_progress('Loading StoryMap');
-
-    // load storymap
-    ajax_get("{{ url_for('storymap_get') }}", {
-            id: _storymap_meta.id
-        },
-        function(error, error_detail) {
-            storymap_abort(format_error('Error loading StoryMap', error), error_detail);
-        },
-        function(data) {
-            // Set page title
-            document.title = document.title.replace("TITLE", data.meta.title);
-
-            if(data.meta.published_on && (data.meta.draft_on > data.meta.published_on)) {
-                $('#storymap_publish').show();
+        { %
+            if meta %
+        }
+        var _storymap_meta = {
+            {
+                meta | tojson
             }
+        }; { % endif %
+        }
 
-            _storymap_data = data.data;
-          
-            for (i = 0; i < _storymap_data.storymap.slides.length; i++) {
-                if (_storymap_data.storymap.slides[i] === null) {
-                    _storymap_data.storymap.slides.splice(i, 1);
-                } 
-            } 
-          
-            _slides = _storymap_data.storymap.slides;
+        var _storymap_data; // { width: n, height: n, ..., storymap: { } }
 
-            // List images and sort by name
-            ajax_get("{{ url_for('storymap_image_list') }}", {
-                    id: _storymap_meta.id
-                },
-                function(error, error_detail) {
-                    storymap_abort(format_error('Error listing images', error), error_detail);
-                },
-                function(data) {
-                    _storymap_files = data.image_list.sort();
+        var _storymap_files = []; // array of image files in this storymap folder
+        var _slides = null; // _storymap_data.storymap.slides
+
+        var _storymap_object;
+
+        var _current_slide_index = -1;
+        var _dirty = 0;
+
+        //var _language_library = {};  //cache for translations to allow switching back to English in editor, and reduce # of scripts loaded
+        //_language_library['en'] = KLStoryMap.Language;
+
+
+        //
+        // urls
+        //
+
+        function storymap_url(uid, id, filename) {
+            return "{{ STORAGE_URL }}" + [uid, id, filename].join('/');
+        }
+
+        function storymap_image_url(uid, id, filename) {
+            return storymap_url(uid, id, '_images/' + filename);
+        }
+
+        function get_storymap_property(name, default_value) {
+            if (_storymap_data.storymap.hasOwnProperty(name)) {
+                return _storymap_data.storymap[name];
+            }
+            return default_value;
+        }
+
+        function get_map_as_image() {
+            return get_storymap_property('map_as_image', false);
+        }
+
+        function map_set_type() {
+            // this used to have different signatures for google and leaflet but trying to eliminate google
+            _map.setMapType(_storymap_data);
+            if (_storymap_data.storymap.map_type == "zoomify") {
+                /**
+                 * When converting a StoryMap with existing slides to zoomify type, we
+                 * must ensure are slides are editable and properly displayed by
+                 * placing markers where none is defined.
+                 */
+                for (var i = 1; i < _slides.length; i++) {
+                    var loc = _slides[i].location || {};
+                    if (!loc.lat || !loc.lon) {
+                        if (i === 1) {
+                            var d = _map.getDefaultView();
+                            _slides[i].location = {
+                                lat: d.lat,
+                                lon: d.lng,
+                                zoom: d.zoom ? d.zoom : 1
+                            };
+                        } else {
+                            Object.assign(_slides[i].location, _slides[i - 1].location);
+                        }
+                    }
                 }
-            );
 
-            //Language init
-            check_language();
-
-            // Map init
-            map_init(init_callback);
-
-        }
-    );
-}
-
-function check_language () {
-    var _lang_ISO = _storymap_data.storymap['language'];
-    if (!_lang_ISO) {
-        _lang_ISO = 'en';
-    }
-    KLStoryMap.Language = KLStoryMap.setLanguage(_lang_ISO);
-};
-
-function language_loaded (_lang_ISO) {
-    _language_library[_lang_ISO] = KLStoryMap.Language;
-    var elem = document.getElementById('call_default_text');
-    elem.innerHTML = KLStoryMap.Language.messages['start'];
-};
-
-$(function() {
-
-    $('.slide:first').click(slide_select);
-
-//------------------------------------------------------------
-// Menu bar
-//------------------------------------------------------------
-
-    $('#storymap_save').click(function(event) {
-        storymap_save(function(error) {
-            if(error) {
-                show_error('Error saving StoryMap', error);
+                $('.slide.selected').click(); // effective reset of the edit view
+                storymap_auto_save();
             }
-        });
-    });
-
-    $('#storymap_publish').click(function(event) {
-        show_progress('Publishing changes');
-
-        storymap_publish(function(error) {
-            if(error) {
-                show_error('Error publishing StoryMap', error);
-            } else {
-                hide_progress();
-            }
-        });
-    });
-
-    $('#storymap_add_slide').click(function(event) {
-        if(preview_visible()) {
-            $('#edit').one('edit-tab-shown', function(event) {
-                slide_add();
-            });
-            $('a[data-toggle="tab"][href="#edit"]').tab('show');
-        } else {
-            slide_add();
         }
-    });
 
-//------------------------------------------------------------
-// StoryMap Options
-//------------------------------------------------------------
-
-    var $opt_modal = modal_init($('#opt_modal'))
-        //
-        // Display
-        //
-        .on('change', '#width, #height', function(event) {
-             var id = $(this).attr('id');
-            _storymap_data[id] = $(this).val().trim();
-            storymap_dirty(1);
-        })
-        .on('change', '#language', function(event) {
-            _storymap_data.storymap['language'] = $(this).val();
-            storymap_dirty(1);
-            check_language();
-        })
-        .on('change', '#font_css', function(event) {
-            _storymap_data['font_css'] = $(this).val().trim();
-            storymap_dirty(1);
-            font_update();
-        })
-        .on('click', "input[name='map_as_image']", function() {
-            var value = ($(this).val() == "true");
-
-            if(value != get_map_as_image()) {
-                _storymap_data.storymap.map_as_image = value;
+        function location_set(slide_index, data) {
+            var dirty = 0;
+            if (('location' in _slides[slide_index]) === false ||
+                _slides[slide_index].location === null) {
+                _slides[slide_index]['location'] = {};
+            }
+            for (var key in data) {
+                if (_slides[slide_index].location[key] != data[key]) {
+                    _slides[slide_index].location[key] = data[key];
+                    dirty = 1;
+                }
+            }
+            if (dirty) {
                 storymap_dirty(1);
+            }
+        }
 
-                if(_current_slide_index == 0) {
-                    if(value) {
-                        _map.removePolyLine();
-                    } else {
+        function location_mark(data) {
+            _map.clearOverlays();
+            if (data && data.location.lat && data.location.lon) {
+                _map.addMarker(data, true);
+                _map.panTo(data.location.lat, data.location.lon);
+            }
+        }
+
+        function slide_set_class(slide_index) {
+            // Get slide icon
+            var elem = $('.slide-icon').eq(slide_index);
+
+            // Remove old slide-icon-* class
+            elem.removeClass(function(i, cls) {
+                return cls.split(' ')
+                    .filter(function(val) {
+                        return _re_slide_cls.test(val);
+                    })
+                    .join(' ');
+            });
+
+            // Add new class
+            var data = _slides[slide_index];
+            var url = (data.media) ? (data.media.url || '') : '';
+            if (url) {
+                var media = KLStoryMap.MediaType({
+                    'url': url
+                });
+                if (media.type) {
+                    elem.addClass('slide-icon-' + media.type);
+                }
+            }
+        }
+
+        function slide_append_element(data) {
+            var slide_index = $('.slide').length;
+
+            var slide_elem = $(storymap_slide_template(data.text))
+                .appendTo('#slides')
+                .click(slide_select);
+
+            $('<a class="close" href="javascript:">&nbsp;</a>')
+                .appendTo(slide_elem)
+                .click(slide_delete);
+
+            slide_set_class(slide_index);
+            return slide_elem;
+        }
+
+        function slide_select(event) {
+            $(':focus').blur(); // force change event!
+
+            storymap_auto_save();
+
+            $('.slide.selected').removeClass('selected');
+            $(this).addClass('selected');
+
+            _current_slide_index = $('.slide').index(this);
+
+            if (preview_visible()) {
+                if (_storymap_object) {
+                    _storymap_object.goTo(_current_slide_index);
+                }
+            } else {
+                var data = $.extend(true, {}, _default_data.storymap.slide, _slides[_current_slide_index]);
+
+                _map.zoomEnable(false);
+                _map.clearOverlays();
+
+                if (_current_slide_index == 0) {
+                    // Show overview view
+                    $('#map_info, #map_overlay').show();
+                    $('#map_search_input').hide();
+
+                    for (var i = 1; i < _slides.length; i++) {
+                        if (_slides[i].hasOwnProperty('location')) {
+                            var loc_data = _slides[i].location;
+                            if (loc_data &&
+                                'lat' in loc_data &&
+                                'lon' in loc_data &&
+                                loc_data.lat && loc_data.lon) {
+                                _map.addMarker(_slides[i], false);
+                            }
+                        }
+                    }
+
+                    $('#marker_options').attr('disabled', true);
+
+                    _map.setDefaultView();
+
+                    if (!get_map_as_image()) {
                         _map.addPolyLine();
                     }
-                }
-            }
-        })
-        .on('click', "input[name='call_to_action']", function() {
-            var value = ($(this).val() == "true");
-
-            if(value != get_storymap_property('call_to_action', false)) {
-                _storymap_data.storymap.call_to_action = value;
-                storymap_dirty(1);
-
-                if(value) {
-                    $('#call_to_action_text').show();
                 } else {
-                    $('#call_to_action_text').hide();
+                    // Show slide view
+                    $('#map_info, #map_overlay').hide();
+                    $('#marker_options').attr('disabled', false);
+
+                    if (_storymap_data.storymap.zoomify) {
+                        $('#map_search_input').hide();
+                    } else {
+                        $('#map_search_input').val('').show();
+                    }
+
+                    if (data.location &&
+                        'lat' in data.location &&
+                        'lon' in data.location &&
+                        data.location.lat && data.location.lon) {
+                        _map.setView(data.location.lat, data.location.lon, data.location.zoom);
+                    }
+                    _map.zoomEnable(true);
+
+                    if (data.location &&
+                        'lat' in data.location &&
+                        'lon' in data.location &&
+                        data.location.lat && data.location.lon) {
+                        location_mark(data);
+                    }
                 }
-            }
-        })
-        .on('change', '#call_to_action_text', function() {
-            _storymap_data.storymap.call_to_action_text = $(this).val().trim();
-            storymap_dirty(1);
-        })
-        //
-        // Display: Zoomify
-        //
-        .on('change', '#zoomify_path', function() {
-            var value = $(this).val().trim();
-            var re = /drive.google.com\/open\?id=/
-            var re2 = /drive.google.com\/folderview\?id=/;
-            var subst = 'www.googledrive.com\/host\/';
-            var value = value.replace(re, subst);
-            var value = value.replace(re2, subst);
-            var re3 = /&authuser=0/;
-            var re4 = /&usp=sharing/
-            var subst2 = '/';
-            var value = value.replace(re3, subst2);
-            var value = value.replace(re4, subst2);
-            if(!value.match(/\/$/)) {
-                value += '/';
-                $(this).val(value);
-            }
-            _storymap_data.storymap.zoomify.path = value;
-            storymap_dirty(1);
-            map_set_type();
-        })
-        .on('change', '#zoomify_width', function() {
-            _storymap_data.storymap.zoomify.width = parseInt($(this).val().trim());
-            storymap_dirty(1);
-            map_set_type();
-        })
-        .on('change', '#zoomify_height', function() {
-            _storymap_data.storymap.zoomify.height = parseInt($(this).val().trim());
-            storymap_dirty(1);
-            map_set_type();
-        })
-        .on('change', '#zoomify_attribution', function() {
-            _storymap_data.storymap.zoomify.attribution = $(this).val().trim();
-            storymap_dirty(1);
-            map_set_type();
-        })
-        //
-        // Display: Map
-        //
-        .on('map_error_show', function(event) {
-            $('#map_access_token').focus()
-                .closest('.control-group').addClass('error')
-                .find('.help-inline').show();
-        })
-        .on('map_error_reset', function(event) {
-            $opt_modal.find('.control-group.map-control-group')
-                .removeClass('error')
-                .find('.help-inline').hide();
-        })
-        .on('change', '#map_type_menu', function(event) {
-            var map_type = $(this).val();
-            _storymap_data.storymap.zoomify = false;
-            $('.zoomify-control-group').hide();
 
-            if(!map_type) {
-                $('#map_type').val('').attr('placeholder', 'http://{s}.domain.org/{z}/{x}/{y}.png')
-                    .prev().html('URL')
-                    .closest('.control-group').show();
-                $('#map_type').focus();
-                $('#map_subdomains').val('').closest('.control-group').show();
-                $('#map_access_token').val('').closest('.control-group').hide();
-                $('#attribution').val('').closest('.control-group').show();
+                $('#url').val(data.media.url);
+                $('#credit').val(data.media.credit);
+                $('#caption').val(data.media.caption);
 
-                _storymap_data.storymap.map_type = '';
-                _storymap_data.storymap.map_subdomains = '';
-                _storymap_data.storymap.attribution = '';
-            } else if(map_type == 'zoomify') {
-              _storymap_data.storymap.zoomify = {};
-
-              $('#map_access_token').val('').closest('.control-group').hide();
-              $('#map_subdomains').val('').closest('.control-group').hide();
-              $('.zoomify-control-group').show();
-
-                _storymap_data.storymap.map_type = 'zoomify';
-                _storymap_data.storymap.zoomify.path = "";
-                _storymap_data.storymap.zoomify.height = 600;
-                _storymap_data.storymap.zoomify.width = 600;
-            } else if(map_type == 'mapbox') {
-                $('#map_type').val('').attr('placeholder', 'mapbox://')
-                    .prev().html('Style URL')
-                    .closest('.control-group').show();
-                $('#map_type').focus();
-                $('#map_subdomains').val('').closest('.control-group').hide();
-                $('#map_access_token').val('').closest('.control-group').show();
-
-                _storymap_data.storymap.map_type = 'mapbox:';
-                _storymap_data.storymap.map_subdomains = 'abcd';
-            } else {
-                $('#map_type').val('').closest('.control-group').hide();
-                $('#map_subdomains').val('').closest('.control-group').hide();
-                $('#map_access_token').val('').closest('.control-group').hide();
-                $('#attribution').val('').closest('.control-group').hide();
-
-                _storymap_data.storymap.map_type = map_type;
-                _storymap_data.storymap.map_subdomains = '';
-                _storymap_data.storymap.attribution = '';
-
-                map_set_type();
+                $('#headline').val(data.text.headline);
+                $('#text').val(data.text.text);
+                $('iframe.wysihtml5-sandbox').contents().find('body').html(data.text.text);
             }
 
-            $opt_modal.trigger('map_error_reset');
+            media_preview_update($('#url').val().trim());
+        }
 
-            storymap_dirty(1);
-        })
-        .on('change', '#map_type', function(event) {
-            var map_type = $(this).val().trim();
+        function slide_delete(event) {
+            var slide_elem = $(this).closest('.slide');
+            var slide_index = $('.slide').index(slide_elem);
 
+            var data = _slides[slide_index];
+            var slide_title = ((data.text) ? (data.text.headline || "(untitled)") : "(untitled)");
 
-            switch($('#map_type_menu').val()) {
-                case '':    // custom
-                    map_type = map_type.replace('{Z}','{z}').replace('{X}','{x}').replace('{Y}','{y}').replace('{S}','{s}');
-                    _storymap_data.storymap.map_type = map_type;
-                    storymap_dirty(1);
-                    map_set_type();
-                    break;
+            show_confirm('Delete "' + slide_title + '" slide?', function() {
+                var height = $('#slides').height() - slide_elem.outerHeight(true);
 
-                case 'mapbox':
-                    _storymap_data.storymap.map_type = 'mapbox:'+map_type;
-                    storymap_dirty(1);
-                    map_set_type();
-                    break;
+                // Delete the slide data
+                _slides.splice(slide_index, 1);
+                storymap_dirty(1);
 
-            }
-        })
-        .on('change', '#map_subdomains, #map_access_token, #attribution', function(event) {
-            var id = $(this).attr('id');
-            _storymap_data.storymap[id] = $(this).val().trim();
-            storymap_dirty(1);
-            map_set_type();
-        })
-        //
-        // general
-        //
-        .on('show', function() {
-            $(this).trigger('modal_show');
-        })
-        .on('click', '.btn-primary', function(event) {
-            // Check for required map_access_token
-            if($('#map_type_menu').val() == 'mapbox') {
-                if(!$('#map_access_token').val().trim()) {
-                    $opt_modal.trigger('map_error_show');
-                    event.preventDefault();
-                    return;
+                // Remove DOM element
+                slide_elem.remove();
+
+                // Adjust slide container height
+                $('#slides').css('height', height + "px");
+
+                if (_current_slide_index == 0) {
+                    // Update overlay view
+                    _map.removeMarker(slide_index - 1);
+                } else {
+                    // Reset current slide
+                    if (slide_index < _current_slide_index) {
+                        _current_slide_index--;
+                        storymap_auto_save();
+                    } else if (slide_index == _current_slide_index) {
+                        var n = Math.min(_current_slide_index, _slides.length - 1);
+                        $('.slide').eq(n).click();
+                    }
                 }
-            }
-
-            $opt_modal.trigger('map_error_reset');
-            $opt_modal.modal('hide');
-        });
-
-
-//------------------------------------------------------------
-// .....
-//------------------------------------------------------------
-
-    // slide-level media options
-    $('#url, #credit, #caption').change(function(event) {
-        var id = $(this).attr('id');
-        var val = $(this).val().trim();
-
-        if(id == 'url' && val.match('^https://www.dropbox.com/')) {
-            val = val.replace(/^https:\/\/www.dropbox.com\//i, 'https://dl.dropboxusercontent.com/');
-            $(this).val(val);
-        }
-
-        _slides[_current_slide_index].media[id] = val;
-        storymap_dirty(1);
-
-        slide_set_class(_current_slide_index);
-
-        if (id == 'url') {
-            media_preview_update(val);
-        }
-    });
-
-    // slide-level text options
-    $('#headline').change(function() {
-        var value = $(this).val().trim();
-        _slides[_current_slide_index].text['headline'] = value;
-        storymap_dirty(1);
-        $('.slide-title').eq(_current_slide_index).html(value);
-    });
-
-    $('#text').wysihtml5({
-        "stylesheets": ["{{ STATIC_URL }}bootstrap-wysihtml5/lib/css/wysiwyg-color.css"],
-        "font-styles": false,   // Font styling, e.g. h1, h2, etc. Default true
-        "emphasis": true,       // Italics, bold, etc. Default true
-        "lists": false,         // (Un)ordered lists, e.g. Bullets, Numbers. Default true
-        "link": true,           // Button to insert a link. Default true
-        "html": true,           // Button which allows you to edit the generated HTML. Default false
-        "image": false,         // Button to insert an image. Default true,
-        "color": false,         // Button to change color of font,
-        customTemplates: {
-            'emphasis': function(locale) {
-                return $('#wysihtml5_emphasis').html();
-            },
-            'link': function(locale) {
-                return $('#wysihtml5_link').html();
-            },
-            'html': function(locale) {
-                return $('#wysihtml5_html').html();
-            }
-        },
-        'events': {
-            'change': function() {
-                var val = $('#text').data("wysihtml5").editor.getValue().trim();
-                _slides[_current_slide_index].text['text'] = val;
-                storymap_dirty(1);
-            }
-        }
-    });
-
-// ------------------------------------------------------------
-// Tab toggle
-// ------------------------------------------------------------
-
-    $('a[data-toggle="tab"][href="#edit"]').on('shown', function(event) {
-        $('.slide.selected').click();   // reselect current slide
-        $('#storymap_options').removeAttr('disabled');
-        preview_clear();
-
-        $('#edit').trigger('edit-tab-shown');
-    });
-
-    $('a[data-toggle="tab"][href="#preview"]').on('shown', function(event) {
-        $("#geocode-autocomplete").remove();
-        $('#storymap_options').attr('disabled', true);
-        preview_refresh();
-    });
-
-// ------------------------------------------------------------
-// Slide sorting
-// ------------------------------------------------------------
-
-    var sortable_i = 0;
-    var sortable_j = 0;
-
-    $('#slides').sortable({
-        axis: 'y',
-        cursor: 'move',
-        items: '.slide',
-        start: function(event, ui) {
-            sortable_i = $('.slide').index(ui.item);
-        },
-        stop: function(event, ui) {
-            sortable_j = $('.slide').index(ui.item);
-
-            if(sortable_i != sortable_j) {
-                // Move slide data from i to j
-                _slides.move(sortable_i, sortable_j);
-
-                 // Adjust current slide index
-                _current_slide_index = $('.slide').index($('.slide.selected'));
-
-                storymap_dirty(1);
-                storymap_auto_save();
 
                 // Refresh preview
                 preview_refresh();
-            }
-        }
-    });
-
-// ------------------------------------------------------------
-// Uploads
-// ------------------------------------------------------------
-
-    modal_init($('#upload_modal'))
-        .on('upload', function(event, url) {
-            $('#url').val(url).change();
-            $(this).modal('hide');
-        })
-        .on('modal_show', function(event, error_msg) {
-            $(this).find('.upload-panel').trigger('reset');
-            $(this).trigger('reset', error_msg);
-        })
-        .on('show', function() {
-            $(this).trigger('modal_show');
-        });
-    
-    // ------------------------------------------------------------
-// Rosalie's work
-// ------------------------------------------------------------
-        
-    modal_init($('#html_modal'))
-        .on('show', function() {
-            $(this).trigger('modal_show');
-        });
-
-// ------------------------------------------------------------
-// Slide options
-// ------------------------------------------------------------
-
-    $('#background_color').minicolors({
-        control: 'hue',
-        opacity: true,
-        theme: 'bootstrap',
-        hide: function() {
-            var color = $(this).val();
-
-            if(color) {
-                var rgb = $(this).minicolors('rgbObject');
-                var opacity = parseInt(rgb.a * 100, 10);
-
-                _slides[_current_slide_index].background = $.extend(true,
-                        _slides[_current_slide_index].background,
-                        {color: color, opacity: opacity}
-                    );
-                $('#background_color_clear').show();
-            } else {
-                _slides[_current_slide_index].background = {};
-                $('#background_color_clear').hide();
-            }
-            storymap_dirty(1);
-        },
-        change: function(hex, opacity) {
-            if(hex) {
-                $('#background_color_clear').show();
-            } else {
-                $('#background_color_clear').hide();
-            }
-        }
-    });
-
-    $('<button id="background_color_clear" type="button" class="close text-input-clear">&times;</button>')
-        .insertAfter('#background_color')
-        .click(function(event) {
-            $('#background_color').minicolors('value', '');
-            $('#background_color').minicolors('opacity', 1);
-            _slides[_current_slide_index].background = {};
-            $('#background_color_clear').hide();
-            storymap_dirty(1);
-        });
-
-    $('#background_url').change(function(event) {
-        _slides[_current_slide_index].background = $.extend(true,
-                _slides[_current_slide_index].background,
-                {url: $(this).val().trim()}
-            );
-        storymap_dirty(1);
-    });
-
-    modal_init($('#background_opt_modal'))
-        .on('upload', function(event, url) {
-            $(this).trigger('refresh_image_select');
-            $('#background_url').val(url).change();
-            $(this).find('.upload-panel').trigger('reset');
-        })
-        .on('refresh_image_select', function(event) {
-            var html = '';
-            for(var i = 0; i < _storymap_files.length; i++) {
-                html += '<li><a href="javascript:">'+_storymap_files[i]+'</a></li>';
-            }
-            $('.image-select').html(html || '<li class="default">no uploaded images found</li>');
-
-            $('#background_image_select a').click(function(event) {
-                $('#background_url')
-                    .val(storymap_image_url(_user.uid, _storymap_meta.id, $(this).html()))
-                    .change();
             });
-        })
-        .on('modal_show', function(event, error_msg) {
-            var background = _slides[_current_slide_index].background || {};
-            var color = background.color || '';
-            var opacity = (background.opacity || 100) / 100;
-            var url = background.url || '';
 
-            $('#background_color').minicolors('value', color);
-            $('#background_color').minicolors('opacity', opacity);
+            return false;
+        }
 
+        function slide_add() {
+            var data = $.extend(true, {}, _default_data.storymap.slide);
+            var n = _slides.length;
 
-            if(color) {
-                $('#background_color_clear').show();
+            // Add location data if not overview slide, else add type
+            if (n > 0) {
+                var d = _map.getDefaultView();
+                $.extend(true, data.location, {
+                        lat: d.lat,
+                        lon: d.lng,
+                        zoom: d.zoom ? d.zoom : 1
+                    },
+                    _slides[n - 1].location || {});
             } else {
-                $('#background_color_clear').hide();
+                data.type = "overview";
             }
 
-            $(this).trigger('refresh_image_select');
-
-            $('#background_url').val(url);
-
-            $(this).find('.upload-panel').trigger('reset');
-            $(this).trigger('reset', error_msg);
-        })
-        .on('show', function() {
-            $(this).trigger('modal_show');
-        });
-
-// ------------------------------------------------------------
-// Markers
-// ------------------------------------------------------------
-
-    $('#marker_url').change(function(event) {
-        var currentSlide = _slides[_current_slide_index];
-        var icon = $(this).val().trim();
-
-        if (icon) {
-            var img = new Image();
-
-            img.onload = function() {
-                currentSlide.location.use_custom_marker = true;
-                currentSlide.location.icon = icon;
-                currentSlide.location.iconSize = [this.width, this.height];
-                var size = currentSlide.location.iconSize;
-                if (this.width > this.height) {
-                    currentSlide.location.iconSize = [48, this.height * 48/this.width ];
-                } else {
-                    currentSlide.location.iconSize = [this.width * 48/this.height, 48];
-                }
-                storymap_dirty(1);
-                location_mark(_slides[_current_slide_index]);
-            }
-
-            img.src = icon;
-        } else {
-            currentSlide.location.use_custom_marker = false;
-            delete currentSlide.location.icon;
-            delete currentSlide.location.iconSize;
+            // Add slide
+            _slides.push(data);
             storymap_dirty(1);
+
+            // Add slide element if not adding overview slide
+            if (n > 0) {
+                var slide = slide_append_element(data);
+
+                // Adjust slide container height
+                var height = $('#slides').height() + slide.outerHeight(true);
+                $('#slides').css('height', height + "px");
+
+                // Scroll new slide into view
+                $('.slides-container').scrollTop(Math.max(0, height - $('#slides').parent().height()));
+            } else {
+                slide_set_class(0);
+            }
+
+            // Select new slide
+            $('.slide:last').click();
+        }
+
+        function storymap_dirty(is_dirty) {
+            _dirty = is_dirty;
+
+            if (is_dirty) {
+                $('#storymap_save').removeClass('disabled').addClass('btn-primary');
+                $('#storymap_publish').hide();
+            } else {
+                $('#storymap_save').addClass('disabled').removeClass('btn-primary');
+                if (_storymap_meta.published_on &&
+                    _storymap_meta.published_on < _storymap_meta.draft_on) {
+                    $('#storymap_publish').show();
+                }
+            }
+        }
+
+        // save draft
+        // callback(error)
+        function storymap_save(callback) {
+            var save_button = $('#storymap_save')
+                .addClass('disabled').removeClass('btn-primary')
+                .html('<i class="icon-spinner icon-spin"></i> Saving...');
+
+            ajax_post("{{ url_for('storymap_save') }}", {
+                    id: _storymap_meta.id,
+                    d: JSON.stringify(_storymap_data)
+                },
+                function(error) {
+                    save_button.removeClass('disabled').addClass('btn-primary');
+                },
+                function(data) {
+                    _storymap_meta = data.meta; // update meta
+                    storymap_dirty(0);
+                },
+                function(error) {
+                    save_button.html('<i class="icon-save"></i> Save');
+                    callback(error);
+                }
+            );
+        }
+
+        // callback(error || null, embed_url)
+        function storymap_publish(callback) {
+            if (_dirty) {
+                storymap_save(function(error) {
+                    if (error) {
+                        callback(error);
+                    } else {
+                        storymap_publish(callback);
+                    }
+                });
+            } else {
+                ajax_post("{{ url_for('storymap_publish') }}", {
+                        id: _storymap_meta.id,
+                        d: JSON.stringify(_storymap_data)
+                    },
+                    function(error) {
+                        callback(error);
+                    },
+                    function(data) {
+                        _storymap_meta = data.meta; // update meta
+                        $('#storymap_publish').hide();
+                        callback(null, data.embed_url);
+                    }
+                );
+            }
+        }
+
+        function storymap_auto_save() {
+            if (_dirty) {
+                $('#storymap_save').click();
+            }
+        }
+
+        function preview_visible() {
+            return $("#preview").is(":visible");
+        }
+
+        function preview_clear() {
+            $('#preview').html('<div id="preview_embed"></div>');
+            _storymap_object = null;
+        }
+
+        function preview_load() {
+            var options = {
+                script_path: getScriptPath(/storymap(-min)?\.js/) + '/',
+                start_at_slide: _current_slide_index,
+            };
+
+            _storymap_object = new KLStoryMap.StoryMap('preview_embed',
+                $.extend(true, {}, _storymap_data), options);
+
+            _storymap_object.on('change', function(e) {
+                $('.slide').eq(this.current_slide).click();
+            }, false);
+        }
+
+        function preview_refresh() {
+            if (preview_visible()) {
+                preview_clear();
+                preview_load();
+            }
+        }
+
+        function font_update() {
+            var val = $('#font_css').val().trim() || 'stock:default';
+            var href = _font_url + 'font.' + val.split(':')[1] + '.css';
+            $('head').append('<link rel="stylesheet" type="text/css" href="' + href + '">');
+        }
+
+        function media_preview_update(url) {
+            var $preview = $('.data-media-preview');
+            $preview.empty();
+            if (url) {
+                var media = KLStoryMap.MediaType({
+                    'url': url
+                })
+                if (media.type) {
+                    // Create a media object using the matched class name
+                    var element = new media.cls(media);
+                    element.loadMedia()
+                    $preview.append(element._el.container);
+                }
+            } else {
+                $preview.append("<p>No Media Selected</p>");
+            }
+        }
+
+        //
+        // Map
+        //
+
+        var search = function(lat, lng) {
+            var data = {
+                lat: lat,
+                lon: lng
+            };
+            location_set(_current_slide_index, data);
             location_mark(_slides[_current_slide_index]);
+            if (_map.getZoom() == 1) {
+                _map.setView(lat, lng, 12);
+            }
         }
-    });
 
-    modal_init($('#marker_opt_modal'))
-        .on('upload', function(event, url) {
-            $(this).trigger('refresh_image_select');
-            $('#marker_url').val(url).change();
-            $(this).find('.upload-panel').trigger('reset');
-        })
-        .on('refresh_image_select', function(event) {
-            var html = '<li><a href="javascript:">(Default icon)</a></li>';
-            for(var i = 0; i < _storymap_files.length; i++) {
-                // TODO: find a nicer way of trimming these (local doesn't look nice)
-                html += '<li><a href="javascript:" data-filename="'+_storymap_files[i]+'">'+_storymap_files[i]+'</a></li>';
-            }
-            $('.image-select').html(html || '<li class="default">no uploaded images found</li>');
-
-            $('#marker_image_select a').click(function(event) {
-                if ($(this).data('filename')) {
-                  $('#marker_url')
-                    .val(storymap_image_url(_user.uid, _storymap_meta.id, $(this).data('filename')))
-                    .change();
-                } else {
-                  $('#marker_url').val('').change();
-                }
-            });
-        })
-        .on('modal_show', function(event, error_msg) {
-            var currentSlide = _slides[_current_slide_index];
-            $(this).trigger('refresh_image_select');
-
-            if (currentSlide.location.use_custom_marker) {
-                $('#marker_url').val(currentSlide.location.icon);
-            }
-
-            $(this).find('.upload-panel').trigger('reset');
-            $(this).trigger('reset', error_msg);
-        })
-        .on('show', function() {
-            $(this).trigger('modal_show');
-        });
-
-// ------------------------------------------------------------
-// Sharing
-// ------------------------------------------------------------
-
-    $share_modal = modal_init($('#share_modal'))
-        .on('click', '#share_publish', function(event) {
-            $share_modal.trigger('progress_show', 'Publishing StoryMap');
-
-            storymap_publish(function(error) {
-                if(error) {
-                    $('#share_modal').trigger('modal_show', format_error('Error publishing StoryMap', error));
-                } else {
-                    $('#share_modal').trigger('modal_show');
-                }
-            });
-        })
-        //
-        // Sharing
-        //
-        .on('change', '#share_description', function(event) {
-            ajax_post("{{ url_for('storymap_update_meta') }}", {
-                    id: _storymap_meta.id,
-                    key: 'description',
-                    value: $(this).val().trim()
+        var _map_options = {
+            map_id: 'map',
+            map_overlay_id: 'map_overlay',
+            handlers: {
+                double_click: function(lat, lng) {
+                    var data = {
+                        lat: lat,
+                        lon: lng
+                    };
+                    location_set(_current_slide_index, data);
+                    location_mark(_slides[_current_slide_index]);
                 },
-                function(error) {
-                    $share_modal.trigger('modal_show', format_error('Error updating storymap', error));
-                }
-            );
-        })
-        .on('change', '#share_image_url', function(event) {
-            ajax_post("{{ url_for('storymap_update_meta') }}", {
-                    id: _storymap_meta.id,
-                    key: 'image_url',
-                    value: $(this).val().trim()
+                zoom: function(zoom) {
+                    location_set(_current_slide_index, {
+                        zoom: zoom
+                    });
                 },
-                function(error) {
-                    $share_modal.trigger('modal_show', format_error('Error updating storymap', error));
-                }
-            );
-        })
-        .on('upload', function(event, url) {
-            $(this).trigger('refresh_image_select');
-            $('#share_image_url').val(url).change();
-            $(this).find('.upload-panel').trigger('reset');
-        })
-        .on('refresh_image_select', function(event) {
-            var html = '';
-            for(var i = 0; i < _storymap_files.length; i++) {
-                html += '<li><a href="javascript:">'+_storymap_files[i]+'</a></li>';
+                marker_drag: function(lat, lng) {
+                    location_set(_current_slide_index, {
+                        lat: lat,
+                        lon: lng
+                    });
+                },
+                search: search
             }
-            $('#share_image_select').html(html || '<li class="default">no uploaded images found</li>');
-        })
-        .on('change', '#share_width, #share_height', function(event) {
-            $share_modal.trigger('modal_show');
-        })
-        .on('modal_show', function(event, error_msg) {
-            $(this).trigger('refresh_image_select');
-            $('#share_image_select a').click(function(event) {
-                $('#share_image_url')
-                    .val(storymap_image_url(_user.uid, _storymap_meta.id, $(this).html()))
-                    .change();
-            });
-            $(this).find('.upload-panel').trigger('reset');
+        };
 
-            var embed_url = '';
+        function slides_load(init_callback) {
+            $('#width').val(_storymap_data.width || _default_data.width);
+            $('#height').val(_storymap_data.height || _default_data.height);
+            $('#language').val(_storymap_data.storymap.language || _default_data.storymap.language);
+            $('#font_css').val(_storymap_data.font_css || _default_data.font_css);
 
-            if(_storymap_meta.draft_on > _storymap_meta.published_on) {
-                embed_url = 'https:'+storymap_url(_user.uid, _storymap_meta.id, 'draft.html');
-                $('#share_publish_panel').show();
+            $('input:radio[name="map_as_image"][value="' + get_map_as_image() + '"]').prop('checked', true);
+
+            var call_to_action = get_storymap_property('call_to_action', false);
+            $('input:radio[name="call_to_action"][value="' + call_to_action + '"]').prop('checked', true);
+            if (call_to_action) {
+                $('#call_to_action_text').show().val(get_storymap_property('call_to_action_text', ''));
             } else {
-                embed_url = 'https:'+storymap_url(_user.uid, _storymap_meta.id, 'index.html');
-                $('#share_publish_panel').hide();
+                $('#call_to_action_text').hide();
             }
 
-            var embed_html = storymap_iframe_template({
-                embed_url: embed_url,
-                width: $('#share_width').val(),
-                height: $('#share_height').val()
+            document.getElementById('map').style.backgroundColor =
+                _storymap_data.storymap.map_background_color || _default_data.storymap.map_background_color;
+
+            $('#map_background_color').minicolors({
+                control: 'hue',
+                opacity: false,
+                theme: 'bootstrap',
+                hide: function() {
+                    var color = $(this).val();
+                    if (color != _storymap_data.storymap.map_background_color) {
+                        _storymap_data.storymap.map_background_color = color;
+                        storymap_dirty(1);
+
+                        document.getElementById('map').style.backgroundColor =
+                            color || _default_data.storymap.map_background_color;
+                    }
+                    if (color) {
+                        $('#map_background_color_clear').show();
+                    } else {
+                        $('#map_background_color_clear').hide();
+                    }
+                },
+                change: function(hex, opacity) {
+                    if (hex) {
+                        $('#map_background_color_clear').show();
+                    } else {
+                        $('#map_background_color_clear').hide();
+                    }
+                }
             });
 
-            var enc_embed_url = encodeURIComponent(embed_url);
+            $('<button id="map_background_color_clear" type="button" class="close text-input-clear">&times;</button>')
+                .insertAfter('#map_background_color')
+                .click(function(event) {
+                    $('#map_background_color').minicolors('value', '');
+                    $('#map_background_color_clear').hide();
 
-            $('#share_url').val(embed_url);
+                    _storymap_data.storymap.map_background_color = '';
+                    storymap_dirty(1);
 
-            $(this).find('.share-link-twitter').attr('href',
-                'http://twitter.com/intent/tweet?url='+enc_embed_url);
-            $(this).find('.share-link-facebook').attr('href',
-                'https://www.facebook.com/sharer/sharer.php?u='+enc_embed_url);
-            $(this).find('.share-link-googleplus').attr('href',
-                'https://plus.google.com/share?url='+enc_embed_url);
-            $(this).find('.share-link-reddit').attr('href',
-                'http://www.reddit.com/submit?url='+enc_embed_url);
+                    if ($(this).siblings('.minicolors-panel').is(':hidden')) {
+                        document.getElementById('map').style.backgroundColor = _default_data.storymap.map_background_color;
+                    }
+                });
 
-            $('#share_embed').html(embed_html);
+            $('#map_background_color').minicolors('value', _storymap_data.storymap.map_background_color || '');
 
-            $(this).trigger('reset', error_msg)
-        })
-        .on('show', function() {
-            $('#share_publish_panel').hide();
-            $('#share_url').val('');
-            $('#share_width').val(_storymap_data.width || _default_data.width);
-            $('#share_height').val(_storymap_data.height || _default_data.height);
-            $('#share_embed').html('');
-        })
-        .on('shown', function() {
-            var $modal = $(this);
+            font_update();
 
-            // If never published, then publish (will also save draft, if needed)
-            if(!_storymap_meta.published_on) {
-                $modal.trigger('progress_show', 'Publishing changes');
+            // sharing access_token
+            $('#share_description').val(_storymap_meta.description || '');
+            $('#share_image_url').val(_storymap_meta.image_url || '');
+
+            // Slides 1,...,n
+            $('#slides').html();
+            var height = 0;
+
+            for (var i = 1, slide; i < _slides.length; i++) {
+                slide = slide_append_element(_slides[i]);
+                height += slide.outerHeight(true);
+            }
+            $('#slides').css('height', height + "px");
+
+            if (_slides.length > 0) {
+                var data = _slides[0];
+                slide_set_class(0);
+                $('.slide:first .slide-title').html(((data.text) ? (data.text.headline || "(untitled)") : "(untitled)"));
+                $('.slide:first').click();
+            } else {
+                slide_add();
+            }
+            hide_progress();
+            init_callback();
+
+        }
+
+        function map_init(init_callback) {
+            var map_type = _storymap_data.storymap.map_type || _default_data.storymap.map_type;
+
+            if (map_type && map_type.match('^zoomify.*')) {
+                $('.map-control-group').hide();
+
+                $('.zoomify-control-group').show();
+
+                $('#zoomify_path').val(_storymap_data.storymap.zoomify.path);
+                $('#zoomify_width').val(_storymap_data.storymap.zoomify.width);
+                $('#zoomify_height').val(_storymap_data.storymap.zoomify.height);
+                $('#zoomify_attribution').val(_storymap_data.storymap.zoomify.attribution);
+
+                _map = new LeafletEditorMap(_map_options);
+            } else {
+                $('.zoomify-control-group').hide();
+
+                if (map_type && map_type.match('^(http|https|//)')) {
+                    $('#map_type_menu').val('');
+                    $('#map_type').val(map_type).attr('placeholder', 'http://{s}.domain.org/{z}/{x}/{y}.png')
+                        .prev().html('URL')
+                        .closest('.control-group').show();
+                    $('#map_subdomains')
+                        .val(_storymap_data.storymap.map_subdomains || _default_data.storymap.map_subdomains)
+                        .closest('.control-group').show();
+                    $('#map_access_token')
+                        .val('').closest('.control-group').hide();
+                    $('#attribution')
+                        .val(_storymap_data.storymap.attribution)
+                        .show();
+                } else if (map_type && map_type.match('^mapbox:.+')) {
+                    $('#map_type_menu').val('mapbox');
+                    $('#map_type').val(map_type.substr('mapbox:'.length)).attr('placeholder', 'mapbox://')
+                        .prev().html('Style URL')
+                        .closest('.control-group').show();
+                    $('#map_subdomains')
+                        .val(_storymap_data.storymap.map_subdomains || 'abcd')
+                        .closest('.control-group').hide();
+                    $('#map_access_token')
+                        .val(_storymap_data.storymap.map_access_token)
+                        .closest('.control-group').show();
+                    $('#attribution')
+                        .val(_storymap_data.storymap.attribution)
+                        .closest('.control-group').hide();
+                } else {
+                    switch (map_type) {
+                        case "stamen:toner-lite":
+                        case "stamen:toner":
+                        case "stamen:toner-lines":
+                        case "stamen:toner-labels":
+                        case "stamen:toner-background":
+                        case "stamen:watercolor":
+                        case "stamen:terrain":
+                            $('#map_type_menu').val(map_type);
+                            break;
+
+                        default:
+                            $('#map_type_menu').val(_default_data.storymap.map_type);
+                            break;
+                    }
+
+                    $('#map_type').val('').closest('.control-group').hide();
+                    $('#map_subdomains').val('').closest('.control-group').hide();
+                    $('#map_access_token').val('').closest('.control-group').hide();
+                    $('#attribution').val('').closest('.control-group').hide();
+                }
+
+                _map = new LeafletEditorMap(_map_options);
+            }
+
+            map_set_type();
+
+            slides_load(init_callback);
+        }
+
+        function storymap_abort(message, detail) {
+            detail = (detail || '') + '\nuid = {{ user.uid }}';
+            show_message_report(message, detail, function() {
+                document.location.href = "{{ url_for('select') }}";
+            });
+        }
+
+        function storymap_init(init_callback) {
+            show_progress('Loading StoryMap');
+
+            // load storymap
+            ajax_get("{{ url_for('storymap_get') }}", {
+                    id: _storymap_meta.id
+                },
+                function(error, error_detail) {
+                    storymap_abort(format_error('Error loading StoryMap', error), error_detail);
+                },
+                function(data) {
+                    // Set page title
+                    document.title = document.title.replace("TITLE", data.meta.title);
+
+                    if (data.meta.published_on && (data.meta.draft_on > data.meta.published_on)) {
+                        $('#storymap_publish').show();
+                    }
+
+                    _storymap_data = data.data;
+
+                    for (i = 0; i < _storymap_data.storymap.slides.length; i++) {
+                        if (_storymap_data.storymap.slides[i] === null) {
+                            _storymap_data.storymap.slides.splice(i, 1);
+                        }
+                    }
+
+                    _slides = _storymap_data.storymap.slides;
+
+                    // List images and sort by name
+                    ajax_get("{{ url_for('storymap_image_list') }}", {
+                            id: _storymap_meta.id
+                        },
+                        function(error, error_detail) {
+                            storymap_abort(format_error('Error listing images', error), error_detail);
+                        },
+                        function(data) {
+                            _storymap_files = data.image_list.sort();
+                        }
+                    );
+
+                    //Language init
+                    check_language();
+
+                    // Map init
+                    map_init(init_callback);
+
+                }
+            );
+        }
+
+        function check_language() {
+            var _lang_ISO = _storymap_data.storymap['language'];
+            if (!_lang_ISO) {
+                _lang_ISO = 'en';
+            }
+            KLStoryMap.Language = KLStoryMap.setLanguage(_lang_ISO);
+        };
+
+        function language_loaded(_lang_ISO) {
+            _language_library[_lang_ISO] = KLStoryMap.Language;
+            var elem = document.getElementById('call_default_text');
+            elem.innerHTML = KLStoryMap.Language.messages['start'];
+        };
+
+        $(function() {
+
+            $('.slide:first').click(slide_select);
+
+            //------------------------------------------------------------
+            // Menu bar
+            //------------------------------------------------------------
+
+            $('#storymap_save').click(function(event) {
+                storymap_save(function(error) {
+                    if (error) {
+                        show_error('Error saving StoryMap', error);
+                    }
+                });
+            });
+
+            $('#storymap_publish').click(function(event) {
+                show_progress('Publishing changes');
 
                 storymap_publish(function(error) {
-                    if(error) {
-                        $modal.trigger('modal_show', format_error('Error publishing changes', error));
+                    if (error) {
+                        show_error('Error publishing StoryMap', error);
                     } else {
-                        $modal.trigger('modal_show');
+                        hide_progress();
                     }
                 });
-            }
-            // If previously published but dirty, then save draft
-            else if(_dirty) {
-                $modal.trigger('progress_show', 'Saving StoryMap');
+            });
 
-                storymap_save(function(error) {
-                    if(error) {
-                        $modal.trigger('modal_show', format_error('Error saving StoryMap', error));
-                    } else {
-                        $modal.trigger('modal_show');
-                    }
-                });
-            }
-            // Else, just show the modal
-            else {
-                $modal.trigger('modal_show');
-            }
-        });
-
-
-//------------------------------------------------------------
-// Doit
-//------------------------------------------------------------
-
-{% if error %}
-    storymap_abort('{{ error }}');
-{% else %}
-    storymap_init(function() {
-        var map_type = _storymap_data.storymap.map_type;
-
-        if(map_type && map_type.match('^mapbox:.+') && !_storymap_data.storymap.map_access_token) {
-            $opt_modal.trigger('map_error_show');
-            $opt_modal.modal('show');
-        }
-    });
-{% endif %}
-});
-
-//
-// Window events
-//
-window.onbeforeunload = function confirmExit() {
-    if(_dirty) {
-        return "You have unsaved changes, and your changes will be lost."
-            + "  Are you sure you want to exit this page?";
-    }
-}
-
-window.onresize = function(event) {
-    if(preview_visible() && _storymap_object) {
-        _storymap_object.updateDisplay();
-    }
-}
-
-// Returns a function, that, as long as it continues to be invoked, will not
-// be triggered. The function will be called after it stops being called for
-// N milliseconds. If `immediate` is passed, trigger the function on the
-// leading edge, instead of the trailing.
-// source: https://davidwalsh.name/javascript-debounce-function
-function debounce(func, wait, immediate) {
-    var timeout;
-    return function () {
-        var context = this, args = arguments;
-        var later = function () {
-            timeout = null;
-            if (!immediate) func.apply(context, args);
-        };
-        var callNow = immediate && !timeout;
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-        if (callNow) func.apply(context, args);
-    };
-};
-
-    function update_autocomplete_list(features) {
-        var list = document.getElementById('geocode-autocomplete');
-        if (!list) {
-            list = document.createElement('ul');
-            list.id = 'geocode-autocomplete';
-            document.body.appendChild(list);
-            $(list).mouseleave(function(){
-                geocode_activate(null);
-            })
-            .keyup(function(e) {
-                // this substantially duplicates the input element handling
-                // but what about typing regular letters? they wouldn't show up in the box, right?
-                if (e.keyCode == keys.enter) {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    geocode_select();
-                    return false;
-                } else if (e.keyCode == keys.uparrow) {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    geocode_activate_previous();
-                    return false;
-                } else if (e.keyCode == keys.downarrow) {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    geocode_activate_next();
-                    return false;
+            $('#storymap_add_slide').click(function(event) {
+                if (preview_visible()) {
+                    $('#edit').one('edit-tab-shown', function(event) {
+                        slide_add();
+                    });
+                    $('a[data-toggle="tab"][href="#edit"]').tab('show');
+                } else {
+                    slide_add();
                 }
-            })
-        }
-        $(list).empty();
-        features.forEach(x => {
-            var item = $(`<li>${x.place_name}</li>`);
-            item.data('center', x.center)
-                .data('place_type', x.place_type[0])
-                .appendTo(list)
-                .mouseover(function() {
-                    geocode_activate(this);
+            });
+
+            //------------------------------------------------------------
+            // StoryMap Options
+            //------------------------------------------------------------
+
+            var $opt_modal = modal_init($('#opt_modal'))
+                //
+                // Display
+                //
+                .on('change', '#width, #height', function(event) {
+                    var id = $(this).attr('id');
+                    _storymap_data[id] = $(this).val().trim();
+                    storymap_dirty(1);
                 })
-                .click(function() {
-                    geocode_select(this);
-                    return false;
+                .on('change', '#language', function(event) {
+                    _storymap_data.storymap['language'] = $(this).val();
+                    storymap_dirty(1);
+                    check_language();
+                })
+                .on('change', '#font_css', function(event) {
+                    _storymap_data['font_css'] = $(this).val().trim();
+                    storymap_dirty(1);
+                    font_update();
+                })
+                .on('click', "input[name='map_as_image']", function() {
+                    var value = ($(this).val() == "true");
+
+                    if (value != get_map_as_image()) {
+                        _storymap_data.storymap.map_as_image = value;
+                        storymap_dirty(1);
+
+                        if (_current_slide_index == 0) {
+                            if (value) {
+                                _map.removePolyLine();
+                            } else {
+                                _map.addPolyLine();
+                            }
+                        }
+                    }
+                })
+                .on('click', "input[name='call_to_action']", function() {
+                    var value = ($(this).val() == "true");
+
+                    if (value != get_storymap_property('call_to_action', false)) {
+                        _storymap_data.storymap.call_to_action = value;
+                        storymap_dirty(1);
+
+                        if (value) {
+                            $('#call_to_action_text').show();
+                        } else {
+                            $('#call_to_action_text').hide();
+                        }
+                    }
+                })
+                .on('change', '#call_to_action_text', function() {
+                    _storymap_data.storymap.call_to_action_text = $(this).val().trim();
+                    storymap_dirty(1);
+                })
+                //
+                // Display: Zoomify
+                //
+                .on('change', '#zoomify_path', function() {
+                    var value = $(this).val().trim();
+                    var re = /drive.google.com\/open\?id=/
+                    var re2 = /drive.google.com\/folderview\?id=/;
+                    var subst = 'www.googledrive.com\/host\/';
+                    var value = value.replace(re, subst);
+                    var value = value.replace(re2, subst);
+                    var re3 = /&authuser=0/;
+                    var re4 = /&usp=sharing/
+                    var subst2 = '/';
+                    var value = value.replace(re3, subst2);
+                    var value = value.replace(re4, subst2);
+                    if (!value.match(/\/$/)) {
+                        value += '/';
+                        $(this).val(value);
+                    }
+                    _storymap_data.storymap.zoomify.path = value;
+                    storymap_dirty(1);
+                    map_set_type();
+                })
+                .on('change', '#zoomify_width', function() {
+                    _storymap_data.storymap.zoomify.width = parseInt($(this).val().trim());
+                    storymap_dirty(1);
+                    map_set_type();
+                })
+                .on('change', '#zoomify_height', function() {
+                    _storymap_data.storymap.zoomify.height = parseInt($(this).val().trim());
+                    storymap_dirty(1);
+                    map_set_type();
+                })
+                .on('change', '#zoomify_attribution', function() {
+                    _storymap_data.storymap.zoomify.attribution = $(this).val().trim();
+                    storymap_dirty(1);
+                    map_set_type();
+                })
+                //
+                // Display: Map
+                //
+                .on('map_error_show', function(event) {
+                    $('#map_access_token').focus()
+                        .closest('.control-group').addClass('error')
+                        .find('.help-inline').show();
+                })
+                .on('map_error_reset', function(event) {
+                    $opt_modal.find('.control-group.map-control-group')
+                        .removeClass('error')
+                        .find('.help-inline').hide();
+                })
+                .on('change', '#map_type_menu', function(event) {
+                    var map_type = $(this).val();
+                    _storymap_data.storymap.zoomify = false;
+                    $('.zoomify-control-group').hide();
+
+                    if (!map_type) {
+                        $('#map_type').val('').attr('placeholder', 'http://{s}.domain.org/{z}/{x}/{y}.png')
+                            .prev().html('URL')
+                            .closest('.control-group').show();
+                        $('#map_type').focus();
+                        $('#map_subdomains').val('').closest('.control-group').show();
+                        $('#map_access_token').val('').closest('.control-group').hide();
+                        $('#attribution').val('').closest('.control-group').show();
+
+                        _storymap_data.storymap.map_type = '';
+                        _storymap_data.storymap.map_subdomains = '';
+                        _storymap_data.storymap.attribution = '';
+                    } else if (map_type == 'zoomify') {
+                        _storymap_data.storymap.zoomify = {};
+
+                        $('#map_access_token').val('').closest('.control-group').hide();
+                        $('#map_subdomains').val('').closest('.control-group').hide();
+                        $('.zoomify-control-group').show();
+
+                        _storymap_data.storymap.map_type = 'zoomify';
+                        _storymap_data.storymap.zoomify.path = "";
+                        _storymap_data.storymap.zoomify.height = 600;
+                        _storymap_data.storymap.zoomify.width = 600;
+                    } else if (map_type == 'mapbox') {
+                        $('#map_type').val('').attr('placeholder', 'mapbox://')
+                            .prev().html('Style URL')
+                            .closest('.control-group').show();
+                        $('#map_type').focus();
+                        $('#map_subdomains').val('').closest('.control-group').hide();
+                        $('#map_access_token').val('').closest('.control-group').show();
+
+                        _storymap_data.storymap.map_type = 'mapbox:';
+                        _storymap_data.storymap.map_subdomains = 'abcd';
+                    } else {
+                        $('#map_type').val('').closest('.control-group').hide();
+                        $('#map_subdomains').val('').closest('.control-group').hide();
+                        $('#map_access_token').val('').closest('.control-group').hide();
+                        $('#attribution').val('').closest('.control-group').hide();
+
+                        _storymap_data.storymap.map_type = map_type;
+                        _storymap_data.storymap.map_subdomains = '';
+                        _storymap_data.storymap.attribution = '';
+
+                        map_set_type();
+                    }
+
+                    $opt_modal.trigger('map_error_reset');
+
+                    storymap_dirty(1);
+                })
+                .on('change', '#map_type', function(event) {
+                    var map_type = $(this).val().trim();
+
+
+                    switch ($('#map_type_menu').val()) {
+                        case '': // custom
+                            map_type = map_type.replace('{Z}', '{z}').replace('{X}', '{x}').replace('{Y}', '{y}').replace('{S}', '{s}');
+                            _storymap_data.storymap.map_type = map_type;
+                            storymap_dirty(1);
+                            map_set_type();
+                            break;
+
+                        case 'mapbox':
+                            _storymap_data.storymap.map_type = 'mapbox:' + map_type;
+                            storymap_dirty(1);
+                            map_set_type();
+                            break;
+
+                    }
+                })
+                .on('change', '#map_subdomains, #map_access_token, #attribution', function(event) {
+                    var id = $(this).attr('id');
+                    _storymap_data.storymap[id] = $(this).val().trim();
+                    storymap_dirty(1);
+                    map_set_type();
+                })
+                //
+                // general
+                //
+                .on('show', function() {
+                    $(this).trigger('modal_show');
+                })
+                .on('click', '.btn-primary', function(event) {
+                    // Check for required map_access_token
+                    if ($('#map_type_menu').val() == 'mapbox') {
+                        if (!$('#map_access_token').val().trim()) {
+                            $opt_modal.trigger('map_error_show');
+                            event.preventDefault();
+                            return;
+                        }
+                    }
+
+                    $opt_modal.trigger('map_error_reset');
+                    $opt_modal.modal('hide');
                 });
+
+
+            //------------------------------------------------------------
+            // .....
+            //------------------------------------------------------------
+
+            // slide-level media options
+            $('#url, #credit, #caption').change(function(event) {
+                var id = $(this).attr('id');
+                var val = $(this).val().trim();
+
+                if (id == 'url' && val.match('^https://www.dropbox.com/')) {
+                    val = val.replace(/^https:\/\/www.dropbox.com\//i, 'https://dl.dropboxusercontent.com/');
+                    $(this).val(val);
+                }
+
+                _slides[_current_slide_index].media[id] = val;
+                storymap_dirty(1);
+
+                slide_set_class(_current_slide_index);
+
+                if (id == 'url') {
+                    media_preview_update(val);
+                }
+            });
+
+            // slide-level text options
+            $('#headline').change(function() {
+                var value = $(this).val().trim();
+                _slides[_current_slide_index].text['headline'] = value;
+                storymap_dirty(1);
+                $('.slide-title').eq(_current_slide_index).html(value);
+            });
+
+            $('#text').wysihtml5({
+                "stylesheets": ["{{ STATIC_URL }}bootstrap-wysihtml5/lib/css/wysiwyg-color.css"],
+                "font-styles": false, // Font styling, e.g. h1, h2, etc. Default true
+                "emphasis": true, // Italics, bold, etc. Default true
+                "lists": false, // (Un)ordered lists, e.g. Bullets, Numbers. Default true
+                "link": true, // Button to insert a link. Default true
+                "html": true, // Button which allows you to edit the generated HTML. Default false
+                "image": false, // Button to insert an image. Default true,
+                "color": false, // Button to change color of font,
+                customTemplates: {
+                    'emphasis': function(locale) {
+                        return $('#wysihtml5_emphasis').html();
+                    },
+                    'link': function(locale) {
+                        return $('#wysihtml5_link').html();
+                    },
+                    'html': function(locale) {
+                        return $('#wysihtml5_html').html();
+                    }
+                },
+                'events': {
+                    'change': function() {
+                        var val = $('#text').data("wysihtml5").editor.getValue().trim();
+                        _slides[_current_slide_index].text['text'] = val;
+                        storymap_dirty(1);
+                    }
+                }
+            });
+
+            // ------------------------------------------------------------
+            // Tab toggle
+            // ------------------------------------------------------------
+
+            $('a[data-toggle="tab"][href="#edit"]').on('shown', function(event) {
+                $('.slide.selected').click(); // reselect current slide
+                $('#storymap_options').removeAttr('disabled');
+                preview_clear();
+
+                $('#edit').trigger('edit-tab-shown');
+            });
+
+            $('a[data-toggle="tab"][href="#preview"]').on('shown', function(event) {
+                $("#geocode-autocomplete").remove();
+                $('#storymap_options').attr('disabled', true);
+                preview_refresh();
+            });
+
+            // ------------------------------------------------------------
+            // Slide sorting
+            // ------------------------------------------------------------
+
+            var sortable_i = 0;
+            var sortable_j = 0;
+
+            $('#slides').sortable({
+                axis: 'y',
+                cursor: 'move',
+                items: '.slide',
+                start: function(event, ui) {
+                    sortable_i = $('.slide').index(ui.item);
+                },
+                stop: function(event, ui) {
+                    sortable_j = $('.slide').index(ui.item);
+
+                    if (sortable_i != sortable_j) {
+                        // Move slide data from i to j
+                        _slides.move(sortable_i, sortable_j);
+
+                        // Adjust current slide index
+                        _current_slide_index = $('.slide').index($('.slide.selected'));
+
+                        storymap_dirty(1);
+                        storymap_auto_save();
+
+                        // Refresh preview
+                        preview_refresh();
+                    }
+                }
+            });
+
+            // ------------------------------------------------------------
+            // Uploads
+            // ------------------------------------------------------------
+
+            modal_init($('#upload_modal'))
+                .on('upload', function(event, url) {
+                    $('#url').val(url).change();
+                    $(this).modal('hide');
+                })
+                .on('modal_show', function(event, error_msg) {
+                    $(this).find('.upload-panel').trigger('reset');
+                    $(this).trigger('reset', error_msg);
+                })
+                .on('show', function() {
+                    $(this).trigger('modal_show');
+                });
+
+            // ------------------------------------------------------------
+            // Rosalie's work
+            // ------------------------------------------------------------
+
+            modal_init($('#html_modal'))
+                .on('show', function() {
+                    $(this).trigger('modal_show');
+                });
+
+            // ------------------------------------------------------------
+            // Slide options
+            // ------------------------------------------------------------
+
+            $('#background_color').minicolors({
+                control: 'hue',
+                opacity: true,
+                theme: 'bootstrap',
+                hide: function() {
+                    var color = $(this).val();
+
+                    if (color) {
+                        var rgb = $(this).minicolors('rgbObject');
+                        var opacity = parseInt(rgb.a * 100, 10);
+
+                        _slides[_current_slide_index].background = $.extend(true,
+                            _slides[_current_slide_index].background, {
+                                color: color,
+                                opacity: opacity
+                            }
+                        );
+                        $('#background_color_clear').show();
+                    } else {
+                        _slides[_current_slide_index].background = {};
+                        $('#background_color_clear').hide();
+                    }
+                    storymap_dirty(1);
+                },
+                change: function(hex, opacity) {
+                    if (hex) {
+                        $('#background_color_clear').show();
+                    } else {
+                        $('#background_color_clear').hide();
+                    }
+                }
+            });
+
+            $('<button id="background_color_clear" type="button" class="close text-input-clear">&times;</button>')
+                .insertAfter('#background_color')
+                .click(function(event) {
+                    $('#background_color').minicolors('value', '');
+                    $('#background_color').minicolors('opacity', 1);
+                    _slides[_current_slide_index].background = {};
+                    $('#background_color_clear').hide();
+                    storymap_dirty(1);
+                });
+
+            $('#background_url').change(function(event) {
+                _slides[_current_slide_index].background = $.extend(true,
+                    _slides[_current_slide_index].background, {
+                        url: $(this).val().trim()
+                    }
+                );
+                storymap_dirty(1);
+            });
+
+            modal_init($('#background_opt_modal'))
+                .on('upload', function(event, url) {
+                    $(this).trigger('refresh_image_select');
+                    $('#background_url').val(url).change();
+                    $(this).find('.upload-panel').trigger('reset');
+                })
+                .on('refresh_image_select', function(event) {
+                    var html = '';
+                    for (var i = 0; i < _storymap_files.length; i++) {
+                        html += '<li><a href="javascript:">' + _storymap_files[i] + '</a></li>';
+                    }
+                    $('.image-select').html(html || '<li class="default">no uploaded images found</li>');
+
+                    $('#background_image_select a').click(function(event) {
+                        $('#background_url')
+                            .val(storymap_image_url(_user.uid, _storymap_meta.id, $(this).html()))
+                            .change();
+                    });
+                })
+                .on('modal_show', function(event, error_msg) {
+                    var background = _slides[_current_slide_index].background || {};
+                    var color = background.color || '';
+                    var opacity = (background.opacity || 100) / 100;
+                    var url = background.url || '';
+
+                    $('#background_color').minicolors('value', color);
+                    $('#background_color').minicolors('opacity', opacity);
+
+
+                    if (color) {
+                        $('#background_color_clear').show();
+                    } else {
+                        $('#background_color_clear').hide();
+                    }
+
+                    $(this).trigger('refresh_image_select');
+
+                    $('#background_url').val(url);
+
+                    $(this).find('.upload-panel').trigger('reset');
+                    $(this).trigger('reset', error_msg);
+                })
+                .on('show', function() {
+                    $(this).trigger('modal_show');
+                });
+
+            // ------------------------------------------------------------
+            // Markers
+            // ------------------------------------------------------------
+
+            $('#marker_url').change(function(event) {
+                var currentSlide = _slides[_current_slide_index];
+                var icon = $(this).val().trim();
+
+                if (icon) {
+                    var img = new Image();
+
+                    img.onload = function() {
+                        currentSlide.location.use_custom_marker = true;
+                        currentSlide.location.icon = icon;
+                        currentSlide.location.iconSize = [this.width, this.height];
+                        var size = currentSlide.location.iconSize;
+                        if (this.width > this.height) {
+                            currentSlide.location.iconSize = [48, this.height * 48 / this.width];
+                        } else {
+                            currentSlide.location.iconSize = [this.width * 48 / this.height, 48];
+                        }
+                        storymap_dirty(1);
+                        location_mark(_slides[_current_slide_index]);
+                    }
+
+                    img.src = icon;
+                } else {
+                    currentSlide.location.use_custom_marker = false;
+                    delete currentSlide.location.icon;
+                    delete currentSlide.location.iconSize;
+                    storymap_dirty(1);
+                    location_mark(_slides[_current_slide_index]);
+                }
+            });
+
+            modal_init($('#marker_opt_modal'))
+                .on('upload', function(event, url) {
+                    $(this).trigger('refresh_image_select');
+                    $('#marker_url').val(url).change();
+                    $(this).find('.upload-panel').trigger('reset');
+                })
+                .on('refresh_image_select', function(event) {
+                    var html = '<li><a href="javascript:">(Default icon)</a></li>';
+                    for (var i = 0; i < _storymap_files.length; i++) {
+                        // TODO: find a nicer way of trimming these (local doesn't look nice)
+                        html += '<li><a href="javascript:" data-filename="' + _storymap_files[i] + '">' + _storymap_files[i] + '</a></li>';
+                    }
+                    $('.image-select').html(html || '<li class="default">no uploaded images found</li>');
+
+                    $('#marker_image_select a').click(function(event) {
+                        if ($(this).data('filename')) {
+                            $('#marker_url')
+                                .val(storymap_image_url(_user.uid, _storymap_meta.id, $(this).data('filename')))
+                                .change();
+                        } else {
+                            $('#marker_url').val('').change();
+                        }
+                    });
+                })
+                .on('modal_show', function(event, error_msg) {
+                    var currentSlide = _slides[_current_slide_index];
+                    $(this).trigger('refresh_image_select');
+
+                    if (currentSlide.location.use_custom_marker) {
+                        $('#marker_url').val(currentSlide.location.icon);
+                    }
+
+                    $(this).find('.upload-panel').trigger('reset');
+                    $(this).trigger('reset', error_msg);
+                })
+                .on('show', function() {
+                    $(this).trigger('modal_show');
+                });
+
+            // ------------------------------------------------------------
+            // Sharing
+            // ------------------------------------------------------------
+
+            $share_modal = modal_init($('#share_modal'))
+                .on('click', '#share_publish', function(event) {
+                    $share_modal.trigger('progress_show', 'Publishing StoryMap');
+
+                    storymap_publish(function(error) {
+                        if (error) {
+                            $('#share_modal').trigger('modal_show', format_error('Error publishing StoryMap', error));
+                        } else {
+                            $('#share_modal').trigger('modal_show');
+                        }
+                    });
+                })
+                //
+                // Sharing
+                //
+                .on('change', '#share_description', function(event) {
+                    ajax_post("{{ url_for('storymap_update_meta') }}", {
+                            id: _storymap_meta.id,
+                            key: 'description',
+                            value: $(this).val().trim()
+                        },
+                        function(error) {
+                            $share_modal.trigger('modal_show', format_error('Error updating storymap', error));
+                        }
+                    );
+                })
+                .on('change', '#share_image_url', function(event) {
+                    ajax_post("{{ url_for('storymap_update_meta') }}", {
+                            id: _storymap_meta.id,
+                            key: 'image_url',
+                            value: $(this).val().trim()
+                        },
+                        function(error) {
+                            $share_modal.trigger('modal_show', format_error('Error updating storymap', error));
+                        }
+                    );
+                })
+                .on('upload', function(event, url) {
+                    $(this).trigger('refresh_image_select');
+                    $('#share_image_url').val(url).change();
+                    $(this).find('.upload-panel').trigger('reset');
+                })
+                .on('refresh_image_select', function(event) {
+                    var html = '';
+                    for (var i = 0; i < _storymap_files.length; i++) {
+                        html += '<li><a href="javascript:">' + _storymap_files[i] + '</a></li>';
+                    }
+                    $('#share_image_select').html(html || '<li class="default">no uploaded images found</li>');
+                })
+                .on('change', '#share_width, #share_height', function(event) {
+                    $share_modal.trigger('modal_show');
+                })
+                .on('modal_show', function(event, error_msg) {
+                    $(this).trigger('refresh_image_select');
+                    $('#share_image_select a').click(function(event) {
+                        $('#share_image_url')
+                            .val(storymap_image_url(_user.uid, _storymap_meta.id, $(this).html()))
+                            .change();
+                    });
+                    $(this).find('.upload-panel').trigger('reset');
+
+                    var embed_url = '';
+
+                    if (_storymap_meta.draft_on > _storymap_meta.published_on) {
+                        embed_url = 'https:' + storymap_url(_user.uid, _storymap_meta.id, 'draft.html');
+                        $('#share_publish_panel').show();
+                    } else {
+                        embed_url = 'https:' + storymap_url(_user.uid, _storymap_meta.id, 'index.html');
+                        $('#share_publish_panel').hide();
+                    }
+
+                    var embed_html = storymap_iframe_template({
+                        embed_url: embed_url,
+                        width: $('#share_width').val(),
+                        height: $('#share_height').val()
+                    });
+
+                    var enc_embed_url = encodeURIComponent(embed_url);
+
+                    $('#share_url').val(embed_url);
+
+                    $(this).find('.share-link-twitter').attr('href',
+                        'http://twitter.com/intent/tweet?url=' + enc_embed_url);
+                    $(this).find('.share-link-facebook').attr('href',
+                        'https://www.facebook.com/sharer/sharer.php?u=' + enc_embed_url);
+                    $(this).find('.share-link-googleplus').attr('href',
+                        'https://plus.google.com/share?url=' + enc_embed_url);
+                    $(this).find('.share-link-reddit').attr('href',
+                        'http://www.reddit.com/submit?url=' + enc_embed_url);
+
+                    $('#share_embed').html(embed_html);
+
+                    $(this).trigger('reset', error_msg)
+                })
+                .on('show', function() {
+                    $('#share_publish_panel').hide();
+                    $('#share_url').val('');
+                    $('#share_width').val(_storymap_data.width || _default_data.width);
+                    $('#share_height').val(_storymap_data.height || _default_data.height);
+                    $('#share_embed').html('');
+                })
+                .on('shown', function() {
+                    var $modal = $(this);
+
+                    // If never published, then publish (will also save draft, if needed)
+                    if (!_storymap_meta.published_on) {
+                        $modal.trigger('progress_show', 'Publishing changes');
+
+                        storymap_publish(function(error) {
+                            if (error) {
+                                $modal.trigger('modal_show', format_error('Error publishing changes', error));
+                            } else {
+                                $modal.trigger('modal_show');
+                            }
+                        });
+                    }
+                    // If previously published but dirty, then save draft
+                    else if (_dirty) {
+                        $modal.trigger('progress_show', 'Saving StoryMap');
+
+                        storymap_save(function(error) {
+                            if (error) {
+                                $modal.trigger('modal_show', format_error('Error saving StoryMap', error));
+                            } else {
+                                $modal.trigger('modal_show');
+                            }
+                        });
+                    }
+                    // Else, just show the modal
+                    else {
+                        $modal.trigger('modal_show');
+                    }
+                });
+
+
+            //------------------------------------------------------------
+            // Doit
+            //------------------------------------------------------------
+
+            { %
+                if error %
+            }
+            storymap_abort('{{ error }}'); { %
+                else %
+            }
+            storymap_init(function() {
+                var map_type = _storymap_data.storymap.map_type;
+
+                if (map_type && map_type.match('^mapbox:.+') && !_storymap_data.storymap.map_access_token) {
+                    $opt_modal.trigger('map_error_show');
+                    $opt_modal.modal('show');
+                }
+            }); { % endif %
+            }
         });
-        var offset = $('#map_search_input').offset();
-        var height = $('#map_search_input').height();
-        var width = $('#map_search_input').width();
 
-        $(list).css({
-            'position': 'absolute',
-            'left': offset.left,
-            'top': offset.top + height + "px"
-        }); 
-    }
-
-    function parseLatLon(s) {
-        var tokens = s.split(' ');
-        var lat;
-        var lon;
-        if (lat_match = s.match(/lat:<?(\-?\d+\.?\d*)>?/)) {
-            lat_match = parseFloat(lat_match[1])
-            if (!isNaN(lat_match) && lat_match >= -90 && lat_match <= 90) {
-                lat = lat_match;
-            }
-        }
-        if (lon_match = s.match(/lon:<?(\-?\d+\.?\d*)>?/)) {
-            lon_match = parseFloat(lon_match[1])
-            if (!isNaN(lon_match) && lon_match >= -180 && lon_match <= 180) {
-                lon = lon_match;
+        //
+        // Window events
+        //
+        window.onbeforeunload = function confirmExit() {
+            if (_dirty) {
+                return "You have unsaved changes, and your changes will be lost." +
+                    "  Are you sure you want to exit this page?";
             }
         }
 
-        return [lat, lon];
-    }
+        window.onresize = function(event) {
+            if (preview_visible() && _storymap_object) {
+                _storymap_object.updateDisplay();
+            }
+        }
 
-    function geocode(query) {
-        if (query) {
-            if (query.includes("lat:") && query.includes("lon:")) {
-                var latlon = parseLatLon(query);
-                if (latlon[0] && latlon[1]) {
-                    search(latlon[0], latlon[1]);
-                    $("#geocode-autocomplete").empty();
-                }
-                return;
+        // Returns a function, that, as long as it continues to be invoked, will not
+        // be triggered. The function will be called after it stops being called for
+        // N milliseconds. If `immediate` is passed, trigger the function on the
+        // leading edge, instead of the trailing.
+        // source: https://davidwalsh.name/javascript-debounce-function
+        function debounce(func, wait, immediate) {
+            var timeout;
+            return function() {
+                var context = this,
+                    args = arguments;
+                var later = function() {
+                    timeout = null;
+                    if (!immediate) func.apply(context, args);
+                };
+                var callNow = immediate && !timeout;
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+                if (callNow) func.apply(context, args);
+            };
+        };
+
+        function update_autocomplete_list(features) {
+            var list = document.getElementById('geocode-autocomplete');
+            if (!list) {
+                list = document.createElement('ul');
+                list.id = 'geocode-autocomplete';
+                document.body.appendChild(list);
+                $(list).mouseleave(function() {
+                        geocode_activate(null);
+                    })
+                    .keyup(function(e) {
+                        // this substantially duplicates the input element handling
+                        // but what about typing regular letters? they wouldn't show up in the box, right?
+                        if (e.keyCode == keys.enter) {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            geocode_select();
+                            return false;
+                        } else if (e.keyCode == keys.uparrow) {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            geocode_activate_previous();
+                            return false;
+                        } else if (e.keyCode == keys.downarrow) {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            geocode_activate_next();
+                            return false;
+                        }
+                    })
             }
-            var opts = {
-                query: query,
-                limit: 7,
-                mode: 'mapbox.places-permanent' 
-                // https://docs.mapbox.com/api/search/#forward-geocoding
-                // language, types, limit might be interesting config values
-            }
-            try {
-                var map_center = _map.map.getCenter();
-                opts.proximity = [ map_center.lng, map_center.lat ];
-            } catch(e) {
-                // since we're digging beyond the public API, 
-                // catch errors in case it gets changed without knowing about this.
-                console.error("Error setting proximity", e);
-            }
-            mapboxClient.geocoding.forwardGeocode(opts)
-            .send()
-            .then(response => {
-                update_autocomplete_list(response.body.features);
-            }).catch(err => {
-                if (err.statusCode == 403) {
-                    alert("Geocoding forbidden. Have you configured the API key?")
-                } else {
-                    console.log('geocode error', err)
-                }
+            $(list).empty();
+            features.forEach(x => {
+                var item = $(`<li>${x.place_name}</li>`);
+                item.data('center', x.center)
+                    .data('place_type', x.place_type[0])
+                    .appendTo(list)
+                    .mouseover(function() {
+                        geocode_activate(this);
+                    })
+                    .click(function() {
+                        geocode_select(this);
+                        return false;
+                    });
             });
-        } else {
-            $("#geocode-autocomplete").empty();
-        }
-    }
+            var offset = $('#map_search_input').offset();
+            var height = $('#map_search_input').height();
+            var width = $('#map_search_input').width();
 
-    
-    function geocode_activate_previous() {
-        var target;
-        var active = document.querySelector("#geocode-autocomplete li.active")
-
-        if (active && active.previousSibling) {
-            target = active.previousSibling;
-        } else {
-            target = _(document.querySelectorAll("#geocode-autocomplete li")).last(); // wraparound
+            $(list).css({
+                'position': 'absolute',
+                'left': offset.left,
+                'top': offset.top + height + "px"
+            });
         }
 
-        geocode_activate(target);
-    }
-
-
-    function geocode_activate_next() {
-        var target;
-        var active = document.querySelector("#geocode-autocomplete li.active")
-
-        if (active && active.nextSibling) {
-            target = active.nextSibling;
-        } else {
-            target = _(document.querySelectorAll("#geocode-autocomplete li")).first(); // wraparound
-        }
-
-        geocode_activate(target);
-    }
-
-    /**
-     * Common behavior for mouseover and keyboard navigation to indicate the 
-     * address which would be selected -- but doesn't select it  
-     */
-    function geocode_activate(selection) {
-        document.querySelectorAll("#geocode-autocomplete li").forEach(
-            function (x, i) {
-                if (x == selection) {
-                    $(x).addClass('active')
-                } else {
-                    $(x).removeClass('active');
+        function parseLatLon(s) {
+            var tokens = s.split(' ');
+            var lat;
+            var lon;
+            if (lat_match = s.match(/lat:<?(\-?\d+\.?\d*)>?/)) {
+                lat_match = parseFloat(lat_match[1])
+                if (!isNaN(lat_match) && lat_match >= -90 && lat_match <= 90) {
+                    lat = lat_match;
                 }
             }
-        )
-    }
-
-    /**
-     * Move the map to the location represented by the selection, whether selected by click or by return-key.
-     */
-    function geocode_select(selection) {
-        if (!selection) {
-            selection = document.querySelector('#geocode-autocomplete li.active');
-
-        }
-        if (selection) {
-            var lng = $(selection).data('center')[0],
-                lat = $(selection).data('center')[1],
-                place_type = $(selection).data('place_type');
-            search(lat, lng);
-            $("#geocode-autocomplete").remove()
-            document.getElementById('map_search_input').value = '';
-        } else {
-            console.error("geocode_select called with no selection and no active element")
-        }
-
-    }
-
-    initAutocomplete = function() {
-        var input = document.getElementById('map_search_input');
-        if (input) {
-            window.mapboxClient = mapboxSdk({ 
-                accessToken: '{{ mapbox_api_key }}'
-            });
-            input.addEventListener('keyup',function(e) {
-                if (e.keyCode == keys.enter) {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    geocode_select();
-                    return false;
-                } else if (e.keyCode == keys.uparrow) {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    geocode_activate_previous();
-                    return false;
-                } else if (e.keyCode == keys.downarrow) {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    geocode_activate_next();
-                    return false;
-                } else {
-                    debounce(geocode(e.target.value), 250);
+            if (lon_match = s.match(/lon:<?(\-?\d+\.?\d*)>?/)) {
+                lon_match = parseFloat(lon_match[1])
+                if (!isNaN(lon_match) && lon_match >= -180 && lon_match <= 180) {
+                    lon = lon_match;
                 }
-            })
-        } else {
-            console.log("Can't find input to set up searchbox")
+            }
+
+            return [lat, lon];
         }
-    }
 
-    ready(initAutocomplete);
+        function geocode(query) {
+            if (query) {
+                if (query.includes("lat:") && query.includes("lon:")) {
+                    var latlon = parseLatLon(query);
+                    if (latlon[0] && latlon[1]) {
+                        search(latlon[0], latlon[1]);
+                        $("#geocode-autocomplete").empty();
+                    }
+                    return;
+                }
+                var opts = {
+                    query: query,
+                    limit: 7,
+                    mode: 'mapbox.places-permanent'
+                        // https://docs.mapbox.com/api/search/#forward-geocoding
+                        // language, types, limit might be interesting config values
+                }
+                try {
+                    var map_center = _map.map.getCenter();
+                    opts.proximity = [map_center.lng, map_center.lat];
+                } catch (e) {
+                    // since we're digging beyond the public API, 
+                    // catch errors in case it gets changed without knowing about this.
+                    console.error("Error setting proximity", e);
+                }
+                mapboxClient.geocoding.forwardGeocode(opts)
+                    .send()
+                    .then(response => {
+                        update_autocomplete_list(response.body.features);
+                    }).catch(err => {
+                        if (err.statusCode == 403) {
+                            alert("Geocoding forbidden. Have you configured the API key?")
+                        } else {
+                            console.log('geocode error', err)
+                        }
+                    });
+            } else {
+                $("#geocode-autocomplete").empty();
+            }
+        }
 
 
-</script>
-<!-- MapBox JS API -->
-<script src="https://unpkg.com/@mapbox/mapbox-sdk/umd/mapbox-sdk.min.js"></script>
-<!-- LEAVE THIS HERE -->
-<script type="text/javascript" src="{{ STATIC_URL }}js/modals.js"></script>
+        function geocode_activate_previous() {
+            var target;
+            var active = document.querySelector("#geocode-autocomplete li.active")
+
+            if (active && active.previousSibling) {
+                target = active.previousSibling;
+            } else {
+                target = _(document.querySelectorAll("#geocode-autocomplete li")).last(); // wraparound
+            }
+
+            geocode_activate(target);
+        }
+
+
+        function geocode_activate_next() {
+            var target;
+            var active = document.querySelector("#geocode-autocomplete li.active")
+
+            if (active && active.nextSibling) {
+                target = active.nextSibling;
+            } else {
+                target = _(document.querySelectorAll("#geocode-autocomplete li")).first(); // wraparound
+            }
+
+            geocode_activate(target);
+        }
+
+        /**
+         * Common behavior for mouseover and keyboard navigation to indicate the 
+         * address which would be selected -- but doesn't select it  
+         */
+        function geocode_activate(selection) {
+            document.querySelectorAll("#geocode-autocomplete li").forEach(
+                function(x, i) {
+                    if (x == selection) {
+                        $(x).addClass('active')
+                    } else {
+                        $(x).removeClass('active');
+                    }
+                }
+            )
+        }
+
+        /**
+         * Move the map to the location represented by the selection, whether selected by click or by return-key.
+         */
+        function geocode_select(selection) {
+            if (!selection) {
+                selection = document.querySelector('#geocode-autocomplete li.active');
+
+            }
+            if (selection) {
+                var lng = $(selection).data('center')[0],
+                    lat = $(selection).data('center')[1],
+                    place_type = $(selection).data('place_type');
+                search(lat, lng);
+                $("#geocode-autocomplete").remove()
+                document.getElementById('map_search_input').value = '';
+            } else {
+                console.error("geocode_select called with no selection and no active element")
+            }
+
+        }
+
+        initAutocomplete = function() {
+            var input = document.getElementById('map_search_input');
+            if (input) {
+                window.mapboxClient = mapboxSdk({
+                    accessToken: '{{ mapbox_api_key }}'
+                });
+                input.addEventListener('keyup', function(e) {
+                    if (e.keyCode == keys.enter) {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        geocode_select();
+                        return false;
+                    } else if (e.keyCode == keys.uparrow) {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        geocode_activate_previous();
+                        return false;
+                    } else if (e.keyCode == keys.downarrow) {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        geocode_activate_next();
+                        return false;
+                    } else {
+                        debounce(geocode(e.target.value), 250);
+                    }
+                })
+            } else {
+                console.log("Can't find input to set up searchbox")
+            }
+        }
+
+        ready(initAutocomplete);
+    </script>
+    <!-- MapBox JS API -->
+    <script src="https://unpkg.com/@mapbox/mapbox-sdk/umd/mapbox-sdk.min.js"></script>
+    <!-- LEAVE THIS HERE -->
+    <script type="text/javascript" src="{{ STATIC_URL }}js/modals.js"></script>
 </body>
+
 </html>
