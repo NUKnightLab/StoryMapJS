@@ -161,6 +161,7 @@ class StoryMap {
             .then(response => response.json())
             .then(result => {
                 console.log(result);
+				self.data = result.storymap;
             });
 		} else if (typeof data === 'object') {
 			if (data.storymap) {
