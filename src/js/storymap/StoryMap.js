@@ -162,6 +162,7 @@ class StoryMap {
             .then(result => {
                 console.log(result);
 				self.data = result.storymap;
+			    self._initOptions();
             });
 		} else if (typeof data === 'object') {
 			if (data.storymap) {
