@@ -118,11 +118,9 @@ export default class MiniMapControl extends L.Control {
            do, we will need to sort out why this function is currently being
            called in the normal course of navigation. In the mean time, this
            code is commented out to prevent inadvertent minimization. */
-        /*
 		if (!this._minimized) {
 			this._minimize();
 		}
-        */
 	}
 	
 	restore() {
@@ -192,12 +190,14 @@ export default class MiniMapControl extends L.Control {
     _minimize() {
         this._container.style.width = '0px';
         this._container.style.height = '0px';
+        this._container.style.border = '0';
         this._minimized = true;
     }
 
     _restore() {
         this._container.style.width = this.options.width + 'px';
         this._container.style.height = this.options.height + 'px';
+        this._container.style.border = '2px solid #b3b3b3';
         this._minimized = false;
     }
 
