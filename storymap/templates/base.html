@@ -6,8 +6,13 @@
     {% include "_head.html" %}
     {% include "_analytics.html" %}
 {% endblock head %}
+{% if production %}
 <link rel="stylesheet" href="//cdn.knightlab.com/libs/storymapjs/latest/css/storymap.css?v2">
 <script type="text/javascript" src="//cdn.knightlab.com/libs/storymapjs/latest/js/storymap.js"></script>
+{% else %}
+<link rel="stylesheet" href="//cdn.knightlab.com/libs/storymapjs/dev/css/storymap.css?v2">
+<script type="text/javascript" src="//cdn.knightlab.com/libs/storymapjs/dev/js/storymap.js"></script>
+{% endif %}
 </head>
 
 <body>
