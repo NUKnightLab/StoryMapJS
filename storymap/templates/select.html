@@ -1,779 +1,759 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <title>StoryMap JS</title>
-    <meta name="description" content="Telling stories with maps.">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <link rel="shortcut icon" href="//cdn.knightlab.com/libs/blueline/latest/assets/logos/favicon.ico">
-    <link href="//cloud.typenetwork.com/projects/5433/fontface.css" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="//cdn.knightlab.com/libs/blueline/latest/css/blueline.min.css">
-    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script type="text/javascript" src="//code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
-    <script src="//cdn.knightlab.com/libs/blueline/latest/js/blueline.min.js"></script>
-    <!-- === storymap -->
-    <link rel="stylesheet" href="{{ CDN_URL }}css/storymap.css?v1">
-    <!-- === Moment.js -->
-    <script src="{{ STATIC_URL }}js/moment.min.js"></script>
-    <script src="{{ STATIC_URL }}js/moment-timezone.min.js"></script>
-    <script src="{{ STATIC_URL }}js/moment-timezone-data.js"></script>
-    <!-- === editor -->
-    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.history.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}js/json2.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}js/editor.js"></script>
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/editor.css">
-    <style>
-        #entry_login {
-            display: block;
-            margin: 2em auto;
-            background-image: url("{{STATIC_URL}}img/google/1x/btn_google_signin_dark_normal_web.png");
-            width: 191px;
-            height: 46px;
-        }
-        
-        #entry_login:focus,
-        #entry_login:hover {
-            background-image: url("{{STATIC_URL}}img/google/1x/btn_google_signin_dark_focus_web.png");
-        }
-        
-        #entry_login:active {
-            background-image: url("{{STATIC_URL}}img/google/1x/btn_google_signin_dark_pressed_web.png");
-        }
-        
-        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-            #entry_login {
-                background-image: url("{{STATIC_URL}}img/google/2x/btn_google_signin_dark_pressed_web@2x.png");
-                background-size: 191px 46px;
-            }
-            #entry_login:focus,
-            #entry_login:hover {
-                background-image: url("{{STATIC_URL}}img/google/2x/btn_google_signin_dark_focus_web@2x.png");
-                background-size: 191px 46px;
-            }
-            #entry_login:active {
-                background-image: url("{{STATIC_URL}}img/google/2x/btn_google_signin_dark_pressed_web@2x.png");
-                background-size: 191px 46px;
-            }
-        }
-    </style>
-</head>
+<title>StoryMap JS</title>
+<meta name="description" content="Telling stories with maps.">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<link rel="shortcut icon" href="//cdn.knightlab.com/libs/blueline/latest/assets/logos/favicon.ico">
+<link href="//cloud.typenetwork.com/projects/5433/fontface.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="//cdn.knightlab.com/libs/blueline/latest/css/blueline.min.css">
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="//code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
+<script src="//cdn.knightlab.com/libs/blueline/latest/js/blueline.min.js"></script>
+<!-- === storymap -->
+<link rel="stylesheet" href="{{ CDN_URL }}css/storymap.css?v1">
+<!-- === Moment.js -->
+<script src="{{ STATIC_URL }}js/moment.min.js"></script>
+<script src="{{ STATIC_URL }}js/moment-timezone.min.js"></script>
+<script src="{{ STATIC_URL }}js/moment-timezone-data.js"></script>
+<!-- === editor -->
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.history.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/json2.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/editor.js"></script>
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/editor.css">
+<style>
+  #entry_login {
+    display: block;
+    margin: 2em auto;
+    background-image: url("{{STATIC_URL}}img/google/1x/btn_google_signin_dark_normal_web.png");
+    width: 191px;
+    height: 46px;
+  }
 
+  #entry_login:focus,#entry_login:hover {
+    background-image: url("{{STATIC_URL}}img/google/1x/btn_google_signin_dark_focus_web.png");
+  }
+
+  #entry_login:active {
+    background-image: url("{{STATIC_URL}}img/google/1x/btn_google_signin_dark_pressed_web.png");
+  }
+
+  @media
+  (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    #entry_login {
+      background-image: url("{{STATIC_URL}}img/google/2x/btn_google_signin_dark_pressed_web@2x.png");
+      background-size: 191px 46px;
+    }
+
+    #entry_login:focus,#entry_login:hover {
+      background-image: url("{{STATIC_URL}}img/google/2x/btn_google_signin_dark_focus_web@2x.png");
+      background-size: 191px 46px;
+    }
+
+    #entry_login:active {
+      background-image: url("{{STATIC_URL}}img/google/2x/btn_google_signin_dark_pressed_web@2x.png");
+      background-size: 191px 46px;
+    }
+  }
+
+
+</style>
+</head>
 <body>
 
-    {% include '_editor.html' %}
+{% include '_editor.html' %}
 
-    <div id="ie_modal" class="modal hide fade" data-backdrop="static">
-        <div class="modal-body">
-            The StoryMapJS authoring tool is not compatible with Internet Explorer. Please use a different browser.
-        </div>
+<div id="ie_modal" class="modal hide fade" data-backdrop="static">
+    <div class="modal-body">
+    The StoryMapJS authoring tool is not compatible with Internet Explorer.  Please use a different browser.
     </div>
+</div>
 
-    <div id="entry_modal" class="modal hide fade" data-backdrop="static">
-        <!-- error -->
-        <div class="modal-body">
-            <div class="modal-error hide">
-                <span class="modal-msg error"></span>
-            </div>
-            <!-- login panel -->
-            <div class="entry-panel entry-login hide">
-                <div>
-                    <div>
-                        <a id="entry_login" href="{{ url_for('google_auth_start') }}"></a>
-                        <p class="ui-note">The StoryMapJS editor uses your Google account for logging in, so that only you can edit your projects, and so that you don't need to remember another password.
-                            <br>[ <a href="/#privacy">learn more</a> ]
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <!-- migrate panel (initial) -->
-            <div class="entry-panel entry-migrate hide">
-                <p>Your StoryMap account currently has content from an older version of the StoryMap editor which will not work due to changes in the Google Drive API. In order to continue editing these older entries, please do the following:
-                    <p>1. Find the folder on your Google Drive called <strong>KnightLabStoryMap/public</strong></p>
-                    <p>2. Share the contents of that folder with the gmail user: <strong>nuknightlab@gmail.com</strong></p>
-                    <p>3. Click the error report link below and send the resulting email to report this issue and to initiate the migration process</p>
-            </div>
-            <!-- migrate panel (resume) -->
-            <div class="entry-panel entry-migrate-resume hide">
-                <p>Your StoryMap account currently has content from an older version of the StoryMap editor which will not work due to changes in the Google Drive API. In order to continue editing these older entries, please do the following:
-                    <p>1. Find the folder on your Google Drive called <strong>KnightLabStoryMap/public</strong></p>
-                    <p>2. Share the contents of that folder with the gmail user: <strong>nuknightlab@gmail.com</strong></p>
-                    <p>3. Click the error report link below and send the resulting email to report this issue and to initiate the migration process</p>
-            </div>
-            <!-- list panel -->
-            <div class="entry-panel entry-list hide">
-                <div class="table-header">
-                    <strong>Your StoryMaps </strong>
-                    <div class="table-toggles">
-                        <div class="btn-group" data-toggle="buttons-radio">
-                            <button id="entry_sort_title" type="button" class="btn btn-small active" onclick="$('#entry_modal').trigger('display_list', 'title');">
-                            Title <i class="icon-angle-up"></i></button>
-                            <button id="entry_sort_date" type="button" class="btn btn-small" onclick="$('#entry_modal').trigger('display_list', 'date');">
-                            Date <i class="icon-angle-down"></i></button>
-                        </div>
-                    </div>
-                    <div style="clear:both;"></div>
-                </div>
-                <table class="table table-striped table-bordered">
-                    <tbody></tbody>
-                </table>
-            </div>
-            <!-- create map panel -->
-            <div class="entry-panel entry-create-map hide">
-                <p>
-                    <label>Great!  Let's make a StoryMap.  What do you want to call it?</label>
-                    <input type="text" class="entry-create-title stretch" data-onsubmit="entry_create" />
-                </p>
-                <p class="ui-note">Making a gigapixel storymap? Click 'create' and set the details using 'Map Type' in the <i class='icon-cog'></i> options. <br> <a target="_blank" href="http://knightlab.northwestern.edu/2016/05/24/a-few-small-improvements-to-storymapjs/">Read this for more info.</a></p>
-            </div>
-            <!-- import panel -->
-            <div class="entry-panel entry-import hide">
-                <p>
-                    <label>Let's import your StoryMap.  What do you want to call it?</label>
-                    <input type="text" class="entry-import-title stretch" data-onsubmit="entry_import" />
-                </p>
-            </div>
-            <!-- rename panel -->
-            <div class="entry-panel entry-rename hide">
-                <p>
-                    <label>Enter a new name for your <strong class="entry-rename-title-old"></strong> StoryMap:</label>
-                    <input type="text" class="entry-rename-title stretch" data-onsubmit="entry_rename" />
-                </p>
-            </div>
-            <!-- copy panel -->
-            <div class="entry-panel entry-copy hide">
-                <p>
-                    <label>Enter a name for your copy of <strong class="entry-copy-title-old"></strong> StoryMap:</label>
-                    <input type="text" class="entry-copy-title stretch" data-onsubmit="entry_copy" />
-                </p>
-            </div>
+<div id="entry_modal" class="modal hide fade" data-backdrop="static">
+<!-- error -->
+    <div class="modal-body">
+        <div class="modal-error hide">
+            <span class="modal-msg error"></span>
         </div>
-        <!-- FOOTER -->
-        <div class="modal-footer">
-            <div id="entry_user_info" class="hide">
-                <span id="entry_user_name"></span> | <a id="entry_logout" href="{{ url_for('logout') }}">Logout</a>
-            </div>
-            <span>&nbsp;</span>
-            <a id="entry_create_cancel" class="entry-panel entry-create entry-import entry-rename entry-copy hide btn" onclick="$('#entry_modal').trigger('show_list');">
-            Cancel</a>
-            <a id="entry_create" class="entry-panel entry-create hide btn btn-success" href="javascript:;">
-            Create</a> {# See issue #316
-            <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button> #}
-            <a id="new_storymap" class="entry-panel entry-list hide btn btn-success" href="javascript:;" onclick="$('#entry_modal').trigger('show_create_map');">
-                <i class="icon-file "></i> New</a>
-            <a id="entry_rename" class="entry-panel entry-rename hide btn btn-success" href="javascript:;">
-            Rename</a>
-            <a id="entry_copy" class="entry-panel entry-copy hide btn btn-success" href="javascript:;">
-            Copy</a>
-            <a id="entry_import" class="entry-panel entry-import hide btn btn-success" href="javascript:;">
-            Import</a>
-        </div>
-        <!-- progress -->
-        <div class="modal-progress hide">
+<!-- login panel -->
+        <div class="entry-panel entry-login hide">
             <div>
                 <div>
-                    <i class="icon-spinner icon-4x icon-spin"></i>
-                    <p><span class="modal-msg"></span>...</p>
-                </div>
-            </div>
-        </div>
-        <!-- confirm -->
-        <div class="modal-confirm hide">
-            <div>
-                <div>
-                    <p><span class="modal-msg"></span></p>
-                    <button class="btn">No</button>
-                    <button class="btn btn-primary">Yes</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- TEMPLATES START  -->
-
-    <script id="storymap_row_template" type="text/template">
-        <tr storymap-data="<%= id %>">
-            <td>
-                <div style="display: inline;float: right">
-                    <div class="dropdown">
-                        <a class="list-item-options dropdown-toggle" data-toggle="dropdown" href="javascript:" title="Options"><i class="icon-cog icon-large"></i></a>
-                        <ul class="dropdown-menu pull-right" role="menu">
-                            <li><a href="javascript:" class="list-item-rename">Rename</a></li>
-                            <li><a href="javascript:" class="list-item-copy">Copy</a></li>
-                            <li><a href="javascript:" class="list-item-delete">Delete</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <a class="title" href="{{ url_for('edit') }}?id=<%= id %>">
-                    <%= title %>
-                </a>
-                <% if(published_on) { %>
-                    <p class="modded">Published on
-                        <%= format_dt(published_on) %>
+                    <a id="entry_login" href="{{ url_for('google_auth_start') }}" ></a>
+                    <p class="ui-note">The StoryMapJS editor uses your Google account for logging in,
+                      so that only you can edit your projects, and
+                      so that you don't need to remember another password.
+                      <br>[ <a href="/#privacy">learn more</a> ]
                     </p>
-                    <% } %>
-                        <% if(draft_on > published_on) { %>
-                            <p class="modded">
-                                <% if(published_on) { %>
-                                    <i class="icon-warning-sign" title="This draft is newer than the most recently published version."></i>
-                                    <% } %>
-                                        Edited on
-                                        <%= format_dt(draft_on) %>
-                                            <% } %>
-                            </p>
-            </td>
-        </tr>
-    </script>
+                </div>
+            </div>
+        </div>
+<!-- migrate panel (initial) -->
+    <div class="entry-panel entry-migrate hide">
+        <p>Your StoryMap account currently has content from an older version of the StoryMap editor which will not work due to changes in the Google Drive API. In order to continue editing these older entries, please do the following:        <p>1. Find the folder on your Google Drive called <strong>KnightLabStoryMap/public</strong></p>
+        <p>2. Share the contents of that folder with the gmail user: <strong>nuknightlab@gmail.com</strong></p>
+        <p>3. Click the error report link below and send the resulting email to report this issue and to initiate the migration process</p>
+    </div>
+<!-- migrate panel (resume) -->
+    <div class="entry-panel entry-migrate-resume hide">
+        <p>Your StoryMap account currently has content from an older version of the StoryMap editor which will not work due to changes in the Google Drive API. In order to continue editing these older entries, please do the following:        <p>1. Find the folder on your Google Drive called <strong>KnightLabStoryMap/public</strong></p>
+        <p>2. Share the contents of that folder with the gmail user: <strong>nuknightlab@gmail.com</strong></p>
+        <p>3. Click the error report link below and send the resulting email to report this issue and to initiate the migration process</p>
+    </div>
+<!-- list panel -->
+        <div class="entry-panel entry-list hide">
+            <div class="table-header">
+                <strong>Your StoryMaps </strong>
+                <div class="table-toggles">
+                    <div class="btn-group" data-toggle="buttons-radio">
+                        <button id="entry_sort_title" type="button" class="btn btn-small active" onclick="$('#entry_modal').trigger('display_list', 'title');">
+                            Title <i class="icon-angle-up"></i></button>
+                        <button id="entry_sort_date" type="button" class="btn btn-small" onclick="$('#entry_modal').trigger('display_list', 'date');">
+                            Date <i class="icon-angle-down"></i></button>
+                    </div>
+                </div>
+                <div style="clear:both;"></div>
+            </div>
+            <table class="table table-striped table-bordered">
+                <tbody></tbody>
+            </table>
+        </div>
+<!-- create map panel -->
+        <div class="entry-panel entry-create-map hide">
+            <p>
+                <label>Great!  Let's make a StoryMap.  What do you want to call it?</label>
+                <input type="text" class="entry-create-title stretch" data-onsubmit="entry_create" />
+            </p>
+            <p class="ui-note">Making a gigapixel storymap? Click 'create' and set the details using 'Map Type' in the <i class='icon-cog'></i> options. <br> <a target="_blank" href="http://knightlab.northwestern.edu/2016/05/24/a-few-small-improvements-to-storymapjs/">Read this for more info.</a></p>
+        </div>
+<!-- import panel -->
+        <div class="entry-panel entry-import hide">
+            <p>
+                <label>Let's import your StoryMap.  What do you want to call it?</label>
+                <input type="text" class="entry-import-title stretch" data-onsubmit="entry_import" />
+            </p>
+        </div>
+<!-- rename panel -->
+        <div class="entry-panel entry-rename hide">
+            <p>
+                <label>Enter a new name for your <strong class="entry-rename-title-old"></strong> StoryMap:</label>
+                <input type="text" class="entry-rename-title stretch" data-onsubmit="entry_rename" />
+            </p>
+        </div>
+<!-- copy panel -->
+        <div class="entry-panel entry-copy hide">
+            <p>
+                <label>Enter a name for your copy of <strong class="entry-copy-title-old"></strong> StoryMap:</label>
+                <input type="text" class="entry-copy-title stretch" data-onsubmit="entry_copy" />
+            </p>
+        </div>
+    </div>
+<!-- FOOTER -->
+    <div class="modal-footer">
+        <div id="entry_user_info" class="hide">
+            <span id="entry_user_name"></span> | <a id="entry_logout" href="{{ url_for('logout') }}">Logout</a>
+        </div>
+        <span>&nbsp;</span>
+        <a id="entry_create_cancel" class="entry-panel entry-create entry-import entry-rename entry-copy hide btn" onclick="$('#entry_modal').trigger('show_list');">
+            Cancel</a>
+        <a id="entry_create" class="entry-panel entry-create hide btn btn-success" href="javascript:;">
+            Create</a>
+        {# See issue #316
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+        #}
+        <a id="new_storymap" class="entry-panel entry-list hide btn btn-success" href="javascript:;" onclick="$('#entry_modal').trigger('show_create_map');">
+            <i class="icon-file "></i> New</a>
+        <a id="entry_rename" class="entry-panel entry-rename hide btn btn-success" href="javascript:;">
+            Rename</a>
+        <a id="entry_copy" class="entry-panel entry-copy hide btn btn-success" href="javascript:;">
+            Copy</a>
+        <a id="entry_import" class="entry-panel entry-import hide btn btn-success" href="javascript:;">
+            Import</a>
+    </div>
+    <!-- progress -->
+    <div class="modal-progress hide">
+        <div>
+            <div>
+                <i class="icon-spinner icon-4x icon-spin"></i>
+                <p><span class="modal-msg"></span>...</p>
+            </div>
+        </div>
+    </div>
+    <!-- confirm -->
+    <div class="modal-confirm hide">
+        <div>
+            <div>
+                <p><span class="modal-msg"></span></p>
+                <button class="btn">No</button>
+                <button class="btn btn-primary">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-    <!-- TEMPLATES END -->
+<!-- TEMPLATES START  -->
 
-    <script type="text/javascript">
-        var _user = {}; { %
-            if user %
+<script id="storymap_row_template" type="text/template">
+<tr storymap-data="<%= id %>">
+<td>
+<div style="display: inline;float: right">
+    <div class="dropdown">
+    <a class="list-item-options dropdown-toggle" data-toggle="dropdown" href="javascript:" title="Options"><i class="icon-cog icon-large"></i></a>
+    <ul class="dropdown-menu pull-right" role="menu">
+    <li><a href="javascript:" class="list-item-rename">Rename</a></li>
+    <li><a href="javascript:" class="list-item-copy">Copy</a></li>
+    <li><a href="javascript:" class="list-item-delete">Delete</a></li>
+    </ul>
+    </div>
+</div>
+<a class="title" href="{{ url_for('edit') }}?id=<%= id %>"><%= title %></a>
+<% if(published_on) { %>
+<p class="modded">Published on <%= format_dt(published_on) %></p>
+<% } %>
+<% if(draft_on > published_on) { %>
+<p class="modded">
+<% if(published_on) { %>
+<i class="icon-warning-sign" title="This draft is newer than the most recently published version."></i>
+<% } %>
+Edited on <%= format_dt(draft_on) %>
+<% } %>
+</p>
+</td>
+</tr>
+</script>
+
+<!-- TEMPLATES END -->
+
+<script type="text/javascript">
+
+var _user = {};
+{% if user %}
+    _user = {{ user|tojson }};
+{% endif %}
+
+var storymap_row_template = _.template($('#storymap_row_template').html().trim());
+
+var _storymap_list = [];        // [object]
+var _migrate_list = [];         // [object]
+
+var _params = parseQueryString();   // for import
+
+//
+// sort
+//
+
+function sortby_date(a, b) {
+    adt = (a.draft_on > a.published_on) ? a.draft_on : a.published_on;
+    bdt = (b.draft_on > b.published_on) ? b.draft_on : b.published_on;
+    return (adt > bdt) ? -1 : 1;
+}
+
+function sortby_title(a, b) {
+    return (a.title.toUpperCase() < b.title.toUpperCase()) ? -1 : 1;
+}
+
+//
+// misc
+//
+
+function make_storymap_list() {
+    _storymap_list = [];
+    for(var id in _user.storymaps) {
+        _storymap_list.push(_user.storymaps[id]);
+    }
+
+}
+
+function validate_storymap_name($modal, name) {
+    if(!name.length) {
+        $modal.trigger('error_show', 'You must enter a name');
+        return false;
+    }
+    for(var i = 0; i < _user.storymaps.length; i++) {
+        if(name.toLowerCase() == _user.storymaps[i].title.toLowerCase()) {
+            $modal.trigger('error_show', 'You already have a StoryMap named "'+name+'".');
+            return false;
         }
-        _user = {
-            {
-                user | tojson
+    }
+    return true;
+}
+
+function handle_onload() {
+    var isIE = !!(window.ActiveXObject || "ActiveXObject" in window);
+    if(isIE) {
+        $('#ie_modal').modal('show');
+    } else {
+        $('#entry_modal').modal('show');
+    }
+}
+
+//
+// MAIN
+//
+
+$(function() {
+
+    // bind input.text return key events to button clicks
+    $('input[type="text"][data-onsubmit]').each(function(i, val) {
+        var $el = $(this);
+        $el.keyup(function(event) {
+            if(event.keyCode == 13) {
+                $('#'+$el.attr('data-onsubmit')).click();
             }
-        }; { % endif %
+        });
+    });
+
+// ------------------------------------------------------------
+// migrate
+// ------------------------------------------------------------
+
+    function _do_migrate(callback) {
+        var $modal = $('#entry_modal');
+
+       if(_migrate_list.length) {
+            var info = _migrate_list.pop();
+            $modal.trigger('progress_show', 'Copying '+info.title);
+
+            ajax_post("{{ url_for('storymap_migrate') }}",
+                {
+                    title: info.title,
+                    url: info.url,
+                    draft_on: info.draft_on,
+                    published_on: info.published_on,
+                    file_list: JSON.stringify(info.file_list)
+                },
+                function(error) {
+                    _migrate_list.push(info);   // push back onto list
+                    callback(error);
+                },
+                function(data) {
+                    _user.storymaps[data.id] = data;
+                    _storymap_list.push(data);
+                    _do_migrate(callback);
+                }
+            );
+        } else {
+            callback();
         }
+    }
 
-        var storymap_row_template = _.template($('#storymap_row_template').html().trim());
+    $('#entry_migrate, #entry_migrate_resume').click(function(event) {
+        var $modal = $('#entry_modal');
 
-        var _storymap_list = []; // [object]
-        var _migrate_list = []; // [object]
-
-        var _params = parseQueryString(); // for import
-
-        //
-        // sort
-        //
-
-        function sortby_date(a, b) {
-            adt = (a.draft_on > a.published_on) ? a.draft_on : a.published_on;
-            bdt = (b.draft_on > b.published_on) ? b.draft_on : b.published_on;
-            return (adt > bdt) ? -1 : 1;
-        }
-
-        function sortby_title(a, b) {
-            return (a.title.toUpperCase() < b.title.toUpperCase()) ? -1 : 1;
-        }
-
-        //
-        // misc
-        //
-
-        function make_storymap_list() {
-            _storymap_list = [];
-            for (var id in _user.storymaps) {
-                _storymap_list.push(_user.storymaps[id]);
+        _do_migrate(function(error) {
+            if(error) {
+                $modal.trigger('reset', format_error('Error migrating StoryMap', error));
+            } else {
+                ajax_get("{{ url_for('storymap_migrate_done') }}", {},
+                    function(error) {
+                        $modal.trigger('reset', format_error('Error setting migration status', error));
+                    },
+                    function(data) {
+                        $modal.trigger('show_list');
+                    }
+                );
             }
+        });
+    });
 
+// ------------------------------------------------------------
+// rename
+// ------------------------------------------------------------
+
+    $('#entry_rename').click(function(event) {
+        var $modal = $('#entry_modal');
+        var $panel = $('.entry-rename');
+
+        var title = $panel.find('.entry-rename-title').val().trim();
+        if(!validate_storymap_name($modal, title)) {
+            return false;
+        }
+        var id = $(this).attr('storymap-data');
+
+        ajax_post("{{ url_for('storymap_update_meta') }}",
+            {id: id, key:'title', value: title},
+            function(error) {
+                $modal.trigger('reset', format_error('Error renaming StoryMap', error));
+            },
+            function(data) {
+                _user.storymaps[id].title = title;
+                $modal.trigger('show_list');
+            }
+        );
+    });
+
+// ------------------------------------------------------------
+// copy
+// ------------------------------------------------------------
+
+    $('#entry_copy').click(function(event) {
+        var $modal = $('#entry_modal');
+        var $panel = $('.entry-copy');
+
+        var title = $panel.find('.entry-copy-title').val().trim();
+        if(!validate_storymap_name($modal, title)) {
+            return false;
+        }
+        var id = $(this).attr('storymap-data');
+
+        $modal.trigger('progress_show', 'Copying StoryMap');
+
+        ajax_get("{{ url_for('storymap_copy') }}",
+            {id: id, title: title},
+            function(error) {
+                $modal.trigger('reset', format_error('Error copying StoryMap', error));
+            },
+            function(data) {
+                _user.storymaps[data.id] = data;
+                _storymap_list.push(data);
+                $modal.trigger('show_list', true);
+            }
+        );
+    });
+
+// ------------------------------------------------------------
+// import
+// ------------------------------------------------------------
+
+    $('#entry_import').click(function() {
+        var $modal = $('#entry_modal');
+        var $panel = $('.entry-import');
+
+        var name = $panel.find('.entry-import-title').val().trim();
+        if(!validate_storymap_name($modal, name)) {
+            return false;
         }
 
-        function validate_storymap_name($modal, name) {
-            if (!name.length) {
-                $modal.trigger('error_show', 'You must enter a name');
+        $modal.trigger('progress_show', 'Importing StoryMap');
+
+        ajax_get(_params.import_url, {},
+            function(error) {
+                $modal.trigger('reset', format_error('Error loading storymap', error));
+            },
+            function(data) {
+                ajax_post("{{ url_for('storymap_create') }}",
+                    {title: name, d: JSON.stringify(data)},
+                    function(error) {
+                        $modal.trigger('reset', format_error('Error creating StoryMap', error));
+                    },
+                    function(data) {
+                        // Replace history state
+                        var url = document.location.href;
+                        url = url.substring(0, url.indexOf("?"));
+                        History.replaceState(null, document.title, url);
+
+                        document.location.href = "{{ url_for('edit') }}?id="+data.id;
+                    }
+                );
+            }
+        );
+    });
+
+// ------------------------------------------------------------
+// create
+// ------------------------------------------------------------
+
+    $('#entry_create').click(function() {
+        var $modal = $('#entry_modal');
+
+        var is_map_type = $('.entry-create-map').is(":visible");
+        var $panel = (is_map_type) ? $('.entry-create-map') : $('.entry-create-zoomify');
+
+        var data = {
+            storymap: {
+                map_as_image: false,
+                call_to_action: true,
+                call_to_action_text: "",
+                slides: []
+            }
+        };
+
+        var name = $panel.find('.entry-create-title').val().trim();
+        if(!validate_storymap_name($modal, name)) {
+            return false;
+        }
+
+        if(!is_map_type) {
+            // Zoomify properties
+            var path = $('#entry_create_path').val().trim();
+            if(!path.length) {
+                $modal.trigger('error_show', 'You must enter an URL path');
                 return false;
             }
-            for (var i = 0; i < _user.storymaps.length; i++) {
-                if (name.toLowerCase() == _user.storymaps[i].title.toLowerCase()) {
-                    $modal.trigger('error_show', 'You already have a StoryMap named "' + name + '".');
-                    return false;
-                }
+            if(!path.match(/\/$/)) {
+                path += '/';
+                $('#entry_create_path').val(path);
             }
-            return true;
-        }
 
-        function handle_onload() {
-            var isIE = !!(window.ActiveXObject || "ActiveXObject" in window);
-            if (isIE) {
-                $('#ie_modal').modal('show');
-            } else {
-                $('#entry_modal').modal('show');
+            var width = parseInt($('#entry_create_width').val().trim());
+            if(!width || isNaN(width)) {
+                $modal.trigger('error_show', 'Image width must be a positive integer');
+                return false;
             }
-        }
 
-        //
-        // MAIN
-        //
+            var height = parseInt($('#entry_create_height').val().trim());
+            if(!height || isNaN(height)) {
+                $modal.trigger('error_show', 'Image height must be a positive integer');
+                return false;
+            }
 
-        $(function() {
-
-            // bind input.text return key events to button clicks
-            $('input[type="text"][data-onsubmit]').each(function(i, val) {
-                var $el = $(this);
-                $el.keyup(function(event) {
-                    if (event.keyCode == 13) {
-                        $('#' + $el.attr('data-onsubmit')).click();
-                    }
-                });
+            $.extend(data.storymap, {
+                map_type: 'zoomify',
+                map_as_image: true,
+                zoomify: {path: path, width: width, height: height, tolerance: 0.9, attribution: ''}
             });
+        }
 
-            // ------------------------------------------------------------
-            // migrate
-            // ------------------------------------------------------------
+        $modal.trigger('progress_show', 'Creating StoryMap');
 
-            function _do_migrate(callback) {
-                var $modal = $('#entry_modal');
+        ajax_post("{{ url_for('storymap_create') }}",
+            {title: name, d: JSON.stringify(data)},
+            function(error) {
+                $modal.trigger('reset', format_error('Error creating StoryMap', error));
+            },
+            function(data) {
+                document.location.href = "{{ url_for('edit') }}?id="+data.id;
+            }
+        );
+    });
 
-                if (_migrate_list.length) {
-                    var info = _migrate_list.pop();
-                    $modal.trigger('progress_show', 'Copying ' + info.title);
+// ------------------------------------------------------------
+// main
+// ------------------------------------------------------------
 
-                    ajax_post("{{ url_for('storymap_migrate') }}", {
-                            title: info.title,
-                            url: info.url,
-                            draft_on: info.draft_on,
-                            published_on: info.published_on,
-                            file_list: JSON.stringify(info.file_list)
-                        },
+    modal_init($('#entry_modal'))
+        ////// custom
+        .on('show', function(event) {
+            if (event.target.id == 'entry_modal') {
+                $(this).trigger('handle_auth', _user.uid);
+            }
+        })
+        .on('handle_auth', function(event, authorized) {
+            var $modal = $(this);
+
+            $modal.find('.entry-panel').hide();
+
+            if(!authorized) {
+                $modal.trigger('show_login');
+                return;
+            }
+
+            // Show user information
+            $('#entry_user_name').html(_user.uname);
+            $('#entry_user_info').show();
+
+            make_storymap_list();
+
+
+
+            // Already migrated?
+            if(_user.migrated) {
+                if(_params.import_url) {
+                    $modal.trigger('show_import');
+                } else {
+                    $modal.trigger('show_list');
+                }
+                return;
+            }
+
+            $modal = $(this).trigger('progress_show', 'Checking migration status');
+
+            ajax_get("{{ url_for('storymap_migrate_list') }}", {},
+                function(error) {
+                    // No longer triggering this error due to changes in Google Drive
+                    //$modal.trigger('reset',  format_error('Error getting migration list', error));
+                    ajax_get("{{ url_for('storymap_migrate_done') }}", {},
                         function(error) {
-                            _migrate_list.push(info); // push back onto list
-                            callback(error);
+                            $modal.trigger('reset', format_error('Error setting migration status', error));
                         },
                         function(data) {
-                            _user.storymaps[data.id] = data;
-                            _storymap_list.push(data);
-                            _do_migrate(callback);
+                            if(_params.import_url) {
+                                $modal.trigger('show_import');
+                            } else {
+                                $modal.trigger('show_list');
+                            }
                         }
                     );
-                } else {
-                    callback();
-                }
-            }
-
-            $('#entry_migrate, #entry_migrate_resume').click(function(event) {
-                var $modal = $('#entry_modal');
-
-                _do_migrate(function(error) {
-                    if (error) {
-                        $modal.trigger('reset', format_error('Error migrating StoryMap', error));
+                },
+                function(data) {
+                    if(data.migrate_list.length) {
+                        _migrate_list = data.migrate_list;
+                        if(Object.keys(_user.storymaps).length) {
+                            $modal.trigger('show_migrate_resume');
+                        } else {
+                            $modal.trigger('show_migrate');
+                        }
+                        var link = format_report_link('StoryMap Data Migration Required');
+                        link = $(link).find('a');
+                        link.addClass('entry-panel entry-migrate btn btn-success');
+                        $('.modal-footer').append(link);
                     } else {
                         ajax_get("{{ url_for('storymap_migrate_done') }}", {},
                             function(error) {
                                 $modal.trigger('reset', format_error('Error setting migration status', error));
                             },
                             function(data) {
-                                $modal.trigger('show_list');
-                            }
-                        );
-                    }
-                });
-            });
-
-            // ------------------------------------------------------------
-            // rename
-            // ------------------------------------------------------------
-
-            $('#entry_rename').click(function(event) {
-                var $modal = $('#entry_modal');
-                var $panel = $('.entry-rename');
-
-                var title = $panel.find('.entry-rename-title').val().trim();
-                if (!validate_storymap_name($modal, title)) {
-                    return false;
-                }
-                var id = $(this).attr('storymap-data');
-
-                ajax_post("{{ url_for('storymap_update_meta') }}", {
-                        id: id,
-                        key: 'title',
-                        value: title
-                    },
-                    function(error) {
-                        $modal.trigger('reset', format_error('Error renaming StoryMap', error));
-                    },
-                    function(data) {
-                        _user.storymaps[id].title = title;
-                        $modal.trigger('show_list');
-                    }
-                );
-            });
-
-            // ------------------------------------------------------------
-            // copy
-            // ------------------------------------------------------------
-
-            $('#entry_copy').click(function(event) {
-                var $modal = $('#entry_modal');
-                var $panel = $('.entry-copy');
-
-                var title = $panel.find('.entry-copy-title').val().trim();
-                if (!validate_storymap_name($modal, title)) {
-                    return false;
-                }
-                var id = $(this).attr('storymap-data');
-
-                $modal.trigger('progress_show', 'Copying StoryMap');
-
-                ajax_get("{{ url_for('storymap_copy') }}", {
-                        id: id,
-                        title: title
-                    },
-                    function(error) {
-                        $modal.trigger('reset', format_error('Error copying StoryMap', error));
-                    },
-                    function(data) {
-                        _user.storymaps[data.id] = data;
-                        _storymap_list.push(data);
-                        $modal.trigger('show_list', true);
-                    }
-                );
-            });
-
-            // ------------------------------------------------------------
-            // import
-            // ------------------------------------------------------------
-
-            $('#entry_import').click(function() {
-                var $modal = $('#entry_modal');
-                var $panel = $('.entry-import');
-
-                var name = $panel.find('.entry-import-title').val().trim();
-                if (!validate_storymap_name($modal, name)) {
-                    return false;
-                }
-
-                $modal.trigger('progress_show', 'Importing StoryMap');
-
-                ajax_get(_params.import_url, {},
-                    function(error) {
-                        $modal.trigger('reset', format_error('Error loading storymap', error));
-                    },
-                    function(data) {
-                        ajax_post("{{ url_for('storymap_create') }}", {
-                                title: name,
-                                d: JSON.stringify(data)
-                            },
-                            function(error) {
-                                $modal.trigger('reset', format_error('Error creating StoryMap', error));
-                            },
-                            function(data) {
-                                // Replace history state
-                                var url = document.location.href;
-                                url = url.substring(0, url.indexOf("?"));
-                                History.replaceState(null, document.title, url);
-
-                                document.location.href = "{{ url_for('edit') }}?id=" + data.id;
-                            }
-                        );
-                    }
-                );
-            });
-
-            // ------------------------------------------------------------
-            // create
-            // ------------------------------------------------------------
-
-            $('#entry_create').click(function() {
-                var $modal = $('#entry_modal');
-
-                var is_map_type = $('.entry-create-map').is(":visible");
-                var $panel = (is_map_type) ? $('.entry-create-map') : $('.entry-create-zoomify');
-
-                var data = {
-                    storymap: {
-                        map_as_image: false,
-                        call_to_action: true,
-                        call_to_action_text: "",
-                        slides: []
-                    }
-                };
-
-                var name = $panel.find('.entry-create-title').val().trim();
-                if (!validate_storymap_name($modal, name)) {
-                    return false;
-                }
-
-                if (!is_map_type) {
-                    // Zoomify properties
-                    var path = $('#entry_create_path').val().trim();
-                    if (!path.length) {
-                        $modal.trigger('error_show', 'You must enter an URL path');
-                        return false;
-                    }
-                    if (!path.match(/\/$/)) {
-                        path += '/';
-                        $('#entry_create_path').val(path);
-                    }
-
-                    var width = parseInt($('#entry_create_width').val().trim());
-                    if (!width || isNaN(width)) {
-                        $modal.trigger('error_show', 'Image width must be a positive integer');
-                        return false;
-                    }
-
-                    var height = parseInt($('#entry_create_height').val().trim());
-                    if (!height || isNaN(height)) {
-                        $modal.trigger('error_show', 'Image height must be a positive integer');
-                        return false;
-                    }
-
-                    $.extend(data.storymap, {
-                        map_type: 'zoomify',
-                        map_as_image: true,
-                        zoomify: {
-                            path: path,
-                            width: width,
-                            height: height,
-                            tolerance: 0.9,
-                            attribution: ''
-                        }
-                    });
-                }
-
-                $modal.trigger('progress_show', 'Creating StoryMap');
-
-                ajax_post("{{ url_for('storymap_create') }}", {
-                        title: name,
-                        d: JSON.stringify(data)
-                    },
-                    function(error) {
-                        $modal.trigger('reset', format_error('Error creating StoryMap', error));
-                    },
-                    function(data) {
-                        document.location.href = "{{ url_for('edit') }}?id=" + data.id;
-                    }
-                );
-            });
-
-            // ------------------------------------------------------------
-            // main
-            // ------------------------------------------------------------
-
-            modal_init($('#entry_modal'))
-                ////// custom
-                .on('show', function(event) {
-                    if (event.target.id == 'entry_modal') {
-                        $(this).trigger('handle_auth', _user.uid);
-                    }
-                })
-                .on('handle_auth', function(event, authorized) {
-                    var $modal = $(this);
-
-                    $modal.find('.entry-panel').hide();
-
-                    if (!authorized) {
-                        $modal.trigger('show_login');
-                        return;
-                    }
-
-                    // Show user information
-                    $('#entry_user_name').html(_user.uname);
-                    $('#entry_user_info').show();
-
-                    make_storymap_list();
-
-
-
-                    // Already migrated?
-                    if (_user.migrated) {
-                        if (_params.import_url) {
-                            $modal.trigger('show_import');
-                        } else {
-                            $modal.trigger('show_list');
-                        }
-                        return;
-                    }
-
-                    $modal = $(this).trigger('progress_show', 'Checking migration status');
-
-                    ajax_get("{{ url_for('storymap_migrate_list') }}", {},
-                        function(error) {
-                            // No longer triggering this error due to changes in Google Drive
-                            //$modal.trigger('reset',  format_error('Error getting migration list', error));
-                            ajax_get("{{ url_for('storymap_migrate_done') }}", {},
-                                function(error) {
-                                    $modal.trigger('reset', format_error('Error setting migration status', error));
-                                },
-                                function(data) {
-                                    if (_params.import_url) {
-                                        $modal.trigger('show_import');
-                                    } else {
-                                        $modal.trigger('show_list');
-                                    }
+                                if(_params.import_url) {
+                                    $modal.trigger('show_import');
+                                } else {
+                                    $modal.trigger('show_list');
                                 }
-                            );
+                            }
+                        );
+                    }
+                }
+            );
+        })
+        .on('show_login', function(event) {
+            $(this).find('.entry-panel').hide();
+            $(this).find('.entry-login').show();
+            $(this).trigger('progress_hide');
+        })
+        .on('show_create_map', function(event) {
+            $('.entry-create-map input[type="text"]').val('');
+
+            $(this).find('.entry-panel').hide();
+            $(this).find('.entry-create, .entry-create-map').show();
+        })
+        .on('show_create_zoomify', function(event) {
+            $('.entry-create-zoomify input[type="text"]').val('');
+
+            $(this).find('.entry-panel').hide();
+            $(this).find('.entry-create, .entry-create-zoomify').show();
+        })
+        .on('show_migrate', function(event) {
+            $(this).find('.entry-panel').hide();
+            $(this).trigger('error_hide');
+            $(this).find('.entry-migrate').show();
+            $(this).trigger('progress_hide');
+        })
+        .on('show_migrate_resume', function(event) {
+            $(this).find('.entry-panel').hide();
+            $(this).trigger('error_hide');
+            $(this).find('.entry-migrate-resume').show();
+            $(this).trigger('progress_hide');
+        })
+        .on('show_list', function(event, force_reload) {
+            $(this).find('.entry-panel').hide();
+            var $modal = $(this)
+                .trigger('error_hide')
+                .trigger('progress_show', 'Getting StoryMap list');
+
+            if(_storymap_list.length > 0) {
+                $modal.find('.entry-list').show();
+                $modal.trigger('display_list', 'title');
+            } else {
+              $modal.trigger('progress_hide');
+              $modal.trigger('show_create_map');
+            }
+        })
+        .on('display_list', function(event, sortby) {
+            if(sortby == 'date') {
+                _storymap_list = _storymap_list.sort(sortby_date);
+            } else {
+                _storymap_list = _storymap_list.sort(sortby_title);
+            }
+
+            var $modal = $(this);
+            var $table = $('.entry-list tbody').html('');
+            var html = '';
+
+            for(var i = 0; i < _storymap_list.length; i++) {
+                html += storymap_row_template(_storymap_list[i]);
+            }
+
+            $table.append(html);
+
+            $table.find('.list-item-rename').click(function(event) {
+                $modal.trigger('show_rename', this);
+            });
+
+            $table.find('.list-item-copy').click(function(event) {
+                $modal.trigger('show_copy', this);
+            });
+
+            $table.find('.list-item-delete').click(function(event) {
+                $modal.trigger('delete_storymap', this);
+            });
+
+            $table.find('.list-item-share').click(function(event) {
+                $modal.trigger('share_storymap', this);
+            });
+
+            $('a[data-toggle="tooltip"]').tooltip();
+
+            $modal.trigger('progress_hide');
+        })
+        .on('show_rename', function(event, obj) {
+            var id = $(obj).closest('tr').attr('storymap-data');
+            var item = _user.storymaps[id];
+
+            $('.entry-rename-title-old').html(item.title);
+            $('.entry-rename input[type="text"]').val('');
+            $('#entry_rename').attr('storymap-data', id);
+
+            $(this).find('.entry-panel').hide();
+            $(this).find('.entry-rename').show();
+            $('.entry-rename-title').focus();
+        })
+        .on('show_copy', function(event, obj) {
+            var id = $(obj).closest('tr').attr('storymap-data');
+            var item = _user.storymaps[id];
+
+            $('.entry-copy-title-old').html(item.title);
+            $('.entry-copy input[type="text"]').val('');
+            $('#entry_copy').attr('storymap-data', id);
+
+            $(this).find('.entry-panel').hide();
+            $(this).find('.entry-copy').show();
+            $('.entry-copy-title').focus();
+        })
+        .on('show_import', function(event) {
+            $('.entry-import input[type="text"]').val('');
+
+            var $modal = $(this).trigger('reset');
+
+            $modal.find('.entry-panel').hide();
+            $modal.find('.entry-import').show();
+            $('entry-import-title').focus();
+        })
+        .on('delete_storymap', function(event, obj) {
+            var $modal = $(this);
+            var $tr = $(obj).closest('tr');
+            var id = $tr.attr('storymap-data');
+            var item = _user.storymaps[id];
+
+            $modal.trigger('confirm_show', ['Delete <strong>'+item.title+'</strong> StoryMap?', function(yes) {
+                if(yes) {
+                    $modal.trigger('progress_show', 'Deleting StoryMap');
+
+                    ajax_get("{{ url_for('storymap_delete') }}",
+                        {id: id},
+                        function(error) {
+                            $modal.trigger('error_show', format_error('Error deleting StoryMap', error));
                         },
                         function(data) {
-                            if (data.migrate_list.length) {
-                                _migrate_list = data.migrate_list;
-                                if (Object.keys(_user.storymaps).length) {
-                                    $modal.trigger('show_migrate_resume');
-                                } else {
-                                    $modal.trigger('show_migrate');
-                                }
-                                var link = format_report_link('StoryMap Data Migration Required');
-                                link = $(link).find('a');
-                                link.addClass('entry-panel entry-migrate btn btn-success');
-                                $('.modal-footer').append(link);
-                            } else {
-                                ajax_get("{{ url_for('storymap_migrate_done') }}", {},
-                                    function(error) {
-                                        $modal.trigger('reset', format_error('Error setting migration status', error));
-                                    },
-                                    function(data) {
-                                        if (_params.import_url) {
-                                            $modal.trigger('show_import');
-                                        } else {
-                                            $modal.trigger('show_list');
-                                        }
-                                    }
-                                );
-                            }
+                            _storymap_list.remove(item);
+                            delete _user.storymaps[id];
+                            $tr.remove();
+                        },
+                        function(error) {
+                            $modal.trigger('progress_hide');
                         }
                     );
-                })
-                .on('show_login', function(event) {
-                    $(this).find('.entry-panel').hide();
-                    $(this).find('.entry-login').show();
-                    $(this).trigger('progress_hide');
-                })
-                .on('show_create_map', function(event) {
-                    $('.entry-create-map input[type="text"]').val('');
-
-                    $(this).find('.entry-panel').hide();
-                    $(this).find('.entry-create, .entry-create-map').show();
-                })
-                .on('show_create_zoomify', function(event) {
-                    $('.entry-create-zoomify input[type="text"]').val('');
-
-                    $(this).find('.entry-panel').hide();
-                    $(this).find('.entry-create, .entry-create-zoomify').show();
-                })
-                .on('show_migrate', function(event) {
-                    $(this).find('.entry-panel').hide();
-                    $(this).trigger('error_hide');
-                    $(this).find('.entry-migrate').show();
-                    $(this).trigger('progress_hide');
-                })
-                .on('show_migrate_resume', function(event) {
-                    $(this).find('.entry-panel').hide();
-                    $(this).trigger('error_hide');
-                    $(this).find('.entry-migrate-resume').show();
-                    $(this).trigger('progress_hide');
-                })
-                .on('show_list', function(event, force_reload) {
-                    $(this).find('.entry-panel').hide();
-                    var $modal = $(this)
-                        .trigger('error_hide')
-                        .trigger('progress_show', 'Getting StoryMap list');
-
-                    if (_storymap_list.length > 0) {
-                        $modal.find('.entry-list').show();
-                        $modal.trigger('display_list', 'title');
-                    } else {
-                        $modal.trigger('progress_hide');
-                        $modal.trigger('show_create_map');
-                    }
-                })
-                .on('display_list', function(event, sortby) {
-                    if (sortby == 'date') {
-                        _storymap_list = _storymap_list.sort(sortby_date);
-                    } else {
-                        _storymap_list = _storymap_list.sort(sortby_title);
-                    }
-
-                    var $modal = $(this);
-                    var $table = $('.entry-list tbody').html('');
-                    var html = '';
-
-                    for (var i = 0; i < _storymap_list.length; i++) {
-                        html += storymap_row_template(_storymap_list[i]);
-                    }
-
-                    $table.append(html);
-
-                    $table.find('.list-item-rename').click(function(event) {
-                        $modal.trigger('show_rename', this);
-                    });
-
-                    $table.find('.list-item-copy').click(function(event) {
-                        $modal.trigger('show_copy', this);
-                    });
-
-                    $table.find('.list-item-delete').click(function(event) {
-                        $modal.trigger('delete_storymap', this);
-                    });
-
-                    $table.find('.list-item-share').click(function(event) {
-                        $modal.trigger('share_storymap', this);
-                    });
-
-                    $('a[data-toggle="tooltip"]').tooltip();
-
-                    $modal.trigger('progress_hide');
-                })
-                .on('show_rename', function(event, obj) {
-                    var id = $(obj).closest('tr').attr('storymap-data');
-                    var item = _user.storymaps[id];
-
-                    $('.entry-rename-title-old').html(item.title);
-                    $('.entry-rename input[type="text"]').val('');
-                    $('#entry_rename').attr('storymap-data', id);
-
-                    $(this).find('.entry-panel').hide();
-                    $(this).find('.entry-rename').show();
-                    $('.entry-rename-title').focus();
-                })
-                .on('show_copy', function(event, obj) {
-                    var id = $(obj).closest('tr').attr('storymap-data');
-                    var item = _user.storymaps[id];
-
-                    $('.entry-copy-title-old').html(item.title);
-                    $('.entry-copy input[type="text"]').val('');
-                    $('#entry_copy').attr('storymap-data', id);
-
-                    $(this).find('.entry-panel').hide();
-                    $(this).find('.entry-copy').show();
-                    $('.entry-copy-title').focus();
-                })
-                .on('show_import', function(event) {
-                    $('.entry-import input[type="text"]').val('');
-
-                    var $modal = $(this).trigger('reset');
-
-                    $modal.find('.entry-panel').hide();
-                    $modal.find('.entry-import').show();
-                    $('entry-import-title').focus();
-                })
-                .on('delete_storymap', function(event, obj) {
-                    var $modal = $(this);
-                    var $tr = $(obj).closest('tr');
-                    var id = $tr.attr('storymap-data');
-                    var item = _user.storymaps[id];
-
-                    $modal.trigger('confirm_show', ['Delete <strong>' + item.title + '</strong> StoryMap?', function(yes) {
-                        if (yes) {
-                            $modal.trigger('progress_show', 'Deleting StoryMap');
-
-                            ajax_get("{{ url_for('storymap_delete') }}", {
-                                    id: id
-                                },
-                                function(error) {
-                                    $modal.trigger('error_show', format_error('Error deleting StoryMap', error));
-                                },
-                                function(data) {
-                                    _storymap_list.remove(item);
-                                    delete _user.storymaps[id];
-                                    $tr.remove();
-                                },
-                                function(error) {
-                                    $modal.trigger('progress_hide');
-                                }
-                            );
-                        }
-                    }]);
-                });
-
-
-            handle_onload();
+                }
+            }]);
         });
-    </script>
-    <!-- LEAVE THIS HERE -->
-    <script type="text/javascript" src="{{ STATIC_URL }}js/modals.js"></script>
-</body>
 
+
+    handle_onload();
+});
+
+
+</script>
+<!-- LEAVE THIS HERE -->
+<script type="text/javascript" src="{{ STATIC_URL }}js/modals.js"></script>
+</body>
 </html>
