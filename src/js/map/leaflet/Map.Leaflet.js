@@ -223,7 +223,7 @@ export default class Leaflet extends Map {
 				break;
 
 			default:
-				_tilelayer = new L.StamenTileLayer('toner', _options);
+				_tilelayer = new StamenTileLayer('toner', _options);
 				break;
 		}
 
