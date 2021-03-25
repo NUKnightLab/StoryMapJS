@@ -9,33 +9,6 @@ OSMMapType for Google Maps API V3
 This code shadoes code in KLStoryMap.Map.Leaflet.js -- keep them in sync or unify into a single source file.
 */
 
-// TODO: delete this if everything works
-// if (typeof(google) != "undefined" && google.maps) {
-//     google.maps.OSMMapType = function() {
-//         var map_url = 'https://{S}.tile.openstreetmap.org/{Z}/{X}/{Y}.png';
-//         var subdomains = 'ab';
-//         return google.maps.ImageMapType.call(this, {
-//             "getTileUrl": function(coord, zoom) {
-//                 var numTiles = 1 << zoom,
-//                     wx = coord.x % numTiles,
-//                     x = (wx < 0) ? wx + numTiles : wx,
-//                     y = coord.y,
-//                     index = (zoom + x + y) % subdomains.length;
-//                 return map_url
-//                     .replace("{S}", subdomains[index])
-//                     .replace("{Z}", zoom)
-//                     .replace("{X}", x)
-//                     .replace("{Y}", y);
-//             },
-//             "tileSize": new google.maps.Size(256, 256),
-//             "name":     'OpenStreetMap Standard',
-//             "minZoom":  0,
-//             "maxZoom":  19
-//         });
-//     }
-//     google.maps.OSMMapType.prototype = new google.maps.ImageMapType("_");
-// }
-
 function EditorMap(options) {
     this.name = "";
     this.map = null;
@@ -240,8 +213,10 @@ LeafletEditorMap.prototype.setView = function(lat, lng, zoom) {
 LeafletEditorMap.prototype.setDefaultView = function() {
   if (this.tilelayer.getCenterZoom) {
     var d = this.tilelayer.getCenterZoom(this.map)
-    // Need to use reset option, else map doesn't update properly
-    this.map.setView(L.latLng(d.lat, d.lon), d.zoom, {reset: true});
+    var lat = d.lat ? d.lat : 0;
+    var lon = d.lon ? d.lon : 0;
+    var zoom = d.zoom ? d.zoom : 1;
+    this.map.setView(L.latLng(lat, lon), zoom, {reset: true});
   } else {
     this.setView(0, 0, 1);
   }

@@ -9,12 +9,18 @@ let defaultZoomifyOptions = {
     tolerance: 0.8
 };
 
+const DEFAULT_WIDTH = 600;
+const DEFAULT_HEIGHT = 600;
+
 export default class ZoomifyTileLayer extends L.TileLayer {
 
 	constructor(url, options=defaultZoomifyOptions) {
         super(url, options);
 		options = L.setOptions(this, options);
 		this._url = url;
+
+        if (!options.width) { options.width = DEFAULT_WIDTH; }
+        if (!options.height) { options.width = DEFAULT_HEIGHT; }
 
   	    var imageSize = L.point(options.width, options.height),
     	    tileSize = options.tileSize;
@@ -38,26 +44,27 @@ export default class ZoomifyTileLayer extends L.TileLayer {
 		L.TileLayer.prototype.onAdd.call(this, map);
 		var mapSize = map.getSize(),
 			zoom = this._getBestFitZoom(mapSize),
-			imageSize = this._imageSize[zoom],
-			center = map.options.crs.pointToLatLng(L.point(imageSize.x / 2, imageSize.y / 2), zoom);
-		//map.setView(center, zoom, true);
+			imageSize = this._imageSize[zoom];
+        var x = imageSize.x ? imageSize.x : 0;
+        var y = imageSize.y ? imageSize.y : 0;
+	  	var center = map.options.crs.pointToLatLng(L.point(x / 2, y / 2), zoom);
 	}
 
 	getZoomifyBounds(map) {
-		//return "getZoomifyBounds";
 		var imageSize 	= this._imageSize[0],
 			topleft 	= map.options.crs.pointToLatLng(L.point(0, 0), 0),
 		    bottomright = map.options.crs.pointToLatLng(L.point(imageSize.x, imageSize.y), 0),
 		    bounds 		= L.latLngBounds(topleft, bottomright);
 		return bounds;
-		//[[75, -132], [-30, 128]]
 	}
 
 	getCenterZoom(map) {
 		var mapSize = map.getSize(),
 			zoom = this._getBestFitZoom(mapSize),
-			imageSize = this._imageSize[zoom],
-			center = map.options.crs.pointToLatLng(L.point(imageSize.x / 2, imageSize.y / 2), zoom);
+			imageSize = this._imageSize[zoom];
+        var x = imageSize.x ? imageSize.x : 0;
+        var y = imageSize.y ? imageSize.y : 0;
+	    var center = map.options.crs.pointToLatLng(L.point(x / 2, y / 2), zoom);
 
 		return {
 			center: center,
@@ -69,7 +76,9 @@ export default class ZoomifyTileLayer extends L.TileLayer {
 
 	_getGridSize(imageSize) {
 		var tileSize = this.options.tileSize;
-		return L.point(Math.ceil(imageSize.x / tileSize), Math.ceil(imageSize.y / tileSize));
+        var x = imageSize.x ? imageSize.x : 0;
+        var y = imageSize.y ? imageSize.y : 0;
+		return L.point(Math.ceil(x / tileSize), Math.ceil(y / tileSize));
 	}
 
 	_getBestFitZoom(mapSize) {
@@ -127,19 +136,15 @@ export default class ZoomifyTileLayer extends L.TileLayer {
 	getTileUrl(tilePoint) {
 		return this._url + 'TileGroup' + this._getTileGroup(tilePoint) + '/' + this._map.getZoom() + '-' + tilePoint.x + '-' + tilePoint.y + '.jpg';
 	}
-
 	_getTileGroup(tilePoint) {
 		var zoom = this._map.getZoom(),
 			num = 0,
 			gridSize;
-
 		for (let z = 0; z < zoom; z++) {
 			gridSize = this._gridSize[z];
 			num += gridSize.x * gridSize.y;
 		}
-
 		num += tilePoint.y * this._gridSize[zoom].x + tilePoint.x;
       	return Math.floor(num / 256);;
 	}
-
 }

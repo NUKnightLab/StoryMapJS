@@ -674,74 +674,74 @@ function map_init(init_callback) {
     var map_type = _storymap_data.storymap.map_type || _default_data.storymap.map_type;
 
     if(map_type && map_type.match('^zoomify.*')) {
-        $('.map-control-group').hide();
-
         $('.zoomify-control-group').show();
-
         $('#zoomify_path').val(_storymap_data.storymap.zoomify.path);
         $('#zoomify_width').val(_storymap_data.storymap.zoomify.width);
         $('#zoomify_height').val(_storymap_data.storymap.zoomify.height);
         $('#zoomify_attribution').val(_storymap_data.storymap.zoomify.attribution);
-
-        _map = new LeafletEditorMap(_map_options);
     } else {
         $('.zoomify-control-group').hide();
-
-        if(map_type && map_type.match('^(http|https|//)')) {
-            $('#map_type_menu').val('');
-            $('#map_type').val(map_type).attr('placeholder', 'http://{s}.domain.org/{z}/{x}/{y}.png')
-                .prev().html('URL')
-                .closest('.control-group').show();
-            $('#map_subdomains')
-                .val(_storymap_data.storymap.map_subdomains || _default_data.storymap.map_subdomains)
-                .closest('.control-group').show();
-            $('#map_access_token')
-                .val('').closest('.control-group').hide();
-            $('#attribution')
-              .val(_storymap_data.storymap.attribution)
-              .show();
-        } else if(map_type && map_type.match('^mapbox:.+')) {
-            $('#map_type_menu').val('mapbox');
-            $('#map_type').val(map_type.substr('mapbox:'.length)).attr('placeholder', 'mapbox://')
-                .prev().html('Style URL')
-                .closest('.control-group').show();
-            $('#map_subdomains')
-                .val(_storymap_data.storymap.map_subdomains || 'abcd')
-                .closest('.control-group').hide();
-            $('#map_access_token')
-                .val(_storymap_data.storymap.map_access_token)
-                .closest('.control-group').show();
-            $('#attribution')
-                .val(_storymap_data.storymap.attribution)
-                .closest('.control-group').hide();
-        } else {
-            switch(map_type) {
-                case "stamen:toner-lite":
-                case "stamen:toner":
-                case "stamen:toner-lines":
-                case "stamen:toner-labels":
-                case "stamen:toner-background":
-                case "stamen:watercolor":
-                case "stamen:terrain":
-                    $('#map_type_menu').val(map_type);
-                    break;
-
-                default:
-                    $('#map_type_menu').val(_default_data.storymap.map_type);
-                    break;
-            }
-
-            $('#map_type').val('').closest('.control-group').hide();
-            $('#map_subdomains').val('').closest('.control-group').hide();
-            $('#map_access_token').val('').closest('.control-group').hide();
-            $('#attribution').val('').closest('.control-group').hide();
-        }
-
-        _map = new LeafletEditorMap(_map_options);
     }
 
-    map_set_type();
+    if(map_type && map_type.match('^zoomify.*')) {
+        $('#map_type_menu').val('zoomify');
+        $('#map_type').val('').closest('.control-group').hide();
+        $('#map_subdomains')
+            .val(_storymap_data.storymap.map_subdomains || 'abcd')
+            .closest('.control-group').hide();
+        $('#map_access_token')
+            .val('').closest('.control-group').hide();
+        $('#attribution').val('').closest('.control-group').hide();
+    } else if(map_type && map_type.match('^(http|https|//)')) {
+        $('#map_type_menu').val('');
+        $('#map_type').val(map_type).attr('placeholder', 'http://{s}.domain.org/{z}/{x}/{y}.png')
+            .prev().html('URL')
+            .closest('.control-group').show();
+        $('#map_subdomains')
+            .val(_storymap_data.storymap.map_subdomains || _default_data.storymap.map_subdomains)
+            .closest('.control-group').show();
+        $('#map_access_token')
+            .val('').closest('.control-group').hide();
+        $('#attribution')
+          .val(_storymap_data.storymap.attribution)
+          .show();
+    } else if(map_type && map_type.match('^mapbox:.+')) {
+        $('#map_type_menu').val('mapbox');
+        $('#map_type').val(map_type.substr('mapbox:'.length)).attr('placeholder', 'mapbox://')
+            .prev().html('Style URL')
+            .closest('.control-group').show();
+        $('#map_subdomains')
+            .val(_storymap_data.storymap.map_subdomains || 'abcd')
+            .closest('.control-group').hide();
+        $('#map_access_token')
+            .val(_storymap_data.storymap.map_access_token)
+            .closest('.control-group').show();
+        $('#attribution')
+            .val(_storymap_data.storymap.attribution)
+            .closest('.control-group').hide();
+    } else {
+        switch(map_type) {
+            case "stamen:toner-lite":
+            case "stamen:toner":
+            case "stamen:toner-lines":
+            case "stamen:toner-labels":
+            case "stamen:toner-background":
+            case "stamen:watercolor":
+            case "stamen:terrain":
+                $('#map_type_menu').val(map_type);
+                break;
+            default:
+                $('#map_type_menu').val(_default_data.storymap.map_type);
+                break;
+        }
+        $('#map_type').val('').closest('.control-group').hide();
+        $('#map_subdomains').val('').closest('.control-group').hide();
+        $('#map_access_token').val('').closest('.control-group').hide();
+        $('#attribution').val('').closest('.control-group').hide();
+    }
 
+    _map = new LeafletEditorMap(_map_options);
+    map_set_type();
     slides_load(init_callback);
 }
 
@@ -979,16 +979,21 @@ $(function() {
                 _storymap_data.storymap.map_subdomains = '';
                 _storymap_data.storymap.attribution = '';
             } else if(map_type == 'zoomify') {
-              _storymap_data.storymap.zoomify = {};
+                _storymap_data.storymap.zoomify = {};
 
-              $('#map_access_token').val('').closest('.control-group').hide();
-              $('#map_subdomains').val('').closest('.control-group').hide();
-              $('.zoomify-control-group').show();
+                $('#map_access_token').val('').closest('.control-group').hide();
+                $('#map_subdomains').val('').closest('.control-group').hide();
+                $('.zoomify-control-group').show();
 
                 _storymap_data.storymap.map_type = 'zoomify';
                 _storymap_data.storymap.zoomify.path = "";
                 _storymap_data.storymap.zoomify.height = 600;
                 _storymap_data.storymap.zoomify.width = 600;
+                $('#zoomify_path').trigger('change');
+                $('#zoomify_width').trigger('change');
+                $('#zoomify_height').trigger('change');
+                $('#zoomify_attribution').trigger('change');
+
             } else if(map_type == 'mapbox') {
                 $('#map_type').val('').attr('placeholder', 'mapbox://')
                     .prev().html('Style URL')
@@ -1018,7 +1023,6 @@ $(function() {
         })
         .on('change', '#map_type', function(event) {
             var map_type = $(this).val().trim();
-
 
             switch($('#map_type_menu').val()) {
                 case '':    // custom
