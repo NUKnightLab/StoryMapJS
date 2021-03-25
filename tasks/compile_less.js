@@ -6,13 +6,13 @@ const glob = require('glob')
 let main_output_dir = path.resolve(__dirname, '../dist/css')
 fs.ensureDirSync(main_output_dir, { recursive: true })
 
-// /* 
-//  * Copy support files
-//  */
-// fs.copySync('src/css/icons', path.join(main_output_dir, 'icons'), err => {
-//     console.error(err);
-//     return 1;
-// });
+/* 
+ * Copy support files
+ */
+fs.copySync('src/css/icons', path.join(main_output_dir, 'icons'), err => {
+    console.error(err);
+    return 1;
+});
 
 
 // /*

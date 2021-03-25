@@ -1,37 +1,18 @@
-const { merge } = require('webpack-merge')
+const merge = require('webpack-merge')
 const common = require('./webpack.common.js')
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const path = require("path");
-const CopyPlugin = require("copy-webpack-plugin");
-const output_path = path.resolve(__dirname, "dist");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
-module.exports = merge({
+
+module.exports = merge.smart({
     mode: 'production',
-    devtool: 'inline-source-map',
-    devServer: {
-        contentBase: ['./src/css'],
-        contentBasePublicPath: ['/', '/css'],
-        stats: 'verbose',
-        openPage: "/index.html",
-        disableHostCheck: true
-    },
+    devtool: 'source-map',
     module: {
         rules: [{
             test: /\.less$/,
-            use: ['style-loader']
+            use: [MiniCssExtractPlugin.loader]
         }]
     },
-    plugins: [
-        //new HtmlWebpackPlugin({
-        //    template: 'src/template/index.html'
-        //})
-
-        // do this in the stage task
-        //new CopyPlugin({
-        //    patterns: [{
-        //        from: path.join(output_path, 'js/storymap.js'),
-        //        to: path.join(output_path, 'js/storymap-min.js')
-        //    }]
-        //})
-    ]
+    plugins: [new MiniCssExtractPlugin({
+        filename: '../css/storymap.css'
+    })]
 }, common)
