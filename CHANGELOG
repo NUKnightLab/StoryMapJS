@@ -1,6 +1,7 @@
 TBD
-* Reinstates dynamic minimap
+* Reinstate dynamic minimap
 * Allow user to revert from Gigapixel to standard map types
+* Autoextract width and height info from zoomify ImageProperties
 
 0.8.2 (2021-03-25)
 * Re-organizes code and build to use webpack
