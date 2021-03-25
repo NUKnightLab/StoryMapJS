@@ -474,16 +474,12 @@ export default class Leaflet extends Map {
 		)
 
 		if (this._mini_map && this.options.width > this.options.skinny_size) {
-            TODO: figure this out
-			this._mini_map.restore();
-            /*
 			if ((_zoom - 1) <= this.zoom_min_max.min ) {
 				this._mini_map.minimize();
 			} else {
 				this._mini_map.restore();
 				//this._mini_map.updateDisplay(_location, _zoom, _duration);
 			}
-            */
 		}
 
 	}
