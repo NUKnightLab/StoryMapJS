@@ -925,13 +925,24 @@ $(function() {
             var subst2 = '/';
             var value = value.replace(re3, subst2);
             var value = value.replace(re4, subst2);
-            if(!value.match(/\/$/)) {
+            if(value && !value.match(/\/$/)) {
                 value += '/';
                 $(this).val(value);
             }
             _storymap_data.storymap.zoomify.path = value;
-            storymap_dirty(1);
-            map_set_type();
+
+            var imagePropertiesURL = value.replace(/\/+$/, '') + '/ImageProperties.xml';
+            fetch('/zoomify-image-props?url=' + value, {
+                cache: 'no-cache'})
+            .then(response => response.json())
+            .then(data => {
+                $('#zoomify_width').val(data.width);
+                $('#zoomify_height').val(data.height);
+                _storymap_data.storymap.zoomify.width = data.width;
+                _storymap_data.storymap.zoomify.height = data.height;
+                storymap_dirty(1);
+                map_set_type();
+            });
         })
         .on('change', '#zoomify_width', function() {
             _storymap_data.storymap.zoomify.width = parseInt($(this).val().trim());

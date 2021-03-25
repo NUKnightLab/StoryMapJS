@@ -951,6 +951,21 @@ def redirect_old_urls(path):
         return redirect(url_for(path.split('.')[0]))
     abort(404)
 
+
+IMAGE_PROPS_REGEX = re.compile("IMAGE_PROPERTIES WIDTH='(\d+)' HEIGHT='(\d+)'")
+
+@require_user
+@app.route('/zoomify-image-props', methods=['GET'])
+def zoomify_image_props():
+    url = request.args['url'].strip('/') + '/ImageProperties.xml'
+    xml = requests.get(url).text
+    m = IMAGE_PROPS_REGEX.search(xml)
+    return jsonify({
+        'width': m.group(1),
+        'height': m.group(2)
+    })
+
+
 if __name__ == '__main__':
     import getopt
 
