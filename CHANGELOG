@@ -1,3 +1,9 @@
+TBD
+* Reinstates dynamic minimap
+
+0.8.2 (2021-03-25)
+* Re-organizes code and build to use webpack
+
 0.7.6 (2020-11-03)
 * Improve Portuguese translation (thanks Marcio Costa Strumiello)
 
