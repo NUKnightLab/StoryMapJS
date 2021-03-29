@@ -337,17 +337,17 @@ def require_user_id(template=None):
         @wraps(f)
         def decorated_function(*args, **kwargs):
             user = get_session_user()
-
             id = _request_get_required('id')
             if id not in user['storymaps']:
                 error = 'You do not have permission to access to this StoryMap'
                 if template:
-                    if '_id' in user: # mongo only
-                        del user['_id'] # for serialization
-                    return render_template('edit.html', user=user, error=error)
+                    message = f"""<p><i class="icon-warning-sign icon-large" style="color: red;"></i>
+                    There is no StoryMap with the ID <code>{id}</code> associated with your account.</p>
+                    <p>Please <a id="entry_logout" href="{ url_for('logout')}">logout</a> and sign back in
+                    with the correct account, or select one of your existing StoryMaps below.</p>"""
+                    return render_template('select.html', user=user, error=error, selector_message=message)
                 else:
                     return jsonify({'error': error})
-
             request.user = user
             kwargs['user'] = user
             kwargs['id'] = id

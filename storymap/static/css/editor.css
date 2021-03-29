@@ -1057,3 +1057,15 @@ animation: none;
 #geocode-autocomplete li.active {
 	background-color: lightyellow;
 }
+
+div#selector-message {
+    border: 2px solid #1dacd6;
+    border-radius: 1em;
+    margin-bottom: 1em;
+}
+
+
+div#selector-message p {
+    line-height: normal;
+    padding: 1em .5em 0 1em;
+{

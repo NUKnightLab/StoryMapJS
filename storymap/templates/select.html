@@ -104,7 +104,15 @@
     </div>
 <!-- list panel -->
         <div class="entry-panel entry-list hide">
-            <div class="table-header">
+
+            {% if selector_message %}
+            <div id="selector-message">
+              {{ selector_message|safe }}
+            </div>
+            {% endif %}
+
+            <div>
+              <div class="table-header">
                 <strong>Your StoryMaps </strong>
                 <div class="table-toggles">
                     <div class="btn-group" data-toggle="buttons-radio">
@@ -115,10 +123,11 @@
                     </div>
                 </div>
                 <div style="clear:both;"></div>
-            </div>
-            <table class="table table-striped table-bordered">
+              </div>
+              <table class="table table-striped table-bordered">
                 <tbody></tbody>
-            </table>
+              </table>
+            </div>
         </div>
 <!-- create map panel -->
         <div class="entry-panel entry-create-map hide">
