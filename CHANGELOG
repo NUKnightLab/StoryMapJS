@@ -1,10 +1,10 @@
-TBD
+0.8.2 (2021-03-29)
 * Reinstate dynamic minimap
 * Allow user to revert from Gigapixel to standard map types
 * Autoextract width and height info from zoomify ImageProperties
 * Better error handling for invalid edit links
 
-0.8.2 (2021-03-25)
+0.8.1 (2021-03-25)
 * Re-organizes code and build to use webpack
 
 0.7.6 (2020-11-03)
