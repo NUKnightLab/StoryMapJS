@@ -8,6 +8,7 @@ import Leaflet from "../map/leaflet/Map.Leaflet"
 import MenuBar from "../ui/MenuBar"
 import StorySlider from "../slider/StorySlider"
 import { Browser } from "../core/Browser"
+import Animate from "../animation/Animate"
 
 class StoryMap {
 
