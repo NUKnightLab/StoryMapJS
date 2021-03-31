@@ -372,13 +372,14 @@
 <!-- Markers //-->
 <div id="marker_opt_modal" class="modal hide fade" data-backdrop="static">
     <div class="modal-header">
-        <h4>Map Markers</h4>
+        <h4>Location Marker</h4>
     </div>
     <div class="modal-body">
         <!-- error -->
         <div class="modal-error hide">
             <span class="modal-msg error"></span>
         </div>
+        <h5>Marker Image</h5>
         <label>Select a custom marker to use on this slide, or reset to use the default.</label>
         <div class="input-prepend" style="width: 96%;">
             <div class="btn-group">
@@ -416,6 +417,29 @@
                 </label>
             </div>
        </div>
+
+       <div>
+         <hr/>
+         <h5>Coordinates</h5>
+         <form class="form-inline">
+         <div style="float: left; width: 50%;">
+         <label for="lat">Latitude:</label>
+         <input type="text" name="lat" style="width: 80%;" value="41.8781">
+         </div>
+         <div style="float: left; width: 50%;">
+         <label for="lon">Longitude:</label>
+         <div class="input-prepend">
+              <div class="btn-group">
+                  <button class="btn dropdown-toggle" data-toggle="dropdown" title="Toggle longitudinal navigation direction">
+                      <span>+/-</span>
+                  </button>
+              </div>
+              <input type="text" id="longitude" placeholder="Lon" style="width: 80%;" value="-87.6298">
+          </div>
+         </div>
+         </form>
+       </div>
+
     </div>
     <div class="modal-footer">
         <a id="marker_options_close" href="javascript:;" class="btn btn-primary" data-dismiss="modal">Close</a>
