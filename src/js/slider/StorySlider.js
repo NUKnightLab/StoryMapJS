@@ -6,6 +6,8 @@ import Ease from "../animation/Ease"
 import SlideNav from "./SlideNav"
 import Slide from "./Slide"
 import Animate from "../animation/Animate"
+import Swipable from "../ui/Swipable"
+import Message from "../ui/Message"
 import { Browser } from "../core/Browser"
 import { Language } from "../language/Language"
 
@@ -531,20 +533,18 @@ export default class StorySlider {
 		this._nav.next.addTo(this._el.container);
 		this._nav.previous.addTo(this._el.container);
 
-
-
 		this._el.slider_container.style.left="0px";
 
 		if (Browser.touch) {
 			//this._el.slider_touch_mask = VCO.Dom.create('div', 'vco-slider-touch-mask', this._el.slider_container_mask);
-			this._swipable = new VCO.Swipable(this._el.slider_container_mask, this._el.slider_container, {
+			this._swipable = new Swipable(this._el.slider_container_mask, this._el.slider_container, {
 				enable: {x:true, y:false},
 				snap: 	true
 			});
 			this._swipable.enable();
 
 			// Message
-			this._message = new VCO.Message({}, {
+			this._message = new Message({}, {
 				message_class: 		"vco-message-full",
 				message_icon_class: "vco-icon-swipe-left"
 			});
@@ -566,8 +566,6 @@ export default class StorySlider {
 			this._swipable.on('swipe_right', this._onNavigation, this);
 			this._swipable.on('swipe_nodirection', this._onSwipeNoDirection, this);
 		}
-
-
 	}
 
 	_initData() {
