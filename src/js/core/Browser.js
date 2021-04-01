@@ -20,12 +20,11 @@ export const opera = window.opera;
 export const touch = !window.L_NO_TOUCH && !phantomjs
     && (pointer || 'ontouchstart' in window || (window.DocumentTouch && document instanceof window.DocumentTouch));
 
-var _retina = 'devicePixelRatio' in window && window.devicePixelRatio > 1;
-if (!_retina && 'matchMedia' in window) {
+export let retina = 'devicePixelRatio' in window && window.devicePixelRatio > 1;
+if (!retina && 'matchMedia' in window) {
     var matches = window.matchMedia('(min-resolution:144dpi)');
-    _retina = matches && matches.matches;
+    retina = matches && matches.matches;
 }
-export const retina = _retina;
 
 export const Browser = {
     ie: ie,
