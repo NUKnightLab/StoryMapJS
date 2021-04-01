@@ -22,8 +22,8 @@ export const touch = !window.L_NO_TOUCH && !phantomjs
 
 export let retina = 'devicePixelRatio' in window && window.devicePixelRatio > 1;
 if (!retina && 'matchMedia' in window) {
-    var matches = window.matchMedia('(min-resolution:144dpi)');
-    retina = matches && matches.matches;
+    var windowMediaMatches = window.matchMedia('(min-resolution:144dpi)');
+    retina = windowMediaMatches && windowMediaMatches.matches;
 }
 
 export const Browser = {
