@@ -1,6 +1,8 @@
-0.8.3 (2021-04-01)
-* Fixes regression of touch handling on mobile
+0.8.4 (2021-04-01)
 * Fixes regression of retina device handling
+
+0.8.3 (2021-03-31)
+* Fixes regression of touch handling on mobile
 
 0.8.2 (2021-03-29)
 * Reinstate dynamic minimap
