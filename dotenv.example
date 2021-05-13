@@ -12,7 +12,7 @@ DB_PORT__DEFAULT=27017
 FLASK_ENV=development
 FLASK_SECRET_KEY=development
 FLASK_SETTINGS_FILE=core/settings.py
-FLASK_SETTINGS_MODULE=core.settings
+FLASK_SETTINGS_MODULE=storymap.core.settings
 STATIC_URL=/static/
 
 ADMINS=

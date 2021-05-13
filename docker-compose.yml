@@ -1,18 +1,4 @@
-version: '3'
-
-# The default docker-compose file for local development
-
-# Usage:
-#
-#  $ docker-compose build
-#  $ docker-compose up
-#
-#  Navigate to https://localhost
-#
-# See QUICKSTART.md for preliminaries before running this stack.
-
-# Runs the Flask development server. This stack is sufficient for most
-# development needs and so is the default docker-compose option.
+version: '2.1'
 
 services:
 
@@ -27,15 +13,31 @@ services:
     volumes:
       - ./storymap:/usr/src/apps/StoryMapJS/storymap
       - ./dist:/usr/src/apps/StoryMapJS/dist
-    #  #- ./.localstack/:/usr/src/apps/StoryMapJS/.localstack
+    working_dir: /usr/src/apps/StoryMapJS
+    environment:
+      DEBUG: 'true'
+      PYTHONPATH: .
     env_file: .env
-    command: gunicorn -b :5000 --workers 1 --reload --log-level debug storymap.core.wsgi:application --keyfile localhost.key --certfile localhost.pem
+    command: gunicorn -b :5000 --workers 1 --reload --log-level debug storymap.core.wsgi:application --keyfile KnightLabRootCA.key --certfile KnightLabRootCA.crt
     depends_on:
       - pg
       - localstack
 
+  localstack:
+    container_name: "${LOCALSTACK_DOCKER_NAME-localstack_main}"
+    image: localstack/localstack
+    # network_mode: bridge
+    ports:
+      - "4566:4566"
+      - "4571:4571"
+    environment:
+      - LOCALSTACK_SERVICES=s3
+      - LOCALSTACK_DATA_DIR=/tmp/localstack/data
+    volumes:
+      - ./.localstack/:/tmp/localstack
+
   pg:
-    image: postgres:11.6
+    image: postgres:11.10
     restart: always
     environment:
       POSTGRES_USER: storymap
@@ -45,17 +47,3 @@ services:
       - "5432:5432"
     volumes:
       - ./.pgdata/:/var/lib/postgresql/data/
-
-  localstack:
-    image: localstack/localstack-light
-    restart: always
-    environment:
-      USE_LIGHT_IMAGE: 1
-      LOCALSTACK_SERVICES: s3
-      DATA_DIR: /tmp/localstack/data
-    ports:
-      - "4566:4566"
-    volumes:
-      - ./.localstack/:/tmp/localstack
-      #- /var/run/docker.sock:/var/run/docker.sock
-

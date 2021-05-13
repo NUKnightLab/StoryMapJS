@@ -26,6 +26,7 @@ def truthy(s):
 
 if hasattr(settings, 'TEST_MODE') and settings.TEST_MODE:
     # TODO: Not sure if mocks still work
+    print('TEST MODE: Mocking s3')
     _mock = mock_s3()
     _mock.start()
     _conn = boto.client()
@@ -37,15 +38,17 @@ else:
     #        settings.AWS_ACCESS_KEY_ID,
     #        settings.AWS_SECRET_ACCESS_KEY, calling_format=OrdinaryCallingFormat())
     endpoint = os.environ.get('AWS_ENDPOINT_URL')
+    print('AWS endpoint:', endpoint)
     ssl_verify = truthy(os.environ.get('AWS_SSL_VERIFY', 't'))
     _conn = boto.client('s3',
             verify=ssl_verify,
-            endpoint_url=endpoint,
-            aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-            aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
-    session = boto.session.Session(
-            aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-            aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
+            endpoint_url=endpoint) # ,
+    #        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+    #        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
+    #session = boto.session.Session(
+    #        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+    #        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
+    session = boto.session.Session()
     s3 = session.resource('s3', verify=ssl_verify, endpoint_url=endpoint)
     _bucket = s3.Bucket(settings.AWS_STORAGE_BUCKET_NAME)
 

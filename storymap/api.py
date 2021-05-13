@@ -266,6 +266,8 @@ def google_auth_verify():
                 "following information to support@knightlab.zendesk.com: " \
                 "stg-storymap.knightlab.com unauthorized %s" % uid)
 
+        print('upsert user', uid)
+
         # Upsert user record
         user = get_user(uid)
         if user:
