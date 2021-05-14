@@ -1,6 +1,7 @@
 from __future__ import division
 from flask import Flask, request, session, redirect, url_for, \
     render_template, jsonify, abort
+from flask import g
 from werkzeug.exceptions import Forbidden
 from collections import defaultdict
 import os
@@ -31,14 +32,34 @@ except ImportError as e:
 import hashlib
 import requests
 import slugify
-#import bson
 from oauth2client.client import OAuth2WebServerFlow
-#from storymap import google
-#from storymap.connection import get_user, save_user, create_user, find_users
 from . import googleauth
-from .connection import get_user, save_user, create_user, find_users
+from .connection import get_user, save_user, create_user, find_users, pg_conn
 
-app = Flask(__name__)
+
+def db():
+    if 'db' not in g:
+        g.db = pg_conn()
+    return g.db
+
+
+def close_db(e=None):
+    db = g.pop('db', None)
+    if db is not None:
+        db.close()
+
+
+def init_app(app):
+    app.teardown_appcontext(close_db)
+
+
+def create_app():
+    app = Flask(__name__)
+    init_app(app)
+    return app
+
+
+app = create_app()
 app.config.from_envvar('FLASK_SETTINGS_FILE')
 settings = sys.modules[settings_module]
 
@@ -269,7 +290,7 @@ def google_auth_verify():
         print('upsert user', uid)
 
         # Upsert user record
-        user = get_user(uid)
+        user = get_user(uid, db=db())
         if user:
             user['google'] = info
         else:
@@ -280,7 +301,7 @@ def google_auth_verify():
                 'google': info
             }
         user['uname'] = info['name']
-        save_user(user)
+        save_user(user, db=db())
 
         # Update session
         session['uid'] = uid
@@ -300,7 +321,7 @@ def google_auth_verify():
 def get_session_user():
     """Enforce authenticated user"""
     uid = session.get('uid')
-    user = get_user(uid)
+    user = get_user(uid, db=db())
     if not user:
         try:
             session.pop('uid')
@@ -311,8 +332,8 @@ def get_session_user():
 
 def check_test_user():
     if settings.TEST_MODE:
-        if not get_user('test'):
-            create_user('test', 'Test User')
+        if not get_user('test', db=db()):
+            create_user('test', 'Test User', db=db())
         session['uid'] = 'test'
 
 def require_user(f):
@@ -433,7 +454,7 @@ def storymap_update_meta(user, id):
         key, value = _request_get_required('key', 'value')
 
         user['storymaps'][id][key] = value
-        save_user(user)
+        save_user(user, db=db())
 
         key_prefix = storage.key_prefix(user['uid'], id)
 
@@ -485,7 +506,7 @@ def storymap_copy(user, id):
             'draft_on': user['storymaps'][id]['draft_on'],
             'published_on': user['storymaps'][id]['published_on']
         }
-        save_user(user)
+        save_user(user, db=db())
         # Write new embed pages
         _write_embed_draft(dst_key_prefix, user['storymaps'][dst_id])
         if user['storymaps'][dst_id].get('published_on'):
@@ -508,12 +529,13 @@ def storymap_delete(user, id):
             storage.delete(key);
 
         del user['storymaps'][id]
-        save_user(user)
+        save_user(user, db=db())
 
         return jsonify({})
     except Exception as e:
         traceback.print_exc()
         return jsonify({'error': str(e)})
+
 
 @app.route('/storymap/create/', methods=['POST'])
 @require_user
@@ -521,28 +543,23 @@ def storymap_create(user):
     """Create a storymap"""
     try:
         title, data = _request_get_required('title', 'd')
-
         id = _make_storymap_id(user, title)
-
         key_prefix = storage.key_prefix(user['uid'], id)
-
         content = json.loads(data)
         storage.save_json(key_prefix+'draft.json', content)
-
         user['storymaps'][id] = {
             'id': id,
             'title': title,
             'draft_on': _utc_now(),
             'published_on': ''
         }
-        save_user(user)
-
+        save_user(user, db=db())
         _write_embed_draft(key_prefix, user['storymaps'][id])
-
         return jsonify({'id': id})
     except Exception as e:
         traceback.print_exc()
         return jsonify({'error': str(e)})
+
 
 @app.route('/storymap/migrate/done/', methods=['GET'])
 @require_user
@@ -550,7 +567,7 @@ def storymap_migrate_done(user):
     """Flag user as migrated"""
     try:
         user['migrated'] = 1
-        save_user(user)
+        save_user(user, db=db())
         return jsonify({})
     except Exception as e:
         traceback.print_exc()
@@ -621,7 +638,7 @@ def storymap_migrate(user):
             'draft_on': draft_on,
             'published_on': published_on
         }
-        save_user(user)
+        save_user(user, db=db())
         _write_embed_draft(dst_key_prefix, user['storymaps'][dst_id])
         if published_on:
             _write_embed_published(dst_key_prefix, user['storymaps'][dst_id])
@@ -666,7 +683,7 @@ def storymap_save(user, id):
         storage.save_json(key_name, content)
 
         user['storymaps'][id]['draft_on'] = _utc_now()
-        save_user(user)
+        save_user(user, db=db())
         return jsonify({'meta': user['storymaps'][id]})
     except storage.StorageException as e:
         traceback.print_exc()
@@ -688,7 +705,7 @@ def storymap_publish(user, id):
         storage.save_json(key_prefix+'published.json', content)
 
         user['storymaps'][id]['published_on'] = _utc_now()
-        save_user(user)
+        save_user(user, db=db())
         _write_embed_published(key_prefix, user['storymaps'][id])
 
         return jsonify({'meta': user['storymaps'][id]})
@@ -793,7 +810,7 @@ def userinfo():
     migrate_data = None
 
     if uid:
-        user = get_user(uid)
+        user = get_user(uid, db=db())
         if user:
             if not user['migrated']:
                 migrate_data = googleauth.drive_get_migration_diagnostics(user)
@@ -824,7 +841,7 @@ def select():
         uid = session.get('uid')
         if not uid:
             return render_template('select.html')
-        user = get_user(uid)
+        user = get_user(uid, db=db())
         if not user:
             _session_pop('uid')
             return render_template('select.html')
@@ -894,7 +911,7 @@ def admin_users(user):
     pages = 0
     if query:
         query.update({ 'limit': rpp, 'offset': page-1 })
-        users, pages = find_users(**query)
+        users, pages = find_users(db=db(), **query)
     return render_template('admin/users.html', **{
         'users': users,
         'page': page,
@@ -969,74 +986,11 @@ def zoomify_image_props():
 
 
 if __name__ == '__main__':
-    import getopt
-
-    if sys.argv[1] == 'migrate':
-        """Temporary utility to create the postgres db.
-
-        $ docker-compose run app python api.py migrate
-        """
-        from storymap.connection import migrate_pg
-        migrate_pg()
-        exit()
-
-    if sys.argv[1] == 'audit':
-        """Temporary utility to audit user database entries and to ensure
-        pg/mongo parity.
-
-        $ docker-compose run app python api.py audit
-        """
-        from storymap.connection import audit_pg
-        audit_pg()
-        exit()
-
-    if sys.argv[1] == 'deltest':
-        """Temporary utility to delete the KnightLab user from both dbs.
-        For testing new-user workflow.
-        """
-        from storymap.connection import delete_test_user
-        delete_test_user()
-        exit()
-
-    # Add current directory to sys.path
     site_dir = os.path.dirname(os.path.abspath(__file__))
     if site_dir not in sys.path:
         sys.path.append(site_dir)
-
     ssl_context = None
     port = 5000
     app.run(host='0.0.0.0', port=port, debug=True)
-    #app.run(host='0.0.0.0', port=port, debug=True, ssl_context='adhoc')
-    exit()
-
     # Experimenting with using Flask's scarcely documented 'adhoc' ssl context
-    app.run(host='0.0.0.0', port=port, debug=True, ssl_context='adhoc')
-
-    #try:
-    #    opts, args = getopt.getopt(sys.argv[1:], "sp:", ["port="])
-    #    for opt, arg in opts:
-    #        if opt == '-s':
-    #            crt_file = os.environ.get('APP_SSL_CRT_FILE', 'local_only.crt')
-    #            key_file = os.environ.get('APP_SSL_KEY_FILE', 'local_only.key')
-    #            if (os.path.isfile(crt_file) and os.path.isfile(key_file)):
-    #                ssl_context = (crt_file, key_file)
-    #            else:
-    #                print("""
-    # To run HTTPS locally you should create a crt/key file.
-    # Don't put them in the repository, because if you tell your browser to trust the certificate
-    # and an adversary got the cert from the public repository, they could take
-    # advantage of you.
-
-    # Run ./makecerts.sh to create the files:
-    # """)
-    #                sys.exit(1)
-    #        elif opt in ('-p', '--port'):
-    #            port = int(arg)
-    #        else:
-    #            print('Usage: app.py [-s]')
-    #            sys.exit(1)
-    #except getopt.GetoptError:
-    #    print('Usage: app.py [-s] [-p port]')
-    #    sys.exit(1)
-    # Google OAuth requires localhost, not a raw IP address
-    #app.run(host='0.0.0.0', port=port, debug=True, ssl_context=ssl_context)
+    #app.run(host='0.0.0.0', port=port, debug=True, ssl_context='adhoc')

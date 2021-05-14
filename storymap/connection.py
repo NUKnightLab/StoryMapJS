@@ -5,6 +5,7 @@ import sys
 import os
 import psycopg2
 import psycopg2.extras
+from contextlib import contextmanager
 from psycopg2.sql import SQL, Literal
 
 psycopg2.extensions.register_adapter(dict, psycopg2.extras.Json)
@@ -15,57 +16,53 @@ DEFAULT_USER_QUERY_LIMIT = 20
 settings = sys.modules[os.environ['FLASK_SETTINGS_MODULE']]
 
 
-_pg_conn = psycopg2.connect(
-    host=settings.DATABASES['pg']['HOST'],
-    port=settings.DATABASES['pg']['PORT'],
-    dbname=settings.DATABASES['pg']['NAME'],
-    user=settings.DATABASES['pg']['USER'],
-    password=settings.DATABASES['pg']['PASSWORD'])
+def pg_conn():
+    return psycopg2.connect(
+        host=settings.DATABASES['pg']['HOST'],
+        port=settings.DATABASES['pg']['PORT'],
+        dbname=settings.DATABASES['pg']['NAME'],
+        user=settings.DATABASES['pg']['USER'],
+        password=settings.DATABASES['pg']['PASSWORD'])
 
 
 ### Postgres ###
 
-def create_pg_user(uid, uname, migrated=1, storymaps=None, cursor=None):
+def create_pg_user(uid, uname, *, db, migrated=1, storymaps=None):
     if storymaps is None:
         storymaps = {}
     query = "INSERT INTO users (uid, uname, migrated, storymaps) " \
         "VALUES (%s, %s, %s, %s);"
-    if cursor:
+    with db.cursor() as cursor:
         cursor.execute(query, (uid, uname, migrated, storymaps))
-        return
-    else:
-        with _pg_conn.cursor() as cursor:
-            cursor.execute(query, (uid, uname, migrated, storymaps))
-        _pg_conn.commit()
+    db.commit()
 
 
-def migrate_pg(drop_table=False):
+def migrate_pg(*, db, drop_table=False):
     # Checked max length of uname in mongo was 71 characters
     raise Exception('Migration currently unavailable')
     if drop_table:
-        with _pg_conn.cursor() as cursor:
+        with db.cursor() as cursor:
             cursor.execute('DROP TABLE IF EXISTS users;')
             cursor.execute(
                 "CREATE TABLE IF NOT EXISTS users " \
                 "(id serial PRIMARY KEY, uid varchar(32), uname varchar(100), " \
                 "migrated smallint, storymaps jsonb, " \
                 "CONSTRAINT unique_uid UNIQUE (uid))")
-        _pg_conn.commit()
-    _pg_conn.close()
+        db.commit()
 
 
-def delete_test_user():
+def delete_test_user(*, db):
     """Delete the hard-coded user from the database.
     Use for testing new-user workflow
     """
     test_uid = '6331e0e40cd0ea0a72a130f6b352b106'
-    with _pg_conn.cursor() as cursor:
+    with db.cursor() as cursor:
         cursor.execute('DELETE FROM users where uid=%s', (test_uid,))
-    _pg_conn.commit()
+    db.commit()
 
 
-def get_pg_user(uid):
-    with _pg_conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+def get_pg_user(uid, *, db):
+    with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
         cursor.execute(
             "SELECT uid, uname, migrated, storymaps FROM users " \
             "WHERE uid=%s", (uid,))
@@ -75,45 +72,41 @@ def get_pg_user(uid):
     return u
 
 
-def save_pg_user(user):
-    _u = get_pg_user(user['uid'])
+def save_pg_user(user, *, db):
+    _u = get_pg_user(user['uid'], db=db)
     if _u:
-        with _pg_conn.cursor() as cursor:
+        with db.cursor() as cursor:
             _u = dict(_u)
             _u.update(user)
             cursor.execute(
                 "UPDATE users SET uid=%(uid)s, uname=%(uname)s, " \
                 "migrated=%(migrated)s, storymaps=%(storymaps)s " \
                 "WHERE uid=%(uid)s;", user)
-            _pg_conn.commit()
+            db.commit()
     else:
         create_pg_user(
             user['uid'],
             user['uname'],
             migrated=user.get('migrated', 1),
-            storymaps=user.get('storymaps'))
+            storymaps=user.get('storymaps'), db=db)
 
 
-def create_user(uid, uname, migrated=1, storymaps=None):
+def create_user(uid, uname, *, db, migrated=1, storymaps=None):
     if storymaps is None:
         storymaps = {}
-    create_pg_user(uid, uname, migrated=1, storymaps=storymaps)
+    create_pg_user(uid, uname, migrated=1, storymaps=storymaps, db=db)
 
 
-def get_user(uid):
-    return get_pg_user(uid)
+def get_user(uid, *, db):
+    return get_pg_user(uid, db=db)
 
 
-def save_user(user):
-    """The time requirement for saving a user in Mongo is enough that record
-    audits usually show at least a few mismatched records. Trying to mitigate
-    that by saving the Mongo record first.
-    """
+def save_user(user, *, db):
     user_copy = copy.copy(user)
-    save_pg_user(user)
+    save_pg_user(user, db=db)
 
 
-def find_users(uname=None, uname__like=None, uid=None, migrated=None,
+def find_users(*, db, uname=None, uname__like=None, uid=None, migrated=None,
         limit=DEFAULT_USER_QUERY_LIMIT, offset=0):
     """NOTE: currently does not properly handle an all-users search. Must
     include either uname, uname__like, or uid for a legitimate query.
@@ -134,7 +127,7 @@ def find_users(uname=None, uname__like=None, uid=None, migrated=None,
         conj = 'AND' if any([uname, uname__like, uid]) else 'WHERE'
         query += SQL(f' {conj} migrated=%s')
         params.append(migrated)
-    with _pg_conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+    with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
         q = SQL('SELECT COUNT(*) FROM users WHERE ') + query
         cursor.execute(q, params)
         count = cursor.fetchone()[0]
