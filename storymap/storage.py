@@ -42,13 +42,12 @@ else:
     ssl_verify = truthy(os.environ.get('AWS_SSL_VERIFY', 't'))
     _conn = boto.client('s3',
             verify=ssl_verify,
-            endpoint_url=endpoint) # ,
-    #        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-    #        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
-    #session = boto.session.Session(
-    #        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-    #        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
-    session = boto.session.Session()
+            endpoint_url=endpoint,
+            aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
+    session = boto.session.Session(
+            aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
     s3 = session.resource('s3', verify=ssl_verify, endpoint_url=endpoint)
     _bucket = s3.Bucket(settings.AWS_STORAGE_BUCKET_NAME)
 

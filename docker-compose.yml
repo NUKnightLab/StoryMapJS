@@ -13,10 +13,14 @@ services:
     volumes:
       - ./storymap:/usr/src/apps/StoryMapJS/storymap
       - ./dist:/usr/src/apps/StoryMapJS/dist
+      - ./compiled:/usr/src/apps/StoryMapJS/compiled
     working_dir: /usr/src/apps/StoryMapJS
     environment:
       DEBUG: 'true'
       PYTHONPATH: .
+      AWS_ACCESS_KEY_ID: xyz
+      AWS_DEFAULT_REGION: xyz
+      AWS_SECRET_ACCESS_KEY: xyz
     env_file: .env
     command: gunicorn -b :5000 --workers 1 --reload --log-level debug storymap.core.wsgi:application --keyfile KnightLabRootCA.key --certfile KnightLabRootCA.crt
     depends_on:

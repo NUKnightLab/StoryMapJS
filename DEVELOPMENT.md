@@ -1,6 +1,8 @@
 # Developing StoryMapJS - the javascript
 
-If you are interested in contributing to the development of the StoryMapJS javascript library, that is about it. When you make changes to the code, you should execute the build command. To test your changes, run a simple local web server in the project root and navigate, e.g. to http://localhost:8000/src/template/index.html.
+When you make changes to the code, you should execute the build command. To
+test your changes, run a simple local web server in the project root and
+navigate, e.g. to http://localhost:8000/src/template/index.html.
 
 Install the dependencies and build the javascript:
 
@@ -10,6 +12,22 @@ Install the dependencies and build the javascript:
 ```
 
 # StoryMap editor development
+
+## Questions not yet completely addressed with the new localstack based setup:
+
+
+**Note:**
+
+Built static is served directly (via the flask app) from the `compiled`
+directory, but the current development setup does not sort this out very well.
+Unless you have a need to host the static code locally, the easiest thing to do
+is probably to point to a deployed cdn. ie., set this env variable:
+
+```
+   CDN_URL=https://cdn.knightlab.com/libs/storymapjs/latest/
+```
+
+## Overview / tl;dr
 
 To get started you will need to do the following steps which are described in
 more detail below:
@@ -22,24 +40,23 @@ more detail below:
  * create the s3 buckets in localstack
  * create the users table in postgres
 
-## Questions not yet completely addressed:
-
- * Built static is served directly from the `compiled` directory. What is the process in development for building/reloading this?
- * Related: our overall build management depends on Fabric and fablib. What is the best way to get this working in this context?
-
 
 ## Getting started developing StoryMap with docker-compose
 
 ### Install docker-compose
 
-Be sure to have Docker and (docker-compose)[https://docs.docker.com/compose/] installed.
+Be sure to have Docker and (docker-compose)[https://docs.docker.com/compose/]
+installed.
 
 
 ### Build ssl certs for localstack
 
-Localstack would automatically create ssl certs, but without authority, thus making the stack inaccesible via the browser. Instead, we generate a certificate chain with authority using the server.test filenames that localstack expects.
+Localstack would automatically create ssl certs, but without authority, thus
+making the stack inaccesible via the browser. Instead, we generate a certificate
+chain with authority using the server.test filenames that localstack expects.
 
-This should be done before bringing up the stack so that localstack will use the generated cert.
+This should be done before bringing up the stack so that localstack will use the
+generated cert.
 
 Execute the following from the repo root:
 
@@ -49,7 +66,9 @@ Execute the following from the repo root:
 
 #### Import the web cert to your browser
 
-**Note:** If you want to view a share link, ie. a StoryMap directly from the localstack hosted s3, you can do it via http rather than https. The backend calls to localstack should still work without this import.
+**Note:** If you want to view a share link, ie. a StoryMap directly from the
+localstack hosted s3, you can do it via http rather than https. The backend
+calls to localstack should still work without this import.
 
 Note: on Mac, hit CMD+SHIFT+. to see dotted files in the finder.
 
