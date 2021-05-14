@@ -1,0 +1,5 @@
+Requires git-deploy 1.0.6
+
+Be sure to include knightlab custom roles in /etc/ansible/roles
+
+Ansible roles and hosts files are kept in the operations repository.
