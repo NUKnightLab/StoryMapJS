@@ -30,10 +30,10 @@
     <div class="slides-container">
         <ol id="slides">
         </ol>
-	    <div class="slides-add" id="storymap_add_slide" >
-			<div class="slide-icon"></div>
-			<div class="slide-title">Add Slide</div>
-		</div>
+        <div class="slides-add" id="storymap_add_slide">
+            <div class="slide-icon"></div>
+            <div class="slide-title">Add Slide</div>
+        </div>
     </div>
 </div>
 
@@ -49,14 +49,14 @@
                 <svg id="map_overlay" xmlns="http://www.w3.org/2000/svg" version="1.1">
                     <polyline points="" />
                 </svg>
-                <div id="map_info" class="ui-note">This is your title slide.  The title slide shows all points from your other slides.</div>
+                <div id="map_info" class="ui-note">This is your title slide. The title slide shows all points from your other slides.</div>
                 <input title="Search for a location or enter coordinates like this: lat:42.0507 lon:-87.6739" id="map_search_input" type="text" placeholder="Search for a location or enter coordinates like this: lat:42.0507 lon:-87.6739">
-           </div>
-
+                <div id="mapbox-credit">Address search geocoding generously sponsored by <a href="https://mapbox.com">Mapbox</a>.</div>
+            </div>
             <div class="data-left">
                 <div class="data-section data-frame">
                     <label style='display: block'>Media</label>
-					<!--
+                    <!--
                     <div class="data-media-icons">
                         <span class="vco-icon-dailymotion"></span>
                         <span class="vco-icon-flickr"></span>
@@ -75,15 +75,15 @@
                     <div class="data-media-preview">
                     </div>
                     <div class="data-media-details">
-                      <input id="url" type="text" placeholder="URL to your media">
+                        <input id="url" type="text" placeholder="URL to your media">
 
-                      <div class="data-media-upload">
-                      or  <button id="upload_media" class="btn" title="Upload image" href="#upload_modal" data-toggle="modal"><i class="icon-cloud-upload icon-large"></i> Upload an Image </button>
+                        <div class="data-media-upload">
+                            or <button id="upload_media" class="btn" title="Upload image" href="#upload_modal" data-toggle="modal"><i class="icon-cloud-upload icon-large"></i> Upload an Image </button>
 
-                      </div>
-                        
-                      <input id="credit" type="text" placeholder="Credit">
-                      <textarea id="caption" placeholder="Caption" rows="3"></textarea>
+                        </div>
+
+                        <input id="credit" type="text" placeholder="Credit">
+                        <textarea id="caption" placeholder="Caption" rows="3"></textarea>
                         <div class="data-media-upload"><em>Accepts <a href="#html_modal"  data-toggle="modal">HTML</a></em></div>
                     </div>
                 </div>
@@ -95,9 +95,8 @@
                     <textarea id="text" rows="5"></textarea>
                     <button id="marker_options" class="btn" href="#marker_opt_modal" data-toggle="modal"><i class="icon-map-marker icon-medium"></i> Marker Options</button>
                     <button id="background_options" class="btn" href="#background_opt_modal" data-toggle="modal"><i class="icon-cog icon-medium"></i> Background Options</button>
-               </div>
+                </div>
             </div>
-
         </div>
         <div class="tab-pane" id="preview">
             <div id="preview_embed"></div>
@@ -108,31 +107,31 @@
 <!-- START BOOTSTRAP-WYSIHTML5 BUTTON TEMPLATES -->
 <ul id="wysihtml5_emphasis" style="display: none;">
     <li>
-    <div class="btn-group">
-    <a class="btn btn-small" data-wysihtml5-command="bold" title="Bold" tabindex="-1" href="javascript:;" unselectable="on"><i class="icon-bold"></i></a>
-    <a class="btn btn-small" data-wysihtml5-command="italic" title="Italic" tabindex="-1" href="javascript:;" unselectable="on"><i class="icon-italic"></i></a>
-    </div>
+        <div class="btn-group">
+            <a class="btn btn-small" data-wysihtml5-command="bold" title="Bold" tabindex="-1" href="javascript:;" unselectable="on"><i class="icon-bold"></i></a>
+            <a class="btn btn-small" data-wysihtml5-command="italic" title="Italic" tabindex="-1" href="javascript:;" unselectable="on"><i class="icon-italic"></i></a>
+        </div>
     </li>
 </ul>
 <ul id="wysihtml5_link" style="display: none;">
-<li>
-    <div class="bootstrap-wysihtml5-insert-link-modal modal hide fade">
-    <div class="modal-body">
-    <p><input value="" class="bootstrap-wysihtml5-insert-link-url input-xlarge"></p>
-    <label class="checkbox"> <input type="checkbox" class="bootstrap-wysihtml5-insert-link-target" checked="">Open link in new window</label>
-    </div>
-    <div class="modal-footer">
-    <a href="#" class="btn" data-dismiss="modal">Cancel</a><a href="#" class="btn btn-primary" data-dismiss="modal">Insert link</a>
-    </div>
-    </div>
-    <a class="btn btn-small" data-wysihtml5-command="createLink" title="Insert link" tabindex="-1" href="javascript:;" unselectable="on"><i class="icon-link"></i></a>
-</li>
+    <li>
+        <div class="bootstrap-wysihtml5-insert-link-modal modal hide fade">
+            <div class="modal-body">
+                <p><input value="" class="bootstrap-wysihtml5-insert-link-url input-xlarge"></p>
+                <label class="checkbox"> <input type="checkbox" class="bootstrap-wysihtml5-insert-link-target" checked="">Open link in new window</label>
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn" data-dismiss="modal">Cancel</a><a href="#" class="btn btn-primary" data-dismiss="modal">Insert link</a>
+            </div>
+        </div>
+        <a class="btn btn-small" data-wysihtml5-command="createLink" title="Insert link" tabindex="-1" href="javascript:;" unselectable="on"><i class="icon-link"></i></a>
+    </li>
 </ul>
 <ul id="wysihtml5_html" style="display: none;">
-<li>
-    <div class="btn-group">
-    <a class="btn btn-small" data-wysihtml5-action="change_view" title="Edit HTML" tabindex="-1" href="javascript:;" unselectable="on">&lt;/&gt;</a>
-    </div>
-</li>
+    <li>
+        <div class="btn-group">
+            <a class="btn btn-small" data-wysihtml5-action="change_view" title="Edit HTML" tabindex="-1" href="javascript:;" unselectable="on">&lt;/&gt;</a>
+        </div>
+    </li>
 </ul>
 <!-- END BOOTSTRAP-WYSIHTML5 BUTTON TEMPLATES -->
