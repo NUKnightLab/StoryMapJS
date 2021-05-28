@@ -5,7 +5,7 @@ from os.path import abspath, dirname, join
 from os import environ as env
 
 TEST_MODE = env.get('TEST_MODE')
-LOCAL_STORAGE_MODE = env.get('TEST_MODE') 
+LOCAL_STORAGE_MODE = False # rip this out if we can
 
 CORE_ROOT = dirname(abspath(__file__))
 PROJECT_ROOT = dirname(dirname(CORE_ROOT))
