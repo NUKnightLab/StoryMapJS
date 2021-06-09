@@ -1,6 +1,7 @@
 project_name: StoryMapJS
 service_name: "{{ project_name|lower }}"
 gitdeploy_version: "1.0.6"
+python_version: "3.8.2"
 python: /home/apps/sites/StoryMapJS/.venv/bin/python
 service_port: "{{ storymap_port }}"
 
