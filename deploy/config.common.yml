@@ -4,6 +4,8 @@ gitdeploy_version: "1.0.6"
 python_version: "3.8.2"
 python: /home/apps/sites/StoryMapJS/.venv/bin/python
 service_port: "{{ storymap_port }}"
+nginx_template: storymap.conf
+nginx_client_max_body_size: 20M
 
 playbooks:
   - playbook.deploy.yml
