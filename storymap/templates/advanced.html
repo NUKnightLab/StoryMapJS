@@ -29,7 +29,7 @@ var storymap_data = '{{ STATIC_URL }}demo/demo.json';
 // certain settings must be passed within a separate options object
 var storymap_options = {};
 
-var storymap = new VCO.StoryMap('mapdiv', storymap_data, storymap_options);
+var storymap = new KLStoryMap.StoryMap('mapdiv', storymap_data, storymap_options);
 window.onresize = function(event) {
     storymap.updateDisplay(); // this isn't automatic
 }
@@ -132,7 +132,7 @@ window.onresize = function(event) {
       </pre>
     </p>
     <p>It is recommended that your first slide be an "overview" slide.  The map on an overview slide will show the locations of all subsequent slides.</p>
-    <p>The media URL can come from a number of different services, including YouTube, Flickr, Vimeo, and Twitter.  You can get an overview of supported media types by looking at the <a href="https://github.com/NUKnightLab/StoryMapJS/blob/master/source/js/media/VCO.MediaType.js">StoryMapJS source code</a>.</p>
+    <p>The media URL can come from a number of different services, including YouTube, Flickr, Vimeo, and Twitter.  You can get an overview of supported media types by looking at the <a href="https://github.com/NUKnightLab/StoryMapJS/blob/master/src/js/media/MediaType.js">StoryMapJS source code</a>.</p>
     </div>
   </div>
 </div>
