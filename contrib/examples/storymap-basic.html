@@ -13,23 +13,12 @@
     var storymap_url = "//uploads.knightlab.com/storymapjs/a1a349b51799ee49e96bed10cc235e7f/aryas-journey/published.json";
     var storymap_options = {};
 
-
     (function() {
         var storymap = new KLStoryMap.StoryMap("mapdiv", storymap_url, storymap_options);
         
         window.onresize = function(event) {
             storymap.updateDisplay();
         }
-
-        const loadNextSlide =  function() {
-            if ((storymap.current_slide + 1) < (storymap.data.slides.length)) {
-                storymap.goTo(storymap.current_slide + 1);
-            } else {
-                storymap.goTo(0);
-            }
-        }
-
-        setInterval(loadNextSlide, 5000);
     })();
 </script>
 
