@@ -49,7 +49,7 @@ window.onresize = function(event) {
             <li>call_to_action_text</li>
         </ul>
     </p>
-    <p>Also, any specified fonts must be loaded by the embedding page.  View the <a href="https://github.com/NUKnightLab/StoryMapJS/blob/master/source/embed/index.html">StoryMap embed tool source code</a> for details.</p>
+    <p>Also, any specified fonts must be loaded by the embedding page.  View the <a href="https://github.com/NUKnightLab/StoryMapJS/blob/master/src/embed/index.html">StoryMap embed tool source code</a> for details.</p>
     <h3 id="json-syntax">JSON syntax</h3>
     <p>StoryMapJS is still in beta, so the JSON format is subject to change. Most changes should be additions, providing backward compatibility.</p>
     <p><strong>Map-based storymaps</strong> tell stories with geographic locations.  The JSON for these StoryMaps have the following structure:
@@ -108,7 +108,7 @@ window.onresize = function(event) {
     </p>
     <p><code>map_as_image</code> gives StoryMap a hint about whether your gigapixel image is a map (such as a historic map) or a non-geographic image. When <code>map_as_image</code> is set to <code>true</code>, StoryMap understands that you are using a non-geographic image. It suppresses the line that connects markers, and it implicitly sets the <code>calculate_zoom</code> option to <code>false</code>, which means that you must make sure to set the <code>zoom</code> property for each of your slides.</p>
     <p>For either type of StoryMap:
-      <p>The <code>language</code> setting specifies the language for user-interface controls and messages.  Supported codes can be viewed <a href="https://github.com/NUKnightLab/StoryMapJS/tree/master/source/js/language/locale">here</a>.
+      <p>The <code>language</code> setting specifies the language for user-interface controls and messages.  Supported codes can be viewed <a href="https://github.com/NUKnightLab/StoryMapJS/tree/master/src/js/language/locale">here</a>.
     </p>
     <p>The <code>font_css</code> value should be specified as an URL to your font CSS file or as "stock:<em>code</em>" (e.g. "stock:amatic-andika").  For an example of how to define a custom font CSS file, see <a href="https://github.com/NUKnightLab/StoryMapJS/tree/master/build/css/fonts">the GitHub repository</a>. The valid values for <em>code</em> above are the parts of the file names in the repository between <code>font.</code> and <code>.css</code>. Examples of the available fonts can be seen <a href="{{ STATIC_URL }}img/font-options.png" target="_blank">in this image</a>.</p>
     <p>Each object with the <code>slides</code> array has the following specification:
