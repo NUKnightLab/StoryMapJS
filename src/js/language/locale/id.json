@@ -1,0 +1,17 @@
+{
+    "name": "Indonesia",
+    "lang": "id",
+    "messages": {
+        "loading": "Memuat",
+        "wikipedia": "Dari Wikipedia, wikipedia gratis",
+        "start": "Mulai Menjelajah"
+    },
+    "buttons": {
+        "map_overview": "Peta Keseluhuran",
+        "overview": "Ringkasan",
+        "backtostart": "Kembali ke halaman utama",
+        "collapse_toggle": "Sembunyikan Peta",
+        "uncollapse_toggle": "Tampilkan Map",
+  		"swipe_to_navigate": "Geser untuk Menavigasi<br><span class='vco-button'>OK</span>"
+    }
+}
