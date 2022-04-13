@@ -665,6 +665,8 @@ def storymap_get(user, id):
         return jsonify({'meta': user['storymaps'][id], 'data': data})
     except storage.StorageException as e:
         traceback.print_exc()
+        app.logger.error(f"StorageException uid:{user['uid']} id:{id}")
+        app.logger.error(e.detail)
         return jsonify({'error': str(e), 'error_detail': e.detail})
     except Exception as e:
         traceback.print_exc()
@@ -687,6 +689,8 @@ def storymap_save(user, id):
         return jsonify({'meta': user['storymaps'][id]})
     except storage.StorageException as e:
         traceback.print_exc()
+        app.logger.error(f"StorageException uid:{user['uid']} id:{id}")
+        app.logger.error(e.detail)
         return jsonify({'error': str(e), 'error_detail': e.detail})
     except Exception as e:
         traceback.print_exc()
@@ -711,6 +715,8 @@ def storymap_publish(user, id):
         return jsonify({'meta': user['storymaps'][id]})
     except storage.StorageException as e:
         traceback.print_exc()
+        app.logger.error(f"StorageException uid:{user['uid']} id:{id}")
+        app.logger.error(e.detail)
         return jsonify({'error': str(e), 'error_detail': e.detail})
     except Exception as e:
         traceback.print_exc()
@@ -729,6 +735,8 @@ def storymap_image_list(user, id):
         return jsonify({'image_list': image_list})
     except storage.StorageException as e:
         traceback.print_exc()
+        app.logger.error(f"StorageException uid:{user['uid']} id:{id}")
+        app.logger.error(e.detail)
         return jsonify({'error': str(e), 'error_detail': e.detail})
     except Exception as e:
         traceback.print_exc()
@@ -766,6 +774,8 @@ def storymap_image_save(user, id):
         return jsonify({'url': settings.AWS_STORAGE_BUCKET_URL+key_name})
     except storage.StorageException as e:
         traceback.print_exc()
+        app.logger.error(f"StorageException uid:{user['uid']} id:{id}")
+        app.logger.error(e.detail)
         return jsonify({'error': str(e), 'error_detail': e.detail})
     except Exception as e:
         traceback.print_exc()

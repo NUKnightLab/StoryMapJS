@@ -193,6 +193,7 @@ def save_from_data(key_name, content_type, content):
     """
     _conn.put_object(ACL='public-read', Body=content, Bucket=_bucket.name, Key=key_name, ContentType=content_type)
 
+
 @_reraise_s3response
 @_mock_in_test_mode
 def save_from_url(key_name, url):
@@ -202,6 +203,7 @@ def save_from_url(key_name, url):
     r = requests.get(url)
     save_from_data(key_name, r.headers['content-type'], r.content)
 
+
 @_reraise_s3response
 @_mock_in_test_mode
 def load_json(key_name):
@@ -210,6 +212,7 @@ def load_json(key_name):
     """
     obj = s3.Object(_bucket.name, key_name)
     return json.loads(obj.get()['Body'].read().decode('utf-8'))
+
 
 @_reraise_s3response
 @_mock_in_test_mode
@@ -221,7 +224,20 @@ def save_json(key_name, data):
         content = data
     else:
         content = json.dumps(data)
+    try:
+        _check = json.loads(content)
+    except json.decoder.JSONDecodeError:
+        import inspect
+        curframe = inspect.currentframe()
+        callframe = inspect.getouterframes(curframe, context=1)
+        call_chain = [f.function for f in callframe]
+        raise StorageException(
+            f"Save failed. Please try again. If the problem persists, please contact "
+            f"KnightLab support.",
+            f"Call chain: {call_chain}\n\ndata:\n{str(data)}\n\ncontent:\n{str(content)}"
+        )
     save_from_data(key_name, 'application/json', content)
+
 
 @_reraise_s3response
 @_mock_in_test_mode
