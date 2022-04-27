@@ -17,6 +17,7 @@ import urllib
 from urllib.parse import urlparse, urljoin, quote, urlencode
 from flask_cors import cross_origin
 
+
 # Import settings module
 if __name__ == "__main__":
     if not os.environ.get('FLASK_SETTINGS_MODULE', ''):
@@ -33,8 +34,9 @@ import hashlib
 import requests
 import slugify
 from oauth2client.client import OAuth2WebServerFlow
-from . import googleauth
 from .connection import get_user, save_user, create_user, find_users, pg_conn
+from . import googleauth
+from . import storage
 
 
 def db():
@@ -62,14 +64,7 @@ def create_app():
 app = create_app()
 app.config.from_envvar('FLASK_SETTINGS_FILE')
 settings = sys.modules[settings_module]
-
-if settings.LOCAL_STORAGE_MODE:
-    #from storymap import local_storage as storage
-    from . import local_storage as storage
-else:
-    #from storymap import storage as storage
-    from . import storage
-
+# LOCAL_STORAGE_MODE is no longer supported. Use localstack instead.
 app.config['LOCAL_STORAGE_MODE'] = settings.LOCAL_STORAGE_MODE
 app.config['TEST_MODE'] = settings.TEST_MODE
 examples_json = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'examples.json')
@@ -356,6 +351,7 @@ def require_user_id(template=None):
     Decorator to enfore storymap access for authenticated user
     Adds user to request and kwargs, adds id to kwargs
     """
+    # TODO: `id` here refers to the storymap ID and should be named accordingly
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
@@ -522,15 +518,20 @@ def storymap_copy(user, id):
 @require_user_id()
 def storymap_delete(user, id):
     """Delete storymap"""
+    max_keys = min(storage.S3_LIST_OBJECTS_MAX, storage.S3_DELETE_OBJECTS_MAX)
+    storymap_id = id
     try:
-        key_prefix = storage.key_prefix(user['uid'], id)
-        key_list, marker = storage.list_keys(key_prefix, 50)
-        for key in key_list:
-            storage.delete(key);
-
-        del user['storymaps'][id]
+        key_prefix = storage.key_prefix(user['uid'], storymap_id)
+        maybe_more_keys = True
+        while maybe_more_keys:
+            key_list, maybe_more_keys = storage.list_keys(key_prefix, max_keys)
+            for key in key_list:
+                storage.delete_key(key)
+            # Alternative approach, similar problems due to the fact that it still seems
+            # to delete one by one.
+            #storage.delete_keys(key_list)
+        del user['storymaps'][storymap_id]
         save_user(user, db=db())
-
         return jsonify({})
     except Exception as e:
         traceback.print_exc()

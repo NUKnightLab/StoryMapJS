@@ -137,8 +137,38 @@ Some commands to know:
 ```
 
 
-Also, specific to localstack:
+## Using LocalStack
+
+See the [LocalStack docs](https://docs.localstack.cloud/integrations/aws-cli/) for details.
+
+One approach: use [awslocal](https://docs.localstack.cloud/integrations/aws-cli/#localstack-aws-cli-awslocal)
+
+Or just use the aws cli with a localized profile
+
+
+### Using the aws cli
+
+Configure a profile in your ~/.aws/credentials:
 
 ```
- $ aws --debug --endpoint-url=https://localhost:4566 s3 ls
+
+[local]
+aws_access_key_id=test
+aws_secret_access_key=test
 ```
+
+Specify the profile and endpoint for s3 operations. Optionally, specify --debug:
+
+```
+aws [--debug] --profile local --endpoint-url=http://localhost:4566 s3 ...
+```
+
+E.g.:
+
+```
+aws --profile local --endpoint-url=http://localhost:4566 s3 ls uploads.knilab.com/storymapjs/
+```
+
+Note that there has not been a lot of interest from the cli dev team in [making
+endpoint-url profile configurable](https://github.com/aws/aws-cli/issues/1270), although
+this [may be changing](https://github.com/aws/aws-sdk/issues/229).

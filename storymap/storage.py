@@ -17,6 +17,11 @@ from boto.exception import S3ResponseError
 from boto.s3.connection import OrdinaryCallingFormat
 import requests
 
+
+S3_LIST_OBJECTS_MAX = 1000 # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/s3.html#S3.Client.list_objects
+S3_DELETE_OBJECTS_MAX = 1000 # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/s3.html#S3.Bucket.delete_objects
+
+
 # Get settings module
 settings = sys.modules[os.environ['FLASK_SETTINGS_MODULE']]
 
@@ -107,6 +112,7 @@ def list_keys(key_prefix, n, marker=''):
     @n = number of items to return
     @marker = name of last item
     """
+    assert n <= S3_LIST_OBJECTS_MAX, f"Cannot list more than {S3_LIST_OBJECTS_MAX} keys."
     key_list = []
     i = 0
     # localstack cannot handle an empty marker
@@ -122,6 +128,7 @@ def list_keys(key_prefix, n, marker=''):
             continue
         key_list.append(item)
     return key_list, (i == n)
+
 
 @_mock_in_test_mode
 def get_contents_as_string(src_key):
@@ -241,8 +248,18 @@ def save_json(key_name, data):
 
 @_reraise_s3response
 @_mock_in_test_mode
-def delete(key_name):
+def delete_key(key):
     """
-    Delete key
+    Delete a single key
     """
-    _conn.delete_object(Bucket=_bucket.name, Key=key_name)
+    _conn.delete_object(Bucket=_bucket.name, Key=key)
+
+
+@_reraise_s3response
+def delete_keys(keys):
+    """
+    Delete up to S3_DELETE_OBJECTS_MAX keys
+    """
+    assert len(keys) <= S3_DELETE_OBJECTS_MAX, f"Cannot delete more than {S3_DELETE_OBJECTS_MAX} keys."
+    objects = [ { "Key": key } for key in keys ]
+    _bucket.delete_objects(Delete={ "Objects": objects })
