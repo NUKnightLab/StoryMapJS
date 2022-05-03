@@ -17,6 +17,8 @@ import urllib
 from urllib.parse import urlparse, urljoin, quote, urlencode
 from flask_cors import cross_origin
 
+from .tasks import storymap_cleanup
+
 
 # Import settings module
 if __name__ == "__main__":
@@ -518,18 +520,9 @@ def storymap_copy(user, id):
 @require_user_id()
 def storymap_delete(user, id):
     """Delete storymap"""
-    max_keys = min(storage.S3_LIST_OBJECTS_MAX, storage.S3_DELETE_OBJECTS_MAX)
     storymap_id = id
     try:
-        key_prefix = storage.key_prefix(user['uid'], storymap_id)
-        maybe_more_keys = True
-        while maybe_more_keys:
-            key_list, maybe_more_keys = storage.list_keys(key_prefix, max_keys)
-            for key in key_list:
-                storage.delete_key(key)
-            # Alternative approach, similar problems due to the fact that it still seems
-            # to delete one by one.
-            #storage.delete_keys(key_list)
+        storymap_cleanup.delay(user["uid"], storymap_id)
         del user['storymaps'][storymap_id]
         save_user(user, db=db())
         return jsonify({})

@@ -23,7 +23,15 @@ S3_DELETE_OBJECTS_MAX = 1000 # https://boto3.amazonaws.com/v1/documentation/api/
 
 
 # Get settings module
-settings = sys.modules[os.environ['FLASK_SETTINGS_MODULE']]
+#settings = sys.modules[os.environ['FLASK_SETTINGS_MODULE']]
+import importlib
+settings_module = os.environ.get('FLASK_SETTINGS_MODULE')
+try:
+    importlib.import_module(settings_module)
+except ImportError as e:
+    raise ImportError("Could not import settings '%s' (Is it on sys.path?): %s" % (settings_module, e))
+settings = sys.modules[settings_module]
+
 
 def truthy(s):
    return str(s).lower()[0] in ['t', '1']
