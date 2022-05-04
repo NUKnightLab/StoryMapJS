@@ -22,6 +22,7 @@ services:
       AWS_DEFAULT_REGION: xyz
       AWS_SECRET_ACCESS_KEY: xyz
       REDIS_HOST: redis
+      RABBITMQ_HOST: rabbitmq
     env_file: .env
     command: gunicorn -b :5000 --workers 1 --reload --log-level debug storymap.core.wsgi:application --keyfile KnightLabRootCA.key --certfile KnightLabRootCA.crt
     depends_on:
@@ -31,12 +32,11 @@ services:
   localstack:
     container_name: "${LOCALSTACK_DOCKER_NAME-localstack_main}"
     image: localstack/localstack-light
-    # network_mode: bridge
     ports:
       - "4566:4566"
       - "4571:4571"
     environment:
-      - LOCALSTACK_SERVICES=s3
+      - LOCALSTACK_SERVICES=s3,sqs
       - LOCALSTACK_DATA_DIR=/tmp/localstack/data
     volumes:
       - ./.localstack/:/tmp/localstack
@@ -68,10 +68,15 @@ services:
       AWS_DEFAULT_REGION: xyz
       AWS_SECRET_ACCESS_KEY: xyz
       REDIS_HOST: redis
+      RABBITMQ_HOST: rabbitmq
     command: celery -A storymap.tasks worker -l debug
     depends_on:
-      - redis
       - localstack
+      - rabbitmq
 
-  redis:
-    image: redis
+  #redis:
+  #  image: redis
+
+  rabbitmq:
+    image: rabbitmq
+    command: rabbitmq-server
