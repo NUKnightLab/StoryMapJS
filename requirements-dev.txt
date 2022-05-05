@@ -17,6 +17,7 @@ google-api-python-client==1.9.3
 gunicorn==20.0.4
 httplib2==0.18.1
 httpretty==0.8.10
+huey==2.4.3
 idna==2.7
 ipaddress==1.0.17
 ipython==0.13.2

@@ -53,7 +53,28 @@ services:
     volumes:
       - ./.pgdata/:/var/lib/postgresql/data/
 
-  celery:
+  #celery:
+  #  build:
+  #    context: .
+  #    dockerfile: celery.Dockerfile
+  #  restart: always
+  #  working_dir: /usr/src/apps/StoryMapJS
+  #  volumes:
+  #    - ./storymap:/usr/src/apps/StoryMapJS/storymap
+  #  env_file: .env
+  #  environment:
+  #    PYTHONPATH: .
+  #    AWS_ACCESS_KEY_ID: xyz
+  #    AWS_DEFAULT_REGION: xyz
+  #    AWS_SECRET_ACCESS_KEY: xyz
+  #    REDIS_HOST: redis
+  #    RABBITMQ_HOST: rabbitmq
+  #  command: celery -A storymap.tasks worker -l debug
+  #  depends_on:
+  #    - localstack
+  #    - rabbitmq
+
+  huey:
     build:
       context: .
       dockerfile: celery.Dockerfile
@@ -67,16 +88,14 @@ services:
       AWS_ACCESS_KEY_ID: xyz
       AWS_DEFAULT_REGION: xyz
       AWS_SECRET_ACCESS_KEY: xyz
-      REDIS_HOST: redis
-      RABBITMQ_HOST: rabbitmq
-    command: celery -A storymap.tasks worker -l debug
+    command: huey_consumer.py storymap.tasks.huey
     depends_on:
       - localstack
-      - rabbitmq
+    
 
   #redis:
   #  image: redis
 
-  rabbitmq:
-    image: rabbitmq
-    command: rabbitmq-server
+  #rabbitmq:
+  #  image: rabbitmq
+  #  command: rabbitmq-server

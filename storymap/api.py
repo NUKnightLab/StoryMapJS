@@ -522,7 +522,8 @@ def storymap_delete(user, id):
     """Delete storymap"""
     storymap_id = id
     try:
-        storymap_cleanup.delay(user["uid"], storymap_id)
+        #storymap_cleanup.delay(user["uid"], storymap_id)
+        storymap_cleanup(user["uid"], storymap_id)
         del user['storymaps'][storymap_id]
         save_user(user, db=db())
         return jsonify({})
