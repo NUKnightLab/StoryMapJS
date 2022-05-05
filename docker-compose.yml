@@ -67,7 +67,7 @@ services:
       AWS_ACCESS_KEY_ID: xyz
       AWS_DEFAULT_REGION: xyz
       AWS_SECRET_ACCESS_KEY: xyz
-    command: huey_consumer.py storymap.tasks.huey
+    command: huey_consumer.py --logfile=storymap/huey.log storymap.tasks.huey
     depends_on:
       - localstack
 
