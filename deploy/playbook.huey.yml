@@ -1,0 +1,29 @@
+- hosts: "{{ env }}"
+  vars_files:
+    - "{{ config_dir }}/config.common.yml"
+    - "{{ config_dir }}/config.{{ env }}.yml"
+    - "{{ vault }}"
+  gather_facts: false
+
+  handlers:
+    - name: reload systemctl
+      become: yes
+      shell: systemctl daemon-reload
+
+  roles:
+    - role: knightlab
+
+  tasks:
+    - name: Create storymap-tasks worker service config
+      template:
+        src: huey.service.j2
+        dest: "/etc/systemd/system/storymap-tasks.service"
+        owner: root
+        group: root
+        mode: 0644
+      become: yes
+      notify:
+        - reload systemctl
+
+    - name: ensure storymap-tasks is running
+      raw: if (sudo systemctl status storymap-tasks |grep Stop); then sudo systemctl start storymap-tasks ; fi

@@ -9,6 +9,7 @@ nginx_client_max_body_size: 20M
 
 playbooks:
   - playbook.deploy.yml
+  - playbook.huey.yml
   - playbook.restart.yml
 
 # these will be merged with deployment-specific env into variable init_env
