@@ -30,3 +30,5 @@ import sys
 
 rabbitmq_host = os.environ.get("RABBITMQ_HOST", "localhost")
 broker_url = f"amqp://guest:guest@{rabbitmq_host}:5672/"
+
+broker_transport_options = {"queue_name_prefix": "storymap-tasks-"}
