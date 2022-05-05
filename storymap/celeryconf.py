@@ -1,6 +1,10 @@
 import os
 import sys
 
+"""
+Obsolete. huey is now being used in lieu of celery.
+"""
+
 
 ###
 # redis
