@@ -36,7 +36,7 @@ services:
       - "4566:4566"
       - "4571:4571"
     environment:
-      - LOCALSTACK_SERVICES=s3,sqs
+      - LOCALSTACK_SERVICES=s3
       - LOCALSTACK_DATA_DIR=/tmp/localstack/data
     volumes:
       - ./.localstack/:/tmp/localstack
