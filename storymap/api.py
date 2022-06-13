@@ -289,8 +289,6 @@ def google_auth_verify():
                 "following information to support@knightlab.zendesk.com: " \
                 "stg-storymap.knightlab.com unauthorized %s" % uid)
 
-        print('upsert user', uid)
-
         # Upsert user record
         user = get_user(uid, db=db())
         if user:
@@ -810,10 +808,9 @@ def storymap_save(user, id):
         storage.save_json(key_name, content)
         user['storymaps'][id]['draft_on'] = _utc_now()
         save_user(user, db=db())
-        print(user["storymaps"][id])
         return jsonify({
             "meta": user["storymaps"][id],
-            "data": data
+            "data": content
         })
     except storage.StorageException as e:
         traceback.print_exc()
