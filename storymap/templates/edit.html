@@ -450,6 +450,7 @@ function storymap_save(callback) {
         },
         function(data) {
             _storymap_meta = data.meta; // update meta
+            _storymap_data = data.data; // TODO: this does not update the rendered content in the editor
             storymap_dirty(0);
         },
         function(error) {
