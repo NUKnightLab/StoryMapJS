@@ -507,7 +507,7 @@ def storymap_export(user, id):
     return send_file(temp_path, mimetype="application/zip", as_attachment=True, attachment_filename=('storymap-%s.zip' % id))
 
 
-def fix_media_urls(jsonstring, key_prefix):
+def fix_image_urls(jsonstring, key_prefix, image_files):
     data = json.loads(jsonstring)
     slides = []
     for slide in data["storymap"]["slides"]:
@@ -515,7 +515,7 @@ def fix_media_urls(jsonstring, key_prefix):
 
         def fixed_path(path):
             path = path.split("/")[-2:]
-            if len(path) == 2 and path[0] == "_images":
+            if len(path) == 2 and path[0] == "_images" and path[1] in image_files:
                 path = "/".join(path)
                 path = f"{settings.AWS_STORAGE_BUCKET_URL}{key_prefix}{path}"
             return path
@@ -551,12 +551,16 @@ def storymap_import(user):
                     return jsonify({'error': 'This doesn\'t look like a StoryMap exported package.'})
                 id = _import_metadata(user, json.loads(zip_file.read('metadata.json')))
                 key_prefix = storage.key_prefix(user['uid'], id)
+                image_files = []
+                for file_name in files:
+                    if file_name.startswith("_images/"):
+                        image_files.append(file_name.split("/")[-1])
                 for file_name in files:
                     if file_name != 'metadata.json':
                         key_name = "%s%s" % (key_prefix, file_name)
                         f = zip_file.read(file_name)
                         if file_name in ["draft.json", "published.json"]:
-                            f = fix_media_urls(f, key_prefix)
+                            f = fix_image_urls(f, key_prefix, image_files)
                         storage.save_from_data(key_name, mimetypes.guess_type(file_name)[0], f)
                 return jsonify({'id': id})
 
