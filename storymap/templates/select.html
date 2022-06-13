@@ -136,7 +136,19 @@
             </p>
             <p class="ui-note">Making a gigapixel storymap? Click 'create' and set the details using 'Map Type' in the <i class='icon-cog'></i> options. <br> <a target="_blank" href="http://knightlab.northwestern.edu/2016/05/24/a-few-small-improvements-to-storymapjs/">Read this for more info.</a></p>
         </div>
-<!-- import panel -->
+<!-- import package panel -->
+        <div class="entry-panel entry-import-package hide">
+            <p>
+                <label>Import a package created using the <strong>Share &rarr; Export</strong> option.</label>
+                <div class="upload-panel">
+                    <a class="upload-file-link btn" href="javascript:">
+                        Choose File...
+                        <input id="entry_import_package" type="file" accept="application/zip, application/octet-stream" size="40">
+                    </a>
+                </div>
+            </p>
+        </div>
+<!-- import URL panel -->
         <div class="entry-panel entry-import hide">
             <p>
                 <label>Let's import your StoryMap.  What do you want to call it?</label>
@@ -164,13 +176,16 @@
             <span id="entry_user_name"></span> | <a id="entry_logout" href="{{ url_for('logout') }}">Logout</a>
         </div>
         <span>&nbsp;</span>
-        <a id="entry_create_cancel" class="entry-panel entry-create entry-import entry-rename entry-copy hide btn" onclick="$('#entry_modal').trigger('show_list');">
+        <a id="entry_migrate" class="entry-panel entry-migrate hide btn btn-success" href="javascript:;">
+            Start Migration</a>
+        <a id="entry_migrate_resume" class="entry-panel entry-migrate-resume hide btn btn-success" href="javascript:;">
+            Resume Migration</a>
+        <a id="entry_create_cancel" class="entry-panel entry-import-package entry-create entry-import entry-rename entry-copy hide btn" onclick="$('#entry_modal').trigger('show_list');">
             Cancel</a>
         <a id="entry_create" class="entry-panel entry-create hide btn btn-success" href="javascript:;">
             Create</a>
-        {# See issue #316
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-        #}
+        <a id="import_package" class="entry-panel entry-list hide btn btn-default" href="javascript:;" onclick="$('#entry_modal').trigger('show_import_package');">
+            Import</a>
         <a id="new_storymap" class="entry-panel entry-list hide btn btn-success" href="javascript:;" onclick="$('#entry_modal').trigger('show_create_map');">
             <i class="icon-file "></i> New</a>
         <a id="entry_rename" class="entry-panel entry-rename hide btn btn-success" href="javascript:;">
@@ -422,7 +437,7 @@ $(function() {
     });
 
 // ------------------------------------------------------------
-// import
+// import URL
 // ------------------------------------------------------------
 
     $('#entry_import').click(function() {
@@ -455,6 +470,36 @@ $(function() {
                         document.location.href = "{{ url_for('edit') }}?id="+data.id;
                     }
                 );
+            }
+        );
+    });
+
+// ------------------------------------------------------------
+// import package
+// ------------------------------------------------------------
+
+    $('#entry_import_package').change(function() {
+        var $modal = $('#entry_modal');
+        var $panel = $('.entry-import');
+
+        var data = new FormData();
+        data.append('archive', $('#entry_import_package').get(0).files[0]);
+
+        $modal.trigger('progress_show', 'Importing StoryMap');
+
+        _ajax(
+            {
+                url: "{{ url_for('storymap_import') }}",
+                type: 'POST',
+                data: data,
+                processData: false,
+                contentType: false
+            },
+            function(error) {
+                $modal.trigger('reset', format_error('Error importing storymap', error));
+            },
+            function(data) {
+                document.location.href = "{{ url_for('edit') }}?id="+data.id;
             }
         );
     });
@@ -618,6 +663,12 @@ $(function() {
             $(this).find('.entry-panel').hide();
             $(this).find('.entry-login').show();
             $(this).trigger('progress_hide');
+        })
+        .on('show_import_package', function(event) {
+            $('.entry-import-package input[type="file"]').val('');
+
+            $(this).find('.entry-panel').hide();
+            $(this).find('.entry-import-package').show();
         })
         .on('show_create_map', function(event) {
             $('.entry-create-map input[type="text"]').val('');

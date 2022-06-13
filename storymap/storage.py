@@ -137,6 +137,9 @@ def list_keys(key_prefix, n, marker=''):
         key_list.append(item)
     return key_list, (i == n)
 
+def get_contents(src_key):
+    obj = s3.Object(_bucket.name, src_key)
+    return obj.get()['Body'].read()
 
 @_mock_in_test_mode
 def get_contents_as_string(src_key):

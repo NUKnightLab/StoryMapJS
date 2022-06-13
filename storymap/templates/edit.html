@@ -1404,6 +1404,9 @@ $(function() {
                 }
             });
         })
+        .on('click', '#share_export', function(event) {
+          window.location = "{{ url_for('storymap_export') }}?id=" + _storymap_meta.id;
+        })
         //
         // Sharing
         //

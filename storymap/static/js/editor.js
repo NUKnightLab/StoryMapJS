@@ -70,14 +70,11 @@ function format_dt(dt_string) {
 
 function noop() {}
 
-function _ajax(url, type, data, on_error, on_success, on_complete) {
+function _ajax(options, on_error, on_success, on_complete) {
     var _error = '';
     var _error_detail = '';
-    
-    $.ajax({
-        url: url,
-        type: type,
-        data: data,
+
+    var options = $.extend({
         cache: false,
         dataType: 'json',
         timeout: 45000, // ms
@@ -99,15 +96,19 @@ function _ajax(url, type, data, on_error, on_success, on_complete) {
         complete: function() {
             on_complete(_error, _error_detail);
         }
-    });
+    }, options);
+
+    $.ajax(options);
 }
 
 function ajax_get(url, data, on_error, on_success, on_complete) {
-    _ajax(url, 'GET', data, on_error, on_success || noop, on_complete || noop);
+    var options = { url: url, type: 'GET', data: data };
+    _ajax(options, on_error, on_success || noop, on_complete || noop);
 }
 
 function ajax_post(url, data, on_error, on_success, on_complete) {
-    _ajax(url, 'POST', data, on_error, on_success || noop, on_complete || noop);
+    var options = { url: url, type: 'POST', data: data };
+    _ajax(options, on_error, on_success || noop, on_complete || noop);
 }
 
 
