@@ -514,10 +514,11 @@ def fix_media_urls(jsonstring, key_prefix):
         _slide = copy.copy(slide)
         url = slide["media"].get("url")
         if url:
-            index = 8 if url.startswith("http") else 7
-            path = "/".join(url.split("/")[index:])
-            url = f"{settings.AWS_STORAGE_BUCKET_URL}{key_prefix}{path}"
-            _slide["media"]["url"] = url
+            path = url.split("/")[-2:]
+            if len(path) == 2 and path[0] == "_images":
+                path = "/".join(path)
+                url = f"{settings.AWS_STORAGE_BUCKET_URL}{key_prefix}{path}"
+                _slide["media"]["url"] = url
         slides.append(_slide)
     data["storymap"]["slides"] = slides
     return json.dumps(data)
