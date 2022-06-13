@@ -514,9 +514,9 @@ def fix_image_urls(jsonstring, key_prefix, image_files):
         _slide = copy.copy(slide)
 
         def fixed_path(path):
-            path = path.split("/")[-2:]
-            if len(path) == 2 and path[0] == "_images" and path[1] in image_files:
-                path = "/".join(path)
+            _path = path.split("/")[-2:]
+            if len(_path) == 2 and _path[0] == "_images" and _path[1] in image_files:
+                path = "/".join(_path)
                 path = f"{settings.AWS_STORAGE_BUCKET_URL}{key_prefix}{path}"
             return path
 
