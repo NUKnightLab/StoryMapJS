@@ -20,6 +20,7 @@ import requests
 
 S3_LIST_OBJECTS_MAX = 1000 # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/s3.html#S3.Client.list_objects
 S3_DELETE_OBJECTS_MAX = 1000 # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/s3.html#S3.Bucket.delete_objects
+CACHE_CONTROL_MAX_AGE = 60 * 5
 
 
 # Get settings module
@@ -190,7 +191,10 @@ def copy_key(src_key_name, dst_key_name):
     dst_key = _bucket.copy(
         { 'Bucket': _bucket.name, 'Key': src_key_name },
         dst_key_name,
-        ExtraArgs={ 'ACL': 'public-read' }
+        ExtraArgs={
+            'ACL': 'public-read',
+            'CacheControl': f'max-age={CACHE_CONTROL_MAX_AGE}'
+        }
     )
 
 
@@ -200,7 +204,14 @@ def save_bytes_from_data(key_name, content_type, content):
     """
     Save content with content-type to key_name
     """
-    _conn.put_object(ACL='public-read', Body=content, Bucket=_bucket.name, Key=key_name, ContentType=content_type)
+    _conn.put_object(
+        ACL='public-read',
+        Body=content,
+        Bucket=_bucket.name,
+        CacheControl=f'max-age={CACHE_CONTROL_MAX_AGE}',
+        ContentType=content_type,
+        Key=key_name
+    )
 
 
 @_reraise_s3response
@@ -209,7 +220,14 @@ def save_from_data(key_name, content_type, content):
     """
     Save content with content-type to key_name
     """
-    _conn.put_object(ACL='public-read', Body=content, Bucket=_bucket.name, Key=key_name, ContentType=content_type)
+    _conn.put_object(
+        ACL='public-read',
+        Body=content,
+        Bucket=_bucket.name,
+        CacheControl=f'max-age={CACHE_CONTROL_MAX_AGE}',
+        ContentType=content_type,
+        Key=key_name
+    )
 
 
 @_reraise_s3response
