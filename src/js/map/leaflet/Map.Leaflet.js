@@ -40,8 +40,18 @@ export default class Leaflet extends Map {
 			}
 		);
 
+		function isEmptyObject(obj) {
+		 var empt = true;
+		 for(var key in obj) {
+				 if(obj.hasOwnProperty(key)) empt = false;
+		 }
+		 return empt;
+	 };
+
 		// Detect if base_map has been defined in options object.
-		if ( (typeof this.options.base_map === "string" && this.options.base_map !== "") || !isEmptyObject(this.options.base_map) ) {
+		if ( (typeof this.options.base_map === "string" && this.options.base_map !== "") ||
+				(typeof this.options.base_map === "object" && Object.keys(this.options.base_map).length === 0) )
+			{
 			this._base_layer = this._createTileLayer(this.options.base_map);
 			this._map.addLayer(this._base_layer);
 		}
@@ -52,7 +62,7 @@ export default class Leaflet extends Map {
 		this._map.on("moveend", this._onMapMoveEnd, this);
 		this._map.attributionControl.setPrefix("<a href='http://storymap.knightlab.com/' target='_blank' class='vco-knightlab-brand'><span>&#x25a0;</span> StoryMapJS</a>");
 
-		var map_type_arr = this.options.map_type.split(':');
+		//var map_type_arr = this.options.map_type.split(':');
 
 		// Create Tile Layer
 		this._tile_layer = this._createTileLayer(this.options.map_type);
@@ -465,6 +475,12 @@ export default class Leaflet extends Map {
 	_zoomTo(z, animate) {
 		this._map.setZoom(z);
 	}
+
+	_updateLayer(nl) {
+			this._map.removeLayer(this._tile_layer);
+			this._tile_layer = this._createTileLayer(nl);
+			this._map.addLayer(this._tile_layer);
+	},
 
 	_viewTo(loc, opts) {
 		var _animate 	= true,

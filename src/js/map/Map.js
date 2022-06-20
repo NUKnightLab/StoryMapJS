@@ -136,7 +136,8 @@ export default class Map {
       // Basemap support
       base_map: "",
       // Extended CRS Support
-      map_crs: ""
+      map_crs: "",
+			use_custom_markers: false
 		};
 
 		// Animation

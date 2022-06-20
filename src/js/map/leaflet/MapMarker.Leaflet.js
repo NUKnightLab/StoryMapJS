@@ -24,7 +24,12 @@ export default class LeafletMapMarker extends MapMarker {
                 };
                 this._icon = this._createIcon();
             } else if (use_custom_marker && d.location.image) {
-                this._custom_image_icon = d.location.image;
+                //this._custom_image_icon = d.location.image;
+                this._custom_image_icon = {
+        					url:d.location.image,
+        					size: d.location.imageSize || [50,100],
+        					anchor: this._customIconAnchor(d.location.imageSize)
+        				}
                 this._icon = this._createImage();
             } else {
                 this._icon = this._createDefaultIcon(false);
@@ -92,7 +97,14 @@ export default class LeafletMapMarker extends MapMarker {
 
     _createImage(active) { // TODO: calculate shadow dimensions
         var className = active ? "vco-mapmarker-image-icon-active" : "vco-mapmarker-image-icon";
-        return new L.icon({ iconUrl: url, iconSize: [48], iconAnchor: [24, 48], shadowSize: [68, 95], shadowAnchor: [22, 94], className: className });
+        //return new L.icon({ iconUrl: url, iconSize: [48], iconAnchor: [24, 48], shadowSize: [68, 95], shadowAnchor: [22, 94], className: className });
+        return new L.icon({
+          iconUrl: this._custom_image_icon.url,
+          iconSize:this._custom_image_icon.size,
+          iconAnchor: this._custom_icon.anchor,
+          shadowSize: [68, 95],
+          shadowAnchor: [22, 94],
+          className: className});
     }
 
     _createDefaultIcon(active) {
