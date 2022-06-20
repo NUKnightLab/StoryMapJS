@@ -21,8 +21,31 @@ export default class Leaflet extends Map {
 	================================================== */
 	_createMap() {
 
+		// Set the CRS of the Leaflet map. If user has indicated a specific CRS check it against a set of support CRS here
+		var map_crs_requested;
+		switch (this.options.map_crs) {
+			case "EPSG:4326" :
+				map_crs_requested = L.CRS.EPSG4326;
+				break;
+			default:
+				map_crs_requested =  L.CRS.EPSG3857;
+				break
+		}
+		console.log(map_crs_requested);
 
-		this._map = new L.map(this._el.map, {scrollWheelZoom:false, zoomControl:!this.options.map_mini});
+		this._map = new L.map(this._el.map, {
+			scrollWheelZoom:false,
+			zoomControl:!this.options.map_mini,
+			crs: map_crs_requested
+			}
+		);
+
+		// Detect if base_map has been defined in options object.
+		if ( (typeof this.options.base_map === "string" && this.options.base_map !== "") || !isEmptyObject(this.options.base_map) ) {
+			this._base_layer = this._createTileLayer(this.options.base_map);
+			this._map.addLayer(this._base_layer);
+		}
+
 		this._map.on("load", this._onMapLoaded, this);
 
 
@@ -72,7 +95,8 @@ export default class Leaflet extends Map {
 			this.bounds_array = this._getAllMarkersBounds(this._markers);
 		}
 
-		this._tile_layer_mini = this._createTileLayer(this.options.map_type);
+		// Detect if base_map defined in options object, use this as layer on minimap if defined.
+		this._tile_layer_mini = this._createTileLayer(this.options.base_map || this.options.map_type);
 		this._mini_map = new MiniMapControl(this._tile_layer_mini, {
 			width: 				150,
 			height: 			100,
@@ -170,7 +194,10 @@ export default class Leaflet extends Map {
 	================================================== */
 	_createTileLayer(map_type, options) {
 		var _tilelayer = null,
-			_map_type_arr = map_type.split(':'),
+			// Set the map type by detecting the type, if an object the type is passed in url attribute
+			_map_type_arr = (typeof map_type === "object") ? map_type.url.split(':') : map_type.split(':'),
+			// Set the map options by decting type, if object the map options are passed in options attribute
+			_map_options = (typeof map_type === "object") ?  map_type.options : {},
 			_options = {},
 			_attribution_knightlab = "<a href='http://leafletjs.com' title='A JS library for interactive maps'>Leaflet</a> | "
 
@@ -214,7 +241,17 @@ export default class Leaflet extends Map {
 				_options.attribution = _attribution_knightlab + "© <a target='_blank' href='http://www.openstreetmap.org'>OpenStreetMap</a> and contributors, under an <a target='_blank' href='http://www.openstreetmap.org/copyright'>open license</a>";
 				_tilelayer = new L.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', _options);
 				break;
-
+			// Adding support for WMS layer by calling TileLayer.WMS Leaflet function
+			case 'wms':
+					_options.attribution = _attribution_knightlab + this.options.attribution;
+					// Force the transparency of the WMS layer so either the map background or base map are visible
+					_map_options.transparent = true;
+					_tilelayer = new L.TileLayer.WMS(map_type.url.slice(4), _map_options);
+					break;
+			// Adding support for WMTS layer by calling TileLayer Leaflet function
+			case 'wmts':
+					_tilelayer = new L.TileLayer(map_type.url.slice(5), _map_options);
+					break;
 			case 'http':
 			case 'https':
 				_options.subdomains = this.options.map_subdomains;
