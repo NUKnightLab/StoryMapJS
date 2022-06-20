@@ -23,6 +23,9 @@ export default class Leaflet extends Map {
 
 		// Set the CRS of the Leaflet map. If user has indicated a specific CRS check it against a set of support CRS here
 		var map_crs_requested;
+
+		//console.log(this.options);
+
 		switch (this.options.map_crs) {
 			case "EPSG:4326" :
 				map_crs_requested = L.CRS.EPSG4326;
@@ -31,7 +34,7 @@ export default class Leaflet extends Map {
 				map_crs_requested =  L.CRS.EPSG3857;
 				break
 		}
-		console.log(map_crs_requested);
+		//console.log(map_crs_requested);
 
 		this._map = new L.map(this._el.map, {
 			scrollWheelZoom:false,
@@ -40,18 +43,9 @@ export default class Leaflet extends Map {
 			}
 		);
 
-		function isEmptyObject(obj) {
-		 var empt = true;
-		 for(var key in obj) {
-				 if(obj.hasOwnProperty(key)) empt = false;
-		 }
-		 return empt;
-	 };
-
 		// Detect if base_map has been defined in options object.
-		if ( (typeof this.options.base_map === "string" && this.options.base_map !== "") ||
-				(typeof this.options.base_map === "object" && Object.keys(this.options.base_map).length === 0) )
-			{
+		if ((typeof this.options.base_map === "string" && this.options.base_map !== "") ||
+				(typeof this.options.base_map === "object" && Object.keys(this.options.base_map).length === 0) ) {
 			this._base_layer = this._createTileLayer(this.options.base_map);
 			this._map.addLayer(this._base_layer);
 		}
@@ -480,7 +474,7 @@ export default class Leaflet extends Map {
 			this._map.removeLayer(this._tile_layer);
 			this._tile_layer = this._createTileLayer(nl);
 			this._map.addLayer(this._tile_layer);
-	},
+	}
 
 	_viewTo(loc, opts) {
 		var _animate 	= true,

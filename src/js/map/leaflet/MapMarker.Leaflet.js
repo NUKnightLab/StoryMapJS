@@ -27,10 +27,11 @@ export default class LeafletMapMarker extends MapMarker {
                 //this._custom_image_icon = d.location.image;
                 this._custom_image_icon = {
         					url:d.location.image,
-        					size: d.location.imageSize || [50,100],
+        					size: d.location.imageSize || [48],
         					anchor: this._customIconAnchor(d.location.imageSize)
         				}
                 this._icon = this._createImage();
+                console.log(this._icon);
             } else {
                 this._icon = this._createDefaultIcon(false);
             }
@@ -92,7 +93,11 @@ export default class LeafletMapMarker extends MapMarker {
     }
 
     _createIcon() {
-        return new L.icon({ iconUrl: this._custom_icon.url, iconSize: this._custom_icon.size, iconAnchor: this._custom_icon.anchor });
+        return new L.icon({
+          iconUrl: this._custom_icon.url,
+          iconSize: this._custom_icon.size,
+          iconAnchor: this._custom_icon.anchor
+          });
     }
 
     _createImage(active) { // TODO: calculate shadow dimensions
