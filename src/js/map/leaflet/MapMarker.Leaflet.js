@@ -11,43 +11,43 @@ export default class LeafletMapMarker extends MapMarker {
     ================================================== */
     _createMarker(d, o) {
 
-        var icon = {}; //new L.Icon.Default();
+      var icon = {}; //new L.Icon.Default();
 
-        if (d.location && typeof(d.location.lat) == 'number' && typeof(d.location.lon) == 'number') {
-            this.data.real_marker = true;
-            var use_custom_marker = o.use_custom_markers || d.location.use_custom_marker;
-            if (use_custom_marker && d.location.icon) {
-                this._custom_icon = {
-                    url: d.location.icon,
-                    size: d.location.iconSize || [48, 48],
-                    anchor: this._customIconAnchor(d.location.iconSize)
-                };
-                this._icon = this._createIcon();
-            } else if (use_custom_marker && d.location.image) {
-                //this._custom_image_icon = d.location.image;
-                this._custom_image_icon = {
-        					url:d.location.image,
-        					size: d.location.imageSize || [48],
-        					anchor: this._customIconAnchor(d.location.imageSize)
-        				}
-                this._icon = this._createImage();
-                console.log(this._icon);
-            } else {
-                this._icon = this._createDefaultIcon(false);
-            }
+     if (d.location && typeof(d.location.lat) == 'number' && typeof(d.location.lon) == 'number') {
+         this.data.real_marker = true;
+         var use_custom_marker = o.use_custom_markers || d.location.use_custom_marker;
+         if (use_custom_marker && d.location.icon) {
+             this._custom_icon = {
+                 url: d.location.icon,
+                 size: d.location.iconSize || [48, 48],
+                 anchor: this._customIconAnchor(d.location.iconSize)
+             };
+             this._icon = this._createIcon();
+         } else if (use_custom_marker && d.location.image) {
+             this._custom_image_icon = {
+                url: d.location.image,
+                size: d.location.imageSize || [48],
+                anchor: this._customIconAnchor(d.location.iconSize)
+             }
+             this._icon = this._createImage();
+         } else {
+             this._icon = this._createDefaultIcon(false);
+         }
 
-            this._marker = new L.marker([d.location.lat, d.location.lon], {
-                title: d.text.headline,
-                icon: this._icon
-            });
+         this._marker = new L.marker([d.location.lat, d.location.lon], {
+             title: d.text.headline,
+             icon: this._icon
+         });
 
-            this._marker.on("click", this._onMarkerClick, this);
+         this._marker.on("click", this._onMarkerClick, this);
 
-            if (o.map_popup) {
-                this._createPopup(d, o);
-            }
-        }
-    }
+         if (o.map_popup) {
+             this._createPopup(d, o);
+         }
+     }
+      }
+
+
 
     _addTo(m) {
         if (this.data.real_marker) {

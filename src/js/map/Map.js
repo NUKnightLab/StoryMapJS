@@ -106,9 +106,8 @@ export default class Map {
       // options is optional, and if defined can contain any options supported by the web map service
       // options is passed to the appropriate createTileLayer function which uses the attributes to compose the request URL
 			map_type: 			"stamen:toner-lite",
-
-			map_as_image: 		false,
-			map_mini: 			false,
+			map_as_image: 		false,									// If true, default icons will display on hover, lines and history lines are suppressed. If false, default icons and lines will always display
+			map_mini: 			false,										// If true, a mini-map with the base layer or stamen:toner-lite will be displayed. If false, a zoom control is displayed
 			map_background_color: "#d9d9d9",
 			map_subdomains: 	"",
 			map_access_token:   "",
@@ -125,23 +124,28 @@ export default class Map {
 			start_at_slide: 	0,
 			map_popup: 			false,
 			zoom_distance: 		100,
-			calculate_zoom: 	true,  // Allow map to determine best zoom level between markers (recommended)
-			line_follows_path: 	true,  // Map history path follows default line, if false it will connect previous and current only
+			calculate_zoom: 	true,  										// Allow map to determine best zoom level between markers (recommended)
+			line_follows_path: 	true,  									// Map history path follows default line, if false it will connect previous and current only
 			line_color: 		"#333",
 			line_color_inactive: "#000",
 			line_weight: 		5,
 			line_opacity: 		0.20,
 			line_dash: 			"5,5",
-			line_join: 			"miter",
-			show_lines: 		true,
-			show_history_line: 	true,
-			map_center_offset:  null, // takes object {top:0,left:0}
+			line_join: 			"miter",										// Shape to use for corner of stroke can be any options for Leaflet Path
+			show_lines: 		true,												// If true, will display edges joining map points
+			show_history_line: 	true, 									// If true, will highlight the last edge of map points
+			map_center_offset:  null, 									// takes object {top:0,left:0}
 
       // Basemap support
       base_map: "",
       // Extended CRS Support
       map_crs: "",
-			use_custom_markers: false
+
+			use_custom_markers: false		// If use_custom_markers is true, the program will seek a location.icon or location.image URL definition. If detected will display them.
+																	// If no icon or image URL is defined, a default marker will be displayed.
+																	// If you want to suppress default markers, define an empty string or dummy image/icon
+
+
 		};
 
 		// Animation
