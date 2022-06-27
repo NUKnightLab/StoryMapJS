@@ -556,7 +556,7 @@ def storymap_import(user):
                     if file_name.startswith("_images/"):
                         image_files.append(file_name.split("/")[-1])
                 for file_name in files:
-                    if file_name != 'metadata.json':
+                    if file_name != 'metadata.json' and not file_name.endswith("/"):
                         key_name = "%s%s" % (key_prefix, file_name)
                         f = zip_file.read(file_name)
                         if file_name in ["draft.json", "published.json"]:
