@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script crossorigin src="https://unpkg.com/react@16.7.0/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@16.7.0/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6.26.0/babel.min.js"></script>
+    <style>
+        div#mapdiv {
+            height: 600px;
+        }
+    </style>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="//cdn.knightlab.com/libs/storymapjs/latest/css/storymap.css">
+    <script type="text/javascript" src="//cdn.knightlab.com/libs/storymapjs/latest/js/storymap-min.js"></script>
+</head>
+<body>
+
+  <div>Content above React container</div>
+  <div id="react-container"></div>
+  <div>Content below React container</div>
+
+  <script type="text/babel">
+        /**
+         * Alternatively: create a React Component and create the StoryMap
+         * object in componentDidMount() and componentDidUpdate() functions.
+         */
+        const storymap_url = "//uploads.knightlab.com/storymapjs/a1a349b51799ee49e96bed10cc235e7f/aryas-journey/published.json";
+        const storymap_options = {};
+
+        ReactDOM.render(<div>
+            <p>A React-rendered paragraph above StoryMap</p>
+            <div id="mapdiv"></div>
+            <p>A React-rendered paragraph below StoryMap</p>
+            </div>,
+            document.getElementById("react-container"),
+            function() {
+                 var storymap = new KLStoryMap.StoryMap("mapdiv", storymap_url, storymap_options);
+                 window.onresize = function(event) {
+                    storymap.updateDisplay();
+                 }
+            }
+        );
+  </script>
+
+</body>
+</html>
+
