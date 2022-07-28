@@ -1,14 +1,10 @@
 import {
   classMixin
 } from "../../core/Util";
-import {
-  LeafletModule
-} from "leaflet";
-console.log(L);
+import { LeafletModule } from "leaflet";
+export { LeafletModule }
 import * as proj4 from "proj4";
-console.log(proj4);
-// import * as L from 'leaflet';
-//import 'proj4leaflet';
+export { proj4 }
 import * as proj4leaflet from "proj4leaflet";
 import Map from "../Map";
 import Events from "../../core/Events";
@@ -35,14 +31,16 @@ export default class Leaflet extends Map {
     var map_crs_requested;
 
     //console.log(this.options);
-
+    var Ll = require('leaflet');
+    console.log(Ll);
+    var proj4p = require('proj4');
+    console.log(proj4p);
     switch (this.options.map_crs) {
       case "EPSG:4326":
       console.log(L);
         map_crs_requested = L.CRS.EPSG4326;
         break;
       case "EPSG:3978":
-        Proj4js.defs["EPSG:3978"] = "+proj=lcc +lat_1=49 +lat_2=77 +lat_0=49 +lon_0=-95 +x_0=0 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs";
         var crs_proj4def = "+proj=lcc +lat_1=49 +lat_2=77 +lat_0=49 +lon_0=-95 +x_0=0 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs";
 				var crs_options ={
 					resolutions: [8192,4096,2048,1024,512,256,128],
