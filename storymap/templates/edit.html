@@ -298,7 +298,19 @@ function slide_select(event) {
 
             $('#marker_options').attr('disabled',true);
 
-            _map.setDefaultView();
+            try {
+                _map.setDefaultView();
+            } catch (error) {
+                show_message(
+                    '<i class="icon-warning-sign error"></i>&nbsp; The background map could '
+                    + 'not be loaded due to an unexpected error. This may be the result of '
+                    + 'a badly formed custom Map Type URL in the Options for this StoryMap. '
+                    + '<br/><br/>In order to continue editing this StoryMap, please fix the '
+                    + 'options that are causing the error, save the changes, and then reload '
+                    + 'the StoryMap from the <i>My Maps</i> selector.'
+                    + '<br/><br/>The error received was: &nbsp;<span class="error">'
+                    + error.message) + '</span>';
+            }
 
             if(!get_map_as_image()) {
                 _map.addPolyLine();

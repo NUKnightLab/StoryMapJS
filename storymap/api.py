@@ -757,7 +757,6 @@ def storymap_get(user, id):
     try:
         key_name = storage.key_name(user['uid'], id, 'draft.json')
         data = storage.load_json(key_name)
-
         return jsonify({'meta': user['storymaps'][id], 'data': data})
     except storage.StorageException as e:
         traceback.print_exc()
