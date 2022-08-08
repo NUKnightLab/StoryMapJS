@@ -23,9 +23,6 @@ Map = VCO.Class.extend({
 
 export default class Map {
 	constructor(elem, data, options) {
-		console.log(elem);
-		console.log(data);
-		console.log(options);
 
 		// DOM ELEMENTS
 		this._el = {
@@ -162,14 +159,7 @@ export default class Map {
 
 		// Merge Data and Options
 		mergeData(this.options, options);
-
-		console.log(options);
-		console.log(this.options);
-
 		mergeData(this.data, data);
-
-		console.log(data);
-		console.log(this.data);
 
 
 		this._initLayout();

@@ -1,10 +1,5 @@
-import {
-  classMixin
-} from "../../core/Util";
+import { classMixin } from "../../core/Util";
 import { LeafletModule } from "leaflet";
-export { LeafletModule }
-import * as proj4 from "proj4";
-export { proj4 }
 import * as proj4leaflet from "proj4leaflet";
 import Map from "../Map";
 import Events from "../../core/Events";
@@ -28,47 +23,59 @@ export default class Leaflet extends Map {
   _createMap() {
 
     // Set the CRS of the Leaflet map. If user has indicated a specific CRS check it against a set of support CRS here
-    var map_crs_requested;
+    var map_crs;
 
-    //console.log(this.options);
-    var Ll = require('leaflet');
-    console.log(Ll);
-    var proj4p = require('proj4');
-    console.log(proj4p);
     switch (this.options.map_crs) {
       case "EPSG:4326":
-      console.log(L);
-        map_crs_requested = L.CRS.EPSG4326;
+        map_crs = L.CRS.EPSG4326;
         break;
       case "EPSG:3978":
-        var crs_proj4def = "+proj=lcc +lat_1=49 +lat_2=77 +lat_0=49 +lon_0=-95 +x_0=0 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs";
-				var crs_options ={
-					resolutions: [8192,4096,2048,1024,512,256,128],
-					origin: [0,0]
-				}
-        var EPSG3978 = new L.Proj.CRS(
-          crs_code,
-          crs_proj4def,
-          crs_options
+        L.CRS.EPSG3978 = new L.Proj.CRS(
+        	"EPSG:3978",
+          "+proj=lcc +lat_1=49 +lat_2=77 +lat_0=49 +lon_0=-95 +x_0=0 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
+					,{
+						//Resolution factors (projection units per pixel, for example meters/pixel) for zoom levels;
+	            resolutions: [
+	              38364.660062653464,
+	              22489.62831258996,
+	              13229.193125052918,
+	              7937.5158750317505,
+	              4630.2175937685215,
+	              2645.8386250105837,
+	              926.0435187537042,
+	              529.1677250021168,
+	              317.50063500127004,
+	              185.20870375074085,
+	              111.12522225044451,
+	              66.1459656252646,
+	              38.36466006265346,
+	              22.48962831258996,
+	              7.9375158750317505,
+	              4.6302175937685215
+	            ],
+	            origin: [-34655800, 39310000]
+					}
         );
-				map_crs_requested = EPSG3978;
-				console.log(map_crs_requested);
+				map_crs = L.CRS.EPSG3978;
 				break;
-      default: //add case for 3978 ****************************************
-        map_crs_requested = L.CRS.EPSG3857;
+      default:
+        map_crs = L.CRS.EPSG3857;
         break;
     }
-    console.log(map_crs_requested);
 
     this._map = new L.map(this._el.map, {
       scrollWheelZoom: false,
       zoomControl: !this.options.map_mini,
-      crs: map_crs_requested
+      crs: map_crs,
+			center: [0,0]
     });
 
+		console.log(Object.keys(this.options.base_map).length)
+
     // Detect if base_map has been defined in options object.
-    if ((typeof this.options.base_map === "string" && this.options.base_map !== "") ||
-      (typeof this.options.base_map === "object" && Object.keys(this.options.base_map).length === 0)) {
+    if ((typeof this.options.base_map === "string" && this.options.base_map !== "") || (typeof this.options.base_map === "object" && Object.keys(this.options.base_map).length > 0)) {
+
+
       this._base_layer = this._createTileLayer(this.options.base_map);
       this._map.addLayer(this._base_layer);
     }
@@ -228,6 +235,8 @@ export default class Leaflet extends Map {
   /*	Create Tile Layer
   ================================================== */
   _createTileLayer(map_type, options) {
+		console.log('in _createTileLayer')
+		console.log(map_type)
     var _tilelayer = null,
       // Set the map type by detecting the type, if an object the type is passed in url attribute
       _map_type_arr = (typeof map_type === "object") ? map_type.url.split(':') : map_type.split(':'),
@@ -298,6 +307,7 @@ export default class Leaflet extends Map {
         _tilelayer = new StamenTileLayer('toner', _options);
         break;
     }
+		console.log(_tilelayer)
 
     return _tilelayer;
   }
