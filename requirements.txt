@@ -54,6 +54,6 @@ unicodecsv==0.14.1
 Unidecode==0.4.17
 uritemplate==3.0.1
 urllib3==1.24.2
-Werkzeug==1.0.1
+Werkzeug==2.2.3
 xmltodict==0.10.2
 gunicorn==20.0.4
