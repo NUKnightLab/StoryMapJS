@@ -1,81 +1,73 @@
-{% extends "base.html" %}
-{% block title %}StoryMap for Gigapixel Images - {% endblock %}
-{% block content %}
+{% extends "base.html" %} {% block title %}StoryMap for Gigapixel Images - {% endblock %} {% block content %}
 <style>
-#storymap {
-    height: 600px;
-    width: 100%;
-}
-
-.modal {
-    width: 80%;
-    margin-left:-40%; /* width/2) */
-}
+    #storymap {
+        height: 600px;
+        width: 100%;
+    }
+    
+    .modal {
+        width: 80%;
+        margin-left: -40%;
+        /* width/2) */
+    }
 </style>
 <div class="container">
-  <div class="grid grid-center">
-    <div class="column-12">
-      <h3>StoryMap for Images</h3>
-      <p>You can use StoryMap to tell stories about photography or art, or to show a journey on a historic map. Learn more <a href="#how-to-gigapixel">below the example</a>.</p>
-      <div id="storymap"></div>
-      <!-- JavaScript-->
-      <script>
-        var storymap = new VCO.StoryMap('storymap', '{{ STATIC_URL }}demo/seurat.json', {
-         map_type:                "zoomify",
-         map_background_color:    "#333",
-         map_as_image:            true,
-         calculate_zoom:      false,
-         zoomify: {
-          path:               "http://cdn.verite.co/maps/zoomify/seurat/",
-          width:              30000,
-          height:             19970,
-          tolerance:          0.9,
-          attribution:        "<a href='http://www.google.com/culturalinstitute/asset-viewer/a-sunday-on-la-grande-jatte-1884/twGyqq52R-lYpA?projectId=art-project' target='_blank'>Google Art Project</a>"
-         }
-        });
-        window.onresize = function(event) {
-         storymap.updateDisplay();
-        }
-      </script>
+    <div class="grid grid-center">
+        <div class="column-12">
+            <h3>StoryMap for Images</h3>
+            <p>You can use StoryMap to tell stories about photography or art, or to show a journey on a historic map. Learn more <a href="#how-to-gigapixel">below the example</a>.</p>
+            <div id="storymap"></div>
+            <!-- JavaScript-->
+            <script>
+                var storymap = new VCO.StoryMap('storymap', '{{ STATIC_URL }}demo/seurat.json', {
+                    map_type: "zoomify",
+                    map_background_color: "#333",
+                    map_as_image: true,
+                    calculate_zoom: false,
+                    zoomify: {
+                        path: "http://cdn.verite.co/maps/zoomify/seurat/",
+                        width: 30000,
+                        height: 19970,
+                        tolerance: 0.9,
+                        attribution: "<a href='http://www.google.com/culturalinstitute/asset-viewer/a-sunday-on-la-grande-jatte-1884/twGyqq52R-lYpA?projectId=art-project' target='_blank'>Google Art Project</a>"
+                    }
+                });
+                window.onresize = function(event) {
+                    storymap.updateDisplay();
+                }
+            </script>
+        </div>
+        <div class="column-12" id="how-to-gigapixel">
+            <h3>How do I make one?</h3>
+            <p>To preface the instructions, the gigapixel feature of StoryMap is not as easy to use as most of our other tools because it requires hosting a folder of image tiles on a web server. If you are unable to serve your images and make them accessible
+                through the web, you won't be able to use the gigapixel feature of StoryMap. Also, since we created the tool, some of the options for creating the image tiles no longer work. However, we still see new Gigapixel storymaps published, so
+                be assured that it's possible.</p>
+            <p>You'll start with a large image for your gigapixel project. It doesn't actually need to be a <a href="http://en.wikipedia.org/wiki/Gigapixel_image">gigapixel</a> image, but images you take with your phone won't be big enough to be interesting.
+                You need to know the image width and height in pixels as part of starting a gigapixel StoryMap.</p>
+            <p>Once you have a large image, export it as tiles. Windows can use the <a href="http://www.zoomify.com/free.htm">Zoomify Free</a> app. A Mac download is provided, but it does not work on modern MacOS. Photoshop no longer offers a Zoomify export,
+                unfortunately.
+            </p>
+
+
+            <p>More technically-minded users can use command-line tools such as <a href="https://libvips.github.io/libvips/API/current/Making-image-pyramids.md.html">VIPS</a>. For Mac users, VIPS can be installed using <a href="https://brew.sh/">homebrew</a>.
+                It takes quite a while, but works well once it is installed. The Windows version is already compiled, so is more easily downloaded, but also, there's no reason we know that Windows users shouldn't just use Zoomify Free, mentioned above.</p>
+
+            <p>This is when you'll need to be able to put your image folder onto a web server. (<a href="#serving-your-tiles">Tell me more</a>) You'll use the base url of the image folder for your exported tiles to make your gigapixel StoryMap.</p>
+            <p>After you have your image tiles up on a server, <a href="{{ url_for('select') }}">go to make a new StoryMap</a>, the same as you would for a conventional storymap. When you get to the main StoryMap editor screen, click on the "options" button
+                near the top left. Set the "map type" to "Gigapixel" and enter the base URL for your image tiles, and the width and height of the original image.</p>
+        </div>
     </div>
-    <div class="column-12" id="how-to-gigapixel">
-      <h3>How do I make one?</h3>
-      <p>To preface the instructions, the gigapixel feature of StoryMap is not as easy to use as most of our other tools because it requires hosting a folder of images on a web server. If you are unable to serve your images and make them accessible through the web, you won't be able to use the gigapixel feature of StoryMap.</p>
-      <p>You'll start with a large image for your gigapixel project. It doesn't actually need to be a <a href="http://en.wikipedia.org/wiki/Gigapixel_image">gigapixel</a> image, but images you take with your phone won't be big enough to be interesting. You need to know the image width and height in pixels as part of starting a gigapixel StoryMap.</p>
-      <p>Once you have a large image, export it as tiles. Windows and Mac users can use the <a href="http://www.zoomify.com/express.htm">Zoomify Express</a> app. Or, if you have Photoshop, you can use its "Zoomify" export feature. <a href="#zoomify-export">(show me how)</a> More technically-minded users can use command-line tools such as <a href="http://sourceforge.net/projects/zoomifyimage/">ZoomifyImage</a> or <a href="https://libvips.github.io/libvips/API/current/Making-image-pyramids.md.html">VIPS</a>.</p>
-      <p>This is when you'll need to be able to put your image folder onto a web server. (<a href="#serving-your-tiles">Tell me more</a>) You'll use the base url of the image folder for your exported tiles to make your gigapixel StoryMap.</p>
-      <p>After you have your image tiles up on a server, <a href="{{ url_for('select') }}">go to make a new StoryMap</a> and choose the "gigapixel" button. (<i class="vco-icon-image icon-button"></i>). Give your new project a name and enter the base url of your image tile folder on the web. Then enter the image width and height mentioned above, and you're ready to tell your gigapixel story.</p>
-      </div>
-  </div>
-  <div id="zoomify-export" class="column-12 section-color" data-keyboard="true">
-    <div class="container">
-      <h2>Zoomify Help</h2>
-      <img src="{{ STATIC_URL }}img/zoomify-tutorial-image-size.png" style="float:right;">
-      <ol>
-        <li>Open your image in Adobe Photoshop</li>
-        <li>Note the pixel dimensions of your image:
-          <ol>
-            <li>From the <strong>Image</strong> menu, choose <strong>Image Size</strong></li>
-            <li>If the dimensions aren't in pixels, use the menu next to "Dimensions:" to set it to pixels. </li>
-            <li>Make a note of the dimensions: the first number is width, the second is height.</li>
-          </ol>
-        </li>
-        <li>From the <strong>File</strong> menu choose <strong>Export > Zoomify.</strong></li>
-        <li>Set the output folder and click OK. Take note of (or edit) the "Base Name". Photoshop will create a folder with that name in your output folder. Later, you'll need to put that "Base Name" folder on a <a href="#serving-your-tiles">web server</a>.</li>
-        <li>After you click OK, Photoshop will open a page in your browser showing your Zoomify export. You can ignore this.</li>
-      </ol>
+
+    <div id="serving-your-tiles" class="column-12 section-color" data-keyboard="true">
+        <div class="container">
+            <h2>Serving Your Tiles</h2>
+            <p>We've found that many people in our audience have never had to manage files on a webserver before, so this can be where things get complicated. We've tried to explain things as best we can.</p>
+            <p>Previously, Gigapixel tiles were able to be hosted on Google Drive and Dropbox. Both platforms have since changed their rules, and now no longer suporting hosting tiles. Outside of hosting your tiles yourself, we have found two alternatives:</p>
+            <ul>
+                <li><a href="https://github.com/NUKnightLab/StoryMapJS/blob/master/AWS_Hosting/AWS_Hosting.md">Amazon Web Services</a></li>
+                <li><a href="https://github.com/NUKnightLab/StoryMapJS/blob/master/GITHUB_HOSTING/GITHUB_HOSTING.md">Github</a></li>
+            </ul>
+        </div>
     </div>
-  </div>
-  <div id="serving-your-tiles" class="column-12 section-color" data-keyboard="true">
-    <div class="container">
-      <h2>Serving Your Tiles</h2>
-      <p>We've found that many people in our audience have never had to manage files on a webserver before, so this can be where things get complicated. We've tried to explain things as best we can.</p>
-      <p>Previously, Gigapixel tiles were able to be hosted on Google Drive and Dropbox. Both platforms have since changed their rules, and now no longer suporting hosting tiles. Outside of hosting your tiles yourself, we have found two alternatives:</p>
-      <ul>
-        <li><a href="https://github.com/NUKnightLab/StoryMapJS/blob/master/AWS_Hosting/AWS_Hosting.md">Amazon Web Services</a></li>
-        <li><a href="https://github.com/NUKnightLab/StoryMapJS/blob/master/GITHUB_HOSTING/GITHUB_HOSTING.md">Github</a></li>
-      </ul>
-    </div>
-  </div>
 </div>
 {% endblock %}
