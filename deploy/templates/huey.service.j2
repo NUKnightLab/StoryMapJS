@@ -1,0 +1,13 @@
+[Unit]
+Description=storymap-tasks
+After=network.target
+
+[Service]
+User={{ application_user }}
+Group={{ application_group }}
+WorkingDirectory={{ application_dir }}
+EnvironmentFile={{ env_file }}
+ExecStart={{ virtualenv}}/bin/huey_consumer --logfile=/var/log/huey/storymap-tasks.log storymap.tasks.huey
+
+[Install]
+WantedBy=multi-user.target
