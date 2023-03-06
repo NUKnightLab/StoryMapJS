@@ -32,7 +32,7 @@ is probably to point to a deployed cdn. ie., set this env variable:
 To get started you will need to do the following steps which are described in
 more detail below:
 
- * install docker-compose
+ * install docker
  * install the aws cli
  * build and import ssl certs
  * create a .env file
@@ -43,10 +43,21 @@ more detail below:
 
 ## Getting started developing StoryMap with docker-compose
 
-### Install docker-compose
 
-Be sure to have Docker and (docker-compose)[https://docs.docker.com/compose/]
-installed.
+### Prerequisite installs
+
+ * [Docker](https://docs.docker.com/) installed.
+ * [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+
+   You will need a local credentials configuration in your ~/.aws/credentials file:
+
+    ```
+    [local]
+    region=us-east-1
+    endpoint-url=http://localhost:4566
+    aws_access_key_id=localstack
+    aws_secret_access_key=localstack
+    ```
 
 
 ### Build ssl certs for localstack
@@ -76,7 +87,7 @@ Note: on Mac, hit CMD+SHIFT+. to see dotted files in the finder.
     - Preferences >
     - Certificates >
     - View Certificates >
-    - Your Certificates >
+    - Authorities >
     - Import .localstack/KnightLabRootCA.pem
 
 
@@ -97,8 +108,8 @@ Needed to login to StoryMap:
 ### Run the development docker-compose stack
 
 ```
- $ docker-compose build
- $ docker-compose up
+ $ docker compose build
+ $ docker compose up
 ```
 
 
@@ -116,6 +127,8 @@ After the services come up, create the required buckets:
  $ scripts/create-tables.sh
 ```
 
+Note: If prompted for the password of the storymap user, it is `storymap`
+
 
 ### Open application
 
@@ -127,8 +140,8 @@ Navigate to `https://localhost` and accept the self-signed certificate.
 Some commands to know:
 
 ```
- $ docker-compose images
- $ docker-compose up --remove-orphans
+ $ docker compose images
+ $ docker compose up --remove-orphans
  $ docker ps
  $ docker stop
  $ docker system prune
