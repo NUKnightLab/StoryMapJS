@@ -3,6 +3,8 @@
 	http://maps.stamen.com/
 ================================================== */
 import { LeafletModule } from "leaflet";
+// import * as proj4 from "proj4";
+// import * as proj4leaflet from "proj4leaflet";
 import { mergeData } from "../../core/Util"
 
 

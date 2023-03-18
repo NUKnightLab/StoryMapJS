@@ -26,7 +26,7 @@ class StoryMap {
 				this.on(key,callbacks);
 			} else {
 				for (var idx in callbacks) {
-                    if (typeof(callbacks[idx]) == 'function') { 
+                    if (typeof(callbacks[idx]) == 'function') {
 					    this.on(key,callbacks[idx]);
                     } else {
                         console.log(
@@ -52,7 +52,7 @@ class StoryMap {
 			map: {},
 			menubar: {}
 		};
-        
+
 		// Determine Container Element
 		if (typeof elem === 'object') {
 			this._el.container = elem;

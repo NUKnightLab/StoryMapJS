@@ -17,10 +17,10 @@ export function extend(/*Object*/ dest) /*-> Object*/ {	// merge src properties 
 }
 
 /**
- * Implement mixin behavior. Based on 
+ * Implement mixin behavior. Based on
  *     https://blog.bitsrc.io/understanding-mixins-in-javascript-de5d3e02b466
- * @param {class} cls 
- * @param  {...class} src 
+ * @param {class} cls
+ * @param  {...class} src
  */
 export function classMixin(cls, ...src) {
     for (let _cl of src) {
@@ -145,7 +145,7 @@ export function htmlify(str) {
         str = Emoji(str);
     }
     if (str.match(/<p>[\s\S]*?<\/p>/)) {
-        
+
         return str;
     } else {
         return "<p>" + str + "</p>";
@@ -158,7 +158,7 @@ export function getUrlVars(string) {
         hash,
         hashes;
     str = string.toString();
-    if (str.match('&#038;')) { 
+    if (str.match('&#038;')) {
         str = str.replace("&#038;", "&");
     } else if (str.match('&#38;')) {
         str = str.replace("&#38;", "&");
@@ -189,7 +189,7 @@ export const ratio = {
         }
         return s;
     },
-    
+
     r16_9: function(size) {
         if (size.w !== null && size.w !== "") {
             return Math.round((size.w / 16) * 9);
