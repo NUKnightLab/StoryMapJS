@@ -44,15 +44,16 @@
 	    storymap = new KLStoryMap.StoryMap('storymap-embed', data, options, {title: onStoryMapTitle});
     }
 
-    (function() {
+    document.addEventListener("DOMContentLoaded", () => {
+        console.log("Initializing storymap")
         var data = {};
         var options = {};
         var storymapTitle = 'Test';
-        let url = 'https://uploads.knightlab.com/storymapjs/fe78caa5c21790f56f0bb53cba313ab9/the-most-expensive-transfers-in-football-history/published.json';
+        let url = './football.json';
         fetch(url)
             .then(response => response.json())
             .then(data => buildStoryMap(data));
-    })();
+    })
     </script>
 
 </body>

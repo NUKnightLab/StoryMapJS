@@ -1,6 +1,8 @@
 dist/*
 .pgdata/
 
+.devcontainer
+
 huey.*
 
 .srl
