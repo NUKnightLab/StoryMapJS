@@ -170,19 +170,21 @@ export default class Leaflet extends Map {
 	================================================== */
 	_createTileLayer(map_type, options) {
 		var _tilelayer = null,
-			_map_type_arr = map_type.split(':'),
-			_options = {},
+			options = {},
 			_attribution_knightlab = "<a href='http://leafletjs.com' title='A JS library for interactive maps'>Leaflet</a> | "
 
-		if (options) {
-			_options = options; // WARNING this is just a reference not a copy. If the idea was to protect options it isn't doing that.
+		if (map_type == 'stamen:trees-cabs-crime') {
+			console.log("stamen:trees-cabs-crime layer no longer available. Using OSM instead")
+			map_type = 'osm'
 		}
 
+		let _map_type_arr = map_type.split(':')
+
 		// Set Tiles
-		switch(_map_type_arr[0]) {
+		switch (_map_type_arr[0]) {
 			case 'mapbox':
 				var mapbox_url;
-				_options.attribution = _attribution_knightlab + "<div class='mapbox-maplogo'></div><a href='https://www.mapbox.com/about/maps/' target='_blank'>© Mapbox © OpenStreetMap</a>";
+				options.attribution = _attribution_knightlab + "<div class='mapbox-maplogo'></div><a href='https://www.mapbox.com/about/maps/' target='_blank'>© Mapbox © OpenStreetMap</a>";
 				if (_map_type_arr.length > 2) {
 					// new form mapbox URL:
 					// mapbox://styles/nuknightlab/cjl6w8oio0agu2sltd04tp1kx
@@ -194,36 +196,36 @@ export default class Leaflet extends Map {
 					var mapbox_name = _map_type_arr[1];
 					mapbox_url = "https://api.tiles.mapbox.com/v4/" + mapbox_name + "/{z}/{x}/{y}.png?access_token=" + this.options.map_access_token;
 				}
-				_tilelayer = new L.TileLayer(mapbox_url, _options);
+				_tilelayer = new L.TileLayer(mapbox_url, options);
 				break;
 			case 'stamen':
-				_tilelayer = new StamenTileLayer(_map_type_arr[1] || 'toner-lite', _options);
+				_tilelayer = new StamenTileLayer(_map_type_arr[1] || 'toner-lite', options);
 				this._map.getContainer().style.backgroundColor = "#FFFFFF";
 				break;
 			case 'zoomify':
-				_options.width			= this.options.zoomify.width;
-				_options.height 		= this.options.zoomify.height;
-				_options.tolerance 		= this.options.zoomify.tolerance || 0.9;
-				_options.attribution 	= _attribution_knightlab + this.options.zoomify.attribution;
+				options.width			= this.options.zoomify.width;
+				options.height 		= this.options.zoomify.height;
+				options.tolerance 		= this.options.zoomify.tolerance || 0.9;
+				options.attribution 	= _attribution_knightlab + this.options.zoomify.attribution;
 
-				_tilelayer = new ZoomifyTileLayer(this.options.zoomify.path, _options);
+				_tilelayer = new ZoomifyTileLayer(this.options.zoomify.path, options);
 				//this._image_layer = new L.imageOverlay(this.options.zoomify.path + "TileGroup0/0-0-0.jpg", _tilelayer.getZoomifyBounds(this._map));
 				break;
 			case 'osm':
-				_options.subdomains = 'ab';
-				_options.attribution = _attribution_knightlab + "© <a target='_blank' href='http://www.openstreetmap.org'>OpenStreetMap</a> and contributors, under an <a target='_blank' href='http://www.openstreetmap.org/copyright'>open license</a>";
-				_tilelayer = new L.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', _options);
+				options.subdomains = 'ab';
+				options.attribution = _attribution_knightlab + "© <a target='_blank' href='http://www.openstreetmap.org'>OpenStreetMap</a> and contributors, under an <a target='_blank' href='http://www.openstreetmap.org/copyright'>open license</a>";
+				_tilelayer = new L.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', options);
 				break;
 
 			case 'http':
 			case 'https':
-				_options.subdomains = this.options.map_subdomains;
-				_options.attribution 	= _attribution_knightlab + this.options.attribution;
-				_tilelayer = new L.TileLayer(this.options.map_type, _options);
+				options.subdomains = this.options.map_subdomains;
+				options.attribution 	= _attribution_knightlab + this.options.attribution;
+				_tilelayer = new L.TileLayer(this.options.map_type, options);
 				break;
 
 			default:
-				_tilelayer = new StamenTileLayer('toner', _options);
+				_tilelayer = new StamenTileLayer('toner', options);
 				break;
 		}
 

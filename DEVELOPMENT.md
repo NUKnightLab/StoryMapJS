@@ -1,8 +1,8 @@
-# Developing StoryMapJS - the javascript
+# Developing StoryMapJS - the javascript library
 
 When you make changes to the code, you should execute the build command. To
 test your changes, run a simple local web server in the project root and
-navigate, e.g. to http://localhost:8000/src/template/index.html.
+navigate, e.g. to http://localhost:8000/src/template/arya.html.
 
 Install the dependencies and build the javascript:
 
@@ -11,7 +11,7 @@ Install the dependencies and build the javascript:
  $ npx webpack -c webpack.dev.js
 ```
 
-# StoryMap editor development
+# StoryMap editor development - the python server
 
 ## Questions not yet completely addressed with the new localstack based setup:
 

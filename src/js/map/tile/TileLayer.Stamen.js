@@ -1,25 +1,25 @@
 /*	TyleLayer.Stamen
 	Makes Stamen Map tiles available
 	http://maps.stamen.com/
+    Stamen tiles will no longer be free (2023)
+    see http://maps.stamen.com/stadia-partnership/
 ================================================== */
-import { LeafletModule } from "leaflet";
 import { mergeData } from "../../core/Util"
 
 
 /*	tile.stamen.js v1.2.3
 ================================================== */
-
-let SUBDOMAINS = "a b c d".split(" ");
 function MAKE_PROVIDER(layer, type, minZoom, maxZoom) {
     return {
-        "url":          ["//stamen-tiles-{S}.a.ssl.fastly.net/", layer, "/{Z}/{X}/{Y}.", type].join(""),
+        "url": ["https://tiles.stadiamaps.com/tiles/", layer, "/{Z}/{X}/{Y}.", type].join(""),
         "type":         type,
-        "subdomains":   SUBDOMAINS.slice(),
+        "subdomains":   '',
         "minZoom":      minZoom,
         "maxZoom":      maxZoom,
         "attribution":  [
             "<a href='http://leafletjs.com' title='A JS library for interactive maps'>Leaflet</a> | ",
-            'Map tiles by <a href="http://stamen.com">Stamen Design</a>, ',
+            'Map tiles by <a href="http://stamen.com">Stamen Design</a>, served by ',
+            '<a href="https://stadiamaps.com/">Stadia</a> ',
             'under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. ',
             'Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, ',
             'under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>.'
@@ -28,25 +28,23 @@ function MAKE_PROVIDER(layer, type, minZoom, maxZoom) {
 }
 
 let PROVIDERS =  {
-    "toner":        MAKE_PROVIDER("toner", "png", 0, 20),
-    "terrain":      MAKE_PROVIDER("terrain", "jpg", 4, 18),
-    "watercolor":   MAKE_PROVIDER("watercolor", "jpg", 0, 16),
-    "trees-cabs-crime": {
-        "url": "http://{S}.tiles.mapbox.com/v3/stamen.trees-cabs-crime/{Z}/{X}/{Y}.png",
-        "type": "png",
-        "subdomains": "a b c d".split(" "),
-        "minZoom": 11,
-        "maxZoom": 18,
-        "extent": [
-            {"lat": 37.853, "lon": -122.577},
-            {"lat": 37.684, "lon": -122.313}
-        ],
+    "toner":        MAKE_PROVIDER("stamen_toner", "png", 0, 20),
+    "terrain":      MAKE_PROVIDER("stamen_terrain", "jpg", 4, 18),
+    "watercolor": MAKE_PROVIDER("stamen_watercolor", "jpg", 0, 16),
+    "ch_watercolor": {
+        "url": "https://watercolormaps.collection.cooperhewitt.org/tile/watercolor//{Z}/{X}/{Y}.png",
+        "type": 'png',
+        "subdomains": '',
+        "minZoom": 0,
+        "maxZoom": 16,
         "attribution": [
-            'Design by Shawn Allen at <a href="http://stamen.com">Stamen</a>.',
-            'Data courtesy of <a href="http://fuf.net">FuF</a>,',
-            '<a href="http://www.yellowcabsf.com">Yellow Cab</a>',
-            '&amp; <a href="http://sf-police.org">SFPD</a>.'
-        ].join(" ")
+            "<a href='http://leafletjs.com' title='A JS library for interactive maps'>Leaflet</a> | ",
+            'Map tiles by <a href="http://stamen.com">Stamen Design</a>, served by ',
+            '<a href="https://watercolormaps.collection.cooperhewitt.org/">Cooper Hewitt, Smithsonian Design Museum</a> ',
+            'under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. ',
+            'Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, ',
+            'under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>.'
+        ].join("")
     }
 };
 
@@ -83,6 +81,12 @@ function setupFlavors(base, flavors, type) {
     if it doesn't exist.
 ================================================== */
 function getProvider(name) {
+
+    if (name == "trees-cabs-crime") {
+        console.log("trees-cabs-crime is not available. Using toner instead")
+        name = 'toner'
+    }
+
     if (name in PROVIDERS) {
         return PROVIDERS[name];
     } else {
