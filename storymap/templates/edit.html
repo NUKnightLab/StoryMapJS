@@ -1671,7 +1671,7 @@ function debounce(func, wait, immediate) {
         return [lat, lon];
     }
 
-    function geocode(query) {
+    function geocode(query, final) {
         if (query) {
             if (query.includes("lat:") && query.includes("lon:")) {
                 var latlon = parseLatLon(query);
@@ -1681,10 +1681,20 @@ function debounce(func, wait, immediate) {
                 }
                 return;
             }
+
+            // The Mapbox API requires use of 'mapbox.places-permanent'
+            // for any saved geocodes, but it is more expensive
+            // so shouldn't be used for suggestions
+            let mapbox_mode = 'mapbox.places' 
+            if (final) {
+                mapbox_mode = 'mapbox.places-permanent' 
+            }
+            
+
             var opts = {
                 query: query,
                 limit: 7,
-                mode: 'mapbox.places-permanent' 
+                mode: mapbox_mode
                 // https://docs.mapbox.com/api/search/#forward-geocoding
                 // language, types, limit might be interesting config values
             }
@@ -1699,7 +1709,9 @@ function debounce(func, wait, immediate) {
             mapboxClient.geocoding.forwardGeocode(opts)
             .send()
             .then(response => {
-                update_autocomplete_list(response.body.features);
+                if (!final) {
+                    update_autocomplete_list(response.body.features);
+                } // if it's final, there's nothing to do
             }).catch(err => {
                 if (err.statusCode == 403) {
                     alert("Geocoding forbidden. Have you configured the API key?")
@@ -1765,6 +1777,7 @@ function debounce(func, wait, immediate) {
 
         }
         if (selection) {
+            geocode($(selection).text(), true) // final geocode to be honest about the fact it's being saved
             var lng = $(selection).data('center')[0],
                 lat = $(selection).data('center')[1],
                 place_type = $(selection).data('place_type');
