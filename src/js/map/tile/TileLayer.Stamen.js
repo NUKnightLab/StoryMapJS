@@ -10,6 +10,7 @@ import { mergeData } from "../../core/Util"
 /*	tile.stamen.js v1.2.3
 ================================================== */
 function MAKE_PROVIDER(layer, type, minZoom, maxZoom) {
+    layer = layer.replace('-','_') // stadia has a different pattern than stamen
     return {
         "url": ["https://tiles.stadiamaps.com/tiles/", layer, "/{Z}/{X}/{Y}.", type].join(""),
         "type":         type,
@@ -49,13 +50,13 @@ let PROVIDERS =  {
 };
 
 	// set up toner and terrain flavors
-	setupFlavors("toner", ["hybrid", "labels", "lines", "background", "lite"]);
+    setupFlavors("toner", ["hybrid", "labels", "lines", "background", "lite"]);
 	// toner 2010
-	setupFlavors("toner", ["2010"]);
+    setupFlavors("toner", ["2010"]);
 	// toner 2011 flavors
-	setupFlavors("toner", ["2011", "2011-lines", "2011-labels", "2011-lite"]);
+    setupFlavors("toner", ["2011", "2011-lines", "2011-labels", "2011-lite"]);
 	setupFlavors("terrain", ["background"]);
-	setupFlavors("terrain", ["labels", "lines"], "png");
+    setupFlavors("terrain", ["labels", "lines"], "png");
 
 
 	/*	Export stamen.tile to the provided namespace.
@@ -68,12 +69,13 @@ let PROVIDERS =  {
 
 /*	A shortcut for specifying "flavors" of a style, which are assumed to have the
     same type and zoom range.
+    it appears that none of the "flavors" are supported by Stadia
 ================================================== */
 function setupFlavors(base, flavors, type) {
     var provider = getProvider(base);
     for (var i = 0; i < flavors.length; i++) {
         var flavor = [base, flavors[i]].join("-");
-        PROVIDERS[flavor] = MAKE_PROVIDER(flavor, type || provider.type, provider.minZoom, provider.maxZoom);
+        PROVIDERS[flavor] = MAKE_PROVIDER(`stamen_${flavor}`, type || provider.type, provider.minZoom, provider.maxZoom);
     }
 }
 
