@@ -293,11 +293,10 @@ LeafletEditorMap.prototype.setMapType = function(storymap_config) {
             break;
         }
       case 'osm':
+      default: // default case is 'osm'
         _options = {subdomains: 'ab'};
         this.tilelayer = new L.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', _options);
         break;
-      default:
-        this.tilelayer = new KLStoryMap.StamenTileLayer('toner');
     }
   }
   this.tilelayer.addTo(this.map);

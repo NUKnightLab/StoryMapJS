@@ -514,8 +514,9 @@ $(function() {
         var is_map_type = $('.entry-create-map').is(":visible");
         var $panel = (is_map_type) ? $('.entry-create-map') : $('.entry-create-zoomify');
 
-        var data = {
+        var data = { // note this diverges from _default_data in edit.html which is unfortunate but maybe hard to re-engineer?
             storymap: {
+                map_type: 'osm:standard', 
                 map_as_image: false,
                 call_to_action: true,
                 call_to_action_text: "",
@@ -672,6 +673,7 @@ $(function() {
         })
         .on('show_create_map', function(event) {
             $('.entry-create-map input[type="text"]').val('');
+            $('.entry-create-map input[type="text"]').focus();
 
             $(this).find('.entry-panel').hide();
             $(this).find('.entry-create, .entry-create-map').show();

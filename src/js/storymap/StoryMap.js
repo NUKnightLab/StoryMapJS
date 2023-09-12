@@ -99,7 +99,7 @@ class StoryMap {
       // interaction
       dragging: true,
       trackResize: true,
-      map_type: "stamen:toner-lite",
+      map_type: "stamen:toner-lite", // as Stamen transitions to Stadia, this is not a good default, but is it premature to change?
       attribution: "",
       map_mini: true,
       map_subdomains: "",
