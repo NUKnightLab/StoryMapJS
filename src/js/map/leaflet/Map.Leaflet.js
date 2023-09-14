@@ -1,5 +1,4 @@
 import { classMixin } from "../../core/Util";
-import { LeafletModule } from "leaflet";
 import Map from "../Map";
 import Events from "../../core/Events";
 import ZoomifyTileLayer from "./extensions/Leaflet.TileLayer.Zoomify";
@@ -172,7 +171,11 @@ export default class Leaflet extends Map {
 		var _tilelayer = null,
 			options = {},
 			_attribution_knightlab = "<a href='http://leafletjs.com' title='A JS library for interactive maps'>Leaflet</a> | "
-
+		let _attribution_cooperhewitt = 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, served by ' +
+										'<a href="https://watercolormaps.collection.cooperhewitt.org/">Cooper Hewitt, Smithsonian Design Museum</a> '+
+										'under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. ' +
+										'Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, ' +
+										'under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>.'
 		if (map_type == 'stamen:trees-cabs-crime') {
 			console.log("stamen:trees-cabs-crime layer no longer available. Using OSM instead")
 			map_type = 'osm'
@@ -181,7 +184,7 @@ export default class Leaflet extends Map {
 		let _map_type_arr = map_type.split(':')
 
 		// Set Tiles
-		switch (_map_type_arr[0]) {
+		switch (_map_type_arr[0]) { // this section is a little duplicative of similar case in EditorMap.js but not sure how to share.
 			case 'mapbox':
 				var mapbox_url;
 				options.attribution = _attribution_knightlab + "<div class='mapbox-maplogo'></div><a href='https://www.mapbox.com/about/maps/' target='_blank'>© Mapbox © OpenStreetMap</a>";
@@ -211,12 +214,6 @@ export default class Leaflet extends Map {
 				_tilelayer = new ZoomifyTileLayer(this.options.zoomify.path, options);
 				//this._image_layer = new L.imageOverlay(this.options.zoomify.path + "TileGroup0/0-0-0.jpg", _tilelayer.getZoomifyBounds(this._map));
 				break;
-			case 'osm':
-				options.subdomains = 'ab';
-				options.attribution = _attribution_knightlab + "© <a target='_blank' href='http://www.openstreetmap.org'>OpenStreetMap</a> and contributors, under an <a target='_blank' href='http://www.openstreetmap.org/copyright'>open license</a>";
-				_tilelayer = new L.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', options);
-				break;
-
 			case 'http':
 			case 'https':
 				options.subdomains = this.options.map_subdomains;
@@ -224,8 +221,14 @@ export default class Leaflet extends Map {
 				_tilelayer = new L.TileLayer(this.options.map_type, options);
 				break;
 
-			default:
-				_tilelayer = new StamenTileLayer('toner', options);
+			case 'ch-watercolor':
+				options.url = "https://watercolormaps.collection.cooperhewitt.org/tile/watercolor//{Z}/{X}/{Y}.png"
+				options.attribution = _attribution_knightlab + _attribution_cooperhewitt
+			case 'osm':
+			default: // osm is the default now
+				options.subdomains = 'ab';
+				options.attribution = _attribution_knightlab + "© <a target='_blank' href='http://www.openstreetmap.org'>OpenStreetMap</a> and contributors, under an <a target='_blank' href='http://www.openstreetmap.org/copyright'>open license</a>";
+				_tilelayer = new L.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', options);
 				break;
 		}
 

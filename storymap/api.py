@@ -893,6 +893,10 @@ def index():
 def gigapixel():
     return render_template('gigapixel.html')
 
+@app.route("/basemaps/")
+def basemaps():
+    return render_template('basemaps.html')
+
 @app.route("/advanced/")
 def advanced():
     return render_template('advanced.html')

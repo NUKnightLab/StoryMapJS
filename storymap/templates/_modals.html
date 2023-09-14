@@ -166,30 +166,29 @@
                         <label class="control-label">Map Type</label>
                         <div class="controls">
                             <select id="map_type_menu" class="span4">
-                                <option value="osm:standard">Open Street Maps: Standard</option>
-                                <option value="stamen:toner-lite">Stamen Maps: Toner Lite</option>
-                                <option value="stamen:toner">Stamen Maps: Toner</option>
-                                <option value="stamen:toner-lines">Stamen Maps: Toner Lines</option>
-                                <option value="stamen:toner-labels">Stamen Maps: Toner Labels</option>
-                                <option value="stamen:toner-background">Stamen Maps: Toner Background</option>
-                                <option value="stamen:watercolor">Stamen Maps: Watercolor</option>
-                                <option value="mapbox">Mapbox</option>
+                                <option value="osm:standard">OpenStreetMap: Standard</option>
+                                <option value="ch-watercolor">Cooper Hewitt: Watercolor</option>
                                 <option value="zoomify">Gigapixel</option>
+                                <option value="mapbox">Mapbox</option>
+                                <option value="stadia">Stadia</option>
                                 <option value="">custom</option>
+                                <option value="stamen:toner-lite">Stamen Maps<sup>*</sup>: Toner Lite</option>
+                                <option value="stamen:toner">Stamen Maps<sup>*</sup>: Toner</option>
+                                <option value="stamen:toner-lines">Stamen Maps<sup>*</sup>: Toner Lines</option>
+                                <option value="stamen:toner-labels">Stamen Maps<sup>*</sup>: Toner Labels</option>
+                                <option value="stamen:toner-background">Stamen Maps<sup>*</sup>: Toner Background</option>
+                                <option value="stamen:watercolor">Stamen Maps<sup>*</sup>: Watercolor</option>
                             </select>
-                            <a class="help" href="javascript:"
-                                data-html="true"
-                                data-placement="left"
-                                data-content='
-                                <p>Select a predefined map type.</p>
+                            <p id="basemap_note"><sup>*</sup><strong>Stamen maps are deprecated and should no longer be used.</strong> The option is preserved while 
+                                storymap creators learn about the issue. <a href="/basemaps/" target="basemap_explainer"><strong>Learn more</strong></a>
+                            
+                            </p>
+                                <!-- <p>Select a predefined map type.</p>
                                 <p>Select "Mapbox" to enter the ID of your Mapbox map and a
                                 <a href="https://www.mapbox.com/help/define-access-token/" target="_blank">public access token</a>.</p>
                                 <p>Select "custom" to enter the URL for a tile server.  If the server supports multiple subdomains,
                                 enter them as a single string in the Subdomain field (e.g. subdomains "a", "b", and "c" should
-                                be entered as "abc").</p>
-                                '
-                            >&nbsp;<i class="icon-question-sign icon-large"></i>
-                            </a>
+                                be entered as "abc").</p> -->
                         </div>
                     </div>
                     <div class="control-group map-control-group">

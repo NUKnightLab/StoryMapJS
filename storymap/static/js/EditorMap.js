@@ -273,6 +273,15 @@ LeafletEditorMap.prototype.setMapType = function(storymap_config) {
 
         this.tilelayer = L.tileLayer(map_type, options);
         break;
+      case 'ch-watercolor':
+            this.tilelayer = L.tileLayer("https://watercolormaps.collection.cooperhewitt.org/tile/watercolor/{z}/{x}/{y}.png", {
+                attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, served by ' +
+                '<a href="https://watercolormaps.collection.cooperhewitt.org/">Cooper Hewitt, Smithsonian Design Museum</a> ' +
+                'under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. ' +
+                'Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, ' +
+                'under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>.'
+        })
+        break;
       case 'stamen':
         this.tilelayer = new KLStoryMap.StamenTileLayer(parts[1]);
         break;

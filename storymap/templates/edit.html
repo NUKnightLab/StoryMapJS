@@ -731,17 +731,12 @@ function map_init(init_callback) {
             .closest('.control-group').hide();
     } else {
         switch(map_type) {
-            case "stamen:toner-lite":
-            case "stamen:toner":
-            case "stamen:toner-lines":
-            case "stamen:toner-labels":
-            case "stamen:toner-background":
-            case "stamen:watercolor":
-            case "stamen:terrain":
-                $('#map_type_menu').val(map_type);
+            // simple prefills
+            case "":
+                $('#map_type_menu').val(_default_data.storymap.map_type);
                 break;
             default:
-                $('#map_type_menu').val(_default_data.storymap.map_type);
+                $('#map_type_menu').val(map_type);
                 break;
         }
         $('#map_type').val('').closest('.control-group').hide();
