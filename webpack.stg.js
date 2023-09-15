@@ -25,11 +25,5 @@ module.exports = merge({
         //new HtmlWebpackPlugin({
         //    template: 'src/template/index.html'
         //})
-        new CopyPlugin({
-            patterns: [{
-                from: path.join(output_path, 'js/storymap.js'),
-                to: path.join(output_path, 'js/storymap-min.js')
-            }]
-        })
     ]
 }, common)

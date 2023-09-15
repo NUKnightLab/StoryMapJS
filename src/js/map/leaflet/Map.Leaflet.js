@@ -5,6 +5,7 @@ import ZoomifyTileLayer from "./extensions/Leaflet.TileLayer.Zoomify";
 import MiniMapControl from "./extensions/Leaflet.MiniMap.js";
 import LeafletMapMarker from "./MapMarker.Leaflet";
 import StamenTileLayer from "../tile/TileLayer.Stamen";
+import { Browser } from "../../core/Browser";
 
 /*	Map.Leaflet
 	Creates a Map using Leaflet
@@ -169,7 +170,7 @@ export default class Leaflet extends Map {
 	================================================== */
 	_createTileLayer(map_type, options) {
 		var _tilelayer = null,
-			options = {},
+			options = { r: '' },
 			_attribution_knightlab = "<a href='http://leafletjs.com' title='A JS library for interactive maps'>Leaflet</a> | "
 		let _attribution_cooperhewitt = 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, served by ' +
 										'<a href="https://watercolormaps.collection.cooperhewitt.org/">Cooper Hewitt, Smithsonian Design Museum</a> '+
@@ -179,6 +180,10 @@ export default class Leaflet extends Map {
 		if (map_type == 'stamen:trees-cabs-crime') {
 			console.log("stamen:trees-cabs-crime layer no longer available. Using OSM instead")
 			map_type = 'osm'
+		}
+
+		if (Browser.retina) {
+			options.r = '@2x'
 		}
 
 		let _map_type_arr = map_type.split(':')
@@ -200,6 +205,16 @@ export default class Leaflet extends Map {
 					mapbox_url = "https://api.tiles.mapbox.com/v4/" + mapbox_name + "/{z}/{x}/{y}.png?access_token=" + this.options.map_access_token;
 				}
 				_tilelayer = new L.TileLayer(mapbox_url, options);
+				break;
+			case 'stadia':
+				var style_url;
+				if (_map_type_arr.length > 1) {
+					style_url = _map_type_arr.slice(1).join(':') // put the pieces back together
+					if (this.options.map_access_token) {
+						style_url = `${style_url}?api_key=${this.options.map_access_token}`
+					}
+				}
+				_tilelayer = new L.TileLayer(style_url, options);
 				break;
 			case 'stamen':
 				_tilelayer = new StamenTileLayer(_map_type_arr[1] || 'toner-lite', options);

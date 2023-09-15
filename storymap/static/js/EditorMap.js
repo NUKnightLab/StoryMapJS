@@ -258,19 +258,19 @@ LeafletEditorMap.prototype.setMapType = function(storymap_config) {
       );
   } else {
 
+    var options = { r: '' };
+    if (L.Browser.retina) { options.r = '@2x' }
+    if (storymap_config.storymap.map_subdomains) {
+        options.subdomains = storymap_config.storymap.map_subdomains;
+    }
+    if (storymap_config.storymap.attribution) {
+        options.attribution = storymap_config.storymap.attribution;
+    }
+
     var parts = map_type.split(':')
     switch(parts[0]) { // this is a little duplicative of stuff in KLStoryMap.Map.Leaflet but I'm not sure that we can use that here. Take a look, though. Otherwise, add new tile layers...
       case 'http':
       case 'https':
-        var options = {};
-        if (storymap_config.storymap.map_subdomains) {
-          options.subdomains = storymap_config.storymap.map_subdomains;
-        }
-
-        if (storymap_config.storymap.attribution) {
-          options.attribution = storymap_config.storymap.attribution;
-        }
-
         this.tilelayer = L.tileLayer(map_type, options);
         break;
       case 'ch-watercolor':
@@ -282,7 +282,18 @@ LeafletEditorMap.prototype.setMapType = function(storymap_config) {
                 'under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>.'
         })
         break;
-      case 'stamen':
+    case 'stadia':
+        var access_token = storymap_config.storymap.map_access_token;
+        let style_url = '';
+        if (parts.length > 1) {
+            style_url = parts.slice(1).join(':') // put the pieces back together
+            if (access_token) {
+                style_url = `${style_url}?api_key=${access_token}`
+            }
+        }
+        this.tilelayer = new L.TileLayer(style_url, options);
+        break;
+    case 'stamen':
         this.tilelayer = new KLStoryMap.StamenTileLayer(parts[1]);
         break;
       case 'mapbox':
@@ -303,8 +314,8 @@ LeafletEditorMap.prototype.setMapType = function(storymap_config) {
         }
       case 'osm':
       default: // default case is 'osm'
-        _options = {subdomains: 'ab'};
-        this.tilelayer = new L.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', _options);
+        options.subdomains = 'ab';
+        this.tilelayer = new L.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', options);
         break;
     }
   }

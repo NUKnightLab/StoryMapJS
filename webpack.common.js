@@ -31,6 +31,12 @@ module.exports = {
                 to: path.join(output_path, 'js/locale/[name].[ext]') }
             ]
         }),
+        new CopyPlugin({
+            patterns: [{
+                from: path.join(output_path, 'js/storymap.js'),
+                to: path.join(output_path, 'js/storymap-min.js')
+            }]
+        }),
         new CleanWebpackPlugin({
             cleanStaleWebpackAssets: true
         }),

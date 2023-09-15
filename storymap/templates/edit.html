@@ -589,6 +589,45 @@ var _map_options = {
     }
 };
 
+function setUpStadiaMapTypeControls(options) {
+    options = options || {};
+    let style_url = options.style_url || ''
+    let subdomains = options.subdomains ?? ''
+    let access_token = options.access_token || ''
+    let attribution = options.attribution || ''
+    $('#map_type').val(style_url).attr('placeholder', '')
+        .prev().html('Style URL')
+        .closest('.control-group').show();
+    $('#map_type').focus();
+    $('#map_subdomains').val(subdomains).closest('.control-group').hide();
+    $('#map_access_token')
+        .attr('placeholder', 'API key')
+        .val(access_token).closest('.control-group').show();
+
+}
+
+function setUpMapboxMapTypeControls(options) {
+    options = options || {};
+    let style_url = options.style_url || ''
+    let subdomains = options.subdomains ?? 'abcd'
+    let access_token = options.access_token || ''
+    let attribution = options.attribution || ''
+    $('#map_type').val(style_url).attr('placeholder', 'mapbox://')
+        .prev().html('Style URL')
+        .closest('.control-group').show();
+    $('#map_subdomains')
+        .val(subdomains)
+        .closest('.control-group').hide();
+    $('#map_access_token')
+        .attr('placeholder', 'public access token')
+        .val(access_token)
+        .closest('.control-group').show();
+    $('#access-token-api-key-label').text('Access Token')
+    $('#attribution')
+        .val(attribution)
+        .closest('.control-group').hide();
+}
+
 function slides_load(init_callback) {
     $('#width').val(_storymap_data.width || _default_data.width);
     $('#height').val(_storymap_data.height || _default_data.height);
@@ -717,18 +756,18 @@ function map_init(init_callback) {
           .show();
     } else if(map_type && map_type.match('^mapbox:.+')) {
         $('#map_type_menu').val('mapbox');
-        $('#map_type').val(map_type.substr('mapbox:'.length)).attr('placeholder', 'mapbox://')
-            .prev().html('Style URL')
-            .closest('.control-group').show();
-        $('#map_subdomains')
-            .val(_storymap_data.storymap.map_subdomains || 'abcd')
-            .closest('.control-group').hide();
-        $('#map_access_token')
-            .val(_storymap_data.storymap.map_access_token)
-            .closest('.control-group').show();
-        $('#attribution')
-            .val(_storymap_data.storymap.attribution)
-            .closest('.control-group').hide();
+        setUpMapboxMapTypeControls({
+            style_url: map_type.substr('mapbox:'.length),
+            subdomains: _storymap_data.storymap.map_subdomains,
+            access_token: _storymap_data.storymap.map_access_token
+        })
+    } else if(map_type && map_type.match('^stadia:.+')) {
+        $('#map_type_menu').val('stadia');
+        setUpStadiaMapTypeControls({
+            style_url: map_type.substr('mapbox:'.length),
+            subdomains: _storymap_data.storymap.map_subdomains,
+            access_token: _storymap_data.storymap.map_access_token
+        })
     } else {
         switch(map_type) {
             // simple prefills
@@ -995,31 +1034,30 @@ $(function() {
                 _storymap_data.storymap.map_subdomains = '';
                 _storymap_data.storymap.attribution = '';
             } else if(map_type == 'zoomify') {
-                _storymap_data.storymap.zoomify = {};
+                _storymap_data.storymap.zoomify = {
+                    height: 600,
+                    width: 600,
+                    path: ''
+                };
 
                 $('#map_access_token').val('').closest('.control-group').hide();
                 $('#map_subdomains').val('').closest('.control-group').hide();
                 $('.zoomify-control-group').show();
 
                 _storymap_data.storymap.map_type = 'zoomify';
-                _storymap_data.storymap.zoomify.path = "";
-                _storymap_data.storymap.zoomify.height = 600;
-                _storymap_data.storymap.zoomify.width = 600;
                 $('#zoomify_path').trigger('change');
                 $('#zoomify_width').trigger('change');
                 $('#zoomify_height').trigger('change');
                 $('#zoomify_attribution').trigger('change');
 
             } else if(map_type == 'mapbox') {
-                $('#map_type').val('').attr('placeholder', 'mapbox://')
-                    .prev().html('Style URL')
-                    .closest('.control-group').show();
-                $('#map_type').focus();
-                $('#map_subdomains').val('').closest('.control-group').hide();
-                $('#map_access_token').val('').closest('.control-group').show();
-
                 _storymap_data.storymap.map_type = 'mapbox:';
                 _storymap_data.storymap.map_subdomains = 'abcd';
+                setUpMapboxMapTypeControls()
+            } else if(map_type == 'stadia') {
+                _storymap_data.storymap.map_type = 'stadia:';
+                _storymap_data.storymap.map_subdomains = '';
+                setUpStadiaMapTypeControls()
             } else {
                 $('#map_type').val('').closest('.control-group').hide();
                 $('#map_subdomains').val('').closest('.control-group').hide();
@@ -1050,6 +1088,12 @@ $(function() {
 
                 case 'mapbox':
                     _storymap_data.storymap.map_type = 'mapbox:'+map_type;
+                    storymap_dirty(1);
+                    map_set_type();
+                    break;
+
+                case 'stadia':
+                    _storymap_data.storymap.map_type = 'stadia:'+map_type;
                     storymap_dirty(1);
                     map_set_type();
                     break;

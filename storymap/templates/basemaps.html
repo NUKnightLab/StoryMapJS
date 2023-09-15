@@ -17,36 +17,36 @@
             <figure>
                 <img src="{{ STATIC_URL }}/img/basemaps.jpg" class="figure-img img-fluid img-rounded" alt="A composite image showing three squares, each showing the same location on a map with a different style." width="800" height="280">
                 <figcaption>
-                    Examples of the original Stamen basemaps showing the area around Knight Lab. From left to right, <em>toner</em>, <em>terrain</em>, and <em>watercolor</em>.
+                    Examples of the original Stamen Design basemaps showing the area around Knight Lab. From left to right, <em>toner</em>, <em>terrain</em>, and <em>watercolor</em>.
                 </figcaption>
             </figure>
-            <p>
+            <p class="lead">
                 Behind every great storymap is a basemap—literally!
             </p>
             <p> 
-                The "basemap" for webmaps is the layer which shows land and water, roads and placenames. When we launched StoryMapJS, we included a few different <a href="http://maps.stamen.com">basemap options created by Stamen Design</a> and offered by them at no cost to you.
+                The "basemap" for all webmaps, including storymaps, is the layer which shows land and water, roads and placenames. When we launched StoryMapJS, we included a few different <a href="http://maps.stamen.com">basemap options created by Stamen Design</a> and offered by them at no cost to you.
             </p>
             <p>
-                However, it turns out that the cost to Stamen Design was considerable, so in 2023, they recognized that they could no longer afford to provide this service. <a href="http://maps.stamen.com/stadia-partnership/">They arranged with a company, Stadia, to take over hosting the maps.</a> 
+                However, it turns out that the cost to Stamen Design was considerable, and in 2023, they recognized that they could no longer afford to provide this service. <a href="http://maps.stamen.com/stadia-partnership/">They arranged with a company called Stadia to take over hosting the maps.</a> 
             </p>
             <p>
-                <strong>Unfortunately, this change is going to impact most storymaps which have ever been created.</strong> Stadia offers a limited free level of service for non-commercial use, but commercial users and non-commercial maps after a certain point need to pay a fee. 
+                <strong>Unfortunately, this change is going to impact most storymaps which have ever been created.</strong> Stadia offers a limited free level of service for non-commercial use, but commercial users and non-commercial maps after a certain point need to pay a fee.
             </p>
             <p>
-                There's no way we can automatically switch existing storymaps that use the Stamen basemaps to use Stadia's instead. Even if you qualify for the free level of service, you need to <a href="https://stadiamaps.com/stamen/onboarding/create-account">create an account</a> and generate an <em>API key</em> so that Stadia can track usage. 
-            </p>
-            <p>
-                Note that in the case of Stamen's watercolor basemap, a no-cost option appears to be available. In 2021 Cooper Hewitt, Smithsonian Design Museum <a href="https://www.cooperhewitt.org/2021/10/06/maptiles-by-stamen-design/"></a>acquired Watercolor Maptiles into its digital design collection</a>, and they <a href="https://watercolormaps.collection.cooperhewitt.org/#16/42.0556/-87.6741">make the tiles available</a> for use in digital maps. You can now choose <em>Cooper Hewitt: Watercolor</em> from the "map type" menu in the StoryMap options configuration.
+                Note that in the case of Stamen's watercolor basemap, a no-cost option is available. In 2021 Cooper Hewitt, Smithsonian Design Museum <a href="https://www.cooperhewitt.org/2021/10/06/maptiles-by-stamen-design/"></a>acquired Watercolor Maptiles into its digital design collection</a>, and they <a href="https://watercolormaps.collection.cooperhewitt.org/#16/42.0556/-87.6741">make the tiles available</a> for use in digital maps. You can now choose <em>Cooper Hewitt: Watercolor</em> from the "map type" menu in the StoryMap options configuration.
             </p>
             <figure id="basemap-osm" >
             <img src="{{ STATIC_URL }}/img/basemaps-osm.png" class="figure-img img-fluid img-rounded" alt="A map with a similar view as the composite image above, demonstrating the OpenStreetMap basemap style." width="250" height="250">
             <figcaption>An example of the OpenStreetMap basemap showing the area around Knight Lab.</figcaption>
             </figure>            
             <p>
-                Effective immediately, new storymaps will default to using the <em>OpenStreetMap: Standard</em> basemap. We won't change existing storymaps yet, but eventually, for maps that aren't updated, the Stamen basemaps will stop working. At some point, we'll change StoryMapJS to switch those to using OpenStreetMap instead, but we want people to have time to learn about this change and consider their options. We will likely change maps using the Stamen Watercolor basemap to use the Cooper Hewitt Watercolor basemap, instead of changing them to use OpenStreetMap. You can change your storymap yourself, at any time.
+                <strong>Effective immediately, new storymaps will default to using the <em>OpenStreetMap: Standard</em> basemap.</strong> We won't change existing storymaps yet, but eventually, for maps that aren't updated, the Stamen basemaps will stop working. At some point, we'll change StoryMapJS to switch those to using OpenStreetMap instead, but we want people to have time to learn about this change and consider their options. We will likely change maps using the Stamen Watercolor basemap to use the Cooper Hewitt Watercolor basemap, instead of changing them to use OpenStreetMap. You can change your storymap yourself, at any time.
             </p>
             <p>
-                Also effective immediately, StoryMapJS supports configuring your map to use Stadia maps—both the Stamen-designed maps, as well as others that Stadia has created. We also continue to support maps made with <a href="https://www.mapbox.com/mapbox-studio">Mapbox Studio</a>, another commercial service which has a no-cost level.
+                 <strong>If you want to continue to use a Stamen basemap on your storymap, it will need to be edited.</strong>  Even if you qualify for the free level of service, you need to <a href="https://stadiamaps.com/stamen/onboarding/create-account">create an account</a>, generate an <em>API key</em> so that Stadia can track usage, and update your storymap to configure that key. Stadia provides other basemaps besides the Stamen Design options. See below for more specific details on using Stadia maps with Stamen or other designs.
+            </p>
+            <p>
+                We also continue to support maps made with <a href="https://www.mapbox.com/mapbox-studio">Mapbox Studio</a>, another commercial service which has a no-cost level.
             </p>
             <h3>Basemap options, in detail</h3>
             <p>Changing the basemap of your storymap happens in the <em>Options</em> panel. Open the panel by clicking on the button in the top left of the editor window. Basemaps are chosen using the <em>Map Type</em> menu.</p>
@@ -57,22 +57,30 @@
             <p>
                 The Cooper Hewitt: Watercolor basemap is a no-cost option provided by <a href="https://watercolormaps.collection.cooperhewitt.org/#16/42.0556/-87.6741">Cooper Hewitt, Smithsonian Design Museum</a>. 
             </p>
+            <h4>Mapbox</h4>
+            <p>Mapbox is a commercial map service provider. If you create an account with them, you can use <a href="https://www.mapbox.com/gallery/" target="mapbox_gallery">their existing styles</a> or create your own using <a href="https://www.mapbox.com/mapbox-studio" target="mapbox_studio">Mapbox Studio.</a> When you configure a storymap to use a Mapbox basemap, you will enter the "style URL" (which looks something like <code>mapbox://styles/nuknightlab/cikplzs9w00ddsykp7vqdz22u</code>) and an <em>access token</em> created from <a href="https://account.mapbox.com/access-tokens/" target="mapbox_account">your Mapbox account homepage</a>.</p>
+            <p>Mapbox charges for their service based on monthly usage, but they offer a "free tier" if your total usage is under a certain amount.</p>
+            <h4>Stadia</h4>
+            <p>
+                Stadia is a commercial map service provider. They offer <a href="https://docs.stadiamaps.com/themes/">a variety of basemap styles</a>, including, as mentioned above, the styles originally designed by Stamen Design. To use Stadia maps, <a href="https://client.stadiamaps.com/signup/">create an account</a>. Once you've verified your email address, create a "property" in the Stadia dashboard. After doing that, in the "Authentication Configuration" section, click on "+ Add API Key."  We understand that the recommendation on that page is to not use API keys in applications accessed through a web browser. However, the other option, based on domains, can't be used for storymaps made with our authoring tool, since all authors publish on the same domain. If you are a more technical user hosting storymaps on your own server, you could use the domain authorization control.
+            </p>
+            <p>
+                Once you have your API key, select the style you want to use from their <a href="https://docs.stadiamaps.com/themes/">themes page</a> and click on the "Get started with <em>theme name</em>" button. Under the <em>Preview and use [theme name]</em> section, click on <em>Standard URLs</em> (or <em>EU URLs</em>, if you prefer), and copy the URL under the <em>Raster XYZ PNG URL format</em> header. It will look something like <code>https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png</code>.  In the StoryMapJS editor options pane, when you choose "Stadia", you will see places to enter the URL and API key.
+            </p>
+            <p>
+                Stadia charges for their service based on monthly usage, but have a "free tier" for non-profit users if your total usage is under a certain amount.
+            </p>
             <h4>Gigapixel</h4>
             <p>
                 <em>Gigapixel</em> is Knight Lab's term for StoryMaps made based on images instead of map data. Creating this kind of map requires some technical capability. Learn more on our <a href="/gigapixel/">Gigapixel page</a>.
             </p>
-            <h4>Mapbox</h4>
-            <p>Mapbox is a commercial map service provider.If you create an account with them, you can use <a href="https://www.mapbox.com/gallery/">their existing styles</a> or create your own using <a href="https://www.mapbox.com/mapbox-studio">Mapbox Studio.</a> When you configure a storymap to use a Mapbox basemap, you will enter the "style URL" (which looks something like <code>mapbox://styles/nuknightlab/cikplzs9w00ddsykp7vqdz22u</code> and an <em>access token</em> created from your Mapbox account homepage.</p>
-            <p>Mapbox charges for their service based on monthly usage, but have a "free tier" if your total usage is under a certain amount. Note that StoryMapJS only works with "raster" tiles, which shouldn't be an issue in most cases, although they are charged at a higher rate than newer "vector" tiles. We understand this isn't ideal, but changing StoryMapJS to use the newer format is a bigger technological effort than we are currently prepared to take on.</p>
-            <h4>Stadia</h4>
-            <p></p>
             <h4>custom</h4>
-            <p></p>
-            <h4>Stamen: *</h4>
-            <p></p>
-
             <p>
-                Cooper Hewitt? custom? anything else? contact support
+                This option will not be used by many storymap creators, but if you happen to have access to a basemap provider not mentioned above, you can choose this option and enter a map URL template. This template will typically look like a normal URL, except it will have, at least, <code>{x}</code>, <code>{y}</code> and <code>{z}</code> placeholders that StoryMapJS replaces with coordinates and a zoom level. It may also have <code>{s}</code> (for subdomains) and/or <code>{r}</code> (for Retina display support). Since this option will be so rarely used, we won't try to explain it in detail here, but you can always <a href="https://knightlab.zendesk.com/anonymous_requests/new">file a support request with us</a> and we'll try to help.
+            </p>
+            <h4>Stamen: *</h4>
+            <p>
+                As discussed at length above, Stamen maps are no longer a viable option, and should not be chosen for new maps. Eventually, we will remove the options from the authoring tool.
             </p>
         </div>
     </div>
