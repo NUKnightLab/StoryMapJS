@@ -69,7 +69,6 @@ let PROVIDERS =  {
 
 /*	A shortcut for specifying "flavors" of a style, which are assumed to have the
     same type and zoom range.
-    it appears that none of the "flavors" are supported by Stadia
 ================================================== */
 function setupFlavors(base, flavors, type) {
     var provider = getProvider(base);
