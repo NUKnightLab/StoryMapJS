@@ -1,7 +1,7 @@
 {
   "name": "StoryMapJS",
   "version": "0.9.0",
-  "description": "This README is a work in progress. Please see QUICKSTART.md for the current development onboarding process.",
+  "description": "StoryMapJS is a tool for telling stories through the context of places on a map. For more information, see storymap.knightlab.com",
   "private": "true",
   "directories": {
     "test": "tests"
