@@ -177,6 +177,11 @@ export default class Leaflet extends Map {
 										'under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. ' +
 										'Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, ' +
 										'under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>.'
+
+		if (!map_type) {
+			map_type = 'stamen:toner-lite'; // very temporary stopgap for maps with undefined basemap
+		}
+
 		if (map_type == 'stamen:trees-cabs-crime') {
 			console.log("stamen:trees-cabs-crime layer no longer available. Using OSM instead")
 			map_type = 'osm'

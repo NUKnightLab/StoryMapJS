@@ -296,7 +296,7 @@ LeafletEditorMap.prototype.setMapType = function(storymap_config) {
     case 'stamen':
         this.tilelayer = new KLStoryMap.StamenTileLayer(parts[1]);
         break;
-      case 'mapbox':
+    case 'mapbox':
         // rare legacy may not have a map_access_token configured
         var access_token = storymap_config.storymap.map_access_token || 'pk.eyJ1IjoibnVrbmlnaHRsYWIiLCJhIjoieUpRU1FOWSJ9.f7Z1min5DNfTPBIb7RbnGA';
         if (parts.length > 2) {

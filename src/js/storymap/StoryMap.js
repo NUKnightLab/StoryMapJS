@@ -99,7 +99,7 @@ class StoryMap {
       // interaction
       dragging: true,
       trackResize: true,
-      map_type: "osm:standard", 
+      map_type: '', // "osm:standard", 
       attribution: "",
       map_mini: true,
       map_subdomains: "",
