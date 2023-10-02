@@ -50,17 +50,17 @@
             </p>
             <h3>Basemap options, in detail</h3>
             <p>Changing the basemap of your storymap happens in the <em>Options</em> panel. Open the panel by clicking on the button in the top left of the editor window. Basemaps are chosen using the <em>Map Type</em> menu.</p>
-            <h4>OpenStreetMap: Standard</h4>
+            <h4 id="openstreetmap">OpenStreetMap: Standard</h4>
             <p><a href="https://openstreetmap.org" target="openstreetmap">OpenStreetMap</a> is often described as the Wikipedia of mapping. Their basemap layer is the default for storymaps. It is available at no cost, although the organization <a href="https://supporting.openstreetmap.org/">accepts donations and offers memberships</a>.
             </p>
-            <h4>Cooper Hewitt: Watercolor</h4>
+            <h4 id="cooper-hewitt">Cooper Hewitt: Watercolor</h4>
             <p>
                 The Cooper Hewitt: Watercolor basemap is a no-cost option provided by <a href="https://watercolormaps.collection.cooperhewitt.org/#16/42.0556/-87.6741">Cooper Hewitt, Smithsonian Design Museum</a>. 
             </p>
-            <h4>Mapbox</h4>
+            <h4 id="mapbox">Mapbox</h4>
             <p>Mapbox is a commercial map service provider. If you create an account with them, you can use <a href="https://www.mapbox.com/gallery/" target="mapbox_gallery">their existing styles</a> or create your own using <a href="https://www.mapbox.com/mapbox-studio" target="mapbox_studio">Mapbox Studio.</a> When you configure a storymap to use a Mapbox basemap, you will enter the "style URL" (which looks something like <code>mapbox://styles/nuknightlab/cikplzs9w00ddsykp7vqdz22u</code>) and an <em>access token</em> created from <a href="https://account.mapbox.com/access-tokens/" target="mapbox_account">your Mapbox account homepage</a>.</p>
             <p>Mapbox charges for their service based on monthly usage, but they offer a "free tier" if your total usage is under a certain amount.</p>
-            <h4>Stadia</h4>
+            <h4 id="stadia">Stadia</h4>
             <p>
                 Stadia is a commercial map service provider. They offer <a href="https://docs.stadiamaps.com/themes/">a variety of basemap styles</a>, including, as mentioned above, the styles originally designed by Stamen Design. To use Stadia maps, <a href="https://client.stadiamaps.com/signup/">create an account</a>. Once you've verified your email address, create a "property" in the Stadia dashboard. After doing that, in the "Authentication Configuration" section, click on "+ Add API Key."  We understand that the recommendation on that page is to not use API keys in applications accessed through a web browser. However, the other option, based on domains, can't be used for storymaps made with our authoring tool, since all authors publish on the same domain. If you are a more technical user hosting storymaps on your own server, you could use the domain authorization control.
             </p>
@@ -70,15 +70,15 @@
             <p>
                 Stadia charges for their service based on monthly usage, but have a "free tier" for non-profit users if your total usage is under a certain amount.
             </p>
-            <h4>Gigapixel</h4>
+            <h4 id="gigapixel">Gigapixel</h4>
             <p>
                 <em>Gigapixel</em> is Knight Lab's term for StoryMaps made based on images instead of map data. Creating this kind of map requires some technical capability. Learn more on our <a href="/gigapixel/">Gigapixel page</a>.
             </p>
-            <h4>custom</h4>
+            <h4 id="custom">custom</h4>
             <p>
                 This option will not be used by many storymap creators, but if you happen to have access to a basemap provider not mentioned above, you can choose this option and enter a map URL template. This template will typically look like a normal URL, except it will have, at least, <code>{x}</code>, <code>{y}</code> and <code>{z}</code> placeholders that StoryMapJS replaces with coordinates and a zoom level. It may also have <code>{s}</code> (for subdomains) and/or <code>{r}</code> (for Retina display support). Since this option will be so rarely used, we won't try to explain it in detail here, but you can always <a href="https://knightlab.zendesk.com/anonymous_requests/new">file a support request with us</a> and we'll try to help.
             </p>
-            <h4>Stamen: *</h4>
+            <h4 id="stamen">Stamen: *</h4>
             <p>
                 As discussed at length above, Stamen maps are no longer a viable option, and should not be chosen for new maps. Eventually, we will remove the options from the authoring tool.
             </p>
