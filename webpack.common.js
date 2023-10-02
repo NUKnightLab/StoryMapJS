@@ -18,11 +18,6 @@ module.exports = {
         library: "KLStoryMap" // https://webpack.js.org/configuration/output/#outputlibrary
     },
     plugins: [
-        //new CopyPlugin([{
-        //    from: "./source/js/language/locale/*.json",
-        //    to: path.join(output_path, "js/locale"),
-        //    flatten: true
-        //}]),
         new CopyPlugin({
             patterns: [
               { from: './src/embed/*.html',
@@ -30,12 +25,6 @@ module.exports = {
               { from: './src/js/language/locale/*.json',
                 to: path.join(output_path, 'js/locale/[name].[ext]') }
             ]
-        }),
-        new CopyPlugin({
-            patterns: [{
-                from: path.join(output_path, 'js/storymap.js'),
-                to: path.join(output_path, 'js/storymap-min.js')
-            }]
         }),
         new CleanWebpackPlugin({
             cleanStaleWebpackAssets: true

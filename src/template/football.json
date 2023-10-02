@@ -276,7 +276,6 @@
         }
       }
     ],
-    "map_type": "stamen:terrain",
     "call_to_action_text": "",
     "map_as_image": false,
     "map_subdomains": ""
