@@ -29,8 +29,6 @@ export default class Leaflet extends Map {
 		this._map.on("moveend", this._onMapMoveEnd, this);
 		this._map.attributionControl.setPrefix("<a href='http://storymap.knightlab.com/' target='_blank' class='vco-knightlab-brand'><span>&#x25a0;</span> StoryMapJS</a>");
 
-		var map_type_arr = this.options.map_type.split(':');
-
 		// Create Tile Layer
 		this._tile_layer = this._createTileLayer(this.options.map_type);
 		this._tile_layer.on("load", this._onTilesLoaded, this);
@@ -242,8 +240,14 @@ export default class Leaflet extends Map {
 				break;
 
 			case 'ch-watercolor':
-				options.url = "https://watercolormaps.collection.cooperhewitt.org/tile/watercolor//{Z}/{X}/{Y}.png"
 				options.attribution = _attribution_knightlab + _attribution_cooperhewitt
+				options.type = 'jpg'
+				options.minZoom = 0
+				options.maxZoom = 16
+				_tilelayer = new L.TileLayer("https://watercolormaps.collection.cooperhewitt.org/tile/watercolor/{z}/{x}/{y}.jpg", options);
+				
+				break;
+
 			case 'osm':
 			default: // osm is the default now
 				options.subdomains = 'ab';

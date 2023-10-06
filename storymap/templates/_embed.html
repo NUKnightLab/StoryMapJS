@@ -36,28 +36,22 @@ html, body {
 <body>
 <div id="storymap-embed"></div>
 
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-27829802-2"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+<!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-M95DDQGLWH"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
 
-  gtag('config', 'UA-27829802-2',
-    {
-      'anonymize_ip': true,
-      'linker': {
-          'domains': ['knightlab.com']
-        }
-    });
+    function gtag(){ dataLayer.push(arguments); }
 
-  gtag('event', 'EmbeddedIn', {
-    'event_label': document.referrer,
-    'event_category': 'StoryMapJS',
-    'non_interaction': true
-  });
-</script>
-<!-- End Google Analytics -->
+    gtag('js', new Date());
+    gtag('config', 'G-M95DDQGLWH');
+    gtag('event', 'EmbeddedIn', {
+      'event_label': document.referrer,
+      'event_category': 'StoryMapJS',
+      'non_interaction': true
+    })
+
+  </script>
 
 <script type="text/javascript">
     var storymap;

@@ -33,7 +33,7 @@ let PROVIDERS =  {
     "terrain":      MAKE_PROVIDER("stamen_terrain", "jpg", 4, 18),
     "watercolor": MAKE_PROVIDER("stamen_watercolor", "jpg", 0, 16),
     "ch_watercolor": {
-        "url": "https://watercolormaps.collection.cooperhewitt.org/tile/watercolor//{Z}/{X}/{Y}.png",
+        "url": "https://watercolormaps.collection.cooperhewitt.org/tile/watercolor//{z}/{x}/{y}.png",
         "type": 'png',
         "subdomains": '',
         "minZoom": 0,
