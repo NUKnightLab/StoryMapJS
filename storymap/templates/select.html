@@ -451,27 +451,39 @@ $(function() {
 
         $modal.trigger('progress_show', 'Importing StoryMap');
 
-        ajax_get(_params.import_url, {},
-            function(error) {
-                $modal.trigger('reset', format_error('Error loading storymap', error));
-            },
-            function(data) {
-                ajax_post("{{ url_for('storymap_create') }}",
-                    {title: name, d: JSON.stringify(data)},
-                    function(error) {
-                        $modal.trigger('reset', format_error('Error creating StoryMap', error));
-                    },
-                    function(data) {
-                        // Replace history state
-                        var url = document.location.href;
-                        url = url.substring(0, url.indexOf("?"));
-                        History.replaceState(null, document.title, url);
+        let import_url = _params.import_url
 
-                        document.location.href = "{{ url_for('edit') }}?id="+data.id;
-                    }
-                );
-            }
-        );
+        if (import_url.indexOf('index.html') >= 0) {
+            import_url = import_url.replace('index.html', 'published.json')
+        } else if (import_url.indexOf('draft.html') >= 0) {
+            import_url = import_url.replace('draft.html', 'draft.json')
+        }
+
+        if (import_url.indexOf('.json') != import_url.length - 5) {
+            $modal.trigger('reset', format_error('Error loading storymap', 'Invalid import URL'));
+        } else {
+            ajax_get(import_url, {},
+                function(error) {
+                    $modal.trigger('reset', format_error('Error loading storymap', error));
+                },
+                function(data) {
+                    ajax_post("{{ url_for('storymap_create') }}",
+                        {title: name, d: JSON.stringify(data)},
+                        function(error) {
+                            $modal.trigger('reset', format_error('Error creating StoryMap', error));
+                        },
+                        function(data) {
+                            // Replace history state
+                            var url = document.location.href;
+                            url = url.substring(0, url.indexOf("?"));
+                            History.replaceState(null, document.title, url);
+
+                            document.location.href = "{{ url_for('edit') }}?id="+data.id;
+                        }
+                    );
+                }
+            );
+        }
     });
 
 // ------------------------------------------------------------
