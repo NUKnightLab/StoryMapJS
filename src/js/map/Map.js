@@ -84,7 +84,7 @@ export default class Map {
 	
 		//Options
 		this.options = {
-			map_type: 			"stamen:toner-lite",
+			map_type: 			"osm:standard",
 			map_as_image: 		false,
 			map_mini: 			false,
 			map_background_color: "#d9d9d9",

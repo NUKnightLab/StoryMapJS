@@ -177,7 +177,7 @@ export default class Leaflet extends Map {
 										'under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>.'
 
 		if (!map_type) {
-			map_type = 'stamen:toner-lite'; // very temporary stopgap for maps with undefined basemap
+			map_type = 'osm:standard'; // temporary stopgap for maps with undefined basemap
 		}
 
 		if (map_type == 'stamen:trees-cabs-crime') {
