@@ -541,11 +541,12 @@ class StoryMap {
 	}
 }
 
-// TODO. what is this?
-//(function(_) {
-//  var scripts = document.getElementsByTagName("script"),
-//    		src = scripts[scripts.length-1].src;
-//  _.SCRIPT_PATH = src.substr(0,src.lastIndexOf("/"));
+// Calculates the script path and sets it as SCRIPT_PATH on the StoryMap class
+(function(StoryMapClass) {
+	var scripts = document.getElementsByTagName("script");
+	var src = scripts[scripts.length - 1].src;
+	StoryMapClass.SCRIPT_PATH = src.substr(0, src.lastIndexOf("/"));
+  })(StoryMap);
 
 classMixin(StoryMap, Events)
 export { StoryMap }
