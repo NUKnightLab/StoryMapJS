@@ -1597,10 +1597,8 @@ $(function() {
 
         if (!map_type) {
             // many storymaps have no explicit map type set.
-            // As stamen maps become un-free, this is unfortunate.
-            // For now, fill it in with this, even though it's deprecated.
-            // Eventually we'll default to osm:standard instead
-            _storymap_data.storymap.map_type = 'stamen:toner-lite'
+            // that was a mistake, but so it goes. 
+            _storymap_data.storymap.map_type = 'osm:standard'
         }
 
 

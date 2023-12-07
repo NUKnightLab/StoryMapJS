@@ -196,7 +196,18 @@ class StoryMap {
 			this.options.calculate_zoom = false;
 		}
 
-    // Use relative date calculations?
+	  // handle Stamen change
+	  if (this.options.map_type.indexOf('stamen') == 0) {
+		  const old_type = this.options.map_type
+		  if (old_type == 'stamen:watercolor') {
+			  this.options.map_type = 'ch-watercolor'
+		  } else {
+			  this.options.map_type = 'osm:standard'
+		  }
+		  console.log(`Deprecated map_type ${old_type}; using ${this.options.map_type}`)
+	  }
+
+	  // Use relative date calculations?
 		if(this.options.relative_date) {
 			if (typeof(moment) !== 'undefined') {
 				self._loadLanguage();
@@ -541,11 +552,14 @@ class StoryMap {
 	}
 }
 
-// TODO. what is this?
-//(function(_) {
-//  var scripts = document.getElementsByTagName("script"),
-//    		src = scripts[scripts.length-1].src;
-//  _.SCRIPT_PATH = src.substr(0,src.lastIndexOf("/"));
+// Calculates the script path and sets it as SCRIPT_PATH on the StoryMap class
+(function(StoryMapClass) {
+	var scripts = document.getElementsByTagName("script");
+	if (scripts.length > 0) {
+		var src = scripts[scripts.length - 1].src;
+		StoryMapClass.SCRIPT_PATH = src.substring(0, src.lastIndexOf("/"));
+	}
+})(StoryMap);
 
 classMixin(StoryMap, Events)
 export { StoryMap }

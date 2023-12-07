@@ -1,6 +1,6 @@
 {
   "name": "StoryMapJS",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "description": "StoryMapJS is a tool for telling stories through the context of places on a map. For more information, see storymap.knightlab.com",
   "private": "true",
   "directories": {
