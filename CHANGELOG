@@ -1,3 +1,7 @@
+0.9.4 (2023-12-08)
+* Forcibly change `stamen:` map_types to `osm:standard` or `ch-watercolor`
+* #491 set script path in code
+
 0.9.3 (2023-11-02)
 * Use osm:standard as default since stamen:toner-lite no longer free
 
