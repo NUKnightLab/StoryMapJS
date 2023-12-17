@@ -20,7 +20,7 @@ httpretty==0.8.10
 huey==2.4.3
 idna==2.7
 ipaddress==1.0.17
-ipython==7.16.3
+ipython==8.10.0
 itsdangerous==1.1.0
 Jinja2==2.11.3
 livereload==1.0.0
