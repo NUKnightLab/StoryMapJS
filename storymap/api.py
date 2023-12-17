@@ -20,6 +20,7 @@ import tempfile
 from urllib.parse import urlparse, urljoin, quote, urlencode
 from flask_cors import cross_origin
 from zipfile import ZipFile
+import bleach
 
 from .tasks import storymap_cleanup
 
@@ -287,8 +288,6 @@ def google_auth_verify():
                 "You are not authorized to access this page. Please send the " \
                 "following information to support@knightlab.zendesk.com: " \
                 "stg-storymap.knightlab.com unauthorized %s" % uid)
-
-        print('upsert user', uid)
 
         # Upsert user record
         user = get_user(uid, db=db())
@@ -767,6 +766,26 @@ def storymap_get(user, id):
         traceback.print_exc()
         return jsonify({'error': str(e)})
 
+
+def clean_html(html):
+    # bleach.sanitizer.ALLOWED_TAGS:
+    # ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code', 'em', 'i', 'li', 'ol', 'strong', 'ul']
+    allowed_tags = bleach.sanitizer.ALLOWED_TAGS + [
+        "br",
+        "div",
+        "iframe",
+        "img",
+        "span"
+    ]
+    allowed_attrs = {
+        "*": ["class"],
+        "a": ["href", "rel"],
+        "iframe": ["src"],
+        "img": ["alt", "title"],
+    }
+    return bleach.clean(html, tags=allowed_tags, attributes=allowed_attrs)
+
+
 @app.route('/storymap/save/', methods=['POST'])
 @require_user
 @require_user_id()
@@ -774,14 +793,24 @@ def storymap_save(user, id):
     """Save draft storymap"""
     try:
         data = _request_get_required('d')
-
         key_name = storage.key_name(user['uid'], id, 'draft.json')
         content = json.loads(data)
+        slides = []
+        for slide in content["storymap"]["slides"]:
+            _slide = copy.copy(slide)
+            for field in ["caption", "credit", "url"]:
+                _slide["media"][field] = clean_html(_slide["media"][field])
+            for field in ["headline", "text"]:
+                _slide["text"][field] = clean_html(_slide["text"][field])
+            slides.append(_slide)
+        content["storymap"]["slides"] = slides
         storage.save_json(key_name, content)
-
         user['storymaps'][id]['draft_on'] = _utc_now()
         save_user(user, db=db())
-        return jsonify({'meta': user['storymaps'][id]})
+        return jsonify({
+            "meta": user["storymaps"][id],
+            "data": content
+        })
     except storage.StorageException as e:
         traceback.print_exc()
         app.logger.error(f"StorageException uid:{user['uid']} id:{id}")
