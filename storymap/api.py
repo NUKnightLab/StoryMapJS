@@ -70,8 +70,6 @@ def create_app():
 app = create_app()
 app.config.from_envvar('FLASK_SETTINGS_FILE')
 settings = sys.modules[settings_module]
-# LOCAL_STORAGE_MODE is no longer supported. Use localstack instead.
-app.config['LOCAL_STORAGE_MODE'] = settings.LOCAL_STORAGE_MODE
 app.config['TEST_MODE'] = settings.TEST_MODE
 examples_json = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'examples.json')
 faq_json = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'faq.json')

@@ -1,4 +1,10 @@
-version: '2.1'
+version: '3.9'
+
+
+volumes:
+  localstack-data:
+    external: true
+
 
 services:
 
@@ -9,7 +15,7 @@ services:
       - "443:5000"
     links:
       - pg:pg
-      - localstack:localstack
+      #- localstack:localstack
     volumes:
       - ./storymap:/usr/src/apps/StoryMapJS/storymap
       - ./dist:/usr/src/apps/StoryMapJS/dist
@@ -19,7 +25,7 @@ services:
       DEBUG: 'true'
       PYTHONPATH: .
       AWS_ACCESS_KEY_ID: xyz
-      AWS_DEFAULT_REGION: xyz
+      AWS_DEFAULT_REGION: us-east-1
       AWS_SECRET_ACCESS_KEY: xyz
       REDIS_HOST: redis
       RABBITMQ_HOST: rabbitmq
@@ -27,22 +33,28 @@ services:
     command: gunicorn -b :5000 --workers 1 --reload --log-level debug storymap.core.wsgi:application --keyfile KnightLabRootCA.key --certfile KnightLabRootCA.crt
     depends_on:
       - pg
-      - localstack
+      #- localstack
 
   localstack:
     container_name: "${LOCALSTACK_DOCKER_NAME-localstack_main}"
-    image: localstack/localstack-light
+    image: localstack/localstack
     ports:
       - "4566:4566"
       - "4571:4571"
     environment:
       - LOCALSTACK_SERVICES=s3
-      - LOCALSTACK_DATA_DIR=/tmp/localstack/data
+      - LOCALSTACK_LEGACY_PERSISTENCE=1
+      - LOCALSTACK_PERSISTENCE=1
+      # - LOCALSTACK_DATA_DIR=/localstack/data
     volumes:
-      - ./.localstack/:/tmp/localstack
+      #- ./.localstack/:/var/lib/localstack
+      - localstack-data:/var/lib/localstack
+      #- ./.localstack/:/localstack
+      #- "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
+
 
   pg:
-    image: postgres:11.10
+    image: postgres:12.17
     restart: always
     environment:
       POSTGRES_USER: storymap
@@ -56,7 +68,7 @@ services:
   huey:
     build:
       context: .
-      dockerfile: celery.Dockerfile
+      dockerfile: Dockerfile.huey
     restart: always
     working_dir: /usr/src/apps/StoryMapJS
     volumes:
@@ -65,37 +77,8 @@ services:
     environment:
       PYTHONPATH: .
       AWS_ACCESS_KEY_ID: xyz
-      AWS_DEFAULT_REGION: xyz
+      AWS_DEFAULT_REGION: us-east-1
       AWS_SECRET_ACCESS_KEY: xyz
     command: huey_consumer.py --logfile=storymap/huey.log storymap.tasks.huey
-    depends_on:
-      - localstack
-
-  #celery:
-  #  build:
-  #    context: .
-  #    dockerfile: celery.Dockerfile
-  #  restart: always
-  #  working_dir: /usr/src/apps/StoryMapJS
-  #  volumes:
-  #    - ./storymap:/usr/src/apps/StoryMapJS/storymap
-  #  env_file: .env
-  #  environment:
-  #    PYTHONPATH: .
-  #    AWS_ACCESS_KEY_ID: xyz
-  #    AWS_DEFAULT_REGION: xyz
-  #    AWS_SECRET_ACCESS_KEY: xyz
-  #    REDIS_HOST: redis
-  #    RABBITMQ_HOST: rabbitmq
-  #  command: celery -A storymap.tasks worker -l debug
-  #  depends_on:
-  #    - localstack
-  #    - rabbitmq
-
-
-  #redis:
-  #  image: redis
-
-  #rabbitmq:
-  #  image: rabbitmq
-  #  command: rabbitmq-server
+    #depends_on:
+    #  - localstack

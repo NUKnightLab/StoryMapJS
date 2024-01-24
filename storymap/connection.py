@@ -12,11 +12,11 @@ psycopg2.extensions.register_adapter(dict, psycopg2.extras.Json)
 
 DEFAULT_USER_QUERY_LIMIT = 20
 
-# Get settings module
-settings = sys.modules[os.environ['FLASK_SETTINGS_MODULE']]
 
 
-def pg_conn():
+def pg_conn(settings=None):
+    if settings is None:
+        settings = sys.modules[os.environ['FLASK_SETTINGS_MODULE']]
     return psycopg2.connect(
         host=settings.DATABASES['pg']['HOST'],
         port=settings.DATABASES['pg']['PORT'],
@@ -37,12 +37,18 @@ def create_pg_user(uid, uname, *, db, migrated=1, storymaps=None):
     db.commit()
 
 
-def migrate_pg(*, db, drop_table=False):
-    # Checked max length of uname in mongo was 71 characters
-    raise Exception('Migration currently unavailable')
+def create_users_table(*, db, drop_table=False):
     if drop_table:
         with db.cursor() as cursor:
             cursor.execute('DROP TABLE IF EXISTS users;')
+            cursor.execute(
+                "CREATE TABLE IF NOT EXISTS users " \
+                "(id serial PRIMARY KEY, uid varchar(32), uname varchar(100), " \
+                "migrated smallint, storymaps jsonb, " \
+                "CONSTRAINT unique_uid UNIQUE (uid))")
+        db.commit()
+    else:
+        with db.cursor() as cursor:
             cursor.execute(
                 "CREATE TABLE IF NOT EXISTS users " \
                 "(id serial PRIMARY KEY, uid varchar(32), uname varchar(100), " \
