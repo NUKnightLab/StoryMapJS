@@ -286,7 +286,6 @@ def google_auth_verify():
                 "following information to support@knightlab.zendesk.com: " \
                 "stg-storymap.knightlab.com unauthorized %s" % uid)
 
-        print('upsert user', uid)
 
         # Upsert user record
         user = get_user(uid, db=db())
@@ -851,8 +850,6 @@ def storymap_image_save(user, id):
     import binascii
     try:
         name, content = _request_get_required('name', 'content')
-        print(content[:30])
-
         m = re.match('data:(.+);base64,(.+)', content)
         if m:
             content_type = m.group(1)
