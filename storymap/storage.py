@@ -9,13 +9,12 @@ import sys
 import time
 import traceback
 import json
-from functools import wraps
-import boto3 as boto
-from boto.s3.connection import S3Connection
-from moto import mock_s3
-from boto.exception import S3ResponseError
-from boto.s3.connection import OrdinaryCallingFormat
+import boto3
 import requests
+from functools import wraps
+from botocore.exceptions import ClientError, EndpointConnectionError
+#from boto3.exception import S3ResponseError
+#from boto3.s3.connection import OrdinaryCallingFormat
 
 
 S3_LIST_OBJECTS_MAX = 1000 # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/s3.html#S3.Client.list_objects
@@ -38,32 +37,26 @@ def truthy(s):
    return str(s).lower()[0] in ['t', '1']
 
 
-if hasattr(settings, 'TEST_MODE') and settings.TEST_MODE:
-    # TODO: Not sure if mocks still work
-    print('TEST MODE: Mocking s3')
-    _mock = mock_s3()
-    _mock.start()
-    _conn = boto.client()
-    _bucket = _conn.create_bucket(settings.AWS_STORAGE_BUCKET_NAME)
-    _mock.stop()
-else:
-    # TODO: do we still need OrdinaryCallingFormat for dots in the bucket name?
-    #_conn = boto.connect_s3(
-    #        settings.AWS_ACCESS_KEY_ID,
-    #        settings.AWS_SECRET_ACCESS_KEY, calling_format=OrdinaryCallingFormat())
-    endpoint = os.environ.get('AWS_ENDPOINT_URL')
-    print('AWS endpoint:', endpoint)
-    ssl_verify = truthy(os.environ.get('AWS_SSL_VERIFY', 't'))
-    _conn = boto.client('s3',
-            verify=ssl_verify,
-            endpoint_url=endpoint,
-            aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-            aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
-    session = boto.session.Session(
-            aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-            aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
-    s3 = session.resource('s3', verify=ssl_verify, endpoint_url=endpoint)
-    _bucket = s3.Bucket(settings.AWS_STORAGE_BUCKET_NAME)
+# TODO: do we still need OrdinaryCallingFormat for dots in the bucket name?
+#_conn = boto.connect_s3(
+#        settings.AWS_ACCESS_KEY_ID,
+#        settings.AWS_SECRET_ACCESS_KEY, calling_format=OrdinaryCallingFormat())
+endpoint = os.environ.get('AWS_ENDPOINT_URL')
+print('AWS endpoint:', endpoint)
+ssl_verify = truthy(os.environ.get('AWS_SSL_VERIFY', 't'))
+_conn = boto3.client('s3',
+        verify=ssl_verify,
+        endpoint_url=endpoint,
+        config=boto3.session.Config(signature_version='s3v4'),
+        aws_session_token=None,
+        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
+session = boto3.session.Session(
+        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
+s3 = session.resource('s3', verify=ssl_verify, endpoint_url=endpoint,
+    aws_session_token=None, config=boto3.session.Config(signature_version='s3v4'))
+_bucket = s3.Bucket(settings.AWS_STORAGE_BUCKET_NAME)
 
 
 class StorageException(Exception):
@@ -75,26 +68,17 @@ class StorageException(Exception):
         self.detail = detail
 
 
-def _mock_in_test_mode(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if hasattr(settings, 'TEST_MODE') and settings.TEST_MODE:
-            _mock.start(reset=False)
-            result = f(*args, **kwargs)
-            _mock.stop()
-            return result
-        else:
-            return f(*args, **kwargs)
-    return decorated_function
-
-
 def _reraise_s3response(f):
     """Decorator trap and re-raise S3ResponseError as StorageException"""
     @wraps(f)
     def decorated_function(*args, **kwargs):
         try:
             return f(*args, **kwargs)
-        except S3ResponseError as e:
+        #except S3ResponseError as e:
+        except (ClientError, EndpointConnectionError) as e:
+            print(traceback.format_exc())
+            raise StorageException("Could not connect to document store: " + str(e), str(e))
+        except Exception as e: # TODO !!!
             print(traceback.format_exc())
             raise StorageException(e.message, e.body)
     return decorated_function
@@ -114,7 +98,6 @@ def key_name(*args):
 
 
 @_reraise_s3response
-@_mock_in_test_mode
 def list_keys(key_prefix, n, marker=''):
     """
     List keys that start with key_prefix (<> key_prefix itself)
@@ -142,12 +125,10 @@ def get_contents(src_key):
     obj = s3.Object(_bucket.name, src_key)
     return obj.get()['Body'].read()
 
-@_mock_in_test_mode
 def get_contents_as_string(src_key):
     obj = s3.Object(_bucket.name, src_key)
     return obj.get()['Body'].read().decode('utf-8')
 
-@_mock_in_test_mode
 def all_keys():
     _contents = _conn.list_objects(Bucket=_bucket.name, Prefix=settings.AWS_STORAGE_BUCKET_KEY)
     _key_list = [ key['Key'] for key in _contents.get('Contents', []) ]
@@ -159,7 +140,6 @@ def all_keys():
 
 
 @_reraise_s3response
-@_mock_in_test_mode
 def list_key_names(key_prefix, n, marker=''):
     """
     List key names that start with key_prefix (<> key_prefix itself)
@@ -183,7 +163,6 @@ def list_key_names(key_prefix, n, marker=''):
     return name_list, (i == n)
 
 @_reraise_s3response
-@_mock_in_test_mode
 def copy_key(src_key_name, dst_key_name):
     """
     Copy from src_key_name to dst_key_name
@@ -199,7 +178,6 @@ def copy_key(src_key_name, dst_key_name):
 
 
 @_reraise_s3response
-@_mock_in_test_mode
 def save_bytes_from_data(key_name, content_type, content):
     """
     Save content with content-type to key_name
@@ -215,7 +193,6 @@ def save_bytes_from_data(key_name, content_type, content):
 
 
 @_reraise_s3response
-@_mock_in_test_mode
 def save_from_data(key_name, content_type, content):
     """
     Save content with content-type to key_name
@@ -231,7 +208,6 @@ def save_from_data(key_name, content_type, content):
 
 
 @_reraise_s3response
-@_mock_in_test_mode
 def save_from_url(key_name, url):
     """
     Save file at url to key_name
@@ -241,7 +217,6 @@ def save_from_url(key_name, url):
 
 
 @_reraise_s3response
-@_mock_in_test_mode
 def load_json(key_name):
     """
     Get contents of key as json
@@ -251,7 +226,6 @@ def load_json(key_name):
 
 
 @_reraise_s3response
-@_mock_in_test_mode
 def save_json(key_name, data):
     """
     Save data to key_name as json
@@ -276,7 +250,6 @@ def save_json(key_name, data):
 
 
 @_reraise_s3response
-@_mock_in_test_mode
 def delete_key(key):
     """
     Delete a single key
