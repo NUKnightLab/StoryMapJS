@@ -501,7 +501,12 @@ def storymap_export(user, id):
         for key in key_list:
             file_name = key.split(key_prefix)[-1]
             zip_file.writestr(file_name, storage.get_contents(key))
-    return send_file(temp_path, mimetype="application/zip", as_attachment=True, attachment_filename=('storymap-%s.zip' % id))
+    return send_file(
+        temp_path,
+        mimetype="application/zip",
+        as_attachment=True,
+        download_name=('storymap-%s.zip' % id)
+    )
 
 
 def fix_image_urls(jsonstring, key_prefix, image_files):
