@@ -70,8 +70,6 @@ def create_app():
 app = create_app()
 app.config.from_envvar('FLASK_SETTINGS_FILE')
 settings = sys.modules[settings_module]
-# LOCAL_STORAGE_MODE is no longer supported. Use localstack instead.
-app.config['LOCAL_STORAGE_MODE'] = settings.LOCAL_STORAGE_MODE
 app.config['TEST_MODE'] = settings.TEST_MODE
 examples_json = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'examples.json')
 faq_json = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'faq.json')
@@ -288,7 +286,6 @@ def google_auth_verify():
                 "following information to support@knightlab.zendesk.com: " \
                 "stg-storymap.knightlab.com unauthorized %s" % uid)
 
-        print('upsert user', uid)
 
         # Upsert user record
         user = get_user(uid, db=db())
@@ -504,7 +501,12 @@ def storymap_export(user, id):
         for key in key_list:
             file_name = key.split(key_prefix)[-1]
             zip_file.writestr(file_name, storage.get_contents(key))
-    return send_file(temp_path, mimetype="application/zip", as_attachment=True, attachment_filename=('storymap-%s.zip' % id))
+    return send_file(
+        temp_path,
+        mimetype="application/zip",
+        as_attachment=True,
+        download_name=('storymap-%s.zip' % id)
+    )
 
 
 def fix_image_urls(jsonstring, key_prefix, image_files):
@@ -853,8 +855,6 @@ def storymap_image_save(user, id):
     import binascii
     try:
         name, content = _request_get_required('name', 'content')
-        print(content[:30])
-
         m = re.match('data:(.+);base64,(.+)', content)
         if m:
             content_type = m.group(1)
