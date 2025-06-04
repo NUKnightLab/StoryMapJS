@@ -4,6 +4,7 @@ S3-based storage backend
 Object Keys
 http://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html
 """
+import mimetypes
 import os
 import sys
 import time
@@ -197,6 +198,11 @@ def save_from_data(key_name, content_type, content):
     """
     Save content with content-type to key_name
     """
+    if content_type is None:
+        content_type, _ = mimetypes.guess_type(key_name)
+    if content_type is None:
+        content_type = 'application/octet-stream'
+
     _conn.put_object(
         ACL='public-read',
         Body=content,
