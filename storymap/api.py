@@ -1080,7 +1080,7 @@ def redirect_old_urls(path):
     abort(404)
 
 
-IMAGE_PROPS_REGEX = re.compile("IMAGE_PROPERTIES WIDTH='(\d+)' HEIGHT='(\d+)'")
+IMAGE_PROPS_REGEX = re.compile(r"IMAGE_PROPERTIES WIDTH='(\d+)' HEIGHT='(\d+)'")
 
 @require_user
 @app.route('/zoomify-image-props', methods=['GET'])
