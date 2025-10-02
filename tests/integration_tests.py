@@ -1,99 +1,107 @@
 """Integration testing requiring access to S3
 
-Be sure to set the following env vars:
+These tests require the Docker Compose stack to be running with LocalStack.
 
-AWS_SECRET_ACCESS_KEY
-AWS_ACCESS_KEY_ID
-AWS_TEST_BUCKET (defaults to test.knilab.com)
+Run: docker compose up
 
-Note: we are in the process to transitioning to boto3 in order support localstack based testing and development. To use with localstack, be sure also to set:
-
-AWS_ENDPOINT_URL="http://localhost:4572"
+The tests connect to LocalStack at http://localhost:4566 (the exposed port from Docker).
 """
 import importlib
 import json
 import os
 import sys
-import unittest
-import boto
+import pytest
 import botocore
 import boto3
 
-if __name__ == "__main__":
-    if not os.environ.get('FLASK_SETTINGS_MODULE', ''):
-        os.environ['FLASK_SETTINGS_MODULE'] = 'core.settings.loc'
+# Override AWS_ENDPOINT_URL for tests running on host machine
+# (Docker uses localstack:4566, but from host we need localhost:4566)
+if 'localstack:4566' in os.environ.get('AWS_ENDPOINT_URL', ''):
+    os.environ['AWS_ENDPOINT_URL'] = 'http://localhost:4566'
+elif not os.environ.get('AWS_ENDPOINT_URL'):
+    os.environ['AWS_ENDPOINT_URL'] = 'http://localhost:4566'
+
+# Set up settings module
+if not os.environ.get('FLASK_SETTINGS_MODULE', ''):
+    os.environ['FLASK_SETTINGS_MODULE'] = 'storymap.core.settings'
 
 settings_module = os.environ.get('FLASK_SETTINGS_MODULE')
 try:
     importlib.import_module(settings_module)
-except ImportError, e:
-    raise ImportError("Could not import settings '%s' (Is it on sys.path?): %s" % (settings_module, e))
+except ImportError as e:
+    raise ImportError(f"Could not import settings '{settings_module}' (Is it on sys.path?): {e}")
 
 settings = sys.modules[os.environ['FLASK_SETTINGS_MODULE']]
 settings.TEST_MODE = False
-settings.AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_TEST_BUCKET', 'test.knilab.com')
+# Use the actual bucket from settings (uploads.knilab.com) instead of a test bucket
+# The bucket should be created by running scripts/makebuckets.sh
+if not os.environ.get('AWS_TEST_BUCKET'):
+    # Use the existing bucket from .env settings
+    pass
+else:
+    settings.AWS_STORAGE_BUCKET_NAME = os.environ['AWS_TEST_BUCKET']
 
-try:
-    from storymap.storage import all_keys, save_from_data
-except boto.exception.S3ResponseError:
-    raise Exception("""
-
-boto2 response error loading module storymap.storage. Check your environment variables
-
-During transition from boto2 to boto3, real connections to S3 are required to test the legacy code. Be sure AWS_SECRET_ACCESS_KEY and AWS_ACCESS_KEY_ID are set
-""")
+# Import storage module AFTER setting environment
+from storymap.storage import all_keys, save_from_data
 
 
-class StorageTestCase(unittest.TestCase):
+@pytest.mark.integration
+def test_list_keys():
+    """Test listing all S3 keys."""
+    keys = all_keys()
+    # TODO: this is not yet testing anything - add assertions
+    assert keys is not None
 
-    def test_list_keys(self):
-        keys = all_keys()
-        # TODO: this is not yet testing anything
 
-    def test_save_from_data(self):
-        file_name = 'test1.json'
-        key_name = '%s/%s' % (settings.AWS_STORAGE_BUCKET_KEY, file_name)
-        content_type = 'application/json'
-        content = json.dumps({ 'test_key': 'test_value' })
-        save_from_data(key_name, content_type, content)
-        endpoint = settings.AWS_ENDPOINT_URL
-        if endpoint:
-            s3 = boto3.resource('s3', endpoint_url=endpoint)
-        else:
-            s3 = boto3.resource('s3')
-        obj = s3.Object(settings.AWS_STORAGE_BUCKET_NAME, key_name)
-        try:
-            self.assertEqual('test_value',
-                json.loads(obj.get()['Body'].read())['test_key'])
-        except botocore.exceptions.ConnectionError:
-            self.fail("""
+@pytest.mark.integration
+def test_save_from_data():
+    """Test saving data to S3 and retrieving it."""
+    file_name = 'test1.json'
+    key_name = f'{settings.AWS_STORAGE_BUCKET_KEY}/{file_name}'
+    content_type = 'application/json'
+    content = json.dumps({'test_key': 'test_value'})
+
+    # Save the data
+    save_from_data(key_name, content_type, content)
+
+    # Retrieve and verify
+    # Use localhost instead of Docker hostname for tests running on host
+    endpoint = settings.AWS_ENDPOINT_URL
+    if endpoint and 'localstack:4566' in endpoint:
+        endpoint = 'http://localhost:4566'
+
+    if endpoint:
+        s3 = boto3.resource('s3', endpoint_url=endpoint)
+    else:
+        s3 = boto3.resource('s3')
+
+    obj = s3.Object(settings.AWS_STORAGE_BUCKET_NAME, key_name)
+
+    try:
+        retrieved_data = json.loads(obj.get()['Body'].read())
+        assert retrieved_data['test_key'] == 'test_value'
+    except botocore.exceptions.ConnectionError:
+        pytest.fail("""
 boto3 connection error in test. Check your environment variables
 
 Be sure AWS_ENDPOINT_URL points to a valid localized endpoint. If connecting to S3, be sure AWS_ENDPOINT_URL is blank or not set and that AWS_SECRET_ACCESS_KEY and AWS_ACCESS_KEY_ID are set
 """)
-        except Exception as e:
-            if 'NoSuchBucket' in e.message:
-                self.fail("""
-Could not connect. No such bucket: %s
-AWS endpoint: %s
+    except Exception as e:
+        error_msg = str(e)
+        if 'NoSuchBucket' in error_msg:
+            pytest.fail(f"""
+Could not connect. No such bucket: {obj.bucket_name}
+AWS endpoint: {endpoint}
 
 NOTE: StoryMap and these tests do not create the storage bucket. For testing, your endpoint should have a bucket named according to your AWS_TEST_BUCKET environment variable. With localstack, this bucket can be created with the following command:
 
-aws --endpoint-url=http://localhost:4572 s3 mb s3://%s
-""" % (obj.bucket_name, endpoint, settings.AWS_TEST_BUCKET))
-            elif 'NoSuchKey' in e.message:
-                self.fail("""
+aws --endpoint-url=http://localhost:4566 s3 mb s3://{settings.AWS_TEST_BUCKET}
+""")
+        elif 'NoSuchKey' in error_msg:
+            pytest.fail("""
 No such key error
 
 The `save_from_data` function currently only saves to remote S3. To get this test passing, we will need to migrate to boto3 usage that allows for local storage (via localstack) or remote (to s3)
 """)
-            else:
-                raise
-
-
-def suite():
-    tests = ['test_list_keys', 'test_save_from_data']
-    return unittest.TestSuite(map(StorageTestCase, tests))
-
-if __name__=='__main__':
-    unittest.main()
+        else:
+            raise

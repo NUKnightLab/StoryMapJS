@@ -1,10 +1,7 @@
-import unittest
-
-class NothingTestCase(unittest.TestCase):
-
-    def test_nothing(self):
-        self.assertTrue(True)
+import pytest
 
 
-if __name__=='__main__':
-    unittest.main()
+@pytest.mark.unit
+def test_placeholder():
+    """Placeholder test - replace with actual unit tests for Flask app."""
+    assert True

@@ -185,3 +185,21 @@ aws --profile local --endpoint-url=http://localhost:4566 s3 ls uploads.knilab.co
 Note that there has not been a lot of interest from the cli dev team in [making
 endpoint-url profile configurable](https://github.com/aws/aws-cli/issues/1270), although
 this [may be changing](https://github.com/aws/aws-sdk/issues/229).
+
+
+## Testing
+
+StoryMapJS uses a comprehensive test suite with both unit and integration tests. See [tests/README.md](tests/README.md) for detailed testing documentation.
+
+**Quick start:**
+
+```bash
+# Unit tests (no Docker required)
+hatch run unit:test
+
+# Integration tests (requires Docker Compose stack running)
+docker compose up
+hatch run integration:test
+```
+
+For more information on test setup, writing tests, and available commands, see the [Testing Guide](tests/README.md).
