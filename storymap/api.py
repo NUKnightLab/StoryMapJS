@@ -779,7 +779,34 @@ def storymap_save(user, id):
 
         key_name = storage.key_name(user['uid'], id, 'draft.json')
         content = json.loads(data)
-        storage.save_json(key_name, content)
+        max_attempts = 2
+        retry_delay_seconds = 0.2
+        for attempt in range(1, max_attempts + 1):
+            try:
+                storage.save_json(key_name, content)
+                break
+            except storage.StorageException as exc:
+                detail = getattr(exc, 'detail', str(exc))
+                app.logger.warning(
+                    "storymap_save attempt %s failed for uid:%s id:%s: %s",
+                    attempt,
+                    user['uid'],
+                    id,
+                    detail,
+                )
+                if attempt == max_attempts:
+                    app.logger.error(
+                        "storymap_save retries exhausted for uid:%s id:%s",
+                        user['uid'],
+                        id,
+                    )
+                    return jsonify({
+                        'error': 'Unable to save StoryMap after multiple attempts. Please try again.',
+                        'error_detail': detail,
+                        'error_type': str(exc),
+                        'error_attempts': max_attempts,
+                    })
+                time.sleep(retry_delay_seconds)
 
         user['storymaps'][id]['draft_on'] = _utc_now()
         save_user(user, db=db())

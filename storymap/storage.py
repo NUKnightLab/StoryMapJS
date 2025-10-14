@@ -81,7 +81,9 @@ def _reraise_s3response(f):
             raise StorageException("Could not connect to document store: " + str(e), str(e))
         except Exception as e: # TODO !!!
             print(traceback.format_exc())
-            raise StorageException(e.message, e.body)
+            message = getattr(e, 'message', str(e) or e.__class__.__name__)
+            detail = getattr(e, 'body', str(e))
+            raise StorageException(message, detail)
     return decorated_function
 
 
