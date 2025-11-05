@@ -4,6 +4,8 @@ import Blockquote from "./types/Blockquote"
 import Wikipedia from "./types/Wikipedia"
 import SoundCloud from "./types/SoundCloud"
 import Vimeo from "./types/Vimeo"
+import Video from "./types/Video"
+import Audio from "./types/Audio"
 import DailyMotion from "./types/DailyMotion"
 import Vine from "./types/Vine"
 import Twitter from "./types/Twitter"
@@ -81,6 +83,18 @@ export default function MediaType(m) {
 				name: 		"Image",
 				match_str: 	/jpg|jpeg|png|gif/i,
 				cls: 		Image
+			},
+			{
+				type: "video",
+				name: "Video",
+				match_str: /(mp4|webm)(\?.*)?$/i,
+				cls: Video
+			},
+			{
+				type: "audio",
+				name: "Audio",
+				match_str: /(mp3|wav|m4a)(\?.*)?$/i,
+				cls: Audio
 			},
 			{
 				type: 		"googledocs",

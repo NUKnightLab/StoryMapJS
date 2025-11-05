@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>StoryMapJS Development Server</title>
+    <meta charset="utf-8">
+    <!-- Webpack dev server will inject the built JS automatically -->
+	<script type="text/javascript" src="/dist/js/storymap.js"></script>
+
+    <link rel="stylesheet" href="https://cloud.typenetwork.com/projects/5433/fontface.css" />
+    <link rel="stylesheet" href="https://cdn.knightlab.com/libs/orangeline/latest/css/orangeline.min.css" />
+
+    <style>
+		html, body {
+		    width: 100%;
+		    height: 100%;
+		    padding: 10px 100px;
+		    margin: 0;
+		}
+		#storymap-embed {
+			width: 100%;
+			height: 600px;
+		}
+	</style>
+
+</head>
+
+<body>
+    <h1>StoryMap Development Server</h1>
+    <p>This page loads the locally built StoryMapJS library and watches for changes.</p>
+    <div id='storymap-embed'></div>
+
+    <script>
+    var storymap;
+
+	function onStoryMapTitle(e) {
+		document.title = "StoryMapJS: " + e.title;
+	};
+
+    function buildStoryMap(data) {
+        console.log('Building storymap with data:', data);
+        let options = {};
+	    storymap = new KLStoryMap.StoryMap('storymap-embed', data, options, {title: onStoryMapTitle});
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        console.log("Initializing StoryMapJS development test page")
+        // Load the football example by default
+        let url = './football.json';
+        fetch(url)
+            .then(response => response.json())
+            .then(data => buildStoryMap(data))
+            .catch(error => {
+                console.error('Error loading storymap data:', error);
+                document.getElementById('storymap-embed').innerHTML =
+                    '<p style="color: red; padding: 20px;">Error loading storymap data. Check console for details.</p>';
+            });
+    })
+    </script>
+
+</body>
+
+</html>

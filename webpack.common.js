@@ -54,7 +54,8 @@ module.exports = {
                     loader: 'file-loader',
                     options: {
                         name: '[name].[ext]',
-                        outputPath: '../css/icons'
+                        outputPath: '../css/icons',
+                        publicPath: '../css/icons'
                     }
                 }]
             }

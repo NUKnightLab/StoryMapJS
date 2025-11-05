@@ -5,7 +5,7 @@
     "slides": [
       {
         "date": "",
-        "media": { "url": "", "caption": "", "credit": "" },
+        "media": { "url": "https://file-examples.com/storage/fe4e3fed6c690ba4c97e6e4/2017/11/file_example_MP3_700KB.mp3", "caption": "MP3 Audio", "credit": "" },
         "type": "overview",
         "location": {
           "line": true,

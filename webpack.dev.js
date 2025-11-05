@@ -1,16 +1,38 @@
 const merge = require('webpack-merge')
 const common = require('./webpack.common.js')
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const path = require('path');
 
 module.exports = merge({
     mode: 'development',
     devtool: 'inline-source-map',
+    output: {
+        path: path.resolve(__dirname, 'dist/js'),
+        publicPath: '/dist/js/'
+    },
     devServer: {
-        contentBase: ['./src/css'],
-        contentBasePublicPath: ['/', '/css'],
-        stats: 'verbose',
-        openPage: "/index.html",
-        disableHostCheck: true
+        static: [
+            {
+                directory: path.resolve(__dirname, 'src/template'),
+                publicPath: '/'
+            },
+            {
+                directory: path.resolve(__dirname, 'src/css'),
+                publicPath: '/css'
+            },
+            {
+                directory: path.resolve(__dirname, 'dist/css'),
+                publicPath: '/dist/css'
+            }
+        ],
+        hot: true,
+        open: '/index.html',
+        port: 8000,
+        watchFiles: ['src/**/*'],
+        devMiddleware: {
+            writeToDisk: true
+        }
     },
     module: {
         rules: [{
@@ -19,8 +41,10 @@ module.exports = merge({
         }]
     },
     plugins: [
-        //new HtmlWebpackPlugin({
-        //    template: 'src/template/index.html'
-        //})
+        new CopyWebpackPlugin({
+            patterns: [
+                { from: 'src/template', to: path.resolve(__dirname, 'dist') }
+            ]
+        })
     ]
 }, common)
