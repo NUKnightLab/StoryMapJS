@@ -1,5 +1,6 @@
 FROM python:3.10.2
 ENV PYTHONUNBUFFERED=1
+COPY ./requirements.txt /usr/src/apps/StoryMapJS/
 COPY ./requirements-dev.txt /usr/src/apps/StoryMapJS/
 #COPY ./.localstack/KnightLabRootCA.crt /usr/src/apps/StoryMapJS/
 #COPY ./.localstack/KnightLabRootCA.key /usr/src/apps/StoryMapJS/
