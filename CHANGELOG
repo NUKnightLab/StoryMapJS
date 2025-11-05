@@ -1,3 +1,6 @@
+0.9.5 (2025-11-05)
+* Implement basic Audio and Video media types
+
 0.9.4 (2023-12-08)
 * Forcibly change `stamen:` map_types to `osm:standard` or `ch-watercolor`
 * #491 set script path in code
