@@ -614,6 +614,9 @@ def storymap_copy(user, id):
         if user['storymaps'][dst_id].get('published_on'):
             _write_embed_published(dst_key_prefix, user['storymaps'][dst_id])
         return jsonify(user['storymaps'][dst_id])
+    except storage.StorageException as e:
+        traceback.print_exc()
+        return jsonify({'error': str(e), 'error_detail': e.detail})
     except Exception as e:
         traceback.print_exc()
         return jsonify({'error': str(e)})
@@ -630,6 +633,9 @@ def storymap_delete(user, id):
         del user['storymaps'][storymap_id]
         save_user(user, db=db())
         return jsonify({})
+    except storage.StorageException as e:
+        traceback.print_exc()
+        return jsonify({'error': str(e), 'error_detail': e.detail})
     except Exception as e:
         traceback.print_exc()
         return jsonify({'error': str(e)})
@@ -654,6 +660,9 @@ def storymap_create(user):
         save_user(user, db=db())
         _write_embed_draft(key_prefix, user['storymaps'][id])
         return jsonify({'id': id})
+    except storage.StorageException as e:
+        traceback.print_exc()
+        return jsonify({'error': str(e), 'error_detail': e.detail})
     except Exception as e:
         traceback.print_exc()
         return jsonify({'error': str(e)})

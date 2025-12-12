@@ -2,17 +2,18 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Overview
+## Project Overview
 
-StoryMapJS is a dual-component application:
-1. **JavaScript library** (src/) - The client-side StoryMap visualization library built with webpack
-2. **Python web application** (storymap/) - A Flask-based editor and hosting service with PostgreSQL and S3 storage
+StoryMapJS is a tool for telling stories through the context of places on a map. The project consists of:
+- **JavaScript library** (`src/js/`) - the client-side StoryMap viewer built with Leaflet
+- **Python Flask backend** (`storymap/`) - web server for the StoryMap editor with Google OAuth authentication
+- **Build system** - Webpack for JS bundling and LESS compilation
 
 ## Development Setup
 
 ### JavaScript Library Development
 
-Build the JavaScript library for development:
+Build the JavaScript library:
 ```bash
 npm install
 npx webpack -c webpack.dev.js

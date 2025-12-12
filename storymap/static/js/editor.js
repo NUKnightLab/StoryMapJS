@@ -88,6 +88,11 @@ function _ajax(options, on_error, on_success, on_complete) {
             if(data.error) {
                 _error = data.error;
                 _error_detail = data.error_detail || '';
+                // For debugging: append error_detail to error message if present
+                if(_error_detail) {
+                    debug('error_detail:', _error_detail);
+                    _error = _error + '<div style="margin-top: 12px; padding: 8px; background: #f5f5f5; border-left: 3px solid #999; font-family: monospace; font-size: 11px; white-space: pre-wrap;">DETAIL: ' + _error_detail + '</div>';
+                }
                 on_error(_error, _error_detail);
             } else {
                 on_success(data);
@@ -113,14 +118,25 @@ function ajax_post(url, data, on_error, on_success, on_complete) {
 
 
 function format_error(msg, err) {
-    var message = msg;
+    var message = '<strong>' + msg + ':</strong>';
+
     if(err) {
-        if(err.hasOwnProperty('message')) {
-            message += ': ' + err.message;
+        var error_text = '';
+        if(typeof err === 'object' && err.hasOwnProperty('message')) {
+            error_text = err.message;
         } else {
-            message += ': ' + err;
-        }    
+            error_text = String(err);
+        }
+
+        // Check if error contains instructions separated by pipe character
+        if(error_text.indexOf('|') > -1) {
+            var parts = error_text.split('|');
+            message += ' ' + parts[0] + '<div class="error-instructions"><strong>' + parts[1] + '</strong></div>';
+        } else {
+            message += ' ' + error_text;
+        }
     }
+
     return message;
 }
 
@@ -150,21 +166,30 @@ function format_report_link(subject, error_msg, error_stack) {
     return '<p><a class="report" href="'+link+'">Report this error to the Knight Lab</a></p>';
 }
 
-function show_error(msg, err) { 
-    var message = msg;
-    
+function show_error(msg, err) {
+    var message = '<strong>' + msg + ':</strong>';
+
     if(err) {
-        if(err.hasOwnProperty('message')) {
-            message += ': ' + err.message;
+        var error_text = '';
+        if(typeof err === 'object' && err.hasOwnProperty('message')) {
+            error_text = err.message;
         } else {
-            message += ': ' + err;
+            error_text = String(err);
         }
-        
-        if(err.hasOwnProperty('stack')) {
+
+        // Check if error contains instructions separated by pipe character
+        if(error_text.indexOf('|') > -1) {
+            var parts = error_text.split('|');
+            message += ' ' + parts[0] + '<div class="error-instructions"><strong>' + parts[1] + '</strong></div>';
+        } else {
+            message += ' ' + error_text;
+        }
+
+        if(typeof err === 'object' && err.hasOwnProperty('stack')) {
             message += format_report_link(msg, message, err.stack);
         }
     }
-    
+
     hide_progress();
     $('#error_modal .modal-msg').html(message);
     $('#error_modal').modal('show');

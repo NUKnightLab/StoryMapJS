@@ -159,6 +159,36 @@ input[type="radio"] {
     font-style: italic;
 }
 
+.modal .error .error-instructions {
+    color: #333 !important;
+    font-style: normal !important;
+    background-color: white !important;
+    padding: 12px;
+    margin-top: 12px;
+    border-radius: 4px;
+    display: block !important;
+}
+
+.modal .error .error-instructions strong {
+    color: #333 !important;
+    font-style: normal !important;
+}
+
+.modal-msg.error .error-instructions {
+    color: #333 !important;
+    font-style: normal !important;
+    background-color: white !important;
+    padding: 12px;
+    margin-top: 12px;
+    border-radius: 4px;
+    display: block !important;
+}
+
+.modal-msg.error .error-instructions strong {
+    color: #333 !important;
+    font-style: normal !important;
+}
+
 .modal {
     border: 1px solid #CCC;
     box-shadow: 1px 1px 7px rgba(0, 0, 0, .20);
@@ -266,6 +296,20 @@ input[type="radio"] {
     background-color: #f2dede;
     color: #b94a48;
     border-color: #eed3d7;
+}
+
+#error_modal .error-instructions,
+#message_modal .error-instructions {
+    background-color: white !important;
+    color: #333 !important;
+    padding: 12px;
+    margin-top: 12px;
+    border-radius: 4px;
+}
+
+#error_modal .error-instructions strong,
+#message_modal .error-instructions strong {
+    color: #333 !important;
 }
 
 #progress_modal i {
@@ -1460,4 +1504,4 @@ div#selector-message {
 div#selector-message p {
     line-height: normal;
     padding: 1em .5em 0 1em;
-    {
+}

@@ -73,17 +73,90 @@ def _reraise_s3response(f):
     """Decorator trap and re-raise S3ResponseError as StorageException"""
     @wraps(f)
     def decorated_function(*args, **kwargs):
+        # Error injection for testing - controlled by environment variable
+        # Format: FORCE_STORAGE_ERROR=error_type[:operation]
+        # error_type: 'connection', 'timeout', 'permission', 'notfound', 'corrupt' (required)
+        # operation: 'read', 'write', or omit for all operations (optional)
+        force_error = os.environ.get('FORCE_STORAGE_ERROR', '').lower()
+        if force_error:
+            # Parse error type and operation type
+            if ':' in force_error:
+                error_type, operation_type = force_error.split(':', 1)
+            else:
+                error_type = force_error
+                operation_type = 'all'
+
+            # Categorize functions as read or write operations
+            read_operations = ['list_keys', 'list_key_names', 'get_contents',
+                             'get_contents_as_string', 'load_json']
+            write_operations = ['copy_key', 'save_bytes_from_data', 'save_from_data',
+                              'save_from_url', 'save_json', 'delete_key', 'delete_keys']
+
+            function_name = f.__name__
+            is_read = function_name in read_operations
+            is_write = function_name in write_operations
+
+            # Determine if we should inject the error
+            should_inject = False
+            if operation_type == 'all':
+                should_inject = True
+            elif operation_type == 'read' and is_read:
+                should_inject = True
+            elif operation_type == 'write' and is_write:
+                should_inject = True
+
+            if should_inject:
+                op_desc = 'read' if is_read else 'write' if is_write else 'unknown'
+                print(f"[ERROR INJECTION] Forcing {op_desc} error '{error_type}' on {function_name}()")
+
+                if error_type == 'connection':
+                    raise StorageException(
+                        "There was a problem connecting to the document storage service.|Please wait a few moments and try again. If the problem persists, please contact KnightLab support.",
+                        f"FORCE_STORAGE_ERROR={force_error} - Simulated connection failure on {op_desc} operation"
+                    )
+                elif error_type == 'timeout':
+                    raise StorageException(
+                        "The request timed out while accessing the document storage service.|Please wait a few moments and try again. If the problem persists, please contact KnightLab support.",
+                        f"FORCE_STORAGE_ERROR={force_error} - Simulated timeout on {op_desc} operation"
+                    )
+                elif error_type == 'permission':
+                    raise StorageException(
+                        "Permission denied while accessing the document storage service.|Please wait a few moments and try again. If the problem persists, please contact KnightLab support.",
+                        f"FORCE_STORAGE_ERROR={force_error} - Simulated permission error on {op_desc} operation"
+                    )
+                elif error_type == 'notfound':
+                    raise StorageException(
+                        "The requested document was not found in storage.|Please wait a few moments and try again. If the problem persists, please contact KnightLab support.",
+                        f"FORCE_STORAGE_ERROR={force_error} - Simulated not found error on {op_desc} operation"
+                    )
+                elif error_type == 'corrupt':
+                    raise StorageException(
+                        "The document data appears to be corrupted or invalid.|Please wait a few moments and try again. If the problem persists, please contact KnightLab support.",
+                        f"FORCE_STORAGE_ERROR={force_error} - Simulated data corruption on {op_desc} operation"
+                    )
+
         try:
             return f(*args, **kwargs)
         #except S3ResponseError as e:
         except (ClientError, EndpointConnectionError) as e:
             print(traceback.format_exc())
-            raise StorageException("Could not connect to document store: " + str(e), str(e))
+            raise StorageException(
+                "There was a problem connecting to the document storage service.|Please wait a few moments and try again. If the problem persists, please contact KnightLab support.",
+                f"Connection error: {str(e)}"
+            )
         except Exception as e: # TODO !!!
             print(traceback.format_exc())
-            message = getattr(e, 'message', str(e) or e.__class__.__name__)
-            detail = getattr(e, 'body', str(e))
-            raise StorageException(message, detail)
+            # Check if it's an exception with message and body attributes
+            if hasattr(e, 'message') and hasattr(e, 'body'):
+                raise StorageException(
+                    "An error occurred while accessing the document storage service.|Please wait a few moments and try again. If the problem persists, please contact KnightLab support.",
+                    f"Error: {e.message}\nBody: {e.body}"
+                )
+            else:
+                raise StorageException(
+                    "An unexpected error occurred while accessing the document storage service.|Please wait a few moments and try again. If the problem persists, please contact KnightLab support.",
+                    f"Error: {str(e)}"
+                )
     return decorated_function
 
 
