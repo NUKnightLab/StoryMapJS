@@ -1095,8 +1095,10 @@ admins = os.environ.get('ADMINS', '').split(' ')
 
 @app.route('/robots.txt')
 def robots_txt():
-    if 'storymap.knilab.com' in domains:
+    if domains and ('storymap.knightlab.com' in domains or 'storymap.knilab.com' in domains):
         return send_file('templates/robots.txt')
+    # Default robots.txt for non-production environments
+    return "User-agent: *\nDisallow: /\n", 200, {'Content-Type': 'text/plain'}
 
 @app.route('/build/embed/')
 def catch_build_embed():
