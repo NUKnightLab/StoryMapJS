@@ -10,10 +10,22 @@ import sys
 import time
 import traceback
 import json
+import logging
 import boto3
 import requests
 from functools import wraps
-from botocore.exceptions import ClientError, EndpointConnectionError
+
+# Enable boto3 debug logging for retry attempts (optional, can be disabled in production)
+# Set to INFO to see retry attempts, DEBUG for full details
+# boto3.set_stream_logger('boto3.resources', logging.INFO)
+from botocore.exceptions import (
+    BotoCoreError,
+    ClientError,
+    EndpointConnectionError,
+    ConnectionClosedError,
+    ReadTimeoutError,
+    ConnectTimeoutError
+)
 #from boto3.exception import S3ResponseError
 #from boto3.s3.connection import OrdinaryCallingFormat
 
@@ -45,10 +57,24 @@ def truthy(s):
 endpoint = os.environ.get('AWS_ENDPOINT_URL')
 print('AWS endpoint:', endpoint)
 ssl_verify = truthy(os.environ.get('AWS_SSL_VERIFY', 't'))
+
+# Configure retries for transient errors (connection resets, timeouts, etc.)
+# Standard retry mode retries on connection errors, throttling, and server errors
+# Max attempts = 1 initial + 4 retries = 5 total attempts
+retry_config = boto3.session.Config(
+    signature_version='s3v4',
+    retries={
+        'mode': 'standard',  # Uses exponential backoff with jitter
+        'max_attempts': 5    # Total of 5 attempts (1 initial + 4 retries)
+    },
+    connect_timeout=10,      # Connection timeout in seconds
+    read_timeout=60          # Read timeout in seconds
+)
+
 _conn = boto3.client('s3',
         verify=ssl_verify,
         endpoint_url=endpoint,
-        config=boto3.session.Config(signature_version='s3v4'),
+        config=retry_config,
         aws_session_token=None,
         aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
         aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
@@ -56,7 +82,7 @@ session = boto3.session.Session(
         aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
         aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
 s3 = session.resource('s3', verify=ssl_verify, endpoint_url=endpoint,
-    aws_session_token=None, config=boto3.session.Config(signature_version='s3v4'))
+    aws_session_token=None, config=retry_config)
 _bucket = s3.Bucket(settings.AWS_STORAGE_BUCKET_NAME)
 
 
@@ -137,15 +163,70 @@ def _reraise_s3response(f):
 
         try:
             return f(*args, **kwargs)
-        #except S3ResponseError as e:
-        except (ClientError, EndpointConnectionError) as e:
+        except ClientError as e:
+            # S3 client errors (NoSuchBucket, AccessDenied, etc.)
             print(traceback.format_exc())
+            error_code = e.response.get('Error', {}).get('Code', 'Unknown')
+            print(f"[STORAGE] ClientError: {error_code} in {f.__name__}()")
+
+            # Special handling for key-related size errors
+            if error_code == 'KeyTooLongError':
+                # Log diagnostic information
+                print(f"[STORAGE] KeyTooLongError - Function: {f.__name__}")
+                print(f"[STORAGE] KeyTooLongError - Args: {args}")
+                if args and isinstance(args[0], str):
+                    key = args[0]
+                    print(f"[STORAGE] KeyTooLongError - Key length: {len(str(key))} bytes (max 1024)")
+                    print(f"[STORAGE] KeyTooLongError - Key: {str(key)[:200]}...")
+                raise StorageException(
+                    "The StoryMap identifier is too long for storage.|This is usually caused by corrupted data. Please contact KnightLab support with the StoryMap ID.",
+                    f"KeyTooLongError in {f.__name__}(): Key length {len(str(args[0])) if args else 'unknown'} bytes. {str(e)}"
+                )
+
+            if error_code == 'RequestHeaderSectionTooLarge':
+                # Log diagnostic information
+                print(f"[STORAGE] RequestHeaderSectionTooLarge - Function: {f.__name__}")
+                print(f"[STORAGE] RequestHeaderSectionTooLarge - Args: {args}")
+                if args and isinstance(args[0], str):
+                    key = args[0]
+                    print(f"[STORAGE] RequestHeaderSectionTooLarge - Key length: {len(str(key))} bytes")
+                    print(f"[STORAGE] RequestHeaderSectionTooLarge - Key: {str(key)[:200]}...")
+                raise StorageException(
+                    "The StoryMap data exceeds size limits for storage.|Please try reducing the amount of content, especially in text fields. If the problem persists, please contact KnightLab support.",
+                    f"RequestHeaderSectionTooLarge in {f.__name__}(): {str(e)}"
+                )
+
             raise StorageException(
                 "There was a problem connecting to the document storage service.|Please wait a few moments and try again. If the problem persists, please contact KnightLab support.",
                 f"Connection error: {str(e)}"
             )
-        except Exception as e: # TODO !!!
+        except (ConnectionClosedError, ReadTimeoutError, ConnectTimeoutError) as e:
+            # Connection/timeout errors - these are likely transient
             print(traceback.format_exc())
+            print(f"[STORAGE] Connection/Timeout error in {f.__name__}(): {type(e).__name__}")
+            raise StorageException(
+                "The connection to the document storage service was interrupted.|Please wait a few moments and try again. If the problem persists, please contact KnightLab support.",
+                f"Connection interrupted: {type(e).__name__}: {str(e)}"
+            )
+        except EndpointConnectionError as e:
+            # Endpoint connection failures
+            print(traceback.format_exc())
+            print(f"[STORAGE] EndpointConnectionError in {f.__name__}()")
+            raise StorageException(
+                "There was a problem connecting to the document storage service.|Please wait a few moments and try again. If the problem persists, please contact KnightLab support.",
+                f"Connection error: {str(e)}"
+            )
+        except BotoCoreError as e:
+            # Other botocore errors
+            print(traceback.format_exc())
+            print(f"[STORAGE] BotoCoreError in {f.__name__}(): {type(e).__name__}")
+            raise StorageException(
+                "An error occurred while accessing the document storage service.|Please wait a few moments and try again. If the problem persists, please contact KnightLab support.",
+                f"Storage error: {type(e).__name__}: {str(e)}"
+            )
+        except Exception as e:
+            print(traceback.format_exc())
+            print(f"[STORAGE] Unexpected exception in {f.__name__}(): {type(e).__name__}")
             # Check if it's an exception with message and body attributes
             if hasattr(e, 'message') and hasattr(e, 'body'):
                 raise StorageException(
@@ -155,7 +236,7 @@ def _reraise_s3response(f):
             else:
                 raise StorageException(
                     "An unexpected error occurred while accessing the document storage service.|Please wait a few moments and try again. If the problem persists, please contact KnightLab support.",
-                    f"Error: {str(e)}"
+                    f"Unexpected error: {type(e).__name__}: {str(e)}"
                 )
     return decorated_function
 

@@ -238,3 +238,117 @@ StoryMapJS supports various map modes and customization:
 ## Userinfo Endpoint
 
 The `/userinfo/` endpoint (https://storymap.knightlab.com/userinfo/) provides account and storymap information for troubleshooting user issues.
+
+## Storage Error Handling and Retry Logic
+
+The storage layer (`storymap/storage.py`) implements robust error handling for S3 operations:
+
+### Boto3 Retry Configuration
+
+The S3 client is configured with automatic retry logic for transient errors:
+- **Retry mode:** `standard` (uses exponential backoff with jitter)
+- **Max attempts:** 5 (1 initial attempt + 4 retries)
+- **Connect timeout:** 10 seconds
+- **Read timeout:** 60 seconds
+
+**What gets retried automatically:**
+- Connection errors (including connection resets)
+- Read/connect timeouts
+- Throttling errors (429, 503)
+- Server errors (500, 502, 503, 504)
+
+### Exception Handling Hierarchy
+
+1. **`ClientError`** - S3-specific errors (NoSuchBucket, AccessDenied)
+2. **`ConnectionClosedError/ReadTimeoutError/ConnectTimeoutError`** - Connection interruptions (connection resets)
+3. **`EndpointConnectionError`** - Endpoint unreachable
+4. **`BotoCoreError`** - Other boto errors
+5. **`Exception`** - Unexpected errors
+
+All exceptions are converted to `StorageException` with:
+- User-friendly message separated by `|` from instructions
+- Detailed error information in `error_detail` field for debugging
+
+### Monitoring Retries
+
+To see retry attempts in production logs, enable boto3 debug logging by uncommenting in `storage.py`:
+```python
+boto3.set_stream_logger('boto3.resources', logging.INFO)
+```
+
+Look for `[STORAGE]` prefixed log lines to identify specific exceptions:
+```bash
+grep "\[STORAGE\]" logs.txt
+```
+
+### S3 Key Size Errors
+
+**Intermittent production issues** during save operations related to S3 object key length:
+
+#### KeyTooLongError
+
+**Error Code**: `KeyTooLongError`
+**Cause**: S3 object key exceeds AWS limit of 1024 bytes
+**Occurrence**: Intermittent production issue during save operations
+
+S3 object keys are constructed from `{AWS_STORAGE_BUCKET_KEY}/{user_id}/{storymap_id}/...`. If user IDs or storymap IDs are extremely long (corrupted data, malformed UUIDs, encoded content), the key can exceed the limit.
+
+**Diagnostic Logging**: When this error occurs, storage.py logs:
+- Function name where error occurred
+- Function arguments
+- Key length in bytes (compared to 1024 byte max)
+- First 200 characters of the key
+
+**User Message**: "The StoryMap identifier is too long for storage. This is usually caused by corrupted data. Please contact KnightLab support with the StoryMap ID."
+
+**Investigation**: Check production logs for `[STORAGE] KeyTooLongError` to identify the specific keys that are too long.
+
+#### RequestHeaderSectionTooLarge
+
+**Error Code**: `RequestHeaderSectionTooLarge`
+**Cause**: HTTP request headers exceed S3's 8KB limit
+**Occurrence**: Intermittent production issue during save operations
+
+This error indicates the total size of all HTTP headers in the PutObject request exceeds AWS S3's limit. Since the code doesn't set custom metadata, possible causes:
+
+1. **Long S3 object keys** - Keys under 1024 bytes but still very long (700-900 bytes)
+2. **Large AWS signature** - Signature V4 authorization header is typically 500-1000 bytes
+3. **Cumulative header size** - All headers (Host, Authorization, Content-Type, ACL, Cache-Control, Key, etc.) combined
+
+**Diagnostic Logging**: When this error occurs, storage.py logs:
+- Function name where error occurred
+- Function arguments
+- Key length in bytes
+- First 200 characters of the key
+
+**User Message**: "The StoryMap data exceeds size limits for storage. Please try reducing the amount of content, especially in text fields."
+
+**Investigation**: Check production logs for `[STORAGE] RequestHeaderSectionTooLarge` to identify affected StoryMaps and key patterns.
+
+#### Root Cause and Fix
+
+Both errors were caused by S3 object keys being generated with unexpectedly long values. The key construction happens in `storage.py`:
+- `key_prefix(*args)` - `'{AWS_STORAGE_BUCKET_KEY}/{args joined by /}/'`
+- `key_name(*args)` - `'{AWS_STORAGE_BUCKET_KEY}/{args joined by /}'`
+
+**Original Issue**: StoryMap IDs were created from user-provided titles using `slugify.slugify(title)` with no length limit. Extremely long titles resulted in keys exceeding AWS limits.
+
+**Fix Applied** (api.py:394-401): StoryMap ID generation now limits the slugified title to 200 characters maximum:
+```python
+MAX_ID_LENGTH = 200
+id_base = slugify.slugify(title)
+if len(id_base) > MAX_ID_LENGTH:
+    id_base = id_base[:MAX_ID_LENGTH]
+```
+
+This reserves sufficient space for:
+- Bucket key (~20 bytes)
+- User ID (~100 bytes)
+- Path components like `_images/` (~50 bytes)
+- File names like `draft.json` (~20 bytes)
+- Suffix digits for uniqueness (~10 bytes)
+- Safety margin (~624 bytes remaining out of 1024 byte limit)
+
+### Testing Error Conditions
+
+See `TESTING_STORAGE_ERRORS.md` for documentation on forcing storage errors to test the user experience.

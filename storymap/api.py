@@ -391,7 +391,15 @@ def _make_storymap_id(user, title):
         if m:
             id_set.add(m.group(1))
 
+    # Limit slugified title to prevent excessively long S3 keys
+    # S3 key max is 1024 bytes, and keys are: {bucket_key}/{user_id}/{id}/...
+    # Reserve space for bucket key (~20), user ID (~100), path components (~50), suffix digits (~10)
+    # This leaves ~200 chars for the base ID to be safe
+    MAX_ID_LENGTH = 200
     id_base = slugify.slugify(title)
+    if len(id_base) > MAX_ID_LENGTH:
+        id_base = id_base[:MAX_ID_LENGTH]
+
     id = id_base
     n = 0
     while id in id_set:
