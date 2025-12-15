@@ -62,7 +62,7 @@ def truthy(s):
 #        settings.AWS_ACCESS_KEY_ID,
 #        settings.AWS_SECRET_ACCESS_KEY, calling_format=OrdinaryCallingFormat())
 endpoint = os.environ.get('AWS_ENDPOINT_URL')
-logger.info(f'AWS endpoint: {endpoint}')
+logger.warning(f'[STORAGE] AWS endpoint: {endpoint}')
 ssl_verify = truthy(os.environ.get('AWS_SSL_VERIFY', 't'))
 
 # Configure retries for transient errors (connection resets, timeouts, etc.)
@@ -375,7 +375,7 @@ def save_bytes_from_data(key_name, content_type, content):
     """
     # Log all save attempts to correlate failures/successes
     content_size = len(content) if isinstance(content, (str, bytes)) else 'unknown'
-    logger.info(f"[SAVE_ATTEMPT] save_bytes_from_data: key={key_name[:100]}... key_len={len(key_name)} content_size={content_size} type={content_type}")
+    logger.warning(f"[SAVE_ATTEMPT] save_bytes_from_data: key={key_name[:100]}... key_len={len(key_name)} content_size={content_size} type={content_type}")
 
     _conn.put_object(
         ACL='public-read',
@@ -385,7 +385,7 @@ def save_bytes_from_data(key_name, content_type, content):
         ContentType=content_type,
         Key=key_name
     )
-    logger.info(f"[SAVE_SUCCESS] save_bytes_from_data: key={key_name[:100]}...")
+    logger.warning(f"[SAVE_SUCCESS] save_bytes_from_data: key={key_name[:100]}...")
 
 
 @_reraise_s3response
@@ -432,7 +432,7 @@ def save_json(key_name, data):
     Save data to key_name as json
     """
     # Log all save attempts to correlate failures/successes
-    logger.info(f"[SAVE_ATTEMPT] save_json: key={key_name[:100]}... key_len={len(key_name)}")
+    logger.warning(f"[SAVE_ATTEMPT] save_json: key={key_name[:100]}... key_len={len(key_name)}")
 
     if type(data) in [type(''), type(u'')]:
         content = data
@@ -440,7 +440,7 @@ def save_json(key_name, data):
         content = json.dumps(data)
 
     content_size = len(content.encode('utf-8'))
-    logger.info(f"[SAVE_ATTEMPT] save_json: content_size={content_size} bytes")
+    logger.warning(f"[SAVE_ATTEMPT] save_json: content_size={content_size} bytes")
 
     try:
         _check = json.loads(content)
@@ -455,7 +455,7 @@ def save_json(key_name, data):
             f"Call chain: {call_chain}\n\ndata:\n{str(data)}\n\ncontent:\n{str(content)}"
         )
     save_from_data(key_name, 'application/json', content)
-    logger.info(f"[SAVE_SUCCESS] save_json: key={key_name[:100]}...")
+    logger.warning(f"[SAVE_SUCCESS] save_json: key={key_name[:100]}...")
 
 
 @_reraise_s3response
