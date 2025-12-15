@@ -323,17 +323,21 @@ This error indicates the total size of all HTTP headers in the PutObject request
 
 **User Message**: "The StoryMap data exceeds size limits for storage. Please try reducing the amount of content, especially in text fields."
 
-**Investigation**: Check production logs for `[STORAGE] RequestHeaderSectionTooLarge` to identify affected StoryMaps and key patterns.
+**Investigation**:
+- Check production logs for `[STORAGE_ERROR]` to see all storage errors
+- Check logs for `[SAVE_ATTEMPT]` and `[SAVE_SUCCESS]` to correlate failures with retries
+- See `DEBUGGING_INTERMITTENT_SAVES.md` for complete diagnostic strategy
+- **IMPORTANT**: We have NOT confirmed this error is related to user-reported intermittent save issues
 
-#### Root Cause and Fix
+#### Preventive Fix Applied
 
-Both errors were caused by S3 object keys being generated with unexpectedly long values. The key construction happens in `storage.py`:
+To prevent one class of potential errors, we limited StoryMap ID length. Key construction in `storage.py`:
 - `key_prefix(*args)` - `'{AWS_STORAGE_BUCKET_KEY}/{args joined by /}/'`
 - `key_name(*args)` - `'{AWS_STORAGE_BUCKET_KEY}/{args joined by /}'`
 
-**Original Issue**: StoryMap IDs were created from user-provided titles using `slugify.slugify(title)` with no length limit. Extremely long titles resulted in keys exceeding AWS limits.
+**Potential Issue**: StoryMap IDs were created from user-provided titles using `slugify.slugify(title)` with no length limit. Very long titles could result in keys exceeding AWS limits.
 
-**Fix Applied** (api.py:394-401): StoryMap ID generation now limits the slugified title to 200 characters maximum:
+**Preventive Fix** (api.py:394-401): StoryMap ID generation now limits the slugified title to 200 characters maximum:
 ```python
 MAX_ID_LENGTH = 200
 id_base = slugify.slugify(title)

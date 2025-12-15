@@ -17,7 +17,11 @@ from functools import wraps
 
 # Enable boto3 debug logging for retry attempts (optional, can be disabled in production)
 # Set to INFO to see retry attempts, DEBUG for full details
-# boto3.set_stream_logger('boto3.resources', logging.INFO)
+# For RequestHeaderSectionTooLarge debugging, enable urllib3 debug to see actual HTTP headers:
+# import http.client as http_client
+# http_client.HTTPConnection.debuglevel = 1
+# boto3.set_stream_logger('boto3.resources', logging.DEBUG)
+# boto3.set_stream_logger('botocore', logging.DEBUG)
 from botocore.exceptions import (
     BotoCoreError,
     ClientError,
@@ -45,6 +49,9 @@ except ImportError as e:
     raise ImportError("Could not import settings '%s' (Is it on sys.path?): %s" % (settings_module, e))
 settings = sys.modules[settings_module]
 
+# Setup logger for storage module
+logger = logging.getLogger(__name__)
+
 
 def truthy(s):
    return str(s).lower()[0] in ['t', '1']
@@ -55,7 +62,7 @@ def truthy(s):
 #        settings.AWS_ACCESS_KEY_ID,
 #        settings.AWS_SECRET_ACCESS_KEY, calling_format=OrdinaryCallingFormat())
 endpoint = os.environ.get('AWS_ENDPOINT_URL')
-print('AWS endpoint:', endpoint)
+logger.info(f'AWS endpoint: {endpoint}')
 ssl_verify = truthy(os.environ.get('AWS_SSL_VERIFY', 't'))
 
 # Configure retries for transient errors (connection resets, timeouts, etc.)
@@ -133,7 +140,7 @@ def _reraise_s3response(f):
 
             if should_inject:
                 op_desc = 'read' if is_read else 'write' if is_write else 'unknown'
-                print(f"[ERROR INJECTION] Forcing {op_desc} error '{error_type}' on {function_name}()")
+                logger.warning(f"[ERROR INJECTION] Forcing {op_desc} error '{error_type}' on {function_name}()")
 
                 if error_type == 'connection':
                     raise StorageException(
@@ -164,36 +171,63 @@ def _reraise_s3response(f):
         try:
             return f(*args, **kwargs)
         except ClientError as e:
-            # S3 client errors (NoSuchBucket, AccessDenied, etc.)
-            print(traceback.format_exc())
+            # Log ALL ClientErrors with full context for debugging intermittent issues
             error_code = e.response.get('Error', {}).get('Code', 'Unknown')
-            print(f"[STORAGE] ClientError: {error_code} in {f.__name__}()")
+            logger.error(f"[STORAGE_ERROR] ClientError: {error_code} in {f.__name__}()")
+            logger.error(f"[STORAGE_ERROR] Key: {args[0][:200] if args and isinstance(args[0], str) else 'N/A'}... (len={len(args[0]) if args and isinstance(args[0], str) else 'N/A'})")
+            if len(args) > 1:
+                content_size = len(args[1]) if isinstance(args[1], (str, bytes)) else 'N/A'
+                logger.error(f"[STORAGE_ERROR] Content size: {content_size}")
+            logger.error(f"[STORAGE_ERROR] Error response: {e.response}")
+            logger.error(traceback.format_exc())
 
             # Special handling for key-related size errors
             if error_code == 'KeyTooLongError':
                 # Log diagnostic information
-                print(f"[STORAGE] KeyTooLongError - Function: {f.__name__}")
-                print(f"[STORAGE] KeyTooLongError - Args: {args}")
+                logger.error(f"[STORAGE] KeyTooLongError - Function: {f.__name__}")
+                logger.error(f"[STORAGE] KeyTooLongError - Args count: {len(args)}, Kwargs: {list(kwargs.keys())}")
                 if args and isinstance(args[0], str):
                     key = args[0]
-                    print(f"[STORAGE] KeyTooLongError - Key length: {len(str(key))} bytes (max 1024)")
-                    print(f"[STORAGE] KeyTooLongError - Key: {str(key)[:200]}...")
+                    logger.error(f"[STORAGE] KeyTooLongError - Key length: {len(str(key))} bytes (max 1024)")
+                    logger.error(f"[STORAGE] KeyTooLongError - Key: {str(key)[:200]}...")
                 raise StorageException(
                     "The StoryMap identifier is too long for storage.|This is usually caused by corrupted data. Please contact KnightLab support with the StoryMap ID.",
                     f"KeyTooLongError in {f.__name__}(): Key length {len(str(args[0])) if args else 'unknown'} bytes. {str(e)}"
                 )
 
             if error_code == 'RequestHeaderSectionTooLarge':
-                # Log diagnostic information
-                print(f"[STORAGE] RequestHeaderSectionTooLarge - Function: {f.__name__}")
-                print(f"[STORAGE] RequestHeaderSectionTooLarge - Args: {args}")
+                # Log comprehensive diagnostic information to debug intermittent errors
+                logger.error(f"[STORAGE] ===== RequestHeaderSectionTooLarge DEBUG =====")
+                logger.error(f"[STORAGE] Function: {f.__name__}")
+                logger.error(f"[STORAGE] Args count: {len(args)}, Kwargs keys: {list(kwargs.keys())}")
+
+                # Log key information
                 if args and isinstance(args[0], str):
                     key = args[0]
-                    print(f"[STORAGE] RequestHeaderSectionTooLarge - Key length: {len(str(key))} bytes")
-                    print(f"[STORAGE] RequestHeaderSectionTooLarge - Key: {str(key)[:200]}...")
+                    key_bytes = len(str(key).encode('utf-8'))
+                    logger.error(f"[STORAGE] Key length: {key_bytes} bytes (UTF-8)")
+                    logger.error(f"[STORAGE] Key (first 300 chars): {str(key)[:300]}")
+                    # Parse key to show components
+                    key_parts = str(key).split('/')
+                    logger.error(f"[STORAGE] Key components: {len(key_parts)} parts")
+                    for i, part in enumerate(key_parts):
+                        logger.error(f"[STORAGE]   Part {i}: '{part}' ({len(part)} chars)")
+
+                # Log content size if available
+                if len(args) > 1:
+                    content = args[1] if f.__name__ == 'save_bytes_from_data' else kwargs.get('data', args[1] if len(args) > 1 else None)
+                    if content:
+                        content_size = len(content) if isinstance(content, (str, bytes)) else 'unknown'
+                        logger.error(f"[STORAGE] Content size: {content_size} bytes")
+
+                # Log boto3 client configuration
+                logger.error(f"[STORAGE] Boto3 endpoint: {endpoint}")
+                logger.error(f"[STORAGE] Signature version: s3v4")
+                logger.error(f"[STORAGE] ===== END DEBUG =====")
+
                 raise StorageException(
                     "The StoryMap data exceeds size limits for storage.|Please try reducing the amount of content, especially in text fields. If the problem persists, please contact KnightLab support.",
-                    f"RequestHeaderSectionTooLarge in {f.__name__}(): {str(e)}"
+                    f"RequestHeaderSectionTooLarge in {f.__name__}(): Key length {len(str(args[0]).encode('utf-8')) if args and isinstance(args[0], str) else 'unknown'} bytes. {str(e)}"
                 )
 
             raise StorageException(
@@ -202,31 +236,31 @@ def _reraise_s3response(f):
             )
         except (ConnectionClosedError, ReadTimeoutError, ConnectTimeoutError) as e:
             # Connection/timeout errors - these are likely transient
-            print(traceback.format_exc())
-            print(f"[STORAGE] Connection/Timeout error in {f.__name__}(): {type(e).__name__}")
+            logger.error(traceback.format_exc())
+            logger.error(f"[STORAGE] Connection/Timeout error in {f.__name__}(): {type(e).__name__}")
             raise StorageException(
                 "The connection to the document storage service was interrupted.|Please wait a few moments and try again. If the problem persists, please contact KnightLab support.",
                 f"Connection interrupted: {type(e).__name__}: {str(e)}"
             )
         except EndpointConnectionError as e:
             # Endpoint connection failures
-            print(traceback.format_exc())
-            print(f"[STORAGE] EndpointConnectionError in {f.__name__}()")
+            logger.error(traceback.format_exc())
+            logger.error(f"[STORAGE] EndpointConnectionError in {f.__name__}()")
             raise StorageException(
                 "There was a problem connecting to the document storage service.|Please wait a few moments and try again. If the problem persists, please contact KnightLab support.",
                 f"Connection error: {str(e)}"
             )
         except BotoCoreError as e:
             # Other botocore errors
-            print(traceback.format_exc())
-            print(f"[STORAGE] BotoCoreError in {f.__name__}(): {type(e).__name__}")
+            logger.error(traceback.format_exc())
+            logger.error(f"[STORAGE] BotoCoreError in {f.__name__}(): {type(e).__name__}")
             raise StorageException(
                 "An error occurred while accessing the document storage service.|Please wait a few moments and try again. If the problem persists, please contact KnightLab support.",
                 f"Storage error: {type(e).__name__}: {str(e)}"
             )
         except Exception as e:
-            print(traceback.format_exc())
-            print(f"[STORAGE] Unexpected exception in {f.__name__}(): {type(e).__name__}")
+            logger.error(traceback.format_exc())
+            logger.error(f"[STORAGE] Unexpected exception in {f.__name__}(): {type(e).__name__}")
             # Check if it's an exception with message and body attributes
             if hasattr(e, 'message') and hasattr(e, 'body'):
                 raise StorageException(
@@ -339,6 +373,10 @@ def save_bytes_from_data(key_name, content_type, content):
     """
     Save content with content-type to key_name
     """
+    # Log all save attempts to correlate failures/successes
+    content_size = len(content) if isinstance(content, (str, bytes)) else 'unknown'
+    logger.info(f"[SAVE_ATTEMPT] save_bytes_from_data: key={key_name[:100]}... key_len={len(key_name)} content_size={content_size} type={content_type}")
+
     _conn.put_object(
         ACL='public-read',
         Body=content,
@@ -347,6 +385,7 @@ def save_bytes_from_data(key_name, content_type, content):
         ContentType=content_type,
         Key=key_name
     )
+    logger.info(f"[SAVE_SUCCESS] save_bytes_from_data: key={key_name[:100]}...")
 
 
 @_reraise_s3response
@@ -392,10 +431,17 @@ def save_json(key_name, data):
     """
     Save data to key_name as json
     """
+    # Log all save attempts to correlate failures/successes
+    logger.info(f"[SAVE_ATTEMPT] save_json: key={key_name[:100]}... key_len={len(key_name)}")
+
     if type(data) in [type(''), type(u'')]:
         content = data
     else:
         content = json.dumps(data)
+
+    content_size = len(content.encode('utf-8'))
+    logger.info(f"[SAVE_ATTEMPT] save_json: content_size={content_size} bytes")
+
     try:
         _check = json.loads(content)
     except json.decoder.JSONDecodeError:
@@ -409,6 +455,7 @@ def save_json(key_name, data):
             f"Call chain: {call_chain}\n\ndata:\n{str(data)}\n\ncontent:\n{str(content)}"
         )
     save_from_data(key_name, 'application/json', content)
+    logger.info(f"[SAVE_SUCCESS] save_json: key={key_name[:100]}...")
 
 
 @_reraise_s3response
