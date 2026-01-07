@@ -446,7 +446,7 @@ function storymap_dirty(is_dirty) {
 }
 
 // save draft
-// callback(error)
+// callback(error, error_detail)
 function storymap_save(callback) {
     var save_button = $('#storymap_save')
         .addClass('disabled').removeClass('btn-primary')
@@ -457,26 +457,26 @@ function storymap_save(callback) {
             id: _storymap_meta.id,
             d: JSON.stringify(_storymap_data)
         },
-        function(error) {
+        function(error, error_detail) {
             save_button.removeClass('disabled').addClass('btn-primary');
         },
         function(data) {
             _storymap_meta = data.meta; // update meta
             storymap_dirty(0);
         },
-        function(error) {
+        function(error, error_detail) {
             save_button.html('<i class="icon-save"></i> Save');
-            callback(error);
+            callback(error, error_detail);
         }
     );
 }
 
-// callback(error || null, embed_url)
+// callback(error || null, embed_url, error_detail)
 function storymap_publish(callback) {
     if(_dirty) {
-        storymap_save(function(error) {
+        storymap_save(function(error, error_detail) {
             if(error) {
-                callback(error);
+                callback(error, null, error_detail);
             } else {
                 storymap_publish(callback);
             }
@@ -487,8 +487,8 @@ function storymap_publish(callback) {
                 id: _storymap_meta.id,
                 d: JSON.stringify(_storymap_data)
             },
-            function(error) {
-                callback(error);
+            function(error, error_detail) {
+                callback(error, null, error_detail);
             },
             function(data) {
                 _storymap_meta = data.meta; // update meta
@@ -867,9 +867,9 @@ $(function() {
 //------------------------------------------------------------
 
     $('#storymap_save').click(function(event) {
-        storymap_save(function(error) {
+        storymap_save(function(error, error_detail) {
             if(error) {
-                show_error('Error saving StoryMap', error);
+                show_error('Error saving StoryMap', error, error_detail);
             }
         });
     });
@@ -877,9 +877,9 @@ $(function() {
     $('#storymap_publish').click(function(event) {
         show_progress('Publishing changes');
 
-        storymap_publish(function(error) {
+        storymap_publish(function(error, embed_url, error_detail) {
             if(error) {
-                show_error('Error publishing StoryMap', error);
+                show_error('Error publishing StoryMap', error, error_detail);
             } else {
                 hide_progress();
             }
@@ -1446,7 +1446,7 @@ $(function() {
         .on('click', '#share_publish', function(event) {
             $share_modal.trigger('progress_show', 'Publishing StoryMap');
 
-            storymap_publish(function(error) {
+            storymap_publish(function(error, embed_url, error_detail) {
                 if(error) {
                     $('#share_modal').trigger('modal_show', format_error('Error publishing StoryMap', error));
                 } else {
@@ -1553,7 +1553,7 @@ $(function() {
             if(!_storymap_meta.published_on) {
                 $modal.trigger('progress_show', 'Publishing changes');
 
-                storymap_publish(function(error) {
+                storymap_publish(function(error, embed_url, error_detail) {
                     if(error) {
                         $modal.trigger('modal_show', format_error('Error publishing changes', error));
                     } else {
@@ -1565,7 +1565,7 @@ $(function() {
             else if(_dirty) {
                 $modal.trigger('progress_show', 'Saving StoryMap');
 
-                storymap_save(function(error) {
+                storymap_save(function(error, error_detail) {
                     if(error) {
                         $modal.trigger('modal_show', format_error('Error saving StoryMap', error));
                     } else {

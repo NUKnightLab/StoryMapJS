@@ -163,10 +163,12 @@ input[type="radio"] {
     color: #333 !important;
     font-style: normal !important;
     background-color: white !important;
-    padding: 12px;
-    margin-top: 12px;
+    padding: 6px;
+    margin-top: 6px;
+    margin-bottom: 4px;
     border-radius: 4px;
     display: block !important;
+    font-size: 13px;
 }
 
 .modal .error .error-instructions strong {
@@ -178,10 +180,12 @@ input[type="radio"] {
     color: #333 !important;
     font-style: normal !important;
     background-color: white !important;
-    padding: 12px;
-    margin-top: 12px;
+    padding: 6px;
+    margin-top: 6px;
+    margin-bottom: 4px;
     border-radius: 4px;
     display: block !important;
+    font-size: 13px;
 }
 
 .modal-msg.error .error-instructions strong {
@@ -298,18 +302,51 @@ input[type="radio"] {
     border-color: #eed3d7;
 }
 
+#error_modal .modal-body,
+#message_modal .modal-body,
+.modal-error {
+    padding: 12px 15px;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
 #error_modal .error-instructions,
 #message_modal .error-instructions {
     background-color: white !important;
     color: #333 !important;
-    padding: 12px;
-    margin-top: 12px;
+    padding: 6px;
+    margin-top: 6px;
+    margin-bottom: 6px;
     border-radius: 4px;
+    font-size: 13px;
 }
 
 #error_modal .error-instructions strong,
 #message_modal .error-instructions strong {
     color: #333 !important;
+}
+
+#error_modal p,
+#message_modal p,
+.modal-error p,
+.modal-msg.error p {
+    margin: 6px 0 3px 0;
+}
+
+#error_modal a.report,
+#message_modal a.report,
+.modal-error a.report,
+.modal-msg.error a.report {
+    font-weight: normal;
+    text-decoration: underline;
+    font-size: 13px;
+}
+
+#error_modal strong,
+#message_modal strong,
+.modal-error strong,
+.modal-msg.error strong {
+    font-size: 14px;
 }
 
 #progress_modal i {
@@ -512,6 +549,31 @@ input[type="radio"] {
 
 #entry_modal .modal-body {
     min-height: 200px;
+}
+
+#entry_modal .modal-error {
+    padding: 10px 12px;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+#entry_modal .modal-error .error-instructions {
+    padding: 6px;
+    margin-top: 6px;
+    margin-bottom: 4px;
+    font-size: 13px;
+}
+
+#entry_modal .modal-msg.error p {
+    margin: 5px 0 3px 0;
+}
+
+#entry_modal .modal-msg.error a.report {
+    font-size: 13px;
+}
+
+#entry_modal .modal-msg.error strong {
+    font-size: 14px;
 }
 
 #entry_user_info {

@@ -347,9 +347,9 @@ $(function() {
                     published_on: info.published_on,
                     file_list: JSON.stringify(info.file_list)
                 },
-                function(error) {
+                function(error, error_detail) {
                     _migrate_list.push(info);   // push back onto list
-                    callback(error);
+                    callback(error, error_detail);
                 },
                 function(data) {
                     _user.storymaps[data.id] = data;
@@ -365,13 +365,13 @@ $(function() {
     $('#entry_migrate, #entry_migrate_resume').click(function(event) {
         var $modal = $('#entry_modal');
 
-        _do_migrate(function(error) {
+        _do_migrate(function(error, error_detail) {
             if(error) {
-                $modal.trigger('reset', format_error('Error migrating StoryMap', error));
+                $modal.trigger('reset', format_error('Error migrating StoryMap', error, error_detail));
             } else {
                 ajax_get("{{ url_for('storymap_migrate_done') }}", {},
-                    function(error) {
-                        $modal.trigger('reset', format_error('Error setting migration status', error));
+                    function(error, error_detail) {
+                        $modal.trigger('reset', format_error('Error setting migration status', error, error_detail));
                     },
                     function(data) {
                         $modal.trigger('show_list');
@@ -397,8 +397,8 @@ $(function() {
 
         ajax_post("{{ url_for('storymap_update_meta') }}",
             {id: id, key:'title', value: title},
-            function(error) {
-                $modal.trigger('reset', format_error('Error renaming StoryMap', error));
+            function(error, error_detail) {
+                $modal.trigger('reset', format_error('Error renaming StoryMap', error, error_detail));
             },
             function(data) {
                 _user.storymaps[id].title = title;
@@ -425,8 +425,8 @@ $(function() {
 
         ajax_get("{{ url_for('storymap_copy') }}",
             {id: id, title: title},
-            function(error) {
-                $modal.trigger('reset', format_error('Error copying StoryMap', error));
+            function(error, error_detail) {
+                $modal.trigger('reset', format_error('Error copying StoryMap', error, error_detail));
             },
             function(data) {
                 _user.storymaps[data.id] = data;
@@ -463,14 +463,14 @@ $(function() {
             $modal.trigger('reset', format_error('Error loading storymap', 'Invalid import URL'));
         } else {
             ajax_get(import_url, {},
-                function(error) {
-                    $modal.trigger('reset', format_error('Error loading storymap', error));
+                function(error, error_detail) {
+                    $modal.trigger('reset', format_error('Error loading storymap', error, error_detail));
                 },
                 function(data) {
                     ajax_post("{{ url_for('storymap_create') }}",
                         {title: name, d: JSON.stringify(data)},
-                        function(error) {
-                            $modal.trigger('reset', format_error('Error creating StoryMap', error));
+                        function(error, error_detail) {
+                            $modal.trigger('reset', format_error('Error creating StoryMap', error, error_detail));
                         },
                         function(data) {
                             // Replace history state
@@ -507,8 +507,8 @@ $(function() {
                 processData: false,
                 contentType: false
             },
-            function(error) {
-                $modal.trigger('reset', format_error('Error importing storymap', error));
+            function(error, error_detail) {
+                $modal.trigger('reset', format_error('Error importing storymap', error, error_detail));
             },
             function(data) {
                 document.location.href = "{{ url_for('edit') }}?id="+data.id;
@@ -576,8 +576,8 @@ $(function() {
 
         ajax_post("{{ url_for('storymap_create') }}",
             {title: name, d: JSON.stringify(data)},
-            function(error) {
-                $modal.trigger('reset', format_error('Error creating StoryMap', error));
+            function(error, error_detail) {
+                $modal.trigger('reset', format_error('Error creating StoryMap', error, error_detail));
             },
             function(data) {
                 document.location.href = "{{ url_for('edit') }}?id="+data.id;
@@ -627,12 +627,12 @@ $(function() {
             $modal = $(this).trigger('progress_show', 'Checking migration status');
 
             ajax_get("{{ url_for('storymap_migrate_list') }}", {},
-                function(error) {
+                function(error, error_detail) {
                     // No longer triggering this error due to changes in Google Drive
-                    //$modal.trigger('reset',  format_error('Error getting migration list', error));
+                    //$modal.trigger('reset',  format_error('Error getting migration list', error, error_detail));
                     ajax_get("{{ url_for('storymap_migrate_done') }}", {},
-                        function(error) {
-                            $modal.trigger('reset', format_error('Error setting migration status', error));
+                        function(error, error_detail) {
+                            $modal.trigger('reset', format_error('Error setting migration status', error, error_detail));
                         },
                         function(data) {
                             if(_params.import_url) {
@@ -657,8 +657,8 @@ $(function() {
                         $('.modal-footer').append(link);
                     } else {
                         ajax_get("{{ url_for('storymap_migrate_done') }}", {},
-                            function(error) {
-                                $modal.trigger('reset', format_error('Error setting migration status', error));
+                            function(error, error_detail) {
+                                $modal.trigger('reset', format_error('Error setting migration status', error, error_detail));
                             },
                             function(data) {
                                 if(_params.import_url) {
@@ -804,8 +804,8 @@ $(function() {
 
                     ajax_get("{{ url_for('storymap_delete') }}",
                         {id: id},
-                        function(error) {
-                            $modal.trigger('error_show', format_error('Error deleting StoryMap', error));
+                        function(error, error_detail) {
+                            $modal.trigger('error_show', format_error('Error deleting StoryMap', error, error_detail));
                         },
                         function(data) {
                             _storymap_list.remove(item);
