@@ -91,7 +91,7 @@ function _ajax(options, on_error, on_success, on_complete) {
                 // For debugging: append error_detail to error message if present
                 if(_error_detail) {
                     debug('error_detail:', _error_detail);
-                    _error = _error + '<div style="margin-top: 12px; padding: 8px; background: #f5f5f5; border-left: 3px solid #999; font-family: monospace; font-size: 11px; white-space: pre-wrap;">DETAIL: ' + _error_detail + '</div>';
+                    _error = _error + '<div style="margin-top: 6px; margin-bottom: 4px; padding: 5px; background: #f5f5f5; border-left: 3px solid #999; font-family: monospace; font-size: 10px; line-height: 1.3; white-space: pre-wrap;">DETAIL: ' + _error_detail + '</div>';
                 }
                 on_error(_error, _error_detail);
             } else {
@@ -117,7 +117,7 @@ function ajax_post(url, data, on_error, on_success, on_complete) {
 }
 
 
-function format_error(msg, err) {
+function format_error(msg, err, error_detail) {
     var message = '<strong>' + msg + ':</strong>';
 
     if(err) {
@@ -134,6 +134,12 @@ function format_error(msg, err) {
             message += ' ' + parts[0] + '<div class="error-instructions"><strong>' + parts[1] + '</strong></div>';
         } else {
             message += ' ' + error_text;
+        }
+
+        // Add report link for backend errors with error_detail (storage errors, etc.)
+        if(error_detail) {
+            var diagnostic_info = error_text + '\n\n' + error_detail;
+            message += format_report_link(msg, error_text, diagnostic_info);
         }
     }
 
@@ -151,14 +157,28 @@ function format_navigator_info() {
 
 function format_report_link(subject, error_msg, error_stack) {
     var subject = 'StoryMapJS Editor Report ('+subject+')';
+
+    // Collect context information
+    var context_info = '';
+    if(typeof _user !== 'undefined' && _user.uid) {
+        context_info += 'User ID: ' + _user.uid + '\n';
+    }
+    if(typeof _storymap_meta !== 'undefined' && _storymap_meta.id) {
+        context_info += 'StoryMap ID: ' + _storymap_meta.id + '\n';
+    }
+    if(context_info) {
+        context_info += '\n';
+    }
+
     var body = 'Please describe what you were doing when this error occurred:\n\n\n'
             + '---DIAGNOSTICS---\n'
+            + context_info
             + error_msg+'\n'
             + '\n'
             + format_navigator_info()
             + '\n'
             + error_stack+'\n';
-    
+
     var link = 'mailto:support@knightlab.zendesk.com?'
         + 'subject='+encodeURIComponent(subject)
         + '&body='+encodeURIComponent(body);
@@ -166,7 +186,7 @@ function format_report_link(subject, error_msg, error_stack) {
     return '<p><a class="report" href="'+link+'">Report this error to the Knight Lab</a></p>';
 }
 
-function show_error(msg, err) {
+function show_error(msg, err, error_detail) {
     var message = '<strong>' + msg + ':</strong>';
 
     if(err) {
@@ -185,8 +205,14 @@ function show_error(msg, err) {
             message += ' ' + error_text;
         }
 
+        // Add report link for JavaScript errors with stack trace
         if(typeof err === 'object' && err.hasOwnProperty('stack')) {
             message += format_report_link(msg, message, err.stack);
+        }
+        // Add report link for backend errors with error_detail (storage errors, etc.)
+        else if(error_detail) {
+            var diagnostic_info = error_text + '\n\n' + error_detail;
+            message += format_report_link(msg, error_text, diagnostic_info);
         }
     }
 
