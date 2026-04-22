@@ -1,5 +1,8 @@
 project_name: StoryMapJS
 service_name: "{{ project_name|lower }}"
+restart_services:
+  - "{{ service_name }}"
+  - storymap-tasks
 gitdeploy_version: "1.0.6"
 python_version: "3.14.0"
 python: .venv/bin/python
