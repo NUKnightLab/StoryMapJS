@@ -11,6 +11,7 @@ huey.*
 
 .srl
 *.pyc
+.python-version
 .env
 .envrc
 .venv/*

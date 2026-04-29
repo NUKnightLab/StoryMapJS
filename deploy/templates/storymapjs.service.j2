@@ -1,0 +1,46 @@
+[Unit]
+Description=storymapjs
+After=network.target
+StartLimitIntervalSec=300
+StartLimitBurst=5
+
+[Service]
+User={{ application_user }}
+Group={{ application_group }}
+WorkingDirectory={{ application_dir }}
+EnvironmentFile={{ env_file }}
+
+# Kill + respawn each worker after ~150–250 requests, so accumulated heap drift from base64 image saves.
+# Never reaches the OOM threshold. Jitter prevents all 3 workers from recycling at the same instant.
+ExecStart={{ virtualenv }}/bin/gunicorn -b :{{ service_port }} \
+          --workers 3 \
+          --max-requests 200 \
+          --max-requests-jitter 50 {{ wsgi_application }}
+
+# Auto-recover from crashes (currently Restart=no, which is why the
+# OOM today left the service dead for 40-60 min each time).
+Restart=on-failure
+RestartSec=5s
+
+# Per-unit memory ceiling. Soft pressure at 1.6G (kernel reclaims
+# from this cgroup first), hard kill at 2.0G — so a runaway worker
+# gets killed inside the cgroup instead of triggering global OOM
+# that takes nginx down with it (which happened at 17:44:42 today).
+MemoryHigh=1600M
+MemoryMax=2000M
+
+
+# Why these numbers
+
+# - --max-requests 200 — at ~5–10 MB worker drift per heavy save, 200 requests stays well under the 2 GB ceiling
+#   even in the worst case. Tune down to 100 if drift turns out worse.
+# - MemoryMax=2000M — 3 workers × 2 GB = 6 GB cap, which exceeds the 3.7 GB box, so this never bites under normal
+#   load; it only fires when one worker has gone berserk. The point is to convert "global OOM kills random victim"
+#   into "cgroup OOM kills the offender".
+# - Restart=on-failure (not always) — preserves clean shutdowns (systemctl stop) without a respawn loop.
+# - StartLimitBurst=5 over StartLimitIntervalSec=300 — if it crashes 5× in 5 min, stop trying; that's a real bug,
+#   not a transient.
+
+
+[Install]
+WantedBy=multi-user.target
