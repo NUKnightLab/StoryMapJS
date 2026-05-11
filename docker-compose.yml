@@ -22,7 +22,7 @@ services:
       REDIS_HOST: redis
       RABBITMQ_HOST: rabbitmq
     env_file: .env
-    command: gunicorn -b :5000 --workers 1 --reload --log-level debug storymap.core.wsgi:application --keyfile KnightLabRootCA.key --certfile KnightLabRootCA.crt
+    command: gunicorn -b :5000 --workers 1 --timeout 90 --reload --log-level debug storymap.core.wsgi:application --keyfile KnightLabRootCA.key --certfile KnightLabRootCA.crt
     depends_on:
       - pg
       #- localstack

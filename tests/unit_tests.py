@@ -113,3 +113,75 @@ def test_storymap_save_returns_user_friendly_error_after_retries(api_client, mon
     assert body['error_type'] == 'transient failure'
     assert body['error_attempts'] == 2
     assert attempts['count'] == 2
+
+
+@pytest.mark.unit
+def test_require_user_returns_json_401_for_ajax_when_no_session(api_client):
+    """When session has no valid user and request is AJAX, return JSON 401."""
+    client, _ = api_client
+    with client.session_transaction() as sess:
+        sess.pop('uid', None)
+
+    response = client.get(
+        '/storymap/?id=map-123',
+        headers={'X-Requested-With': 'XMLHttpRequest'},
+    )
+    assert response.status_code == 401
+    body = response.get_json()
+    assert 'error' in body
+    assert 'session' in body['error'].lower()
+
+
+@pytest.mark.unit
+def test_require_user_redirects_for_non_ajax_when_no_session(api_client):
+    """When session has no valid user and request is NOT AJAX, redirect to select."""
+    client, _ = api_client
+    with client.session_transaction() as sess:
+        sess.pop('uid', None)
+
+    response = client.get('/storymap/?id=map-123')
+    assert response.status_code == 302
+    assert 'select' in response.headers['Location']
+
+
+@pytest.mark.unit
+def test_require_user_returns_json_500_for_ajax_on_db_error(api_client, monkeypatch):
+    """When DB throws during auth check and request is AJAX, return JSON 500."""
+    client, _ = api_client
+
+    def failing_get_user(uid, db=None):
+        raise Exception('connection refused')
+
+    monkeypatch.setattr(api, 'get_user', failing_get_user)
+
+    response = client.get(
+        '/storymap/?id=map-123',
+        headers={'X-Requested-With': 'XMLHttpRequest'},
+    )
+    assert response.status_code == 500
+    body = response.get_json()
+    assert 'error' in body
+    assert 'temporary' in body['error'].lower()
+
+
+@pytest.mark.unit
+def test_is_ajax_request_with_xhr_header():
+    """Detect AJAX via X-Requested-With header."""
+    with api.app.test_request_context(
+        '/storymap/',
+        headers={'X-Requested-With': 'XMLHttpRequest'},
+    ):
+        assert api._is_ajax_request() is True
+
+
+@pytest.mark.unit
+def test_is_ajax_request_without_xhr_header():
+    """Non-AJAX request should not be detected as AJAX."""
+    with api.app.test_request_context('/storymap/'):
+        assert api._is_ajax_request() is False
+
+
+@pytest.mark.unit
+def test_flask_500_handler_returns_json_for_ajax():
+    """Flask 500 error handler should be registered and return JSON for AJAX."""
+    assert 500 in api.app.error_handler_spec[None]
