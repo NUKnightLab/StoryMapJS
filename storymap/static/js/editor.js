@@ -78,9 +78,44 @@ function _ajax(options, on_error, on_success, on_complete) {
         cache: false,
         dataType: 'json',
         timeout: 45000, // ms
-        error: function(xhr, status, err) { 
+        error: function(xhr, status, err) {
+            debug('ajax error', status, xhr.status, err);
+
+            if (status === 'parsererror') {
+                var responseText = xhr.responseText || '';
+                if (responseText.indexOf('entry_login') > -1) {
+                    _error = 'Your session has expired.|Please reload this page to sign back in.';
+                } else {
+                    _error = 'A temporary server error occurred. Your changes were not saved.|Please wait a moment and try again.';
+                }
+                on_error(_error);
+                return;
+            }
+
+            if (xhr.status === 401) {
+                try {
+                    var data = JSON.parse(xhr.responseText);
+                    _error = data.error || 'Your session has expired.|Please reload this page to sign back in.';
+                } catch(e) {
+                    _error = 'Your session has expired.|Please reload this page to sign back in.';
+                }
+                on_error(_error);
+                return;
+            }
+
+            if (xhr.status === 502 || xhr.status === 503 || xhr.status === 504) {
+                _error = 'The server is temporarily unavailable.|Please wait a moment and try again.';
+                on_error(_error);
+                return;
+            }
+
+            if (status === 'timeout') {
+                _error = 'The request timed out.|Please wait a moment and try again.';
+                on_error(_error);
+                return;
+            }
+
             _error = err || status;
-            debug('ajax error', _error)           
             on_error(_error);
         },
         success: function(data) {

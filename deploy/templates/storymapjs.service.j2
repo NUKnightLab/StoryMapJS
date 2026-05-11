@@ -14,6 +14,7 @@ EnvironmentFile={{ env_file }}
 # Never reaches the OOM threshold. Jitter prevents all 3 workers from recycling at the same instant.
 ExecStart={{ virtualenv }}/bin/gunicorn -b :{{ service_port }} \
           --workers 3 \
+          --timeout 90 \
           --max-requests 200 \
           --max-requests-jitter 50 {{ wsgi_application }}
 
@@ -32,6 +33,8 @@ MemoryMax=2000M
 
 # Why these numbers
 
+# - --timeout 90 — S3 read_timeout is 60s with up to 5 retry attempts. 90s gives retries room to complete
+#   without gunicorn killing the worker. nginx proxy_read_timeout is 95s to match.
 # - --max-requests 200 — at ~5–10 MB worker drift per heavy save, 200 requests stays well under the 2 GB ceiling
 #   even in the worst case. Tune down to 100 if drift turns out worse.
 # - MemoryMax=2000M — 3 workers × 2 GB = 6 GB cap, which exceeds the 3.7 GB box, so this never bites under normal

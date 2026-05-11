@@ -95,6 +95,34 @@ def https_redirect():
 '''
 
 
+@app.errorhandler(401)
+def handle_401(e):
+    if _is_ajax_request():
+        return jsonify({
+            'error': 'Your session has expired. Please log in again.|'
+                     'Reload this page to sign back in.'
+        }), 401
+    return redirect(url_for('select'))
+
+@app.errorhandler(403)
+def handle_403(e):
+    if _is_ajax_request():
+        return jsonify({
+            'error': 'You do not have permission to perform this action.'
+        }), 403
+    return redirect(url_for('select'))
+
+@app.errorhandler(500)
+def handle_500(e):
+    app.logger.error("Unhandled 500 error: %s", e)
+    if _is_ajax_request():
+        return jsonify({
+            'error': 'A temporary server error occurred. Your changes were not saved.|'
+                     'Please wait a moment and try again.'
+        }), 500
+    return redirect(url_for('select'))
+
+
 @app.context_processor
 def inject_urls():
     """
@@ -153,6 +181,11 @@ def _request_wants_json():
     return best == 'application/json' and \
         request.accept_mimetypes[best] > \
         request.accept_mimetypes['text/html']
+
+def _is_ajax_request():
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return True
+    return _request_wants_json()
 
 def _jsonify(*args, **kwargs):
     """Convert to JSON"""
@@ -319,7 +352,13 @@ def google_auth_verify():
 def get_session_user():
     """Enforce authenticated user"""
     uid = session.get('uid')
-    user = get_user(uid, db=db())
+    if not uid:
+        return None
+    try:
+        user = get_user(uid, db=db())
+    except Exception as e:
+        app.logger.error("get_session_user: DB error for uid=%s: %s", uid, e)
+        raise
     if not user:
         try:
             session.pop('uid')
@@ -341,8 +380,21 @@ def require_user(f):
     """
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        user = get_session_user()
+        try:
+            user = get_session_user()
+        except Exception as e:
+            traceback.print_exc()
+            if _is_ajax_request():
+                return jsonify({
+                    'error': 'A temporary server error occurred. Please try again.'
+                }), 500
+            return redirect(url_for('select'))
         if user is None:
+            if _is_ajax_request():
+                return jsonify({
+                    'error': 'Your session has expired. Please log in again.|'
+                             'Reload this page to sign back in.'
+                }), 401
             return redirect(url_for('select'))
         request.user = user
         kwargs['user'] = user
@@ -358,7 +410,7 @@ def require_user_id(template=None):
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
-            user = get_session_user()
+            user = request.user
             id = _request_get_required('id')
             if id not in user['storymaps']:
                 error = 'You do not have permission to access to this StoryMap'
@@ -370,7 +422,6 @@ def require_user_id(template=None):
                     return render_template('select.html', user=user, error=error, selector_message=message)
                 else:
                     return jsonify({'error': error})
-            request.user = user
             kwargs['user'] = user
             kwargs['id'] = id
             return f(*args, **kwargs)
@@ -489,6 +540,7 @@ def storymap_update_meta(user, id):
 
 
 @app.route('/storymap/export/')
+@require_user
 @require_user_id()
 def storymap_export(user, id):
     """
