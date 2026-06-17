@@ -1,0 +1,1 @@
+VCO.Language={name:"Suomi",lang:"fi",messages:{loading:"Lataa",wikipedia:"Wikipediasta, vapaasta tietosanakirjasta",start:"Tutustu"},buttons:{map_overview:"Yleiskartta",overview:"Yleiskatsaus",backtostart:"Takaisin alkuun",collapse_toggle:"Piilota kartta",uncollapse_toggle:"Näytä kartta"}};
