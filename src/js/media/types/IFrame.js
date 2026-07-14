@@ -22,10 +22,16 @@ export default class IFrame extends Media {
 		this.media_id = this.data.url;
 		
 		// API URL
-		let iframe = this.media_id;
+		let iframe = document.createElement('iframe');
+		iframe.src = this.media_id;
+		iframe.style.width = "100%";
+		iframe.style.height = "100%";
+		iframe.setAttribute('frameborder', '0');
+		iframe.setAttribute('allowfullscreen', '');
+		iframe.setAttribute('allow', 'autoplay; encrypted-media');
 
 		// API Call
-		this._el.content_item.innerHTML = iframe;
+		this._el.content_item.appendChild(iframe);
 		
 		// After Loaded
 		this.onLoaded();
