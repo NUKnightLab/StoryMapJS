@@ -391,7 +391,15 @@ def _make_storymap_id(user, title):
         if m:
             id_set.add(m.group(1))
 
+    # Limit slugified title to prevent excessively long S3 keys
+    # S3 key max is 1024 bytes, and keys are: {bucket_key}/{user_id}/{id}/...
+    # Reserve space for bucket key (~20), user ID (~100), path components (~50), suffix digits (~10)
+    # This leaves ~200 chars for the base ID to be safe
+    MAX_ID_LENGTH = 200
     id_base = slugify.slugify(title)
+    if len(id_base) > MAX_ID_LENGTH:
+        id_base = id_base[:MAX_ID_LENGTH]
+
     id = id_base
     n = 0
     while id in id_set:
@@ -614,6 +622,9 @@ def storymap_copy(user, id):
         if user['storymaps'][dst_id].get('published_on'):
             _write_embed_published(dst_key_prefix, user['storymaps'][dst_id])
         return jsonify(user['storymaps'][dst_id])
+    except storage.StorageException as e:
+        traceback.print_exc()
+        return jsonify({'error': str(e), 'error_detail': e.detail})
     except Exception as e:
         traceback.print_exc()
         return jsonify({'error': str(e)})
@@ -630,6 +641,9 @@ def storymap_delete(user, id):
         del user['storymaps'][storymap_id]
         save_user(user, db=db())
         return jsonify({})
+    except storage.StorageException as e:
+        traceback.print_exc()
+        return jsonify({'error': str(e), 'error_detail': e.detail})
     except Exception as e:
         traceback.print_exc()
         return jsonify({'error': str(e)})
@@ -654,6 +668,9 @@ def storymap_create(user):
         save_user(user, db=db())
         _write_embed_draft(key_prefix, user['storymaps'][id])
         return jsonify({'id': id})
+    except storage.StorageException as e:
+        traceback.print_exc()
+        return jsonify({'error': str(e), 'error_detail': e.detail})
     except Exception as e:
         traceback.print_exc()
         return jsonify({'error': str(e)})
@@ -1078,8 +1095,10 @@ admins = os.environ.get('ADMINS', '').split(' ')
 
 @app.route('/robots.txt')
 def robots_txt():
-    if 'storymap.knilab.com' in domains:
+    if domains and ('storymap.knightlab.com' in domains or 'storymap.knilab.com' in domains):
         return send_file('templates/robots.txt')
+    # Default robots.txt for non-production environments
+    return "User-agent: *\nDisallow: /\n", 200, {'Content-Type': 'text/plain'}
 
 @app.route('/build/embed/')
 def catch_build_embed():

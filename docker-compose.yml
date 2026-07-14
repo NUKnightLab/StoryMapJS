@@ -41,6 +41,7 @@ services:
     volumes:
       #- ./.localstack/:/var/lib/localstack
       - ./localstack-data:/var/lib/localstack
+      - ./localstack-init:/etc/localstack/init/ready.d
       #- ./.localstack/:/localstack
       #- "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
 

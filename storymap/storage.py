@@ -10,10 +10,27 @@ import sys
 import time
 import traceback
 import json
+import logging
 import boto3
 import requests
+from datetime import datetime
 from functools import wraps
-from botocore.exceptions import ClientError, EndpointConnectionError
+
+# Enable boto3 debug logging for retry attempts (optional, can be disabled in production)
+# Set to INFO to see retry attempts, DEBUG for full details
+# For RequestHeaderSectionTooLarge debugging, enable urllib3 debug to see actual HTTP headers:
+# import http.client as http_client
+# http_client.HTTPConnection.debuglevel = 1
+# boto3.set_stream_logger('boto3.resources', logging.DEBUG)
+# boto3.set_stream_logger('botocore', logging.DEBUG)
+from botocore.exceptions import (
+    BotoCoreError,
+    ClientError,
+    EndpointConnectionError,
+    ConnectionClosedError,
+    ReadTimeoutError,
+    ConnectTimeoutError
+)
 #from boto3.exception import S3ResponseError
 #from boto3.s3.connection import OrdinaryCallingFormat
 
@@ -33,6 +50,9 @@ except ImportError as e:
     raise ImportError("Could not import settings '%s' (Is it on sys.path?): %s" % (settings_module, e))
 settings = sys.modules[settings_module]
 
+# Setup logger for storage module
+logger = logging.getLogger(__name__)
+
 
 def truthy(s):
    return str(s).lower()[0] in ['t', '1']
@@ -43,12 +63,26 @@ def truthy(s):
 #        settings.AWS_ACCESS_KEY_ID,
 #        settings.AWS_SECRET_ACCESS_KEY, calling_format=OrdinaryCallingFormat())
 endpoint = os.environ.get('AWS_ENDPOINT_URL')
-print('AWS endpoint:', endpoint)
+logger.warning(f'[{datetime.now().isoformat()}] [STORAGE] AWS endpoint: {endpoint}')
 ssl_verify = truthy(os.environ.get('AWS_SSL_VERIFY', 't'))
+
+# Configure retries for transient errors (connection resets, timeouts, etc.)
+# Standard retry mode retries on connection errors, throttling, and server errors
+# Max attempts = 1 initial + 4 retries = 5 total attempts
+retry_config = boto3.session.Config(
+    signature_version='s3v4',
+    retries={
+        'mode': 'standard',  # Uses exponential backoff with jitter
+        'max_attempts': 5    # Total of 5 attempts (1 initial + 4 retries)
+    },
+    connect_timeout=10,      # Connection timeout in seconds
+    read_timeout=60          # Read timeout in seconds
+)
+
 _conn = boto3.client('s3',
         verify=ssl_verify,
         endpoint_url=endpoint,
-        config=boto3.session.Config(signature_version='s3v4'),
+        config=retry_config,
         aws_session_token=None,
         aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
         aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
@@ -56,7 +90,7 @@ session = boto3.session.Session(
         aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
         aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
 s3 = session.resource('s3', verify=ssl_verify, endpoint_url=endpoint,
-    aws_session_token=None, config=boto3.session.Config(signature_version='s3v4'))
+    aws_session_token=None, config=retry_config)
 _bucket = s3.Bucket(settings.AWS_STORAGE_BUCKET_NAME)
 
 
@@ -73,17 +107,173 @@ def _reraise_s3response(f):
     """Decorator trap and re-raise S3ResponseError as StorageException"""
     @wraps(f)
     def decorated_function(*args, **kwargs):
+        # Error injection for testing - controlled by environment variable
+        # Format: FORCE_STORAGE_ERROR=error_type[:operation]
+        # error_type: 'connection', 'timeout', 'permission', 'notfound', 'corrupt' (required)
+        # operation: 'read', 'write', or omit for all operations (optional)
+        force_error = os.environ.get('FORCE_STORAGE_ERROR', '').lower()
+        if force_error:
+            # Parse error type and operation type
+            if ':' in force_error:
+                error_type, operation_type = force_error.split(':', 1)
+            else:
+                error_type = force_error
+                operation_type = 'all'
+
+            # Categorize functions as read or write operations
+            read_operations = ['list_keys', 'list_key_names', 'get_contents',
+                             'get_contents_as_string', 'load_json']
+            write_operations = ['copy_key', 'save_bytes_from_data', 'save_from_data',
+                              'save_from_url', 'save_json', 'delete_key', 'delete_keys']
+
+            function_name = f.__name__
+            is_read = function_name in read_operations
+            is_write = function_name in write_operations
+
+            # Determine if we should inject the error
+            should_inject = False
+            if operation_type == 'all':
+                should_inject = True
+            elif operation_type == 'read' and is_read:
+                should_inject = True
+            elif operation_type == 'write' and is_write:
+                should_inject = True
+
+            if should_inject:
+                op_desc = 'read' if is_read else 'write' if is_write else 'unknown'
+                logger.warning(f"[{datetime.now().isoformat()}] [ERROR INJECTION] Forcing {op_desc} error '{error_type}' on {function_name}()")
+
+                if error_type == 'connection':
+                    raise StorageException(
+                        "There was a problem connecting to the document storage service.|Please wait a few moments and try again. If the problem persists, please contact KnightLab support.",
+                        f"FORCE_STORAGE_ERROR={force_error} - Simulated connection failure on {op_desc} operation"
+                    )
+                elif error_type == 'timeout':
+                    raise StorageException(
+                        "The request timed out while accessing the document storage service.|Please wait a few moments and try again. If the problem persists, please contact KnightLab support.",
+                        f"FORCE_STORAGE_ERROR={force_error} - Simulated timeout on {op_desc} operation"
+                    )
+                elif error_type == 'permission':
+                    raise StorageException(
+                        "Permission denied while accessing the document storage service.|Please wait a few moments and try again. If the problem persists, please contact KnightLab support.",
+                        f"FORCE_STORAGE_ERROR={force_error} - Simulated permission error on {op_desc} operation"
+                    )
+                elif error_type == 'notfound':
+                    raise StorageException(
+                        "The requested document was not found in storage.|Please wait a few moments and try again. If the problem persists, please contact KnightLab support.",
+                        f"FORCE_STORAGE_ERROR={force_error} - Simulated not found error on {op_desc} operation"
+                    )
+                elif error_type == 'corrupt':
+                    raise StorageException(
+                        "The document data appears to be corrupted or invalid.|Please wait a few moments and try again. If the problem persists, please contact KnightLab support.",
+                        f"FORCE_STORAGE_ERROR={force_error} - Simulated data corruption on {op_desc} operation"
+                    )
+
         try:
             return f(*args, **kwargs)
-        #except S3ResponseError as e:
-        except (ClientError, EndpointConnectionError) as e:
-            print(traceback.format_exc())
-            raise StorageException("Could not connect to document store: " + str(e), str(e))
-        except Exception as e: # TODO !!!
-            print(traceback.format_exc())
-            message = getattr(e, 'message', str(e) or e.__class__.__name__)
-            detail = getattr(e, 'body', str(e))
-            raise StorageException(message, detail)
+        except ClientError as e:
+            # Log ALL ClientErrors with full context for debugging intermittent issues
+            error_code = e.response.get('Error', {}).get('Code', 'Unknown')
+            timestamp = datetime.now().isoformat()
+            logger.error(f"[{timestamp}] [STORAGE_ERROR] ClientError: {error_code} in {f.__name__}()")
+            logger.error(f"[{timestamp}] [STORAGE_ERROR] Key: {args[0][:200] if args and isinstance(args[0], str) else 'N/A'}... (len={len(args[0]) if args and isinstance(args[0], str) else 'N/A'})")
+            if len(args) > 1:
+                content_size = len(args[1]) if isinstance(args[1], (str, bytes)) else 'N/A'
+                logger.error(f"[{timestamp}] [STORAGE_ERROR] Content size: {content_size}")
+            logger.error(f"[{timestamp}] [STORAGE_ERROR] Error response: {e.response}")
+            logger.error(traceback.format_exc())
+
+            # Special handling for key-related size errors
+            if error_code == 'KeyTooLongError':
+                # Log diagnostic information
+                logger.error(f"[{timestamp}] [STORAGE] KeyTooLongError - Function: {f.__name__}")
+                logger.error(f"[{timestamp}] [STORAGE] KeyTooLongError - Args count: {len(args)}, Kwargs: {list(kwargs.keys())}")
+                if args and isinstance(args[0], str):
+                    key = args[0]
+                    logger.error(f"[{timestamp}] [STORAGE] KeyTooLongError - Key length: {len(str(key))} bytes (max 1024)")
+                    logger.error(f"[{timestamp}] [STORAGE] KeyTooLongError - Key: {str(key)[:200]}...")
+                raise StorageException(
+                    "The StoryMap identifier is too long for storage.|This is usually caused by corrupted data. Please contact KnightLab support with the StoryMap ID.",
+                    f"KeyTooLongError in {f.__name__}(): Key length {len(str(args[0])) if args else 'unknown'} bytes. {str(e)}"
+                )
+
+            if error_code == 'RequestHeaderSectionTooLarge':
+                # Log comprehensive diagnostic information to debug intermittent errors
+                logger.error(f"[{timestamp}] [STORAGE] ===== RequestHeaderSectionTooLarge DEBUG =====")
+                logger.error(f"[{timestamp}] [STORAGE] Function: {f.__name__}")
+                logger.error(f"[{timestamp}] [STORAGE] Args count: {len(args)}, Kwargs keys: {list(kwargs.keys())}")
+
+                # Log key information
+                if args and isinstance(args[0], str):
+                    key = args[0]
+                    key_bytes = len(str(key).encode('utf-8'))
+                    logger.error(f"[{timestamp}] [STORAGE] Key length: {key_bytes} bytes (UTF-8)")
+                    logger.error(f"[{timestamp}] [STORAGE] Key (first 300 chars): {str(key)[:300]}")
+                    # Parse key to show components
+                    key_parts = str(key).split('/')
+                    logger.error(f"[{timestamp}] [STORAGE] Key components: {len(key_parts)} parts")
+                    for i, part in enumerate(key_parts):
+                        logger.error(f"[{timestamp}] [STORAGE]   Part {i}: '{part}' ({len(part)} chars)")
+
+                # Log content size if available
+                if len(args) > 1:
+                    content = args[1] if f.__name__ == 'save_bytes_from_data' else kwargs.get('data', args[1] if len(args) > 1 else None)
+                    if content:
+                        content_size = len(content) if isinstance(content, (str, bytes)) else 'unknown'
+                        logger.error(f"[{timestamp}] [STORAGE] Content size: {content_size} bytes")
+
+                # Log boto3 client configuration
+                logger.error(f"[{timestamp}] [STORAGE] Boto3 endpoint: {endpoint}")
+                logger.error(f"[{timestamp}] [STORAGE] Signature version: s3v4")
+                logger.error(f"[{timestamp}] [STORAGE] ===== END DEBUG =====")
+
+                raise StorageException(
+                    "The StoryMap data exceeds size limits for storage.|Please try reducing the amount of content, especially in text fields. If the problem persists, please contact KnightLab support.",
+                    f"RequestHeaderSectionTooLarge in {f.__name__}(): Key length {len(str(args[0]).encode('utf-8')) if args and isinstance(args[0], str) else 'unknown'} bytes. {str(e)}"
+                )
+
+            raise StorageException(
+                "There was a problem connecting to the document storage service.|Please wait a few moments and try again. If the problem persists, please contact KnightLab support.",
+                f"Connection error: {str(e)}"
+            )
+        except (ConnectionClosedError, ReadTimeoutError, ConnectTimeoutError) as e:
+            # Connection/timeout errors - these are likely transient
+            logger.error(traceback.format_exc())
+            logger.error(f"[{datetime.now().isoformat()}] [STORAGE] Connection/Timeout error in {f.__name__}(): {type(e).__name__}")
+            raise StorageException(
+                "The connection to the document storage service was interrupted.|Please wait a few moments and try again. If the problem persists, please contact KnightLab support.",
+                f"Connection interrupted: {type(e).__name__}: {str(e)}"
+            )
+        except EndpointConnectionError as e:
+            # Endpoint connection failures
+            logger.error(traceback.format_exc())
+            logger.error(f"[{datetime.now().isoformat()}] [STORAGE] EndpointConnectionError in {f.__name__}()")
+            raise StorageException(
+                "There was a problem connecting to the document storage service.|Please wait a few moments and try again. If the problem persists, please contact KnightLab support.",
+                f"Connection error: {str(e)}"
+            )
+        except BotoCoreError as e:
+            # Other botocore errors
+            logger.error(traceback.format_exc())
+            logger.error(f"[{datetime.now().isoformat()}] [STORAGE] BotoCoreError in {f.__name__}(): {type(e).__name__}")
+            raise StorageException(
+                "An error occurred while accessing the document storage service.|Please wait a few moments and try again. If the problem persists, please contact KnightLab support.",
+                f"Storage error: {type(e).__name__}: {str(e)}"
+            )
+        except Exception as e:
+            logger.error(traceback.format_exc())
+            logger.error(f"[{datetime.now().isoformat()}] [STORAGE] Unexpected exception in {f.__name__}(): {type(e).__name__}")
+            # Check if it's an exception with message and body attributes
+            if hasattr(e, 'message') and hasattr(e, 'body'):
+                raise StorageException(
+                    "An error occurred while accessing the document storage service.|Please wait a few moments and try again. If the problem persists, please contact KnightLab support.",
+                    f"Error: {e.message}\nBody: {e.body}"
+                )
+            else:
+                raise StorageException(
+                    "An unexpected error occurred while accessing the document storage service.|Please wait a few moments and try again. If the problem persists, please contact KnightLab support.",
+                    f"Unexpected error: {type(e).__name__}: {str(e)}"
+                )
     return decorated_function
 
 
@@ -185,6 +375,11 @@ def save_bytes_from_data(key_name, content_type, content):
     """
     Save content with content-type to key_name
     """
+    # Log all save attempts to correlate failures/successes
+    content_size = len(content) if isinstance(content, (str, bytes)) else 'unknown'
+    timestamp = datetime.now().isoformat()
+    logger.warning(f"[{timestamp}] [SAVE_ATTEMPT] save_bytes_from_data: key={key_name[:100]}... key_len={len(key_name)} content_size={content_size} type={content_type}")
+
     _conn.put_object(
         ACL='public-read',
         Body=content,
@@ -193,6 +388,7 @@ def save_bytes_from_data(key_name, content_type, content):
         ContentType=content_type,
         Key=key_name
     )
+    logger.warning(f"[{datetime.now().isoformat()}] [SAVE_SUCCESS] save_bytes_from_data: key={key_name[:100]}...")
 
 
 @_reraise_s3response
@@ -238,10 +434,18 @@ def save_json(key_name, data):
     """
     Save data to key_name as json
     """
+    # Log all save attempts to correlate failures/successes
+    timestamp = datetime.now().isoformat()
+    logger.warning(f"[{timestamp}] [SAVE_ATTEMPT] save_json: key={key_name[:100]}... key_len={len(key_name)}")
+
     if type(data) in [type(''), type(u'')]:
         content = data
     else:
         content = json.dumps(data)
+
+    content_size = len(content.encode('utf-8'))
+    logger.warning(f"[{timestamp}] [SAVE_ATTEMPT] save_json: content_size={content_size} bytes")
+
     try:
         _check = json.loads(content)
     except json.decoder.JSONDecodeError:
@@ -255,6 +459,7 @@ def save_json(key_name, data):
             f"Call chain: {call_chain}\n\ndata:\n{str(data)}\n\ncontent:\n{str(content)}"
         )
     save_from_data(key_name, 'application/json', content)
+    logger.warning(f"[{datetime.now().isoformat()}] [SAVE_SUCCESS] save_json: key={key_name[:100]}...")
 
 
 @_reraise_s3response
