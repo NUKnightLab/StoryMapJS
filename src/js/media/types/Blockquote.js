@@ -22,7 +22,7 @@ export default class Blockquote extends Media {
 		this.media_id = this.data.url;
 		
 		// API Call
-		this._el.content_item.innerHTML = this.media_id;
+		this._el.content_item.textContent = this.media_id;
 		
 		// After Loaded
 		this.onLoaded();
