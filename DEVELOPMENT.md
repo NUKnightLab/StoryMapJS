@@ -16,16 +16,70 @@ Install the dependencies and build the javascript:
 ## Questions not yet completely addressed with the new localstack based setup:
 
 
-**Note:**
+## Which StoryMap viewer library the editor loads
 
-Built static is served directly (via the flask app) from the `compiled`
-directory, but the current development setup does not sort this out very well.
-Unless you have a need to host the static code locally, the easiest thing to do
-is probably to point to a deployed cdn. ie., set this env variable:
+The editor renders slide media — and the map preview — using the compiled
+StoryMap viewer library (`storymap.js` + `storymap.css`). Two environment
+variables control where those assets come from:
+
+- `CDN_URL` — base URL for shared assets (fonts, embed pages, etc.).
+- `STORYMAP_LIB_URL` — base URL for the **viewer library** specifically.
+  Defaults to `CDN_URL` when unset.
+
+Splitting these lets you keep `CDN_URL` pointed at a deployed CDN for
+convenience while independently loading the viewer library from a local build
+when you are working on the library itself.
+
+### Development modes
+
+| `STORYMAP_LIB_URL` | Editor loads the viewer from | Use when |
+| --- | --- | --- |
+| *(unset)* | whatever `CDN_URL` is (e.g. the deployed CDN) | working on the editor/server, not the library |
+| `/compiled/` | your local `npm run build` output in `dist/`, served by the `/compiled/` route | testing library changes before they are deployed |
+
+Pointing `CDN_URL` at a deployed CDN remains the easiest default when you have
+no need to host the library locally:
 
 ```
    CDN_URL=https://cdn.knightlab.com/libs/storymapjs/latest/
 ```
+
+To load the **local** build instead, set the library override in `.env`:
+
+```
+   STORYMAP_LIB_URL=/compiled/
+```
+
+Then build the library and recreate the app container so it picks up the env
+change (a plain `docker compose restart` does NOT reload env-file values):
+
+```
+ $ npm run build                              # writes dist/js/storymap.js + dist/css/storymap.css
+ $ docker compose up -d --force-recreate app
+```
+
+`dist/` is bind-mounted into the container, so for subsequent library changes
+you only need to re-run `npm run build` and hard-reload the browser — no
+container recreate required.
+
+### Verifying which library version is loaded
+
+Browser tabs cache the library, so after switching modes or rebuilding you must
+hard-reload the editor (Cmd/Ctrl+Shift+R). A tab opened *before* you changed
+`STORYMAP_LIB_URL` (or before a rebuild) keeps running the previously loaded
+bundle in memory — a common source of "my change isn't showing up" confusion.
+
+To confirm which bundle a page is actually running, open the browser console
+and run:
+
+```js
+document.querySelector('script[src*="storymap.js"]').src
+```
+
+- `.../compiled/js/storymap.js` → the local build (your uncommitted changes).
+- `https://cdn.knightlab.com/libs/storymapjs/latest/...` → the deployed CDN build.
+
+If the src is not what you expect, hard-reload the tab.
 
 ## Overview / tl;dr
 

@@ -5,6 +5,12 @@ AWS_STORAGE_BUCKET_KEY=storymapjs
 AWS_STORAGE_BUCKET_NAME=uploads.knilab.com
 AWS_STORAGE_BUCKET_URL=http://localhost:4566/uploads.knilab.com/
 CDN_URL=https://localhost/compiled/
+# Where the editor loads the StoryMap viewer library (js + css). Defaults to
+# CDN_URL when unset. Development modes:
+#   (unset)      -> follow CDN_URL (e.g. a deployed CDN for convenience)
+#   /compiled/   -> load the local `npm run build` output from dist/, to test
+#                   viewer changes in the editor before deploying to the CDN
+# STORYMAP_LIB_URL=/compiled/
 DB_ENGINE__DEFAULT=mongo
 DB_HOST__DEFAULT=mongo
 DB_NAME__DEFAULT=storymapjs
