@@ -13,6 +13,14 @@ SECRET_KEY = env['FLASK_SECRET_KEY']
 STATIC_URL = env['STATIC_URL']
 CDN_URL = env['CDN_URL']
 
+# Base URL for the StoryMap viewer library (js + css) that the editor loads.
+# Defaults to CDN_URL, so existing setups are unchanged. Set STORYMAP_LIB_URL
+# in the environment to load the viewer from somewhere other than CDN_URL --
+# most usefully '/compiled/', which serves the local `npm run build` output
+# from dist/ (via the /compiled/ route) so viewer changes can be tested in the
+# editor before they are deployed to the CDN.
+STORYMAP_LIB_URL = env.get('STORYMAP_LIB_URL') or CDN_URL
+
 
 # Default database `pg` is setup for local execution via docker-compose where the
 # postgresql service host is set to `pg`. To run migrations, set the `PG_HOST`

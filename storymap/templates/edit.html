@@ -15,13 +15,9 @@
 <script src="//cdn.knightlab.com/libs/blueline/latest/js/blueline.min.js"></script>
 <!-- === leaflet -->
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.2/leaflet.css" />
-<!-- === storymap -->
-<link rel="stylesheet" href="{{ CDN_URL }}css/storymap.css?v1">
-<!-- TEMPORARILY USE NON-MINIFIED -->
-<script type="text/javascript" src="{{ CDN_URL }}js/storymap.js"></script>
-<!--
-<script type="text/javascript" src="/build/js/storymap.js"></script>
--->
+<!-- === storymap viewer library (source set by STORYMAP_LIB_URL; defaults to CDN_URL) -->
+<link rel="stylesheet" href="{{ LIB_URL }}css/storymap.css?v1">
+<script type="text/javascript" src="{{ LIB_URL }}js/storymap.js"></script>
 <!-- === extra leaflet marker classes -->
 <script type="text/javascript" src="{{ STATIC_URL }}js/leaflet-extras.js"></script>
 <!-- === bootstrap-wysihtml5 -->

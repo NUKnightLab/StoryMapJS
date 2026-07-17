@@ -116,10 +116,15 @@ def inject_urls():
     if not cdn_url.endswith('/'):
         cdn_url += '/'
 
+    lib_url = settings.STORYMAP_LIB_URL
+    if not lib_url.endswith('/'):
+        lib_url += '/'
+
     return dict(
         STATIC_URL=static_url, static_url=static_url,
         STORAGE_URL=storage_url, storage_url=storage_url,
-        CDN_URL=cdn_url, cdn_url=cdn_url)
+        CDN_URL=cdn_url, cdn_url=cdn_url,
+        LIB_URL=lib_url, lib_url=lib_url)
 
 
 @app.context_processor
