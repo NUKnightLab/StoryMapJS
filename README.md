@@ -10,6 +10,12 @@ If you want information on creating JSON with your own code and embedding it, se
  See DEVELOPMENT.md to get setup for local development of StoryMap.
 
 
+## Deployment
+
+ See DEPLOYMENT.md for how to release the CDN library and deploy the editor
+ application (two separate processes).
+
+
 ## Contributing language translations
 
 StoryMap's older sibling, [TimelineJS](http://timeline.knightlab.com) has proven internationally popular, in part because users have contributed translation support for dozens of languages.  StoryMap is also ready to be used in languages other than English, but once again, we'll need your help.
