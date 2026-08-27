@@ -47,7 +47,7 @@ services:
 
 
   pg:
-    image: postgres:12.17
+    image: postgres:18.6
     restart: always
     environment:
       POSTGRES_USER: storymap
@@ -56,7 +56,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./.pgdata/:/var/lib/postgresql/data/
+      - ./.pgdata/:/var/lib/postgresql/
 
   huey:
     build:
