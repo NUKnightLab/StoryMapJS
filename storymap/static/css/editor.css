@@ -827,6 +827,10 @@ a.list-item-options:hover {
     width: 130px;
 }
 
+.maintenance-notice ~ .slides-section {
+    top: 116px;
+}
+
 .slides-container {
     position: absolute;
     top: 100px;
@@ -1144,6 +1148,10 @@ a.list-item-options:hover {
     left: 130px;
     bottom: 0;
     right: 0;
+}
+
+.maintenance-notice ~ .tabs-section {
+    top: 92px;
 }
 
 .tabs-section .nav {
@@ -1530,6 +1538,28 @@ test mode banner
     font-weight: bold;
     background-color: orange;
     color: white;
+}
+
+/*
+maintenance notice banner
+*/
+
+.maintenance-notice {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 14px;
+    background-color: #fff4e5;
+    color: #b25c00;
+    border-bottom: 3px solid #e67e22;
+}
+
+.maintenance-notice i {
+    font-size: 16px;
 }
 
 #geocode-autocomplete {

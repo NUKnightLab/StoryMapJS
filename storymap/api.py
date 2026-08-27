@@ -75,6 +75,18 @@ app.config['TEST_MODE'] = settings.TEST_MODE
 examples_json = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'examples.json')
 faq_json = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'faq.json')
 
+# Maintenance mode: touch this file to take the site down for maintenance,
+# remove it to bring the site back up. No env var, redeploy, or restart needed
+# -- it's checked fresh on every request.
+#   touch /home/apps/sites/StoryMapJS/.maintenance_mode
+#   rm /home/apps/sites/StoryMapJS/.maintenance_mode
+MAINTENANCE_FLAG_FILE = os.path.join(settings.PROJECT_ROOT, '.maintenance_mode')
+
+@app.before_request
+def check_maintenance_mode():
+    if os.path.exists(MAINTENANCE_FLAG_FILE):
+        return render_template('maintenance.html'), 503
+
 _GOOGLE_OAUTH_SCOPES = [
 #    'https://www.googleapis.com/auth/drive.readonly', # we may need to restore this if there are legacy accounts unmigrated
     'https://www.googleapis.com/auth/userinfo.profile'
@@ -998,23 +1010,28 @@ def legacy_redirect():
     return redirect(url_for('select')+'?'+request.query_string)
 
 
+# TODO: remove after the 2026-09-12 8pm Central maintenance window has passed
+MAINTENANCE_NOTICE = ("Scheduled maintenance Saturday, September 12 at 8:00 PM Central (1:00 AM UTC): "
+    "the StoryMap editor will be briefly unavailable. Please save your work before that time.")
+
+
 @app.route("/select/", methods=['GET', 'POST'])
 def select():
     check_test_user()
     try:
         uid = session.get('uid')
         if not uid:
-            return render_template('select.html')
+            return render_template('select.html', maintenance_notice=MAINTENANCE_NOTICE)
         user = get_user(uid, db=db())
         if not user:
             _session_pop('uid')
-            return render_template('select.html')
+            return render_template('select.html', maintenance_notice=MAINTENANCE_NOTICE)
         if '_id' in user: # mongo only
             del user['_id']
-        return render_template('select.html', user=user)
+        return render_template('select.html', user=user, maintenance_notice=MAINTENANCE_NOTICE)
     except Exception as e:
         traceback.print_exc()
-        return render_template('select.html', error=str(e))
+        return render_template('select.html', error=str(e), maintenance_notice=MAINTENANCE_NOTICE)
 
 
 @app.route("/edit/", methods=['GET', 'POST'])
@@ -1027,14 +1044,14 @@ def edit(user, id):
         # Default Mapbox key is the production key, which is restricted to
         # only work from our domains local developers need to configure an
         # unrestricted MAPBOX_API_KEY in their environment.
-        mapbox_api_key = os.environ.get('MAPBOX_API_KEY', 
+        mapbox_api_key = os.environ.get('MAPBOX_API_KEY',
             'pk.eyJ1IjoibnVrbmlnaHRsYWIiLCJhIjoiY2pzZGxiaTRpMHd0eTQ0cGVscWliaXA2YyJ9.YTxvt_ZegqDqNxtl_gdDYA')
         return render_template('edit.html',
             user=user, meta=user['storymaps'][id],
-            mapbox_api_key=mapbox_api_key)
+            mapbox_api_key=mapbox_api_key, maintenance_notice=MAINTENANCE_NOTICE)
     except Exception as e:
         traceback.print_exc()
-        return render_template('edit.html', error=str(e))
+        return render_template('edit.html', error=str(e), maintenance_notice=MAINTENANCE_NOTICE)
 
 
 @app.route('/admin/')

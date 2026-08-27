@@ -4,6 +4,7 @@ localstack-data/
 
 dist/*
 .pgdata/
+.maintenance_mode
 
 .devcontainer
 

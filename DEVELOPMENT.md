@@ -189,6 +189,39 @@ Note: If prompted for the password of the storymap user, it is `storymap`
 Navigate to `https://localhost` and accept the self-signed certificate.
 
 
+## Maintenance Mode
+
+To take the editor down for maintenance (e.g. during a database upgrade), touch a flag
+file on the app server. No restart or redeploy needed — it's checked on every request:
+
+```bash
+# production (or wherever the app is deployed)
+touch /home/apps/sites/StoryMapJS/.maintenance_mode
+
+# local docker-compose dev
+docker compose exec app touch .maintenance_mode
+```
+
+While the file exists, every route returns `storymap/templates/maintenance.html` with a
+503 status instead of the normal page. That template is self-contained (inline CSS, no
+calls to the DB, S3, or Flask templating beyond itself), so it still renders correctly
+even if the database is down.
+
+Remove the file to restore normal service:
+
+```bash
+rm /home/apps/sites/StoryMapJS/.maintenance_mode          # production
+docker compose exec app rm .maintenance_mode              # local
+```
+
+The check itself lives in `storymap/api.py` (`check_maintenance_mode`, a `before_request`
+hook). `.maintenance_mode` is gitignored, so it never accidentally ships as part of a deploy.
+
+Note: this only takes the app fully offline if there's a single app server, which matches
+the current nginx → gunicorn setup. If StoryMapJS ever moves to multiple app servers behind
+a load balancer, the flag would need to be set on each one.
+
+
 ## Docker troubleshooting
 
 Some commands to know:
