@@ -2,7 +2,7 @@ boto3==1.34.*
 Flask==3.0.*
 Flask-Cors==4.0.*
 google-api-python-client==2.115.*
-gunicorn==21.2.*
+gunicorn==26.2.0
 huey==2.5.*
 oauth2client==4.1.*
 psycopg2-binary==2.9.*
