@@ -1062,28 +1062,23 @@ def legacy_redirect():
     return redirect(url_for('select')+'?'+request.query_string)
 
 
-# TODO: remove after the 2026-09-12 8pm Central maintenance window has passed
-MAINTENANCE_NOTICE = ("Scheduled maintenance Saturday, September 12 at 8:00 PM Central (1:00 AM UTC): "
-    "the StoryMap editor will be briefly unavailable. Please save your work before that time.")
-
-
 @app.route("/select/", methods=['GET', 'POST'])
 def select():
     check_test_user()
     try:
         uid = session.get('uid')
         if not uid:
-            return render_template('select.html', maintenance_notice=MAINTENANCE_NOTICE)
+            return render_template('select.html')
         user = get_user(uid, db=db())
         if not user:
             _session_pop('uid')
-            return render_template('select.html', maintenance_notice=MAINTENANCE_NOTICE)
+            return render_template('select.html')
         if '_id' in user: # mongo only
             del user['_id']
-        return render_template('select.html', user=user, maintenance_notice=MAINTENANCE_NOTICE)
+        return render_template('select.html', user=user)
     except Exception as e:
         traceback.print_exc()
-        return render_template('select.html', error=str(e), maintenance_notice=MAINTENANCE_NOTICE)
+        return render_template('select.html', error=str(e))
 
 
 @app.route("/edit/", methods=['GET', 'POST'])
@@ -1100,10 +1095,10 @@ def edit(user, id):
             'pk.eyJ1IjoibnVrbmlnaHRsYWIiLCJhIjoiY2pzZGxiaTRpMHd0eTQ0cGVscWliaXA2YyJ9.YTxvt_ZegqDqNxtl_gdDYA')
         return render_template('edit.html',
             user=user, meta=user['storymaps'][id],
-            mapbox_api_key=mapbox_api_key, maintenance_notice=MAINTENANCE_NOTICE)
+            mapbox_api_key=mapbox_api_key)
     except Exception as e:
         traceback.print_exc()
-        return render_template('edit.html', error=str(e), maintenance_notice=MAINTENANCE_NOTICE)
+        return render_template('edit.html', error=str(e))
 
 
 @app.route('/admin/')
